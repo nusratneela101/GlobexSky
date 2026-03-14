@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Management | GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+
+    /* Sidebar */
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh}
+    .sidebar-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:12px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:background .2s}
+    .sidebar-nav li a:hover{background:rgba(255,255,255,.07);color:#fff}
+    .sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-nav li a i{width:16px;text-align:center;font-size:.85rem}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .sidebar-nav li a.logout-link{color:#ef4444}
+    .sidebar-nav li a.logout-link:hover{background:rgba(239,68,68,.1);color:#ef4444}
+
+    /* Main */
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+
+    /* Page heading */
+    .page-heading{margin-bottom:24px}
+    .page-heading h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .page-heading p{color:#64748b;font-size:.88rem;margin-top:4px}
+
+    /* Metric cards */
+    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:24px}
+    .metric-card{background:#fff;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .metric-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .metric-icon.green{background:#d1fae5;color:#059669}
+    .metric-icon.blue{background:#dbeafe;color:#0052CC}
+    .metric-icon.purple{background:#ede9fe;color:#7c3aed}
+    .metric-icon.orange{background:#ffedd5;color:#f97316}
+    .metric-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .metric-label{color:#64748b;font-size:.8rem;margin-top:2px}
+    .metric-sub{font-size:.75rem;font-weight:600;margin-top:4px;color:#10b981}
+
+    /* Admin card */
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+
+    /* Toggle rows */
+    .toggle-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #f1f5f9}
+    .toggle-row:last-child{border-bottom:none}
+    .toggle-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .toggle-icon.blue{background:#dbeafe;color:#0052CC}
+    .toggle-icon.teal{background:#ccfbf1;color:#0d9488}
+    .toggle-icon.purple{background:#ede9fe;color:#7c3aed}
+    .toggle-icon.orange{background:#ffedd5;color:#f97316}
+    .toggle-icon.red{background:#fee2e2;color:#ef4444}
+    .toggle-icon.green{background:#d1fae5;color:#059669}
+    .toggle-info{flex:1;min-width:0}
+    .toggle-name{font-weight:600;font-size:.9rem;color:#0a0e27}
+    .toggle-desc{font-size:.78rem;color:#64748b;margin-top:2px}
+    .toggle-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+
+    /* CSS Toggle switch */
+    .toggle-switch{position:relative;width:46px;height:26px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-track{position:absolute;inset:0;border-radius:50px;background:#cbd5e1;cursor:pointer;transition:background .25s}
+    .toggle-track::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle-switch input:checked + .toggle-track{background:#10b981}
+    .toggle-switch input:checked + .toggle-track::after{transform:translateX(20px)}
+    .toggle-status{font-size:.75rem;font-weight:700;width:28px;text-align:center}
+    .toggle-status.on{color:#10b981}
+    .toggle-status.off{color:#94a3b8}
+
+    /* Badges */
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.73rem;font-weight:600;white-space:nowrap}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-yellow{background:#fef3c7;color:#d97706}
+
+    /* Buttons */
+    .btn{padding:7px 16px;border-radius:7px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-warning:hover{background:#d97706}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+
+    /* Chatbot stats strip */
+    .stats-strip{display:flex;gap:24px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid #f1f5f9;margin-bottom:16px}
+    .strip-item{display:flex;align-items:center;gap:8px;font-size:.85rem}
+    .strip-item strong{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27}
+
+    /* Conversation table */
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .table-wrap{overflow-x:auto}
+
+    /* Section nav tabs */
+    .section-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0}
+    .section-tab{padding:8px 18px;border-radius:50px;border:1.5px solid #e2e8f0;background:#fff;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:#64748b;transition:all .2s;display:flex;align-items:center;gap:6px}
+    .section-tab:hover{border-color:#0052CC;color:#0052CC}
+    .section-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+
+    /* Info blocks inside sections */
+    .info-strip{display:flex;flex-wrap:wrap;gap:20px;padding:14px 16px;background:#f8faff;border-radius:10px;margin-bottom:16px}
+    .info-item{display:flex;flex-direction:column;gap:3px}
+    .info-val{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:#0a0e27}
+    .info-lbl{font-size:.75rem;color:#64748b}
+
+    /* Fraud rule rows */
+    .rule-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#f8faff;border-radius:8px;margin-bottom:8px}
+    .rule-info{display:flex;flex-direction:column;gap:2px}
+    .rule-name{font-weight:600;font-size:.88rem;color:#0a0e27}
+    .rule-desc{font-size:.76rem;color:#64748b}
+    .rule-right{display:flex;align-items:center;gap:10px}
+
+    /* Section panel */
+    .section-panel{display:none}
+    .section-panel.active{display:block}
+
+    /* Gradient header for AI page */
+    .ai-hero{background:linear-gradient(135deg,#0A0E27 0%,#0052CC 60%,#00C9A7 100%);border-radius:16px;padding:28px 32px;margin-bottom:24px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .ai-hero-text h2{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:6px}
+    .ai-hero-text p{font-size:.88rem;opacity:.85;max-width:460px}
+    .ai-hero-icon{font-size:3.5rem;opacity:.25}
+
+    /* Upload zone */
+    .upload-zone{border:2px dashed #e2e8f0;border-radius:10px;padding:24px;text-align:center;color:#94a3b8;font-size:.85rem;cursor:pointer;transition:all .2s}
+    .upload-zone:hover{border-color:#0052CC;color:#0052CC;background:#f0f4ff}
+    .upload-zone i{font-size:2rem;margin-bottom:8px;display:block}
+
+    /* Two-column layout helper */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:900px){.two-col{grid-template-columns:1fr}}
+    @media(max-width:768px){.admin-sidebar{display:none}.ai-hero{padding:20px}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#0052CC" stroke-width="2.5"/>
+          <ellipse cx="20" cy="20" rx="8" ry="18" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <line x1="2" y1="20" x2="38" y2="20" stroke="#0052CC" stroke-width="2"/>
+          <line x1="4" y1="12" x2="36" y2="12" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="4" y1="28" x2="36" y2="28" stroke="#0052CC" stroke-width="1.5"/>
+        </svg>
+        <span>GlobexSky Admin</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i><span>Shipments</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-dollar-sign"></i><span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i><span>Marketing</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i><span>Pricing</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+        <li><a href="inspections.html"><i class="fas fa-search"></i><span>Inspections</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-flag"></i><span>Campaigns</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i><span>Live Streams</span></a></li>
+        <li><a href="content.html"><i class="fas fa-file-alt"></i><span>Content</span></a></li>
+        <li><a href="api-clients.html"><i class="fas fa-code"></i><span>API Clients</span></a></li>
+        <li><a href="logs.html"><i class="fas fa-list-alt"></i><span>Logs</span></a></li>
+        <li><a href="support.html"><i class="fas fa-headset"></i><span>Support</span></a></li>
+        <li><a href="ai.html" class="active"><i class="fas fa-robot"></i><span>AI</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i><span>View Site</span></a></li>
+        <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title">AI &amp; Automation Management</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn" aria-label="Notifications">
+          <i class="fas fa-bell"></i><span class="badge">5</span>
+        </button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">AU</div>
+          <span>Admin User</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- Hero banner -->
+      <div class="ai-hero">
+        <div class="ai-hero-text">
+          <h2>AI &amp; Automation Management</h2>
+          <p>Control intelligent features powering GlobexSky — from NLP search and chatbot support to fraud detection and marketing automation.</p>
+        </div>
+        <i class="fas fa-robot ai-hero-icon"></i>
+      </div>
+
+      <!-- Performance Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-bullseye"></i></div>
+          <div>
+            <div class="metric-value">94.2%</div>
+            <div class="metric-label">AI Accuracy</div>
+            <div class="metric-sub">+1.4% this week</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-stopwatch"></i></div>
+          <div>
+            <div class="metric-value">0.8s</div>
+            <div class="metric-label">Avg Response Time</div>
+            <div class="metric-sub" style="color:#0052CC">-0.2s vs last month</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple"><i class="fas fa-comments"></i></div>
+          <div>
+            <div class="metric-value">48,230</div>
+            <div class="metric-label">Queries Today</div>
+            <div class="metric-sub" style="color:#7c3aed">+12% vs yesterday</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange"><i class="fas fa-dollar-sign"></i></div>
+          <div>
+            <div class="metric-value">$284</div>
+            <div class="metric-label">Cost This Month</div>
+            <div class="metric-sub" style="color:#f97316">$18 under budget</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section navigation -->
+      <div class="admin-card" style="padding:16px 20px;margin-bottom:20px">
+        <div class="section-tabs" id="sectionTabs">
+          <button class="section-tab active" data-section="features"><i class="fas fa-sliders-h"></i> Feature Controls</button>
+          <button class="section-tab" data-section="chatbot"><i class="fas fa-comments"></i> AI Chatbot</button>
+          <button class="section-tab" data-section="marketing"><i class="fas fa-bullhorn"></i> AI Marketing</button>
+          <button class="section-tab" data-section="fraud"><i class="fas fa-shield-alt"></i> Fraud Detection</button>
+          <button class="section-tab" data-section="automation"><i class="fas fa-cogs"></i> Automation Rules</button>
+        </div>
+      </div>
+
+      <!-- Feature Controls panel -->
+      <div class="section-panel active" id="features">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-sliders-h" style="color:#0052CC;margin-right:8px"></i>AI Feature Controls</div>
+            <span style="font-size:.8rem;color:#64748b">Changes apply instantly</span>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon blue"><i class="fas fa-search"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">AI Search</div>
+              <div class="toggle-desc">Intelligent product search with natural language processing (NLP)</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch">
+                <input type="checkbox" checked onchange="updateToggleStatus(this)"/>
+                <span class="toggle-track"></span>
+              </label>
+              <span class="toggle-status on">ON</span>
+              <span class="badge-pill badge-green">Active</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon teal"><i class="fas fa-comments"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">AI Chatbot</div>
+              <div class="toggle-desc">24/7 automated customer support with context-aware responses</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch">
+                <input type="checkbox" checked onchange="updateToggleStatus(this)"/>
+                <span class="toggle-track"></span>
+              </label>
+              <span class="toggle-status on">ON</span>
+              <span class="badge-pill badge-green">Active</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon purple"><i class="fas fa-star"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">AI Recommendations</div>
+              <div class="toggle-desc">Personalized product suggestions using collaborative filtering</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch">
+                <input type="checkbox" checked onchange="updateToggleStatus(this)"/>
+                <span class="toggle-track"></span>
+              </label>
+              <span class="toggle-status on">ON</span>
+              <span class="badge-pill badge-green">Active</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon orange"><i class="fas fa-bullhorn"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">AI Marketing</div>
+              <div class="toggle-desc">Automated campaign optimization and audience segmentation</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch">
+                <input type="checkbox" onchange="updateToggleStatus(this)"/>
+                <span class="toggle-track"></span>
+              </label>
+              <span class="toggle-status off">OFF</span>
+              <span class="badge-pill badge-gray">Inactive</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon red"><i class="fas fa-shield-alt"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">AI Fraud Detection</div>
+              <div class="toggle-desc">Real-time transaction monitoring and anomaly detection</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch">
+                <input type="checkbox" checked onchange="updateToggleStatus(this)"/>
+                <span class="toggle-track"></span>
+              </label>
+              <span class="toggle-status on">ON</span>
+              <span class="badge-pill badge-green">Active</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon green"><i class="fas fa-language"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">AI Translation</div>
+              <div class="toggle-desc">Auto-translate product listings into 45 supported languages</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch">
+                <input type="checkbox" onchange="updateToggleStatus(this)"/>
+                <span class="toggle-track"></span>
+              </label>
+              <span class="toggle-status off">OFF</span>
+              <span class="badge-pill badge-gray">Inactive</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chatbot panel -->
+      <div class="section-panel" id="chatbot">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-robot" style="color:#0d9488;margin-right:8px"></i>AI Chatbot Management</div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-cog"></i> Configure Model</button>
+          </div>
+
+          <div class="stats-strip">
+            <div class="strip-item"><i class="fas fa-book" style="color:#7c3aed"></i><div><strong>1,247</strong><div style="font-size:.72rem;color:#64748b">FAQs Trained</div></div></div>
+            <div class="strip-item"><i class="fas fa-check-circle" style="color:#10b981"></i><div><strong>98.3%</strong><div style="font-size:.72rem;color:#64748b">Resolution Rate</div></div></div>
+            <div class="strip-item"><i class="fas fa-clock" style="color:#3b82f6"></i><div><strong>24/7</strong><div style="font-size:.72rem;color:#64748b">Always Active</div></div></div>
+            <div class="strip-item"><i class="fas fa-users" style="color:#f97316"></i><div><strong>8,920</strong><div style="font-size:.72rem;color:#64748b">Chats Today</div></div></div>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+            <label style="cursor:pointer">
+              <input type="file" style="display:none" accept=".csv,.json,.txt" onchange="handleUpload(this)"/>
+              <span class="btn btn-secondary"><i class="fas fa-upload"></i> Upload Training Data</span>
+            </label>
+            <button class="btn btn-secondary"><i class="fas fa-download"></i> Export Chat Logs</button>
+            <button class="btn btn-warning btn-sm" style="margin-left:auto"><i class="fas fa-sync"></i> Retrain Model</button>
+          </div>
+
+          <div class="admin-card-title" style="margin-bottom:12px;font-size:.92rem">Recent Conversations</div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Question</th>
+                  <th>Resolution</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>anon_user_4821</td>
+                  <td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Where is my order? I placed it 3 days ago and haven't received any updates.</td>
+                  <td><span class="badge-pill badge-green">Resolved</span></td>
+                  <td>2 min ago</td>
+                </tr>
+                <tr>
+                  <td>maria.s@email.com</td>
+                  <td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">How do I request a refund for a damaged product?</td>
+                  <td><span class="badge-pill badge-green">Resolved</span></td>
+                  <td>8 min ago</td>
+                </tr>
+                <tr>
+                  <td>anon_user_9032</td>
+                  <td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Can I change the delivery address after placing an order?</td>
+                  <td><span class="badge-pill badge-yellow" style="background:#fef3c7;color:#d97706">Escalated</span></td>
+                  <td>15 min ago</td>
+                </tr>
+                <tr>
+                  <td>tom.ng@yahoo.com</td>
+                  <td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">I'm having trouble logging into my account after changing my email.</td>
+                  <td><span class="badge-pill badge-yellow" style="background:#fef3c7;color:#d97706">Escalated</span></td>
+                  <td>22 min ago</td>
+                </tr>
+                <tr>
+                  <td>anon_user_1145</td>
+                  <td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">What payment methods are accepted on GlobexSky?</td>
+                  <td><span class="badge-pill badge-green">Resolved</span></td>
+                  <td>31 min ago</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Marketing panel -->
+      <div class="section-panel" id="marketing">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-bullhorn" style="color:#f97316;margin-right:8px"></i>AI Marketing</div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-cog"></i> Configure</button>
+          </div>
+
+          <div class="info-strip">
+            <div class="info-item">
+              <span class="info-val">12</span>
+              <span class="info-lbl">Campaign Templates</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val">8</span>
+              <span class="info-lbl">Audience Segments</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val" style="color:#10b981">2 hrs ago</span>
+              <span class="info-lbl">Last Optimized</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val">+23.4%</span>
+              <span class="info-lbl">Avg CTR Improvement</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val">$1,240</span>
+              <span class="info-lbl">Revenue Attributed (today)</span>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div>
+              <div style="font-weight:600;font-size:.9rem;margin-bottom:12px;color:#0a0e27">Active Segments</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">High-Value Buyers</div><div class="rule-desc">AOV &gt; $500 · 3,421 users</div></div><span class="badge-pill badge-green">Active</span></div>
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">Cart Abandoners</div><div class="rule-desc">Abandoned in last 7 days · 8,802 users</div></div><span class="badge-pill badge-green">Active</span></div>
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">Lapsed Buyers</div><div class="rule-desc">No purchase in 90+ days · 14,220 users</div></div><span class="badge-pill badge-orange">Paused</span></div>
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">New Signups</div><div class="rule-desc">Registered in last 30 days · 2,108 users</div></div><span class="badge-pill badge-green">Active</span></div>
+              </div>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:.9rem;margin-bottom:12px;color:#0a0e27">Campaign Performance</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">Flash Sale Retargeting</div><div class="rule-desc">CTR: 8.4% · Conv: 3.1%</div></div><span class="badge-pill badge-green">Running</span></div>
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">Abandoned Cart Recovery</div><div class="rule-desc">CTR: 14.2% · Conv: 6.8%</div></div><span class="badge-pill badge-green">Running</span></div>
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">New User Onboarding</div><div class="rule-desc">CTR: 22.1% · Conv: 12.4%</div></div><span class="badge-pill badge-green">Running</span></div>
+                <div class="rule-row"><div class="rule-info"><div class="rule-name">Loyalty Rewards Push</div><div class="rule-desc">CTR: 5.2% · Conv: 1.9%</div></div><span class="badge-pill badge-gray">Draft</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fraud Detection panel -->
+      <div class="section-panel" id="fraud">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-shield-alt" style="color:#ef4444;margin-right:8px"></i>Fraud Detection</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export Report</button>
+              <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Rule</button>
+            </div>
+          </div>
+
+          <div class="info-strip">
+            <div class="info-item">
+              <span class="info-val" style="color:#ef4444">23</span>
+              <span class="info-lbl">Flagged Today</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val" style="color:#059669">18</span>
+              <span class="info-lbl">Auto-blocked</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val" style="color:#f59e0b">5</span>
+              <span class="info-lbl">Under Review</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val">$12,840</span>
+              <span class="info-lbl">Fraud Prevented (month)</span>
+            </div>
+            <div class="info-item">
+              <span class="info-val">0.08%</span>
+              <span class="info-lbl">False Positive Rate</span>
+            </div>
+          </div>
+
+          <div style="font-weight:600;font-size:.92rem;margin-bottom:12px;color:#0a0e27">Detection Rules</div>
+
+          <div class="rule-row">
+            <div style="width:38px;height:38px;border-radius:9px;background:#fee2e2;color:#ef4444;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0"><i class="fas fa-dollar-sign"></i></div>
+            <div class="rule-info" style="flex:1;margin-left:12px">
+              <div class="rule-name">High Value Threshold</div>
+              <div class="rule-desc">Flag orders exceeding $2,000 from new accounts for manual review</div>
+            </div>
+            <div class="rule-right">
+              <label class="toggle-switch"><input type="checkbox" checked onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status on">ON</span>
+            </div>
+          </div>
+
+          <div class="rule-row">
+            <div style="width:38px;height:38px;border-radius:9px;background:#ffedd5;color:#f97316;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0"><i class="fas fa-user-friends"></i></div>
+            <div class="rule-info" style="flex:1;margin-left:12px">
+              <div class="rule-name">Multiple Accounts Detection</div>
+              <div class="rule-desc">Detect same device or IP used to create more than 3 accounts</div>
+            </div>
+            <div class="rule-right">
+              <label class="toggle-switch"><input type="checkbox" checked onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status on">ON</span>
+            </div>
+          </div>
+
+          <div class="rule-row">
+            <div style="width:38px;height:38px;border-radius:9px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0"><i class="fas fa-tachometer-alt"></i></div>
+            <div class="rule-info" style="flex:1;margin-left:12px">
+              <div class="rule-name">Velocity Check</div>
+              <div class="rule-desc">Block more than 10 transactions from the same card within 60 minutes</div>
+            </div>
+            <div class="rule-right">
+              <label class="toggle-switch"><input type="checkbox" checked onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status on">ON</span>
+            </div>
+          </div>
+
+          <div class="rule-row">
+            <div style="width:38px;height:38px;border-radius:9px;background:#dbeafe;color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="rule-info" style="flex:1;margin-left:12px">
+              <div class="rule-name">Geographic Anomaly</div>
+              <div class="rule-desc">Flag transactions from countries differing from account registration location</div>
+            </div>
+            <div class="rule-right">
+              <label class="toggle-switch"><input type="checkbox" checked onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status on">ON</span>
+            </div>
+          </div>
+
+          <div style="margin-top:20px">
+            <div style="font-weight:600;font-size:.92rem;margin-bottom:12px;color:#0a0e27">Flagged Transactions (Pending Review)</div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>Transaction ID</th><th>User</th><th>Amount</th><th>Rule Triggered</th><th>Risk Score</th><th>Actions</th></tr></thead>
+                <tbody>
+                  <tr><td>#TXN-88210</td><td>anon_4921@temp.com</td><td>$2,480</td><td>High Value Threshold</td><td><span class="badge-pill badge-red">92 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
+                  <tr><td>#TXN-88198</td><td>fast_buyer@mail.ru</td><td>$340</td><td>Velocity Check</td><td><span class="badge-pill badge-orange">74 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
+                  <tr><td>#TXN-88174</td><td>user_dup_44@email.com</td><td>$128</td><td>Multiple Accounts</td><td><span class="badge-pill badge-orange">68 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
+                  <tr><td>#TXN-88160</td><td>buyer_geo@vpn.net</td><td>$895</td><td>Geographic Anomaly</td><td><span class="badge-pill badge-yellow" style="background:#fef3c7;color:#d97706">55 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
+                  <tr><td>#TXN-88143</td><td>rush_order@fastmail.com</td><td>$1,720</td><td>High Value Threshold</td><td><span class="badge-pill badge-red">88 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Automation Rules panel -->
+      <div class="section-panel" id="automation">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-cogs" style="color:#7c3aed;margin-right:8px"></i>Automation Rules</div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New Rule</button>
+          </div>
+          <p style="font-size:.83rem;color:#64748b;margin-bottom:20px">Automate routine tasks to save time and reduce manual intervention across the platform.</p>
+
+          <div class="toggle-row">
+            <div class="toggle-icon green"><i class="fas fa-user-check"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">Auto-approve Trusted Buyers</div>
+              <div class="toggle-desc">Instantly approve orders from buyers with 5+ previous successful purchases and no disputes</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch"><input type="checkbox" checked onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status on">ON</span>
+              <span class="badge-pill badge-green">Active</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon blue"><i class="fas fa-boxes"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">Auto-restock Inventory Alerts</div>
+              <div class="toggle-desc">Send seller notification when product stock falls below 10 units</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch"><input type="checkbox" checked onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status on">ON</span>
+              <span class="badge-pill badge-green">Active</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon purple"><i class="fas fa-star"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">Auto-send Review Requests</div>
+              <div class="toggle-desc">Send email review request to buyer 3 days after order delivery confirmation</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch"><input type="checkbox" checked onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status on">ON</span>
+              <span class="badge-pill badge-green">Active</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-icon orange"><i class="fas fa-shipping-fast"></i></div>
+            <div class="toggle-info">
+              <div class="toggle-name">Auto-escalate Delayed Shipments</div>
+              <div class="toggle-desc">Create support ticket automatically when shipment has no tracking update for 5+ days</div>
+            </div>
+            <div class="toggle-right">
+              <label class="toggle-switch"><input type="checkbox" onchange="updateToggleStatus(this)"/><span class="toggle-track"></span></label>
+              <span class="toggle-status off">OFF</span>
+              <span class="badge-pill badge-gray">Inactive</span>
+            </div>
+          </div>
+
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid #f1f5f9">
+            <div style="font-weight:600;font-size:.92rem;margin-bottom:12px;color:#0a0e27">Recent Automation Activity</div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>Time</th><th>Rule</th><th>Trigger</th><th>Action Taken</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td style="font-size:.78rem;color:#64748b">5 min ago</td><td>Auto-approve Trusted Buyers</td><td>Order #ORD-9941 placed</td><td>Order approved instantly</td><td><span class="badge-pill badge-green">Success</span></td></tr>
+                  <tr><td style="font-size:.78rem;color:#64748b">12 min ago</td><td>Auto-send Review Requests</td><td>Order #ORD-9900 delivered</td><td>Review email sent to buyer</td><td><span class="badge-pill badge-green">Success</span></td></tr>
+                  <tr><td style="font-size:.78rem;color:#64748b">28 min ago</td><td>Auto-restock Inventory Alerts</td><td>Product #PRD-4412 stock: 7</td><td>Alert sent to seller</td><td><span class="badge-pill badge-green">Success</span></td></tr>
+                  <tr><td style="font-size:.78rem;color:#64748b">1 hr ago</td><td>Auto-approve Trusted Buyers</td><td>Order #ORD-9887 placed</td><td>Order approved instantly</td><td><span class="badge-pill badge-green">Success</span></td></tr>
+                  <tr><td style="font-size:.78rem;color:#64748b">2 hrs ago</td><td>Auto-restock Inventory Alerts</td><td>Product #PRD-2280 stock: 4</td><td>Alert sent to seller</td><td><span class="badge-pill badge-green">Success</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end admin-content -->
+  </div><!-- end admin-main -->
+</div><!-- end admin-wrapper -->
+
+<script>
+  // Section tab switching
+  document.getElementById('sectionTabs').addEventListener('click', function(e) {
+    const btn = e.target.closest('.section-tab');
+    if (!btn) return;
+    const target = btn.dataset.section;
+    document.querySelectorAll('.section-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(target).classList.add('active');
+  });
+
+  // Toggle switch handler: updates adjacent status text and badge
+  function updateToggleStatus(checkbox) {
+    const row = checkbox.closest('.toggle-row') || checkbox.closest('.rule-row');
+    if (!row) return;
+    const statusEl = row.querySelector('.toggle-status');
+    const badgeEl = row.querySelector('.badge-pill');
+    const isOn = checkbox.checked;
+    if (statusEl) {
+      statusEl.textContent = isOn ? 'ON' : 'OFF';
+      statusEl.className = 'toggle-status ' + (isOn ? 'on' : 'off');
+    }
+    if (badgeEl) {
+      badgeEl.className = 'badge-pill ' + (isOn ? 'badge-green' : 'badge-gray');
+      badgeEl.textContent = isOn ? 'Active' : 'Inactive';
+    }
+  }
+
+  // File upload handler
+  function handleUpload(input) {
+    if (input.files && input.files.length > 0) {
+      const name = input.files[0].name;
+      alert('Training data "' + name + '" uploaded successfully! Model retraining will begin shortly.');
+      input.value = '';
+    }
+  }
+
+  // Fraud table approve/block
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('btn-success') || e.target.classList.contains('btn-danger')) {
+      const row = e.target.closest('tr');
+      if (!row) return;
+      const txnId = row.cells[0]?.textContent;
+      if (e.target.classList.contains('btn-success')) {
+        if (confirm('Approve transaction ' + txnId + '?')) row.remove();
+      } else if (e.target.classList.contains('btn-danger')) {
+        if (confirm('Block transaction ' + txnId + '?')) row.remove();
+      }
+    }
+  });
+</script>
+</body>
+</html>

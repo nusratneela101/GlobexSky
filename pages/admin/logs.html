@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>System Logs | GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+
+    /* Sidebar */
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh}
+    .sidebar-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:12px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:background .2s}
+    .sidebar-nav li a:hover{background:rgba(255,255,255,.07);color:#fff}
+    .sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-nav li a i{width:16px;text-align:center;font-size:.85rem}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .sidebar-nav li a.logout-link{color:#ef4444}
+    .sidebar-nav li a.logout-link:hover{background:rgba(239,68,68,.1);color:#ef4444}
+
+    /* Main */
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+
+    /* Page heading */
+    .page-heading{margin-bottom:24px}
+    .page-heading h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .page-heading p{color:#64748b;font-size:.88rem;margin-top:4px}
+
+    /* Cards */
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+
+    /* Health grid */
+    .health-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px}
+    .health-card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:10px}
+    .health-card-label{font-size:.78rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+    .health-card-value{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px}
+    .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+    .status-dot.online{background:#10b981}
+    .status-dot.warning{background:#f59e0b}
+    .status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .status-badge.online{background:#d1fae5;color:#059669}
+    .status-badge.warning{background:#fef3c7;color:#d97706}
+    .progress-bar-wrap{width:100%;background:#f1f5f9;border-radius:50px;height:8px}
+    .progress-bar{height:8px;border-radius:50px;transition:width .4s}
+    .pb-green{background:#10b981}
+    .pb-yellow{background:#f59e0b}
+    .pb-blue{background:#3b82f6}
+    .pb-pct{font-size:.8rem;color:#64748b;margin-top:4px}
+    .uptime-val{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#10b981}
+
+    /* Performance row */
+    .perf-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:20px}
+    .perf-card{background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px}
+    .perf-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .perf-icon.blue{background:#dbeafe;color:#3b82f6}
+    .perf-icon.green{background:#d1fae5;color:#059669}
+    .perf-icon.purple{background:#ede9fe;color:#7c3aed}
+    .perf-icon.teal{background:#ccfbf1;color:#0d9488}
+    .perf-val{font-family:'Poppins',sans-serif;font-size:1.25rem;font-weight:700;color:#0a0e27}
+    .perf-label{font-size:.78rem;color:#64748b;margin-top:2px}
+
+    /* Tabs */
+    .tab-nav{display:flex;gap:4px;border-bottom:2px solid #e2e8f0;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:9px 18px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;font-size:.875rem;font-weight:500;color:#64748b;transition:all .2s;font-family:'Inter',sans-serif;border-radius:6px 6px 0 0}
+    .tab-btn:hover{color:#0052CC;background:#f0f4ff}
+    .tab-btn.active{color:#0052CC;border-bottom-color:#0052CC;font-weight:600}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    /* Tables */
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .table-wrap{overflow-x:auto}
+
+    /* Badges */
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.73rem;font-weight:600;white-space:nowrap}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-yellow{background:#fef3c7;color:#d97706}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+
+    /* Buttons */
+    .btn{padding:7px 16px;border-radius:7px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+
+    /* Filter buttons */
+    .severity-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .sev-btn{padding:5px 14px;border-radius:50px;border:1.5px solid #e2e8f0;background:#fff;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+    .sev-btn:hover{border-color:#0052CC;color:#0052CC}
+    .sev-btn.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .sev-btn.err-active{background:#ef4444;color:#fff;border-color:#ef4444}
+    .sev-btn.warn-active{background:#f59e0b;color:#fff;border-color:#f59e0b}
+    .sev-btn.info-active{background:#3b82f6;color:#fff;border-color:#3b82f6}
+
+    /* Toolbar */
+    .logs-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+    .logs-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+    /* Disk breakdown */
+    .disk-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px}
+    .disk-item{background:#f8faff;border-radius:10px;padding:14px}
+    .disk-item-label{font-size:.8rem;font-weight:600;color:#374151;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+    .cpu-bars{display:flex;align-items:flex-end;gap:6px;height:80px}
+    .cpu-bar-item{flex:1;border-radius:4px 4px 0 0;background:#3b82f6;min-width:18px;position:relative;transition:height .4s}
+    .cpu-bar-item:hover::after{content:attr(data-val);position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;font-size:.7rem;padding:2px 6px;border-radius:4px;white-space:nowrap}
+    .mem-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .mem-seg{height:14px;border-radius:4px}
+
+    /* Log timestamp */
+    .log-ts{font-family:'Roboto Mono',monospace;font-size:.78rem;color:#64748b;white-space:nowrap}
+    .log-msg{max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.83rem}
+
+    /* Metric row inline */
+    .metric-inline{display:flex;align-items:center;gap:6px;font-size:.85rem;color:#374151}
+    .metric-inline strong{color:#0a0e27;font-weight:700}
+
+    @media(max-width:768px){
+      .admin-sidebar{display:none}
+      .admin-sidebar.mobile-open{display:flex}
+      .health-grid{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#0052CC" stroke-width="2.5"/>
+          <ellipse cx="20" cy="20" rx="8" ry="18" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <line x1="2" y1="20" x2="38" y2="20" stroke="#0052CC" stroke-width="2"/>
+          <line x1="4" y1="12" x2="36" y2="12" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="4" y1="28" x2="36" y2="28" stroke="#0052CC" stroke-width="1.5"/>
+        </svg>
+        <span>GlobexSky Admin</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i><span>Shipments</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-dollar-sign"></i><span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i><span>Marketing</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i><span>Pricing</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+        <li><a href="inspections.html"><i class="fas fa-search"></i><span>Inspections</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-flag"></i><span>Campaigns</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i><span>Live Streams</span></a></li>
+        <li><a href="content.html"><i class="fas fa-file-alt"></i><span>Content</span></a></li>
+        <li><a href="api-clients.html"><i class="fas fa-code"></i><span>API Clients</span></a></li>
+        <li><a href="logs.html" class="active"><i class="fas fa-list-alt"></i><span>Logs</span></a></li>
+        <li><a href="support.html"><i class="fas fa-headset"></i><span>Support</span></a></li>
+        <li><a href="ai.html"><i class="fas fa-robot"></i><span>AI</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i><span>View Site</span></a></li>
+        <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')" aria-label="Toggle sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <span class="admin-page-title">System Logs &amp; Monitoring</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="badge">5</span>
+        </button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">AU</div>
+          <span>Admin User</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="admin-content">
+      <div class="page-heading">
+        <h1>System Logs &amp; Monitoring</h1>
+        <p>Monitor system health, error logs, activity, and audit trail in real time.</p>
+      </div>
+
+      <!-- System Health Cards -->
+      <div class="health-grid">
+        <div class="health-card">
+          <div class="health-card-label">Server Status</div>
+          <div class="health-card-value"><span class="status-dot online"></span>Online</div>
+          <span class="status-badge online"><i class="fas fa-check-circle"></i> Operational</span>
+        </div>
+        <div class="health-card">
+          <div class="health-card-label">Database</div>
+          <div class="health-card-value"><span class="status-dot online"></span>Online</div>
+          <span class="status-badge online"><i class="fas fa-check-circle"></i> Operational</span>
+        </div>
+        <div class="health-card">
+          <div class="health-card-label">Storage Usage</div>
+          <div class="health-card-value">75%</div>
+          <div class="progress-bar-wrap"><div class="progress-bar pb-yellow" style="width:75%"></div></div>
+          <div class="pb-pct">375 GB / 500 GB used</div>
+        </div>
+        <div class="health-card">
+          <div class="health-card-label">CPU Usage</div>
+          <div class="health-card-value">34%</div>
+          <div class="progress-bar-wrap"><div class="progress-bar pb-green" style="width:34%"></div></div>
+          <div class="pb-pct">8 cores · 2.4 GHz</div>
+        </div>
+        <div class="health-card">
+          <div class="health-card-label">Memory</div>
+          <div class="health-card-value">52%</div>
+          <div class="progress-bar-wrap"><div class="progress-bar pb-blue" style="width:52%"></div></div>
+          <div class="pb-pct">16.6 GB / 32 GB used</div>
+        </div>
+        <div class="health-card">
+          <div class="health-card-label">System Uptime</div>
+          <div class="uptime-val">99.9%</div>
+          <span class="status-badge online"><i class="fas fa-clock"></i> 47d 14h 22m</span>
+        </div>
+      </div>
+
+      <!-- Performance Metrics -->
+      <div class="perf-row">
+        <div class="perf-card">
+          <div class="perf-icon blue"><i class="fas fa-tachometer-alt"></i></div>
+          <div>
+            <div class="perf-val">1.2s</div>
+            <div class="perf-label">Avg Page Load</div>
+          </div>
+        </div>
+        <div class="perf-card">
+          <div class="perf-icon green"><i class="fas fa-bolt"></i></div>
+          <div>
+            <div class="perf-val">245ms</div>
+            <div class="perf-label">API Response Time</div>
+          </div>
+        </div>
+        <div class="perf-card">
+          <div class="perf-icon purple"><i class="fas fa-users"></i></div>
+          <div>
+            <div class="perf-val">1,247</div>
+            <div class="perf-label">Active Sessions</div>
+          </div>
+        </div>
+        <div class="perf-card">
+          <div class="perf-icon teal"><i class="fas fa-layer-group"></i></div>
+          <div>
+            <div class="perf-val">3</div>
+            <div class="perf-label">Queue Size</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-card">
+        <div class="tab-nav" role="tablist">
+          <button class="tab-btn active" data-tab="error-logs" role="tab">
+            <i class="fas fa-exclamation-circle" style="color:#ef4444;margin-right:5px"></i>Error Logs
+          </button>
+          <button class="tab-btn" data-tab="activity-logs" role="tab">
+            <i class="fas fa-user-clock" style="color:#3b82f6;margin-right:5px"></i>Activity Logs
+          </button>
+          <button class="tab-btn" data-tab="audit-trail" role="tab">
+            <i class="fas fa-shield-alt" style="color:#7c3aed;margin-right:5px"></i>Audit Trail
+          </button>
+          <button class="tab-btn" data-tab="sys-health" role="tab">
+            <i class="fas fa-heartbeat" style="color:#10b981;margin-right:5px"></i>System Health
+          </button>
+        </div>
+
+        <!-- Error Logs Panel -->
+        <div class="tab-panel active" id="error-logs">
+          <div class="logs-toolbar">
+            <div class="severity-btns" id="severityFilters">
+              <button class="sev-btn active" data-sev="all">All</button>
+              <button class="sev-btn" data-sev="error">Error</button>
+              <button class="sev-btn" data-sev="warning">Warning</button>
+              <button class="sev-btn" data-sev="info">Info</button>
+            </div>
+            <div class="logs-toolbar-actions">
+              <button class="btn btn-secondary btn-sm" onclick="exportLogs()"><i class="fas fa-download"></i> Export Logs</button>
+              <button class="btn btn-danger btn-sm" onclick="clearLogs()"><i class="fas fa-trash"></i> Clear Logs</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="errorTable">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Level</th>
+                  <th>Component</th>
+                  <th>Message</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="errorTableBody">
+                <tr data-sev="error">
+                  <td class="log-ts">2025-01-15 14:32:18</td>
+                  <td><span class="badge-pill badge-red">ERROR</span></td>
+                  <td>PaymentGateway</td>
+                  <td class="log-msg">Stripe webhook signature verification failed – invalid secret key</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="warning">
+                  <td class="log-ts">2025-01-15 14:28:45</td>
+                  <td><span class="badge-pill badge-yellow">WARNING</span></td>
+                  <td>Database</td>
+                  <td class="log-msg">Slow query detected: SELECT * FROM orders (2,340ms) – missing index</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="error">
+                  <td class="log-ts">2025-01-15 14:21:09</td>
+                  <td><span class="badge-pill badge-red">ERROR</span></td>
+                  <td>AuthService</td>
+                  <td class="log-msg">JWT token verification failed: token expired for user_id=4829</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="info">
+                  <td class="log-ts">2025-01-15 14:17:33</td>
+                  <td><span class="badge-pill badge-blue">INFO</span></td>
+                  <td>Scheduler</td>
+                  <td class="log-msg">Daily order digest email batch completed: 4,821 emails sent</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="warning">
+                  <td class="log-ts">2025-01-15 14:10:52</td>
+                  <td><span class="badge-pill badge-yellow">WARNING</span></td>
+                  <td>StorageService</td>
+                  <td class="log-msg">Disk usage exceeded 75% threshold – cleanup recommended</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="error">
+                  <td class="log-ts">2025-01-15 13:58:11</td>
+                  <td><span class="badge-pill badge-red">ERROR</span></td>
+                  <td>EmailService</td>
+                  <td class="log-msg">SMTP connection timeout after 30s – retrying (attempt 3/5)</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="info">
+                  <td class="log-ts">2025-01-15 13:45:27</td>
+                  <td><span class="badge-pill badge-blue">INFO</span></td>
+                  <td>CacheService</td>
+                  <td class="log-msg">Redis cache flushed and warmed up: 12,400 keys pre-loaded</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="warning">
+                  <td class="log-ts">2025-01-15 13:32:44</td>
+                  <td><span class="badge-pill badge-yellow">WARNING</span></td>
+                  <td>RateLimiter</td>
+                  <td class="log-msg">IP 185.220.101.47 exceeded 500 req/min limit – throttled</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="error">
+                  <td class="log-ts">2025-01-15 13:19:08</td>
+                  <td><span class="badge-pill badge-red">ERROR</span></td>
+                  <td>ShippingAPI</td>
+                  <td class="log-msg">DHL API returned 503 – carrier integration unreachable, fallback used</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+                <tr data-sev="info">
+                  <td class="log-ts">2025-01-15 13:04:55</td>
+                  <td><span class="badge-pill badge-blue">INFO</span></td>
+                  <td>SearchIndex</td>
+                  <td class="log-msg">Elasticsearch reindex completed: 284,901 products indexed in 48s</td>
+                  <td><button class="btn btn-secondary btn-sm">View</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Activity Logs Panel -->
+        <div class="tab-panel" id="activity-logs">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Action</th>
+                  <th>Resource</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="log-ts">2025-01-15 14:30:01</td>
+                  <td>sarah.chen@example.com</td>
+                  <td><span class="badge-pill badge-purple">Admin</span></td>
+                  <td><span class="badge-pill badge-green">LOGIN</span></td>
+                  <td>Admin Portal</td>
+                  <td>192.168.1.45</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 14:22:17</td>
+                  <td>james.kim@globexsky.com</td>
+                  <td><span class="badge-pill badge-blue">Seller</span></td>
+                  <td><span class="badge-pill badge-orange">UPDATE</span></td>
+                  <td>Product #PRD-8821</td>
+                  <td>203.0.113.82</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 14:15:44</td>
+                  <td>admin@globexsky.com</td>
+                  <td><span class="badge-pill badge-purple">Admin</span></td>
+                  <td><span class="badge-pill badge-red">DELETE</span></td>
+                  <td>User #USR-3391</td>
+                  <td>10.0.0.1</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 14:08:29</td>
+                  <td>mary.johnson@example.com</td>
+                  <td><span class="badge-pill badge-gray">Buyer</span></td>
+                  <td><span class="badge-pill badge-green">CREATE</span></td>
+                  <td>Order #ORD-9940</td>
+                  <td>98.45.123.67</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:57:12</td>
+                  <td>carlos.m@vendor.com</td>
+                  <td><span class="badge-pill badge-blue">Seller</span></td>
+                  <td><span class="badge-pill badge-green">CREATE</span></td>
+                  <td>Product #PRD-9012</td>
+                  <td>177.89.45.210</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:44:08</td>
+                  <td>sarah.chen@example.com</td>
+                  <td><span class="badge-pill badge-purple">Admin</span></td>
+                  <td><span class="badge-pill badge-orange">UPDATE</span></td>
+                  <td>Setting: tax_rate</td>
+                  <td>192.168.1.45</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:31:55</td>
+                  <td>api_client_shopify</td>
+                  <td><span class="badge-pill badge-teal" style="background:#ccfbf1;color:#0d9488">API</span></td>
+                  <td><span class="badge-pill badge-blue">READ</span></td>
+                  <td>Orders API /v2</td>
+                  <td>54.192.44.100</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:20:30</td>
+                  <td>support@globexsky.com</td>
+                  <td><span class="badge-pill badge-orange">Support</span></td>
+                  <td><span class="badge-pill badge-orange">UPDATE</span></td>
+                  <td>Ticket #TKT-5512</td>
+                  <td>10.0.0.14</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:09:17</td>
+                  <td>alex.wu@example.com</td>
+                  <td><span class="badge-pill badge-gray">Buyer</span></td>
+                  <td><span class="badge-pill badge-green">LOGIN</span></td>
+                  <td>Customer Portal</td>
+                  <td>61.184.22.91</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:01:44</td>
+                  <td>admin@globexsky.com</td>
+                  <td><span class="badge-pill badge-purple">Admin</span></td>
+                  <td><span class="badge-pill badge-green">CREATE</span></td>
+                  <td>Coupon #SAVE20</td>
+                  <td>10.0.0.1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Audit Trail Panel -->
+        <div class="tab-panel" id="audit-trail">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Admin User</th>
+                  <th>Action</th>
+                  <th>Before Value</th>
+                  <th>After Value</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="log-ts">2025-01-15 14:05:30</td>
+                  <td>sarah.chen</td>
+                  <td><span class="badge-pill badge-orange">CONFIG CHANGE</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">tax_rate: 8.5%</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">tax_rate: 9.0%</td>
+                  <td>192.168.1.45</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:48:12</td>
+                  <td>admin</td>
+                  <td><span class="badge-pill badge-red">PERMISSION CHANGE</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">role: seller</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">role: admin</td>
+                  <td>10.0.0.1</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:35:09</td>
+                  <td>sarah.chen</td>
+                  <td><span class="badge-pill badge-orange">CONFIG CHANGE</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">smtp_port: 25</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">smtp_port: 587</td>
+                  <td>192.168.1.45</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:22:58</td>
+                  <td>admin</td>
+                  <td><span class="badge-pill badge-blue">FEATURE TOGGLE</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">ai_marketing: false</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">ai_marketing: true</td>
+                  <td>10.0.0.1</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 13:10:41</td>
+                  <td>sarah.chen</td>
+                  <td><span class="badge-pill badge-red">BULK DELETE</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">spam_users: 142</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">spam_users: 0</td>
+                  <td>192.168.1.45</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 12:58:22</td>
+                  <td>admin</td>
+                  <td><span class="badge-pill badge-orange">CONFIG CHANGE</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">max_upload: 5MB</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">max_upload: 20MB</td>
+                  <td>10.0.0.1</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 12:44:17</td>
+                  <td>sarah.chen</td>
+                  <td><span class="badge-pill badge-blue">API KEY REGEN</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">key: sk_live_old…</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">key: sk_live_new…</td>
+                  <td>192.168.1.45</td>
+                </tr>
+                <tr>
+                  <td class="log-ts">2025-01-15 12:30:05</td>
+                  <td>admin</td>
+                  <td><span class="badge-pill badge-orange">CONFIG CHANGE</span></td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#ef4444">session_ttl: 60m</td>
+                  <td style="font-family:monospace;font-size:.78rem;color:#059669">session_ttl: 120m</td>
+                  <td>10.0.0.1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- System Health Panel -->
+        <div class="tab-panel" id="sys-health">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+
+            <!-- Disk Breakdown -->
+            <div>
+              <div class="admin-card-title" style="margin-bottom:14px"><i class="fas fa-hdd" style="color:#f59e0b;margin-right:6px"></i>Disk Usage Breakdown</div>
+              <div class="disk-row" style="grid-template-columns:1fr">
+                <div class="disk-item">
+                  <div class="disk-item-label"><span>System Files</span><span style="font-weight:700">42 GB</span></div>
+                  <div class="progress-bar-wrap"><div class="progress-bar pb-blue" style="width:42%"></div></div>
+                </div>
+                <div class="disk-item">
+                  <div class="disk-item-label"><span>Product Images</span><span style="font-weight:700">180 GB</span></div>
+                  <div class="progress-bar-wrap"><div class="progress-bar pb-yellow" style="width:72%"></div></div>
+                </div>
+                <div class="disk-item">
+                  <div class="disk-item-label"><span>Database Dumps</span><span style="font-weight:700">88 GB</span></div>
+                  <div class="progress-bar-wrap"><div class="progress-bar pb-green" style="width:57%"></div></div>
+                </div>
+                <div class="disk-item">
+                  <div class="disk-item-label"><span>Log Archives</span><span style="font-weight:700">65 GB</span></div>
+                  <div class="progress-bar-wrap"><div class="progress-bar" style="width:43%;background:#7c3aed"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Memory Allocation -->
+            <div>
+              <div class="admin-card-title" style="margin-bottom:14px"><i class="fas fa-memory" style="color:#3b82f6;margin-right:6px"></i>Memory Allocation (32 GB)</div>
+              <div style="height:20px;border-radius:10px;overflow:hidden;display:flex;margin-bottom:12px">
+                <div style="width:35%;background:#3b82f6" title="App Servers (11.2 GB)"></div>
+                <div style="width:22%;background:#10b981" title="Database (7.0 GB)"></div>
+                <div style="width:15%;background:#f59e0b" title="Cache (4.8 GB)"></div>
+                <div style="width:10%;background:#7c3aed" title="Queue (3.2 GB)"></div>
+                <div style="flex:1;background:#f1f5f9" title="Free"></div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem">
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#3b82f6;display:inline-block"></span>App (11.2 GB)</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#10b981;display:inline-block"></span>DB (7.0 GB)</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#f59e0b;display:inline-block"></span>Cache (4.8 GB)</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#7c3aed;display:inline-block"></span>Queue (3.2 GB)</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#f1f5f9;border:1px solid #e2e8f0;display:inline-block"></span>Free (5.8 GB)</span>
+              </div>
+
+              <div class="admin-card-title" style="margin:20px 0 14px"><i class="fas fa-microchip" style="color:#7c3aed;margin-right:6px"></i>CPU History (last 12 intervals)</div>
+              <div style="display:flex;align-items:flex-end;gap:4px;height:70px;padding:0 4px">
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:28%;opacity:.8" title="28%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:34%;opacity:.85" title="34%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:45%;opacity:.9" title="45%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:42%" title="42%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:38%;opacity:.9" title="38%"></div>
+                <div style="flex:1;background:#f59e0b;border-radius:3px 3px 0 0;height:72%" title="72%"></div>
+                <div style="flex:1;background:#f59e0b;border-radius:3px 3px 0 0;height:68%;opacity:.9" title="68%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:55%;opacity:.85" title="55%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:40%" title="40%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:36%;opacity:.9" title="36%"></div>
+                <div style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:34%;opacity:.85" title="34%"></div>
+                <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:34%" title="34% (now)"></div>
+              </div>
+              <div style="font-size:.72rem;color:#94a3b8;margin-top:4px;text-align:right">← 60 min ago &nbsp;&nbsp; now →</div>
+            </div>
+
+            <!-- Services Status -->
+            <div>
+              <div class="admin-card-title" style="margin-bottom:14px"><i class="fas fa-server" style="color:#10b981;margin-right:6px"></i>Services Status</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+                  <span style="font-size:.85rem;font-weight:500"><i class="fas fa-database" style="color:#3b82f6;margin-right:8px"></i>PostgreSQL</span>
+                  <span class="status-badge online">Online</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+                  <span style="font-size:.85rem;font-weight:500"><i class="fas fa-bolt" style="color:#ef4444;margin-right:8px"></i>Redis Cache</span>
+                  <span class="status-badge online">Online</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+                  <span style="font-size:.85rem;font-weight:500"><i class="fas fa-search" style="color:#f59e0b;margin-right:8px"></i>Elasticsearch</span>
+                  <span class="status-badge online">Online</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+                  <span style="font-size:.85rem;font-weight:500"><i class="fas fa-envelope" style="color:#7c3aed;margin-right:8px"></i>SMTP (SendGrid)</span>
+                  <span class="status-badge warning">Degraded</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+                  <span style="font-size:.85rem;font-weight:500"><i class="fas fa-cloud" style="color:#0d9488;margin-right:8px"></i>CDN (Cloudflare)</span>
+                  <span class="status-badge online">Online</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+                  <span style="font-size:.85rem;font-weight:500"><i class="fas fa-layer-group" style="color:#f97316;margin-right:8px"></i>Job Queue (Bull)</span>
+                  <span class="status-badge online">Online</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- end admin-content -->
+  </div><!-- end admin-main -->
+</div><!-- end admin-wrapper -->
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const target = this.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById(target).classList.add('active');
+    });
+  });
+
+  // Severity filter for error logs
+  document.getElementById('severityFilters').addEventListener('click', function(e) {
+    const btn = e.target.closest('.sev-btn');
+    if (!btn) return;
+    const sev = btn.dataset.sev;
+    document.querySelectorAll('.sev-btn').forEach(b => {
+      b.classList.remove('active','err-active','warn-active','info-active');
+    });
+    if (sev === 'error') btn.classList.add('err-active');
+    else if (sev === 'warning') btn.classList.add('warn-active');
+    else if (sev === 'info') btn.classList.add('info-active');
+    else btn.classList.add('active');
+
+    document.querySelectorAll('#errorTableBody tr').forEach(row => {
+      if (sev === 'all') {
+        row.style.display = '';
+      } else {
+        row.style.display = row.dataset.sev === sev ? '' : 'none';
+      }
+    });
+  });
+
+  function exportLogs() {
+    const rows = [...document.querySelectorAll('#errorTableBody tr')]
+      .filter(r => r.style.display !== 'none')
+      .map(r => [...r.querySelectorAll('td')].map(td => td.textContent.trim()).join('\t'));
+    const csv = ['Timestamp\tLevel\tComponent\tMessage\tActions', ...rows].join('\n');
+    const blob = new Blob([csv], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'error_logs_' + new Date().toISOString().slice(0,10) + '.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function clearLogs() {
+    if (confirm('Are you sure you want to clear all displayed logs? This action cannot be undone.')) {
+      document.getElementById('errorTableBody').innerHTML =
+        '<tr><td colspan="5" style="text-align:center;padding:40px;color:#64748b"><i class="fas fa-check-circle" style="color:#10b981;margin-right:8px"></i>Logs cleared successfully.</td></tr>';
+    }
+  }
+</script>
+</body>
+</html>
