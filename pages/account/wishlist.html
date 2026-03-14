@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Wishlist | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;display:flex;flex-direction:column;min-height:100vh}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-divider{border:none;border-top:1px solid #e2e8f0;margin-bottom:16px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:#fff;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#f0f4ff}
+    .btn-danger-icon{background:none;border:none;cursor:pointer;color:#ef4444;padding:6px 8px;border-radius:6px;font-size:.9rem;transition:all .2s}
+    .btn-danger-icon:hover{background:#fee2e2}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+    .filter-tab{padding:7px 18px;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .product-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;transition:all .25s;background:#fff}
+    .product-card:hover{box-shadow:0 6px 24px rgba(0,82,204,.1);border-color:#b3c8f5;transform:translateY(-2px)}
+    .product-card.removing{opacity:0;transform:scale(.95);transition:all .3s}
+    .product-img{width:80px;height:80px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#fff;margin:0 auto 12px;flex-shrink:0}
+    .product-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:.92rem;color:#0a0e27;margin-bottom:4px;text-align:center}
+    .product-supplier{text-align:center;margin-bottom:8px}
+    .product-supplier a{font-size:.78rem;color:#0052CC;text-decoration:none}
+    .product-supplier a:hover{text-decoration:underline}
+    .product-price{text-align:center;font-size:1.05rem;font-weight:700;color:#0052CC;margin-bottom:4px}
+    .product-moq{text-align:center;font-size:.75rem;color:#64748b;margin-bottom:12px}
+    .price-alert-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;font-size:.78rem;color:#64748b}
+    .toggle-switch{position:relative;width:34px;height:18px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;inset:0;background:#d1d5db;border-radius:50px;cursor:pointer;transition:.2s}
+    .toggle-slider:before{content:'';position:absolute;width:14px;height:14px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.2s}
+    .toggle-switch input:checked+.toggle-slider{background:#0052CC}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(16px)}
+    .card-actions{display:flex;gap:8px;align-items:center}
+    .card-actions .btn-primary{flex:1;justify-content:center}
+    .empty-state{text-align:center;padding:60px 20px;display:none}
+    .empty-state-icon{font-size:3.5rem;color:#d1d5db;margin-bottom:16px}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#374151;margin-bottom:8px}
+    .empty-state p{color:#64748b;font-size:.9rem;margin-bottom:20px}
+    footer{background:#0a0e27;color:#94a3b8;padding:20px 0;margin-top:auto}
+    @media(max-width:1024px){.product-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.product-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.product-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <a href="../auth/login.html" style="padding:8px 16px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">AJ</div>
+    <div class="account-sidebar-name">Alex Johnson</div>
+    <div class="account-sidebar-email">alex@example.com</div>
+    <hr class="sidebar-divider"/>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="wishlist.html" class="active"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="address-book.html"><i class="fas fa-map-marker-alt"></i> Address Book</a></li>
+      <li><a href="payment-methods.html"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+      <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <div class="page-card">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-heart" style="color:#ef4444"></i> My Wishlist</h1>
+        <button class="btn btn-outline" onclick="shareWishlist()"><i class="fas fa-share-alt"></i> Share Wishlist</button>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-tab="default">Default <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">8</span></button>
+        <button class="filter-tab" data-tab="electronics">Electronics <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">4</span></button>
+        <button class="filter-tab" data-tab="fashion">Fashion <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">3</span></button>
+      </div>
+
+      <div id="products-container" class="product-grid"></div>
+
+      <div class="empty-state" id="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-heart-crack"></i></div>
+        <h3>Your wishlist is empty</h3>
+        <p>Save items you love and come back to them anytime.</p>
+        <a href="../../index.html" class="btn btn-primary"><i class="fas fa-search"></i> Browse Products</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;text-align:center">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const products = {
+  default: [
+    {id:1,abbr:"CM",color:"#e67e22",name:"Ceramic Coffee Mugs",supplier:"ChinaCraft Co.",price:"$3.20",unit:"unit",moq:"MOQ: 500 pcs"},
+    {id:2,abbr:"BB",color:"#27ae60",name:"Bamboo Cutting Boards",supplier:"EcoWood Supplies",price:"$8.50",unit:"unit",moq:"MOQ: 200 pcs"},
+    {id:3,abbr:"SB",color:"#8e44ad",name:"Steel Water Bottles",supplier:"MetalFab Ltd.",price:"$5.80",unit:"unit",moq:"MOQ: 300 pcs"},
+    {id:4,abbr:"LP",color:"#2980b9",name:"LED Pendant Lights",supplier:"LumiTech Factory",price:"$14.90",unit:"unit",moq:"MOQ: 100 pcs"},
+  ],
+  electronics: [
+    {id:5,abbr:"UH",color:"#16a085",name:"USB-C Hub 7-in-1",supplier:"ShenzTech Electronics",price:"$45.00",unit:"unit",moq:"MOQ: 50 pcs"},
+    {id:6,abbr:"WE",color:"#2471a3",name:"Wireless Earbuds Pro",supplier:"AudioWave Mfg.",price:"$28.00",unit:"unit",moq:"MOQ: 100 pcs"},
+    {id:7,abbr:"SW",color:"#1abc9c",name:"Smart Watch Series X",supplier:"TechVision Co.",price:"$85.00",unit:"unit",moq:"MOQ: 30 pcs"},
+    {id:8,abbr:"PB",color:"#8e44ad",name:"Power Bank 20000mAh",supplier:"PowerCell Factory",price:"$32.00",unit:"unit",moq:"MOQ: 80 pcs"},
+  ],
+  fashion: [
+    {id:9,abbr:"CT",color:"#e74c3c",name:"Cotton T-Shirts Pack",supplier:"TextilePro Garments",price:"$4.50",unit:"unit",moq:"MOQ: 500 pcs"},
+    {id:10,abbr:"LW",color:"#5d4037",name:"Genuine Leather Wallets",supplier:"LeatherCraft Workshop",price:"$12.00",unit:"unit",moq:"MOQ: 200 pcs"},
+    {id:11,abbr:"SG",color:"#f39c12",name:"Polarized Sunglasses",supplier:"OpticalStyle Mfg.",price:"$7.20",unit:"unit",moq:"MOQ: 300 pcs"},
+  ]
+};
+
+let activeTab = "default";
+const alertStates = {};
+
+function renderProducts() {
+  const container = document.getElementById("products-container");
+  const emptyState = document.getElementById("empty-state");
+  const list = products[activeTab] || [];
+  if (!list.length) {
+    container.innerHTML = "";
+    emptyState.style.display = "block";
+    return;
+  }
+  emptyState.style.display = "none";
+  container.innerHTML = list.map(p => `
+    <div class="product-card" id="card-${p.id}">
+      <div class="product-img" style="background:${p.color}">${p.abbr}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-supplier"><a href="#">${p.supplier}</a></div>
+      <div class="product-price">${p.price}<span style="font-size:.72rem;font-weight:400;color:#64748b">/${p.unit}</span></div>
+      <div class="product-moq">${p.moq}</div>
+      <div class="price-alert-row">
+        <label class="toggle-switch">
+          <input type="checkbox" ${alertStates[p.id] ? "checked" : ""} onchange="toggleAlert(${p.id}, this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+        Price Drop Alert
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary btn-sm" onclick="moveToCart(${p.id})"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+        <button class="btn-danger-icon" title="Remove" onclick="removeProduct(${p.id}, '${activeTab}')"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleAlert(id, val) { alertStates[id] = val; }
+
+function removeProduct(id, tab) {
+  const card = document.getElementById("card-"+id);
+  card.classList.add("removing");
+  setTimeout(() => {
+    products[tab] = products[tab].filter(p => p.id !== id);
+    updateCounts();
+    renderProducts();
+  }, 300);
+}
+
+function moveToCart(id) {
+  const card = document.getElementById("card-"+id);
+  const btn = card.querySelector(".btn-primary");
+  btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+  btn.style.background = "#059669";
+  setTimeout(() => { btn.innerHTML = '<i class="fas fa-cart-plus"></i> Move to Cart'; btn.style.background = ""; }, 1500);
+}
+
+function updateCounts() {
+  document.querySelectorAll(".filter-tab").forEach(tab => {
+    const key = tab.dataset.tab;
+    const cnt = tab.querySelector("span");
+    if (cnt) cnt.textContent = (products[key] || []).length;
+  });
+}
+
+function shareWishlist() {
+  if (navigator.clipboard) navigator.clipboard.writeText(window.location.href);
+  const btn = document.querySelector(".btn-outline");
+  btn.innerHTML = '<i class="fas fa-check"></i> Link Copied!';
+  setTimeout(() => { btn.innerHTML = '<i class="fas fa-share-alt"></i> Share Wishlist'; }, 1800);
+}
+
+document.querySelectorAll(".filter-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeTab = tab.dataset.tab;
+    renderProducts();
+  });
+});
+
+renderProducts();
+document.getElementById("copyright-year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

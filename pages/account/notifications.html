@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notifications | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;display:flex;flex-direction:column;min-height:100vh}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-divider{border:none;border-top:1px solid #e2e8f0;margin-bottom:16px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:#fff;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#f0f4ff}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+    .filter-tab{padding:7px 16px;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .notif-list{display:flex;flex-direction:column;gap:2px}
+    .notif-item{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border-left:3px solid transparent;transition:all .25s;border:1.5px solid transparent}
+    .notif-item.unread{background:#f0f4ff;border-left:3px solid #0052CC;border:1.5px solid #dbeafe}
+    .notif-item.removing{opacity:0;transform:translateX(20px);transition:all .3s}
+    .notif-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+    .notif-icon.orders{background:#dbeafe;color:#0052CC}
+    .notif-icon.shipments{background:#d1fae5;color:#059669}
+    .notif-icon.promotions{background:#ffedd5;color:#f97316}
+    .notif-icon.system{background:#f1f5f9;color:#64748b}
+    .notif-body{flex:1;min-width:0}
+    .notif-title{font-weight:600;font-size:.9rem;color:#0a0e27;margin-bottom:3px}
+    .notif-desc{font-size:.82rem;color:#64748b;line-height:1.5}
+    .notif-time{font-size:.75rem;color:#94a3b8;margin-top:4px}
+    .notif-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .mark-read-btn{background:none;border:none;font-size:.75rem;color:#0052CC;cursor:pointer;white-space:nowrap;padding:4px 8px;border-radius:6px;transition:background .2s}
+    .mark-read-btn:hover{background:#f0f4ff}
+    .delete-btn{background:none;border:none;color:#ef4444;cursor:pointer;padding:6px 8px;border-radius:6px;font-size:.85rem;transition:all .2s}
+    .delete-btn:hover{background:#fee2e2}
+    .empty-state{text-align:center;padding:60px 20px;display:none}
+    .empty-state-icon{font-size:3.5rem;color:#d1d5db;margin-bottom:16px}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#374151;margin-bottom:8px}
+    .empty-state p{color:#64748b;font-size:.9rem}
+    footer{background:#0a0e27;color:#94a3b8;padding:20px 0;margin-top:auto}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.notif-actions{flex-direction:column;align-items:flex-end}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <a href="../auth/login.html" style="padding:8px 16px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">AJ</div>
+    <div class="account-sidebar-name">Alex Johnson</div>
+    <div class="account-sidebar-email">alex@example.com</div>
+    <hr class="sidebar-divider"/>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="notifications.html" class="active"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="address-book.html"><i class="fas fa-map-marker-alt"></i> Address Book</a></li>
+      <li><a href="payment-methods.html"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+      <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <div class="page-card">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-bell" style="color:#0052CC"></i> Notifications</h1>
+        <button class="btn btn-outline" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark All as Read</button>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-tab="all">All <span class="tab-badge">12</span></button>
+        <button class="filter-tab" data-tab="orders">Orders <span class="tab-badge">4</span></button>
+        <button class="filter-tab" data-tab="shipments">Shipments <span class="tab-badge">3</span></button>
+        <button class="filter-tab" data-tab="promotions">Promotions <span class="tab-badge">3</span></button>
+        <button class="filter-tab" data-tab="system">System <span class="tab-badge">2</span></button>
+      </div>
+
+      <div class="notif-list" id="notif-list"></div>
+      <div class="empty-state" id="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-bell-slash"></i></div>
+        <h3>No notifications here</h3>
+        <p>You're all caught up! Check back later.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;text-align:center">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const notifications = [
+  {id:1,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Order #GS-2025-0892 Confirmed",desc:"Your order from ShenzTech Electronics has been confirmed and is being processed.",time:"2 hours ago",unread:true},
+  {id:2,cat:"shipments",icon:"fas fa-truck",type:"shipments",title:"Order #GS-2025-0887 Shipped",desc:"Your order has been shipped via DHL Express. Tracking: 1Z9876543210.",time:"5 hours ago",unread:true},
+  {id:3,cat:"promotions",icon:"fas fa-tag",type:"promotions",title:"Flash Sale — Up to 35% Off Electronics",desc:"Limited-time offer on USB hubs, earbuds, and power banks. Ends tonight!",time:"8 hours ago",unread:true},
+  {id:4,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Payment Received for Order #GS-2025-0880",desc:"We've received your payment of $1,240.00. Thank you for your purchase.",time:"Yesterday",unread:false},
+  {id:5,cat:"shipments",icon:"fas fa-truck",type:"shipments",title:"Order #GS-2025-0875 Out for Delivery",desc:"Your shipment is out for delivery today. Expected by 6:00 PM.",time:"Yesterday",unread:true},
+  {id:6,cat:"system",icon:"fas fa-shield-alt",type:"system",title:"Security Alert: New Login Detected",desc:"A new login was detected from Chrome on Windows. If this wasn't you, secure your account.",time:"2 days ago",unread:true},
+  {id:7,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Order #GS-2025-0868 Delivered",desc:"Your order from TextilePro Garments has been delivered successfully.",time:"3 days ago",unread:false},
+  {id:8,cat:"promotions",icon:"fas fa-gift",type:"promotions",title:"New Supplier Joined: LumiTech Factory",desc:"LumiTech Factory is now on GlobexSky — check out their LED lighting catalog.",time:"4 days ago",unread:false},
+  {id:9,cat:"shipments",icon:"fas fa-truck",type:"shipments",title:"Order #GS-2025-0855 Customs Cleared",desc:"Your shipment has cleared customs and is on its way to the destination.",time:"5 days ago",unread:false},
+  {id:10,cat:"promotions",icon:"fas fa-star",type:"promotions",title:"You have 3 pending reviews",desc:"Share your experience with recently purchased products and earn loyalty points.",time:"6 days ago",unread:false},
+  {id:11,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Quotation Accepted by Supplier",desc:"AudioWave Mfg. has accepted your quotation request for 500 units of Wireless Earbuds.",time:"1 week ago",unread:false},
+  {id:12,cat:"system",icon:"fas fa-cog",type:"system",title:"Account Verified Successfully",desc:"Your business account has been verified. You now have access to premium supplier listings.",time:"1 week ago",unread:false},
+];
+
+let activeTab = "all";
+
+function renderNotifications() {
+  const list = document.getElementById("notif-list");
+  const empty = document.getElementById("empty-state");
+  const filtered = activeTab === "all" ? notifications : notifications.filter(n => n.cat === activeTab);
+  if (!filtered.length) { list.innerHTML = ""; empty.style.display = "block"; return; }
+  empty.style.display = "none";
+  list.innerHTML = filtered.map(n => `
+    <div class="notif-item ${n.unread ? "unread" : ""}" id="notif-${n.id}">
+      <div class="notif-icon ${n.type}"><i class="${n.icon}"></i></div>
+      <div class="notif-body">
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-desc">${n.desc}</div>
+        <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px;opacity:.6"></i>${n.time}</div>
+      </div>
+      <div class="notif-actions">
+        ${n.unread ? `<button class="mark-read-btn" onclick="markRead(${n.id})">Mark as Read</button>` : ""}
+        <button class="delete-btn" onclick="deleteNotif(${n.id})" title="Delete"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join("");
+  updateBadges();
+}
+
+function markRead(id) {
+  const n = notifications.find(x => x.id === id);
+  if (n) n.unread = false;
+  renderNotifications();
+}
+
+function markAllRead() {
+  notifications.forEach(n => n.unread = false);
+  renderNotifications();
+}
+
+function deleteNotif(id) {
+  const el = document.getElementById("notif-"+id);
+  el.classList.add("removing");
+  setTimeout(() => {
+    const idx = notifications.findIndex(x => x.id === id);
+    if (idx !== -1) notifications.splice(idx, 1);
+    renderNotifications();
+  }, 300);
+}
+
+function updateBadges() {
+  document.querySelectorAll(".filter-tab").forEach(tab => {
+    const key = tab.dataset.tab;
+    const badge = tab.querySelector(".tab-badge");
+    if (!badge) return;
+    const cnt = key === "all" ? notifications.length : notifications.filter(n => n.cat === key).length;
+    badge.textContent = cnt;
+  });
+}
+
+document.querySelectorAll(".filter-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeTab = tab.dataset.tab;
+    renderNotifications();
+  });
+});
+
+renderNotifications();
+document.getElementById("copyright-year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
