@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Carrier Notifications – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+:root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg)}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark)}
+.logo-accent{color:var(--primary);font-style:normal}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:var(--primary)}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;cursor:pointer;border:none}
+.btn-logout{background:#ef4444;color:#fff}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;color:var(--dark)}
+.btn{padding:9px 20px;border-radius:8px;font-size:.87rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px}
+.btn-outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}
+.btn-outline:hover{background:#eff6ff}
+/* Filter Tabs */
+.filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.filter-tab{padding:7px 18px;border-radius:20px;font-size:.83rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);transition:all .2s}
+.filter-tab.active,.filter-tab:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+/* Notification Cards */
+.notif-list{display:flex;flex-direction:column;gap:12px}
+.notif-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:16px;border-left:4px solid transparent;transition:box-shadow .2s}
+.notif-card:hover{box-shadow:0 4px 20px rgba(0,82,204,.1)}
+.notif-card.unread{border-left-color:var(--primary)}
+.notif-card.read{border-left-color:var(--border)}
+.notif-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.icon-green{background:#d1fae5;color:#059669}
+.icon-blue{background:#eff6ff;color:var(--primary)}
+.icon-orange{background:#fff7ed;color:#f97316}
+.icon-yellow{background:#fefce8;color:#ca8a04}
+.icon-purple{background:#f5f3ff;color:#7c3aed}
+.icon-gray{background:#f1f5f9;color:var(--muted)}
+.notif-body{flex:1;min-width:0}
+.notif-title{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.4}
+.notif-meta{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.notif-time{display:flex;align-items:center;gap:4px}
+.unread-dot{width:8px;height:8px;background:var(--primary);border-radius:50%;flex-shrink:0;margin-top:4px}
+.read-dot{width:8px;height:8px;background:transparent;border-radius:50%;flex-shrink:0}
+/* Empty state */
+.empty-state{text-align:center;padding:60px 24px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.empty-icon{font-size:3rem;color:var(--border);margin-bottom:16px}
+.empty-text{color:var(--muted);font-size:.95rem}
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:space-between;margin-top:24px;flex-wrap:wrap;gap:12px}
+.pagination-info{font-size:.83rem;color:var(--muted)}
+.pagination-btns{display:flex;gap:6px}
+.page-btn{width:36px;height:36px;border:1.5px solid var(--border);background:#fff;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:500;color:var(--text);transition:all .2s}
+.page-btn.active,.page-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+/* Footer */
+.site-footer{background:var(--dark);padding:24px 0;margin-top:40px}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:700px){.nav-links{display:none}.notif-icon{width:36px;height:36px;font-size:.95rem}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<em class="logo-accent">Sky</em></span>
+      </a>
+      <nav class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="create-request.html">Create Request</a>
+        <a href="active-deliveries.html">Active Deliveries</a>
+        <a href="history.html">History</a>
+        <a href="earnings.html">Earnings</a>
+        <a href="notifications.html" class="active">Notifications</a>
+      </nav>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav btn-logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title"><i class="fas fa-bell" style="color:var(--primary);margin-right:10px"></i>Notifications</h1>
+      <button class="btn btn-outline" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark All Read</button>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all">All <span style="background:#0052CC;color:#fff;border-radius:10px;padding:1px 7px;font-size:.75rem;margin-left:4px">6</span></button>
+      <button class="filter-tab" data-filter="unread">Unread <span style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:.75rem;margin-left:4px">2</span></button>
+      <button class="filter-tab" data-filter="trip">Trip Updates</button>
+      <button class="filter-tab" data-filter="payment">Payments</button>
+      <button class="filter-tab" data-filter="system">System</button>
+    </div>
+
+    <!-- Notification List -->
+    <div class="notif-list" id="notifList">
+
+      <!-- Unread: Trip Approval -->
+      <div class="notif-card unread" data-category="trip">
+        <div class="notif-icon icon-green"><i class="fas fa-check-circle"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Your trip GS-2024-001 has been approved</div>
+          <div class="notif-meta">
+            <span class="notif-time"><i class="far fa-clock"></i> 2 hours ago</span>
+            <span style="background:#eff6ff;color:#0052CC;padding:1px 8px;border-radius:10px;font-size:.73rem;font-weight:600">Trip Update</span>
+          </div>
+        </div>
+        <div class="unread-dot"></div>
+      </div>
+
+      <!-- Unread: Payment -->
+      <div class="notif-card unread" data-category="payment">
+        <div class="notif-icon icon-blue"><i class="fas fa-dollar-sign"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Payment of $250.00 processed successfully</div>
+          <div class="notif-meta">
+            <span class="notif-time"><i class="far fa-clock"></i> 5 hours ago</span>
+            <span style="background:#d1fae5;color:#059669;padding:1px 8px;border-radius:10px;font-size:.73rem;font-weight:600">Payment</span>
+          </div>
+        </div>
+        <div class="unread-dot"></div>
+      </div>
+
+      <!-- Read: New Product -->
+      <div class="notif-card read" data-category="trip">
+        <div class="notif-icon icon-orange"><i class="fas fa-box"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">New product available for carry: iPhone 15 Pro (15 kg)</div>
+          <div class="notif-meta">
+            <span class="notif-time"><i class="far fa-clock"></i> 1 day ago</span>
+            <span style="background:#eff6ff;color:#0052CC;padding:1px 8px;border-radius:10px;font-size:.73rem;font-weight:600">Trip Update</span>
+          </div>
+        </div>
+        <div class="read-dot"></div>
+      </div>
+
+      <!-- Read: Delivery Confirmed -->
+      <div class="notif-card read" data-category="trip">
+        <div class="notif-icon icon-green"><i class="fas fa-clipboard-check"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Delivery confirmed by receiver Ahmed K.</div>
+          <div class="notif-meta">
+            <span class="notif-time"><i class="far fa-clock"></i> 2 days ago</span>
+            <span style="background:#eff6ff;color:#0052CC;padding:1px 8px;border-radius:10px;font-size:.73rem;font-weight:600">Trip Update</span>
+          </div>
+        </div>
+        <div class="read-dot"></div>
+      </div>
+
+      <!-- Read: Rating -->
+      <div class="notif-card read" data-category="system">
+        <div class="notif-icon icon-yellow"><i class="fas fa-star"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">You received a 5-star rating from Sarah M.</div>
+          <div class="notif-meta">
+            <span class="notif-time"><i class="far fa-clock"></i> 3 days ago</span>
+            <span style="background:#f5f3ff;color:#7c3aed;padding:1px 8px;border-radius:10px;font-size:.73rem;font-weight:600">System</span>
+          </div>
+        </div>
+        <div class="read-dot"></div>
+      </div>
+
+      <!-- Read: Flight Reminder -->
+      <div class="notif-card read" data-category="system">
+        <div class="notif-icon icon-purple"><i class="fas fa-bell"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Reminder: Your flight is tomorrow — Dubai → London</div>
+          <div class="notif-meta">
+            <span class="notif-time"><i class="far fa-clock"></i> 3 days ago</span>
+            <span style="background:#f5f3ff;color:#7c3aed;padding:1px 8px;border-radius:10px;font-size:.73rem;font-weight:600">System</span>
+          </div>
+        </div>
+        <div class="read-dot"></div>
+      </div>
+
+    </div>
+
+    <!-- Empty State (hidden by default) -->
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon"><i class="far fa-bell-slash"></i></div>
+      <p class="empty-text">No notifications found for this filter.</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="pagination-info">Showing 1–6 of 6 notifications</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span style="font-size:.83rem;color:var(--muted)">Show: <select onchange="void(0)" style="border:1.5px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.83rem;color:var(--text)"><option>10</option><option>25</option><option>50</option></select> per page</span>
+        <div class="pagination-btns">
+          <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn" disabled><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Filter tabs
+const tabs = document.querySelectorAll('.filter-tab');
+const cards = document.querySelectorAll('.notif-card');
+const emptyState = document.getElementById('emptyState');
+const notifList = document.getElementById('notifList');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const filter = tab.dataset.filter;
+    let visible = 0;
+    cards.forEach(card => {
+      const cat = card.dataset.category;
+      const isUnread = card.classList.contains('unread');
+      let show = false;
+      if (filter === 'all') show = true;
+      else if (filter === 'unread') show = isUnread;
+      else if (filter === 'trip') show = cat === 'trip';
+      else if (filter === 'payment') show = cat === 'payment';
+      else if (filter === 'system') show = cat === 'system';
+      card.style.display = show ? 'flex' : 'none';
+      if (show) visible++;
+    });
+    emptyState.style.display = visible === 0 ? 'block' : 'none';
+    notifList.style.display = visible === 0 ? 'none' : 'flex';
+  });
+});
+
+function markAllRead() {
+  document.querySelectorAll('.notif-card').forEach(card => {
+    card.classList.remove('unread');
+    card.classList.add('read');
+    const dot = card.querySelector('.unread-dot');
+    if (dot) dot.className = 'read-dot';
+  });
+  // Update tab badge
+  const unreadTab = document.querySelector('[data-filter="unread"]');
+  if (unreadTab) {
+    const badge = unreadTab.querySelector('span');
+    if (badge) badge.textContent = '0';
+  }
+}
+</script>
+</body>
+</html>
