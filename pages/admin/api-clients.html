@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>API Clients | GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,
+    .admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover{background:rgba(255,255,255,.07);color:#fff}
+    .sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-content{padding:24px;overflow-y:auto}
+    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:24px}
+    .metric-card{background:#fff;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .metric-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .metric-icon.blue{background:#dbeafe;color:#0052CC}
+    .metric-icon.green{background:#d1fae5;color:#059669}
+    .metric-icon.orange{background:#ffedd5;color:#f97316}
+    .metric-icon.purple{background:#ede9fe;color:#7c3aed}
+    .metric-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .metric-label{color:#64748b;font-size:.82rem;margin-top:2px}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:24px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .data-table{width:100%;border-collapse:collapse;font-size:.855rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .data-table tr.hidden-row{display:none}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-teal{background:#ccfbf1;color:#0d9488}
+    .btn-sm{padding:5px 12px;border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
+    .btn-warning{background:#f97316;color:#fff}
+    .btn-warning:hover{background:#ea6c0a}
+    .btn-action-group{display:flex;gap:6px;flex-wrap:wrap}
+    .search-filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .filter-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;color:#374151}
+    .filter-input:focus{outline:none;border-color:#0052CC}
+    /* Usage bar */
+    .usage-bar-wrap{display:flex;align-items:center;gap:8px;min-width:140px}
+    .usage-bar{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+    .usage-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+    .usage-label{font-size:.75rem;color:#64748b;white-space:nowrap}
+    /* Key display */
+    .api-key-display{font-family:monospace;font-size:.8rem;background:#f1f5f9;padding:3px 8px;border-radius:4px;letter-spacing:.5px;display:inline-flex;align-items:center;gap:6px}
+    .copy-btn{border:none;background:none;cursor:pointer;color:#64748b;font-size:.75rem;padding:2px 4px;border-radius:3px;transition:color .2s}
+    .copy-btn:hover{color:#0052CC}
+    /* Settings section */
+    .settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .settings-plan-card{border:1.5px solid #e2e8f0;border-radius:10px;padding:16px}
+    .settings-plan-title{font-weight:700;font-size:.95rem;color:#0a0e27;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+    .settings-plan-desc{font-size:.8rem;color:#64748b;margin-bottom:12px}
+    .settings-plan-input{display:flex;align-items:center;gap:8px}
+    .settings-plan-input input{width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:.875rem;color:#374151}
+    .settings-plan-input input:focus{outline:none;border-color:#0052CC}
+    .settings-plan-input span{font-size:.82rem;color:#64748b;white-space:nowrap}
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,14,39,.55);z-index:1000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative;max-height:90vh;overflow-y:auto}
+    .modal-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#0a0e27;margin-bottom:18px}
+    .modal-close{position:absolute;top:16px;right:16px;border:none;background:none;cursor:pointer;font-size:1.2rem;color:#94a3b8}
+    .modal-close:hover{color:#374151}
+    .detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.875rem}
+    .detail-row:last-child{border-bottom:none}
+    .detail-label{color:#64748b;font-weight:500;flex-shrink:0;width:40%}
+    .detail-value{color:#1a1a2e;font-weight:600;text-align:right;word-break:break-all}
+    .table-scroll{overflow-x:auto}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:900px){.two-col{grid-template-columns:1fr}}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}.metrics-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-dollar-sign"></i> <span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i> <span>Marketing</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="inspections.html"><i class="fas fa-search"></i> <span>Inspections</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-flag"></i> <span>Campaigns</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i> <span>Live Streams</span></a></li>
+        <li><a href="content.html"><i class="fas fa-file-alt"></i> <span>Content</span></a></li>
+        <li><a href="api-clients.html" class="active"><i class="fas fa-code"></i> <span>API Clients</span></a></li>
+        <li><a href="logs.html"><i class="fas fa-list-alt"></i> <span>Logs</span></a></li>
+        <li><a href="support.html"><i class="fas fa-headset"></i> <span>Support</span></a></li>
+        <li><a href="ai.html"><i class="fas fa-robot"></i> <span>AI</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444!important"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="admin-page-title">API Clients</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">5</span></button>
+        <div class="admin-avatar">AD</div>
+        <span style="font-size:.88rem;font-weight:500">Admin User</span>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <!-- Stats Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-code"></i></div>
+          <div>
+            <div class="metric-value">47</div>
+            <div class="metric-label">Total Clients</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+          <div>
+            <div class="metric-value">38</div>
+            <div class="metric-label">Active</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange"><i class="fas fa-bolt"></i></div>
+          <div>
+            <div class="metric-value">124,580</div>
+            <div class="metric-label">API Calls Today</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple"><i class="fas fa-dollar-sign"></i></div>
+          <div>
+            <div class="metric-value">$4,720</div>
+            <div class="metric-label">Monthly Revenue</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Clients Table -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">API Client Accounts</span>
+          <button class="btn-sm btn-primary"><i class="fas fa-plus"></i> Add Client</button>
+        </div>
+        <div class="search-filter-bar">
+          <input type="text" class="filter-input" id="clientSearch" placeholder="&#x1F50D; Search by name, email, company…" style="flex:1;min-width:200px" oninput="filterClients()"/>
+          <select class="filter-input" id="statusFilter" onchange="filterClients()">
+            <option value="">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Pending">Pending</option>
+          </select>
+          <select class="filter-input" id="planFilter" onchange="filterClients()">
+            <option value="">All Plans</option>
+            <option value="Basic">Basic</option>
+            <option value="Pro">Pro</option>
+            <option value="Enterprise">Enterprise</option>
+          </select>
+          <button class="btn-sm btn-secondary" onclick="exportClients()"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table" id="clientTable">
+            <thead>
+              <tr>
+                <th>Name / Company</th>
+                <th>Email</th>
+                <th>Plan</th>
+                <th>Usage</th>
+                <th>Status</th>
+                <th>API Key</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientBody">
+              <!-- Row 1 -->
+              <tr data-status="Active" data-plan="Pro">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">TechBridge Inc.</div>
+                  <div style="font-size:.78rem;color:#64748b">Marcus Wong</div>
+                </td>
+                <td>marcus@techbridge.io</td>
+                <td><span class="badge-pill badge-blue">Pro</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:45%;background:#0052CC"></div></div>
+                    <span class="usage-label">45,230/100K</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-green">Active</span></td>
+                <td><span class="api-key-display">sk_live_••••••••3a7f<button class="copy-btn" onclick="copyKey(event,'sk_live_ab8c3a7f')" title="Copy"><i class="fas fa-copy"></i></button></span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-secondary" onclick="viewClient(0)"><i class="fas fa-eye"></i></button>
+                  <button class="btn-sm btn-danger" onclick="suspendClient(this,'TechBridge Inc.')">Suspend</button>
+                </div></td>
+              </tr>
+              <!-- Row 2 -->
+              <tr data-status="Active" data-plan="Enterprise">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">GlobalConnect Ltd.</div>
+                  <div style="font-size:.78rem;color:#64748b">Amara Osei</div>
+                </td>
+                <td>amara@globalconnect.com</td>
+                <td><span class="badge-pill badge-purple">Enterprise</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:32%;background:#7c3aed"></div></div>
+                    <span class="usage-label">320,000/1M</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-green">Active</span></td>
+                <td><span class="api-key-display">sk_live_••••••••9b2c<button class="copy-btn" onclick="copyKey(event,'sk_live_ff1d9b2c')" title="Copy"><i class="fas fa-copy"></i></button></span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-secondary" onclick="viewClient(1)"><i class="fas fa-eye"></i></button>
+                  <button class="btn-sm btn-danger" onclick="suspendClient(this,'GlobalConnect Ltd.')">Suspend</button>
+                </div></td>
+              </tr>
+              <!-- Row 3 -->
+              <tr data-status="Pending" data-plan="Basic">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">Nexora Solutions</div>
+                  <div style="font-size:.78rem;color:#64748b">Lena Hoffmann</div>
+                </td>
+                <td>lena@nexora.de</td>
+                <td><span class="badge-pill badge-teal">Basic</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:0%;background:#0d9488"></div></div>
+                    <span class="usage-label">0/10K</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-orange">Pending</span></td>
+                <td><span class="api-key-display" style="color:#94a3b8">—</span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-success" onclick="approveClient(this,'Nexora Solutions')">Approve</button>
+                  <button class="btn-sm btn-secondary" onclick="viewClient(2)"><i class="fas fa-eye"></i></button>
+                </div></td>
+              </tr>
+              <!-- Row 4 -->
+              <tr data-status="Suspended" data-plan="Pro">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">DataPulse API</div>
+                  <div style="font-size:.78rem;color:#64748b">Carlos Rivera</div>
+                </td>
+                <td>carlos@datapulse.io</td>
+                <td><span class="badge-pill badge-blue">Pro</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:88%;background:#ef4444"></div></div>
+                    <span class="usage-label">88,100/100K</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-red">Suspended</span></td>
+                <td><span class="api-key-display">sk_live_••••••••c14e<button class="copy-btn" onclick="copyKey(event,'sk_live_0d22c14e')" title="Copy"><i class="fas fa-copy"></i></button></span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-secondary" onclick="viewClient(3)"><i class="fas fa-eye"></i></button>
+                  <button class="btn-sm btn-success" onclick="reactivateClient(this,'DataPulse API')">Reactivate</button>
+                </div></td>
+              </tr>
+              <!-- Row 5 -->
+              <tr data-status="Active" data-plan="Basic">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">SmartImport Co.</div>
+                  <div style="font-size:.78rem;color:#64748b">Priya Nair</div>
+                </td>
+                <td>priya@smartimport.in</td>
+                <td><span class="badge-pill badge-teal">Basic</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:72%;background:#f97316"></div></div>
+                    <span class="usage-label">7,200/10K</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-green">Active</span></td>
+                <td><span class="api-key-display">sk_live_••••••••e83a<button class="copy-btn" onclick="copyKey(event,'sk_live_4f9ae83a')" title="Copy"><i class="fas fa-copy"></i></button></span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-secondary" onclick="viewClient(4)"><i class="fas fa-eye"></i></button>
+                  <button class="btn-sm btn-danger" onclick="suspendClient(this,'SmartImport Co.')">Suspend</button>
+                </div></td>
+              </tr>
+              <!-- Row 6 -->
+              <tr data-status="Active" data-plan="Enterprise">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">TradeFlow Platform</div>
+                  <div style="font-size:.78rem;color:#64748b">John Müller</div>
+                </td>
+                <td>john@tradeflow.eu</td>
+                <td><span class="badge-pill badge-purple">Enterprise</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:61%;background:#7c3aed"></div></div>
+                    <span class="usage-label">610,000/1M</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-green">Active</span></td>
+                <td><span class="api-key-display">sk_live_••••••••7f1b<button class="copy-btn" onclick="copyKey(event,'sk_live_aa3e7f1b')" title="Copy"><i class="fas fa-copy"></i></button></span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-secondary" onclick="viewClient(5)"><i class="fas fa-eye"></i></button>
+                  <button class="btn-sm btn-danger" onclick="suspendClient(this,'TradeFlow Platform')">Suspend</button>
+                </div></td>
+              </tr>
+              <!-- Row 7 -->
+              <tr data-status="Pending" data-plan="Pro">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">Orion Logistics</div>
+                  <div style="font-size:.78rem;color:#64748b">Fatima Al-Rashid</div>
+                </td>
+                <td>fatima@orionlog.ae</td>
+                <td><span class="badge-pill badge-blue">Pro</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:0%;background:#0052CC"></div></div>
+                    <span class="usage-label">0/100K</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-orange">Pending</span></td>
+                <td><span class="api-key-display" style="color:#94a3b8">—</span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-success" onclick="approveClient(this,'Orion Logistics')">Approve</button>
+                  <button class="btn-sm btn-secondary" onclick="viewClient(6)"><i class="fas fa-eye"></i></button>
+                </div></td>
+              </tr>
+              <!-- Row 8 -->
+              <tr data-status="Active" data-plan="Pro">
+                <td>
+                  <div style="font-weight:700;color:#0a0e27">Kaizan Analytics</div>
+                  <div style="font-size:.78rem;color:#64748b">Yuki Tanaka</div>
+                </td>
+                <td>yuki@kaizan.jp</td>
+                <td><span class="badge-pill badge-blue">Pro</span></td>
+                <td>
+                  <div class="usage-bar-wrap">
+                    <div class="usage-bar"><div class="usage-bar-fill" style="width:19%;background:#0052CC"></div></div>
+                    <span class="usage-label">19,400/100K</span>
+                  </div>
+                </td>
+                <td><span class="badge-pill badge-green">Active</span></td>
+                <td><span class="api-key-display">sk_live_••••••••2d90<button class="copy-btn" onclick="copyKey(event,'sk_live_c8b12d90')" title="Copy"><i class="fas fa-copy"></i></button></span></td>
+                <td><div class="btn-action-group">
+                  <button class="btn-sm btn-secondary" onclick="viewClient(7)"><i class="fas fa-eye"></i></button>
+                  <button class="btn-sm btn-danger" onclick="suspendClient(this,'Kaizan Analytics')">Suspend</button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom section: Rate Limiting + Webhook Logs -->
+      <div class="two-col">
+
+        <!-- Rate Limiting Settings -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-tachometer-alt" style="color:#0052CC;margin-right:8px"></i>Rate Limiting Settings</span>
+          </div>
+          <div class="settings-grid" style="grid-template-columns:1fr">
+            <div class="settings-plan-card">
+              <div class="settings-plan-title"><span class="badge-pill badge-teal" style="font-size:.78rem">Basic</span> Basic Plan</div>
+              <div class="settings-plan-desc">Suitable for small-scale integrations and testing.</div>
+              <div class="settings-plan-input">
+                <input type="number" value="10000" id="basicLimit" min="1000" step="1000"/>
+                <span>req / month</span>
+              </div>
+            </div>
+            <div class="settings-plan-card" style="border-color:#dbeafe">
+              <div class="settings-plan-title"><span class="badge-pill badge-blue" style="font-size:.78rem">Pro</span> Pro Plan</div>
+              <div class="settings-plan-desc">For growing businesses with moderate API usage.</div>
+              <div class="settings-plan-input">
+                <input type="number" value="100000" id="proLimit" min="10000" step="10000"/>
+                <span>req / month</span>
+              </div>
+            </div>
+            <div class="settings-plan-card" style="border-color:#ede9fe">
+              <div class="settings-plan-title"><span class="badge-pill badge-purple" style="font-size:.78rem">Enterprise</span> Enterprise Plan</div>
+              <div class="settings-plan-desc">High-volume access for enterprise-grade integrations.</div>
+              <div class="settings-plan-input">
+                <input type="number" value="1000000" id="enterpriseLimit" min="100000" step="100000"/>
+                <span>req / month</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;justify-content:flex-end">
+            <button class="btn-sm btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save Settings</button>
+          </div>
+        </div>
+
+        <!-- Webhook Logs -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-satellite-dish" style="color:#7c3aed;margin-right:8px"></i>Webhook Logs</span>
+            <button class="btn-sm btn-secondary"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Endpoint</th>
+                  <th>Status</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:32:07</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/orders</code></td>
+                  <td><span class="badge-pill badge-green">200</span></td>
+                  <td>142 ms</td>
+                </tr>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:31:54</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/products</code></td>
+                  <td><span class="badge-pill badge-green">200</span></td>
+                  <td>98 ms</td>
+                </tr>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:30:11</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/shipments/track</code></td>
+                  <td><span class="badge-pill badge-red">500</span></td>
+                  <td>2,341 ms</td>
+                </tr>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:29:48</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/users/auth</code></td>
+                  <td><span class="badge-pill badge-green">200</span></td>
+                  <td>67 ms</td>
+                </tr>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:28:33</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/inventory/check</code></td>
+                  <td><span class="badge-pill badge-orange">404</span></td>
+                  <td>54 ms</td>
+                </tr>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:27:19</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/payments/verify</code></td>
+                  <td><span class="badge-pill badge-green">200</span></td>
+                  <td>203 ms</td>
+                </tr>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:26:55</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/quotes/create</code></td>
+                  <td><span class="badge-pill badge-green">200</span></td>
+                  <td>311 ms</td>
+                </tr>
+                <tr>
+                  <td style="font-size:.78rem;color:#64748b">2025-06-18 14:25:40</td>
+                  <td><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:3px">/api/v2/reports/export</code></td>
+                  <td><span class="badge-pill badge-red">500</span></td>
+                  <td>4,892 ms</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Client Detail Modal -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-code" style="color:#0052CC;margin-right:8px"></i>Client Details</div>
+    <div id="clientDetailContent"></div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
+      <button class="btn-sm btn-secondary" onclick="closeModal()">Close</button>
+      <button class="btn-sm btn-primary"><i class="fas fa-edit"></i> Edit Plan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Client data for modal
+  var clients = [
+    {name:'TechBridge Inc.',contact:'Marcus Wong',email:'marcus@techbridge.io',plan:'Pro',status:'Active',joined:'Jan 15, 2025',calls:'45,230',limit:'100,000',key:'sk_live_ab8c3a7f',webhooks:'https://techbridge.io/webhooks/gs'},
+    {name:'GlobalConnect Ltd.',contact:'Amara Osei',email:'amara@globalconnect.com',plan:'Enterprise',status:'Active',joined:'Nov 3, 2024',calls:'320,000',limit:'1,000,000',key:'sk_live_ff1d9b2c',webhooks:'https://globalconnect.com/api/hook'},
+    {name:'Nexora Solutions',contact:'Lena Hoffmann',email:'lena@nexora.de',plan:'Basic',status:'Pending',joined:'Jun 17, 2025',calls:'0',limit:'10,000',key:'—',webhooks:'Not configured'},
+    {name:'DataPulse API',contact:'Carlos Rivera',email:'carlos@datapulse.io',plan:'Pro',status:'Suspended',joined:'Mar 8, 2025',calls:'88,100',limit:'100,000',key:'sk_live_0d22c14e',webhooks:'https://datapulse.io/hooks'},
+    {name:'SmartImport Co.',contact:'Priya Nair',email:'priya@smartimport.in',plan:'Basic',status:'Active',joined:'Apr 22, 2025',calls:'7,200',limit:'10,000',key:'sk_live_4f9ae83a',webhooks:'Not configured'},
+    {name:'TradeFlow Platform',contact:'John Müller',email:'john@tradeflow.eu',plan:'Enterprise',status:'Active',joined:'Oct 11, 2024',calls:'610,000',limit:'1,000,000',key:'sk_live_aa3e7f1b',webhooks:'https://tradeflow.eu/api/globex'},
+    {name:'Orion Logistics',contact:'Fatima Al-Rashid',email:'fatima@orionlog.ae',plan:'Pro',status:'Pending',joined:'Jun 18, 2025',calls:'0',limit:'100,000',key:'—',webhooks:'Not configured'},
+    {name:'Kaizan Analytics',contact:'Yuki Tanaka',email:'yuki@kaizan.jp',plan:'Pro',status:'Active',joined:'Feb 14, 2025',calls:'19,400',limit:'100,000',key:'sk_live_c8b12d90',webhooks:'https://kaizan.jp/webhooks'}
+  ];
+
+  function viewClient(idx) {
+    var c = clients[idx];
+    var statusBadge = c.status === 'Active' ? 'badge-green' : c.status === 'Pending' ? 'badge-orange' : 'badge-red';
+    var planBadge = c.plan === 'Enterprise' ? 'badge-purple' : c.plan === 'Pro' ? 'badge-blue' : 'badge-teal';
+    document.getElementById('clientDetailContent').innerHTML =
+      '<div class="detail-row"><span class="detail-label">Company</span><span class="detail-value">' + c.name + '</span></div>' +
+      '<div class="detail-row"><span class="detail-label">Contact</span><span class="detail-value">' + c.contact + '</span></div>' +
+      '<div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">' + c.email + '</span></div>' +
+      '<div class="detail-row"><span class="detail-label">Plan</span><span class="detail-value"><span class="badge-pill ' + planBadge + '">' + c.plan + '</span></span></div>' +
+      '<div class="detail-row"><span class="detail-label">Status</span><span class="detail-value"><span class="badge-pill ' + statusBadge + '">' + c.status + '</span></span></div>' +
+      '<div class="detail-row"><span class="detail-label">Member Since</span><span class="detail-value">' + c.joined + '</span></div>' +
+      '<div class="detail-row"><span class="detail-label">API Calls</span><span class="detail-value">' + c.calls + ' / ' + c.limit + '</span></div>' +
+      '<div class="detail-row"><span class="detail-label">API Key</span><span class="detail-value" style="font-family:monospace;font-size:.82rem">' + c.key + '</span></div>' +
+      '<div class="detail-row"><span class="detail-label">Webhook URL</span><span class="detail-value" style="font-size:.8rem">' + c.webhooks + '</span></div>';
+    document.getElementById('clientModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('clientModal').classList.remove('open');
+  }
+  document.getElementById('clientModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  function approveClient(btn, name) {
+    var row = btn.closest('tr');
+    row.querySelector('[data-status]');
+    row.dataset.status = 'Active';
+    row.querySelector('.badge-pill').className = 'badge-pill badge-green';
+    row.querySelector('.badge-pill').textContent = 'Active';
+    btn.remove();
+    showToast('✓ ' + name + ' has been approved');
+  }
+
+  function suspendClient(btn, name) {
+    var row = btn.closest('tr');
+    row.dataset.status = 'Suspended';
+    var statusCell = row.querySelector('[class*="badge-pill"]');
+    if (statusCell) { statusCell.className = 'badge-pill badge-red'; statusCell.textContent = 'Suspended'; }
+    btn.textContent = 'Reactivate';
+    btn.className = 'btn-sm btn-success';
+    btn.onclick = function(){ reactivateClient(btn, name); };
+    showToast('⚠ ' + name + ' has been suspended');
+  }
+
+  function reactivateClient(btn, name) {
+    var row = btn.closest('tr');
+    row.dataset.status = 'Active';
+    var statusCell = row.querySelector('[class*="badge-pill badge-red"]');
+    if (statusCell) { statusCell.className = 'badge-pill badge-green'; statusCell.textContent = 'Active'; }
+    btn.textContent = 'Suspend';
+    btn.className = 'btn-sm btn-danger';
+    btn.onclick = function(){ suspendClient(btn, name); };
+    showToast('✓ ' + name + ' has been reactivated');
+  }
+
+  function filterClients() {
+    var search = document.getElementById('clientSearch').value.toLowerCase();
+    var status = document.getElementById('statusFilter').value;
+    var plan = document.getElementById('planFilter').value;
+    document.querySelectorAll('#clientBody tr').forEach(function(row) {
+      var text = row.textContent.toLowerCase();
+      var rowStatus = row.dataset.status || '';
+      var rowPlan = row.dataset.plan || '';
+      var ok = (!search || text.includes(search)) &&
+                (!status || rowStatus === status) &&
+                (!plan || rowPlan === plan);
+      row.classList.toggle('hidden-row', !ok);
+    });
+  }
+
+  function copyKey(e, key) {
+    e.stopPropagation();
+    navigator.clipboard && navigator.clipboard.writeText(key);
+    showToast('API key copied to clipboard');
+  }
+
+  function exportClients() {
+    showToast('Export triggered — CSV download would begin here.');
+  }
+
+  function saveSettings() {
+    showToast('✓ Rate limit settings saved successfully');
+  }
+
+  function showToast(msg) {
+    var t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#059669;color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;font-size:.88rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15)';
+    document.body.appendChild(t);
+    setTimeout(function(){ document.body.removeChild(t); }, 2800);
+  }
+</script>
+</body>
+</html>
