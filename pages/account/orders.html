@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Orders | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .navbar{padding:0}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .container{max-width:1400px;margin:0 auto;padding:0 24px}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    /* Filter tabs */
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tab{padding:7px 16px;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s;display:flex;align-items:center;gap:6px}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .filter-tab .tab-count{background:rgba(0,0,0,.1);border-radius:50px;padding:1px 7px;font-size:.72rem}
+    .filter-tab.active .tab-count{background:rgba(255,255,255,.25)}
+    .search-bar{display:flex;gap:10px;margin-bottom:20px}
+    .search-bar input{flex:1;padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e}
+    .search-bar input:focus{outline:none;border-color:#0052CC}
+    .search-bar button{background:#0052CC;color:#fff;border:none;border-radius:8px;padding:9px 16px;cursor:pointer;font-size:.88rem}
+    /* Orders list */
+    .order-row{border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden;transition:box-shadow .2s}
+    .order-row:hover{box-shadow:0 4px 16px rgba(0,82,204,.1)}
+    .order-row-header{display:grid;grid-template-columns:140px 110px 1fr 110px 130px auto;align-items:center;gap:12px;padding:14px 18px;background:#fff;cursor:pointer}
+    .order-num a{font-weight:600;color:#0052CC;text-decoration:none;font-size:.88rem}
+    .order-num a:hover{text-decoration:underline}
+    .order-date{font-size:.82rem;color:#64748b}
+    .order-items{display:flex;align-items:center;gap:8px}
+    .item-thumb{width:36px;height:36px;border-radius:6px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#0052CC;font-weight:600;flex-shrink:0;border:1px solid #dbeafe}
+    .item-count{font-size:.82rem;color:#64748b}
+    .order-total{font-weight:600;font-size:.92rem;color:#0a0e27}
+    .order-actions{display:flex;gap:6px;align-items:center}
+    .expand-btn{background:none;border:none;cursor:pointer;color:#64748b;padding:4px 8px;border-radius:6px;transition:all .2s}
+    .expand-btn:hover{background:#f0f4ff;color:#0052CC}
+    .order-details-panel{display:none;border-top:1px solid #f1f5f9;padding:16px 18px;background:#f8faff}
+    .order-details-panel.open{display:block}
+    .order-detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+    .order-detail-item{background:#fff;border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0}
+    .order-detail-item-thumb{width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#0052CC;font-weight:600;text-align:center;flex-shrink:0}
+    .order-detail-item-info .name{font-size:.85rem;font-weight:500;color:#0a0e27}
+    .order-detail-item-info .meta{font-size:.75rem;color:#64748b;margin-top:2px}
+    .order-detail-actions{display:flex;gap:8px}
+    .site-footer{background:#0a0e27;color:#94a3b8}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:center}
+    .footer-copyright{font-size:.85rem}
+    @media(max-width:900px){.order-row-header{grid-template-columns:1fr 1fr;gap:8px}.order-items,.order-date{display:none}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">JD</div>
+    <div class="account-sidebar-name">James Davidson</div>
+    <div class="account-sidebar-email">j.davidson@example.com</div>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html" class="active"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-shopping-bag" style="color:#0052CC"></i> My Orders</div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All <span class="tab-count">24</span></button>
+        <button class="filter-tab" data-filter="pending">Pending <span class="tab-count">3</span></button>
+        <button class="filter-tab" data-filter="processing">Processing <span class="tab-count">5</span></button>
+        <button class="filter-tab" data-filter="shipped">Shipped <span class="tab-count">8</span></button>
+        <button class="filter-tab" data-filter="delivered">Delivered <span class="tab-count">6</span></button>
+        <button class="filter-tab" data-filter="cancelled">Cancelled <span class="tab-count">2</span></button>
+      </div>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <input type="text" placeholder="Search by order number, supplier or product…"/>
+        <button><i class="fas fa-search"></i></button>
+      </div>
+
+      <!-- Orders List -->
+      <div id="orders-list">
+
+        <!-- Order 1 -->
+        <div class="order-row" data-status="shipped">
+          <div class="order-row-header" onclick="toggleDetails(this)">
+            <div class="order-num"><a href="#">#GS-2025-0892</a><div style="font-size:.72rem;color:#64748b;margin-top:2px">ShenzTech Electronics</div></div>
+            <div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>May 18, 2025</div>
+            <div class="order-items">
+              <div class="item-thumb">PCB</div>
+              <div class="item-thumb">LED</div>
+              <div class="item-count">+2 items</div>
+            </div>
+            <div class="order-total">$3,240.00</div>
+            <div><span class="badge-pill badge-blue"><i class="fas fa-truck" style="margin-right:4px"></i>Shipped</span></div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-secondary" title="Track"><i class="fas fa-location-dot"></i></button>
+              <button class="btn btn-sm btn-secondary" title="Invoice"><i class="fas fa-file-invoice"></i></button>
+              <button class="expand-btn" title="Details"><i class="fas fa-chevron-down"></i></button>
+            </div>
+          </div>
+          <div class="order-details-panel">
+            <div style="font-size:.82rem;font-weight:600;color:#374151;margin-bottom:10px">Order Items</div>
+            <div class="order-detail-grid">
+              <div class="order-detail-item"><div class="order-detail-item-thumb">PCB</div><div class="order-detail-item-info"><div class="name">Arduino PCB Board v3</div><div class="meta">Qty: 500 · $2.40/ea · $1,200</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">LED</div><div class="order-detail-item-info"><div class="name">SMD LED Strip 5050</div><div class="meta">Qty: 200 · $4.20/ea · $840</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">CAP</div><div class="order-detail-item-info"><div class="name">Ceramic Capacitor 100µF</div><div class="meta">Qty: 1000 · $0.60/ea · $600</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">RES</div><div class="order-detail-item-info"><div class="name">Resistor Pack 220Ω</div><div class="meta">Qty: 2000 · $0.30/ea · $600</div></div></div>
+            </div>
+            <div class="order-detail-actions">
+              <button class="btn btn-sm btn-primary"><i class="fas fa-eye" style="margin-right:6px"></i>View Full Order</button>
+              <button class="btn btn-sm btn-secondary"><i class="fas fa-truck" style="margin-right:6px"></i>Track Shipment</button>
+              <button class="btn btn-sm btn-secondary"><i class="fas fa-file-pdf" style="margin-right:6px"></i>Download Invoice</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order 2 -->
+        <div class="order-row" data-status="delivered">
+          <div class="order-row-header" onclick="toggleDetails(this)">
+            <div class="order-num"><a href="#">#GS-2025-0841</a><div style="font-size:.72rem;color:#64748b;margin-top:2px">Guangzhou Fabrics Co.</div></div>
+            <div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>May 9, 2025</div>
+            <div class="order-items">
+              <div class="item-thumb">FAB</div>
+              <div class="item-count">3 items</div>
+            </div>
+            <div class="order-total">$1,875.50</div>
+            <div><span class="badge-pill badge-green"><i class="fas fa-check-circle" style="margin-right:4px"></i>Delivered</span></div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-secondary" title="Track"><i class="fas fa-location-dot"></i></button>
+              <button class="btn btn-sm btn-secondary" title="Invoice"><i class="fas fa-file-invoice"></i></button>
+              <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+          </div>
+          <div class="order-details-panel">
+            <div style="font-size:.82rem;font-weight:600;color:#374151;margin-bottom:10px">Order Items</div>
+            <div class="order-detail-grid">
+              <div class="order-detail-item"><div class="order-detail-item-thumb">CTN</div><div class="order-detail-item-info"><div class="name">100% Cotton Twill Fabric</div><div class="meta">Qty: 500m · $1.85/m · $925</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">PLY</div><div class="order-detail-item-info"><div class="name">Polyester Blend 240gsm</div><div class="meta">Qty: 300m · $1.50/m · $450</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">ZIP</div><div class="order-detail-item-info"><div class="name">YKK Zipper Assortment</div><div class="meta">Qty: 500pcs · $1.00/ea · $500</div></div></div>
+            </div>
+            <div class="order-detail-actions">
+              <button class="btn btn-sm btn-primary"><i class="fas fa-eye" style="margin-right:6px"></i>View Full Order</button>
+              <button class="btn btn-sm btn-secondary"><i class="fas fa-star" style="margin-right:6px"></i>Leave Review</button>
+              <button class="btn btn-sm btn-secondary"><i class="fas fa-redo" style="margin-right:6px"></i>Reorder</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order 3 -->
+        <div class="order-row" data-status="processing">
+          <div class="order-row-header" onclick="toggleDetails(this)">
+            <div class="order-num"><a href="#">#GS-2025-0903</a><div style="font-size:.72rem;color:#64748b;margin-top:2px">Yiwu Gift Mart</div></div>
+            <div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>May 21, 2025</div>
+            <div class="order-items">
+              <div class="item-thumb">GFT</div>
+              <div class="item-thumb">MUG</div>
+              <div class="item-count">+4 items</div>
+            </div>
+            <div class="order-total">$768.00</div>
+            <div><span class="badge-pill badge-purple"><i class="fas fa-gear" style="margin-right:4px"></i>Processing</span></div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-secondary" title="Invoice"><i class="fas fa-file-invoice"></i></button>
+              <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+          </div>
+          <div class="order-details-panel">
+            <div style="font-size:.82rem;font-weight:600;color:#374151;margin-bottom:10px">Order Items</div>
+            <div class="order-detail-grid">
+              <div class="order-detail-item"><div class="order-detail-item-thumb">MUG</div><div class="order-detail-item-info"><div class="name">Custom Logo Ceramic Mug</div><div class="meta">Qty: 200 · $2.40/ea · $480</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">BAG</div><div class="order-detail-item-info"><div class="name">Tote Bag Eco-Friendly</div><div class="meta">Qty: 100 · $2.88/ea · $288</div></div></div>
+            </div>
+            <div class="order-detail-actions">
+              <button class="btn btn-sm btn-primary"><i class="fas fa-eye" style="margin-right:6px"></i>View Full Order</button>
+              <button class="btn btn-sm btn-secondary" style="color:#ef4444;border-color:#fca5a5"><i class="fas fa-times" style="margin-right:6px"></i>Cancel Order</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order 4 -->
+        <div class="order-row" data-status="pending">
+          <div class="order-row-header" onclick="toggleDetails(this)">
+            <div class="order-num"><a href="#">#GS-2025-0917</a><div style="font-size:.72rem;color:#64748b;margin-top:2px">BeautyPro Cosmetics</div></div>
+            <div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>May 23, 2025</div>
+            <div class="order-items">
+              <div class="item-thumb">COS</div>
+              <div class="item-count">2 items</div>
+            </div>
+            <div class="order-total">$2,100.00</div>
+            <div><span class="badge-pill badge-orange"><i class="fas fa-clock" style="margin-right:4px"></i>Pending</span></div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-primary" style="font-size:.75rem">Pay Now</button>
+              <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+          </div>
+          <div class="order-details-panel">
+            <div style="background:#fff8ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;margin-bottom:12px;font-size:.83rem;color:#92400e">
+              <i class="fas fa-clock" style="margin-right:6px;color:#f97316"></i>Payment pending. Complete payment within <strong>48 hours</strong> to confirm this order.
+            </div>
+            <div class="order-detail-grid">
+              <div class="order-detail-item"><div class="order-detail-item-thumb">LIP</div><div class="order-detail-item-info"><div class="name">Matte Lipstick Set 12-color</div><div class="meta">Qty: 300 · $3.50/ea · $1,050</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">FDN</div><div class="order-detail-item-info"><div class="name">Foundation Liquid SPF30</div><div class="meta">Qty: 150 · $7.00/ea · $1,050</div></div></div>
+            </div>
+            <div class="order-detail-actions">
+              <button class="btn btn-sm btn-primary"><i class="fas fa-credit-card" style="margin-right:6px"></i>Complete Payment</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order 5 -->
+        <div class="order-row" data-status="shipped">
+          <div class="order-row-header" onclick="toggleDetails(this)">
+            <div class="order-num"><a href="#">#GS-2025-0877</a><div style="font-size:.72rem;color:#64748b;margin-top:2px">TechPlus Accessories</div></div>
+            <div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>May 14, 2025</div>
+            <div class="order-items">
+              <div class="item-thumb">USB</div>
+              <div class="item-thumb">CBL</div>
+              <div class="item-count">+1 item</div>
+            </div>
+            <div class="order-total">$4,560.00</div>
+            <div><span class="badge-pill badge-blue"><i class="fas fa-truck" style="margin-right:4px"></i>Shipped</span></div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-secondary" title="Track"><i class="fas fa-location-dot"></i></button>
+              <button class="btn btn-sm btn-secondary" title="Invoice"><i class="fas fa-file-invoice"></i></button>
+              <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+          </div>
+          <div class="order-details-panel">
+            <div class="order-detail-grid">
+              <div class="order-detail-item"><div class="order-detail-item-thumb">USB</div><div class="order-detail-item-info"><div class="name">USB-C Hub 7-in-1</div><div class="meta">Qty: 400 · $6.50/ea · $2,600</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">CBL</div><div class="order-detail-item-info"><div class="name">Braided USB-C Cable 2m</div><div class="meta">Qty: 800 · $1.45/ea · $1,160</div></div></div>
+              <div class="order-detail-item"><div class="order-detail-item-thumb">WLS</div><div class="order-detail-item-info"><div class="name">Wireless Charging Pad 15W</div><div class="meta">Qty: 100 · $8.00/ea · $800</div></div></div>
+            </div>
+            <div class="order-detail-actions">
+              <button class="btn btn-sm btn-primary"><i class="fas fa-truck" style="margin-right:6px"></i>Track Shipment</button>
+              <button class="btn btn-sm btn-secondary"><i class="fas fa-file-pdf" style="margin-right:6px"></i>Invoice</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order 6 -->
+        <div class="order-row" data-status="cancelled">
+          <div class="order-row-header" onclick="toggleDetails(this)">
+            <div class="order-num"><a href="#">#GS-2025-0810</a><div style="font-size:.72rem;color:#64748b;margin-top:2px">Bamboo Home Goods</div></div>
+            <div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>Apr 28, 2025</div>
+            <div class="order-items">
+              <div class="item-thumb">BMB</div>
+              <div class="item-count">1 item</div>
+            </div>
+            <div class="order-total">$390.00</div>
+            <div><span class="badge-pill badge-red"><i class="fas fa-times-circle" style="margin-right:4px"></i>Cancelled</span></div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-secondary"><i class="fas fa-redo" style="margin-right:4px"></i>Reorder</button>
+              <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+          </div>
+          <div class="order-details-panel">
+            <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;margin-bottom:12px;font-size:.83rem;color:#7f1d1d">
+              <i class="fas fa-times-circle" style="margin-right:6px;color:#ef4444"></i>Order cancelled on May 1, 2025. Refund of $390.00 processed within 5–7 business days.
+            </div>
+            <div class="order-detail-grid">
+              <div class="order-detail-item"><div class="order-detail-item-thumb">BMB</div><div class="order-detail-item-info"><div class="name">Bamboo Cutting Board Set</div><div class="meta">Qty: 150 · $2.60/ea · $390</div></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  function toggleDetails(header) {
+    const panel = header.nextElementSibling;
+    const icon = header.querySelector('.expand-btn i');
+    panel.classList.toggle('open');
+    if (icon) icon.style.transform = panel.classList.contains('open') ? 'rotate(180deg)' : '';
+  }
+
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+      document.querySelectorAll('.order-row').forEach(row => {
+        row.style.display = (filter === 'all' || row.dataset.status === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>

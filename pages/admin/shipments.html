@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Shipment Management – GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-teal{background:#ccfbf1;color:#0d9488}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .btn-sm{padding:5px 12px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
+    .btn-warning{background:#f97316;color:#fff}
+    .btn-warning:hover{background:#ea6c0e}
+    .btn-action-group{display:flex;gap:6px;flex-wrap:wrap}
+    .filter-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif}
+    .filter-input:focus{outline:none;border-color:#0052CC}
+    .search-filter-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    /* Service Tabs */
+    .service-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #e2e8f0}
+    .service-tab{padding:12px 24px;border:none;background:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#64748b;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;display:flex;align-items:center;gap:8px}
+    .service-tab.active{color:#0052CC;border-bottom-color:#0052CC}
+    .service-tab:hover:not(.active){color:#374151}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .sub-section-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0a0e27;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
+    .qr-placeholder{width:44px;height:44px;background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:1.2rem}
+    .dispatch-form{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#f8faff;border-radius:10px;padding:16px;margin-bottom:16px}
+    .dispatch-field{display:flex;flex-direction:column;gap:4px}
+    .dispatch-field label{font-size:.82rem;font-weight:600;color:#374151}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html" class="active"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="admin-page-title">Shipment Management</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">A</div>
+          <span>Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <!-- Service Tabs -->
+      <div class="service-tabs">
+        <button class="service-tab active" onclick="switchTab('carry',this)"><i class="fas fa-people-carry"></i> Carry Service</button>
+        <button class="service-tab" onclick="switchTab('parcel',this)"><i class="fas fa-box-open"></i> Parcel Service</button>
+      </div>
+
+      <!-- CARRY SERVICE TAB -->
+      <div id="tab-carry" class="tab-panel active">
+
+        <!-- Carrier Applications -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Carrier Applications</span>
+            <span class="badge-pill badge-orange">4 pending</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr><th>Carrier Name</th><th>Country</th><th>Documents</th><th>Applied Date</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>StarRoute Logistics</strong></td>
+                  <td>Nigeria</td>
+                  <td><button class="btn-sm btn-secondary"><i class="fas fa-file-alt"></i> View Docs</button></td>
+                  <td>Jun 18, 2025</td>
+                  <td><div class="btn-action-group"><button class="btn-sm btn-success"><i class="fas fa-check"></i> Approve</button><button class="btn-sm btn-danger"><i class="fas fa-times"></i> Reject</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong>SwiftCargo Kenya</strong></td>
+                  <td>Kenya</td>
+                  <td><button class="btn-sm btn-secondary"><i class="fas fa-file-alt"></i> View Docs</button></td>
+                  <td>Jun 17, 2025</td>
+                  <td><div class="btn-action-group"><button class="btn-sm btn-success"><i class="fas fa-check"></i> Approve</button><button class="btn-sm btn-danger"><i class="fas fa-times"></i> Reject</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong>EuroFreight GmbH</strong></td>
+                  <td>Germany</td>
+                  <td><button class="btn-sm btn-secondary"><i class="fas fa-file-alt"></i> View Docs</button></td>
+                  <td>Jun 16, 2025</td>
+                  <td><div class="btn-action-group"><button class="btn-sm btn-success"><i class="fas fa-check"></i> Approve</button><button class="btn-sm btn-danger"><i class="fas fa-times"></i> Reject</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong>PacificLink Couriers</strong></td>
+                  <td>South Africa</td>
+                  <td><button class="btn-sm btn-secondary"><i class="fas fa-file-alt"></i> View Docs</button></td>
+                  <td>Jun 15, 2025</td>
+                  <td><div class="btn-action-group"><button class="btn-sm btn-success"><i class="fas fa-check"></i> Approve</button><button class="btn-sm btn-danger"><i class="fas fa-times"></i> Reject</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong>TransAfrica Movers</strong></td>
+                  <td>Ghana</td>
+                  <td><button class="btn-sm btn-secondary"><i class="fas fa-file-alt"></i> View Docs</button></td>
+                  <td>Jun 14, 2025</td>
+                  <td><div class="btn-action-group"><button class="btn-sm btn-success"><i class="fas fa-check"></i> Approve</button><button class="btn-sm btn-danger"><i class="fas fa-times"></i> Reject</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Active Carry Requests -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Active Carry Requests</span>
+            <button class="btn-sm btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr><th>Request #</th><th>Carrier</th><th>Route</th><th>Products</th><th>Total Weight</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>#CR-2241</strong></td>
+                  <td>StarRoute Logistics</td>
+                  <td>Lagos → Accra</td>
+                  <td>Electronics x 3</td>
+                  <td>42 kg</td>
+                  <td><span class="badge-pill badge-blue">In Transit</span></td>
+                </tr>
+                <tr>
+                  <td><strong>#CR-2240</strong></td>
+                  <td>SwiftCargo Kenya</td>
+                  <td>Nairobi → Dar es Salaam</td>
+                  <td>Apparel x 8</td>
+                  <td>120 kg</td>
+                  <td><span class="badge-pill badge-green">Delivered</span></td>
+                </tr>
+                <tr>
+                  <td><strong>#CR-2239</strong></td>
+                  <td>EuroFreight GmbH</td>
+                  <td>Frankfurt → London</td>
+                  <td>Machinery x 1</td>
+                  <td>380 kg</td>
+                  <td><span class="badge-pill badge-orange">Collecting</span></td>
+                </tr>
+                <tr>
+                  <td><strong>#CR-2238</strong></td>
+                  <td>PacificLink Couriers</td>
+                  <td>Johannesburg → Lusaka</td>
+                  <td>General x 5</td>
+                  <td>95 kg</td>
+                  <td><span class="badge-pill badge-blue">In Transit</span></td>
+                </tr>
+                <tr>
+                  <td><strong>#CR-2237</strong></td>
+                  <td>TransAfrica Movers</td>
+                  <td>Accra → Abidjan</td>
+                  <td>Agriculture x 2</td>
+                  <td>210 kg</td>
+                  <td><span class="badge-pill badge-gray">Pending</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Office Collection Queue -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-building" style="color:#0052CC;margin-right:6px"></i>Office Collection Queue — Today</span>
+            <span class="badge-pill badge-blue">3 items today</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr><th>Carrier</th><th>Items</th><th>Expected Time</th><th>QR Code</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>StarRoute Logistics</strong></td>
+                  <td>3 parcels (42 kg)</td>
+                  <td>10:00 AM</td>
+                  <td><div class="qr-placeholder"><i class="fas fa-qrcode"></i></div></td>
+                  <td><button class="btn-sm btn-success"><i class="fas fa-check-circle"></i> Verify &amp; Collect</button></td>
+                </tr>
+                <tr>
+                  <td><strong>EuroFreight GmbH</strong></td>
+                  <td>1 crate (380 kg)</td>
+                  <td>2:00 PM</td>
+                  <td><div class="qr-placeholder"><i class="fas fa-qrcode"></i></div></td>
+                  <td><button class="btn-sm btn-success"><i class="fas fa-check-circle"></i> Verify &amp; Collect</button></td>
+                </tr>
+                <tr>
+                  <td><strong>SwiftCargo Kenya</strong></td>
+                  <td>5 boxes (85 kg)</td>
+                  <td>4:30 PM</td>
+                  <td><div class="qr-placeholder"><i class="fas fa-qrcode"></i></div></td>
+                  <td><button class="btn-sm btn-success"><i class="fas fa-check-circle"></i> Verify &amp; Collect</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PARCEL SERVICE TAB -->
+      <div id="tab-parcel" class="tab-panel">
+
+        <!-- Dispatch Section -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-paper-plane" style="color:#0052CC;margin-right:6px"></i>Dispatch Parcel</span>
+          </div>
+          <div class="dispatch-form">
+            <div class="dispatch-field">
+              <label>Reference Number</label>
+              <input type="text" class="filter-input" placeholder="e.g. PKG-00421" style="width:180px"/>
+            </div>
+            <div class="dispatch-field">
+              <label>Assign Carrier</label>
+              <select class="filter-input" style="width:200px">
+                <option>Select carrier…</option>
+                <option>StarRoute Logistics</option>
+                <option>SwiftCargo Kenya</option>
+                <option>EuroFreight GmbH</option>
+                <option>PacificLink Couriers</option>
+              </select>
+            </div>
+            <div class="dispatch-field">
+              <label>Dispatch Date</label>
+              <input type="date" class="filter-input" value="2025-06-18"/>
+            </div>
+            <button class="btn-sm btn-primary" style="padding:9px 20px"><i class="fas fa-paper-plane"></i> Mark as Shipped</button>
+          </div>
+        </div>
+
+        <!-- All Parcels -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">All Parcels</span>
+            <div class="btn-action-group">
+              <button class="btn-sm btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+            </div>
+          </div>
+          <div class="search-filter-bar">
+            <div style="position:relative;flex:1;min-width:180px">
+              <i class="fas fa-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem"></i>
+              <input type="text" class="filter-input" placeholder="Search reference, sender…" style="padding-left:32px;width:100%"/>
+            </div>
+            <select class="filter-input">
+              <option>All Status</option>
+              <option>Pending</option>
+              <option>Dispatched</option>
+              <option>In Transit</option>
+              <option>Delivered</option>
+            </select>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr><th>Reference #</th><th>Sender</th><th>Destination</th><th>Weight</th><th>Carrier</th><th>Status</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>PKG-00421</strong></td>
+                  <td>James Okafor</td>
+                  <td>Lagos, Nigeria</td>
+                  <td>2.4 kg</td>
+                  <td>StarRoute Logistics</td>
+                  <td><span class="badge-pill badge-blue">In Transit</span></td>
+                  <td>Jun 18</td>
+                </tr>
+                <tr>
+                  <td><strong>PKG-00420</strong></td>
+                  <td>Maria Santos</td>
+                  <td>London, UK</td>
+                  <td>0.8 kg</td>
+                  <td>EuroFreight GmbH</td>
+                  <td><span class="badge-pill badge-green">Delivered</span></td>
+                  <td>Jun 17</td>
+                </tr>
+                <tr>
+                  <td><strong>PKG-00419</strong></td>
+                  <td>Amir Farooq</td>
+                  <td>Nairobi, Kenya</td>
+                  <td>5.1 kg</td>
+                  <td>SwiftCargo Kenya</td>
+                  <td><span class="badge-pill badge-orange">Dispatched</span></td>
+                  <td>Jun 17</td>
+                </tr>
+                <tr>
+                  <td><strong>PKG-00418</strong></td>
+                  <td>Claire Dubois</td>
+                  <td>Paris, France</td>
+                  <td>1.2 kg</td>
+                  <td>EuroFreight GmbH</td>
+                  <td><span class="badge-pill badge-gray">Pending</span></td>
+                  <td>Jun 16</td>
+                </tr>
+                <tr>
+                  <td><strong>PKG-00417</strong></td>
+                  <td>Kofi Mensah</td>
+                  <td>Accra, Ghana</td>
+                  <td>8.7 kg</td>
+                  <td>TransAfrica Movers</td>
+                  <td><span class="badge-pill badge-green">Delivered</span></td>
+                  <td>Jun 15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.service-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Review your cart items, apply coupons, and proceed to checkout on GlobexSky — your global trade gateway."/>
+  <title>Shopping Cart | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+
+    /* HEADER */
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark)}
+    .logo-accent{color:var(--primary)}
+    .nav-controls{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;padding:8px;transition:color .2s}
+    .nav-cart:hover{color:var(--primary)}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:var(--secondary);color:var(--white);font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+    /* PAGE HEADER */
+    .page-hero{background:linear-gradient(135deg,var(--primary),var(--dark));padding:40px 24px;color:var(--white)}
+    .page-hero-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;display:flex;align-items:center;gap:12px}
+    .cart-count-pill{background:rgba(255,255,255,.15);padding:4px 14px;border-radius:50px;font-size:1rem;font-weight:600;border:1px solid rgba(255,255,255,.25)}
+    .breadcrumb-bar{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(255,255,255,.6);margin-top:8px}
+    .breadcrumb-bar a{color:rgba(255,255,255,.8);transition:color .2s}
+    .breadcrumb-bar a:hover{color:var(--white)}
+    .breadcrumb-bar i{font-size:.65rem}
+
+    /* MAIN LAYOUT */
+    .cart-layout{max-width:1400px;margin:32px auto;padding:0 24px;display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
+
+    /* CART ITEMS */
+    .cart-items-section{}
+    .section-card{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden}
+    .section-card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+    .section-card-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:1rem;color:var(--dark);display:flex;align-items:center;gap:8px}
+    .select-all-row{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);cursor:pointer}
+    .select-all-row input[type="checkbox"]{width:16px;height:16px;accent-color:var(--primary);cursor:pointer}
+    .clear-selected{background:none;border:none;color:#ef4444;font-size:.82rem;cursor:pointer;padding:0}
+    .clear-selected:hover{text-decoration:underline}
+
+    /* CART ITEM ROW */
+    .cart-item{display:grid;grid-template-columns:auto 80px 1fr auto auto auto;align-items:center;gap:16px;padding:20px 24px;border-bottom:1px solid var(--border);transition:background .2s}
+    .cart-item:last-child{border-bottom:none}
+    .cart-item:hover{background:#fafbff}
+    .cart-item-check{width:16px;height:16px;accent-color:var(--primary);cursor:pointer;flex-shrink:0}
+    .cart-item-img{width:80px;height:80px;border-radius:12px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:1.8rem;flex-shrink:0;border:1px solid var(--border)}
+    .cart-item-details{min-width:0}
+    .cart-item-name{font-weight:600;color:var(--dark);font-size:.92rem;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .cart-item-supplier{color:var(--muted);font-size:.8rem;display:flex;align-items:center;gap:4px;margin-bottom:6px}
+    .cart-item-supplier i{color:var(--primary);font-size:.7rem}
+    .cart-item-attrs{display:flex;gap:8px;flex-wrap:wrap}
+    .attr-pill{display:inline-block;background:#f1f5f9;color:#475569;font-size:.72rem;padding:2px 8px;border-radius:50px}
+    .cart-item-price{text-align:center;min-width:80px}
+    .unit-price{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:var(--primary)}
+    .price-label{font-size:.72rem;color:var(--muted)}
+    .qty-control{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+    .qty-btn{width:32px;height:32px;border:none;background:var(--bg);cursor:pointer;font-size:.85rem;color:var(--dark);transition:background .2s;display:flex;align-items:center;justify-content:center}
+    .qty-btn:hover{background:#e0e7ff;color:var(--primary)}
+    .qty-num{width:48px;height:32px;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);text-align:center;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif;outline:none}
+    .cart-item-subtotal{text-align:right;min-width:90px}
+    .subtotal-value{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--dark)}
+    .subtotal-label{font-size:.72rem;color:var(--muted)}
+    .cart-item-actions{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+    .btn-remove{background:none;border:none;color:#cbd5e1;cursor:pointer;font-size:1rem;transition:color .2s;padding:4px;border-radius:6px}
+    .btn-remove:hover{color:#ef4444;background:#fef2f2}
+    .btn-save-later{background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;transition:color .2s;white-space:nowrap;display:flex;align-items:center;gap:4px}
+    .btn-save-later:hover{color:var(--primary)}
+
+    /* COUPON SECTION */
+    .coupon-section{padding:20px 24px;border-top:1px solid var(--border);background:#fafbff}
+    .coupon-label{font-size:.88rem;font-weight:500;color:var(--dark);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .coupon-label i{color:var(--secondary)}
+    .coupon-row{display:flex;gap:10px}
+    .coupon-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+    .coupon-input:focus{border-color:var(--primary)}
+    .btn-apply-coupon{background:var(--secondary);color:var(--white);border:none;padding:10px 20px;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:'Poppins',sans-serif;white-space:nowrap}
+    .btn-apply-coupon:hover{background:#e85a24}
+    .coupon-hint{margin-top:8px;font-size:.75rem;color:var(--muted)}
+    .coupon-hint strong{color:var(--accent)}
+
+    /* ORDER SUMMARY */
+    .order-summary-card{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;position:sticky;top:80px}
+    .summary-header{background:linear-gradient(135deg,var(--primary),#003d99);color:var(--white);padding:20px 24px}
+    .summary-header-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px}
+    .summary-body{padding:20px 24px}
+    .summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:.9rem}
+    .summary-row:last-of-type{border-bottom:none}
+    .summary-row.total{padding-top:16px;border-top:2px solid var(--border);margin-top:8px}
+    .summary-row.total .label{font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:1rem}
+    .summary-row.total .value{font-family:'Poppins',sans-serif;font-weight:800;color:var(--primary);font-size:1.2rem}
+    .summary-row .label{color:#374151}
+    .summary-row .value{font-weight:600;color:var(--dark)}
+    .summary-row .value.discount{color:#16a34a}
+    .summary-row .value.shipping{color:var(--muted);font-weight:400}
+    .btn-checkout{display:block;width:100%;background:var(--secondary);color:var(--white);border:none;padding:16px 24px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;text-align:center;text-decoration:none;margin-top:20px}
+    .btn-checkout:hover{background:#e85a24;transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,107,53,.35)}
+    .btn-continue{display:block;width:100%;background:none;color:var(--primary);border:1.5px solid var(--primary);padding:12px 24px;border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;text-align:center;text-decoration:none;margin-top:10px}
+    .btn-continue:hover{background:var(--primary);color:var(--white)}
+    .security-badges{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap}
+    .security-badge{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--muted)}
+    .security-badge i{font-size:.9rem;color:var(--accent)}
+
+    /* EMPTY CART STATE */
+    .empty-cart{display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;text-align:center}
+    .empty-cart.show{display:flex}
+    .empty-cart-icon{font-size:5rem;color:#e2e8f0;margin-bottom:24px;line-height:1}
+    .empty-cart h2{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--dark);margin-bottom:10px}
+    .empty-cart p{color:var(--muted);font-size:.95rem;margin-bottom:28px;max-width:360px}
+    .btn-start-shopping{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:var(--white);padding:14px 28px;border-radius:12px;font-size:1rem;font-weight:600;text-decoration:none;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-start-shopping:hover{background:#003d99;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,82,204,.3)}
+
+    /* RECENTLY VIEWED */
+    .recently-viewed{max-width:1400px;margin:0 auto 60px;padding:0 24px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .mini-product-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+    .mini-card{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;transition:all .25s;cursor:pointer}
+    .mini-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,82,204,.1);border-color:var(--primary)}
+    .mini-card-img{height:120px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:2rem}
+    .mini-card-body{padding:10px 12px}
+    .mini-card-name{font-size:.8rem;font-weight:600;color:var(--dark);margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .mini-card-price{font-size:.85rem;font-weight:700;color:var(--primary);font-family:'Poppins',sans-serif}
+
+    /* FOOTER */
+    .site-footer{background:var(--dark);color:rgba(255,255,255,.85);margin-top:0}
+    .footer-main{padding:60px 24px 40px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;max-width:1400px;margin:0 auto}
+    .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .footer-tagline{color:rgba(255,255,255,.5);font-size:.88rem;margin-bottom:18px}
+    .footer-social{display:flex;gap:10px}
+    .social-link{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);transition:all .2s;font-size:.9rem}
+    .social-link:hover{background:var(--primary);color:var(--white)}
+    .footer-col-title{font-family:'Poppins',sans-serif;font-weight:600;color:var(--white);font-size:.95rem;margin-bottom:16px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .footer-links li a{color:rgba(255,255,255,.6);font-size:.88rem;transition:color .2s;display:flex;align-items:center;gap:6px}
+    .footer-links li a:hover{color:var(--accent)}
+    .footer-links li a i{font-size:.65rem;color:var(--accent)}
+    .footer-contact{font-style:normal;display:flex;flex-direction:column;gap:10px}
+    .footer-contact-item{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.6);font-size:.88rem}
+    .footer-contact-item i{color:var(--accent);width:16px}
+    .footer-contact-item a{color:rgba(255,255,255,.6);transition:color .2s}
+    .footer-contact-item a:hover{color:var(--accent)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:20px 24px}
+    .footer-bottom-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .footer-copyright{color:rgba(255,255,255,.4);font-size:.82rem}
+    .footer-legal-links{display:flex;gap:20px}
+    .footer-legal-links a{color:rgba(255,255,255,.4);font-size:.82rem;transition:color .2s}
+    .footer-legal-links a:hover{color:var(--accent)}
+    .container{max-width:1400px;margin:0 auto}
+
+    @media(max-width:1100px){.cart-layout{grid-template-columns:1fr}.order-summary-card{position:static}.mini-product-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:768px){
+      .cart-layout{padding:0 16px;margin:16px auto}
+      .cart-item{grid-template-columns:auto 64px 1fr;grid-template-rows:auto auto;gap:12px}
+      .cart-item-price,.cart-item-subtotal{display:none}
+      .recently-viewed{padding:0 16px}
+      .mini-product-grid{grid-template-columns:repeat(2,1fr)}
+      .footer-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo" aria-label="GlobexSky Home">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="2" y1="11" x2="34" y2="11" stroke="#0052CC" stroke-width="1"/>
+          <line x1="2" y1="25" x2="34" y2="25" stroke="#0052CC" stroke-width="1"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="cart.html" class="nav-cart" aria-label="Shopping cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cart-count">2</span></a>
+        <a href="../../pages/auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../pages/auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div>
+        <h1><i class="fas fa-shopping-cart"></i> Shopping Cart <span class="cart-count-pill" id="cart-pill">2 items</span></h1>
+        <div class="breadcrumb-bar">
+          <a href="../../index.html">Home</a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="index.html">Sourcing</a>
+          <i class="fas fa-chevron-right"></i>
+          <span>Cart</span>
+        </div>
+      </div>
+      <a href="products.html" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);color:#fff;padding:10px 20px;border-radius:10px;font-size:.88rem;border:1px solid rgba(255,255,255,.25);transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">
+        <i class="fas fa-arrow-left"></i> Continue Shopping
+      </a>
+    </div>
+  </div>
+
+  <!-- CART LAYOUT -->
+  <div class="cart-layout">
+    <!-- CART ITEMS -->
+    <div>
+      <!-- ITEMS CARD -->
+      <div class="section-card" id="cart-items-container">
+        <div class="section-card-header">
+          <div class="section-card-title"><i class="fas fa-boxes-stacked" style="color:#0052CC"></i> Cart Items</div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <label class="select-all-row"><input type="checkbox" id="select-all" onchange="toggleAll(this)" checked> Select All</label>
+            <button class="clear-selected" onclick="removeSelected()"><i class="fas fa-trash-can"></i> Remove Selected</button>
+          </div>
+        </div>
+
+        <!-- ITEM 1 -->
+        <div class="cart-item" id="item-1">
+          <input type="checkbox" class="cart-item-check item-check" checked aria-label="Select item 1">
+          <div class="cart-item-img"><i class="fas fa-headphones"></i></div>
+          <div class="cart-item-details">
+            <div class="cart-item-name">Wireless Bluetooth Headphones Pro X500 — Over-Ear ANC</div>
+            <div class="cart-item-supplier"><i class="fas fa-store"></i> SoundHarvest Electronics Co., Ltd. &nbsp;·&nbsp; 🇨🇳 China</div>
+            <div class="cart-item-attrs">
+              <span class="attr-pill">Color: Midnight Black</span>
+              <span class="attr-pill">MOQ: 100 units</span>
+              <span class="attr-pill">Lead: 15 days</span>
+            </div>
+          </div>
+          <div class="cart-item-price">
+            <div class="unit-price">$15.40</div>
+            <div class="price-label">per unit</div>
+          </div>
+          <div>
+            <div class="qty-control">
+              <button class="qty-btn" aria-label="Decrease" onclick="changeItemQty('item-1',-1)"><i class="fas fa-minus"></i></button>
+              <input class="qty-num" type="number" value="100" min="1" aria-label="Quantity" onchange="recalc()"/>
+              <button class="qty-btn" aria-label="Increase" onclick="changeItemQty('item-1',1)"><i class="fas fa-plus"></i></button>
+            </div>
+            <div style="font-size:.72rem;color:#64748b;text-align:center;margin-top:4px;">Min: 100</div>
+          </div>
+          <div class="cart-item-subtotal">
+            <div class="subtotal-value" id="sub-1">$1,540.00</div>
+            <div class="subtotal-label">subtotal</div>
+          </div>
+          <div class="cart-item-actions">
+            <button class="btn-remove" aria-label="Remove item" onclick="removeItem('item-1')"><i class="fas fa-xmark"></i></button>
+            <button class="btn-save-later"><i class="fas fa-bookmark"></i> Save later</button>
+          </div>
+        </div>
+
+        <!-- ITEM 2 -->
+        <div class="cart-item" id="item-2">
+          <input type="checkbox" class="cart-item-check item-check" checked aria-label="Select item 2">
+          <div class="cart-item-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669"><i class="fas fa-mobile-screen"></i></div>
+          <div class="cart-item-details">
+            <div class="cart-item-name">Portable Bluetooth Speaker 360° Surround Sound — IPX6 Waterproof</div>
+            <div class="cart-item-supplier"><i class="fas fa-store"></i> AcoustiTech Manufacturing &nbsp;·&nbsp; 🇨🇳 Shenzhen</div>
+            <div class="cart-item-attrs">
+              <span class="attr-pill">Color: Ocean Blue</span>
+              <span class="attr-pill">MOQ: 200 units</span>
+              <span class="attr-pill">Lead: 20 days</span>
+            </div>
+          </div>
+          <div class="cart-item-price">
+            <div class="unit-price">$14.20</div>
+            <div class="price-label">per unit</div>
+          </div>
+          <div>
+            <div class="qty-control">
+              <button class="qty-btn" aria-label="Decrease" onclick="changeItemQty('item-2',-1)"><i class="fas fa-minus"></i></button>
+              <input class="qty-num" type="number" value="200" min="1" aria-label="Quantity" onchange="recalc()"/>
+              <button class="qty-btn" aria-label="Increase" onclick="changeItemQty('item-2',1)"><i class="fas fa-plus"></i></button>
+            </div>
+            <div style="font-size:.72rem;color:#64748b;text-align:center;margin-top:4px;">Min: 200</div>
+          </div>
+          <div class="cart-item-subtotal">
+            <div class="subtotal-value" id="sub-2">$2,840.00</div>
+            <div class="subtotal-label">subtotal</div>
+          </div>
+          <div class="cart-item-actions">
+            <button class="btn-remove" aria-label="Remove item" onclick="removeItem('item-2')"><i class="fas fa-xmark"></i></button>
+            <button class="btn-save-later"><i class="fas fa-bookmark"></i> Save later</button>
+          </div>
+        </div>
+
+        <!-- COUPON -->
+        <div class="coupon-section">
+          <div class="coupon-label"><i class="fas fa-ticket"></i> Have a promo code?</div>
+          <div class="coupon-row">
+            <input type="text" class="coupon-input" id="coupon-input" placeholder="Enter coupon code (e.g. GLOBEX20)" aria-label="Coupon code"/>
+            <button class="btn-apply-coupon" onclick="applyCoupon()">Apply Code</button>
+          </div>
+          <div class="coupon-hint">Try code <strong>GLOBEX20</strong> for 20% off your first bulk order · <strong>FREESHIP</strong> for free shipping</div>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE (shown when cart is empty) -->
+      <div class="section-card empty-cart" id="empty-cart-state">
+        <div class="empty-cart-icon"><i class="fas fa-shopping-bag"></i></div>
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added any products yet. Browse our global marketplace and find great deals.</p>
+        <a href="products.html" class="btn-start-shopping"><i class="fas fa-store"></i> Start Shopping</a>
+      </div>
+
+      <!-- SAVED FOR LATER -->
+      <div class="section-card" style="margin-top:20px">
+        <div class="section-card-header">
+          <div class="section-card-title"><i class="fas fa-bookmark" style="color:#FF6B35"></i> Saved for Later <span style="background:#ffedd5;color:#ea580c;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:50px;margin-left:4px;">1</span></div>
+        </div>
+        <div class="cart-item">
+          <input type="checkbox" class="cart-item-check" aria-label="Select saved item">
+          <div class="cart-item-img" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed"><i class="fas fa-plug"></i></div>
+          <div class="cart-item-details">
+            <div class="cart-item-name">20W USB-C Fast Charger GaN + Braided Cable Bundle</div>
+            <div class="cart-item-supplier"><i class="fas fa-store"></i> PowerCore Tech &nbsp;·&nbsp; 🇨🇳 Guangzhou</div>
+            <div class="cart-item-attrs">
+              <span class="attr-pill">MOQ: 500 units</span>
+              <span class="attr-pill">In Stock</span>
+            </div>
+          </div>
+          <div class="cart-item-price">
+            <div class="unit-price">$2.10</div>
+            <div class="price-label">per unit</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button style="background:#0052CC;color:#fff;border:none;padding:8px 14px;border-radius:9px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif">Move to Cart</button>
+          </div>
+          <div class="cart-item-subtotal"></div>
+          <div class="cart-item-actions">
+            <button class="btn-remove" aria-label="Remove saved item"><i class="fas fa-xmark"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <aside aria-label="Order summary">
+      <div class="order-summary-card">
+        <div class="summary-header">
+          <div class="summary-header-title"><i class="fas fa-receipt"></i> Order Summary</div>
+        </div>
+        <div class="summary-body">
+          <div class="summary-row">
+            <span class="label">Items Subtotal (2)</span>
+            <span class="value" id="summary-subtotal">$4,380.00</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Promo Discount</span>
+            <span class="value discount" id="summary-discount">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Shipping Estimate</span>
+            <span class="value shipping">Calculated at checkout</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Tax (VAT / GST)</span>
+            <span class="value shipping">Calculated at checkout</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Trade Assurance Fee</span>
+            <span class="value shipping">Included</span>
+          </div>
+          <div class="summary-row total">
+            <span class="label">Estimated Total</span>
+            <span class="value" id="summary-total">$4,380.00</span>
+          </div>
+
+          <a href="checkout.html" class="btn-checkout">
+            <i class="fas fa-lock"></i> Proceed to Checkout
+          </a>
+          <a href="products.html" class="btn-continue">
+            <i class="fas fa-arrow-left"></i> Continue Shopping
+          </a>
+
+          <div class="security-badges">
+            <div class="security-badge"><i class="fas fa-shield-halved"></i> SSL Secured</div>
+            <div class="security-badge"><i class="fas fa-lock"></i> Safe Checkout</div>
+            <div class="security-badge"><i class="fas fa-rotate-left"></i> Easy Returns</div>
+          </div>
+
+          <!-- ACCEPTED PAYMENTS -->
+          <div style="border-top:1px solid #e2e8f0;margin-top:16px;padding-top:14px;text-align:center">
+            <div style="font-size:.75rem;color:#64748b;margin-bottom:10px;">Accepted Payment Methods</div>
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+              <div style="background:#f1f5f9;border-radius:6px;padding:6px 10px;font-size:.7rem;font-weight:600;color:#374151;display:flex;align-items:center;gap:4px"><i class="fab fa-cc-visa" style="font-size:1.1rem;color:#1a1f71"></i> Visa</div>
+              <div style="background:#f1f5f9;border-radius:6px;padding:6px 10px;font-size:.7rem;font-weight:600;color:#374151;display:flex;align-items:center;gap:4px"><i class="fab fa-cc-mastercard" style="font-size:1.1rem;color:#eb001b"></i> MC</div>
+              <div style="background:#f1f5f9;border-radius:6px;padding:6px 10px;font-size:.7rem;font-weight:600;color:#374151;display:flex;align-items:center;gap:4px"><i class="fab fa-paypal" style="font-size:1.1rem;color:#003087"></i> PayPal</div>
+              <div style="background:#f1f5f9;border-radius:6px;padding:6px 10px;font-size:.7rem;font-weight:600;color:#374151;display:flex;align-items:center;gap:4px"><i class="fas fa-university" style="font-size:.9rem;color:#374151"></i> Wire</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- RECENTLY VIEWED -->
+  <div class="recently-viewed">
+    <h2 class="section-title"><i class="fas fa-clock-rotate-left" style="color:#0052CC"></i> Recently Viewed</h2>
+    <div class="mini-product-grid">
+      <div class="mini-card">
+        <div class="mini-card-img"><i class="fas fa-headphones"></i></div>
+        <div class="mini-card-body"><div class="mini-card-name">Wireless Headphones Pro X500</div><div class="mini-card-price">$12.50–$18.90</div></div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-img" style="background:linear-gradient(135deg,#ffedd5,#fed7aa);color:#ea580c"><i class="fas fa-plug"></i></div>
+        <div class="mini-card-body"><div class="mini-card-name">20W USB-C Fast Charger</div><div class="mini-card-price">$2.10–$3.80</div></div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669"><i class="fas fa-mobile-screen"></i></div>
+        <div class="mini-card-body"><div class="mini-card-name">Bluetooth Speaker 360°</div><div class="mini-card-price">$14.20–$22.00</div></div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-img" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed"><i class="fas fa-gamepad"></i></div>
+        <div class="mini-card-body"><div class="mini-card-name">RGB Gaming Headset 7.1</div><div class="mini-card-price">$11.50–$16.90</div></div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-img" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);color:#db2777"><i class="fas fa-watch"></i></div>
+        <div class="mini-card-body"><div class="mini-card-name">Smart Watch Series 7 Fitness</div><div class="mini-card-price">$8.90–$13.50</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../../index.html" class="footer-logo" aria-label="GlobexSky Home">
+            <svg class="logo-icon" width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/>
+              <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/>
+              <line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/>
+              <line x1="2" y1="11" x2="34" y2="11" stroke="#fff" stroke-width="1"/>
+              <line x1="2" y1="25" x2="34" y2="25" stroke="#fff" stroke-width="1"/>
+              <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+            </svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway.</p>
+          <nav class="footer-social" aria-label="Social media links">
+            <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="../../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+            <li><a href="../shipment/index.html"><i class="fas fa-chevron-right"></i> Shipping</a></li>
+            <li><a href="../auth/login.html"><i class="fas fa-chevron-right"></i> Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Contact Us</h3>
+          <address class="footer-contact">
+            <p class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:support@globexsky.com">support@globexsky.com</a></p>
+            <p class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+18005551234">+1 (800) 555-1234</a></p>
+          </address>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+        <nav class="footer-legal-links">
+          <a href="../legal/privacy.html">Privacy Policy</a>
+          <a href="../legal/terms.html">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cart.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  const prices = { 'item-1': 15.40, 'item-2': 14.20 };
+  let discount = 0;
+
+  function getQty(id) {
+    const item = document.getElementById(id);
+    if (!item) return 0;
+    return parseInt(item.querySelector('.qty-num').value) || 0;
+  }
+
+  function changeItemQty(id, delta) {
+    const item = document.getElementById(id);
+    if (!item) return;
+    const input = item.querySelector('.qty-num');
+    const val = parseInt(input.value) || 1;
+    input.value = Math.max(1, val + delta);
+    recalc();
+  }
+
+  function recalc() {
+    const s1 = prices['item-1'] * getQty('item-1');
+    const s2 = prices['item-2'] * getQty('item-2');
+    const sub1El = document.getElementById('sub-1');
+    const sub2El = document.getElementById('sub-2');
+    if (sub1El) sub1El.textContent = '$' + s1.toLocaleString('en-US', {minimumFractionDigits:2});
+    if (sub2El) sub2El.textContent = '$' + s2.toLocaleString('en-US', {minimumFractionDigits:2});
+    const subtotal = s1 + s2;
+    const total = subtotal - discount;
+    document.getElementById('summary-subtotal').textContent = '$' + subtotal.toLocaleString('en-US', {minimumFractionDigits:2});
+    document.getElementById('summary-total').textContent = '$' + total.toLocaleString('en-US', {minimumFractionDigits:2});
+    checkEmpty();
+  }
+
+  function removeItem(id) {
+    const item = document.getElementById(id);
+    if (item) { item.style.opacity='0'; item.style.height=item.offsetHeight+'px'; setTimeout(()=>{item.remove();recalc();},300); }
+  }
+
+  function toggleAll(cb) {
+    document.querySelectorAll('.item-check').forEach(c => c.checked = cb.checked);
+  }
+
+  function removeSelected() {
+    document.querySelectorAll('.item-check:checked').forEach(cb => {
+      const row = cb.closest('.cart-item');
+      if (row) { row.remove(); }
+    });
+    recalc();
+  }
+
+  function checkEmpty() {
+    const items = document.querySelectorAll('#cart-items-container .cart-item');
+    const empty = document.getElementById('empty-cart-state');
+    const container = document.getElementById('cart-items-container');
+    if (items.length === 0) {
+      container.style.display = 'none';
+      empty.classList.add('show');
+      document.getElementById('cart-count').textContent = '0';
+      document.getElementById('cart-pill').textContent = '0 items';
+    }
+  }
+
+  function applyCoupon() {
+    const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+    const subEl = document.getElementById('summary-subtotal');
+    const discEl = document.getElementById('summary-discount');
+    const subtotal = prices['item-1'] * getQty('item-1') + prices['item-2'] * getQty('item-2');
+    if (code === 'GLOBEX20') {
+      discount = subtotal * 0.20;
+      discEl.textContent = '-$' + discount.toLocaleString('en-US',{minimumFractionDigits:2});
+      discEl.style.color = '#16a34a';
+    } else if (code === 'FREESHIP') {
+      discount = 0;
+      discEl.textContent = 'Free Shipping Applied ✓';
+      discEl.style.color = '#16a34a';
+    } else {
+      discount = 0;
+      discEl.textContent = 'Invalid code';
+      discEl.style.color = '#ef4444';
+    }
+    document.getElementById('summary-total').textContent = '$' + (subtotal - discount).toLocaleString('en-US',{minimumFractionDigits:2});
+  }
+</script>
+</body>
+</html>

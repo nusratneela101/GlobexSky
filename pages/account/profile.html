@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .navbar{padding:0}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .container{max-width:1400px;margin:0 auto;padding:0 24px}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.88rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-control[readonly]{background:#f8faff;color:#64748b}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-danger-outline{background:transparent;color:#ef4444;border:1.5px solid #ef4444}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .toggle-switch{position:relative;display:inline-block;width:44px;height:24px}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:24px;transition:.3s}
+    .toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+    .toggle-switch input:checked + .toggle-slider{background:#0052CC}
+    .toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px)}
+    /* Profile specific */
+    .profile-avatar-section{display:flex;align-items:center;gap:24px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid #f1f5f9}
+    .profile-avatar-large{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:2.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .profile-avatar-info{flex:1}
+    .profile-avatar-info h3{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .profile-avatar-info p{color:#64748b;font-size:.85rem;margin-bottom:12px}
+    .avatar-actions{display:flex;gap:10px;align-items:center}
+    .strength-bar-wrap{margin-top:8px}
+    .strength-bar{height:5px;border-radius:3px;background:#e2e8f0;overflow:hidden}
+    .strength-fill{height:100%;width:0;border-radius:3px;transition:width .4s,background .4s;background:#ef4444}
+    .strength-label{font-size:.75rem;color:#64748b;margin-top:4px}
+    .collapsible-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+    .collapsible-header i.toggle-icon{transition:transform .3s;color:#64748b}
+    .collapsible-header.open i.toggle-icon{transform:rotate(180deg)}
+    .collapsible-body{display:none;padding-top:20px}
+    .collapsible-body.open{display:block}
+    .tfa-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .tfa-info h4{font-size:.95rem;font-weight:600;color:#0a0e27;margin-bottom:2px}
+    .tfa-info p{font-size:.82rem;color:#64748b}
+    .site-footer{background:#0a0e27;color:#94a3b8}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:center}
+    .footer-copyright{font-size:.85rem}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-row{grid-template-columns:1fr}.profile-avatar-section{flex-direction:column;text-align:center}.avatar-actions{justify-content:center}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <!-- Sidebar -->
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">JD</div>
+    <div class="account-sidebar-name">James Davidson</div>
+    <div class="account-sidebar-email">j.davidson@example.com</div>
+    <ul class="account-nav">
+      <li><a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="account-content">
+
+    <!-- Profile Picture & Verification -->
+    <div class="page-card">
+      <div class="profile-avatar-section">
+        <div class="profile-avatar-large">JD</div>
+        <div class="profile-avatar-info">
+          <h3>James Davidson</h3>
+          <p>Member since January 2023 &nbsp;·&nbsp; <span class="badge-pill badge-green"><i class="fas fa-check-circle" style="margin-right:4px"></i> Verified Account</span></p>
+          <div class="avatar-actions">
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-upload" style="margin-right:6px"></i>Upload Photo</button>
+            <button class="btn btn-sm" style="color:#ef4444;background:transparent;border:1px solid #fca5a5">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="page-card-title"><i class="fas fa-id-card" style="color:#0052CC"></i> Personal Information</div>
+      <form id="personal-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" value="James"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" value="Davidson"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" value="j.davidson@example.com" readonly/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" value="+1 (555) 234-5678"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <select class="form-control">
+              <option>United States</option>
+              <option>United Kingdom</option>
+              <option>Canada</option>
+              <option>Australia</option>
+              <option>Germany</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" value="San Francisco"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Timezone</label>
+            <select class="form-control">
+              <option>UTC-08:00 Pacific Time</option>
+              <option>UTC-05:00 Eastern Time</option>
+              <option>UTC+00:00 GMT</option>
+              <option>UTC+01:00 Central European</option>
+              <option>UTC+08:00 China Standard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Language</label>
+            <select class="form-control">
+              <option>English</option>
+              <option>Spanish</option>
+              <option>French</option>
+              <option>German</option>
+              <option>Chinese (Simplified)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Currency</label>
+            <select class="form-control">
+              <option>USD – US Dollar</option>
+              <option>EUR – Euro</option>
+              <option>GBP – British Pound</option>
+              <option>AUD – Australian Dollar</option>
+              <option>CNY – Chinese Yuan</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save" style="margin-right:6px"></i>Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Company Info (Collapsible) -->
+    <div class="page-card">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <div class="page-card-title" style="margin-bottom:0"><i class="fas fa-building" style="color:#0052CC"></i> Company Information <span style="font-size:.75rem;color:#64748b;font-weight:400">(Optional)</span></div>
+        <i class="fas fa-chevron-down toggle-icon"></i>
+      </div>
+      <div class="collapsible-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Company Name</label>
+            <input type="text" class="form-control" placeholder="Your company name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Role / Title</label>
+            <input type="text" class="form-control" placeholder="e.g. Procurement Manager"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Company Website</label>
+          <input type="url" class="form-control" placeholder="https://yourcompany.com"/>
+        </div>
+        <button type="button" class="btn btn-primary"><i class="fas fa-save" style="margin-right:6px"></i>Save Company Info</button>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-lock" style="color:#0052CC"></i> Change Password</div>
+      <form id="password-form" style="max-width:480px">
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input type="password" class="form-control" placeholder="Enter current password" id="current-pass"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input type="password" class="form-control" placeholder="Enter new password" id="new-pass" oninput="checkStrength(this.value)"/>
+          <div class="strength-bar-wrap">
+            <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+            <div class="strength-label" id="strength-label">Enter a password</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" class="form-control" placeholder="Confirm new password"/>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-key" style="margin-right:6px"></i>Update Password</button>
+      </form>
+    </div>
+
+    <!-- Two-Factor Authentication -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-shield-halved" style="color:#0052CC"></i> Two-Factor Authentication</div>
+      <div class="tfa-row">
+        <div class="tfa-info">
+          <h4>Enable Two-Factor Authentication</h4>
+          <p>Add an extra layer of security to your account. You'll be asked for a verification code each time you log in.</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="tfa-toggle"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="tfa-details" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid #f1f5f9">
+        <p style="font-size:.85rem;color:#374151;margin-bottom:12px">Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.):</p>
+        <div style="width:120px;height:120px;background:#f0f4ff;border:2px dashed #0052CC;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#64748b;text-align:center;padding:8px">QR Code Placeholder</div>
+        <p style="font-size:.75rem;color:#64748b;margin-top:8px">Or enter this secret key manually: <strong style="color:#0052CC">ABCD EFGH IJKL MNOP</strong></p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  function toggleCollapsible(header) {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+
+  function checkStrength(val) {
+    const fill = document.getElementById('strength-fill');
+    const label = document.getElementById('strength-label');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const map = [
+      { w: '0%', color: '#ef4444', text: 'Enter a password' },
+      { w: '25%', color: '#ef4444', text: 'Weak' },
+      { w: '50%', color: '#f97316', text: 'Fair' },
+      { w: '75%', color: '#eab308', text: 'Good' },
+      { w: '100%', color: '#22c55e', text: 'Strong' }
+    ];
+    const s = map[score];
+    fill.style.width = s.w;
+    fill.style.background = s.color;
+    label.textContent = s.text;
+    label.style.color = s.color;
+  }
+
+  document.getElementById('tfa-toggle').addEventListener('change', function() {
+    document.getElementById('tfa-details').style.display = this.checked ? 'block' : 'none';
+  });
+
+  document.getElementById('personal-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('[type=submit]');
+    btn.textContent = '✓ Saved!';
+    btn.style.background = '#22c55e';
+    setTimeout(() => { btn.innerHTML = '<i class="fas fa-save" style="margin-right:6px"></i>Save Changes'; btn.style.background = ''; }, 2000);
+  });
+</script>
+</body>
+</html>

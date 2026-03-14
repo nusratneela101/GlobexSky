@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supplier Dashboard | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .navbar{padding:0}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-subtitle{font-size:.72rem;color:#64748b;font-family:'Inter',sans-serif;font-weight:400;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .container{max-width:1400px;margin:0 auto;padding:0 24px}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-orange{background:#FF6B35;color:#fff}.btn-orange:hover{background:#e55a25}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    /* Plan banner */
+    .plan-banner{background:linear-gradient(135deg,#fff8ed,#fff3e0);border:1.5px solid #fed7aa;border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+    .plan-banner-left{display:flex;align-items:center;gap:12px}
+    .plan-banner-left i{color:#f97316;font-size:1.3rem}
+    .plan-banner-left h4{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#0a0e27;margin-bottom:2px}
+    .plan-banner-left p{font-size:.78rem;color:#64748b}
+    /* Metric cards */
+    .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+    .metric-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;overflow:hidden}
+    .metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .metric-card.blue::before{background:#0052CC}
+    .metric-card.green::before{background:#22c55e}
+    .metric-card.orange::before{background:#FF6B35}
+    .metric-card.purple::before{background:#7c3aed}
+    .metric-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:12px}
+    .metric-icon.blue{background:#dbeafe;color:#0052CC}
+    .metric-icon.green{background:#dcfce7;color:#16a34a}
+    .metric-icon.orange{background:#ffedd5;color:#f97316}
+    .metric-icon.purple{background:#ede9fe;color:#7c3aed}
+    .metric-value{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:700;color:#0a0e27;margin-bottom:4px}
+    .metric-label{font-size:.8rem;color:#64748b}
+    .metric-change{font-size:.75rem;margin-top:6px}
+    .metric-change.up{color:#22c55e}.metric-change.down{color:#ef4444}
+    /* Quick actions */
+    .quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+    .quick-action{background:#fff;border-radius:12px;padding:18px 14px;text-align:center;text-decoration:none;border:1.5px solid #e2e8f0;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:8px}
+    .quick-action:hover{border-color:#0052CC;box-shadow:0 4px 16px rgba(0,82,204,.12);transform:translateY(-2px)}
+    .quick-action i{font-size:1.4rem;color:#0052CC}
+    .quick-action span{font-size:.8rem;font-weight:500;color:#374151}
+    /* Tables */
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+    .data-table tr:hover td{background:#f8faff}
+    /* Chart placeholder */
+    .chart-placeholder{height:280px;background:linear-gradient(135deg,#f0f4ff,#e8f4ff);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:2px dashed #bfdbfe}
+    .chart-placeholder i{font-size:2rem;color:#93c5fd}
+    .chart-placeholder p{color:#64748b;font-size:.85rem}
+    /* Top products */
+    .top-products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .top-product-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;transition:all .2s}
+    .top-product-card:hover{border-color:#0052CC;box-shadow:0 4px 12px rgba(0,82,204,.1)}
+    .top-product-thumb{width:100%;height:80px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#0052CC;font-weight:600;margin-bottom:10px}
+    .top-product-name{font-size:.88rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .top-product-cat{font-size:.75rem;color:#64748b;margin-bottom:8px}
+    .top-product-stats{display:flex;justify-content:space-between;font-size:.78rem}
+    .top-product-stats .sold{color:#059669;font-weight:500}
+    .top-product-stats .revenue{color:#0052CC;font-weight:600}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .site-footer{background:#0a0e27;color:#94a3b8}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:center}
+    .footer-copyright{font-size:.85rem}
+    @media(max-width:1100px){.metrics-grid{grid-template-columns:1fr 1fr}.quick-actions{grid-template-columns:1fr 1fr}.top-products-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.metrics-grid{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}.top-products-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <div>
+          <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          <div class="nav-subtitle">Supplier Dashboard</div>
+        </div>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="../account/profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="../account/orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li><a href="../account/settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="#" style="color:#f97316!important"><i class="fas fa-rocket"></i> Upgrade Plan</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+
+    <!-- Plan Banner -->
+    <div class="plan-banner">
+      <div class="plan-banner-left">
+        <i class="fas fa-star"></i>
+        <div>
+          <h4>Free Plan &nbsp;<span class="badge-pill badge-orange">Free</span></h4>
+          <p>You're on the Free plan · 10 products max · Upgrade to unlock unlimited products and analytics</p>
+        </div>
+      </div>
+      <a href="#" class="btn btn-orange"><i class="fas fa-rocket"></i>Upgrade to Pro</a>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card blue">
+        <div class="metric-icon blue"><i class="fas fa-boxes-stacked"></i></div>
+        <div class="metric-value">127</div>
+        <div class="metric-label">Total Products</div>
+        <div class="metric-change up"><i class="fas fa-arrow-up"></i> +8 this month</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-icon green"><i class="fas fa-shopping-bag"></i></div>
+        <div class="metric-value">89</div>
+        <div class="metric-label">Total Orders</div>
+        <div class="metric-change up"><i class="fas fa-arrow-up"></i> +12 this month</div>
+      </div>
+      <div class="metric-card orange">
+        <div class="metric-icon orange"><i class="fas fa-dollar-sign"></i></div>
+        <div class="metric-value">$12,450</div>
+        <div class="metric-label">Revenue This Month</div>
+        <div class="metric-change up"><i class="fas fa-arrow-up"></i> +18.4% vs last month</div>
+      </div>
+      <div class="metric-card purple">
+        <div class="metric-icon purple"><i class="fas fa-star"></i></div>
+        <div class="metric-value">4.7 <span style="font-size:.9rem">★</span></div>
+        <div class="metric-label">Average Rating</div>
+        <div class="metric-change up">Based on 234 reviews</div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="products.html" class="quick-action"><i class="fas fa-plus-circle"></i><span>Add Product</span></a>
+      <a href="../account/orders.html" class="quick-action"><i class="fas fa-shopping-bag"></i><span>View Orders</span></a>
+      <a href="../account/messages.html" class="quick-action"><i class="fas fa-comments"></i><span>Messages <span class="badge-pill badge-blue" style="font-size:.65rem">4</span></span></a>
+      <a href="#" class="quick-action"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+    </div>
+
+    <div class="grid-2">
+      <!-- Recent Orders -->
+      <div class="page-card">
+        <div class="page-card-title"><i class="fas fa-clock" style="color:#0052CC"></i> Recent Orders</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Buyer</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0892</a></td><td>James D.</td><td>$3,240</td><td><span class="badge-pill badge-blue">Shipped</span></td><td style="color:#64748b;font-size:.8rem">May 18</td></tr>
+            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0877</a></td><td>Sarah K.</td><td>$1,560</td><td><span class="badge-pill badge-green">Delivered</span></td><td style="color:#64748b;font-size:.8rem">May 14</td></tr>
+            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0903</a></td><td>Marco L.</td><td>$768</td><td><span class="badge-pill badge-purple">Processing</span></td><td style="color:#64748b;font-size:.8rem">May 21</td></tr>
+            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0856</a></td><td>Priya M.</td><td>$4,100</td><td><span class="badge-pill badge-orange">Pending</span></td><td style="color:#64748b;font-size:.8rem">May 11</td></tr>
+            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0831</a></td><td>Tom W.</td><td>$920</td><td><span class="badge-pill badge-green">Delivered</span></td><td style="color:#64748b;font-size:.8rem">May 7</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Chart Placeholder -->
+      <div class="page-card">
+        <div class="page-card-title"><i class="fas fa-chart-bar" style="color:#0052CC"></i> Revenue Overview</div>
+        <div class="chart-placeholder">
+          <i class="fas fa-chart-area"></i>
+          <p>Revenue chart — connect analytics to display</p>
+          <a href="#" class="btn btn-sm btn-primary">View Analytics</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-trophy" style="color:#0052CC"></i> Top Products</div>
+      <div class="top-products-grid">
+        <div class="top-product-card">
+          <div class="top-product-thumb">Arduino PCB Board v3</div>
+          <div class="top-product-name">Arduino PCB Board v3</div>
+          <div class="top-product-cat"><i class="fas fa-tag" style="margin-right:4px;color:#94a3b8"></i>Electronics</div>
+          <div class="top-product-stats"><span class="sold"><i class="fas fa-fire" style="margin-right:3px"></i>1,240 sold</span><span class="revenue">$2,976</span></div>
+        </div>
+        <div class="top-product-card">
+          <div class="top-product-thumb">USB-C Hub 7-in-1</div>
+          <div class="top-product-name">USB-C Hub 7-in-1</div>
+          <div class="top-product-cat"><i class="fas fa-tag" style="margin-right:4px;color:#94a3b8"></i>Accessories</div>
+          <div class="top-product-stats"><span class="sold"><i class="fas fa-fire" style="margin-right:3px"></i>860 sold</span><span class="revenue">$5,590</span></div>
+        </div>
+        <div class="top-product-card">
+          <div class="top-product-thumb">SMD LED Strip 5050</div>
+          <div class="top-product-name">SMD LED Strip 5050</div>
+          <div class="top-product-cat"><i class="fas fa-tag" style="margin-right:4px;color:#94a3b8"></i>Lighting</div>
+          <div class="top-product-stats"><span class="sold"><i class="fas fa-fire" style="margin-right:3px"></i>640 sold</span><span class="revenue">$2,688</span></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

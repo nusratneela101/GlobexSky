@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Shipment Services – GlobexSky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;overflow-x:hidden}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.container{max-width:1400px;margin:0 auto;padding:0 24px}
+.section{padding:64px 24px}.section-header{text-align:center;margin-bottom:48px}
+.section-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#0a0e27;margin-bottom:12px}
+.section-subtitle{color:#64748b;font-size:1rem}
+.site-footer{background:#0a0e27}.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem}
+
+/* DOOR HERO */
+.door-hero{height:100vh;display:flex;position:relative;overflow:hidden;cursor:pointer}
+.door{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0e27;transition:transform .8s cubic-bezier(.77,0,.175,1),flex .8s ease;position:relative;z-index:2;overflow:hidden}
+.door-left{border-right:2px solid rgba(0,201,167,.2)}
+.door-right{border-left:2px solid rgba(255,107,53,.2)}
+.door-left::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(0,201,167,.12) 0%,transparent 70%)}
+.door-right::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 50%,rgba(255,107,53,.12) 0%,transparent 70%)}
+.door-inner{text-align:center;padding:40px;position:relative;z-index:1;transition:transform .4s ease,opacity .4s ease}
+.door-icon{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.8rem;transition:transform .3s}
+.door-left .door-icon{background:rgba(0,201,167,.15);color:#00C9A7}
+.door-right .door-icon{background:rgba(255,107,53,.15);color:#FF6B35}
+.door-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:#fff;margin-bottom:16px}
+.door-desc{color:rgba(255,255,255,.7);font-size:1rem;line-height:1.7;max-width:320px;margin:0 auto 28px}
+.door-cta{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;text-decoration:none;transition:all .3s}
+.door-left .door-cta{background:#00C9A7;color:#fff}
+.door-left .door-cta:hover{background:#009E84;transform:translateY(-2px)}
+.door-right .door-cta{background:#FF6B35;color:#fff}
+.door-right .door-cta:hover{background:#e85a2a;transform:translateY(-2px)}
+.door-divider{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;width:60px;height:60px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.3);font-size:1.2rem;color:#0052CC;font-family:'Poppins',sans-serif;font-weight:700}
+.door-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);font-size:.8rem;display:flex;flex-direction:column;align-items:center;gap:6px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+
+/* OPEN STATE */
+.door-hero.opened .door-left{transform:translateX(-100%)}
+.door-hero.opened .door-right{transform:translateX(100%)}
+.door-hero.opened{height:0;min-height:0;overflow:hidden}
+.reveal-content{display:none;opacity:0;transition:opacity .6s ease .3s}
+.reveal-content.visible{display:block;opacity:1}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.hiw-col-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0a0e27;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.hiw-col-title span{padding:4px 12px;border-radius:20px;font-size:.8rem}
+.hiw-col-title .tag-teal{background:#d1fce9;color:#059669}
+.hiw-col-title .tag-orange{background:#ffedd5;color:#f97316}
+.hiw-steps{display:flex;flex-direction:column;gap:16px}
+.hiw-step{display:flex;gap:16px;align-items:flex-start}
+.hiw-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;flex-shrink:0}
+.carry-num{background:#e0f2fe;color:#0052CC}
+.parcel-num{background:#ffedd5;color:#FF6B35}
+.hiw-step-text h4{font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:#0a0e27;margin-bottom:4px}
+.hiw-step-text p{color:#64748b;font-size:.85rem;line-height:1.5}
+
+/* STATS */
+.stats-bar{background:#0a0e27;padding:48px 24px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;text-align:center}
+.stat-num{font-family:'Poppins',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:#fff}
+.stat-label{color:rgba(255,255,255,.6);font-size:.9rem;margin-top:4px}
+.stat-icon{font-size:1.4rem;margin-bottom:8px}
+
+/* CTA */
+.cta-section{padding:64px 24px;text-align:center;background:#fff}
+.cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.btn{padding:12px 28px;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;border:none;cursor:pointer}
+.btn-teal{background:#00C9A7;color:#fff}.btn-teal:hover{background:#009E84;transform:translateY(-2px)}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99;transform:translateY(-2px)}
+
+@media(max-width:768px){.hiw-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr;gap:24px}.door-title{font-size:1.4rem}.door-desc{font-size:.9rem}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- DOOR HERO -->
+<div class="door-hero" id="doorHero">
+  <div class="door door-left" id="doorLeft">
+    <div class="door-inner">
+      <div class="door-icon"><i class="fas fa-plane"></i></div>
+      <h2 class="door-title">Carry Service</h2>
+      <p class="door-desc">Travel internationally and earn money by carrying parcels for others. Turn your trips into income.</p>
+      <a href="carry/register.html" class="door-cta" onclick="event.stopPropagation()"><i class="fas fa-arrow-right"></i> Become a Carrier</a>
+    </div>
+  </div>
+  <div class="door-divider">OR</div>
+  <div class="door door-right" id="doorRight">
+    <div class="door-inner">
+      <div class="door-icon"><i class="fas fa-box"></i></div>
+      <h2 class="door-title">Send a Parcel</h2>
+      <p class="door-desc">Ship your packages worldwide through our trusted carrier network. Fast, safe and affordable.</p>
+      <a href="parcel/create.html" class="door-cta" onclick="event.stopPropagation()"><i class="fas fa-arrow-right"></i> Send a Parcel</a>
+    </div>
+  </div>
+  <div class="door-hint">
+    <span>Click to explore</span>
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</div>
+
+<!-- REVEAL CONTENT -->
+<div class="reveal-content" id="revealContent">
+
+  <!-- HOW IT WORKS -->
+  <section class="section" style="background:#fff">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Two ways to use GlobexSky — earn as a carrier or ship as a sender</p>
+      </div>
+      <div class="hiw-grid">
+        <div>
+          <div class="hiw-col-title"><i class="fas fa-plane" style="color:#0052CC"></i> Carry Service <span class="tag-teal">For Travelers</span></div>
+          <div class="hiw-steps">
+            <div class="hiw-step"><div class="hiw-num carry-num">1</div><div class="hiw-step-text"><h4>Register & Get Verified</h4><p>Create your carrier profile and complete identity verification with your passport.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num carry-num">2</div><div class="hiw-step-text"><h4>Browse & Accept Trips</h4><p>Post your upcoming trips and browse available shipment requests matching your route.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num carry-num">3</div><div class="hiw-num" style="display:none"></div><div class="hiw-step-text"><h4>Carry & Deliver</h4><p>Pick up the parcels before your flight and deliver to the recipient at your destination.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num carry-num">4</div><div class="hiw-step-text"><h4>Get Paid</h4><p>Receive your earnings directly to your preferred payment method after successful delivery.</p></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="hiw-col-title"><i class="fas fa-box" style="color:#FF6B35"></i> Send a Parcel <span class="tag-orange">For Senders</span></div>
+          <div class="hiw-steps">
+            <div class="hiw-step"><div class="hiw-num parcel-num">1</div><div class="hiw-step-text"><h4>Create Shipment</h4><p>Enter your package details, receiver information and select your preferred delivery speed.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num parcel-num">2</div><div class="hiw-step-text"><h4>Drop Off Package</h4><p>Drop your parcel at the nearest GlobexSky pickup point or schedule a home collection.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num parcel-num">3</div><div class="hiw-step-text"><h4>We Ship It</h4><p>Our verified carriers transport your package safely to the destination country.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num parcel-num">4</div><div class="hiw-step-text"><h4>Delivered!</h4><p>Recipient receives the package. Track every step in real-time with our tracking system.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="container">
+      <div class="stats-grid">
+        <div><div class="stat-icon" style="color:#00C9A7"><i class="fas fa-user-check"></i></div><div class="stat-num">1,200+</div><div class="stat-label">Carriers Active</div></div>
+        <div><div class="stat-icon" style="color:#FF6B35"><i class="fas fa-box-open"></i></div><div class="stat-num">50,000+</div><div class="stat-label">Parcels Delivered</div></div>
+        <div><div class="stat-icon" style="color:#0052CC"><i class="fas fa-globe"></i></div><div class="stat-num">80+</div><div class="stat-label">Countries Covered</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="section-title">Ready to Get Started?</h2>
+      <p class="section-subtitle">Join thousands of carriers and senders using GlobexSky every day</p>
+      <div class="cta-buttons">
+        <a href="carry/register.html" class="btn btn-teal"><i class="fas fa-plane"></i> Become a Carrier</a>
+        <a href="parcel/create.html" class="btn btn-primary"><i class="fas fa-box"></i> Send a Parcel</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container">
+      <p class="footer-copyright" style="text-align:center">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script>
+document.getElementById('copyright-year').textContent = new Date().getFullYear();
+const hero = document.getElementById('doorHero');
+const reveal = document.getElementById('revealContent');
+hero.addEventListener('click', function(){
+  this.classList.add('opened');
+  setTimeout(()=>{
+    reveal.style.display='block';
+    setTimeout(()=>reveal.classList.add('visible'),50);
+  },500);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="View detailed product information, specifications, pricing tiers, supplier info, and reviews on GlobexSky."/>
+  <title>Product Detail | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark)}
+    .logo-accent{color:var(--primary)}
+    .nav-controls{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;padding:8px;transition:color .2s}
+    .nav-cart:hover{color:var(--primary)}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:var(--secondary);color:var(--white);font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+    /* BREADCRUMB */
+    .breadcrumb{background:var(--white);border-bottom:1px solid var(--border);padding:12px 24px}
+    .breadcrumb-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+    .breadcrumb-inner a{color:var(--primary);transition:color .2s}
+    .breadcrumb-inner a:hover{color:#003d99}
+    .breadcrumb-inner i{font-size:.7rem;color:#cbd5e1}
+
+    /* MAIN LAYOUT */
+    .product-layout{max-width:1400px;margin:32px auto;padding:0 24px;display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start}
+
+    /* GALLERY */
+    .gallery-section{}
+    .gallery-main{position:relative;border-radius:16px;overflow:hidden;background:var(--white);border:1px solid var(--border);margin-bottom:12px;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+    .gallery-main-img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;cursor:zoom-in}
+    .gallery-main:hover .gallery-main-img{transform:scale(1.08)}
+    .gallery-placeholder{width:100%;height:420px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#6366f1;border-radius:16px}
+    .gallery-placeholder i{font-size:4rem;opacity:.4}
+    .gallery-placeholder span{font-size:.9rem;color:var(--muted)}
+    .gallery-thumbnails{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .thumb{border-radius:10px;overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:border-color .2s;aspect-ratio:1;background:linear-gradient(135deg,#e8edff,#d1d9ff);display:flex;align-items:center;justify-content:center;color:#818cf8;font-size:1.5rem}
+    .thumb:hover,.thumb.active{border-color:var(--primary)}
+    .thumb.active{box-shadow:0 0 0 3px rgba(0,82,204,.15)}
+
+    /* PRODUCT INFO PANEL */
+    .product-info-panel{}
+    .product-badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-new{background:#dcfce7;color:#16a34a}
+    .badge-hot{background:#ffedd5;color:#ea580c}
+    .badge-verified{background:#dbeafe;color:var(--primary)}
+    .product-title{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:10px}
+    .product-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+    .stars{color:#f59e0b;font-size:.9rem}
+    .rating-count{color:var(--muted);font-size:.85rem}
+    .sold-count{color:var(--muted);font-size:.85rem}
+    .product-price-hero{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:6px}
+    .price-range{color:var(--muted);font-size:.9rem;margin-bottom:20px}
+
+    /* TIERED PRICING */
+    .pricing-table{width:100%;border-collapse:collapse;margin-bottom:20px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+    .pricing-table thead{background:linear-gradient(135deg,var(--primary),#003d99)}
+    .pricing-table thead th{color:var(--white);padding:10px 14px;font-size:.82rem;font-weight:600;text-align:left}
+    .pricing-table tbody tr{background:var(--white)}
+    .pricing-table tbody tr:nth-child(even){background:#f8faff}
+    .pricing-table tbody tr.highlight-tier{background:linear-gradient(135deg,#fff8f5,#fff1eb);border-left:3px solid var(--secondary)}
+    .pricing-table td{padding:10px 14px;font-size:.88rem;border-bottom:1px solid var(--border)}
+    .pricing-table td:first-child{font-weight:600;color:var(--dark)}
+    .pricing-table td.unit-price{color:var(--primary);font-weight:700;font-family:'Poppins',sans-serif}
+    .pricing-table td.best-value{color:var(--secondary);font-size:.75rem;font-weight:600}
+
+    /* SUPPLIER CARD */
+    .supplier-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px}
+    .supplier-card-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .supplier-avatar{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#003d99);display:flex;align-items:center;justify-content:center;color:var(--white);font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;flex-shrink:0}
+    .supplier-name{font-family:'Poppins',sans-serif;font-weight:600;color:var(--dark);font-size:1rem;margin-bottom:3px}
+    .supplier-verified{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-size:.78rem;font-weight:600;background:#dbeafe;padding:2px 8px;border-radius:50px}
+    .supplier-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .supplier-stat{background:#f8faff;border-radius:10px;padding:10px 14px}
+    .supplier-stat-label{color:var(--muted);font-size:.75rem;margin-bottom:2px}
+    .supplier-stat-value{font-weight:600;color:var(--dark);font-size:.9rem;display:flex;align-items:center;gap:4px}
+
+    /* ACTION BUTTONS */
+    .action-buttons{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+    .btn-add-cart{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--primary);color:var(--white);border:none;padding:14px 24px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-add-cart:hover{background:#003d99;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,82,204,.3)}
+    .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn-outline{display:flex;align-items:center;justify-content:center;gap:7px;border:1.5px solid var(--border);background:var(--white);padding:11px 16px;border-radius:10px;font-size:.85rem;font-weight:500;cursor:pointer;color:var(--dark);transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:#f0f4ff}
+    .btn-outline.accent{border-color:var(--accent);color:var(--accent)}
+    .btn-outline.accent:hover{background:#f0fdf9}
+    .btn-outline.orange{border-color:var(--secondary);color:var(--secondary)}
+    .btn-outline.orange:hover{background:#fff8f5}
+    .btn-wishlist-share{display:flex;gap:10px}
+    .btn-icon{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);font-size:1rem;transition:all .2s;flex-shrink:0}
+    .btn-icon:hover{border-color:#ef4444;color:#ef4444}
+    .btn-icon.share:hover{border-color:var(--primary);color:var(--primary)}
+
+    /* QUANTITY SELECTOR */
+    .qty-section{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .qty-label{font-size:.9rem;font-weight:500;color:var(--dark);min-width:80px}
+    .qty-control{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+    .qty-btn{width:36px;height:36px;border:none;background:var(--bg);cursor:pointer;font-size:1rem;color:var(--dark);transition:background .2s;display:flex;align-items:center;justify-content:center}
+    .qty-btn:hover{background:#e0e7ff;color:var(--primary)}
+    .qty-input{width:60px;height:36px;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);text-align:center;font-size:.95rem;font-weight:600;font-family:'Inter',sans-serif;outline:none}
+
+    /* TABS */
+    .product-tabs-section{max-width:1400px;margin:0 auto 40px;padding:0 24px}
+    .tabs-nav{display:flex;border-bottom:2px solid var(--border);margin-bottom:0;overflow-x:auto;background:var(--white);border-radius:16px 16px 0 0;padding:0 20px}
+    .tab-btn{display:flex;align-items:center;gap:7px;padding:16px 20px;border:none;background:none;font-size:.9rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif}
+    .tab-btn:hover{color:var(--primary)}
+    .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+    .tabs-content{background:var(--white);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;padding:32px}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    /* DESCRIPTION TAB */
+    .description-text p{color:#374151;line-height:1.8;margin-bottom:16px}
+    .feature-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+    .feature-list li{display:flex;align-items:center;gap:8px;font-size:.9rem;color:#374151}
+    .feature-list li i{color:var(--accent);flex-shrink:0}
+
+    /* SPECS TABLE */
+    .specs-table{width:100%;border-collapse:collapse}
+    .specs-table tr:nth-child(even){background:#f8faff}
+    .specs-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.9rem}
+    .specs-table td:first-child{font-weight:600;color:var(--dark);width:35%;background:rgba(0,82,204,.04)}
+    .specs-table td:last-child{color:#374151}
+
+    /* REVIEWS TAB */
+    .reviews-summary{display:grid;grid-template-columns:200px 1fr;gap:32px;margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+    .review-score{text-align:center;background:linear-gradient(135deg,#f0f4ff,#e8edff);border-radius:16px;padding:28px}
+    .review-big-score{font-family:'Poppins',sans-serif;font-size:3.5rem;font-weight:800;color:var(--primary);line-height:1}
+    .review-stars-big{color:#f59e0b;font-size:1.2rem;margin:8px 0}
+    .review-count-text{color:var(--muted);font-size:.85rem}
+    .rating-bars{}
+    .rating-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .rating-bar-label{font-size:.85rem;color:var(--muted);width:30px;text-align:right;flex-shrink:0}
+    .rating-bar-track{flex:1;height:8px;background:#e2e8f0;border-radius:50px;overflow:hidden}
+    .rating-bar-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+    .rating-bar-count{font-size:.82rem;color:var(--muted);width:28px;flex-shrink:0}
+    .review-cards{display:flex;flex-direction:column;gap:20px}
+    .review-card{padding:20px;border:1px solid var(--border);border-radius:14px;background:var(--white)}
+    .review-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .reviewer-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:var(--white);font-weight:700;font-size:.9rem;flex-shrink:0}
+    .reviewer-name{font-weight:600;color:var(--dark);font-size:.9rem}
+    .reviewer-date{color:var(--muted);font-size:.78rem}
+    .review-stars{color:#f59e0b;font-size:.82rem}
+    .review-text{color:#374151;font-size:.88rem;line-height:1.7}
+    .review-verified{display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-size:.75rem;font-weight:600;margin-top:8px}
+
+    /* QA TAB */
+    .qa-item{padding:20px;border:1px solid var(--border);border-radius:14px;margin-bottom:16px}
+    .qa-question{display:flex;gap:10px;margin-bottom:10px}
+    .qa-q-icon{color:var(--primary);font-weight:700;font-size:1rem;flex-shrink:0;padding-top:2px}
+    .qa-q-text{font-weight:600;color:var(--dark);font-size:.9rem}
+    .qa-answer{display:flex;gap:10px;padding-left:8px}
+    .qa-a-icon{color:var(--secondary);font-weight:700;font-size:1rem;flex-shrink:0;padding-top:2px}
+    .qa-a-text{color:#374151;font-size:.88rem;line-height:1.7}
+
+    /* RELATED PRODUCTS */
+    .related-section{max-width:1400px;margin:0 auto 60px;padding:0 24px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--dark);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+    .section-title::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,var(--border),transparent)}
+    .related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+    .related-card{background:var(--white);border-radius:14px;border:1px solid var(--border);overflow:hidden;transition:all .3s;cursor:pointer}
+    .related-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,82,204,.1);border-color:var(--primary)}
+    .related-card-img{height:180px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:3rem}
+    .related-card-body{padding:14px}
+    .related-card-name{font-weight:600;color:var(--dark);font-size:.88rem;margin-bottom:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .related-card-price{color:var(--primary);font-weight:700;font-family:'Poppins',sans-serif;font-size:.95rem;margin-bottom:8px}
+    .related-card-footer{display:flex;align-items:center;justify-content:space-between}
+    .related-card-rating{color:#f59e0b;font-size:.78rem}
+    .btn-related-cart{background:var(--primary);color:var(--white);border:none;padding:6px 12px;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:'Inter',sans-serif}
+    .btn-related-cart:hover{background:#003d99}
+
+    /* FOOTER */
+    .site-footer{background:var(--dark);color:rgba(255,255,255,.85);margin-top:60px}
+    .footer-main{padding:60px 24px 40px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;max-width:1400px;margin:0 auto}
+    .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .footer-tagline{color:rgba(255,255,255,.5);font-size:.88rem;margin-bottom:18px}
+    .footer-social{display:flex;gap:10px}
+    .social-link{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);transition:all .2s;font-size:.9rem}
+    .social-link:hover{background:var(--primary);color:var(--white)}
+    .footer-col-title{font-family:'Poppins',sans-serif;font-weight:600;color:var(--white);font-size:.95rem;margin-bottom:16px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .footer-links li a{color:rgba(255,255,255,.6);font-size:.88rem;transition:color .2s;display:flex;align-items:center;gap:6px}
+    .footer-links li a:hover{color:var(--accent)}
+    .footer-links li a i{font-size:.65rem;color:var(--accent)}
+    .footer-contact{font-style:normal;display:flex;flex-direction:column;gap:10px}
+    .footer-contact-item{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.6);font-size:.88rem}
+    .footer-contact-item i{color:var(--accent);width:16px}
+    .footer-contact-item a{color:rgba(255,255,255,.6);transition:color .2s}
+    .footer-contact-item a:hover{color:var(--accent)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:20px 24px}
+    .footer-bottom-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .footer-copyright{color:rgba(255,255,255,.4);font-size:.82rem}
+    .footer-legal-links{display:flex;gap:20px}
+    .footer-legal-links a{color:rgba(255,255,255,.4);font-size:.82rem;transition:color .2s}
+    .footer-legal-links a:hover{color:var(--accent)}
+    .container{max-width:1400px;margin:0 auto}
+
+    @media(max-width:1024px){
+      .product-layout{grid-template-columns:1fr;}.related-grid{grid-template-columns:repeat(2,1fr)}
+      .reviews-summary{grid-template-columns:1fr;}.review-score{padding:20px}
+    }
+    @media(max-width:768px){
+      .product-layout{padding:0 16px;margin:16px auto}
+      .gallery-thumbnails{grid-template-columns:repeat(4,1fr)}
+      .btn-row{grid-template-columns:1fr}
+      .feature-list{grid-template-columns:1fr}
+      .related-grid{grid-template-columns:repeat(2,1fr)}
+      .footer-grid{grid-template-columns:1fr}
+      .product-tabs-section,.related-section{padding:0 16px}
+    }
+    @media(max-width:480px){.related-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo" aria-label="GlobexSky Home">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="2" y1="11" x2="34" y2="11" stroke="#0052CC" stroke-width="1"/>
+          <line x1="2" y1="25" x2="34" y2="25" stroke="#0052CC" stroke-width="1"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="cart.html" class="nav-cart" aria-label="Shopping cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <a href="../../pages/auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../pages/auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <div class="breadcrumb-inner">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="index.html">Sourcing</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="products.html">Products</a>
+      <i class="fas fa-chevron-right"></i>
+      <span>Wireless Bluetooth Headphones Pro X500</span>
+    </div>
+  </div>
+
+  <!-- PRODUCT LAYOUT -->
+  <div class="product-layout">
+    <!-- LEFT: GALLERY + TABS -->
+    <div>
+      <!-- GALLERY -->
+      <section aria-label="Product Images" style="background:#fff;border-radius:16px;border:1px solid #e2e8f0;padding:24px;margin-bottom:24px;">
+        <div class="gallery-main" id="gallery-main">
+          <div class="gallery-placeholder">
+            <i class="fas fa-headphones" style="font-size:5rem;opacity:.35;color:#6366f1"></i>
+            <span>Wireless Bluetooth Headphones Pro X500</span>
+          </div>
+        </div>
+        <div class="gallery-thumbnails" role="list" aria-label="Product image thumbnails">
+          <div class="thumb active" role="listitem" tabindex="0" aria-label="View image 1" onclick="setActiveThumb(this,0)">
+            <i class="fas fa-headphones"></i>
+          </div>
+          <div class="thumb" role="listitem" tabindex="0" aria-label="View image 2" onclick="setActiveThumb(this,1)">
+            <i class="fas fa-volume-up"></i>
+          </div>
+          <div class="thumb" role="listitem" tabindex="0" aria-label="View image 3" onclick="setActiveThumb(this,2)">
+            <i class="fas fa-microphone"></i>
+          </div>
+          <div class="thumb" role="listitem" tabindex="0" aria-label="View image 4" onclick="setActiveThumb(this,3)">
+            <i class="fas fa-battery-full"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- TABS -->
+      <section class="product-tabs-section" style="padding:0" aria-label="Product details tabs">
+        <div class="tabs-nav" role="tablist" aria-label="Product information tabs">
+          <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-description" id="tbtn-description" onclick="switchTab('description')">
+            <i class="fas fa-align-left"></i> Description
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-specs" id="tbtn-specs" onclick="switchTab('specs')">
+            <i class="fas fa-list-ul"></i> Specifications
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-reviews" id="tbtn-reviews" onclick="switchTab('reviews')">
+            <i class="fas fa-star"></i> Reviews &amp; Ratings
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-qa" id="tbtn-qa" onclick="switchTab('qa')">
+            <i class="fas fa-comments"></i> Q&amp;A
+          </button>
+        </div>
+        <div class="tabs-content">
+          <!-- DESCRIPTION -->
+          <div class="tab-panel active" id="tab-description" role="tabpanel" aria-labelledby="tbtn-description">
+            <div class="description-text">
+              <p>The <strong>Wireless Bluetooth Headphones Pro X500</strong> deliver studio-grade audio performance in a premium over-ear design. Engineered for audiophiles and professionals alike, these headphones combine advanced noise cancellation technology with 40-hour battery life, making them ideal for long-haul travel, office use, or immersive home listening sessions.</p>
+              <p>Equipped with 40mm custom-tuned dynamic drivers, the X500 produces deep, punchy bass alongside crisp highs and a detailed midrange. The adaptive active noise cancellation (ANC) system uses dual microphones to analyze ambient sound and neutralize it in real time, giving you an uninterrupted sonic experience no matter your environment.</p>
+              <p>The foldable, lightweight architecture — crafted from aircraft-grade aluminum and premium vegan leather — ensures durability and comfort for extended wear. A multi-point connection feature allows simultaneous pairing with two devices, while the built-in voice assistant support works seamlessly with Google Assistant, Siri, and Alexa.</p>
+            </div>
+            <ul class="feature-list">
+              <li><i class="fas fa-check-circle"></i> 40-hour battery life with fast charging</li>
+              <li><i class="fas fa-check-circle"></i> Active Noise Cancellation (ANC)</li>
+              <li><i class="fas fa-check-circle"></i> Bluetooth 5.3 with multi-point pairing</li>
+              <li><i class="fas fa-check-circle"></i> 40mm custom dynamic drivers</li>
+              <li><i class="fas fa-check-circle"></i> Foldable design with carrying case</li>
+              <li><i class="fas fa-check-circle"></i> Built-in microphone for calls</li>
+              <li><i class="fas fa-check-circle"></i> Compatible with all Bluetooth devices</li>
+              <li><i class="fas fa-check-circle"></i> IPX4 sweat & splash resistance</li>
+            </ul>
+          </div>
+
+          <!-- SPECIFICATIONS -->
+          <div class="tab-panel" id="tab-specs" role="tabpanel" aria-labelledby="tbtn-specs">
+            <table class="specs-table" aria-label="Product specifications">
+              <tbody>
+                <tr><td>Material</td><td>Aircraft-grade Aluminum + Vegan Leather Ear Pads</td></tr>
+                <tr><td>Weight</td><td>285 g (10.1 oz)</td></tr>
+                <tr><td>Dimensions (folded)</td><td>195 × 170 × 80 mm</td></tr>
+                <tr><td>Colors Available</td><td>Midnight Black, Arctic White, Cobalt Blue, Rose Gold</td></tr>
+                <tr><td>Driver Size</td><td>40 mm Dynamic Driver</td></tr>
+                <tr><td>Frequency Response</td><td>20 Hz – 20,000 Hz</td></tr>
+                <tr><td>Impedance</td><td>32 Ω</td></tr>
+                <tr><td>Bluetooth Version</td><td>5.3</td></tr>
+                <tr><td>Battery Capacity</td><td>800 mAh</td></tr>
+                <tr><td>Charging Time</td><td>1.5 hours (USB-C)</td></tr>
+                <tr><td>Play Time</td><td>40 hours (ANC off) / 28 hours (ANC on)</td></tr>
+                <tr><td>Water Resistance</td><td>IPX4</td></tr>
+                <tr><td>Certifications</td><td>CE, FCC, RoHS, UL</td></tr>
+                <tr><td>Warranty</td><td>12 Months Manufacturer Warranty</td></tr>
+                <tr><td>Country of Origin</td><td>🇨🇳 China</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- REVIEWS -->
+          <div class="tab-panel" id="tab-reviews" role="tabpanel" aria-labelledby="tbtn-reviews">
+            <div class="reviews-summary">
+              <div class="review-score">
+                <div class="review-big-score">4.7</div>
+                <div class="review-stars-big"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                <div class="review-count-text">Based on 1,284 reviews</div>
+              </div>
+              <div class="rating-bars">
+                <div class="rating-bar-row"><span class="rating-bar-label">5★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:74%"></div></div><span class="rating-bar-count">951</span></div>
+                <div class="rating-bar-row"><span class="rating-bar-label">4★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:16%;background:linear-gradient(90deg,#84cc16,#a3e635)"></div></div><span class="rating-bar-count">207</span></div>
+                <div class="rating-bar-row"><span class="rating-bar-label">3★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:6%;background:linear-gradient(90deg,#f59e0b,#fcd34d)"></div></div><span class="rating-bar-count">77</span></div>
+                <div class="rating-bar-row"><span class="rating-bar-label">2★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:3%;background:linear-gradient(90deg,#f97316,#fb923c)"></div></div><span class="rating-bar-count">32</span></div>
+                <div class="rating-bar-row"><span class="rating-bar-label">1★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:1%;background:linear-gradient(90deg,#ef4444,#f87171)"></div></div><span class="rating-bar-count">17</span></div>
+              </div>
+            </div>
+            <div class="review-cards">
+              <div class="review-card">
+                <div class="review-header">
+                  <div class="reviewer-avatar">JM</div>
+                  <div>
+                    <div class="reviewer-name">James Mitchell</div>
+                    <div class="reviewer-date">November 12, 2024</div>
+                    <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                  </div>
+                </div>
+                <p class="review-text">Outstanding audio quality. I ordered 200 units for retail distribution and every single one arrived in perfect condition. The ANC is genuinely impressive — blocks out background office noise completely. Packaging was professional and our customers love them.</p>
+                <div class="review-verified"><i class="fas fa-check-circle"></i> Verified Bulk Purchase · 200 units</div>
+              </div>
+              <div class="review-card">
+                <div class="review-header">
+                  <div class="reviewer-avatar" style="background:linear-gradient(135deg,#ec4899,#a855f7)">SP</div>
+                  <div>
+                    <div class="reviewer-name">Sara Patel</div>
+                    <div class="reviewer-date">October 3, 2024</div>
+                    <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+                  </div>
+                </div>
+                <p class="review-text">Great product for the price point. Delivery was fast (22 days to our UK warehouse). One box had a slight dent but supplier replaced without hassle. Will definitely reorder for Q1 next season.</p>
+                <div class="review-verified"><i class="fas fa-check-circle"></i> Verified Buyer · 500 units</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q&A -->
+          <div class="tab-panel" id="tab-qa" role="tabpanel" aria-labelledby="tbtn-qa">
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-q-icon">Q:</span><span class="qa-q-text">Can we get custom branding/OEM packaging with our logo on the headphones?</span></div>
+              <div class="qa-answer"><span class="qa-a-icon">A:</span><span class="qa-a-text">Yes, OEM and ODM services are available for orders of 500 units or more. Custom logo printing on ear cups, custom carry cases, and branded retail packaging are all supported. Please contact our sales team for a custom quote and sample lead time (typically 7–10 business days).</span></div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-q-icon">Q:</span><span class="qa-q-text">What is the lead time for a 500-unit order?</span></div>
+              <div class="qa-answer"><span class="qa-a-icon">A:</span><span class="qa-a-text">Standard production lead time for 500 units is 15–20 business days after payment confirmation. Express production (10–12 days) is available for an additional fee. Sea freight to major US/EU ports takes an additional 20–30 days.</span></div>
+            </div>
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-q-icon">Q:</span><span class="qa-q-text">Do the headphones come with CE and FCC certifications?</span></div>
+              <div class="qa-answer"><span class="qa-a-icon">A:</span><span class="qa-a-text">Yes. All units are CE, FCC, RoHS, and UL certified. Certification documents are available for download in the supplier portal upon request. We can also provide a Certificate of Conformity for customs clearance purposes.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- RIGHT: PRODUCT INFO PANEL -->
+    <aside aria-label="Product purchase options">
+      <div style="background:#fff;border-radius:16px;border:1px solid #e2e8f0;padding:24px;position:sticky;top:80px">
+        <!-- BADGES -->
+        <div class="product-badge-row">
+          <span class="badge badge-new"><i class="fas fa-bolt"></i> New Arrival</span>
+          <span class="badge badge-hot"><i class="fas fa-fire"></i> Hot Item</span>
+          <span class="badge badge-verified"><i class="fas fa-shield-halved"></i> Trade Assured</span>
+        </div>
+
+        <h1 class="product-title">Wireless Bluetooth Headphones Pro X500 — Over-Ear ANC</h1>
+
+        <div class="product-meta">
+          <div class="stars" aria-label="4.7 out of 5 stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+          </div>
+          <span class="rating-count">4.7 (1,284 reviews)</span>
+          <span class="sold-count"><i class="fas fa-box"></i> 8,400+ sold</span>
+        </div>
+
+        <div class="product-price-hero">$12.50 – $18.90</div>
+        <p class="price-range">Per unit · Price depends on quantity</p>
+
+        <!-- TIERED PRICING TABLE -->
+        <table class="pricing-table" aria-label="Tiered pricing by quantity">
+          <thead>
+            <tr>
+              <th>Quantity (Units)</th>
+              <th>Unit Price</th>
+              <th>Savings</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 – 99</td>
+              <td class="unit-price">$18.90</td>
+              <td>—</td>
+            </tr>
+            <tr class="highlight-tier">
+              <td>100 – 499</td>
+              <td class="unit-price">$15.40</td>
+              <td class="best-value">Save 18% <i class="fas fa-tag"></i></td>
+            </tr>
+            <tr>
+              <td>500+</td>
+              <td class="unit-price">$12.50</td>
+              <td class="best-value" style="color:#00C9A7">Save 34% 🔥</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- QUANTITY SELECTOR -->
+        <div class="qty-section">
+          <label class="qty-label" for="qty-input">Quantity:</label>
+          <div class="qty-control">
+            <button class="qty-btn" aria-label="Decrease quantity" onclick="changeQty(-1)"><i class="fas fa-minus"></i></button>
+            <input class="qty-input" type="number" id="qty-input" value="100" min="1" max="9999" aria-label="Quantity"/>
+            <button class="qty-btn" aria-label="Increase quantity" onclick="changeQty(1)"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+          <button class="btn-add-cart" aria-label="Add to cart">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+          <div class="btn-row">
+            <button class="btn-outline accent"><i class="fas fa-file-invoice-dollar"></i> Request Quotation</button>
+            <button class="btn-outline"><i class="fas fa-flask"></i> Request Sample</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn-outline orange"><i class="fas fa-message"></i> Contact Supplier</button>
+            <button class="btn-outline"><i class="fas fa-magnifying-glass"></i> Request Inspection</button>
+          </div>
+          <div class="btn-wishlist-share">
+            <button class="btn-icon" aria-label="Add to wishlist" title="Add to Wishlist" onclick="toggleWishlist(this)">
+              <i class="far fa-heart"></i>
+            </button>
+            <button class="btn-icon share" aria-label="Share product" title="Share">
+              <i class="fas fa-share-nodes"></i>
+            </button>
+            <div style="flex:1;font-size:.8rem;color:#64748b;display:flex;align-items:center;gap:4px;padding-left:4px;">
+              <i class="fas fa-users" style="color:#00C9A7"></i> 23 people viewing now
+            </div>
+          </div>
+        </div>
+
+        <!-- SUPPLIER CARD -->
+        <div class="supplier-card">
+          <div class="supplier-card-header">
+            <div class="supplier-avatar">SH</div>
+            <div>
+              <div class="supplier-name">SoundHarvest Electronics Co., Ltd.</div>
+              <div class="supplier-verified"><i class="fas fa-circle-check"></i> Gold Verified Supplier</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;color:#374151;font-size:.85rem;">
+            <span>🇨🇳 Guangdong, China</span>
+            <span style="color:#e2e8f0">|</span>
+            <span class="stars" style="font-size:.8rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span>
+            <span style="color:#64748b">4.8</span>
+          </div>
+          <div class="supplier-stats">
+            <div class="supplier-stat">
+              <div class="supplier-stat-label">Response Rate</div>
+              <div class="supplier-stat-value"><i class="fas fa-reply" style="color:#00C9A7;font-size:.8rem"></i> 97.3%</div>
+            </div>
+            <div class="supplier-stat">
+              <div class="supplier-stat-label">Response Time</div>
+              <div class="supplier-stat-value"><i class="fas fa-clock" style="color:#0052CC;font-size:.8rem"></i> ≤ 2 hrs</div>
+            </div>
+            <div class="supplier-stat">
+              <div class="supplier-stat-label">Years Active</div>
+              <div class="supplier-stat-value"><i class="fas fa-calendar" style="color:#FF6B35;font-size:.8rem"></i> 8 Years</div>
+            </div>
+            <div class="supplier-stat">
+              <div class="supplier-stat-label">Trade Assurance</div>
+              <div class="supplier-stat-value"><i class="fas fa-shield" style="color:#7c3aed;font-size:.8rem"></i> Up to $2M</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHIPPING INFO -->
+        <div style="background:#f0fdf9;border:1px solid #a7f3d0;border-radius:12px;padding:14px;font-size:.85rem;color:#374151;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-truck" style="color:#00C9A7;width:16px"></i> <strong>Free shipping</strong> on orders over $5,000</div>
+          <div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-box-open" style="color:#00C9A7;width:16px"></i> Ships within <strong>3–5 business days</strong></div>
+          <div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-rotate-left" style="color:#00C9A7;width:16px"></i> <strong>30-day</strong> return policy</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  <section class="related-section" aria-label="Related products">
+    <h2 class="section-title"><i class="fas fa-layer-group" style="color:#0052CC"></i> Related Products</h2>
+    <div class="related-grid">
+      <div class="related-card">
+        <div class="related-card-img"><i class="fas fa-headphones-simple"></i></div>
+        <div class="related-card-body">
+          <div class="related-card-name">In-Ear Wireless Earbuds TWS Pro</div>
+          <div class="related-card-price">$6.80 – $9.50</div>
+          <div class="related-card-footer">
+            <span class="related-card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> 4.9</span>
+            <button class="btn-related-cart">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="related-card">
+        <div class="related-card-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669"><i class="fas fa-mobile-screen"></i></div>
+        <div class="related-card-body">
+          <div class="related-card-name">Portable Bluetooth Speaker 360° Surround Sound</div>
+          <div class="related-card-price">$14.20 – $22.00</div>
+          <div class="related-card-footer">
+            <span class="related-card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i> 4.4</span>
+            <button class="btn-related-cart">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="related-card">
+        <div class="related-card-img" style="background:linear-gradient(135deg,#ffedd5,#fed7aa);color:#ea580c"><i class="fas fa-plug"></i></div>
+        <div class="related-card-body">
+          <div class="related-card-name">20W USB-C Fast Charger + Cable Bundle</div>
+          <div class="related-card-price">$2.10 – $3.80</div>
+          <div class="related-card-footer">
+            <span class="related-card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> 4.6</span>
+            <button class="btn-related-cart">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="related-card">
+        <div class="related-card-img" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed"><i class="fas fa-gamepad"></i></div>
+        <div class="related-card-body">
+          <div class="related-card-name">RGB Gaming Headset 7.1 Surround with Mic</div>
+          <div class="related-card-price">$11.50 – $16.90</div>
+          <div class="related-card-footer">
+            <span class="related-card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> 4.8</span>
+            <button class="btn-related-cart">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../../index.html" class="footer-logo" aria-label="GlobexSky Home">
+            <svg class="logo-icon" width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/>
+              <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/>
+              <line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/>
+              <line x1="2" y1="11" x2="34" y2="11" stroke="#fff" stroke-width="1"/>
+              <line x1="2" y1="25" x2="34" y2="25" stroke="#fff" stroke-width="1"/>
+              <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+            </svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway.</p>
+          <nav class="footer-social" aria-label="Social media links">
+            <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="../../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+            <li><a href="../shipment/index.html"><i class="fas fa-chevron-right"></i> Shipping</a></li>
+            <li><a href="../auth/login.html"><i class="fas fa-chevron-right"></i> Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Contact Us</h3>
+          <address class="footer-contact">
+            <p class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:support@globexsky.com">support@globexsky.com</a></p>
+            <p class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+18005551234">+1 (800) 555-1234</a></p>
+          </address>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+        <nav class="footer-legal-links">
+          <a href="../legal/privacy.html">Privacy Policy</a>
+          <a href="../legal/terms.html">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cart.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  function switchTab(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tbtn-' + id).classList.add('active');
+    document.getElementById('tbtn-' + id).setAttribute('aria-selected','true');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  function setActiveThumb(el, idx) {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function changeQty(delta) {
+    const input = document.getElementById('qty-input');
+    const val = parseInt(input.value) || 1;
+    input.value = Math.max(1, val + delta);
+  }
+
+  function toggleWishlist(btn) {
+    const icon = btn.querySelector('i');
+    if (icon.classList.contains('far')) {
+      icon.classList.replace('far', 'fas');
+      btn.style.borderColor = '#ef4444';
+      btn.style.color = '#ef4444';
+    } else {
+      icon.classList.replace('fas', 'far');
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }
+  }
+</script>
+</body>
+</html>

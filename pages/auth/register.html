@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px}
+
+    /* ── Card ── */
+    .auth-card{background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(0,0,0,.1);width:100%;max-width:620px;padding:40px 44px;margin:auto}
+    @media(max-width:640px){.auth-card{padding:28px 20px}}
+
+    /* ── Logo / Header ── */
+    .card-logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:28px;justify-content:center}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0A0E27}
+    .logo-accent{color:#0052CC}
+    .card-header{text-align:center;margin-bottom:32px}
+    .card-header h2{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0A0E27;margin-bottom:6px}
+    .card-header p{color:#64748b;font-size:.88rem}
+
+    /* ── Account Type Selector ── */
+    .account-type-label{font-size:.85rem;font-weight:600;color:#374151;margin-bottom:12px;display:block}
+    .type-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+    .type-card{position:relative;cursor:pointer}
+    .type-card input[type="radio"]{position:absolute;opacity:0;width:0;height:0}
+    .type-card-inner{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 12px;border:2px solid #e2e8f0;border-radius:12px;transition:all .22s;background:#fff}
+    .type-card-inner i{font-size:1.6rem;color:#94a3b8;transition:color .22s}
+    .type-card-inner span{font-size:.82rem;font-weight:600;color:#64748b;transition:color .22s}
+    .type-card input:checked ~ .type-card-inner{border-color:#0052CC;background:#eff6ff;box-shadow:0 0 0 4px rgba(0,82,204,.1)}
+    .type-card input:checked ~ .type-card-inner i{color:#0052CC}
+    .type-card input:checked ~ .type-card-inner span{color:#0052CC}
+    .type-card-inner:hover{border-color:#0052CC;background:#f8fbff}
+    @media(max-width:420px){.type-cards{grid-template-columns:1fr}.type-card-inner{flex-direction:row;justify-content:center;padding:14px 16px}}
+
+    /* ── Form ── */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-grid .full{grid-column:1/-1}
+    @media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+    .form-group{margin-bottom:0}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-label span{color:#ef4444;margin-left:2px}
+    .input-wrapper{position:relative}
+    .input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem;pointer-events:none}
+    .form-input,.form-select{width:100%;border:1.5px solid #e2e8f0;border-radius:9px;padding:11px 13px 11px 38px;font-size:.87rem;font-family:'Inter',sans-serif;color:#1e293b;background:#fff;transition:border-color .2s,box-shadow .2s;outline:none}
+    .form-input:focus,.form-select:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-input::placeholder{color:#94a3b8}
+    .form-select{appearance:none;padding-right:32px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+    .toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;font-size:.88rem;transition:color .2s}
+    .toggle-pw:hover{color:#0052CC}
+
+    /* ── Password strength ── */
+    .pw-strength{margin-top:6px}
+    .pw-strength-bar{display:flex;gap:3px;margin-bottom:4px}
+    .pw-bar-seg{flex:1;height:3px;border-radius:2px;background:#e2e8f0;transition:background .3s}
+    .pw-bar-seg.weak{background:#ef4444}
+    .pw-bar-seg.fair{background:#f59e0b}
+    .pw-bar-seg.good{background:#3b82f6}
+    .pw-bar-seg.strong{background:#10b981}
+    .pw-strength-text{font-size:.73rem;color:#94a3b8}
+
+    /* ── Supplier extra fields ── */
+    .supplier-fields{display:none;grid-column:1/-1;background:#f8fbff;border:1px solid #dbeafe;border-radius:10px;padding:16px;margin-top:4px}
+    .supplier-fields.visible{display:block}
+    .supplier-fields-title{font-size:.8rem;font-weight:600;color:#0052CC;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+    .supplier-fields-inner{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:560px){.supplier-fields-inner{grid-template-columns:1fr}}
+
+    /* ── Terms ── */
+    .terms-row{display:flex;align-items:flex-start;gap:10px;margin:20px 0}
+    .terms-row input[type="checkbox"]{margin-top:2px;width:15px;height:15px;accent-color:#0052CC;flex-shrink:0;cursor:pointer}
+    .terms-row label{font-size:.8rem;color:#374151;line-height:1.5;cursor:pointer}
+    .terms-row a{color:#0052CC;text-decoration:none;font-weight:500}
+    .terms-row a:hover{text-decoration:underline}
+
+    /* ── Buttons ── */
+    .btn-primary{width:100%;background:#0052CC;color:#fff;border:none;border-radius:10px;padding:13px;font-size:.95rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-primary:hover{background:#003d99;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,82,204,.35)}
+    .or-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#94a3b8;font-size:.78rem;font-weight:500}
+    .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e2e8f0}
+    .social-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+    .btn-social{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:9px;font-size:.83rem;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s;text-decoration:none}
+    .btn-google:hover{background:#fef2f2;border-color:#fca5a5;color:#dc2626}
+    .btn-google i{color:#ea4335}
+    .btn-facebook:hover{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
+    .btn-facebook i{color:#1877f2}
+    .auth-footer-link{text-align:center;font-size:.84rem;color:#64748b}
+    .auth-footer-link a{color:#0052CC;font-weight:600;text-decoration:none}
+    .auth-footer-link a:hover{text-decoration:underline}
+
+    .form-section-gap{height:16px}
+  </style>
+</head>
+<body>
+<div class="auth-card">
+
+  <!-- Logo -->
+  <a href="../../index.html" class="card-logo">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+      <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+      <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+      <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+    </svg>
+    <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+  </a>
+
+  <div class="card-header">
+    <h2>Create your account</h2>
+    <p>Join millions of traders on GlobexSky</p>
+  </div>
+
+  <!-- Account Type -->
+  <span class="account-type-label">I am a…</span>
+  <div class="type-cards" role="radiogroup" aria-label="Account type">
+    <label class="type-card">
+      <input type="radio" name="account-type" value="buyer" checked/>
+      <div class="type-card-inner">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Buyer</span>
+      </div>
+    </label>
+    <label class="type-card">
+      <input type="radio" name="account-type" value="supplier"/>
+      <div class="type-card-inner">
+        <i class="fas fa-store"></i>
+        <span>Supplier</span>
+      </div>
+    </label>
+    <label class="type-card">
+      <input type="radio" name="account-type" value="carrier"/>
+      <div class="type-card-inner">
+        <i class="fas fa-truck"></i>
+        <span>Carrier</span>
+      </div>
+    </label>
+  </div>
+
+  <form id="register-form" novalidate>
+    <div class="form-grid">
+
+      <!-- Full Name -->
+      <div class="form-group full">
+        <label class="form-label" for="full-name">Full Name <span>*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="full-name" name="full-name" class="form-input" placeholder="Your full name" autocomplete="name" required/>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group full">
+        <label class="form-label" for="reg-email">Email Address <span>*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="reg-email" name="email" class="form-input" placeholder="you@example.com" autocomplete="email" required/>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label" for="reg-password">Password <span>*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="reg-password" name="password" class="form-input" placeholder="Create a password" autocomplete="new-password" required/>
+          <button type="button" class="toggle-pw" id="toggle-pw1" aria-label="Toggle password"><i class="fas fa-eye" id="pw1-icon"></i></button>
+        </div>
+        <div class="pw-strength" id="pw-strength-wrap" style="display:none">
+          <div class="pw-strength-bar">
+            <div class="pw-bar-seg" id="seg1"></div>
+            <div class="pw-bar-seg" id="seg2"></div>
+            <div class="pw-bar-seg" id="seg3"></div>
+            <div class="pw-bar-seg" id="seg4"></div>
+          </div>
+          <span class="pw-strength-text" id="pw-strength-text">Weak</span>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label class="form-label" for="confirm-password">Confirm Password <span>*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="confirm-password" name="confirm-password" class="form-input" placeholder="Repeat password" autocomplete="new-password" required/>
+          <button type="button" class="toggle-pw" id="toggle-pw2" aria-label="Toggle confirm password"><i class="fas fa-eye" id="pw2-icon"></i></button>
+        </div>
+      </div>
+
+      <!-- Phone -->
+      <div class="form-group">
+        <label class="form-label" for="phone">Phone Number</label>
+        <div class="input-wrapper">
+          <i class="fas fa-phone input-icon"></i>
+          <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 555 000 0000" autocomplete="tel"/>
+        </div>
+      </div>
+
+      <!-- Country -->
+      <div class="form-group">
+        <label class="form-label" for="country">Country <span>*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-globe input-icon"></i>
+          <select id="country" name="country" class="form-select" required>
+            <option value="" disabled selected>Select country</option>
+            <option>United States</option><option>United Kingdom</option><option>China</option>
+            <option>Germany</option><option>India</option><option>Japan</option>
+            <option>Brazil</option><option>Canada</option><option>Australia</option>
+            <option>France</option><option>South Korea</option><option>Mexico</option>
+            <option>Indonesia</option><option>Nigeria</option><option>South Africa</option>
+            <option>UAE</option><option>Saudi Arabia</option><option>Singapore</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Supplier Extra Fields -->
+      <div class="supplier-fields full" id="supplier-fields">
+        <p class="supplier-fields-title"><i class="fas fa-store"></i> Supplier Information</p>
+        <div class="supplier-fields-inner">
+          <div class="form-group">
+            <label class="form-label" for="company-name">Company Name <span>*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-building input-icon"></i>
+              <input type="text" id="company-name" name="company-name" class="form-input" placeholder="Your company name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="biz-type">Business Type <span>*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-industry input-icon"></i>
+              <select id="biz-type" name="biz-type" class="form-select">
+                <option value="" disabled selected>Select type</option>
+                <option>Manufacturer</option>
+                <option>Trading Company</option>
+                <option>Distributor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /form-grid -->
+
+    <!-- Terms -->
+    <div class="terms-row">
+      <input type="checkbox" id="terms" name="terms" required/>
+      <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn-primary">
+      <i class="fas fa-user-plus"></i> Create Account
+    </button>
+  </form>
+
+  <div class="or-divider">or sign up with</div>
+
+  <div class="social-btns">
+    <button type="button" class="btn-social btn-google"><i class="fab fa-google"></i> Google</button>
+    <button type="button" class="btn-social btn-facebook"><i class="fab fa-facebook-f"></i> Facebook</button>
+  </div>
+
+  <p class="auth-footer-link">Already have an account? <a href="login.html">Sign in</a></p>
+
+</div>
+
+<script>
+  // Toggle supplier fields
+  document.querySelectorAll('input[name="account-type"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const sf = document.getElementById('supplier-fields');
+      sf.classList.toggle('visible', radio.value === 'supplier' && radio.checked);
+    });
+  });
+
+  // Password show/hide
+  function makePwToggle(btnId, inputId, iconId) {
+    document.getElementById(btnId).addEventListener('click', () => {
+      const inp  = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      const hide = inp.type === 'password';
+      inp.type   = hide ? 'text' : 'password';
+      icon.className = hide ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+  }
+  makePwToggle('toggle-pw1','reg-password','pw1-icon');
+  makePwToggle('toggle-pw2','confirm-password','pw2-icon');
+
+  // Password strength indicator
+  const pwInput = document.getElementById('reg-password');
+  const wrap    = document.getElementById('pw-strength-wrap');
+  const segs    = [1,2,3,4].map(n => document.getElementById('seg'+n));
+  const label   = document.getElementById('pw-strength-text');
+  pwInput.addEventListener('input', () => {
+    const v = pwInput.value;
+    if (!v) { wrap.style.display='none'; return; }
+    wrap.style.display = 'block';
+    let score = 0;
+    if (v.length >= 8)  score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+    const levels = ['','weak','fair','good','strong'];
+    const texts  = ['','Weak','Fair','Good','Strong'];
+    segs.forEach((s,i) => {
+      s.className = 'pw-bar-seg' + (i < score ? ' ' + levels[score] : '');
+    });
+    label.textContent = texts[score] || 'Weak';
+    label.style.color = ['','#ef4444','#f59e0b','#3b82f6','#10b981'][score];
+  });
+
+  // Form submit
+  document.getElementById('register-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const terms = document.getElementById('terms').checked;
+    if (!terms) { alert('Please agree to the Terms of Service.'); return; }
+    const pw  = document.getElementById('reg-password').value;
+    const cpw = document.getElementById('confirm-password').value;
+    if (pw !== cpw) { alert('Passwords do not match.'); return; }
+    window.location.href = '../../index.html';
+  });
+</script>
+</body>
+</html>

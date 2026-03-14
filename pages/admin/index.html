@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Dashboard – GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto}
+    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:24px}
+    .metric-card{background:#fff;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .metric-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .metric-icon.blue{background:#dbeafe;color:#0052CC}
+    .metric-icon.green{background:#d1fae5;color:#059669}
+    .metric-icon.orange{background:#ffedd5;color:#f97316}
+    .metric-icon.purple{background:#ede9fe;color:#7c3aed}
+    .metric-icon.teal{background:#ccfbf1;color:#0d9488}
+    .metric-icon.red{background:#fee2e2;color:#ef4444}
+    .metric-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .metric-label{color:#64748b;font-size:.82rem;margin-top:2px}
+    .metric-change{font-size:.78rem;font-weight:600;margin-top:4px}
+    .metric-change.up{color:#059669}
+    .metric-change.down{color:#ef4444}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+    .data-table tr:hover td{background:#f8faff}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .btn-sm{padding:5px 12px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
+    .search-filter-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .filter-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif}
+    .filter-input:focus{outline:none;border-color:#0052CC}
+    .btn-action-group{display:flex;gap:6px}
+    .section-title-bar{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27;margin:24px 0 12px}
+    .chart-placeholder{background:#f8faff;border:2px dashed #e2e8f0;border-radius:12px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;font-size:.9rem;gap:8px}
+    .quick-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .quick-action-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s;text-decoration:none}
+    .quick-action-btn:hover{border-color:#0052CC;color:#0052CC;background:#f0f4ff}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+    .user-list-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+    .user-list-item:last-child{border-bottom:none}
+    .user-initials{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0}
+    .user-info{flex:1}
+    .user-name{font-weight:600;font-size:.88rem;color:#1a1a2e}
+    .user-date{font-size:.78rem;color:#94a3b8;margin-top:2px}
+    .approval-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1f5f9}
+    .approval-item:last-child{border-bottom:none}
+    .approval-info{display:flex;align-items:center;gap:12px}
+    .approval-avatar{width:40px;height:40px;border-radius:10px;background:#ffedd5;color:#f97316;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .approval-name{font-weight:600;font-size:.88rem;color:#1a1a2e}
+    .approval-meta{font-size:.78rem;color:#64748b;margin-top:2px}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}.two-col,.three-col{grid-template-columns:1fr}.metrics-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="admin-page-title">Dashboard</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">A</div>
+          <span>Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <a href="users.html" class="quick-action-btn"><i class="fas fa-user-plus" style="color:#0052CC"></i> Add User</a>
+        <a href="reports.html" class="quick-action-btn"><i class="fas fa-chart-bar" style="color:#7c3aed"></i> View Reports</a>
+        <a href="#" class="quick-action-btn"><i class="fas fa-file-export" style="color:#059669"></i> Export Data</a>
+        <a href="#" class="quick-action-btn"><i class="fas fa-broadcast-tower" style="color:#f97316"></i> Broadcast</a>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-users"></i></div>
+          <div>
+            <div class="metric-value">12,450</div>
+            <div class="metric-label">Total Users</div>
+            <div class="metric-change up"><i class="fas fa-arrow-up"></i> +3.2% this month</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-shopping-bag"></i></div>
+          <div>
+            <div class="metric-value">247</div>
+            <div class="metric-label">Orders Today</div>
+            <div class="metric-change up"><i class="fas fa-arrow-up"></i> +12.5% vs yesterday</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange"><i class="fas fa-dollar-sign"></i></div>
+          <div>
+            <div class="metric-value">$1.2M</div>
+            <div class="metric-label">Total Revenue</div>
+            <div class="metric-change up"><i class="fas fa-arrow-up"></i> +8.1% this month</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple"><i class="fas fa-bullhorn"></i></div>
+          <div>
+            <div class="metric-value">38</div>
+            <div class="metric-label">Active Campaigns</div>
+            <div class="metric-change down"><i class="fas fa-arrow-down"></i> -2 from last week</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon teal"><i class="fas fa-clock"></i></div>
+          <div>
+            <div class="metric-value">15</div>
+            <div class="metric-label">Pending Approvals</div>
+            <div class="metric-change orange" style="color:#f97316"><i class="fas fa-exclamation-circle"></i> Requires attention</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-heartbeat"></i></div>
+          <div>
+            <div class="metric-value">99.9%</div>
+            <div class="metric-label">System Health</div>
+            <div class="metric-change up"><i class="fas fa-check-circle"></i> All systems normal</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Chart -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">Revenue Trend (Last 30 Days)</span>
+          <div class="btn-action-group">
+            <button class="btn-sm btn-secondary">7D</button>
+            <button class="btn-sm btn-primary">30D</button>
+            <button class="btn-sm btn-secondary">90D</button>
+          </div>
+        </div>
+        <div class="chart-placeholder" style="height:240px">
+          <i class="fas fa-chart-line" style="font-size:2.5rem;color:#cbd5e1"></i>
+          <span>Revenue Line Chart – Integration Point</span>
+          <small style="color:#b0bac8">Connect Chart.js or similar library to populate</small>
+        </div>
+      </div>
+
+      <!-- Recent Orders + Pending Approvals -->
+      <div class="two-col">
+        <!-- Recent Orders -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Recent Orders</span>
+            <a href="orders.html" class="btn-sm btn-secondary">View All</a>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Buyer</th>
+                  <th>Supplier</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>#ORD-8821</strong></td>
+                  <td>James Okafor</td>
+                  <td>ShenTech Ltd</td>
+                  <td>$4,200</td>
+                  <td><span class="badge-pill badge-green">Delivered</span></td>
+                  <td>Jun 18</td>
+                </tr>
+                <tr>
+                  <td><strong>#ORD-8820</strong></td>
+                  <td>Maria Santos</td>
+                  <td>GlobalParts Co</td>
+                  <td>$1,850</td>
+                  <td><span class="badge-pill badge-blue">Processing</span></td>
+                  <td>Jun 18</td>
+                </tr>
+                <tr>
+                  <td><strong>#ORD-8819</strong></td>
+                  <td>Amir Farooq</td>
+                  <td>Yiwu Exports</td>
+                  <td>$9,600</td>
+                  <td><span class="badge-pill badge-orange">Shipped</span></td>
+                  <td>Jun 17</td>
+                </tr>
+                <tr>
+                  <td><strong>#ORD-8818</strong></td>
+                  <td>Claire Dubois</td>
+                  <td>ShenTech Ltd</td>
+                  <td>$720</td>
+                  <td><span class="badge-pill badge-gray">Pending</span></td>
+                  <td>Jun 17</td>
+                </tr>
+                <tr>
+                  <td><strong>#ORD-8817</strong></td>
+                  <td>Kofi Mensah</td>
+                  <td>Dragon Mfg</td>
+                  <td>$3,300</td>
+                  <td><span class="badge-pill badge-red">Disputed</span></td>
+                  <td>Jun 16</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pending Approvals -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Pending Supplier Approvals</span>
+            <span class="badge-pill badge-orange">15 total</span>
+          </div>
+          <div class="approval-item">
+            <div class="approval-info">
+              <div class="approval-avatar">SC</div>
+              <div>
+                <div class="approval-name">SunChain Textiles</div>
+                <div class="approval-meta">Guangzhou, China &bull; Applied Jun 17</div>
+              </div>
+            </div>
+            <div class="btn-action-group">
+              <button class="btn-sm btn-success">Approve</button>
+              <button class="btn-sm btn-danger">Reject</button>
+            </div>
+          </div>
+          <div class="approval-item">
+            <div class="approval-info">
+              <div class="approval-avatar">NE</div>
+              <div>
+                <div class="approval-name">NovElectronics</div>
+                <div class="approval-meta">Shenzhen, China &bull; Applied Jun 16</div>
+              </div>
+            </div>
+            <div class="btn-action-group">
+              <button class="btn-sm btn-success">Approve</button>
+              <button class="btn-sm btn-danger">Reject</button>
+            </div>
+          </div>
+          <div class="approval-item">
+            <div class="approval-info">
+              <div class="approval-avatar" style="background:#d1fae5;color:#059669">GF</div>
+              <div>
+                <div class="approval-name">GreenFarm Organics</div>
+                <div class="approval-meta">Nairobi, Kenya &bull; Applied Jun 15</div>
+              </div>
+            </div>
+            <div class="btn-action-group">
+              <button class="btn-sm btn-success">Approve</button>
+              <button class="btn-sm btn-danger">Reject</button>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:12px">
+            <a href="users.html" style="font-size:.82rem;color:#0052CC;text-decoration:none">View all 15 pending approvals →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Registrations -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">Recent Registrations</span>
+          <a href="users.html" class="btn-sm btn-secondary">View All Users</a>
+        </div>
+        <div>
+          <div class="user-list-item">
+            <div class="user-initials" style="background:#dbeafe;color:#0052CC">JO</div>
+            <div class="user-info">
+              <div class="user-name">James Okafor</div>
+              <div class="user-date">Joined Jun 18, 2025</div>
+            </div>
+            <span class="badge-pill badge-blue">Buyer</span>
+          </div>
+          <div class="user-list-item">
+            <div class="user-initials" style="background:#ffedd5;color:#f97316">MS</div>
+            <div class="user-info">
+              <div class="user-name">Maria Santos</div>
+              <div class="user-date">Joined Jun 17, 2025</div>
+            </div>
+            <span class="badge-pill badge-orange">Supplier</span>
+          </div>
+          <div class="user-list-item">
+            <div class="user-initials" style="background:#ccfbf1;color:#0d9488">AF</div>
+            <div class="user-info">
+              <div class="user-name">Amir Farooq</div>
+              <div class="user-date">Joined Jun 17, 2025</div>
+            </div>
+            <span class="badge-pill" style="background:#ccfbf1;color:#0d9488">Carrier</span>
+          </div>
+          <div class="user-list-item">
+            <div class="user-initials" style="background:#ede9fe;color:#7c3aed">CD</div>
+            <div class="user-info">
+              <div class="user-name">Claire Dubois</div>
+              <div class="user-date">Joined Jun 16, 2025</div>
+            </div>
+            <span class="badge-pill badge-blue">Buyer</span>
+          </div>
+          <div class="user-list-item">
+            <div class="user-initials" style="background:#d1fae5;color:#059669">KM</div>
+            <div class="user-info">
+              <div class="user-name">Kofi Mensah</div>
+              <div class="user-date">Joined Jun 16, 2025</div>
+            </div>
+            <span class="badge-pill badge-orange">Supplier</span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

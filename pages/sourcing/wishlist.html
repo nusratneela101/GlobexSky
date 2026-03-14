@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Manage your saved products on GlobexSky. View, organize, and add wishlist items to your cart."/>
+  <title>My Wishlist | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+
+    /* HEADER */
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark)}
+    .logo-accent{color:var(--primary)}
+    .nav-controls{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;padding:8px;transition:color .2s}
+    .nav-cart:hover{color:var(--primary)}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:var(--secondary);color:var(--white);font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+    /* PAGE HERO */
+    .page-hero{background:linear-gradient(135deg,#c2185b,#ad1457,var(--dark));padding:44px 24px 48px}
+    .page-hero-inner{max-width:1400px;margin:0 auto}
+    .page-hero-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:10px}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:12px}
+    .item-count-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:var(--white);padding:4px 14px;border-radius:50px;font-size:.9rem;font-weight:600}
+    .breadcrumb-bar{display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(255,255,255,.6)}
+    .breadcrumb-bar a{color:rgba(255,255,255,.8);transition:color .2s}
+    .breadcrumb-bar a:hover{color:var(--white)}
+    .breadcrumb-bar i{font-size:.65rem}
+
+    /* MAIN CONTENT */
+    .wishlist-main{max-width:1400px;margin:-28px auto 60px;padding:0 24px;position:relative;z-index:1}
+
+    /* TOP ACTIONS BAR */
+    .actions-bar{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:16px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+    .actions-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .btn-move-all{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:var(--white);border:none;padding:10px 20px;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-move-all:hover{background:#003d99;transform:translateY(-1px)}
+    .btn-clear-all{display:inline-flex;align-items:center;gap:6px;background:none;color:#ef4444;border:1.5px solid #fecaca;padding:9px 16px;border-radius:10px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
+    .btn-clear-all:hover{background:#fef2f2;border-color:#ef4444}
+    .actions-right{display:flex;align-items:center;gap:8px}
+    .sort-select{border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;cursor:pointer;color:#374151}
+    .sort-select:focus{border-color:var(--primary)}
+    .view-toggle{display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+    .view-btn{width:36px;height:36px;border:none;background:var(--white);cursor:pointer;color:var(--muted);font-size:.9rem;transition:all .2s;display:flex;align-items:center;justify-content:center}
+    .view-btn.active{background:var(--primary);color:var(--white)}
+    .view-btn:not(:last-child){border-right:1px solid var(--border)}
+
+    /* TABS */
+    .wishlist-tabs{background:var(--white);border-radius:16px;border:1px solid var(--border);margin-bottom:24px;overflow:hidden}
+    .tabs-nav{display:flex;border-bottom:1px solid var(--border);padding:0 8px;overflow-x:auto}
+    .tab-btn{display:inline-flex;align-items:center;gap:7px;padding:14px 20px;border:none;background:none;font-size:.88rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif}
+    .tab-btn:hover{color:var(--primary)}
+    .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+    .tab-count{background:#f1f5f9;color:var(--muted);font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:50px;min-width:22px;text-align:center;transition:all .2s}
+    .tab-btn.active .tab-count{background:#dbeafe;color:var(--primary)}
+
+    /* PRODUCT GRID */
+    .wishlist-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+    .wishlist-grid.list-view{grid-template-columns:1fr}
+
+    /* PRODUCT CARD */
+    .wl-card{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;transition:all .3s;position:relative}
+    .wl-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,82,204,.1);border-color:rgba(0,82,204,.2)}
+    .wl-card-img{height:200px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:3.5rem;position:relative;overflow:hidden}
+    .wl-card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.03),transparent)}
+    .wl-card-badge{position:absolute;top:12px;left:12px;background:var(--secondary);color:var(--white);font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:50px}
+    .wl-card-remove{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#ef4444;font-size:.85rem;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+    .wl-card-remove:hover{background:#ef4444;color:var(--white);transform:scale(1.1)}
+    .wl-card-body{padding:16px}
+    .wl-card-supplier{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:.75rem;margin-bottom:6px}
+    .wl-card-supplier i{color:var(--primary);font-size:.65rem}
+    .wl-card-name{font-weight:600;color:var(--dark);font-size:.9rem;line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .wl-card-price{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:800;color:var(--primary);margin-bottom:6px}
+    .wl-card-meta{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+    .wl-stars{color:#f59e0b;font-size:.78rem}
+    .wl-reviews{color:var(--muted);font-size:.75rem}
+    .wl-moq{background:#f0fdf9;color:#059669;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:50px}
+    .wl-card-footer{display:flex;gap:8px}
+    .btn-add-cart-wl{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--primary);color:var(--white);border:none;padding:10px;border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-add-cart-wl:hover{background:#003d99;transform:translateY(-1px)}
+    .btn-detail{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:.85rem;cursor:pointer;transition:all .2s;flex-shrink:0}
+    .btn-detail:hover{border-color:var(--primary);color:var(--primary)}
+
+    /* LIST VIEW CARD */
+    .wl-card.list-card{border-radius:14px}
+    .wl-card.list-card .wl-card-inner{display:flex;align-items:center}
+    .wl-card.list-card .wl-card-img{width:120px;height:100px;border-radius:0;flex-shrink:0;font-size:2.5rem}
+    .wl-card.list-card .wl-card-body{flex:1;display:flex;align-items:center;gap:20px;padding:14px 20px}
+    .wl-card.list-card .wl-card-info{flex:1}
+    .wl-card.list-card .wl-card-footer{flex-shrink:0;gap:8px}
+
+    /* EMPTY STATE */
+    .empty-wishlist{display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;text-align:center;background:var(--white);border-radius:16px;border:1px solid var(--border)}
+    .empty-wishlist.show{display:flex}
+    .empty-icon{font-size:5rem;color:#fce7f3;margin-bottom:24px;line-height:1}
+    .empty-icon i{color:#ec4899;opacity:.4}
+    .empty-wishlist h2{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark);margin-bottom:10px}
+    .empty-wishlist p{color:var(--muted);font-size:.9rem;margin-bottom:28px;max-width:340px}
+    .btn-browse{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:var(--white);padding:13px 28px;border-radius:12px;font-size:.95rem;font-weight:600;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-browse:hover{background:#003d99;transform:translateY(-2px)}
+
+    /* RECOMMENDED SECTION */
+    .recommended-section{max-width:1400px;margin:0 auto 60px;padding:0 24px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .reco-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .reco-card{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;transition:all .25s;cursor:pointer}
+    .reco-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,82,204,.1)}
+    .reco-img{height:140px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:2.5rem}
+    .reco-body{padding:12px}
+    .reco-name{font-size:.82rem;font-weight:600;color:var(--dark);margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .reco-price{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:var(--primary);margin-bottom:8px}
+    .btn-reco-wish{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;border:1.5px solid #fce7f3;background:none;color:#ec4899;padding:7px;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-reco-wish:hover{background:#fce7f3}
+
+    /* FOOTER */
+    .site-footer{background:var(--dark);color:rgba(255,255,255,.85)}
+    .footer-main{padding:60px 24px 40px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;max-width:1400px;margin:0 auto}
+    .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .footer-tagline{color:rgba(255,255,255,.5);font-size:.88rem;margin-bottom:18px}
+    .footer-social{display:flex;gap:10px}
+    .social-link{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);transition:all .2s;font-size:.9rem}
+    .social-link:hover{background:var(--primary);color:var(--white)}
+    .footer-col-title{font-family:'Poppins',sans-serif;font-weight:600;color:var(--white);font-size:.95rem;margin-bottom:16px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .footer-links li a{color:rgba(255,255,255,.6);font-size:.88rem;transition:color .2s;display:flex;align-items:center;gap:6px}
+    .footer-links li a:hover{color:var(--accent)}
+    .footer-links li a i{font-size:.65rem;color:var(--accent)}
+    .footer-contact{font-style:normal;display:flex;flex-direction:column;gap:10px}
+    .footer-contact-item{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.6);font-size:.88rem}
+    .footer-contact-item i{color:var(--accent);width:16px}
+    .footer-contact-item a{color:rgba(255,255,255,.6);transition:color .2s}
+    .footer-contact-item a:hover{color:var(--accent)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:20px 24px}
+    .footer-bottom-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .footer-copyright{color:rgba(255,255,255,.4);font-size:.82rem}
+    .footer-legal-links{display:flex;gap:20px}
+    .footer-legal-links a{color:rgba(255,255,255,.4);font-size:.82rem;transition:color .2s}
+    .footer-legal-links a:hover{color:var(--accent)}
+    .container{max-width:1400px;margin:0 auto}
+
+    @media(max-width:1100px){.wishlist-grid{grid-template-columns:repeat(3,1fr)}.reco-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:768px){
+      .wishlist-grid{grid-template-columns:repeat(2,1fr)}.reco-grid{grid-template-columns:repeat(2,1fr)}
+      .wishlist-main{padding:0 16px}.recommended-section{padding:0 16px}
+      .footer-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:480px){.wishlist-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo" aria-label="GlobexSky Home">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="2" y1="11" x2="34" y2="11" stroke="#0052CC" stroke-width="1"/>
+          <line x1="2" y1="25" x2="34" y2="25" stroke="#0052CC" stroke-width="1"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="cart.html" class="nav-cart" aria-label="Shopping cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <a href="../../pages/auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../pages/auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-hero-top">
+        <h1><i class="fas fa-heart" style="color:#f472b6"></i> My Wishlist <span class="item-count-badge" id="wl-count-badge">8 items</span></h1>
+        <a href="products.html" style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);color:#fff;padding:9px 18px;border-radius:10px;font-size:.85rem;border:1px solid rgba(255,255,255,.25);transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
+          <i class="fas fa-store"></i> Browse Products
+        </a>
+      </div>
+      <div class="breadcrumb-bar">
+        <a href="../../index.html">Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <a href="index.html">Sourcing</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Wishlist</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="wishlist-main">
+    <!-- ACTIONS BAR -->
+    <div class="actions-bar">
+      <div class="actions-left">
+        <button class="btn-move-all" onclick="moveAllToCart()"><i class="fas fa-cart-plus"></i> Move All to Cart</button>
+        <button class="btn-clear-all" onclick="clearAll()"><i class="fas fa-trash"></i> Clear Wishlist</button>
+        <span style="font-size:.82rem;color:#64748b"><strong id="selected-count">8</strong> items saved</span>
+      </div>
+      <div class="actions-right">
+        <select class="sort-select" aria-label="Sort wishlist">
+          <option>Sort: Recently Added</option>
+          <option>Sort: Price Low to High</option>
+          <option>Sort: Price High to Low</option>
+          <option>Sort: Rating</option>
+        </select>
+        <div class="view-toggle" role="group" aria-label="View toggle">
+          <button class="view-btn active" id="grid-view-btn" aria-label="Grid view" onclick="setView('grid')"><i class="fas fa-table-cells"></i></button>
+          <button class="view-btn" id="list-view-btn" aria-label="List view" onclick="setView('list')"><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="wishlist-tabs">
+      <div class="tabs-nav" role="tablist" aria-label="Wishlist categories">
+        <button class="tab-btn active" role="tab" aria-selected="true" onclick="switchTab(this,'all')">
+          <i class="fas fa-heart"></i> Default Wishlist <span class="tab-count">8</span>
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab(this,'electronics')">
+          <i class="fas fa-microchip"></i> Electronics <span class="tab-count">5</span>
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab(this,'fashion')">
+          <i class="fas fa-shirt"></i> Fashion <span class="tab-count">3</span>
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab(this,'home')">
+          <i class="fas fa-home"></i> Home & Garden <span class="tab-count">0</span>
+        </button>
+        <button style="display:inline-flex;align-items:center;gap:6px;padding:14px 16px;border:none;background:none;color:var(--primary);font-size:.82rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s;font-family:'Inter',sans-serif">
+          <i class="fas fa-plus"></i> New List
+        </button>
+      </div>
+    </div>
+
+    <!-- WISHLIST GRID -->
+    <div class="wishlist-grid" id="wishlist-grid">
+
+      <!-- CARD 1 -->
+      <div class="wl-card" data-category="electronics" id="wl-1">
+        <div class="wl-card-img">
+          <span class="wl-card-badge">Hot</span>
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-1')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-headphones"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> SoundHarvest Electronics · 🇨🇳</div>
+          <div class="wl-card-name">Wireless Bluetooth Headphones Pro X500 — Over-Ear ANC</div>
+          <div class="wl-card-price">$12.50 – $18.90</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span>
+            <span class="wl-reviews">4.7 (1.2k)</span>
+            <span class="wl-moq">MOQ: 100</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="wl-card" data-category="electronics" id="wl-2">
+        <div class="wl-card-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669">
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-2')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-mobile-screen"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> AcoustiTech Mfg · 🇨🇳</div>
+          <div class="wl-card-name">Portable Bluetooth Speaker 360° Surround — IPX6</div>
+          <div class="wl-card-price">$14.20 – $22.00</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span>
+            <span class="wl-reviews">4.4 (860)</span>
+            <span class="wl-moq">MOQ: 200</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="wl-card" data-category="fashion" id="wl-3">
+        <div class="wl-card-img" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);color:#db2777">
+          <span class="wl-card-badge" style="background:#7c3aed">New</span>
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-3')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-shirt"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> StyleMast Apparel · 🇧🇩</div>
+          <div class="wl-card-name">Organic Cotton Polo Shirts — Unisex Custom Embroidery</div>
+          <div class="wl-card-price">$3.20 – $5.80</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
+            <span class="wl-reviews">4.9 (2.1k)</span>
+            <span class="wl-moq">MOQ: 500</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="wl-card" data-category="electronics" id="wl-4">
+        <div class="wl-card-img" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed">
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-4')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> PlayEdge Tech · 🇨🇳</div>
+          <div class="wl-card-name">RGB Gaming Headset 7.1 Virtual Surround with Mic</div>
+          <div class="wl-card-price">$11.50 – $16.90</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
+            <span class="wl-reviews">4.8 (540)</span>
+            <span class="wl-moq">MOQ: 100</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 5 -->
+      <div class="wl-card" data-category="fashion" id="wl-5">
+        <div class="wl-card-img" style="background:linear-gradient(135deg,#fef9c3,#fef08a);color:#ca8a04">
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-5')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-bag-shopping"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> LeatherCraft Co. · 🇮🇳</div>
+          <div class="wl-card-name">Genuine Leather Tote Bags — Custom Logo Embossing</div>
+          <div class="wl-card-price">$8.90 – $14.60</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span>
+            <span class="wl-reviews">4.6 (334)</span>
+            <span class="wl-moq">MOQ: 300</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 6 -->
+      <div class="wl-card" data-category="electronics" id="wl-6">
+        <div class="wl-card-img" style="background:linear-gradient(135deg,#ffedd5,#fed7aa);color:#ea580c">
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-6')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-plug"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> PowerCore Tech · 🇨🇳</div>
+          <div class="wl-card-name">65W GaN USB-C Fast Charger — 3-Port Travel Adapter</div>
+          <div class="wl-card-price">$4.80 – $7.20</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
+            <span class="wl-reviews">5.0 (189)</span>
+            <span class="wl-moq">MOQ: 500</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 7 -->
+      <div class="wl-card" data-category="electronics" id="wl-7">
+        <div class="wl-card-img" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#0284c7">
+          <span class="wl-card-badge" style="background:#00C9A7">Sale</span>
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-7')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-watch"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> SmartWear Devices · 🇨🇳</div>
+          <div class="wl-card-name">Smart Fitness Watch Series 7 — GPS + Heart Rate Monitor</div>
+          <div class="wl-card-price">$8.90 – $13.50</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span>
+            <span class="wl-reviews">4.3 (720)</span>
+            <span class="wl-moq">MOQ: 50</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 8 -->
+      <div class="wl-card" data-category="fashion" id="wl-8">
+        <div class="wl-card-img" style="background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626">
+          <button class="wl-card-remove" aria-label="Remove from wishlist" onclick="removeWlItem('wl-8')"><i class="fas fa-xmark"></i></button>
+          <i class="fas fa-shoe-prints"></i>
+        </div>
+        <div class="wl-card-body">
+          <div class="wl-card-supplier"><i class="fas fa-store"></i> FootStyle Factory · 🇻🇳</div>
+          <div class="wl-card-name">Athletic Running Shoes — Breathable Mesh Custom Color</div>
+          <div class="wl-card-price">$9.20 – $15.40</div>
+          <div class="wl-card-meta">
+            <span class="wl-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span>
+            <span class="wl-reviews">4.5 (1.5k)</span>
+            <span class="wl-moq">MOQ: 200</span>
+          </div>
+          <div class="wl-card-footer">
+            <button class="btn-add-cart-wl"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+            <a href="product-detail.html" class="btn-detail" title="View details"><i class="fas fa-eye"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-wishlist" id="empty-wl-state">
+      <div class="empty-icon"><i class="fas fa-heart"></i></div>
+      <h2>Your wishlist is empty</h2>
+      <p>You haven't saved any products yet. Browse our marketplace and heart the items you love.</p>
+      <a href="products.html" class="btn-browse"><i class="fas fa-store"></i> Browse Products</a>
+    </div>
+  </div>
+
+  <!-- RECOMMENDED FOR YOU -->
+  <section class="recommended-section" aria-label="Recommended products">
+    <h2 class="section-title"><i class="fas fa-sparkles" style="color:#FF6B35"></i> You Might Also Like</h2>
+    <div class="reco-grid">
+      <div class="reco-card">
+        <div class="reco-img"><i class="fas fa-headphones-simple"></i></div>
+        <div class="reco-body">
+          <div class="reco-name">TWS Wireless Earbuds Pro — ANC + Charging Case</div>
+          <div class="reco-price">$6.80 – $9.50</div>
+          <button class="btn-reco-wish"><i class="far fa-heart"></i> Save to Wishlist</button>
+        </div>
+      </div>
+      <div class="reco-card">
+        <div class="reco-img" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#16a34a"><i class="fas fa-laptop"></i></div>
+        <div class="reco-body">
+          <div class="reco-name">Laptop Cooling Pad RGB 6-Fan USB Powered</div>
+          <div class="reco-price">$5.40 – $8.90</div>
+          <button class="btn-reco-wish"><i class="far fa-heart"></i> Save to Wishlist</button>
+        </div>
+      </div>
+      <div class="reco-card">
+        <div class="reco-img" style="background:linear-gradient(135deg,#f0fdf4,#bbf7d0);color:#059669"><i class="fas fa-camera"></i></div>
+        <div class="reco-body">
+          <div class="reco-name">4K Action Camera Waterproof — Wide Angle Lens</div>
+          <div class="reco-price">$22.00 – $38.00</div>
+          <button class="btn-reco-wish"><i class="far fa-heart"></i> Save to Wishlist</button>
+        </div>
+      </div>
+      <div class="reco-card">
+        <div class="reco-img" style="background:linear-gradient(135deg,#ede9fe,#c4b5fd);color:#7c3aed"><i class="fas fa-keyboard"></i></div>
+        <div class="reco-body">
+          <div class="reco-name">Mechanical Gaming Keyboard TKL — Hot-Swap RGB</div>
+          <div class="reco-price">$18.50 – $28.00</div>
+          <button class="btn-reco-wish"><i class="far fa-heart"></i> Save to Wishlist</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../../index.html" class="footer-logo" aria-label="GlobexSky Home">
+            <svg class="logo-icon" width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/>
+              <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/>
+              <line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/>
+              <line x1="2" y1="11" x2="34" y2="11" stroke="#fff" stroke-width="1"/>
+              <line x1="2" y1="25" x2="34" y2="25" stroke="#fff" stroke-width="1"/>
+              <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+            </svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway.</p>
+          <nav class="footer-social" aria-label="Social media links">
+            <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="../../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+            <li><a href="../shipment/index.html"><i class="fas fa-chevron-right"></i> Shipping</a></li>
+            <li><a href="../auth/login.html"><i class="fas fa-chevron-right"></i> Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Contact Us</h3>
+          <address class="footer-contact">
+            <p class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:support@globexsky.com">support@globexsky.com</a></p>
+            <p class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+18005551234">+1 (800) 555-1234</a></p>
+          </address>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+        <nav class="footer-legal-links">
+          <a href="../legal/privacy.html">Privacy Policy</a>
+          <a href="../legal/terms.html">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cart.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  function removeWlItem(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.transition = 'opacity .3s, transform .3s';
+      el.style.opacity = '0';
+      el.style.transform = 'scale(.9)';
+      setTimeout(() => { el.remove(); updateCount(); checkEmpty(); }, 300);
+    }
+  }
+
+  function updateCount() {
+    const cards = document.querySelectorAll('#wishlist-grid .wl-card');
+    const n = cards.length;
+    document.getElementById('wl-count-badge').textContent = n + ' item' + (n !== 1 ? 's' : '');
+    document.getElementById('selected-count').textContent = n;
+  }
+
+  function checkEmpty() {
+    const cards = document.querySelectorAll('#wishlist-grid .wl-card');
+    if (cards.length === 0) {
+      document.getElementById('empty-wl-state').classList.add('show');
+    }
+  }
+
+  function clearAll() {
+    if (!confirm('Remove all items from your wishlist?')) return;
+    document.querySelectorAll('#wishlist-grid .wl-card').forEach(c => c.remove());
+    updateCount();
+    checkEmpty();
+  }
+
+  function moveAllToCart() {
+    alert('All wishlist items have been added to your cart!');
+  }
+
+  function switchTab(btn, cat) {
+    document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+    const cards = document.querySelectorAll('#wishlist-grid .wl-card');
+    cards.forEach(c => {
+      if (cat === 'all' || c.dataset.category === cat) {
+        c.style.display = '';
+      } else {
+        c.style.display = 'none';
+      }
+    });
+  }
+
+  function setView(view) {
+    const grid = document.getElementById('wishlist-grid');
+    const gridBtn = document.getElementById('grid-view-btn');
+    const listBtn = document.getElementById('list-view-btn');
+    if (view === 'grid') {
+      grid.classList.remove('list-view');
+      gridBtn.classList.add('active');
+      listBtn.classList.remove('active');
+      document.querySelectorAll('.wl-card').forEach(c => c.classList.remove('list-card'));
+    } else {
+      grid.classList.add('list-view');
+      listBtn.classList.add('active');
+      gridBtn.classList.remove('active');
+      document.querySelectorAll('.wl-card').forEach(c => {
+        c.classList.add('list-card');
+        const inner = c.querySelector('.wl-card-body').parentElement;
+        if (!c.querySelector('.wl-card-inner')) {
+          const img = c.querySelector('.wl-card-img');
+          const body = c.querySelector('.wl-card-body');
+          const wrapper = document.createElement('div');
+          wrapper.className = 'wl-card-inner';
+          c.appendChild(wrapper);
+          wrapper.appendChild(img);
+          wrapper.appendChild(body);
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>

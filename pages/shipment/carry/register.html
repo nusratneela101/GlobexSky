@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Carrier Registration – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.container{max-width:800px;margin:0 auto;padding:0 24px}
+.section{padding:48px 24px}
+.section-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:#0a0e27;margin-bottom:8px}
+.page-card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+.page-card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px}
+.form-group{margin-bottom:18px}.form-label{display:block;font-size:.88rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.btn{padding:10px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+.btn-teal{background:#00C9A7;color:#fff}.btn-teal:hover{background:#009E84}
+.step-progress{display:flex;align-items:center;margin-bottom:40px;overflow-x:auto;padding:8px 0}
+.step-item{display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;position:relative}
+.step-item:not(:last-child)::after{content:'';position:absolute;top:20px;left:60%;right:-40%;height:2px;background:#e2e8f0;z-index:0}
+.step-item.completed:not(:last-child)::after,.step-item.active:not(:last-child)::after{background:#0052CC}
+.step-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;border:2px solid #e2e8f0;background:#fff;color:#94a3b8;position:relative;z-index:1;transition:all .3s}
+.step-item.active .step-circle{border-color:#0052CC;background:#0052CC;color:#fff}
+.step-item.completed .step-circle{border-color:#0052CC;background:#0052CC;color:#fff}
+.step-label{font-size:.75rem;color:#64748b;margin-top:6px;text-align:center;font-weight:500}
+.step-item.active .step-label{color:#0052CC;font-weight:600}
+.upload-zone{border:2px dashed #cbd5e1;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;background:#fafbff;margin-bottom:16px}
+.upload-zone:hover{border-color:#0052CC;background:#f0f4ff}
+.upload-zone i{font-size:2rem;color:#0052CC;margin-bottom:12px;display:block}
+.upload-zone h4{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;margin-bottom:4px}
+.upload-zone p{color:#64748b;font-size:.85rem}
+.upload-zone input[type=file]{display:none}
+.step-panel{display:none}.step-panel.active{display:block}
+.verify-box{text-align:center;padding:40px 20px}
+.verify-illustration{width:120px;height:120px;background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:3rem;color:#fff}
+.verify-status{padding:16px;border-radius:10px;margin:20px 0;font-weight:500;font-size:.9rem}
+.verify-status.idle{background:#f1f5f9;color:#64748b}
+.verify-status.loading{background:#dbeafe;color:#0052CC}
+.verify-status.success{background:#d1fae5;color:#059669}
+.review-section{margin-bottom:24px}
+.review-section h4{font-family:'Poppins',sans-serif;font-weight:600;color:#0052CC;font-size:.9rem;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.review-item label{font-size:.78rem;color:#64748b;display:block}
+.review-item span{font-weight:600;color:#0a0e27;font-size:.9rem}
+.btn-row{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}
+.site-footer{background:#0a0e27}.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.review-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div style="margin-bottom:32px">
+      <h1 class="section-title">Become a Carrier</h1>
+      <p style="color:#64748b">Complete registration to start earning on your travels</p>
+    </div>
+
+    <!-- STEP PROGRESS -->
+    <div class="step-progress">
+      <div class="step-item active" id="si-1"><div class="step-circle">1</div><span class="step-label">Personal Info</span></div>
+      <div class="step-item" id="si-2"><div class="step-circle">2</div><span class="step-label">Documents</span></div>
+      <div class="step-item" id="si-3"><div class="step-circle">3</div><span class="step-label">Face Verify</span></div>
+      <div class="step-item" id="si-4"><div class="step-circle">4</div><span class="step-label">Review</span></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step-panel active" id="step-1">
+      <div class="page-card">
+        <h3 class="page-card-title"><i class="fas fa-user" style="color:#0052CC;margin-right:8px"></i>Personal Information</h3>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-control" id="fn" placeholder="John"></div>
+          <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-control" id="ln" placeholder="Doe"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Email Address *</label><input type="email" class="form-control" id="em" placeholder="john@example.com"></div>
+          <div class="form-group"><label class="form-label">Phone Number *</label><input type="tel" class="form-control" id="ph" placeholder="+1 234 567 8900"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Country *</label><select class="form-control" id="co"><option value="">Select country</option><option>United States</option><option>United Kingdom</option><option>France</option><option>Germany</option><option>Nigeria</option><option>Ghana</option><option>Kenya</option><option>South Africa</option><option>Canada</option><option>Australia</option><option>UAE</option><option>China</option><option>India</option><option>Brazil</option></select></div>
+          <div class="form-group"><label class="form-label">City *</label><input type="text" class="form-control" id="ci" placeholder="New York"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Date of Birth *</label><input type="date" class="form-control" id="dob"></div>
+          <div class="form-group"><label class="form-label">Gender *</label><select class="form-control" id="gn"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="goStep(2)">Next Step <i class="fas fa-arrow-right"></i></button></div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-panel" id="step-2">
+      <div class="page-card">
+        <h3 class="page-card-title"><i class="fas fa-id-card" style="color:#0052CC;margin-right:8px"></i>Document Upload</h3>
+        <p style="color:#64748b;font-size:.88rem;margin-bottom:24px">Please upload clear, high-quality photos of your documents. All files are encrypted and securely stored.</p>
+        <label class="upload-zone" for="up-passport">
+          <input type="file" id="up-passport" accept="image/*,.pdf" onchange="handleUpload(this,'lbl-passport')">
+          <i class="fas fa-passport"></i>
+          <h4>Passport</h4>
+          <p id="lbl-passport">Click to browse or drag & drop your passport photo page (JPG, PNG, PDF)</p>
+        </label>
+        <label class="upload-zone" for="up-nid">
+          <input type="file" id="up-nid" accept="image/*,.pdf" onchange="handleUpload(this,'lbl-nid')">
+          <i class="fas fa-id-card"></i>
+          <h4>National ID Card</h4>
+          <p id="lbl-nid">Click to browse or drag & drop front & back of your national ID (JPG, PNG, PDF)</p>
+        </label>
+        <label class="upload-zone" for="up-selfie">
+          <input type="file" id="up-selfie" accept="image/*" onchange="handleUpload(this,'lbl-selfie')">
+          <i class="fas fa-camera"></i>
+          <h4>Selfie with ID</h4>
+          <p id="lbl-selfie">Click to browse or take a photo of yourself holding your ID document</p>
+        </label>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="goStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-primary" onclick="goStep(3)">Next Step <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-panel" id="step-3">
+      <div class="page-card">
+        <h3 class="page-card-title"><i class="fas fa-shield-alt" style="color:#0052CC;margin-right:8px"></i>Facial Verification</h3>
+        <div class="verify-box">
+          <div class="verify-illustration" id="verifyIcon"><i class="fas fa-face-smile"></i></div>
+          <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:8px">Liveness Check</h3>
+          <p style="color:#64748b;max-width:380px;margin:0 auto 24px;font-size:.9rem">We need to verify that you are a real person. Please ensure your face is well-lit and centred. Your camera will be activated briefly.</p>
+          <div class="verify-status idle" id="verifyStatus"><i class="fas fa-info-circle"></i> Click "Start Verification" to begin your liveness check</div>
+          <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary" id="btnVerify" onclick="startVerify()"><i class="fas fa-camera"></i> Start Verification</button>
+          </div>
+          <div style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:360px;margin-left:auto;margin-right:auto">
+            <div style="text-align:center;padding:12px;background:#f8faff;border-radius:8px"><i class="fas fa-lock" style="color:#0052CC;font-size:1.2rem;display:block;margin-bottom:4px"></i><span style="font-size:.75rem;color:#64748b">Encrypted</span></div>
+            <div style="text-align:center;padding:12px;background:#f8faff;border-radius:8px"><i class="fas fa-eye-slash" style="color:#0052CC;font-size:1.2rem;display:block;margin-bottom:4px"></i><span style="font-size:.75rem;color:#64748b">Private</span></div>
+            <div style="text-align:center;padding:12px;background:#f8faff;border-radius:8px"><i class="fas fa-trash-alt" style="color:#0052CC;font-size:1.2rem;display:block;margin-bottom:4px"></i><span style="font-size:.75rem;color:#64748b">Auto-deleted</span></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="goStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-primary" id="btnNextVerify" onclick="goStep(4)" disabled style="opacity:.5">Next Step <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-panel" id="step-4">
+      <div class="page-card">
+        <h3 class="page-card-title"><i class="fas fa-check-circle" style="color:#00C9A7;margin-right:8px"></i>Review & Submit</h3>
+        <p style="color:#64748b;font-size:.88rem;margin-bottom:24px">Please review all your information before submitting your carrier application.</p>
+        <div class="review-section">
+          <h4>Personal Information</h4>
+          <div class="review-grid">
+            <div class="review-item"><label>Full Name</label><span id="rv-name">—</span></div>
+            <div class="review-item"><label>Email</label><span id="rv-email">—</span></div>
+            <div class="review-item"><label>Phone</label><span id="rv-phone">—</span></div>
+            <div class="review-item"><label>Country</label><span id="rv-country">—</span></div>
+            <div class="review-item"><label>City</label><span id="rv-city">—</span></div>
+            <div class="review-item"><label>Date of Birth</label><span id="rv-dob">—</span></div>
+            <div class="review-item"><label>Gender</label><span id="rv-gender">—</span></div>
+          </div>
+        </div>
+        <div class="review-section">
+          <h4>Documents</h4>
+          <div class="review-grid">
+            <div class="review-item"><label>Passport</label><span id="rv-passport">—</span></div>
+            <div class="review-item"><label>National ID</label><span id="rv-nid">—</span></div>
+            <div class="review-item"><label>Selfie with ID</label><span id="rv-selfie">—</span></div>
+          </div>
+        </div>
+        <div class="review-section">
+          <h4>Verification</h4>
+          <div class="review-item"><label>Facial Verification</label><span id="rv-verify" style="color:#059669"><i class="fas fa-check-circle"></i> Completed</span></div>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:14px;margin:16px 0;font-size:.85rem;color:#92400e"><i class="fas fa-exclamation-triangle" style="margin-right:6px"></i>By submitting, you confirm all information is accurate and agree to our <a href="#" style="color:#0052CC">Terms of Service</a> and <a href="#" style="color:#0052CC">Carrier Policy</a>.</div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="goStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-teal" onclick="submitApp()"><i class="fas fa-paper-plane"></i> Submit Application</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container" style="max-width:1400px">
+      <p class="footer-copyright" style="text-align:center">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script src="../../../assets/js/main.js"></script>
+<script>
+document.getElementById('copyright-year').textContent = new Date().getFullYear();
+let verifyDone = false;
+function goStep(n){
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.step-item').forEach((s,i)=>{
+    s.classList.remove('active','completed');
+    if(i+1<n) s.classList.add('completed');
+    if(i+1===n) s.classList.add('active');
+  });
+  document.getElementById('step-'+n).classList.add('active');
+  if(n===4) populateReview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function handleUpload(input, lblId){
+  if(input.files[0]){
+    document.getElementById(lblId).textContent = '✓ ' + input.files[0].name + ' uploaded';
+    document.getElementById(lblId).style.color = '#059669';
+  }
+}
+function startVerify(){
+  const status = document.getElementById('verifyStatus');
+  const icon = document.getElementById('verifyIcon');
+  const btn = document.getElementById('btnVerify');
+  btn.disabled = true;
+  status.className = 'verify-status loading';
+  status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analysing… Please look directly at your camera';
+  icon.style.background = 'linear-gradient(135deg,#0052CC,#00C9A7)';
+  let steps = ['Detecting face…','Checking liveness…','Verifying identity…','Processing…'];
+  let i = 0;
+  const iv = setInterval(()=>{
+    if(i < steps.length){ status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + steps[i++]; }
+    else{
+      clearInterval(iv);
+      status.className = 'verify-status success';
+      status.innerHTML = '<i class="fas fa-check-circle"></i> Verification successful! Your identity has been confirmed.';
+      icon.innerHTML = '<i class="fas fa-check"></i>';
+      icon.style.background = 'linear-gradient(135deg,#059669,#00C9A7)';
+      verifyDone = true;
+      const nb = document.getElementById('btnNextVerify');
+      nb.disabled = false; nb.style.opacity = '1';
+    }
+  }, 900);
+}
+function populateReview(){
+  const fn = document.getElementById('fn').value || '—';
+  const ln = document.getElementById('ln').value || '—';
+  document.getElementById('rv-name').textContent = fn + ' ' + ln;
+  document.getElementById('rv-email').textContent = document.getElementById('em').value || '—';
+  document.getElementById('rv-phone').textContent = document.getElementById('ph').value || '—';
+  document.getElementById('rv-country').textContent = document.getElementById('co').value || '—';
+  document.getElementById('rv-city').textContent = document.getElementById('ci').value || '—';
+  document.getElementById('rv-dob').textContent = document.getElementById('dob').value || '—';
+  document.getElementById('rv-gender').textContent = document.getElementById('gn').value || '—';
+  const p = document.getElementById('up-passport');
+  document.getElementById('rv-passport').textContent = p.files[0] ? '✓ '+p.files[0].name : 'Not uploaded';
+  const nid = document.getElementById('up-nid');
+  document.getElementById('rv-nid').textContent = nid.files[0] ? '✓ '+nid.files[0].name : 'Not uploaded';
+  const sf = document.getElementById('up-selfie');
+  document.getElementById('rv-selfie').textContent = sf.files[0] ? '✓ '+sf.files[0].name : 'Not uploaded';
+}
+function submitApp(){
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+  setTimeout(()=>{
+    document.querySelector('#step-4 .page-card').innerHTML = `
+      <div style="text-align:center;padding:40px 20px">
+        <div style="width:80px;height:80px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2rem;color:#059669"><i class="fas fa-check"></i></div>
+        <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:12px">Application Submitted!</h3>
+        <p style="color:#64748b;max-width:400px;margin:0 auto 24px">Your carrier application has been received. We'll review your documents and notify you within 2-3 business days.</p>
+        <a href="../index.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:600">Back to Shipment Hub</a>
+      </div>`;
+  }, 1800);
+}
+</script>
+</body>
+</html>

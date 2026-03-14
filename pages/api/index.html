@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API Developer Portal – GlobexSky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}
+.nav-container,.container{max-width:1400px;margin:0 auto;padding:12px 24px}
+.container{padding:0 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-controls{margin-left:auto;display:flex;gap:10px;align-items:center}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}
+.btn-register{background:#0052CC;color:#fff}
+.hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:80px 24px;text-align:center;color:#fff}
+.hero h1{font-family:'Poppins',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:800;line-height:1.2;margin-bottom:16px}
+.hero p{color:rgba(255,255,255,.8);font-size:1.1rem;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.section{padding:64px 24px}
+.section-header{text-align:center;margin-bottom:48px}
+.section-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#0a0e27;margin-bottom:12px}
+.section-subtitle{color:#64748b;font-size:1rem}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1.5px solid #f1f5f9;transition:all .3s;text-align:center}
+.card:hover{border-color:#0052CC;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,82,204,.12)}
+.card-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 16px}
+.card-icon.blue{background:#dbeafe;color:#0052CC}
+.card-icon.teal{background:#ccfbf1;color:#0d9488}
+.card-icon.orange{background:#ffedd5;color:#f97316}
+.card-icon.purple{background:#ede9fe;color:#7c3aed}
+.card h3{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27;margin-bottom:8px}
+.card p{font-size:.88rem;color:#64748b;line-height:1.6}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
+.pricing-card{background:#fff;border-radius:16px;padding:32px 24px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:2px solid #f1f5f9;transition:all .3s;position:relative}
+.pricing-card.featured{border-color:#0052CC;box-shadow:0 8px 32px rgba(0,82,204,.15)}
+.pricing-card .plan-name{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+.pricing-card .price{font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:800;color:#0052CC;margin:16px 0}
+.pricing-card .price span{font-size:1rem;font-weight:400;color:#64748b}
+.pricing-card ul{list-style:none;text-align:left;margin:20px 0}
+.pricing-card ul li{padding:6px 0;font-size:.88rem;color:#374151;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f1f5f9}
+.pricing-card ul li i{color:#00C9A7;flex-shrink:0}
+.featured-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#FF6B35;color:#fff;padding:4px 16px;border-radius:50px;font-size:.75rem;font-weight:700;white-space:nowrap}
+.btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:#0052CC;color:#fff}
+.btn-primary:hover{background:#003d99}
+.btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}
+.btn-outline:hover{background:#0052CC;color:#fff}
+.btn-teal{background:#00C9A7;color:#fff}
+.btn-white{background:#fff;color:#0052CC;font-weight:700}
+.btn-white:hover{background:#e8f0fe}
+.btn-lg{padding:14px 32px;font-size:1rem}
+.btn-full{width:100%;justify-content:center;margin-top:20px}
+.code-section{background:#0A0E27;padding:64px 24px}
+.code-section .section-title{color:#fff}
+.code-section .section-subtitle{color:rgba(255,255,255,.6)}
+.code-block{background:#0d1137;border-radius:12px;padding:32px;font-family:'Fira Code','Courier New',monospace;font-size:.85rem;color:#00C9A7;overflow-x:auto;text-align:left;line-height:1.9;border:1px solid rgba(0,82,204,.3)}
+.code-block .comment{color:rgba(255,255,255,.35)}
+.code-block .keyword{color:#FF6B35}
+.code-block .string{color:#00C9A7}
+.code-block .prop{color:#a78bfa}
+.code-block .num{color:#fb923c}
+.site-footer{background:#0a0e27}
+.footer-main{padding:48px 0 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr;gap:32px}
+.footer-brand-col .footer-tagline{color:rgba(255,255,255,.6);font-size:.85rem;margin-top:12px}
+.footer-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.footer-col-title{color:#fff;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;margin-bottom:16px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:8px}
+.footer-links li a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.85rem}
+.footer-links li a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding:16px 0}
+.footer-bottom-inner{display:flex;justify-content:center}
+.footer-copyright{color:rgba(255,255,255,.5);font-size:.82rem}
+@media(max-width:768px){.pricing-grid,.cards-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container" style="display:flex;align-items:center">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1><i class="fas fa-code" style="color:#00C9A7;margin-right:12px"></i>Build on GlobexSky</h1>
+  <p>Access 1M+ products via our RESTful API. Start free, scale as you grow.</p>
+  <div class="hero-btns">
+    <a href="dashboard.html" class="btn btn-white btn-lg"><i class="fas fa-key"></i> Get API Key</a>
+    <a href="#docs" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4)"><i class="fas fa-book"></i> View Docs</a>
+  </div>
+</section>
+
+<!-- Feature Highlights -->
+<section class="section" style="background:#fff">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Everything You Need to Build</h2>
+      <p class="section-subtitle">Powerful tools for developers to integrate global trade into any application.</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon blue"><i class="fas fa-plug"></i></div>
+        <h3>RESTful API</h3>
+        <p>Clean, predictable REST endpoints with JSON responses. Full CRUD support for products, orders, and shipments.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon teal"><i class="fas fa-bolt"></i></div>
+        <h3>Webhooks</h3>
+        <p>Real-time event notifications for order updates, price changes, and inventory alerts delivered to your endpoint.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon orange"><i class="fas fa-flask"></i></div>
+        <h3>Sandbox Mode</h3>
+        <p>Test your integration in a full-featured sandbox environment with mock data before going live.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon purple"><i class="fas fa-code"></i></div>
+        <h3>5 Language SDKs</h3>
+        <p>Official SDKs for JavaScript, Python, PHP, Ruby, and Go. Get up and running in minutes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Simple, Transparent Pricing</h2>
+      <p class="section-subtitle">Choose the plan that fits your usage. Upgrade or downgrade anytime.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="price">$0<span>/mo</span></div>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> 1,000 requests/month</li>
+          <li><i class="fas fa-check-circle"></i> 10 req/min rate limit</li>
+          <li><i class="fas fa-check-circle"></i> Basic endpoints</li>
+          <li><i class="fas fa-check-circle"></i> Community support</li>
+          <li><i class="fas fa-times-circle" style="color:#cbd5e1"></i> Webhooks</li>
+          <li><i class="fas fa-times-circle" style="color:#cbd5e1"></i> Sandbox</li>
+        </ul>
+        <a href="dashboard.html" class="btn btn-outline btn-full">Get API Key</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="featured-badge"><i class="fas fa-star"></i> Most Popular</div>
+        <div class="plan-name">Basic</div>
+        <div class="price">$99<span>/mo</span></div>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> 100K requests/month</li>
+          <li><i class="fas fa-check-circle"></i> 100 req/min rate limit</li>
+          <li><i class="fas fa-check-circle"></i> All endpoints</li>
+          <li><i class="fas fa-check-circle"></i> Webhooks</li>
+          <li><i class="fas fa-check-circle"></i> Email support</li>
+          <li><i class="fas fa-times-circle" style="color:#cbd5e1"></i> Sandbox</li>
+        </ul>
+        <a href="dashboard.html" class="btn btn-primary btn-full">Get API Key</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Professional</div>
+        <div class="price">$299<span>/mo</span></div>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> 1M requests/month</li>
+          <li><i class="fas fa-check-circle"></i> 500 req/min rate limit</li>
+          <li><i class="fas fa-check-circle"></i> All endpoints</li>
+          <li><i class="fas fa-check-circle"></i> Webhooks + Sandbox</li>
+          <li><i class="fas fa-check-circle"></i> Priority support</li>
+          <li><i class="fas fa-check-circle"></i> Advanced analytics</li>
+        </ul>
+        <a href="dashboard.html" class="btn btn-outline btn-full">Get API Key</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="price">$999<span>/mo</span></div>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> Unlimited requests</li>
+          <li><i class="fas fa-check-circle"></i> 2,000 req/min rate limit</li>
+          <li><i class="fas fa-check-circle"></i> Custom endpoints</li>
+          <li><i class="fas fa-check-circle"></i> Full feature access</li>
+          <li><i class="fas fa-check-circle"></i> Dedicated support</li>
+          <li><i class="fas fa-check-circle"></i> SLA guarantee</li>
+        </ul>
+        <a href="dashboard.html" class="btn btn-teal btn-full" style="color:#fff">Get API Key</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Code Snippet -->
+<section class="code-section" id="docs">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Simple to Integrate</h2>
+      <p class="section-subtitle">Start fetching products in under 5 minutes.</p>
+    </div>
+    <div class="code-block">
+<span class="comment">// Fetch products from GlobexSky API</span>
+<span class="keyword">const</span> API_KEY = <span class="string">'sk_live_your_api_key_here'</span>;
+
+<span class="keyword">async function</span> <span class="prop">fetchProducts</span>(query, page = <span class="num">1</span>) {
+  <span class="keyword">const</span> response = <span class="keyword">await</span> fetch(
+    <span class="string">`https://api.globexsky.com/v1/products?q=${query}&page=${page}`</span>,
+    {
+      <span class="prop">method</span>: <span class="string">'GET'</span>,
+      <span class="prop">headers</span>: {
+        <span class="string">'Authorization'</span>: <span class="string">`Bearer ${API_KEY}`</span>,
+        <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>
+      }
+    }
+  );
+
+  <span class="keyword">if</span> (!response.ok) <span class="keyword">throw new</span> Error(<span class="string">`API error: ${response.status}`</span>);
+
+  <span class="keyword">const</span> { data, meta } = <span class="keyword">await</span> response.json();
+  console.log(<span class="string">`Found ${meta.total} products`</span>);
+  <span class="keyword">return</span> data;
+}
+
+<span class="comment">// Example usage</span>
+fetchProducts(<span class="string">'wireless headphones'</span>)
+  .then(products => console.log(products))
+  .catch(err => console.error(err));
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../../index.html" class="footer-logo">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+            <span class="logo-text" style="color:#fff">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway.</p>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="../../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="../sourcing/products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
