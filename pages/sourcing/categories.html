@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Categories | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1e293b;background:#fff}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0A0E27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    /* Hero */
+    .categories-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:64px 24px 56px;text-align:center;position:relative;overflow:hidden}
+    .categories-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")}
+    .hero-content{position:relative;z-index:1;max-width:680px;margin:0 auto}
+    .breadcrumb{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;font-size:.8rem;color:rgba(255,255,255,.7)}
+    .breadcrumb a{color:rgba(255,255,255,.7);text-decoration:none}.breadcrumb a:hover{color:#fff}
+    .breadcrumb span{color:#FF6B35}
+    .categories-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;color:#fff;margin-bottom:12px;line-height:1.15}
+    .categories-hero p{color:rgba(255,255,255,.8);font-size:.95rem;line-height:1.7}
+    /* Category Grid */
+    .categories-section{padding:60px 24px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0A0E27;margin-bottom:8px}
+    .section-sub{color:#64748b;font-size:.9rem;margin-bottom:36px}
+    .categories-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+    .cat-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:28px 20px;text-align:center;text-decoration:none;color:inherit;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .cat-card:hover{border-color:#0052CC;box-shadow:0 8px 28px rgba(0,82,204,.14);transform:translateY(-4px)}
+    .cat-icon{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:4px}
+    .cat-name{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#0A0E27}
+    .cat-count{display:inline-flex;align-items:center;background:#f0f4ff;color:#0052CC;font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:50px}
+    .cat-browse{display:inline-flex;align-items:center;gap:6px;background:#0052CC;color:#fff;padding:7px 16px;border-radius:8px;font-size:.8rem;font-weight:600;text-decoration:none;margin-top:4px;transition:background .2s}
+    .cat-browse:hover{background:#003d99}
+    /* Product Grid (filtered view) */
+    .products-section{padding:60px 24px}
+    .filter-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:48px 24px;text-align:center}
+    .filter-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:800;color:#fff;margin-bottom:8px}
+    .filter-hero p{color:rgba(255,255,255,.8);font-size:.9rem}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+    .product-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;overflow:hidden;transition:all .25s}
+    .product-card:hover{border-color:#0052CC;box-shadow:0 8px 28px rgba(0,82,204,.12);transform:translateY(-3px)}
+    .product-thumb{height:160px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#0052CC;font-weight:600}
+    .product-body{padding:16px}
+    .product-name{font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:600;color:#0A0E27;margin-bottom:6px}
+    .product-price{font-size:1.05rem;font-weight:700;color:#0052CC;margin-bottom:4px}
+    .product-moq{font-size:.78rem;color:#64748b;margin-bottom:6px}
+    .product-supplier{font-size:.78rem;color:#374151;display:flex;align-items:center;gap:4px;margin-bottom:12px}
+    .product-supplier i{color:#00C9A7}
+    .btn-view{display:block;text-align:center;background:#0052CC;color:#fff;padding:8px;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;transition:background .2s}
+    .btn-view:hover{background:#003d99}
+    /* Footer */
+    .site-footer{background:#0a0e27;color:#94a3b8;padding:40px 24px 20px}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);margin-top:24px;padding-top:20px;text-align:center;font-size:.85rem}
+    @media(max-width:768px){.categories-grid{grid-template-columns:repeat(2,1fr)}.products-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.categories-grid{grid-template-columns:1fr}.products-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Dynamic content injected by JS -->
+<div id="page-content"></div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <a href="../../index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span style="font-family:'Poppins',sans-serif;font-weight:700;color:#fff;font-size:1.1rem">Globex<span style="color:#0052CC">Sky</span></span>
+      </a>
+      <div style="display:flex;gap:20px;font-size:.85rem">
+        <a href="products.html" style="color:#94a3b8;text-decoration:none">Products</a>
+        <a href="../contact.html" style="color:#94a3b8;text-decoration:none">Contact</a>
+        <a href="../terms.html" style="color:#94a3b8;text-decoration:none">Terms</a>
+        <a href="../privacy.html" style="color:#94a3b8;text-decoration:none">Privacy</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; <span id="year"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const CATEGORIES = [
+    {name:'Electronics', icon:'fas fa-microchip', color:'#dbeafe', iconColor:'#0052CC', count:'14,820 products'},
+    {name:'Clothing & Apparel', icon:'fas fa-tshirt', color:'#fce7f3', iconColor:'#ec4899', count:'9,345 products'},
+    {name:'Industrial Machinery', icon:'fas fa-industry', color:'#fef3c7', iconColor:'#d97706', count:'6,120 products'},
+    {name:'Home & Garden', icon:'fas fa-home', color:'#dcfce7', iconColor:'#16a34a', count:'8,760 products'},
+    {name:'Food & Beverages', icon:'fas fa-utensils', color:'#ffedd5', iconColor:'#ea580c', count:'5,430 products'},
+    {name:'Health & Beauty', icon:'fas fa-heartbeat', color:'#fce7f3', iconColor:'#db2777', count:'7,210 products'},
+    {name:'Sports & Outdoors', icon:'fas fa-futbol', color:'#ecfdf5', iconColor:'#059669', count:'4,890 products'},
+    {name:'Automotive', icon:'fas fa-car', color:'#ede9fe', iconColor:'#7c3aed', count:'3,670 products'},
+    {name:'Jewelry & Accessories', icon:'fas fa-gem', color:'#fef9c3', iconColor:'#ca8a04', count:'5,120 products'},
+    {name:'Books & Media', icon:'fas fa-book', color:'#e0f2fe', iconColor:'#0284c7', count:'2,980 products'}
+  ];
+
+  const PRODUCTS = [
+    {name:'4K Smart LED TV 55"', price:'$189.00–$245.00', moq:'MOQ: 50 units', supplier:'ShenzTech Electronics'},
+    {name:'Wireless Earbuds Pro', price:'$12.50–$18.00', moq:'MOQ: 100 units', supplier:'AudioMax Co.'},
+    {name:'USB-C Hub 7-in-1', price:'$8.20–$11.50', moq:'MOQ: 200 units', supplier:'ConnectPlus Ltd'},
+    {name:'Solar Power Bank 20000mAh', price:'$22.00–$29.00', moq:'MOQ: 50 units', supplier:'EcoTech Supply'},
+    {name:'Mechanical Keyboard TKL', price:'$34.00–$45.00', moq:'MOQ: 30 units', supplier:'PeriTech Inc.'},
+    {name:'Wireless Security Camera', price:'$28.00–$36.00', moq:'MOQ: 20 units', supplier:'SafeView Systems'},
+    {name:'Smart Home Hub', price:'$45.00–$58.00', moq:'MOQ: 10 units', supplier:'HomeIQ Corp'},
+    {name:'LED Strip Lights 5m', price:'$4.50–$7.00', moq:'MOQ: 500 units', supplier:'BrightLine Mfg'}
+  ];
+
+  function slugify(name) { return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+  const params = new URLSearchParams(window.location.search);
+  const catParam = params.get('cat');
+
+  const content = document.getElementById('page-content');
+
+  if (!catParam) {
+    content.innerHTML = `
+      <section class="categories-hero">
+        <div class="hero-content">
+          <div class="breadcrumb">
+            <a href="../../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:.65rem"></i>
+            <span>Categories</span>
+          </div>
+          <h1>Browse All Categories</h1>
+          <p>Explore thousands of products across all major product categories from verified global suppliers.</p>
+        </div>
+      </section>
+      <section class="categories-section">
+        <div class="container">
+          <h2 class="section-title">All Categories</h2>
+          <p class="section-sub">Click a category to browse its products</p>
+          <div class="categories-grid">
+            ${CATEGORIES.map(c => `
+              <div class="cat-card">
+                <div class="cat-icon" style="background:${c.color};color:${c.iconColor}"><i class="${c.icon}"></i></div>
+                <div class="cat-name">${c.name}</div>
+                <div class="cat-count"><i class="fas fa-box" style="font-size:.65rem;margin-right:4px"></i>${c.count}</div>
+                <a href="products.html?cat=${encodeURIComponent(c.name)}" class="cat-browse"><i class="fas fa-arrow-right"></i> Browse</a>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </section>`;
+  } else {
+    const cat = CATEGORIES.find(c => c.name === catParam) || {name: catParam, icon:'fas fa-box', color:'#dbeafe', iconColor:'#0052CC', count:''};
+    content.innerHTML = `
+      <section class="filter-hero">
+        <div class="hero-content" style="position:relative;z-index:1;max-width:680px;margin:0 auto">
+          <div class="breadcrumb">
+            <a href="../../index.html">Home</a>
+            <i class="fas fa-chevron-right" style="font-size:.65rem"></i>
+            <a href="categories.html">Categories</a>
+            <i class="fas fa-chevron-right" style="font-size:.65rem"></i>
+            <span>${cat.name}</span>
+          </div>
+          <h1>${cat.name}</h1>
+          <p>Browse verified suppliers and competitive prices in ${cat.name}</p>
+        </div>
+      </section>
+      <section class="products-section">
+        <div class="container">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+            <h2 style="font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0A0E27">${cat.name} Products</h2>
+            <a href="categories.html" style="color:#0052CC;text-decoration:none;font-size:.85rem"><i class="fas fa-arrow-left"></i> Back to Categories</a>
+          </div>
+          <div class="products-grid">
+            ${PRODUCTS.map(p => `
+              <div class="product-card">
+                <div class="product-thumb"><i class="fas fa-image" style="font-size:2rem;color:#93c5fd"></i></div>
+                <div class="product-body">
+                  <div class="product-name">${p.name}</div>
+                  <div class="product-price">${p.price}</div>
+                  <div class="product-moq">${p.moq}</div>
+                  <div class="product-supplier"><i class="fas fa-store"></i>${p.supplier}</div>
+                  <a href="product-detail.html" class="btn-view">View Details</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </section>`;
+  }
+</script>
+</body>
+</html>

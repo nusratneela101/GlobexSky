@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supplier Profile | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:200}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px;margin-bottom:20px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    /* Progress meter */
+    .completeness-bar{background:#f1f5f9;border-radius:16px;padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:20px}
+    .completeness-circle{position:relative;width:80px;height:80px;flex-shrink:0}
+    .completeness-circle svg{transform:rotate(-90deg)}
+    .circle-bg{fill:none;stroke:#e2e8f0;stroke-width:8}
+    .circle-fill{fill:none;stroke:#0052CC;stroke-width:8;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:66;transition:stroke-dashoffset .6s}
+    .completeness-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+    .completeness-info h4{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .completeness-info p{font-size:.82rem;color:#64748b;margin-bottom:8px}
+    .completeness-progress{background:#e2e8f0;border-radius:50px;height:8px;overflow:hidden}
+    .completeness-progress-fill{background:linear-gradient(90deg,#0052CC,#00C9A7);height:100%;border-radius:50px;transition:width .6s}
+    /* Logo Upload */
+    .logo-upload{width:120px;height:120px;border-radius:16px;border:2px dashed #0052CC;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;background:#f8faff;gap:6px}
+    .logo-upload:hover{background:#eff6ff;border-color:#003d99}
+    .logo-upload i{font-size:1.8rem;color:#0052CC}
+    .logo-upload span{font-size:.72rem;color:#64748b;text-align:center;max-width:90px}
+    /* Form */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full-width{grid-column:1/-1}
+    .form-label{font-size:.82rem;font-weight:600;color:#374151}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    /* Certifications */
+    .cert-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+    .cert-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px}
+    .cert-item-left{display:flex;align-items:center;gap:10px}
+    .cert-item-left i{color:#00C9A7;font-size:1rem}
+    .cert-item-name{font-size:.875rem;font-weight:500;color:#0a0e27}
+    .cert-item-date{font-size:.75rem;color:#64748b}
+    /* Factory Images */
+    .factory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+    .factory-img{aspect-ratio:1;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#0052CC;font-weight:500;border:1.5px solid #e2e8f0}
+    .factory-add{aspect-ratio:1;border-radius:10px;border:2px dashed #0052CC;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#f8faff;gap:4px;transition:all .2s}
+    .factory-add:hover{background:#eff6ff}
+    .factory-add i{font-size:1.3rem;color:#0052CC}
+    .factory-add span{font-size:.7rem;color:#0052CC;font-weight:500}
+    /* Toast */
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    .toast.show{transform:translateY(0);opacity:1}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-grid{grid-template-columns:1fr}.factory-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <div>
+          <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          <div class="nav-subtitle">Supplier Dashboard</div>
+        </div>
+      </a>
+      <div class="nav-controls">
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html" class="active"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="#" style="color:#f97316!important"><i class="fas fa-rocket"></i> Upgrade Plan</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <!-- Completeness Meter -->
+    <div class="completeness-bar">
+      <div class="completeness-circle">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle class="circle-bg" cx="40" cy="40" r="35"/>
+          <circle class="circle-fill" id="circle-fill" cx="40" cy="40" r="35"/>
+        </svg>
+        <div class="completeness-pct" id="pct-text">70%</div>
+      </div>
+      <div class="completeness-info">
+        <h4>Profile Completeness</h4>
+        <p id="completeness-hint">Add certifications and factory images to reach 100%</p>
+        <div class="completeness-progress"><div class="completeness-progress-fill" id="progress-fill" style="width:70%"></div></div>
+      </div>
+    </div>
+
+    <!-- Logo Upload -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-image" style="color:#0052CC"></i> Company Logo</div>
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+        <div class="logo-upload" onclick="document.getElementById('logo-input').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Click to upload logo</span>
+        </div>
+        <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="handleLogoUpload(event)"/>
+        <div>
+          <p style="font-size:.83rem;font-weight:500;color:#374151;margin-bottom:4px">Upload your company logo</p>
+          <p style="font-size:.78rem;color:#64748b">PNG, JPG up to 2MB. Recommended: 400×400px</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Info -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-building" style="color:#0052CC"></i> Business Information</div>
+      <form id="business-form" onsubmit="saveProfile(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Company Name *</label>
+            <input type="text" class="form-control" value="ShenzTech Electronics Co., Ltd"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Business Type *</label>
+            <select class="form-control">
+              <option selected>Manufacturer</option>
+              <option>Trading Company</option>
+              <option>Manufacturer & Trader</option>
+              <option>Distributor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country *</label>
+            <select class="form-control">
+              <option selected>China</option>
+              <option>India</option>
+              <option>USA</option>
+              <option>Germany</option>
+              <option>Japan</option>
+              <option>South Korea</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year Established</label>
+            <input type="number" class="form-control" value="2008" min="1900" max="2025"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Website</label>
+            <input type="url" class="form-control" value="https://shenztech.com" placeholder="https://"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Annual Revenue (USD)</label>
+            <select class="form-control">
+              <option>Below $1M</option>
+              <option selected>$1M – $10M</option>
+              <option>$10M – $50M</option>
+              <option>Above $50M</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Company Description</label>
+            <textarea class="form-control" rows="4">ShenzTech Electronics Co., Ltd is a leading manufacturer of consumer electronics, specializing in smart home devices, audio products, and mobile accessories. We have been serving global markets for over 15 years with OEM/ODM capabilities and ISO-certified production facilities.</textarea>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div style="margin-top:24px;margin-bottom:16px">
+          <div class="page-card-title" style="margin-bottom:16px"><i class="fas fa-address-card" style="color:#0052CC"></i> Contact Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Business Email *</label>
+              <input type="email" class="form-control" value="sales@shenztech.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" value="+86 755 1234 5678"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">WhatsApp</label>
+              <input type="tel" class="form-control" value="+86 138 0013 8000" placeholder="+XX XXX XXX XXXX"/>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;padding-top:16px;border-top:1px solid #f1f5f9">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Business Info</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Certifications -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-certificate" style="color:#00C9A7"></i> Certifications</div>
+      <div class="cert-list" id="cert-list">
+        <div class="cert-item">
+          <div class="cert-item-left"><i class="fas fa-award"></i><div><div class="cert-item-name">ISO 9001:2015 – Quality Management</div><div class="cert-item-date">Issued: Jan 2020 · Expires: Jan 2026</div></div></div>
+          <button class="btn btn-danger btn-sm" onclick="removeCert(this)"><i class="fas fa-times"></i> Remove</button>
+        </div>
+        <div class="cert-item">
+          <div class="cert-item-left"><i class="fas fa-award"></i><div><div class="cert-item-name">CE Mark – European Conformity</div><div class="cert-item-date">Issued: Mar 2019 · No expiry</div></div></div>
+          <button class="btn btn-danger btn-sm" onclick="removeCert(this)"><i class="fas fa-times"></i> Remove</button>
+        </div>
+        <div class="cert-item">
+          <div class="cert-item-left"><i class="fas fa-award"></i><div><div class="cert-item-name">FDA 510(k) Clearance</div><div class="cert-item-date">Issued: Jun 2021 · Expires: Jun 2027</div></div></div>
+          <button class="btn btn-danger btn-sm" onclick="removeCert(this)"><i class="fas fa-times"></i> Remove</button>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="addCert()"><i class="fas fa-plus"></i> Add Certification</button>
+    </div>
+
+    <!-- Factory Images -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-industry" style="color:#FF6B35"></i> Factory Images</div>
+      <div class="factory-grid">
+        <div class="factory-img">Factory Floor 1</div>
+        <div class="factory-img">Assembly Line</div>
+        <div class="factory-img">QC Department</div>
+        <div class="factory-img">Warehouse</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('factory-input').click()"><i class="fas fa-cloud-upload-alt"></i> Upload More</button>
+      <input type="file" id="factory-input" accept="image/*" multiple style="display:none"/>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px"></i> Profile saved successfully!</div>
+
+<script>
+  function saveProfile(e) {
+    e.preventDefault();
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+  function removeCert(btn) {
+    btn.closest('.cert-item').remove();
+    updateCompleteness();
+  }
+  function addCert() {
+    const name = prompt('Enter certification name:');
+    if(!name) return;
+    const item = document.createElement('div');
+    item.className = 'cert-item';
+    item.innerHTML = `<div class="cert-item-left"><i class="fas fa-award"></i><div><div class="cert-item-name">${name}</div><div class="cert-item-date">Issued: 2025</div></div></div><button class="btn btn-danger btn-sm" onclick="removeCert(this)"><i class="fas fa-times"></i> Remove</button>`;
+    document.getElementById('cert-list').appendChild(item);
+    updateCompleteness();
+  }
+  function handleLogoUpload(e) {
+    if(e.target.files[0]) updateCompleteness(75);
+  }
+  function updateCompleteness(override) {
+    const certs = document.querySelectorAll('#cert-list .cert-item').length;
+    let pct = override || Math.min(100, 60 + certs * 5 + 5);
+    const circumference = 2 * Math.PI * 35;
+    const offset = circumference - (pct / 100) * circumference;
+    document.getElementById('circle-fill').style.strokeDashoffset = offset;
+    document.getElementById('circle-fill').setAttribute('stroke-dasharray', circumference);
+    document.getElementById('pct-text').textContent = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('completeness-hint').textContent = pct < 100 ? 'Complete all sections to reach 100%' : 'Your profile is fully complete!';
+  }
+  updateCompleteness(70);
+</script>
+</body>
+</html>
