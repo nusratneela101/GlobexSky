@@ -1,0 +1,1060 @@
+/* ==========================================================================
+   GlobexSky Platform — Animations Stylesheet
+   All keyframes, transitions, and motion effects
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Door / Intro Animation
+   ========================================================================== */
+
+/**
+ * Door intro effect: two panels split open from the center, revealing the
+ * page content underneath. The .door-open class triggers the transition.
+ */
+
+.door-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-door, 1000);
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  pointer-events: none;
+  display: flex;
+}
+
+.door-wrapper.door-done {
+  display: none;
+}
+
+/* Left panel */
+.door-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(160deg, #0A0E27 0%, #0052CC 60%, #003D99 100%);
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+/* Right panel */
+.door-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(200deg, #003D99 0%, #0052CC 40%, #00C9A7 100%);
+  transform-origin: right center;
+  transform: rotateY(0deg);
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+/* Door panel inner decoration */
+.door-left::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 60%;
+  height: 140%;
+  background: radial-gradient(ellipse, rgba(0, 201, 167, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.door-right::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 140%;
+  background: radial-gradient(ellipse, rgba(255, 107, 53, 0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Center logo / brand mark on the door */
+.door-brand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.4s ease 0.8s;
+}
+
+.door-brand-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4, 1rem);
+  backdrop-filter: blur(8px);
+}
+
+.door-brand-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.door-brand-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.60);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+/* Open state — triggered by JS adding .door-open to .door-wrapper */
+.door-wrapper.door-open .door-left {
+  transform: rotateY(-90deg);
+}
+
+.door-wrapper.door-open .door-right {
+  transform: rotateY(90deg);
+}
+
+.door-wrapper.door-open .door-brand {
+  opacity: 0;
+}
+
+/* Seam / center line */
+.door-seam {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.35) 30%, rgba(255,255,255,0.35) 70%, transparent 100%);
+  z-index: 11;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.door-wrapper.door-open .door-seam {
+  opacity: 0;
+}
+
+/* Progress bar at the bottom of the door */
+.door-progress {
+  position: absolute;
+  bottom: var(--space-8, 2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  z-index: 12;
+}
+
+.door-progress-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.20);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.door-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffffff, #00C9A7);
+  border-radius: 2px;
+  animation: door-load 2s ease-in-out forwards;
+}
+
+/* ==========================================================================
+   2. Page Reveal (after doors open)
+   ========================================================================== */
+
+/**
+ * Content underneath the door starts hidden and fades in after the
+ * door animation completes (~1.5s + stagger delay).
+ */
+
+.page-reveal {
+  opacity: 0;
+  animation: pageReveal 0.8s ease 1.8s forwards;
+}
+
+.page-reveal-up {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: pageRevealUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 2s forwards;
+}
+
+/* ==========================================================================
+   3. Fade-in Animations
+   ========================================================================== */
+
+/* Base classes applied by the intersection observer or JS */
+.animate-fadeIn      { animation: fadeIn      0.6s ease both; }
+.animate-fadeInUp    { animation: fadeInUp    0.6s ease both; }
+.animate-fadeInDown  { animation: fadeInDown  0.6s ease both; }
+.animate-fadeInLeft  { animation: fadeInLeft  0.6s ease both; }
+.animate-fadeInRight { animation: fadeInRight 0.6s ease both; }
+
+/* Stagger delay helpers */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-800 { animation-delay: 800ms; }
+.delay-1000 { animation-delay: 1000ms; }
+
+/* Scroll-triggered: elements start in this state, JS adds .is-visible */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-left.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(32px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-right.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-scale.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ==========================================================================
+   4. Counter Animation
+   ========================================================================== */
+
+/**
+ * Animated number counter. JS toggles .counting to start, and uses
+ * requestAnimationFrame to increment the displayed value.
+ * The CSS provides the entrance animation.
+ */
+
+.counter-value {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+.counter-wrapper {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.counter-wrapper.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Flip-up entrance when a counter number changes */
+.counter-flip {
+  display: inline-block;
+  animation: counterFlip 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   5. Pulse Animations
+   ========================================================================== */
+
+/* Soft pulse for live status indicators */
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Ping: expanding ring for "live" badges */
+.ping {
+  position: relative;
+  display: inline-flex;
+}
+
+.ping::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: inherit;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Glow pulse for CTA buttons or highlighted elements */
+.pulse-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+/* Live indicator dot */
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--danger, #EF4444);
+  display: inline-block;
+  position: relative;
+}
+
+.live-dot::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background-color: var(--danger, #EF4444);
+  opacity: 0.4;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ==========================================================================
+   6. Skeleton / Shimmer Loading
+   ========================================================================== */
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* The .skeleton class in main.css references this keyframe */
+
+/* Wave variant of shimmer */
+.skeleton-wave {
+  position: relative;
+  overflow: hidden;
+  background-color: #E5E7EB;
+}
+
+.skeleton-wave::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  animation: skeletonWave 1.4s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   7. Spinner / Loading Animations
+   ========================================================================== */
+
+/* Circular spinner */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--light-tertiary, #DDE2EE);
+  border-top-color: var(--primary, #0052CC);
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+.spinner-sm { width: 20px; height: 20px; border-width: 2px; }
+.spinner-lg { width: 48px; height: 48px; border-width: 4px; }
+.spinner-xl { width: 64px; height: 64px; border-width: 5px; }
+
+.spinner-white {
+  border-color: rgba(255,255,255,0.25);
+  border-top-color: #ffffff;
+}
+
+/* Dots loader */
+.dots-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dots-loader span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--primary, #0052CC);
+  animation: dotsBounce 1.2s ease-in-out infinite;
+}
+
+.dots-loader span:nth-child(1) { animation-delay: 0s; }
+.dots-loader span:nth-child(2) { animation-delay: 0.2s; }
+.dots-loader span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Bars loader */
+.bars-loader {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+}
+
+.bars-loader span {
+  width: 4px;
+  background-color: var(--primary, #0052CC);
+  border-radius: 2px;
+  animation: barsGrow 1s ease-in-out infinite;
+}
+
+.bars-loader span:nth-child(1) { animation-delay: 0s;    height: 60%; }
+.bars-loader span:nth-child(2) { animation-delay: 0.15s; height: 100%; }
+.bars-loader span:nth-child(3) { animation-delay: 0.3s;  height: 70%; }
+.bars-loader span:nth-child(4) { animation-delay: 0.45s; height: 85%; }
+
+/* Full-screen loading overlay */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  background-color: var(--white, #ffffff);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.page-loader.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   8. Hover Lift Effect
+   ========================================================================== */
+
+.hover-lift {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(10, 14, 39, 0.14);
+}
+
+.hover-lift-sm:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(10, 14, 39, 0.10);
+}
+
+.hover-lift-lg:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 48px rgba(10, 14, 39, 0.18);
+}
+
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-scale:hover { transform: scale(1.04); }
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 0 4px rgba(0, 82, 204, 0.15), 0 8px 24px rgba(0, 82, 204, 0.25);
+}
+
+/* ==========================================================================
+   9. Gradient Background Shift
+   ========================================================================== */
+
+/* Animated gradient background — use on hero or CTA sections */
+.gradient-shift {
+  background: linear-gradient(135deg, #0052CC, #00C9A7, #0052CC, #FF6B35);
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite;
+}
+
+.gradient-shift-slow {
+  background: linear-gradient(135deg, #0A0E27, #0052CC, #003D99, #00C9A7);
+  background-size: 400% 400%;
+  animation: gradientShift 14s ease infinite;
+}
+
+/* Gradient text animation */
+.gradient-text-animate {
+  background: linear-gradient(135deg, #0052CC, #00C9A7, #FF6B35, #0052CC);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientTextShift 5s linear infinite;
+}
+
+/* ==========================================================================
+   10. Modal Slide Animations
+   ========================================================================== */
+
+/* Slide up from bottom */
+.modal-slide-up .modal {
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-slide-up.open .modal {
+  transform: translateY(0);
+}
+
+/* Slide in from right (drawer) */
+.drawer-right {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(480px, 90vw);
+  height: 100%;
+  background-color: var(--white, #ffffff);
+  box-shadow: var(--shadow-2xl, 0 40px 80px rgba(10,14,39,0.20));
+  z-index: 400;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.drawer-right.open {
+  transform: translateX(0);
+}
+
+/* Slide in from left (sidebar drawer) */
+.drawer-left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: min(480px, 90vw);
+  height: 100%;
+  background-color: var(--white, #ffffff);
+  box-shadow: var(--shadow-2xl);
+  z-index: 400;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.drawer-left.open {
+  transform: translateX(0);
+}
+
+/* Overlay for drawers */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 14, 39, 0.50);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 399;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.drawer-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Zoom in for confirmations */
+.modal-zoom .modal {
+  transform: scale(0.85);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.modal-zoom.open .modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   11. Toast Slide-in / Slide-out
+   ========================================================================== */
+
+/* Slide in from right */
+.toast-enter {
+  animation: toastSlideInRight 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Slide in from left */
+.toast-enter-left {
+  animation: toastSlideInLeft 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Slide in from top */
+.toast-enter-top {
+  animation: toastSlideInTop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Exit */
+.toast-exit {
+  animation: toastSlideOut 0.3s ease forwards;
+}
+
+/* ==========================================================================
+   12. Progress Bar Stripes
+   ========================================================================== */
+
+@keyframes progress-stripes {
+  from { background-position: 0 0; }
+  to   { background-position: 28px 0; }
+}
+
+/* ==========================================================================
+   13. Miscellaneous Utility Animations
+   ========================================================================== */
+
+/* Gentle float for decorative elements */
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.float-delayed {
+  animation: float 4s ease-in-out 1.5s infinite;
+}
+
+/* Shake for error feedback */
+.shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Bounce in for success icons */
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Spin once for refresh icons */
+.spin-once {
+  animation: spin 0.6s linear;
+}
+
+/* Accordion / collapse */
+.collapsible {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.collapsible.open {
+  opacity: 1;
+  /* max-height set dynamically via JS for accuracy */
+}
+
+/* Typewriter cursor */
+.typewriter::after {
+  content: '|';
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+/* ==========================================================================
+   14. All @keyframes Definitions
+   ========================================================================== */
+
+/* --- Fade In --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --- Page Reveal --- */
+@keyframes pageReveal {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pageRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Door loading bar --- */
+@keyframes door-load {
+  0%   { width: 0%; }
+  60%  { width: 75%; }
+  80%  { width: 88%; }
+  100% { width: 100%; }
+}
+
+/* --- Counter Flip --- */
+@keyframes counterFlip {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Pulse --- */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.05); }
+}
+
+/* --- Ping (expanding ring) --- */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* --- Glow Pulse --- */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 82, 204, 0.40);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(0, 82, 204, 0);
+  }
+}
+
+/* --- Skeleton Wave --- */
+@keyframes skeletonWave {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* --- Spin --- */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Dots Bounce --- */
+@keyframes dotsBounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* --- Bars Grow --- */
+@keyframes barsGrow {
+  0%, 100% { transform: scaleY(0.6); opacity: 0.6; }
+  50%       { transform: scaleY(1.0); opacity: 1.0; }
+}
+
+/* --- Gradient Shift --- */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes gradientTextShift {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* --- Float --- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* --- Shake --- */
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+
+/* --- Bounce In --- */
+@keyframes bounceIn {
+  0%   { opacity: 0; transform: scale(0.3); }
+  50%  { opacity: 1; transform: scale(1.1); }
+  70%  { transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* --- Toast Slide In from Right --- */
+@keyframes toastSlideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --- Toast Slide In from Left --- */
+@keyframes toastSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --- Toast Slide In from Top --- */
+@keyframes toastSlideInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Toast Slide Out --- */
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 200px;
+    margin-bottom: 12px;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+    max-height: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* --- Blink (cursor) --- */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* --- Accordion expand --- */
+@keyframes expandDown {
+  from { max-height: 0; opacity: 0; }
+  to   { max-height: 800px; opacity: 1; }
+}
+
+@keyframes collapseUp {
+  from { max-height: 800px; opacity: 1; }
+  to   { max-height: 0; opacity: 0; }
+}
+
+/* --- Flip card --- */
+@keyframes flipIn {
+  from { transform: perspective(800px) rotateY(-90deg); opacity: 0; }
+  to   { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+}
+
+/* --- Slide up from bottom (menu, sheet) --- */
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ==========================================================================
+   15. Reduced Motion Overrides
+   ========================================================================== */
+
+/**
+ * Respect the user's OS-level preference for reduced motion.
+ * All animations and transitions are disabled or replaced with
+ * simple opacity fades.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Door: instantly hide instead of animating */
+  .door-left,
+  .door-right {
+    transition: none !important;
+  }
+
+  .door-wrapper.door-open .door-left,
+  .door-wrapper.door-open .door-right {
+    opacity: 0;
+    transform: none;
+  }
+
+  /* Reveal elements immediately */
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale,
+  .page-reveal,
+  .page-reveal-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+
+  /* Disable float, gradient shift */
+  .float,
+  .float-delayed,
+  .gradient-shift,
+  .gradient-shift-slow,
+  .gradient-text-animate {
+    animation: none;
+  }
+
+  /* Disable spinner spin (show static arc) */
+  .spinner {
+    animation: none;
+    border-top-color: var(--primary, #0052CC);
+  }
+
+  /* Disable skeleton shimmer */
+  .skeleton,
+  .skeleton-wave::after {
+    animation: none;
+    background: var(--light-secondary, #E8ECF4);
+  }
+
+  /* Disable toast animations */
+  .toast-enter,
+  .toast-enter-left,
+  .toast-enter-top,
+  .toast-exit {
+    animation: none;
+  }
+
+  /* Disable pulse / ping */
+  .pulse,
+  .ping::before,
+  .live-dot::before,
+  .pulse-glow,
+  .badge-live {
+    animation: none;
+  }
+
+  /* Disable hover lifts */
+  .hover-lift:hover,
+  .hover-lift-sm:hover,
+  .hover-lift-lg:hover {
+    transform: none;
+  }
+}
