@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Streaming | GlobexSky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0052CC;
+      --secondary: #FF6B35;
+      --accent: #00C9A7;
+      --dark: #0A0E27;
+      --text: #1a1a2e;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f4f6fa;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(10,14,39,.06); border: 1px solid var(--border); }
+    .card-head { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .card-head h3 { font-size: 1rem; font-weight: 700; }
+    .card-body { padding: 24px; }
+
+    /* FORM */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-size: .82rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: .9rem; font-family: 'Inter', sans-serif; color: var(--text); background: #fff; outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    /* TOGGLE */
+    .toggle-group { display: flex; gap: 10px; }
+    .toggle-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; font-size: .86rem; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; color: var(--muted); text-align: center; transition: all .18s; }
+    .toggle-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+
+    /* PRICING */
+    .pricing-box { background: var(--bg); border-radius: 12px; padding: 18px 20px; margin-top: 18px; }
+    .pricing-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .pricing-row:last-child { border-bottom: none; }
+    .pricing-total { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; margin-top: 4px; }
+    .pr-label { font-size: .88rem; color: var(--muted); }
+    .pr-val { font-size: .92rem; font-weight: 600; }
+
+    /* CTA BUTTON */
+    .btn-live { display: block; width: 100%; margin-top: 22px; padding: 15px; background: linear-gradient(135deg, #FF6B35, #e0461a); color: #fff; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; letter-spacing: .3px; text-align: center; transition: all .2s; box-shadow: 0 4px 18px rgba(255,107,53,.35); }
+    .btn-live:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,53,.45); }
+    .btn-live:active { transform: translateY(0); }
+    .btn-schedule { display: block; width: 100%; margin-top: 12px; padding: 13px; background: transparent; color: var(--primary); border: 1.5px solid var(--primary); border-radius: 12px; font-size: .93rem; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; text-align: center; transition: all .2s; }
+    .btn-schedule:hover { background: #eff6ff; }
+
+    /* PREVIEW */
+    .stream-preview { background: var(--dark); border-radius: 16px; height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; position: relative; overflow: hidden; }
+    .stream-preview::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(0,82,204,.15) 0%, transparent 70%); }
+    .preview-icon { width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: rgba(255,255,255,.5); border: 2px solid rgba(255,255,255,.12); }
+    .preview-text { color: rgba(255,255,255,.45); font-size: .9rem; font-weight: 500; }
+    .preview-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .preview-badge { padding: 4px 12px; background: rgba(255,255,255,.1); border-radius: 20px; font-size: .74rem; color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.12); }
+
+    /* TABLE */
+    .table-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(10,14,39,.06); border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 12px 16px; text-align: left; font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; background: #f8fafc; border-bottom: 1px solid var(--border); }
+    tbody td { padding: 14px 16px; font-size: .88rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+
+    /* UPCOMING */
+    .upcoming-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .upcoming-card { background: var(--bg); border-radius: 14px; padding: 18px 20px; border: 1.5px solid var(--border); }
+    .upcoming-date { display: inline-flex; align-items: center; gap: 6px; background: #eff6ff; color: var(--primary); border-radius: 8px; padding: 4px 12px; font-size: .8rem; font-weight: 600; margin-bottom: 10px; }
+    .upcoming-title { font-size: .93rem; font-weight: 700; margin-bottom: 8px; font-family: 'Poppins', sans-serif; }
+
+    /* INFO BANNER */
+    .info-banner { background: linear-gradient(135deg, #eff6ff, #f0fdf4); border: 1.5px solid #bfdbfe; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+    .info-banner-icon { width: 42px; height: 42px; background: #dbeafe; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--primary); flex-shrink: 0; }
+    .info-banner p { font-size: .9rem; color: #1e40af; font-weight: 500; }
+    .info-banner strong { color: var(--primary); }
+
+    /* CHECKBOX */
+    .featured-check { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #fff; border-radius: 10px; border: 1.5px solid var(--border); cursor: pointer; transition: border-color .2s; }
+    .featured-check:hover { border-color: var(--primary); }
+    .featured-check input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    .featured-check span { font-size: .87rem; font-weight: 500; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    @media (max-width:900px) { .two-col { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } .upcoming-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="site-header" style="background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000">
+  <div style="max-width:1400px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px">
+    <a href="../../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+      <span style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27">Globex<span style="color:#0052CC">Sky</span></span>
+    </a>
+    <nav style="margin-left:32px;display:flex;gap:6px">
+      <a href="orders.html" style="padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;font-family:'Inter',sans-serif">Orders</a>
+      <a href="analytics.html" style="padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;font-family:'Inter',sans-serif">Analytics</a>
+      <a href="live-stream.html" style="padding:7px 14px;background:#eff6ff;color:#0052CC;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:600;font-family:'Inter',sans-serif">Live Stream</a>
+      <a href="subscription.html" style="padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;font-family:'Inter',sans-serif">Subscription</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <a href="../auth/login.html" style="padding:8px 16px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif">Login</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main style="flex:1">
+  <div style="max-width:1400px;margin:0 auto;padding:32px 24px">
+
+    <!-- Page Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1 style="font-size:1.65rem;font-weight:700"><i class="fa-solid fa-circle-dot" style="color:#ef4444;margin-right:10px;animation:pulse 1.5s infinite"></i>Live Streaming</h1>
+        <p style="color:var(--muted);font-size:.88rem;margin-top:4px">Broadcast your products live and connect directly with buyers worldwide</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1.5px solid #fed7aa;border-radius:10px;padding:8px 16px">
+          <i class="fa-solid fa-tag" style="color:#d97706"></i>
+          <span style="font-size:.88rem;font-weight:700;color:#92400e">$50 / hour</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:7px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:8px 16px">
+          <i class="fa-solid fa-circle-check" style="color:#16a34a"></i>
+          <span style="font-size:.83rem;font-weight:600;color:#15803d">Plan Included</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+      <div class="info-banner-icon"><i class="fa-solid fa-rocket"></i></div>
+      <div>
+        <p><strong>Live streams can boost your sales by up to 3x!</strong> Buyers who watch a live demonstration are significantly more likely to place an order. Schedule regular streams to grow your audience.</p>
+      </div>
+    </div>
+
+    <!-- Start Stream + Preview -->
+    <div class="two-col">
+      <!-- Form Card -->
+      <div class="card">
+        <div class="card-head">
+          <h3><i class="fa-solid fa-video" style="color:#ef4444;margin-right:8px"></i>Start New Stream</h3>
+          <span style="font-size:.78rem;background:#fef2f2;color:#ef4444;padding:3px 10px;border-radius:20px;font-weight:600">LIVE</span>
+        </div>
+        <div class="card-body">
+          <form id="streamForm" onsubmit="launchStream(event)">
+            <div class="form-grid">
+              <div class="form-group form-full">
+                <label><i class="fa-solid fa-heading" style="margin-right:5px;color:var(--primary)"></i>Stream Title</label>
+                <input type="text" id="streamTitle" placeholder="e.g. New USB-C Hub Product Demo — Summer 2025" required />
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-box" style="margin-right:5px;color:var(--accent)"></i>Select Product</label>
+                <select id="streamProduct">
+                  <option value="">— Choose a product —</option>
+                  <option value="usb">USB-C Hub 7-in-1</option>
+                  <option value="earbuds">Wireless Earbuds Pro</option>
+                  <option value="watch">Smart Watch Series 3</option>
+                  <option value="pb">Power Bank 20000mAh</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-hourglass-half" style="margin-right:5px;color:#7c3aed"></i>Duration</label>
+                <select id="streamDuration" onchange="updatePricing()">
+                  <option value="1">1 Hour — $50</option>
+                  <option value="2">2 Hours — $100</option>
+                  <option value="3">3 Hours — $150</option>
+                  <option value="4">4 Hours — $200</option>
+                </select>
+              </div>
+              <div class="form-group form-full">
+                <label><i class="fa-solid fa-align-left" style="margin-right:5px;color:var(--muted)"></i>Description</label>
+                <textarea id="streamDesc" placeholder="Describe what you'll showcase — product features, live Q&A, special offers…"></textarea>
+              </div>
+              <div class="form-group form-full">
+                <label><i class="fa-solid fa-calendar" style="margin-right:5px;color:var(--secondary)"></i>Schedule</label>
+                <div class="toggle-group">
+                  <button type="button" class="toggle-btn active" id="nowBtn" onclick="setScheduleMode('now')">
+                    <i class="fa-solid fa-bolt" style="margin-right:5px"></i>Go Live Now
+                  </button>
+                  <button type="button" class="toggle-btn" id="laterBtn" onclick="setScheduleMode('later')">
+                    <i class="fa-solid fa-calendar-plus" style="margin-right:5px"></i>Schedule for Later
+                  </button>
+                </div>
+                <div id="datetimePicker" style="display:none;margin-top:12px">
+                  <input type="datetime-local" id="scheduleTime" />
+                </div>
+              </div>
+              <div class="form-group form-full">
+                <label><i class="fa-solid fa-star" style="margin-right:5px;color:#d97706"></i>Add-ons</label>
+                <label class="featured-check">
+                  <input type="checkbox" id="featuredCheck" onchange="updatePricing()" />
+                  <div>
+                    <span style="font-weight:700">Featured on Homepage</span>
+                    <span style="color:var(--muted);font-size:.82rem;display:block">Appear on GlobexSky homepage during your stream — max buyer reach</span>
+                  </div>
+                  <span style="margin-left:auto;font-weight:700;color:var(--secondary);white-space:nowrap">+$100</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Pricing Breakdown -->
+            <div class="pricing-box">
+              <div style="font-size:.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pricing Breakdown</div>
+              <div class="pricing-row">
+                <span class="pr-label">Base rate (<span id="prDuration">1</span> hr × $50)</span>
+                <span class="pr-val" id="prBase">$50.00</span>
+              </div>
+              <div class="pricing-row" id="prFeaturedRow" style="display:none">
+                <span class="pr-label"><i class="fa-solid fa-star" style="color:#d97706;margin-right:4px"></i>Featured Homepage</span>
+                <span class="pr-val" style="color:var(--secondary)">$100.00</span>
+              </div>
+              <div class="pricing-total">
+                <span style="font-weight:700;font-family:'Poppins',sans-serif">Total</span>
+                <span style="font-size:1.2rem;font-weight:800;color:var(--primary);font-family:'Poppins',sans-serif" id="prTotal">$50.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-live">
+              <i class="fa-solid fa-circle-dot" style="margin-right:8px;animation:pulse 1.5s infinite"></i>Go Live Now
+            </button>
+            <button type="button" class="btn-schedule" id="scheduleSubmitBtn" style="display:none" onclick="scheduleStream()">
+              <i class="fa-solid fa-calendar-check" style="margin-right:8px"></i>Schedule Stream
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Preview + Upcoming -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <!-- Preview -->
+        <div class="card">
+          <div class="card-head">
+            <h3><i class="fa-solid fa-display" style="color:var(--muted);margin-right:8px"></i>Stream Preview</h3>
+            <span style="font-size:.78rem;color:var(--muted)">Camera feed will appear here</span>
+          </div>
+          <div class="card-body" style="padding:16px">
+            <div class="stream-preview">
+              <div class="preview-icon"><i class="fa-solid fa-camera"></i></div>
+              <div class="preview-text">Preview will appear here</div>
+              <div class="preview-badges">
+                <span class="preview-badge"><i class="fa-solid fa-video" style="margin-right:4px"></i>1080p HD</span>
+                <span class="preview-badge"><i class="fa-solid fa-gauge" style="margin-right:4px"></i>60 fps</span>
+                <span class="preview-badge"><i class="fa-solid fa-microphone" style="margin-right:4px"></i>Stereo Audio</span>
+                <span class="preview-badge"><i class="fa-brands fa-chromecast" style="margin-right:4px"></i>RTMP</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:14px;gap:10px">
+              <button style="flex:1;padding:9px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;font-size:.82rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--muted)" onclick="alert('Testing camera…')">
+                <i class="fa-solid fa-camera-rotate"></i> Test Camera
+              </button>
+              <button style="flex:1;padding:9px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;font-size:.82rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--muted)" onclick="alert('Testing microphone…')">
+                <i class="fa-solid fa-microphone-lines"></i> Test Mic
+              </button>
+              <button style="flex:1;padding:9px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;font-size:.82rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--muted)" onclick="alert('Checking connection…')">
+                <i class="fa-solid fa-wifi"></i> Check Connection
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Scheduled Streams -->
+        <div class="card">
+          <div class="card-head">
+            <h3><i class="fa-solid fa-calendar-days" style="color:var(--primary);margin-right:8px"></i>Upcoming Streams</h3>
+            <span style="font-size:.8rem;background:#eff6ff;color:var(--primary);padding:3px 10px;border-radius:20px;font-weight:600">2 Scheduled</span>
+          </div>
+          <div class="card-body">
+            <div class="upcoming-grid">
+              <div class="upcoming-card">
+                <div class="upcoming-date"><i class="fa-solid fa-calendar-day"></i> Tue, Jul 8 · 2:00 PM UTC</div>
+                <div class="upcoming-title">USB-C Hub Live Demo & Q&A</div>
+                <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px"><i class="fa-solid fa-clock" style="margin-right:4px"></i>2 hrs &nbsp;·&nbsp; <i class="fa-solid fa-star" style="color:#d97706;margin-right:4px"></i>Featured</div>
+                <div style="display:flex;gap:8px">
+                  <button style="flex:1;padding:7px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--primary)" onclick="alert('Editing stream…')"><i class="fa-solid fa-pen"></i> Edit</button>
+                  <button style="flex:1;padding:7px;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:#dc2626" onclick="cancelStream(this)"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                </div>
+              </div>
+              <div class="upcoming-card">
+                <div class="upcoming-date"><i class="fa-solid fa-calendar-day"></i> Fri, Jul 11 · 10:00 AM UTC</div>
+                <div class="upcoming-title">New Arrivals: Smart Watch S3 Unboxing</div>
+                <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px"><i class="fa-solid fa-clock" style="margin-right:4px"></i>1 hr &nbsp;·&nbsp; Standard</div>
+                <div style="display:flex;gap:8px">
+                  <button style="flex:1;padding:7px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--primary)" onclick="alert('Editing stream…')"><i class="fa-solid fa-pen"></i> Edit</button>
+                  <button style="flex:1;padding:7px;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:#dc2626" onclick="cancelStream(this)"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Past Streams Table -->
+    <div class="table-card">
+      <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <h3 style="font-size:1rem;font-weight:700;font-family:'Poppins',sans-serif"><i class="fa-solid fa-film" style="color:var(--muted);margin-right:8px"></i>Past Streams</h3>
+        <span style="font-size:.82rem;color:var(--muted)">Last 4 streams</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Title</th>
+              <th>Duration</th>
+              <th>Viewers</th>
+              <th>Orders Generated</th>
+              <th>Revenue</th>
+              <th>Recording</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--muted);font-size:.83rem">Jun 24, 2025</td>
+              <td><div style="font-weight:600;font-size:.87rem">USB-C Hub Summer Sale Demo</div><div style="font-size:.75rem;color:var(--muted)">Featured · 1080p</div></td>
+              <td><span style="font-weight:600">2 hrs</span></td>
+              <td><i class="fa-solid fa-users" style="color:var(--primary);margin-right:4px"></i><strong>1,240</strong></td>
+              <td><span style="background:#f0fdf4;color:#15803d;padding:4px 10px;border-radius:6px;font-size:.83rem;font-weight:700"><i class="fa-solid fa-box-open" style="margin-right:4px"></i>47 orders</span></td>
+              <td style="font-weight:700;color:#15803d">$3,680</td>
+              <td><button style="padding:5px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:7px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--primary)" onclick="alert('Playing recording…')"><i class="fa-solid fa-play"></i> Play</button></td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);font-size:.83rem">Jun 12, 2025</td>
+              <td><div style="font-weight:600;font-size:.87rem">Wireless Earbuds Pro Launch</div><div style="font-size:.75rem;color:var(--muted)">Standard · 1080p</div></td>
+              <td><span style="font-weight:600">1 hr</span></td>
+              <td><i class="fa-solid fa-users" style="color:var(--primary);margin-right:4px"></i><strong>830</strong></td>
+              <td><span style="background:#f0fdf4;color:#15803d;padding:4px 10px;border-radius:6px;font-size:.83rem;font-weight:700"><i class="fa-solid fa-box-open" style="margin-right:4px"></i>31 orders</span></td>
+              <td style="font-weight:700;color:#15803d">$2,790</td>
+              <td><button style="padding:5px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:7px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--primary)" onclick="alert('Playing recording…')"><i class="fa-solid fa-play"></i> Play</button></td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);font-size:.83rem">May 29, 2025</td>
+              <td><div style="font-weight:600;font-size:.87rem">Power Bank Range Q&A Session</div><div style="font-size:.75rem;color:var(--muted)">Standard · 720p</div></td>
+              <td><span style="font-weight:600">3 hrs</span></td>
+              <td><i class="fa-solid fa-users" style="color:var(--primary);margin-right:4px"></i><strong>2,105</strong></td>
+              <td><span style="background:#f0fdf4;color:#15803d;padding:4px 10px;border-radius:6px;font-size:.83rem;font-weight:700"><i class="fa-solid fa-box-open" style="margin-right:4px"></i>68 orders</span></td>
+              <td style="font-weight:700;color:#15803d">$4,120</td>
+              <td><button style="padding:5px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:7px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--primary)" onclick="alert('Playing recording…')"><i class="fa-solid fa-play"></i> Play</button></td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);font-size:.83rem">May 14, 2025</td>
+              <td><div style="font-weight:600;font-size:.87rem">Smart Watch Buyer Workshop</div><div style="font-size:.75rem;color:var(--muted)">Featured · 1080p</div></td>
+              <td><span style="font-weight:600">2 hrs</span></td>
+              <td><i class="fa-solid fa-users" style="color:var(--primary);margin-right:4px"></i><strong>1,560</strong></td>
+              <td><span style="background:#f0fdf4;color:#15803d;padding:4px 10px;border-radius:6px;font-size:.83rem;font-weight:700"><i class="fa-solid fa-box-open" style="margin-right:4px"></i>52 orders</span></td>
+              <td style="font-weight:700;color:#15803d">$5,460</td>
+              <td><button style="padding:5px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:7px;font-size:.78rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--primary)" onclick="alert('Playing recording…')"><i class="fa-solid fa-play"></i> Play</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer style="background:#0a0e27;color:#94a3b8;padding:20px 0;margin-top:auto">
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;text-align:center">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+</style>
+
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  let scheduleMode = 'now';
+
+  function setScheduleMode(mode) {
+    scheduleMode = mode;
+    document.getElementById('nowBtn').classList.toggle('active', mode==='now');
+    document.getElementById('laterBtn').classList.toggle('active', mode==='later');
+    document.getElementById('datetimePicker').style.display = mode==='later' ? 'block' : 'none';
+    document.getElementById('scheduleSubmitBtn').style.display = mode==='later' ? 'block' : 'none';
+  }
+
+  function updatePricing() {
+    const dur = parseInt(document.getElementById('streamDuration').value) || 1;
+    const featured = document.getElementById('featuredCheck').checked;
+    const base = dur * 50;
+    const total = base + (featured ? 100 : 0);
+    document.getElementById('prDuration').textContent = dur;
+    document.getElementById('prBase').textContent = '$' + base.toFixed(2);
+    document.getElementById('prFeaturedRow').style.display = featured ? 'flex' : 'none';
+    document.getElementById('prTotal').textContent = '$' + total.toFixed(2);
+  }
+
+  function launchStream(e) {
+    e.preventDefault();
+    const title = document.getElementById('streamTitle').value.trim();
+    if (!title) { alert('Please enter a stream title.'); return; }
+    if (scheduleMode === 'later') { scheduleStream(); return; }
+    if (confirm(`Ready to go live with "${title}"?\n\nMake sure your camera and microphone are working.`)) {
+      alert('🔴 You are now LIVE! Your stream has started. Good luck!');
+    }
+  }
+
+  function scheduleStream() {
+    const title = document.getElementById('streamTitle').value.trim() || 'New Stream';
+    const dt = document.getElementById('scheduleTime').value;
+    if (!dt) { alert('Please select a date and time for your scheduled stream.'); return; }
+    const formatted = new Date(dt).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    alert(`Stream "${title}" scheduled for ${formatted}.\n\nYou will receive a reminder 30 minutes before it starts.`);
+  }
+
+  function cancelStream(btn) {
+    if (confirm('Cancel this scheduled stream? This cannot be undone.')) {
+      btn.closest('.upcoming-card').style.opacity = '0.4';
+      btn.closest('.upcoming-card').style.pointerEvents = 'none';
+      btn.closest('.upcoming-card').querySelector('.upcoming-title').style.textDecoration = 'line-through';
+    }
+  }
+</script>
+</body>
+</html>

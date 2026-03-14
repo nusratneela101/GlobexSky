@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Active Deliveries | GlobexSky Carrier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0052CC; --secondary: #FF6B35; --accent: #00C9A7;
+      --dark: #0A0E27; --text: #1a1a2e; --muted: #64748b;
+      --border: #e2e8f0; --bg: #f4f6fa;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+    a { text-decoration: none; }
+
+    /* NAVBAR */
+    header { background:#fff; box-shadow:0 2px 20px rgba(0,82,204,.08); position:sticky; top:0; z-index:1000; }
+    .nav-inner { max-width:1400px; margin:0 auto; padding:12px 24px; display:flex; align-items:center; gap:16px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; }
+    .nav-logo span { font-family:'Poppins',sans-serif; font-size:1.4rem; font-weight:700; color:var(--dark); }
+    .nav-logo span em { color:var(--primary); font-style:normal; }
+    .nav-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+    .btn-login { padding:8px 16px; background:var(--primary); color:#fff; border-radius:8px; font-size:.88rem; font-weight:600; font-family:'Inter',sans-serif; }
+
+    /* MAIN */
+    main { flex:1; }
+    .container { max-width:1400px; margin:0 auto; padding:32px 24px; }
+
+    /* BREADCRUMB */
+    .breadcrumb { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--muted); margin-bottom:24px; }
+    .breadcrumb a { color:var(--primary); font-weight:500; }
+    .breadcrumb i { font-size:.7rem; }
+
+    /* PAGE HEADER */
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+    .page-header h1 { font-family:'Poppins',sans-serif; font-size:1.8rem; font-weight:700; color:var(--dark); }
+    .page-header p { color:var(--muted); margin-top:4px; font-size:.9rem; }
+    .live-badge { display:inline-flex; align-items:center; gap:6px; background:#dcfce7; color:#166534; padding:6px 14px; border-radius:20px; font-size:.82rem; font-weight:600; }
+    .live-dot { width:8px; height:8px; background:#22c55e; border-radius:50%; animation:pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* ACTIVE TRIP CARD */
+    .active-trip-card { background:#fff; border-radius:16px; border:2px solid var(--accent); box-shadow:0 4px 24px rgba(0,201,167,.15); margin-bottom:32px; overflow:hidden; }
+    .trip-header { background:linear-gradient(135deg, var(--dark) 0%, #1e2a4a 100%); padding:24px 28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .trip-route { display:flex; align-items:center; gap:16px; }
+    .trip-route .airport { text-align:center; }
+    .trip-route .airport .code { font-family:'Poppins',sans-serif; font-size:1.6rem; font-weight:800; color:#fff; }
+    .trip-route .airport .city { font-size:.78rem; color:#94a3b8; margin-top:2px; }
+    .trip-route .flight-line { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:120px; }
+    .trip-route .flight-line i { color:var(--secondary); font-size:1.4rem; }
+    .trip-route .flight-line .flight-info { font-size:.78rem; color:#94a3b8; text-align:center; }
+    .trip-meta { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+    .trip-meta .departure { font-size:.82rem; color:#94a3b8; }
+    .trip-meta .departure span { color:#fff; font-weight:600; }
+    .status-active { background:rgba(0,201,167,.2); color:var(--accent); padding:4px 12px; border-radius:20px; font-size:.78rem; font-weight:700; border:1px solid var(--accent); }
+
+    .trip-body { padding:28px; display:grid; grid-template-columns:1fr auto; gap:32px; }
+    @media(max-width:768px){ .trip-body{grid-template-columns:1fr;} }
+
+    /* PRODUCTS LIST */
+    .products-section h3 { font-family:'Poppins',sans-serif; font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .products-section h3 i { color:var(--primary); }
+    .product-list { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+    .product-item { background:var(--bg); border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border:1px solid var(--border); gap:12px; flex-wrap:wrap; }
+    .product-item .prod-name { font-weight:600; font-size:.9rem; color:var(--dark); }
+    .product-item .prod-details { font-size:.8rem; color:var(--muted); margin-top:2px; }
+    .product-item .prod-earning { font-family:'Poppins',sans-serif; font-weight:700; color:var(--accent); font-size:.95rem; white-space:nowrap; }
+
+    .trip-totals { background:linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius:10px; padding:16px 20px; display:flex; gap:32px; margin-bottom:20px; border:1px solid #bbf7d0; }
+    .trip-totals .total-item { display:flex; flex-direction:column; gap:4px; }
+    .trip-totals .total-item .label { font-size:.78rem; color:var(--muted); font-weight:500; }
+    .trip-totals .total-item .value { font-family:'Poppins',sans-serif; font-weight:700; font-size:1.1rem; color:var(--dark); }
+    .trip-totals .total-item .value.accent { color:var(--accent); }
+
+    .delivery-address { display:flex; align-items:flex-start; gap:10px; background:#eff6ff; border-radius:10px; padding:14px 16px; margin-bottom:20px; border:1px solid #bfdbfe; }
+    .delivery-address i { color:var(--primary); margin-top:2px; font-size:1rem; }
+    .delivery-address .addr-label { font-size:.78rem; color:var(--muted); font-weight:500; }
+    .delivery-address .addr-text { font-size:.9rem; color:var(--dark); font-weight:600; margin-top:2px; }
+
+    .action-buttons { display:flex; gap:12px; flex-wrap:wrap; }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:11px 20px; border-radius:10px; font-size:.88rem; font-weight:600; cursor:pointer; border:none; font-family:'Inter',sans-serif; transition:all .2s; }
+    .btn-deliver { background:#22c55e; color:#fff; flex:1; justify-content:center; min-width:160px; }
+    .btn-deliver:hover { background:#16a34a; transform:translateY(-1px); }
+    .btn-upload { background:var(--primary); color:#fff; position:relative; overflow:hidden; }
+    .btn-upload:hover { background:#0041a8; transform:translateY(-1px); }
+    .btn-upload input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+    .btn-contact { background:#fff; color:var(--primary); border:2px solid var(--primary); }
+    .btn-contact:hover { background:#eff6ff; transform:translateY(-1px); }
+
+    /* QR CODE (CSS-generated) */
+    .qr-section { display:flex; flex-direction:column; align-items:center; gap:12px; }
+    .qr-label { font-size:.78rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+    .qr-code { width:120px; height:120px; background:#1a1a2e; border-radius:8px; padding:10px; position:relative; display:grid; grid-template-columns:repeat(7,1fr); grid-template-rows:repeat(7,1fr); gap:1.5px; }
+    .qr-code .qr-cell { background:#1a1a2e; border-radius:1px; }
+    .qr-code .qr-cell.on { background:#fff; }
+    .qr-scan-btn { font-size:.8rem; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:4px; cursor:pointer; }
+
+    /* MAP PLACEHOLDER */
+    .map-placeholder { background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius:14px; width:100%; height:200px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; margin-bottom:32px; border:1px solid #334155; position:relative; overflow:hidden; }
+    .map-placeholder::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .map-placeholder i.fa-map-location-dot { font-size:2rem; color:var(--secondary); }
+    .map-placeholder p { color:#94a3b8; font-size:.9rem; font-weight:500; }
+    .map-route-line { display:flex; align-items:center; gap:8px; font-size:.8rem; color:#64748b; }
+    .map-route-line .dot { width:8px; height:8px; border-radius:50%; }
+    .map-route-line .dot.start { background:var(--accent); }
+    .map-route-line .dot.end { background:var(--secondary); }
+    .map-route-line .line { width:60px; height:1px; background:#334155; border-top:1px dashed #475569; }
+
+    /* EMPTY STATE */
+    .empty-state { display:none; flex-direction:column; align-items:center; justify-content:center; padding:60px 24px; text-align:center; background:#fff; border-radius:16px; border:2px dashed var(--border); margin-bottom:32px; }
+    .empty-state i { font-size:3rem; color:var(--border); margin-bottom:16px; }
+    .empty-state h3 { font-family:'Poppins',sans-serif; font-size:1.1rem; color:var(--muted); }
+    .empty-state p { font-size:.85rem; color:var(--muted); margin-top:6px; }
+
+    /* UPCOMING */
+    .section-title { font-family:'Poppins',sans-serif; font-size:1.1rem; font-weight:700; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .section-title i { color:var(--primary); }
+    .upcoming-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px; margin-bottom:32px; }
+    .upcoming-card { background:#fff; border-radius:12px; padding:20px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.04); transition:all .2s; }
+    .upcoming-card:hover { border-color:var(--primary); box-shadow:0 4px 16px rgba(0,82,204,.1); transform:translateY(-2px); }
+    .upcoming-card .uc-route { display:flex; align-items:center; gap:8px; font-family:'Poppins',sans-serif; font-weight:700; color:var(--dark); font-size:.95rem; margin-bottom:12px; }
+    .upcoming-card .uc-route i { color:var(--secondary); }
+    .uc-meta { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .uc-meta .uc-item { display:flex; flex-direction:column; gap:2px; }
+    .uc-meta .uc-item .uc-label { font-size:.73rem; color:var(--muted); font-weight:500; text-transform:uppercase; letter-spacing:.04em; }
+    .uc-meta .uc-item .uc-value { font-size:.85rem; font-weight:600; color:var(--dark); }
+    .uc-status { margin-top:12px; }
+    .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:.75rem; font-weight:600; }
+    .badge-pending { background:#fef3c7; color:#92400e; }
+    .badge-confirmed { background:#dcfce7; color:#166534; }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:32px; right:32px; background:#166534; color:#fff; padding:16px 24px; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,.2); display:flex; align-items:center; gap:12px; font-weight:600; z-index:9999; transform:translateY(100px); opacity:0; transition:all .4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast i { font-size:1.2rem; }
+
+    /* FOOTER */
+    footer { background:var(--dark); color:#94a3b8; padding:20px 0; margin-top:auto; }
+    footer .footer-inner { max-width:1400px; margin:0 auto; padding:0 24px; text-align:center; font-size:.85rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a href="../../../index.html" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+      <span>Globex<em>Sky</em></span>
+    </a>
+    <div class="nav-right">
+      <a href="../../auth/login.html" class="btn-login">Login</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- BREADCRUMB -->
+    <nav class="breadcrumb">
+      <a href="../../../index.html"><i class="fa fa-house"></i> Home</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>Carrier Portal</span>
+      <i class="fa fa-chevron-right"></i>
+      <span style="color:var(--dark);font-weight:600">Active Deliveries</span>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1><i class="fa fa-truck-fast" style="color:var(--accent);margin-right:10px"></i>Active Deliveries</h1>
+        <p>Manage your current shipment responsibilities</p>
+      </div>
+      <div class="live-badge"><span class="live-dot"></span> Live Tracking Active</div>
+    </div>
+
+    <!-- ACTIVE TRIP CARD -->
+    <div class="active-trip-card" id="activeTripCard">
+      <div class="trip-header">
+        <div class="trip-route">
+          <div class="airport">
+            <div class="code">JFK</div>
+            <div class="city">New York</div>
+          </div>
+          <div class="flight-line">
+            <i class="fa fa-plane"></i>
+            <div class="flight-info">Flight AA285<br>Direct</div>
+          </div>
+          <div class="airport">
+            <div class="code">PVG</div>
+            <div class="city">Shanghai</div>
+          </div>
+        </div>
+        <div class="trip-meta">
+          <div class="departure">Departure: <span>June 15, 2025 08:30</span></div>
+          <div class="departure">Flight: <span>American Airlines AA285</span></div>
+          <span class="status-active"><i class="fa fa-circle-dot"></i> In Transit</span>
+        </div>
+      </div>
+
+      <div class="trip-body">
+        <div class="products-section">
+          <h3><i class="fa fa-boxes-stacked"></i> Products Being Carried</h3>
+          <div class="product-list">
+            <div class="product-item">
+              <div>
+                <div class="prod-name"><i class="fa fa-plug-circle-bolt" style="color:var(--primary);margin-right:6px"></i>USB-C Hubs × 50 units</div>
+                <div class="prod-details"><i class="fa fa-weight-hanging" style="margin-right:4px"></i>2.5 kg &nbsp;|&nbsp; Seller: TechParts Co.</div>
+              </div>
+              <div class="prod-earning">+$45.00</div>
+            </div>
+            <div class="product-item">
+              <div>
+                <div class="prod-name"><i class="fa fa-headphones" style="color:var(--primary);margin-right:6px"></i>Wireless Earbuds × 20 units</div>
+                <div class="prod-details"><i class="fa fa-weight-hanging" style="margin-right:4px"></i>1.2 kg &nbsp;|&nbsp; Seller: AudioMax Ltd.</div>
+              </div>
+              <div class="prod-earning">+$28.00</div>
+            </div>
+            <div class="product-item">
+              <div>
+                <div class="prod-name"><i class="fa fa-clock" style="color:var(--primary);margin-right:6px"></i>Smart Watch × 10 units</div>
+                <div class="prod-details"><i class="fa fa-weight-hanging" style="margin-right:4px"></i>0.8 kg &nbsp;|&nbsp; Seller: WearTech Inc.</div>
+              </div>
+              <div class="prod-earning">+$35.00</div>
+            </div>
+          </div>
+
+          <div class="trip-totals">
+            <div class="total-item">
+              <span class="label"><i class="fa fa-weight-scale"></i> Total Weight</span>
+              <span class="value">4.5 kg</span>
+            </div>
+            <div class="total-item">
+              <span class="label"><i class="fa fa-box"></i> Total Items</span>
+              <span class="value">80 units</span>
+            </div>
+            <div class="total-item">
+              <span class="label"><i class="fa fa-dollar-sign"></i> Total Earnings</span>
+              <span class="value accent">$108.00</span>
+            </div>
+          </div>
+
+          <div class="delivery-address">
+            <i class="fa fa-location-dot"></i>
+            <div>
+              <div class="addr-label">Delivery Address</div>
+              <div class="addr-text">Shenzhen Tech Park, Building 3, Shenzhen, China</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Contact: Li Wei &nbsp;·&nbsp; +86 138 0013 8000</div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn btn-deliver" onclick="markDelivered()">
+              <i class="fa fa-circle-check"></i> Mark as Delivered
+            </button>
+            <button class="btn btn-upload">
+              <i class="fa fa-upload"></i> Upload Receipt
+              <input type="file" accept="image/*,.pdf" onchange="handleFileUpload(event)">
+            </button>
+            <button class="btn btn-contact">
+              <i class="fa fa-message"></i> Contact Receiver
+            </button>
+          </div>
+        </div>
+
+        <!-- QR CODE -->
+        <div class="qr-section">
+          <div class="qr-label"><i class="fa fa-qrcode" style="margin-right:4px"></i>Delivery QR</div>
+          <div class="qr-code" id="qrCode"></div>
+          <div style="font-size:.72rem;color:var(--muted);text-align:center;max-width:120px">Scan to confirm receipt</div>
+          <div class="qr-scan-btn"><i class="fa fa-expand"></i> Enlarge QR</div>
+          <div style="background:var(--bg);border-radius:8px;padding:10px 14px;text-align:center;border:1px solid var(--border);margin-top:8px;">
+            <div style="font-size:.72rem;color:var(--muted)">Trip ID</div>
+            <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:.82rem;color:var(--dark);letter-spacing:.05em">GS-C-2025-0285</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP PLACEHOLDER -->
+    <div class="map-placeholder">
+      <i class="fa fa-map-location-dot"></i>
+      <p><strong style="color:#fff">📍 Delivery Route Map</strong></p>
+      <div class="map-route-line">
+        <span class="dot start"></span>
+        <span style="color:#94a3b8;font-size:.78rem">New York, USA</span>
+        <span class="line"></span>
+        <i class="fa fa-plane" style="color:var(--secondary);font-size:.8rem"></i>
+        <span class="line"></span>
+        <span style="color:#94a3b8;font-size:.78rem">Shanghai, China</span>
+        <span class="dot end"></span>
+      </div>
+      <p style="font-size:.75rem;color:#475569">Live tracking updates every 5 minutes</p>
+    </div>
+
+    <!-- EMPTY STATE (hidden by default) -->
+    <div class="empty-state" id="emptyState">
+      <i class="fa fa-truck"></i>
+      <h3>No Active Deliveries</h3>
+      <p>You have no ongoing deliveries at the moment. Browse available trips to start earning.</p>
+    </div>
+
+    <!-- UPCOMING DELIVERIES -->
+    <div class="section-title"><i class="fa fa-calendar-alt"></i> Upcoming Deliveries</div>
+    <div class="upcoming-grid">
+      <div class="upcoming-card">
+        <div class="uc-route"><i class="fa fa-plane"></i> London (LHR) → Dubai (DXB)</div>
+        <div class="uc-meta">
+          <div class="uc-item">
+            <span class="uc-label">Flight</span>
+            <span class="uc-value">EK 004</span>
+          </div>
+          <div class="uc-item">
+            <span class="uc-label">Departure</span>
+            <span class="uc-value">Jun 22, 14:15</span>
+          </div>
+          <div class="uc-item">
+            <span class="uc-label">Items</span>
+            <span class="uc-value">2 products</span>
+          </div>
+          <div class="uc-item">
+            <span class="uc-label">Earnings</span>
+            <span class="uc-value" style="color:var(--accent)">$65.00</span>
+          </div>
+        </div>
+        <div class="uc-status"><span class="badge badge-confirmed"><i class="fa fa-check"></i> Confirmed</span></div>
+      </div>
+      <div class="upcoming-card">
+        <div class="uc-route"><i class="fa fa-plane"></i> Tokyo (NRT) → Sydney (SYD)</div>
+        <div class="uc-meta">
+          <div class="uc-item">
+            <span class="uc-label">Flight</span>
+            <span class="uc-value">JL 771</span>
+          </div>
+          <div class="uc-item">
+            <span class="uc-label">Departure</span>
+            <span class="uc-value">Jun 28, 10:40</span>
+          </div>
+          <div class="uc-item">
+            <span class="uc-label">Items</span>
+            <span class="uc-value">4 products</span>
+          </div>
+          <div class="uc-item">
+            <span class="uc-label">Earnings</span>
+            <span class="uc-value" style="color:var(--accent)">$92.50</span>
+          </div>
+        </div>
+        <div class="uc-status"><span class="badge badge-pending"><i class="fa fa-clock"></i> Awaiting Confirmation</span></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fa fa-circle-check"></i> <span id="toastMsg">Success!</span></div>
+
+<script>
+  // Build CSS QR pattern
+  (function buildQR() {
+    const pattern = [
+      1,1,1,1,1,1,1,
+      1,0,0,0,0,0,1,
+      1,0,1,0,1,0,1,
+      1,0,0,1,0,0,1,
+      1,0,1,0,1,0,1,
+      1,0,0,0,0,0,1,
+      1,1,1,1,1,1,1
+    ];
+    const qr = document.getElementById('qrCode');
+    pattern.forEach(bit => {
+      const cell = document.createElement('div');
+      cell.className = 'qr-cell' + (bit ? ' on' : '');
+      qr.appendChild(cell);
+    });
+  })();
+
+  function showToast(msg, type = 'success') {
+    const toast = document.getElementById('toast');
+    const colors = { success: '#166534', error: '#991b1b', info: '#1e40af' };
+    toast.style.background = colors[type] || colors.success;
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  function markDelivered() {
+    const card = document.getElementById('activeTripCard');
+    const empty = document.getElementById('emptyState');
+    if (confirm('Are you sure you want to mark this delivery as completed?')) {
+      card.style.transition = 'all .4s ease';
+      card.style.opacity = '0';
+      card.style.transform = 'scale(.97)';
+      setTimeout(() => {
+        card.style.display = 'none';
+        empty.style.display = 'flex';
+        showToast('Delivery marked as completed! Earnings of $108.00 added to your wallet.');
+      }, 400);
+    }
+  }
+
+  function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (file) {
+      showToast(`Receipt "${file.name}" uploaded successfully!`);
+    }
+  }
+
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parcel Dashboard | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0052CC; --secondary: #FF6B35; --accent: #00C9A7;
+      --dark: #0A0E27; --text: #1a1a2e; --muted: #64748b;
+      --border: #e2e8f0; --bg: #f4f6fa;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+    a { text-decoration: none; }
+
+    header { background:#fff; box-shadow:0 2px 20px rgba(0,82,204,.08); position:sticky; top:0; z-index:1000; }
+    .nav-inner { max-width:1400px; margin:0 auto; padding:12px 24px; display:flex; align-items:center; gap:16px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; }
+    .nav-logo span { font-family:'Poppins',sans-serif; font-size:1.4rem; font-weight:700; color:var(--dark); }
+    .nav-logo span em { color:var(--primary); font-style:normal; }
+    .nav-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+    .btn-login { padding:8px 16px; background:var(--primary); color:#fff; border-radius:8px; font-size:.88rem; font-weight:600; font-family:'Inter',sans-serif; }
+
+    main { flex:1; }
+    .container { max-width:1400px; margin:0 auto; padding:32px 24px; }
+
+    /* HERO BANNER */
+    .hero-banner { background:linear-gradient(135deg, #0052CC 0%, #0A0E27 50%, #00C9A7 100%); border-radius:20px; padding:36px 40px; margin-bottom:28px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; overflow:hidden; position:relative; }
+    .hero-banner::before { content:''; position:absolute; top:-30%; right:5%; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,.04); }
+    .hero-banner::after { content:''; position:absolute; bottom:-40%; right:20%; width:200px; height:200px; border-radius:50%; background:rgba(0,201,167,.1); }
+    .hero-text h2 { font-family:'Poppins',sans-serif; font-size:1.8rem; font-weight:800; color:#fff; margin-bottom:6px; }
+    .hero-text p { color:rgba(255,255,255,.75); font-size:.95rem; }
+    .hero-badge { background:rgba(255,107,53,.2); border:1px solid var(--secondary); border-radius:20px; padding:6px 14px; display:inline-flex; align-items:center; gap:6px; color:var(--secondary); font-size:.82rem; font-weight:700; margin-top:10px; }
+    .hero-btn { display:inline-flex; align-items:center; gap:8px; padding:14px 28px; background:var(--secondary); color:#fff; border-radius:12px; font-weight:700; font-family:'Poppins',sans-serif; font-size:1rem; transition:all .2s; border:none; cursor:pointer; white-space:nowrap; }
+    .hero-btn:hover { background:#e55a27; transform:translateY(-2px); box-shadow:0 8px 20px rgba(255,107,53,.3); }
+
+    /* STATS */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+    @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:500px){.stats-grid{grid-template-columns:1fr;}}
+    .stat-card { background:#fff; border-radius:14px; padding:20px 22px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.04); display:flex; align-items:center; gap:16px; transition:all .2s; }
+    .stat-card:hover { box-shadow:0 6px 20px rgba(0,82,204,.1); transform:translateY(-2px); }
+    .stat-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+    .stat-value { font-family:'Poppins',sans-serif; font-size:1.5rem; font-weight:800; color:var(--dark); line-height:1; }
+    .stat-label { font-size:.78rem; color:var(--muted); margin-top:4px; font-weight:500; }
+    .ic-blue{background:#eff6ff;color:var(--primary);}
+    .ic-orange{background:#fff7ed;color:var(--secondary);}
+    .ic-green{background:#f0fdf4;color:#16a34a;}
+    .ic-purple{background:#f5f3ff;color:#7c3aed;}
+
+    /* TRACKING BAR */
+    .track-card { background:#fff; border-radius:14px; padding:24px 28px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.04); margin-bottom:28px; }
+    .track-card h3 { font-family:'Poppins',sans-serif; font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .track-card h3 i { color:var(--secondary); }
+    .track-form { display:flex; gap:12px; }
+    .track-input { flex:1; padding:13px 18px; border:2px solid var(--border); border-radius:12px; font-size:.95rem; font-family:'Inter',sans-serif; outline:none; transition:border-color .2s; }
+    .track-input:focus { border-color:var(--secondary); }
+    .track-input::placeholder { color:var(--muted); }
+    .btn-track { padding:13px 28px; background:var(--secondary); color:#fff; border:none; border-radius:12px; font-weight:700; font-size:.95rem; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; gap:8px; transition:all .2s; white-space:nowrap; }
+    .btn-track:hover { background:#e55a27; transform:translateY(-1px); }
+
+    /* ACTIVE SHIPMENTS */
+    .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .section-title { font-family:'Poppins',sans-serif; font-size:1.1rem; font-weight:700; color:var(--dark); display:flex; align-items:center; gap:8px; }
+    .section-title i { color:var(--primary); }
+    .section-count { background:var(--primary); color:#fff; border-radius:20px; padding:2px 10px; font-size:.75rem; font-weight:700; }
+    .shipments-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:16px; margin-bottom:32px; }
+    .shipment-card { background:#fff; border-radius:14px; padding:20px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.04); transition:all .2s; }
+    .shipment-card:hover { border-color:var(--primary); box-shadow:0 6px 20px rgba(0,82,204,.1); }
+    .sc-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+    .sc-ref { font-size:.78rem; color:var(--muted); font-weight:600; }
+    .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:.75rem; font-weight:600; }
+    .badge-transit { background:#dbeafe; color:#1e40af; }
+    .badge-picked { background:#fef3c7; color:#92400e; }
+    .badge-delivered { background:#dcfce7; color:#166534; }
+    .sc-route { font-family:'Poppins',sans-serif; font-weight:700; color:var(--dark); font-size:.95rem; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+    .sc-route i { color:var(--secondary); font-size:.85rem; }
+    .sc-dest { font-size:.8rem; color:var(--muted); margin-bottom:16px; }
+
+    /* PROGRESS STEPS */
+    .progress-steps { display:flex; align-items:center; margin-bottom:14px; }
+    .step { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
+    .step:not(:last-child)::after { content:''; position:absolute; top:12px; left:50%; width:100%; height:2px; background:var(--border); z-index:0; }
+    .step.active:not(:last-child)::after { background:var(--primary); }
+    .step.done:not(:last-child)::after { background:var(--accent); }
+    .step-dot { width:24px; height:24px; border-radius:50%; border:2px solid var(--border); background:#fff; z-index:1; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--border); transition:all .3s; }
+    .step.done .step-dot { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .step.active .step-dot { background:var(--primary); border-color:var(--primary); color:#fff; animation:pulseDot 1.5s infinite; }
+    @keyframes pulseDot { 0%,100%{box-shadow:0 0 0 0 rgba(0,82,204,.3)} 50%{box-shadow:0 0 0 6px rgba(0,82,204,0)} }
+    .step-label { font-size:.65rem; color:var(--muted); margin-top:5px; text-align:center; font-weight:500; }
+    .step.done .step-label, .step.active .step-label { color:var(--dark); font-weight:600; }
+
+    .sc-eta { font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:6px; }
+    .sc-eta i { color:var(--primary); }
+    .sc-eta strong { color:var(--dark); }
+
+    /* RECENT TABLE */
+    .table-card { background:#fff; border-radius:14px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.04); overflow:hidden; margin-bottom:20px; }
+    .table-wrapper { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:750px; }
+    thead { background:var(--bg); }
+    thead th { padding:12px 16px; text-align:left; font-size:.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--border); white-space:nowrap; }
+    tbody tr { border-bottom:1px solid var(--border); transition:background .15s; }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:hover { background:#f8fafc; }
+    tbody td { padding:12px 16px; font-size:.86rem; vertical-align:middle; }
+    .ref-cell { font-family:'Poppins',sans-serif; font-weight:700; font-size:.82rem; color:var(--primary); }
+    .route-cell { font-weight:600; font-size:.83rem; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    .btn-track-sm { padding:5px 12px; background:var(--bg); color:var(--primary); border:1px solid var(--border); border-radius:8px; font-size:.75rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:all .2s; }
+    .btn-track-sm:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+    /* FILTER TABS FOR TABLE */
+    .tab-group { display:flex; background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+    .tab-btn { padding:8px 16px; border:none; background:transparent; cursor:pointer; font-size:.82rem; font-weight:600; color:var(--muted); font-family:'Inter',sans-serif; transition:all .2s; }
+    .tab-btn.active { background:var(--primary); color:#fff; }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:32px; right:32px; background:var(--dark); color:#fff; padding:16px 24px; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,.25); display:flex; align-items:flex-start; gap:12px; max-width:360px; z-index:9999; transform:translateY(100px); opacity:0; transition:all .4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast-icon { font-size:1.1rem; margin-top:2px; color:var(--accent); }
+    .toast-text { font-size:.85rem; }
+    .toast-title { font-weight:700; font-size:.9rem; margin-bottom:2px; }
+
+    footer { background:var(--dark); color:#94a3b8; padding:20px 0; margin-top:auto; }
+    footer .footer-inner { max-width:1400px; margin:0 auto; padding:0 24px; text-align:center; font-size:.85rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a href="../../../index.html" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+      <span>Globex<em>Sky</em></span>
+    </a>
+    <div class="nav-right">
+      <a href="../../auth/login.html" class="btn-login">Login</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- HERO -->
+    <div class="hero-banner">
+      <div class="hero-text">
+        <h2><i class="fa fa-wave-square" style="font-size:1.4rem;margin-right:8px"></i>Welcome back, Alex!</h2>
+        <p>Manage your shipments, track packages, and ship smarter with GlobexSky.</p>
+        <span class="hero-badge"><i class="fa fa-globe"></i> GlobexSky Parcel Shipping</span>
+      </div>
+      <button class="hero-btn" onclick="location.href='#'">
+        <i class="fa fa-plus-circle"></i> Create New Shipment
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon ic-blue"><i class="fa fa-boxes-stacked"></i></div>
+        <div><div class="stat-value">34</div><div class="stat-label">Total Shipments</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-orange"><i class="fa fa-truck-moving"></i></div>
+        <div><div class="stat-value">3</div><div class="stat-label">Active Shipments</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-green"><i class="fa fa-circle-check"></i></div>
+        <div><div class="stat-value">29</div><div class="stat-label">Delivered</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-purple"><i class="fa fa-dollar-sign"></i></div>
+        <div><div class="stat-value">$1,284</div><div class="stat-label">Total Spent</div></div>
+      </div>
+    </div>
+
+    <!-- TRACKING BAR -->
+    <div class="track-card">
+      <h3><i class="fa fa-search-location"></i> Quick Package Tracking</h3>
+      <div class="track-form">
+        <input type="text" class="track-input" id="trackInput" placeholder="Enter tracking number (e.g. GS-P-2025-4821)..." maxlength="30">
+        <button class="btn-track" onclick="trackPackage()">
+          <i class="fa fa-magnifying-glass"></i> Track
+        </button>
+      </div>
+    </div>
+
+    <!-- ACTIVE SHIPMENTS -->
+    <div class="section-header">
+      <div class="section-title"><i class="fa fa-satellite-dish"></i> Active Shipments <span class="section-count">3</span></div>
+    </div>
+    <div class="shipments-grid">
+      <!-- Card 1 -->
+      <div class="shipment-card">
+        <div class="sc-top">
+          <span class="sc-ref">REF: GS-P-2025-4821</span>
+          <span class="badge badge-transit"><i class="fa fa-plane"></i> In Transit</span>
+        </div>
+        <div class="sc-route"><i class="fa fa-arrow-right"></i> New York → Shanghai</div>
+        <div class="sc-dest">Shanghai, China · Express · 2.3 kg</div>
+        <div class="progress-steps">
+          <div class="step done"><div class="step-dot"><i class="fa fa-check"></i></div><div class="step-label">Created</div></div>
+          <div class="step done"><div class="step-dot"><i class="fa fa-check"></i></div><div class="step-label">Picked Up</div></div>
+          <div class="step active"><div class="step-dot"><i class="fa fa-plane"></i></div><div class="step-label">In Transit</div></div>
+          <div class="step"><div class="step-dot"><i class="fa fa-house"></i></div><div class="step-label">Delivered</div></div>
+        </div>
+        <div class="sc-eta"><i class="fa fa-calendar-check"></i> Estimated Delivery: <strong>Jun 18, 2025</strong></div>
+      </div>
+      <!-- Card 2 -->
+      <div class="shipment-card">
+        <div class="sc-top">
+          <span class="sc-ref">REF: GS-P-2025-4756</span>
+          <span class="badge badge-picked"><i class="fa fa-box"></i> Picked Up</span>
+        </div>
+        <div class="sc-route"><i class="fa fa-arrow-right"></i> Los Angeles → London</div>
+        <div class="sc-dest">London, UK · Standard · 1.8 kg</div>
+        <div class="progress-steps">
+          <div class="step done"><div class="step-dot"><i class="fa fa-check"></i></div><div class="step-label">Created</div></div>
+          <div class="step active"><div class="step-dot"><i class="fa fa-box"></i></div><div class="step-label">Picked Up</div></div>
+          <div class="step"><div class="step-dot"><i class="fa fa-plane"></i></div><div class="step-label">In Transit</div></div>
+          <div class="step"><div class="step-dot"><i class="fa fa-house"></i></div><div class="step-label">Delivered</div></div>
+        </div>
+        <div class="sc-eta"><i class="fa fa-calendar-check"></i> Estimated Delivery: <strong>Jun 25, 2025</strong></div>
+      </div>
+      <!-- Card 3 -->
+      <div class="shipment-card">
+        <div class="sc-top">
+          <span class="sc-ref">REF: GS-P-2025-4690</span>
+          <span class="badge badge-transit"><i class="fa fa-plane"></i> In Transit</span>
+        </div>
+        <div class="sc-route"><i class="fa fa-arrow-right"></i> Chicago → Tokyo</div>
+        <div class="sc-dest">Tokyo, Japan · Economy · 0.6 kg</div>
+        <div class="progress-steps">
+          <div class="step done"><div class="step-dot"><i class="fa fa-check"></i></div><div class="step-label">Created</div></div>
+          <div class="step done"><div class="step-dot"><i class="fa fa-check"></i></div><div class="step-label">Picked Up</div></div>
+          <div class="step active"><div class="step-dot"><i class="fa fa-plane"></i></div><div class="step-label">In Transit</div></div>
+          <div class="step"><div class="step-dot"><i class="fa fa-house"></i></div><div class="step-label">Delivered</div></div>
+        </div>
+        <div class="sc-eta"><i class="fa fa-calendar-check"></i> Estimated Delivery: <strong>Jun 28, 2025</strong></div>
+      </div>
+    </div>
+
+    <!-- RECENT TABLE -->
+    <div class="section-header">
+      <div class="section-title"><i class="fa fa-table-list"></i> Recent Shipments</div>
+      <div class="tab-group">
+        <button class="tab-btn active" onclick="filterRows('all',this)">All</button>
+        <button class="tab-btn" onclick="filterRows('In Transit',this)">In Transit</button>
+        <button class="tab-btn" onclick="filterRows('Delivered',this)">Delivered</button>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table id="recentTable">
+          <thead>
+            <tr>
+              <th>Ref #</th>
+              <th>Date</th>
+              <th>Route</th>
+              <th>Weight</th>
+              <th>Cost</th>
+              <th>Status</th>
+              <th>Track</th>
+            </tr>
+          </thead>
+          <tbody id="recentBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon"><i class="fa fa-circle-info"></i></div>
+  <div class="toast-text">
+    <div class="toast-title" id="toastTitle">Tracking Result</div>
+    <div id="toastMsg">Loading...</div>
+  </div>
+</div>
+
+<script>
+  const recentShipments = [
+    { ref:'GS-P-2025-4821', date:'Jun 12, 2025', from:'New York', to:'Shanghai', weight:'2.3 kg', cost:'$89.05', status:'In Transit' },
+    { ref:'GS-P-2025-4756', date:'Jun 08, 2025', from:'Los Angeles', to:'London', weight:'1.8 kg', cost:'$62.40', status:'In Transit' },
+    { ref:'GS-P-2025-4690', date:'Jun 03, 2025', from:'Chicago', to:'Tokyo', weight:'0.6 kg', cost:'$41.20', status:'In Transit' },
+    { ref:'GS-P-2025-4601', date:'May 28, 2025', from:'Miami', to:'Dubai', weight:'3.1 kg', cost:'$94.80', status:'Delivered' },
+    { ref:'GS-P-2025-4534', date:'May 22, 2025', from:'Dallas', to:'Berlin', weight:'0.9 kg', cost:'$55.60', status:'Delivered' },
+    { ref:'GS-P-2025-4478', date:'May 18, 2025', from:'Seattle', to:'Singapore', weight:'4.2 kg', cost:'$120.15', status:'Delivered' },
+    { ref:'GS-P-2025-4392', date:'May 10, 2025', from:'New York', to:'Paris', weight:'1.1 kg', cost:'$47.30', status:'Delivered' },
+    { ref:'GS-P-2025-4301', date:'May 02, 2025', from:'Boston', to:'Sydney', weight:'2.7 kg', cost:'$78.90', status:'Delivered' },
+  ];
+
+  const statusBadgeMap = {
+    'In Transit': 'badge-transit',
+    'Delivered': 'badge-delivered',
+    'Picked Up': 'badge-picked'
+  };
+
+  function renderTable(filter) {
+    const rows = filter === 'all' ? recentShipments : recentShipments.filter(r => r.status === filter);
+    document.getElementById('recentBody').innerHTML = rows.map(r => `
+      <tr data-status="${r.status}">
+        <td class="ref-cell">${r.ref}</td>
+        <td style="font-size:.8rem;color:var(--muted)">${r.date}</td>
+        <td><div class="route-cell"><i class="fa fa-arrow-right" style="color:var(--secondary)"></i>${r.from} → ${r.to}</div></td>
+        <td>${r.weight}</td>
+        <td style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--accent)">${r.cost}</td>
+        <td><span class="badge ${statusBadgeMap[r.status] || ''}">${r.status}</span></td>
+        <td><button class="btn-track-sm" onclick="trackRef('${r.ref}')"><i class="fa fa-crosshairs"></i> Track</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function filterRows(filter, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable(filter);
+  }
+
+  function trackRef(ref) {
+    document.getElementById('trackInput').value = ref;
+    trackPackage();
+  }
+
+  function trackPackage() {
+    const val = document.getElementById('trackInput').value.trim();
+    if (!val) { showToast('Please enter a tracking number', 'error'); return; }
+    const found = recentShipments.find(r => r.ref === val);
+    const toast = document.getElementById('toast');
+    if (found) {
+      document.getElementById('toastTitle').textContent = `📦 ${found.ref}`;
+      document.getElementById('toastMsg').textContent = `${found.from} → ${found.to} · ${found.status} · ${found.weight}`;
+      toast.style.background = '#1e40af';
+    } else {
+      document.getElementById('toastTitle').textContent = 'Tracking Result';
+      document.getElementById('toastMsg').textContent = `Parcel ${val} is in transit — estimated arrival in 3-5 days.`;
+      toast.style.background = '#166534';
+    }
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  function showToast(msg, type) {
+    const toast = document.getElementById('toast');
+    toast.style.background = type === 'error' ? '#991b1b' : '#166534';
+    document.getElementById('toastTitle').textContent = type === 'error' ? 'Error' : 'Success';
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  renderTable('all');
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

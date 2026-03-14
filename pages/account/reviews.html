@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Reviews | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;display:flex;flex-direction:column;min-height:100vh}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-divider{border:none;border-top:1px solid #e2e8f0;margin-bottom:16px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-ghost{background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0}
+    .btn-ghost:hover{background:#e2e8f0}
+    .btn-danger{background:#fff;color:#ef4444;border:1.5px solid #fca5a5}
+    .btn-danger:hover{background:#fee2e2}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+    .filter-tab{padding:7px 18px;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .review-list{display:flex;flex-direction:column;gap:14px}
+    .review-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:18px;transition:all .25s;background:#fff}
+    .review-card:hover{box-shadow:0 4px 18px rgba(0,82,204,.08);border-color:#b3c8f5}
+    .review-card.removing{opacity:0;transform:translateY(-8px);transition:all .3s}
+    .review-card-inner{display:flex;gap:16px;align-items:flex-start}
+    .review-thumb{width:64px;height:64px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;color:#fff}
+    .review-body{flex:1;min-width:0}
+    .review-product{font-family:'Poppins',sans-serif;font-weight:600;font-size:.92rem;color:#0a0e27;margin-bottom:4px}
+    .stars{color:#f59e0b;font-size:.95rem;letter-spacing:.05em;margin-bottom:6px}
+    .stars .empty{color:#d1d5db}
+    .review-text{font-size:.85rem;color:#374151;line-height:1.6;margin-bottom:8px}
+    .review-meta{font-size:.75rem;color:#94a3b8;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .review-actions{display:flex;gap:8px;flex-shrink:0;align-items:flex-start}
+    .pending-card{border:1.5px dashed #e2e8f0;border-radius:12px;padding:18px;background:#fafbfc;display:flex;align-items:center;gap:16px}
+    .pending-card:hover{border-color:#b3c8f5;background:#f8faff}
+    .pending-thumb{width:64px;height:64px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;color:#fff}
+    .pending-body{flex:1}
+    .pending-product{font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem;color:#0a0e27;margin-bottom:4px}
+    .pending-meta{font-size:.78rem;color:#64748b;margin-bottom:10px}
+    .empty-state{text-align:center;padding:50px 20px}
+    .empty-state-icon{font-size:3rem;color:#d1d5db;margin-bottom:14px}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .empty-state p{color:#64748b;font-size:.85rem}
+    footer{background:#0a0e27;color:#94a3b8;padding:20px 0;margin-top:auto}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.review-card-inner{flex-direction:column}.review-actions{flex-direction:row}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <a href="../auth/login.html" style="padding:8px 16px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">AJ</div>
+    <div class="account-sidebar-name">Alex Johnson</div>
+    <div class="account-sidebar-email">alex@example.com</div>
+    <hr class="sidebar-divider"/>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="address-book.html"><i class="fas fa-map-marker-alt"></i> Address Book</a></li>
+      <li><a href="payment-methods.html"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+      <li><a href="reviews.html" class="active"><i class="fas fa-star"></i> Reviews</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <div class="page-card">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-star" style="color:#f59e0b"></i> My Reviews</h1>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-tab="products">Product Reviews <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px" id="cnt-products">5</span></button>
+        <button class="filter-tab" data-tab="suppliers">Supplier Reviews <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">2</span></button>
+        <button class="filter-tab" data-tab="pending">Pending Reviews <span style="background:rgba(255,107,53,.15);color:#FF6B35;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px" id="cnt-pending">3</span></button>
+      </div>
+
+      <!-- Product Reviews Tab -->
+      <div class="tab-panel active" id="tab-products">
+        <div class="review-list" id="product-reviews-list"></div>
+      </div>
+
+      <!-- Supplier Reviews Tab -->
+      <div class="tab-panel" id="tab-suppliers">
+        <div class="review-list" id="supplier-reviews-list"></div>
+      </div>
+
+      <!-- Pending Reviews Tab -->
+      <div class="tab-panel" id="tab-pending">
+        <div class="review-list" id="pending-reviews-list"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;text-align:center">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const productReviews = [
+  {id:1,abbr:"UH",color:"#16a085",product:"USB-C Hub 7-in-1",supplier:"ShenzTech Electronics",rating:5,text:"Exceptional build quality and all 7 ports work flawlessly. The data transfer speed is impressive. Highly recommend for anyone needing a reliable multi-port hub.",date:"May 10, 2025",helpful:24},
+  {id:2,abbr:"WE",color:"#2471a3",product:"Wireless Earbuds Pro",supplier:"AudioWave Mfg.",rating:4,text:"Great sound quality and comfortable fit. Battery life is solid at around 6 hours. Only minor gripe is the case takes a while to charge.",date:"Apr 28, 2025",helpful:18},
+  {id:3,abbr:"SW",color:"#1abc9c",product:"Smart Watch Series X",supplier:"TechVision Co.",rating:3,text:"Decent watch for the price point. The heart rate monitor is fairly accurate. Screen resolution could be better and the strap feels a bit cheap.",date:"Apr 15, 2025",helpful:9},
+  {id:4,abbr:"CT",color:"#e74c3c",product:"Cotton T-Shirts Pack (500)",supplier:"TextilePro Garments",rating:5,text:"Excellent fabric quality — soft, durable, and the stitching is perfect. Delivered ahead of schedule and packaging was great. Will reorder.",date:"Mar 30, 2025",helpful:31},
+  {id:5,abbr:"CM",color:"#e67e22",product:"Ceramic Coffee Mugs",supplier:"ChinaCraft Co.",rating:4,text:"Beautiful design and sturdy construction. Glaze is smooth and even. A few mugs had minor blemishes but overall a great bulk purchase.",date:"Mar 12, 2025",helpful:15},
+];
+
+const supplierReviews = [
+  {id:1,abbr:"ST",color:"#0052CC",supplier:"ShenzTech Electronics",rating:5,text:"Outstanding supplier — responsive communication, fast shipping, and consistent product quality. Have ordered from them 3 times and never disappointed.",date:"May 10, 2025",helpful:42},
+  {id:2,abbr:"TP",color:"#8e44ad",supplier:"TextilePro Garments",rating:4,text:"Reliable supplier with competitive pricing. Lead times are accurate and samples were exactly as described. Minor communication delays but overall solid.",date:"Mar 30, 2025",helpful:27},
+];
+
+const pendingReviews = [
+  {id:1,abbr:"PB",color:"#8e44ad",product:"Power Bank 20000mAh",supplier:"PowerCell Factory",orderDate:"May 15, 2025"},
+  {id:2,abbr:"LW",color:"#5d4037",product:"Genuine Leather Wallets",supplier:"LeatherCraft Workshop",orderDate:"May 8, 2025"},
+  {id:3,abbr:"BB",color:"#27ae60",product:"Bamboo Cutting Boards",supplier:"EcoWood Supplies",orderDate:"Apr 22, 2025"},
+];
+
+function renderStars(rating) {
+  let s = "";
+  for (let i = 1; i <= 5; i++) {
+    s += i <= rating ? "★" : "<span class='empty'>☆</span>";
+  }
+  return s;
+}
+
+function renderProductReviews() {
+  const list = document.getElementById("product-reviews-list");
+  if (!productReviews.length) { list.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-star"></i></div><h3>No product reviews yet</h3><p>Purchase products to leave reviews.</p></div>'; return; }
+  list.innerHTML = productReviews.map(r => `
+    <div class="review-card" id="pr-${r.id}">
+      <div class="review-card-inner">
+        <div class="review-thumb" style="background:${r.color}">${r.abbr}</div>
+        <div class="review-body">
+          <div class="review-product">${r.product}</div>
+          <div style="font-size:.78rem;color:#64748b;margin-bottom:6px">${r.supplier}</div>
+          <div class="stars">${renderStars(r.rating)}</div>
+          <div class="review-text">${r.text}</div>
+          <div class="review-meta">
+            <span><i class="fas fa-calendar" style="margin-right:4px"></i>${r.date}</span>
+            <span><i class="fas fa-thumbs-up" style="margin-right:4px;color:#059669"></i>${r.helpful} people found this helpful</span>
+          </div>
+        </div>
+        <div class="review-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editReview(${r.id},'product')"><i class="fas fa-edit"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id},'product')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderSupplierReviews() {
+  const list = document.getElementById("supplier-reviews-list");
+  list.innerHTML = supplierReviews.map(r => `
+    <div class="review-card" id="sr-${r.id}">
+      <div class="review-card-inner">
+        <div class="review-thumb" style="background:${r.color}">${r.abbr}</div>
+        <div class="review-body">
+          <div class="review-product">${r.supplier}</div>
+          <div style="font-size:.78rem;color:#64748b;margin-bottom:6px">Supplier Review</div>
+          <div class="stars">${renderStars(r.rating)}</div>
+          <div class="review-text">${r.text}</div>
+          <div class="review-meta">
+            <span><i class="fas fa-calendar" style="margin-right:4px"></i>${r.date}</span>
+            <span><i class="fas fa-thumbs-up" style="margin-right:4px;color:#059669"></i>${r.helpful} people found this helpful</span>
+          </div>
+        </div>
+        <div class="review-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editReview(${r.id},'supplier')"><i class="fas fa-edit"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id},'supplier')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderPendingReviews() {
+  const list = document.getElementById("pending-reviews-list");
+  list.innerHTML = pendingReviews.map(r => `
+    <div class="pending-card" id="pend-${r.id}">
+      <div class="pending-thumb" style="background:${r.color}">${r.abbr}</div>
+      <div class="pending-body">
+        <div class="pending-product">${r.product}</div>
+        <div class="pending-meta"><i class="fas fa-store" style="margin-right:4px;color:#94a3b8"></i>${r.supplier} &bull; Ordered ${r.orderDate}</div>
+        <button class="btn btn-primary btn-sm" onclick="writeReview(${r.id})"><i class="fas fa-pen"></i> Write a Review</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function editReview(id, type) {
+  alert("Edit review #"+id+" ("+type+") — editor would open here.");
+}
+
+function deleteReview(id, type) {
+  if (!confirm("Delete this review?")) return;
+  const prefix = type === "product" ? "pr-" : "sr-";
+  const el = document.getElementById(prefix+id);
+  if (el) { el.classList.add("removing"); setTimeout(() => { el.remove(); }, 300); }
+}
+
+function writeReview(id) {
+  alert("Write review for pending item #"+id+" — review form would open here.");
+}
+
+document.querySelectorAll(".filter-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById("tab-"+tab.dataset.tab).classList.add("active");
+  });
+});
+
+renderProductReviews();
+renderSupplierReviews();
+renderPendingReviews();
+document.getElementById("copyright-year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

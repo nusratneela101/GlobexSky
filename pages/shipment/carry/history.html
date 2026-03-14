@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery History | GlobexSky Carrier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0052CC; --secondary: #FF6B35; --accent: #00C9A7;
+      --dark: #0A0E27; --text: #1a1a2e; --muted: #64748b;
+      --border: #e2e8f0; --bg: #f4f6fa;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+    a { text-decoration: none; }
+
+    /* NAVBAR */
+    header { background:#fff; box-shadow:0 2px 20px rgba(0,82,204,.08); position:sticky; top:0; z-index:1000; }
+    .nav-inner { max-width:1400px; margin:0 auto; padding:12px 24px; display:flex; align-items:center; gap:16px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; }
+    .nav-logo span { font-family:'Poppins',sans-serif; font-size:1.4rem; font-weight:700; color:var(--dark); }
+    .nav-logo span em { color:var(--primary); font-style:normal; }
+    .nav-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+    .btn-login { padding:8px 16px; background:var(--primary); color:#fff; border-radius:8px; font-size:.88rem; font-weight:600; font-family:'Inter',sans-serif; }
+
+    main { flex:1; }
+    .container { max-width:1400px; margin:0 auto; padding:32px 24px; }
+
+    .breadcrumb { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--muted); margin-bottom:24px; }
+    .breadcrumb a { color:var(--primary); font-weight:500; }
+    .breadcrumb i { font-size:.7rem; }
+
+    .page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:16px; }
+    .page-header h1 { font-family:'Poppins',sans-serif; font-size:1.8rem; font-weight:700; color:var(--dark); }
+    .page-header p { color:var(--muted); margin-top:4px; font-size:.9rem; }
+    .btn-export { display:inline-flex; align-items:center; gap:8px; padding:10px 20px; background:var(--accent); color:#fff; border-radius:10px; font-weight:600; font-size:.88rem; cursor:pointer; border:none; font-family:'Inter',sans-serif; transition:all .2s; }
+    .btn-export:hover { background:#00a88c; transform:translateY(-1px); }
+
+    /* STATS */
+    .stats-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:28px; }
+    @media(max-width:900px) { .stats-grid{grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:500px) { .stats-grid{grid-template-columns:1fr;} }
+    .stat-card { background:#fff; border-radius:14px; padding:20px 22px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.04); display:flex; align-items:center; gap:16px; }
+    .stat-card .stat-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+    .stat-card .stat-value { font-family:'Poppins',sans-serif; font-size:1.5rem; font-weight:800; color:var(--dark); line-height:1; }
+    .stat-card .stat-label { font-size:.78rem; color:var(--muted); margin-top:4px; font-weight:500; }
+    .stat-card .stat-change { font-size:.75rem; margin-top:4px; }
+    .ic-blue { background:#eff6ff; color:var(--primary); }
+    .ic-green { background:#f0fdf4; color:#16a34a; }
+    .ic-orange { background:#fff7ed; color:var(--secondary); }
+    .ic-yellow { background:#fefce8; color:#ca8a04; }
+
+    /* FILTER TABS */
+    .filter-bar { display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+    .tab-group { display:flex; background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+    .tab-btn { padding:9px 18px; border:none; background:transparent; cursor:pointer; font-size:.85rem; font-weight:600; color:var(--muted); font-family:'Inter',sans-serif; transition:all .2s; white-space:nowrap; }
+    .tab-btn.active { background:var(--primary); color:#fff; }
+    .tab-btn:hover:not(.active) { background:var(--bg); }
+
+    /* TABLE */
+    .table-card { background:#fff; border-radius:14px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.04); overflow:hidden; margin-bottom:20px; }
+    .table-wrapper { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:900px; }
+    thead { background:var(--bg); }
+    thead th { padding:12px 16px; text-align:left; font-size:.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--border); white-space:nowrap; }
+    tbody tr { border-bottom:1px solid var(--border); transition:background .15s; }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:hover { background:#f8fafc; }
+    tbody td { padding:13px 16px; font-size:.86rem; color:var(--text); vertical-align:middle; }
+    .route-cell { font-weight:600; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+    .route-cell i { color:var(--secondary); }
+
+    .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:.75rem; font-weight:600; white-space:nowrap; }
+    .badge-completed { background:#dcfce7; color:#166534; }
+    .badge-cancelled { background:#fee2e2; color:#991b1b; }
+    .badge-in-progress { background:#dbeafe; color:#1e40af; }
+
+    .stars { color:#f59e0b; font-size:.82rem; letter-spacing:1px; }
+    .stars-empty { color:#e5e7eb; }
+
+    .btn-view { padding:6px 14px; background:var(--bg); color:var(--primary); border:1px solid var(--border); border-radius:8px; font-size:.78rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:all .2s; }
+    .btn-view:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+    /* PAGINATION */
+    .pagination { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-top:1px solid var(--border); flex-wrap:wrap; gap:12px; }
+    .pagination .info { font-size:.83rem; color:var(--muted); }
+    .pagination .pages { display:flex; gap:8px; }
+    .page-btn { padding:7px 14px; border:1px solid var(--border); border-radius:8px; background:#fff; cursor:pointer; font-size:.83rem; font-weight:600; color:var(--muted); font-family:'Inter',sans-serif; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+    .page-btn:hover { border-color:var(--primary); color:var(--primary); }
+    .page-btn.current { background:var(--primary); color:#fff; border-color:var(--primary); }
+    .page-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+    /* MODAL */
+    .modal-overlay { position:fixed; inset:0; background:rgba(10,14,39,.6); z-index:9000; display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; visibility:hidden; transition:all .3s; }
+    .modal-overlay.open { opacity:1; visibility:visible; }
+    .modal { background:#fff; border-radius:18px; width:100%; max-width:600px; max-height:90vh; overflow-y:auto; transform:translateY(24px) scale(.97); transition:all .3s cubic-bezier(.34,1.56,.64,1); }
+    .modal-overlay.open .modal { transform:translateY(0) scale(1); }
+    .modal-header { padding:24px 28px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+    .modal-header h2 { font-family:'Poppins',sans-serif; font-size:1.2rem; font-weight:700; color:var(--dark); }
+    .modal-close { background:none; border:none; cursor:pointer; color:var(--muted); font-size:1.2rem; padding:4px; transition:color .2s; }
+    .modal-close:hover { color:var(--dark); }
+    .modal-body { padding:20px 28px 28px; }
+    .detail-section { margin-bottom:20px; }
+    .detail-section h3 { font-size:.82rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; }
+    .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .detail-item { background:var(--bg); border-radius:10px; padding:12px 14px; }
+    .detail-item .di-label { font-size:.73rem; color:var(--muted); font-weight:500; }
+    .detail-item .di-value { font-size:.9rem; font-weight:600; color:var(--dark); margin-top:3px; }
+    .earnings-breakdown { background:var(--bg); border-radius:10px; padding:16px; }
+    .eb-row { display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0; border-bottom:1px solid var(--border); }
+    .eb-row:last-child { border-bottom:none; font-weight:700; font-size:.95rem; color:var(--dark); padding-top:10px; }
+    .eb-row .eb-label { color:var(--muted); }
+    .eb-row .eb-val { font-weight:600; color:var(--dark); }
+
+    footer { background:var(--dark); color:#94a3b8; padding:20px 0; margin-top:auto; }
+    footer .footer-inner { max-width:1400px; margin:0 auto; padding:0 24px; text-align:center; font-size:.85rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a href="../../../index.html" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+      <span>Globex<em>Sky</em></span>
+    </a>
+    <div class="nav-right">
+      <a href="../../auth/login.html" class="btn-login">Login</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <nav class="breadcrumb">
+      <a href="../../../index.html"><i class="fa fa-house"></i> Home</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>Carrier Portal</span>
+      <i class="fa fa-chevron-right"></i>
+      <span style="color:var(--dark);font-weight:600">Delivery History</span>
+    </nav>
+
+    <div class="page-header">
+      <div>
+        <h1><i class="fa fa-clock-rotate-left" style="color:var(--primary);margin-right:10px"></i>Delivery History</h1>
+        <p>Your complete record of all past and ongoing trips</p>
+      </div>
+      <button class="btn-export" onclick="exportCSV()">
+        <i class="fa fa-file-csv"></i> Export CSV
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon ic-blue"><i class="fa fa-plane-departure"></i></div>
+        <div>
+          <div class="stat-value">47</div>
+          <div class="stat-label">Total Trips</div>
+          <div class="stat-change" style="color:#16a34a"><i class="fa fa-arrow-trend-up"></i> +8 this month</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-green"><i class="fa fa-dollar-sign"></i></div>
+        <div>
+          <div class="stat-value">$2,840</div>
+          <div class="stat-label">Total Earnings</div>
+          <div class="stat-change" style="color:#16a34a"><i class="fa fa-arrow-trend-up"></i> +$340 this month</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-orange"><i class="fa fa-chart-pie"></i></div>
+        <div>
+          <div class="stat-value">97.9%</div>
+          <div class="stat-label">Success Rate</div>
+          <div class="stat-change" style="color:#16a34a"><i class="fa fa-arrow-trend-up"></i> Top Carrier</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-yellow"><i class="fa fa-star"></i></div>
+        <div>
+          <div class="stat-value">4.8 ★</div>
+          <div class="stat-label">Avg Rating</div>
+          <div class="stat-change" style="color:#ca8a04">Based on 46 reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="tab-group">
+        <button class="tab-btn active" onclick="filterTab('all', this)">All (47)</button>
+        <button class="tab-btn" onclick="filterTab('completed', this)">Completed (44)</button>
+        <button class="tab-btn" onclick="filterTab('cancelled', this)">Cancelled (2)</button>
+        <button class="tab-btn" onclick="filterTab('in-progress', this)">In Progress (1)</button>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Route</th>
+              <th>Products</th>
+              <th>Weight</th>
+              <th>Earnings</th>
+              <th>Status</th>
+              <th>Rating</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="info" id="paginationInfo">Showing 1–10 of 47 trips</div>
+        <div class="pages">
+          <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled><i class="fa fa-chevron-left"></i> Previous</button>
+          <button class="page-btn current" id="pageNum">1</button>
+          <button class="page-btn" onclick="changePage(1)">Next <i class="fa fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <h2 id="modalTitle">Trip Details</h2>
+      <button class="modal-close" onclick="closeModalDirect()"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  const trips = [
+    { date:'Jun 10, 2025', route:'NYC → Shanghai', from:'JFK', to:'PVG', flight:'AA285', products:'USB-C Hubs, Earbuds', weight:'4.5', earnings:108.00, status:'in-progress', rating:0, tripId:'GS-C-2025-0285' },
+    { date:'May 28, 2025', route:'NYC → London', from:'JFK', to:'LHR', flight:'BA178', products:'Laptop Stands ×15', weight:'3.2', earnings:72.50, status:'completed', rating:5, tripId:'GS-C-2025-0271' },
+    { date:'May 20, 2025', route:'LA → Tokyo', from:'LAX', to:'NRT', flight:'NH106', products:'Camera Lenses ×8', weight:'2.1', earnings:95.00, status:'completed', rating:5, tripId:'GS-C-2025-0265' },
+    { date:'May 14, 2025', route:'Chicago → Paris', from:'ORD', to:'CDG', flight:'AF63', products:'Fashion Items ×30', weight:'5.8', earnings:125.00, status:'completed', rating:4, tripId:'GS-C-2025-0258' },
+    { date:'May 08, 2025', route:'Miami → Dubai', from:'MIA', to:'DXB', flight:'EK213', products:'Jewelry Accessories', weight:'1.4', earnings:88.00, status:'completed', rating:5, tripId:'GS-C-2025-0249' },
+    { date:'May 02, 2025', route:'NYC → Sydney', from:'JFK', to:'SYD', flight:'QF12', products:'Sports Gear ×12', weight:'6.3', earnings:142.00, status:'completed', rating:4, tripId:'GS-C-2025-0241' },
+    { date:'Apr 25, 2025', route:'London → NYC', from:'LHR', to:'JFK', flight:'VS3', products:'Vintage Clothing', weight:'2.8', earnings:65.00, status:'cancelled', rating:0, tripId:'GS-C-2025-0233' },
+    { date:'Apr 18, 2025', route:'LA → Singapore', from:'LAX', to:'SIN', flight:'SQ37', products:'Electronics ×20', weight:'4.1', earnings:110.00, status:'completed', rating:5, tripId:'GS-C-2025-0226' },
+    { date:'Apr 11, 2025', route:'Dallas → Berlin', from:'DFW', to:'BER', flight:'LH439', products:'Auto Parts ×5', weight:'7.2', earnings:160.00, status:'completed', rating:5, tripId:'GS-C-2025-0219' },
+    { date:'Apr 04, 2025', route:'Seattle → Toronto', from:'SEA', to:'YYZ', flight:'AC551', products:'Books & Docs', weight:'3.5', earnings:55.00, status:'cancelled', rating:0, tripId:'GS-C-2025-0212' },
+  ];
+
+  let currentFilter = 'all';
+  let currentPage = 1;
+  const perPage = 10;
+
+  function renderStars(n) {
+    if (!n) return '<span style="color:var(--muted);font-size:.78rem">—</span>';
+    let s = '';
+    for (let i = 1; i <= 5; i++) s += `<span class="${i <= n ? 'stars' : 'stars-empty'}">★</span>`;
+    return s;
+  }
+
+  function renderBadge(status) {
+    const map = {
+      'completed': ['badge-completed','fa-circle-check','Completed'],
+      'cancelled': ['badge-cancelled','fa-circle-xmark','Cancelled'],
+      'in-progress': ['badge-in-progress','fa-spinner fa-spin','In Progress'],
+    };
+    const [cls, icon, label] = map[status] || map.completed;
+    return `<span class="badge ${cls}"><i class="fa ${icon}"></i> ${label}</span>`;
+  }
+
+  function renderTable() {
+    const filtered = currentFilter === 'all' ? trips : trips.filter(t => t.status === currentFilter);
+    const start = (currentPage - 1) * perPage;
+    const page = filtered.slice(start, start + perPage);
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = page.map((t, i) => `
+      <tr data-status="${t.status}">
+        <td style="font-size:.82rem;color:var(--muted)">${t.date}</td>
+        <td><div class="route-cell"><i class="fa fa-plane"></i>${t.route}</div></td>
+        <td style="max-width:160px;font-size:.83rem">${t.products}</td>
+        <td><span style="font-weight:600">${t.weight}</span> kg</td>
+        <td style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--accent)">$${t.earnings.toFixed(2)}</td>
+        <td>${renderBadge(t.status)}</td>
+        <td>${renderStars(t.rating)}</td>
+        <td><button class="btn-view" onclick='openModal(${start + i},"${currentFilter}")'>View Details</button></td>
+      </tr>
+    `).join('');
+    document.getElementById('paginationInfo').textContent =
+      `Showing ${start + 1}–${Math.min(start + perPage, filtered.length)} of ${filtered.length} trips`;
+    document.getElementById('prevBtn').disabled = currentPage === 1;
+    document.getElementById('pageNum').textContent = currentPage;
+  }
+
+  function filterTab(filter, btn) {
+    currentFilter = filter;
+    currentPage = 1;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  function changePage(dir) {
+    const filtered = currentFilter === 'all' ? trips : trips.filter(t => t.status === currentFilter);
+    const maxPage = Math.ceil(filtered.length / perPage);
+    currentPage = Math.max(1, Math.min(maxPage, currentPage + dir));
+    renderTable();
+  }
+
+  function openModal(idx, filter) {
+    const filtered = filter === 'all' ? trips : trips.filter(t => t.status === filter);
+    const t = filtered[idx];
+    if (!t) return;
+    document.getElementById('modalTitle').textContent = `Trip: ${t.tripId}`;
+    document.getElementById('modalBody').innerHTML = `
+      <div class="detail-section">
+        <h3>Route Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item"><div class="di-label">Route</div><div class="di-value">${t.route}</div></div>
+          <div class="detail-item"><div class="di-label">Flight Number</div><div class="di-value">${t.flight}</div></div>
+          <div class="detail-item"><div class="di-label">Departure</div><div class="di-value">${t.from}</div></div>
+          <div class="detail-item"><div class="di-label">Arrival</div><div class="di-value">${t.to}</div></div>
+          <div class="detail-item"><div class="di-label">Date</div><div class="di-value">${t.date}</div></div>
+          <div class="detail-item"><div class="di-label">Status</div><div class="di-value">${renderBadge(t.status)}</div></div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>Products Carried</h3>
+        <div style="background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--border)">
+          <div style="font-weight:600;font-size:.9rem">${t.products}</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:4px">Total weight: <strong>${t.weight} kg</strong></div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>Pickup Confirmation</h3>
+        <div class="detail-grid">
+          <div class="detail-item"><div class="di-label">Confirmed By</div><div class="di-value">Receiver at ${t.to}</div></div>
+          <div class="detail-item"><div class="di-label">Rating</div><div class="di-value">${t.rating ? renderStars(t.rating) + ` (${t.rating}/5)` : '—'}</div></div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>Earnings Breakdown</h3>
+        <div class="earnings-breakdown">
+          <div class="eb-row"><span class="eb-label">Base Carrier Fee</span><span class="eb-val">$${(t.earnings * .6).toFixed(2)}</span></div>
+          <div class="eb-row"><span class="eb-label">Weight Bonus</span><span class="eb-val">$${(t.earnings * .25).toFixed(2)}</span></div>
+          <div class="eb-row"><span class="eb-label">On-time Bonus</span><span class="eb-val">$${(t.earnings * .1).toFixed(2)}</span></div>
+          <div class="eb-row"><span class="eb-label">Rating Bonus</span><span class="eb-val">$${(t.earnings * .05).toFixed(2)}</span></div>
+          <div class="eb-row"><span>Total Payout</span><span style="color:var(--accent)">$${t.earnings.toFixed(2)}</span></div>
+        </div>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+  }
+  function closeModalDirect() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function exportCSV() {
+    const filtered = currentFilter === 'all' ? trips : trips.filter(t => t.status === currentFilter);
+    const header = ['Date','Route','Flight','Products','Weight(kg)','Earnings($)','Status','Rating'];
+    const rows = filtered.map(t => [t.date, t.route, t.flight, `"${t.products}"`, t.weight, t.earnings, t.status, t.rating || 'N/A']);
+    const csv = [header, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'delivery-history.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  renderTable();
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

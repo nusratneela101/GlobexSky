@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Support Tickets | GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+
+    /* Sidebar */
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh}
+    .sidebar-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:12px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:background .2s}
+    .sidebar-nav li a:hover{background:rgba(255,255,255,.07);color:#fff}
+    .sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-nav li a i{width:16px;text-align:center;font-size:.85rem}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .sidebar-nav li a.logout-link{color:#ef4444}
+    .sidebar-nav li a.logout-link:hover{background:rgba(239,68,68,.1);color:#ef4444}
+
+    /* Main */
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+
+    /* Page heading */
+    .page-heading{margin-bottom:24px}
+    .page-heading h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .page-heading p{color:#64748b;font-size:.88rem;margin-top:4px}
+
+    /* Stats cards */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+    .stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+    .stat-icon.red{background:#fee2e2;color:#ef4444}
+    .stat-icon.orange{background:#ffedd5;color:#f97316}
+    .stat-icon.green{background:#d1fae5;color:#059669}
+    .stat-icon.blue{background:#dbeafe;color:#0052CC}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27}
+    .stat-label{font-size:.78rem;color:#64748b;margin-top:2px}
+
+    /* Admin card */
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+
+    /* Tabs */
+    .tab-nav{display:flex;gap:4px;border-bottom:2px solid #e2e8f0;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:9px 16px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;font-size:.875rem;font-weight:500;color:#64748b;transition:all .2s;font-family:'Inter',sans-serif;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:6px}
+    .tab-btn:hover{color:#0052CC;background:#f0f4ff}
+    .tab-btn.active{color:#0052CC;border-bottom-color:#0052CC;font-weight:600}
+    .tab-count{background:#e2e8f0;color:#64748b;font-size:.7rem;font-weight:700;padding:1px 7px;border-radius:50px}
+    .tab-btn.active .tab-count{background:#dbeafe;color:#0052CC}
+
+    /* Search/filter bar */
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .filter-input{padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;color:#374151;min-width:0}
+    .filter-input:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .search-wrap{position:relative;flex:1;min-width:180px}
+    .search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem}
+    .search-wrap input{padding-left:32px;width:100%}
+
+    /* Table */
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .table-wrap{overflow-x:auto}
+
+    /* Badges */
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.73rem;font-weight:600;white-space:nowrap}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-yellow{background:#fef3c7;color:#d97706}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+
+    /* Urgent pulsing badge */
+    @keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 4px rgba(239,68,68,0)}}
+    .badge-urgent{background:#fee2e2;color:#ef4444;animation:pulse-red 1.5s infinite}
+
+    /* Buttons */
+    .btn{padding:7px 14px;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:5px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-warning:hover{background:#d97706}
+    .btn-sm{padding:5px 10px;font-size:.77rem}
+    .btn-group{display:flex;gap:5px;flex-wrap:wrap}
+
+    /* User cell */
+    .user-cell{display:flex;flex-direction:column;gap:2px}
+    .user-name{font-weight:600;color:#0a0e27;font-size:.85rem}
+    .user-email{font-size:.75rem;color:#64748b}
+
+    /* Modal overlay */
+    .modal-overlay{position:fixed;inset:0;background:rgba(10,14,39,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal-box{background:#fff;border-radius:16px;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2);transform:scale(.96);transition:transform .2s}
+    .modal-overlay.open .modal-box{transform:scale(1)}
+    .modal-header{padding:20px 24px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0}
+    .modal-header-info{display:flex;flex-direction:column;gap:6px}
+    .modal-ticket-id{font-size:.78rem;color:#64748b;font-weight:600}
+    .modal-subject{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27}
+    .modal-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+    .modal-close{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#94a3b8;padding:4px;flex-shrink:0}
+    .modal-close:hover{color:#374151}
+    .modal-meta{padding:12px 24px;background:#f8faff;border-bottom:1px solid #e2e8f0;display:flex;flex-wrap:wrap;gap:16px;font-size:.8rem;color:#64748b;flex-shrink:0}
+    .modal-meta span strong{color:#374151}
+    .modal-body{padding:20px 24px;overflow-y:auto;flex:1}
+    .modal-footer{padding:16px 24px;border-top:1px solid #e2e8f0;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;flex-shrink:0}
+    .modal-footer textarea{flex:1;min-width:200px;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;resize:vertical;min-height:72px;color:#374151}
+    .modal-footer textarea:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .modal-footer-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .modal-footer select{padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.83rem;font-family:'Inter',sans-serif;color:#374151;cursor:pointer}
+    .modal-footer select:focus{outline:none;border-color:#0052CC}
+
+    /* Conversation thread */
+    .conv-thread{display:flex;flex-direction:column;gap:14px;margin-bottom:8px}
+    .msg-bubble{display:flex;flex-direction:column;gap:4px;max-width:88%}
+    .msg-bubble.user-msg{align-self:flex-start}
+    .msg-bubble.admin-msg{align-self:flex-end;align-items:flex-end}
+    .msg-body{padding:12px 16px;border-radius:12px;font-size:.87rem;line-height:1.55}
+    .user-msg .msg-body{background:#f1f5f9;border-bottom-left-radius:4px;color:#374151}
+    .admin-msg .msg-body{background:#0052CC;color:#fff;border-bottom-right-radius:4px}
+    .msg-meta{font-size:.72rem;color:#94a3b8;display:flex;gap:8px;align-items:center}
+    .msg-sender{font-weight:600;color:#64748b}
+    .admin-msg .msg-sender{color:#94a3b8}
+
+    /* KB section */
+    .kb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px}
+    .kb-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s,box-shadow .2s}
+    .kb-card:hover{border-color:#0052CC;box-shadow:0 4px 16px rgba(0,82,204,.1)}
+    .kb-title{font-weight:600;font-size:.9rem;color:#0a0e27;line-height:1.4}
+    .kb-meta{display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:#64748b}
+    .kb-views{display:flex;align-items:center;gap:4px}
+
+    @media(max-width:768px){.admin-sidebar{display:none}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#0052CC" stroke-width="2.5"/>
+          <ellipse cx="20" cy="20" rx="8" ry="18" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <line x1="2" y1="20" x2="38" y2="20" stroke="#0052CC" stroke-width="2"/>
+          <line x1="4" y1="12" x2="36" y2="12" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="4" y1="28" x2="36" y2="28" stroke="#0052CC" stroke-width="1.5"/>
+        </svg>
+        <span>GlobexSky Admin</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i><span>Shipments</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-dollar-sign"></i><span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i><span>Marketing</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i><span>Pricing</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+        <li><a href="inspections.html"><i class="fas fa-search"></i><span>Inspections</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-flag"></i><span>Campaigns</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i><span>Live Streams</span></a></li>
+        <li><a href="content.html"><i class="fas fa-file-alt"></i><span>Content</span></a></li>
+        <li><a href="api-clients.html"><i class="fas fa-code"></i><span>API Clients</span></a></li>
+        <li><a href="logs.html"><i class="fas fa-list-alt"></i><span>Logs</span></a></li>
+        <li><a href="support.html" class="active"><i class="fas fa-headset"></i><span>Support</span></a></li>
+        <li><a href="ai.html"><i class="fas fa-robot"></i><span>AI</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i><span>View Site</span></a></li>
+        <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title">Support Tickets</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn" aria-label="Notifications">
+          <i class="fas fa-bell"></i><span class="badge">5</span>
+        </button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">AU</div>
+          <span>Admin User</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <div class="page-heading">
+        <h1>Support Tickets</h1>
+        <p>Manage customer inquiries, resolve issues, and maintain your knowledge base.</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon red"><i class="fas fa-ticket-alt"></i></div>
+          <div>
+            <div class="stat-value">24</div>
+            <div class="stat-label">Open Tickets</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+          <div>
+            <div class="stat-value">8</div>
+            <div class="stat-label">Pending Reply</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fas fa-check-double"></i></div>
+          <div>
+            <div class="stat-value">15</div>
+            <div class="stat-label">Resolved Today</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fas fa-inbox"></i></div>
+          <div>
+            <div class="stat-value">1,847</div>
+            <div class="stat-label">Total All Time</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tickets card -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title"><i class="fas fa-headset" style="color:#0052CC;margin-right:8px"></i>Ticket Management</div>
+          <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New Ticket</button>
+        </div>
+
+        <!-- Status tabs -->
+        <div class="tab-nav" id="statusTabs">
+          <button class="tab-btn active" data-status="open">Open <span class="tab-count">24</span></button>
+          <button class="tab-btn" data-status="pending">Pending <span class="tab-count">8</span></button>
+          <button class="tab-btn" data-status="resolved">Resolved <span class="tab-count">15</span></button>
+          <button class="tab-btn" data-status="closed">Closed <span class="tab-count">180</span></button>
+          <button class="tab-btn" data-status="all">All Tickets</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" class="filter-input" id="ticketSearch" placeholder="Search tickets…" oninput="filterTickets()"/>
+          </div>
+          <select class="filter-input" id="categoryFilter" onchange="filterTickets()">
+            <option value="">All Categories</option>
+            <option value="Technical">Technical</option>
+            <option value="Billing">Billing</option>
+            <option value="Shipping">Shipping</option>
+            <option value="General">General</option>
+          </select>
+          <select class="filter-input" id="priorityFilter" onchange="filterTickets()">
+            <option value="">All Priorities</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table class="data-table" id="ticketsTable">
+            <thead>
+              <tr>
+                <th>#ID</th>
+                <th>Subject</th>
+                <th>User</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Last Reply</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ticketsBody">
+              <tr data-status="open" data-category="Technical" data-priority="Urgent">
+                <td><strong>#TKT-5521</strong></td>
+                <td>Cannot complete checkout – payment fails every time</td>
+                <td><div class="user-cell"><span class="user-name">Maria Santos</span><span class="user-email">maria.s@email.com</span></div></td>
+                <td><span class="badge-pill badge-purple">Technical</span></td>
+                <td><span class="badge-pill badge-urgent">Urgent</span></td>
+                <td><span class="badge-pill badge-red">Open</span></td>
+                <td>Jan 15, 10:22</td>
+                <td>30 min ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5521','Cannot complete checkout – payment fails every time','maria.s@email.com','Technical','Urgent','Open')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="open" data-category="Billing" data-priority="High">
+                <td><strong>#TKT-5519</strong></td>
+                <td>Double charged for order #ORD-9927</td>
+                <td><div class="user-cell"><span class="user-name">David Park</span><span class="user-email">d.park@gmail.com</span></div></td>
+                <td><span class="badge-pill badge-yellow">Billing</span></td>
+                <td><span class="badge-pill badge-red">High</span></td>
+                <td><span class="badge-pill badge-red">Open</span></td>
+                <td>Jan 15, 09:14</td>
+                <td>1 hr ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5519','Double charged for order #ORD-9927','d.park@gmail.com','Billing','High','Open')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="pending" data-category="Shipping" data-priority="Medium">
+                <td><strong>#TKT-5517</strong></td>
+                <td>Parcel delayed – no updates for 6 days</td>
+                <td><div class="user-cell"><span class="user-name">Aisha Patel</span><span class="user-email">aisha.p@hotmail.com</span></div></td>
+                <td><span class="badge-pill badge-blue">Shipping</span></td>
+                <td><span class="badge-pill badge-orange">Medium</span></td>
+                <td><span class="badge-pill badge-orange">Pending</span></td>
+                <td>Jan 14, 17:45</td>
+                <td>3 hrs ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5517','Parcel delayed – no updates for 6 days','aisha.p@hotmail.com','Shipping','Medium','Pending')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="open" data-category="Technical" data-priority="High">
+                <td><strong>#TKT-5515</strong></td>
+                <td>Product images not loading on mobile app</td>
+                <td><div class="user-cell"><span class="user-name">Tom Nguyen</span><span class="user-email">tom.ng@yahoo.com</span></div></td>
+                <td><span class="badge-pill badge-purple">Technical</span></td>
+                <td><span class="badge-pill badge-red">High</span></td>
+                <td><span class="badge-pill badge-red">Open</span></td>
+                <td>Jan 14, 15:30</td>
+                <td>5 hrs ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5515','Product images not loading on mobile app','tom.ng@yahoo.com','Technical','High','Open')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="resolved" data-category="General" data-priority="Low">
+                <td><strong>#TKT-5512</strong></td>
+                <td>How do I update my shipping address?</td>
+                <td><div class="user-cell"><span class="user-name">Lisa Chen</span><span class="user-email">lisa.c@email.com</span></div></td>
+                <td><span class="badge-pill badge-gray">General</span></td>
+                <td><span class="badge-pill badge-gray">Low</span></td>
+                <td><span class="badge-pill badge-green">Resolved</span></td>
+                <td>Jan 14, 11:20</td>
+                <td>8 hrs ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5512','How do I update my shipping address?','lisa.c@email.com','General','Low','Resolved')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="pending" data-category="Billing" data-priority="Medium">
+                <td><strong>#TKT-5510</strong></td>
+                <td>Refund not received after 10 business days</td>
+                <td><div class="user-cell"><span class="user-name">Omar Farouk</span><span class="user-email">o.farouk@mail.com</span></div></td>
+                <td><span class="badge-pill badge-yellow">Billing</span></td>
+                <td><span class="badge-pill badge-orange">Medium</span></td>
+                <td><span class="badge-pill badge-orange">Pending</span></td>
+                <td>Jan 13, 14:08</td>
+                <td>Yesterday</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5510','Refund not received after 10 business days','o.farouk@mail.com','Billing','Medium','Pending')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="open" data-category="Technical" data-priority="Urgent">
+                <td><strong>#TKT-5508</strong></td>
+                <td>Seller dashboard showing incorrect revenue figures</td>
+                <td><div class="user-cell"><span class="user-name">Carlos Mendez</span><span class="user-email">c.mendez@shopco.com</span></div></td>
+                <td><span class="badge-pill badge-purple">Technical</span></td>
+                <td><span class="badge-pill badge-urgent">Urgent</span></td>
+                <td><span class="badge-pill badge-red">Open</span></td>
+                <td>Jan 13, 09:55</td>
+                <td>Yesterday</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5508','Seller dashboard showing incorrect revenue figures','c.mendez@shopco.com','Technical','Urgent','Open')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="closed" data-category="Shipping" data-priority="Low">
+                <td><strong>#TKT-5502</strong></td>
+                <td>Wrong item delivered in my order</td>
+                <td><div class="user-cell"><span class="user-name">Yuki Tanaka</span><span class="user-email">yuki.t@mail.jp</span></div></td>
+                <td><span class="badge-pill badge-blue">Shipping</span></td>
+                <td><span class="badge-pill badge-gray">Low</span></td>
+                <td><span class="badge-pill badge-gray">Closed</span></td>
+                <td>Jan 12, 16:30</td>
+                <td>2 days ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5502','Wrong item delivered in my order','yuki.t@mail.jp','Shipping','Low','Closed')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="resolved" data-category="General" data-priority="Medium">
+                <td><strong>#TKT-5498</strong></td>
+                <td>Unable to leave a product review</td>
+                <td><div class="user-cell"><span class="user-name">Fatima Al-Hassan</span><span class="user-email">fatima.h@email.ae</span></div></td>
+                <td><span class="badge-pill badge-gray">General</span></td>
+                <td><span class="badge-pill badge-orange">Medium</span></td>
+                <td><span class="badge-pill badge-green">Resolved</span></td>
+                <td>Jan 12, 11:10</td>
+                <td>2 days ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5498','Unable to leave a product review','fatima.h@email.ae','General','Medium','Resolved')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+              <tr data-status="open" data-category="Technical" data-priority="High">
+                <td><strong>#TKT-5494</strong></td>
+                <td>2FA code not arriving via SMS</td>
+                <td><div class="user-cell"><span class="user-name">James O'Brien</span><span class="user-email">j.obrien@corp.ie</span></div></td>
+                <td><span class="badge-pill badge-purple">Technical</span></td>
+                <td><span class="badge-pill badge-red">High</span></td>
+                <td><span class="badge-pill badge-red">Open</span></td>
+                <td>Jan 11, 08:45</td>
+                <td>3 days ago</td>
+                <td><div class="btn-group">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('TKT-5494','2FA code not arriving via SMS','j.obrien@corp.ie','Technical','High','Open')">View</button>
+                  <button class="btn btn-secondary btn-sm">Assign</button>
+                  <button class="btn btn-danger btn-sm" onclick="closeTicket(this)">Close</button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Knowledge Base -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title"><i class="fas fa-book-open" style="color:#7c3aed;margin-right:8px"></i>Knowledge Base Articles</div>
+          <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New Article</button>
+        </div>
+        <div class="kb-grid">
+          <div class="kb-card">
+            <div class="kb-title">How to track your order in real time</div>
+            <div class="kb-meta">
+              <span class="badge-pill badge-blue">Shipping</span>
+              <span class="kb-views"><i class="fas fa-eye" style="font-size:.7rem"></i> 12,840 views</span>
+            </div>
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div class="kb-card">
+            <div class="kb-title">Requesting a refund or return on your purchase</div>
+            <div class="kb-meta">
+              <span class="badge-pill badge-yellow">Billing</span>
+              <span class="kb-views"><i class="fas fa-eye" style="font-size:.7rem"></i> 9,512 views</span>
+            </div>
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div class="kb-card">
+            <div class="kb-title">Setting up two-factor authentication (2FA)</div>
+            <div class="kb-meta">
+              <span class="badge-pill badge-purple">Technical</span>
+              <span class="kb-views"><i class="fas fa-eye" style="font-size:.7rem"></i> 7,204 views</span>
+            </div>
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div class="kb-card">
+            <div class="kb-title">How sellers can list and manage products</div>
+            <div class="kb-meta">
+              <span class="badge-pill badge-gray">General</span>
+              <span class="kb-views"><i class="fas fa-eye" style="font-size:.7rem"></i> 6,089 views</span>
+            </div>
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div class="kb-card">
+            <div class="kb-title">Understanding GlobexSky fees and commissions</div>
+            <div class="kb-meta">
+              <span class="badge-pill badge-yellow">Billing</span>
+              <span class="kb-views"><i class="fas fa-eye" style="font-size:.7rem"></i> 5,341 views</span>
+            </div>
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div class="kb-card">
+            <div class="kb-title">Troubleshooting payment failures at checkout</div>
+            <div class="kb-meta">
+              <span class="badge-pill badge-purple">Technical</span>
+              <span class="kb-views"><i class="fas fa-eye" style="font-size:.7rem"></i> 4,928 views</span>
+            </div>
+            <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ticket Detail Modal -->
+<div class="modal-overlay" id="ticketModal" role="dialog" aria-modal="true" aria-labelledby="modalSubject">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <div class="modal-ticket-id" id="modalTicketId">Ticket #TKT-5521</div>
+        <div class="modal-subject" id="modalSubject">Cannot complete checkout – payment fails every time</div>
+        <div class="modal-badges" id="modalBadges"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close modal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-body">
+      <div class="conv-thread" id="convThread">
+        <div class="msg-bubble user-msg">
+          <div class="msg-body">Hi, I've been trying to check out for the past 2 hours and my payment keeps failing. I've tried three different cards including my Visa and Mastercard. The error says "Payment declined" but my bank shows no issues on their end. Please help urgently – I have items running out of stock!</div>
+          <div class="msg-meta"><span class="msg-sender" id="msgSenderName">Maria Santos</span><span>Today, 10:22 AM</span></div>
+        </div>
+        <div class="msg-bubble admin-msg">
+          <div class="msg-body">Hi Maria, thank you for reaching out! I can see this is urgent. I've escalated your case to our payments team. I can confirm our payment gateway experienced a brief issue between 10:00–10:45 AM which has now been resolved. Could you please try again and let me know if the issue persists?</div>
+          <div class="msg-meta"><span class="msg-sender">Support Agent (Sarah)</span><span>Today, 10:48 AM</span></div>
+        </div>
+        <div class="msg-bubble user-msg">
+          <div class="msg-body">Still getting the same error message even after the fix. Error code shown is: PAY_DECLINED_003. Please advise.</div>
+          <div class="msg-meta"><span class="msg-sender" id="msgSenderName2">Maria Santos</span><span>Today, 11:15 AM</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <textarea id="replyText" placeholder="Type your reply…"></textarea>
+      <div class="modal-footer-actions">
+        <select id="statusSelect" class="filter-input">
+          <option value="Open">Open</option>
+          <option value="Pending">Pending</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+        </select>
+        <button class="btn btn-primary" onclick="sendReply()"><i class="fas fa-paper-plane"></i> Send Reply</button>
+        <button class="btn btn-danger btn-sm" onclick="closeModal()"><i class="fas fa-times"></i> Close Ticket</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentUser = '';
+
+  // Status tab filtering
+  document.getElementById('statusTabs').addEventListener('click', function(e) {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    document.querySelectorAll('#statusTabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterTickets();
+  });
+
+  function filterTickets() {
+    const status = document.querySelector('#statusTabs .tab-btn.active')?.dataset.status || 'all';
+    const search = document.getElementById('ticketSearch').value.toLowerCase();
+    const cat = document.getElementById('categoryFilter').value;
+    const pri = document.getElementById('priorityFilter').value;
+
+    document.querySelectorAll('#ticketsBody tr').forEach(row => {
+      const rowStatus = row.dataset.status;
+      const rowCat = row.dataset.category;
+      const rowPri = row.dataset.priority;
+      const text = row.textContent.toLowerCase();
+
+      const matchStatus = status === 'all' || rowStatus === status.toLowerCase();
+      const matchSearch = !search || text.includes(search);
+      const matchCat = !cat || rowCat === cat;
+      const matchPri = !pri || rowPri === pri;
+
+      row.style.display = (matchStatus && matchSearch && matchCat && matchPri) ? '' : 'none';
+    });
+  }
+
+  function openModal(id, subject, email, category, priority, status) {
+    currentUser = email.split('@')[0].replace('.', ' ').replace(/\b\w/g, c => c.toUpperCase());
+    document.getElementById('modalTicketId').textContent = 'Ticket #' + id;
+    document.getElementById('modalSubject').textContent = subject;
+    document.getElementById('statusSelect').value = status;
+
+    const priorityColors = {Urgent:'badge-urgent', High:'badge-red', Medium:'badge-orange', Low:'badge-gray'};
+    const statusColors = {Open:'badge-red', Pending:'badge-orange', Resolved:'badge-green', Closed:'badge-gray'};
+    document.getElementById('modalBadges').innerHTML =
+      `<span class="badge-pill ${statusColors[status] || 'badge-gray'}">${status}</span>
+       <span class="badge-pill ${priorityColors[priority] || 'badge-gray'}">${priority}</span>
+       <span class="badge-pill badge-blue">${category}</span>`;
+
+    document.getElementById('modalMeta').innerHTML =
+      `<span><strong>User:</strong> ${currentUser} (${email})</span>
+       <span><strong>Category:</strong> ${category}</span>
+       <span><strong>Created:</strong> Jan 15, 2025</span>
+       <span><strong>Last Updated:</strong> Just now</span>`;
+
+    // Update sender names in thread
+    document.querySelectorAll('#msgSenderName, #msgSenderName2').forEach(el => el.textContent = currentUser);
+
+    document.getElementById('ticketModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('ticketModal').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('replyText').value = '';
+  }
+
+  document.getElementById('ticketModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  function sendReply() {
+    const text = document.getElementById('replyText').value.trim();
+    if (!text) { alert('Please type a reply before sending.'); return; }
+    const thread = document.getElementById('convThread');
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble admin-msg';
+    bubble.innerHTML = `<div class="msg-body">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      <div class="msg-meta"><span class="msg-sender">Support Agent (Admin)</span><span>Today, ${timeStr}</span></div>`;
+    thread.appendChild(bubble);
+    bubble.scrollIntoView({behavior:'smooth', block:'nearest'});
+    document.getElementById('replyText').value = '';
+
+    const newStatus = document.getElementById('statusSelect').value;
+    const statusColors = {Open:'badge-red', Pending:'badge-orange', Resolved:'badge-green', Closed:'badge-gray'};
+    const badges = document.getElementById('modalBadges');
+    const firstBadge = badges.querySelector('.badge-pill');
+    if (firstBadge) {
+      firstBadge.className = 'badge-pill ' + (statusColors[newStatus] || 'badge-gray');
+      firstBadge.textContent = newStatus;
+    }
+  }
+
+  function closeTicket(btn) {
+    if (confirm('Close this ticket?')) {
+      const row = btn.closest('tr');
+      row.querySelector('.badge-pill.badge-red, .badge-pill.badge-orange, .badge-pill.badge-green')?.remove?.();
+      const statusCell = row.cells[5];
+      statusCell.innerHTML = '<span class="badge-pill badge-gray">Closed</span>';
+      row.dataset.status = 'closed';
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Address Book | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;display:flex;flex-direction:column;min-height:100vh}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-divider{border:none;border-top:1px solid #e2e8f0;margin-bottom:16px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:#fff;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#f0f4ff}
+    .btn-ghost{background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0}
+    .btn-ghost:hover{background:#e2e8f0}
+    .btn-danger{background:#fff;color:#ef4444;border:1.5px solid #fca5a5}
+    .btn-danger:hover{background:#fee2e2}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .addr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+    .addr-card{border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;transition:all .25s;background:#fff;position:relative}
+    .addr-card:hover{box-shadow:0 6px 24px rgba(0,82,204,.1);border-color:#b3c8f5}
+    .addr-card.default-card{border-color:#00C9A7;background:#f0fdf9}
+    .addr-card.removing{opacity:0;transform:scale(.95);transition:all .3s}
+    .default-badge{display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;position:absolute;top:14px;right:14px}
+    .addr-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:#0a0e27;margin-bottom:4px}
+    .addr-phone{font-size:.82rem;color:#64748b;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .addr-lines{font-size:.85rem;color:#374151;line-height:1.7;margin-bottom:16px}
+    .addr-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,14,39,.55);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:18px;padding:32px;width:100%;max-width:540px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:modalIn .25s ease}
+    @keyframes modalIn{from{transform:scale(.96) translateY(12px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+    .modal-close{background:none;border:none;font-size:1.2rem;color:#64748b;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .2s}
+    .modal-close:hover{background:#f1f5f9;color:#0a0e27}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-group{display:flex;flex-direction:column;gap:5px}
+    .form-group.full{grid-column:1/-1}
+    .form-label{font-size:.82rem;font-weight:500;color:#374151}
+    .form-input{padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-input:focus{outline:none;border-color:#0052CC}
+    .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+    .empty-state{text-align:center;padding:60px 20px;display:none}
+    .empty-state-icon{font-size:3.5rem;color:#d1d5db;margin-bottom:16px}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#374151;margin-bottom:8px}
+    .empty-state p{color:#64748b;font-size:.9rem}
+    footer{background:#0a0e27;color:#94a3b8;padding:20px 0;margin-top:auto}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <a href="../auth/login.html" style="padding:8px 16px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">AJ</div>
+    <div class="account-sidebar-name">Alex Johnson</div>
+    <div class="account-sidebar-email">alex@example.com</div>
+    <hr class="sidebar-divider"/>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="address-book.html" class="active"><i class="fas fa-map-marker-alt"></i> Address Book</a></li>
+      <li><a href="payment-methods.html"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+      <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <div class="page-card">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-map-marker-alt" style="color:#0052CC"></i> Address Book</h1>
+        <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Add New Address</button>
+      </div>
+
+      <div class="addr-grid" id="addr-grid"></div>
+      <div class="empty-state" id="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-map-marked-alt"></i></div>
+        <h3>No addresses saved</h3>
+        <p>Add a shipping address to speed up checkout.</p>
+        <button class="btn btn-primary" onclick="openModal()" style="margin-top:16px"><i class="fas fa-plus"></i> Add Address</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Add New Address</span>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input class="form-input" id="f-name" type="text" placeholder="e.g. John Smith"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number *</label>
+        <input class="form-input" id="f-phone" type="tel" placeholder="+1-555-0000"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Country *</label>
+        <select class="form-input" id="f-country">
+          <option value="">Select country</option>
+          <option>United States</option><option>United Kingdom</option><option>Germany</option>
+          <option>France</option><option>Canada</option><option>Australia</option>
+          <option>Japan</option><option>China</option><option>India</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">City *</label>
+        <input class="form-input" id="f-city" type="text" placeholder="e.g. New York"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">State / Province</label>
+        <input class="form-input" id="f-state" type="text" placeholder="e.g. NY"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Postal Code</label>
+        <input class="form-input" id="f-postal" type="text" placeholder="e.g. 10001"/>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Address Line 1 *</label>
+        <input class="form-input" id="f-addr1" type="text" placeholder="Street address, P.O. box, etc."/>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Address Line 2</label>
+        <input class="form-input" id="f-addr2" type="text" placeholder="Apartment, suite, unit, building (optional)"/>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAddress()"><i class="fas fa-save"></i> Save Address</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;text-align:center">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+let addresses = [
+  {id:1,name:"John Smith",phone:"+1-555-0101",addr1:"123 Main Street",addr2:"",city:"New York",state:"NY",postal:"10001",country:"United States",isDefault:true},
+  {id:2,name:"Alex Johnson",phone:"+44-20-7946-0958",addr1:"45 Oxford Street",addr2:"",city:"London",state:"",postal:"W1D 1BS",country:"United Kingdom",isDefault:false},
+  {id:3,name:"Alex Johnson",phone:"+49-30-1234-5678",addr1:"Unter den Linden 77",addr2:"",city:"Berlin",state:"",postal:"10117",country:"Germany",isDefault:false},
+];
+let editingId = null;
+let nextId = 4;
+
+function renderAddresses() {
+  const grid = document.getElementById("addr-grid");
+  const empty = document.getElementById("empty-state");
+  if (!addresses.length) { grid.innerHTML = ""; empty.style.display = "block"; return; }
+  empty.style.display = "none";
+  grid.innerHTML = addresses.map(a => `
+    <div class="addr-card ${a.isDefault ? "default-card" : ""}" id="addr-${a.id}">
+      ${a.isDefault ? '<span class="default-badge"><i class="fas fa-check-circle"></i> Default</span>' : ""}
+      <div class="addr-name">${a.name}</div>
+      <div class="addr-phone"><i class="fas fa-phone" style="color:#94a3b8"></i>${a.phone}</div>
+      <div class="addr-lines">
+        ${a.addr1}${a.addr2 ? "<br>"+a.addr2 : ""}<br>
+        ${a.city}${a.state ? ", "+a.state : ""} ${a.postal}<br>
+        ${a.country}
+      </div>
+      <div class="addr-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editAddress(${a.id})"><i class="fas fa-edit"></i> Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAddress(${a.id})"><i class="fas fa-trash"></i> Delete</button>
+        <button class="btn btn-outline btn-sm" onclick="setDefault(${a.id})" ${a.isDefault ? "disabled" : ""}><i class="fas fa-star"></i> Set Default</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function openModal(title) {
+  document.getElementById("modal-title").textContent = title || "Add New Address";
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  editingId = null;
+  ["f-name","f-phone","f-country","f-city","f-state","f-postal","f-addr1","f-addr2"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+}
+
+function handleOverlayClick(e) { if (e.target === document.getElementById("modal-overlay")) closeModal(); }
+
+function saveAddress() {
+  const name = document.getElementById("f-name").value.trim();
+  const addr1 = document.getElementById("f-addr1").value.trim();
+  if (!name || !addr1) { alert("Please fill in required fields."); return; }
+  const data = {
+    id: editingId || nextId++,
+    name, phone: document.getElementById("f-phone").value.trim(),
+    addr1, addr2: document.getElementById("f-addr2").value.trim(),
+    city: document.getElementById("f-city").value.trim(),
+    state: document.getElementById("f-state").value.trim(),
+    postal: document.getElementById("f-postal").value.trim(),
+    country: document.getElementById("f-country").value,
+    isDefault: editingId ? (addresses.find(a => a.id === editingId) || {}).isDefault || false : false,
+  };
+  if (editingId) {
+    const idx = addresses.findIndex(a => a.id === editingId);
+    if (idx !== -1) addresses[idx] = data;
+  } else {
+    addresses.push(data);
+  }
+  closeModal();
+  renderAddresses();
+}
+
+function editAddress(id) {
+  const a = addresses.find(x => x.id === id);
+  if (!a) return;
+  editingId = id;
+  document.getElementById("f-name").value = a.name;
+  document.getElementById("f-phone").value = a.phone;
+  document.getElementById("f-addr1").value = a.addr1;
+  document.getElementById("f-addr2").value = a.addr2;
+  document.getElementById("f-city").value = a.city;
+  document.getElementById("f-state").value = a.state;
+  document.getElementById("f-postal").value = a.postal;
+  document.getElementById("f-country").value = a.country;
+  openModal("Edit Address");
+}
+
+function deleteAddress(id) {
+  if (!confirm("Delete this address?")) return;
+  const el = document.getElementById("addr-"+id);
+  el.classList.add("removing");
+  setTimeout(() => {
+    addresses = addresses.filter(a => a.id !== id);
+    renderAddresses();
+  }, 300);
+}
+
+function setDefault(id) {
+  addresses.forEach(a => a.isDefault = a.id === id);
+  renderAddresses();
+}
+
+renderAddresses();
+document.getElementById("copyright-year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supplier Pro Subscription | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0052CC;
+      --secondary: #FF6B35;
+      --accent: #00C9A7;
+      --dark: #0A0E27;
+      --text: #1a1a2e;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f4f6fa;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+
+    /* CURRENT PLAN BANNER */
+    .current-plan-bar { background: linear-gradient(135deg, #0052CC, #338ef7); border-radius: 14px; padding: 18px 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 32px; color: #fff; }
+    .cpb-icon { width: 44px; height: 44px; background: rgba(255,255,255,.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .cpb-label { font-size: .8rem; opacity: .8; text-transform: uppercase; letter-spacing: .5px; font-weight: 500; }
+    .cpb-plan { font-size: 1.1rem; font-weight: 700; font-family: 'Poppins', sans-serif; }
+    .cpb-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .cpb-badge { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 20px; padding: 4px 14px; font-size: .82rem; font-weight: 600; }
+
+    /* PLAN CARDS */
+    .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 18px; align-items: start; }
+    .plan-card { background: #fff; border-radius: 20px; border: 1.5px solid var(--border); padding: 28px; box-shadow: 0 2px 12px rgba(10,14,39,.06); position: relative; transition: box-shadow .2s; }
+    .plan-card:hover { box-shadow: 0 6px 24px rgba(10,14,39,.1); }
+    .plan-card.featured { border-color: var(--primary); box-shadow: 0 8px 32px rgba(0,82,204,.18); transform: scale(1.04); z-index: 1; }
+    .popular-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--primary), #338ef7); color: #fff; padding: 5px 20px; border-radius: 20px; font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; white-space: nowrap; }
+    .plan-name { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 10px; }
+    .plan-price { font-size: 2.5rem; font-weight: 800; color: var(--text); line-height: 1; font-family: 'Poppins', sans-serif; }
+    .plan-price sup { font-size: 1.2rem; font-weight: 600; vertical-align: super; }
+    .plan-price span { font-size: .95rem; font-weight: 500; color: var(--muted); }
+    .plan-tagline { font-size: .84rem; color: var(--muted); margin-top: 6px; margin-bottom: 20px; }
+    .plan-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .plan-features li { display: flex; align-items: flex-start; gap: 9px; font-size: .87rem; }
+    .pf-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .65rem; flex-shrink: 0; margin-top: 1px; }
+    .pf-yes { background: #f0fdf4; color: #15803d; }
+    .pf-no  { background: #fef2f2; color: #dc2626; }
+    .btn-upgrade { display: block; width: 100%; padding: 13px; border-radius: 11px; font-size: .92rem; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; border: none; text-align: center; transition: all .18s; }
+    .btn-upgrade-primary { background: var(--primary); color: #fff; }
+    .btn-upgrade-primary:hover { background: #0044aa; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,82,204,.3); }
+    .btn-upgrade-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-upgrade-secondary:hover { background: #e2e8f0; }
+    .btn-current { background: var(--bg); color: var(--muted); cursor: default; border: 1.5px solid var(--border); }
+    .trial-note { text-align: center; font-size: .82rem; color: var(--muted); margin-bottom: 40px; }
+    .trial-note strong { color: var(--primary); }
+
+    /* COMPARISON TABLE */
+    .comp-table-wrap { background: #fff; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 2px 12px rgba(10,14,39,.06); overflow: hidden; margin-bottom: 28px; }
+    .comp-table-head { padding: 20px 28px; border-bottom: 1px solid var(--border); }
+    .comp-table-head h3 { font-size: 1rem; font-weight: 700; }
+    table.comp { width: 100%; border-collapse: collapse; }
+    table.comp thead th { padding: 14px 20px; text-align: center; font-size: .82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; background: #f8fafc; border-bottom: 2px solid var(--border); }
+    table.comp thead th:first-child { text-align: left; }
+    table.comp thead th.featured-col { background: #eff6ff; color: var(--primary); border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); }
+    table.comp tbody tr:nth-child(even) { background: #f8fafc; }
+    table.comp tbody tr:hover { background: #f0f4ff; }
+    table.comp tbody td { padding: 13px 20px; font-size: .87rem; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
+    table.comp tbody td:first-child { text-align: left; font-weight: 600; color: var(--text); }
+    table.comp tbody tr:last-child td { border-bottom: none; }
+    table.comp tbody td.featured-col { background: #f0f7ff; border-left: 2px solid #bfdbfe; border-right: 2px solid #bfdbfe; }
+    .check-yes { color: #16a34a; font-size: 1rem; font-weight: 700; }
+    .check-no  { color: #dc2626; font-size: .9rem; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,14,39,.55); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(10,14,39,.25); overflow: hidden; }
+    .modal-head { padding: 22px 26px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .modal-head h2 { font-size: 1.1rem; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 1.3rem; color: var(--muted); cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+    .modal-close:hover { background: var(--bg); }
+    .modal-body { padding: 22px 26px; }
+    .modal-foot { padding: 16px 26px 22px; display: flex; gap: 12px; }
+
+    /* FOOTER LINKS */
+    .footer-links { text-align: center; padding-bottom: 8px; }
+    .footer-links a { font-size: .83rem; color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--primary); text-decoration: underline; }
+
+    @media (max-width:1000px) { .plans-grid { grid-template-columns: 1fr; } .plan-card.featured { transform: scale(1); } }
+    @media (max-width:700px) { table.comp { font-size: .8rem; } table.comp thead th, table.comp tbody td { padding: 10px 12px; } }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="site-header" style="background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000">
+  <div style="max-width:1400px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px">
+    <a href="../../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+      <span style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27">Globex<span style="color:#0052CC">Sky</span></span>
+    </a>
+    <nav style="margin-left:32px;display:flex;gap:6px">
+      <a href="orders.html" style="padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;font-family:'Inter',sans-serif">Orders</a>
+      <a href="analytics.html" style="padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;font-family:'Inter',sans-serif">Analytics</a>
+      <a href="live-stream.html" style="padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;font-family:'Inter',sans-serif">Live Stream</a>
+      <a href="subscription.html" style="padding:7px 14px;background:#eff6ff;color:#0052CC;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:600;font-family:'Inter',sans-serif">Subscription</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <a href="../auth/login.html" style="padding:8px 16px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif">Login</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main style="flex:1">
+  <div style="max-width:1200px;margin:0 auto;padding:32px 24px">
+
+    <!-- Page Header -->
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:var(--primary);border-radius:20px;padding:5px 16px;font-size:.8rem;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">
+        <i class="fa-solid fa-crown"></i> Pro Plans
+      </div>
+      <h1 style="font-size:2rem;font-weight:800">Choose Your Pro Plan</h1>
+      <p style="color:var(--muted);font-size:.95rem;margin-top:8px;max-width:520px;margin-left:auto;margin-right:auto">Unlock powerful tools to grow your exports. Upgrade anytime, cancel anytime. All plans include a 14-day free trial.</p>
+    </div>
+
+    <!-- Current Plan Banner -->
+    <div class="current-plan-bar">
+      <div class="cpb-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div>
+        <div class="cpb-label">Currently Active</div>
+        <div class="cpb-plan">Basic Pro Plan</div>
+      </div>
+      <div class="cpb-right">
+        <div class="cpb-badge"><i class="fa-solid fa-calendar" style="margin-right:5px"></i>Renews Jul 15, 2025</div>
+        <div class="cpb-badge"><i class="fa-solid fa-dollar-sign" style="margin-right:4px"></i>$299/month</div>
+      </div>
+    </div>
+
+    <!-- Plan Cards -->
+    <div class="plans-grid">
+
+      <!-- Basic Pro -->
+      <div class="plan-card">
+        <div class="plan-name">Basic Pro</div>
+        <div class="plan-price"><sup>$</sup>299<span>/mo</span></div>
+        <div class="plan-tagline">Perfect for new exporters scaling up</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>4%</strong> platform commission</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Up to <strong>50 products</strong> listed</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Email support</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>1</strong> quality inspection/year</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Basic analytics dashboard</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Standard listing visibility</span></li>
+          <li><span class="pf-icon pf-no"><i class="fa-solid fa-xmark"></i></span><span style="color:var(--muted)">Live streaming access</span></li>
+          <li><span class="pf-icon pf-no"><i class="fa-solid fa-xmark"></i></span><span style="color:var(--muted)">Featured listing</span></li>
+          <li><span class="pf-icon pf-no"><i class="fa-solid fa-xmark"></i></span><span style="color:var(--muted)">API access</span></li>
+        </ul>
+        <button class="btn-upgrade btn-current" disabled>
+          <i class="fa-solid fa-circle-check" style="margin-right:6px"></i>Current Plan
+        </button>
+      </div>
+
+      <!-- Professional Pro — FEATURED -->
+      <div class="plan-card featured">
+        <div class="popular-badge"><i class="fa-solid fa-fire" style="margin-right:5px"></i>MOST POPULAR</div>
+        <div class="plan-name" style="color:var(--primary)">Professional Pro</div>
+        <div class="plan-price" style="color:var(--primary)"><sup>$</sup>599<span>/mo</span></div>
+        <div class="plan-tagline">For growing exporters who mean business</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>3%</strong> platform commission</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>Unlimited</strong> products listed</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Priority support (24h response)</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>2</strong> quality inspections/year</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Advanced analytics &amp; insights</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>Featured</strong> listing badge</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Live streaming access (4 hrs/mo)</span></li>
+          <li><span class="pf-icon pf-no"><i class="fa-solid fa-xmark"></i></span><span style="color:var(--muted)">Dedicated account manager</span></li>
+          <li><span class="pf-icon pf-no"><i class="fa-solid fa-xmark"></i></span><span style="color:var(--muted)">API access</span></li>
+        </ul>
+        <button class="btn-upgrade btn-upgrade-primary" onclick="openUpgradeModal('Professional Pro','$599/mo')">
+          <i class="fa-solid fa-arrow-up" style="margin-right:7px"></i>Upgrade Now
+        </button>
+        <div style="text-align:center;margin-top:10px;font-size:.78rem;color:var(--muted)"><i class="fa-solid fa-shield-halved" style="color:var(--accent);margin-right:4px"></i>14-day free trial included</div>
+      </div>
+
+      <!-- Enterprise Pro -->
+      <div class="plan-card">
+        <div class="plan-name" style="color:#7c3aed">Enterprise Pro</div>
+        <div class="plan-price" style="color:#7c3aed"><sup>$</sup>999<span>/mo</span></div>
+        <div class="plan-tagline">For large-scale global export operations</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>2%</strong> platform commission</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>Unlimited</strong> products</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Dedicated account manager</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span><strong>5</strong> quality inspections/year</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Custom analytics &amp; reporting</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Premium listing (top placement)</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Unlimited live streaming</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>Full REST API access</span></li>
+          <li><span class="pf-icon pf-yes"><i class="fa-solid fa-check"></i></span><span>White-glove onboarding</span></li>
+        </ul>
+        <button class="btn-upgrade btn-upgrade-secondary" style="background:var(--dark);color:#fff;border-color:var(--dark)" onclick="openUpgradeModal('Enterprise Pro','$999/mo')">
+          <i class="fa-solid fa-building" style="margin-right:7px"></i>Upgrade to Enterprise
+        </button>
+        <div style="text-align:center;margin-top:10px;font-size:.78rem;color:var(--muted)"><i class="fa-solid fa-phone" style="color:#7c3aed;margin-right:4px"></i>Custom pricing available</div>
+      </div>
+    </div>
+
+    <!-- Trial note -->
+    <div class="trial-note">
+      <i class="fa-solid fa-gift" style="color:var(--accent);margin-right:6px"></i>
+      All plans include a <strong>14-day free trial</strong>. No credit card required to start. Cancel anytime.
+    </div>
+
+    <!-- Feature Comparison Table -->
+    <div class="comp-table-wrap">
+      <div class="comp-table-head">
+        <h3><i class="fa-solid fa-table" style="color:var(--primary);margin-right:8px"></i>Feature Comparison</h3>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="comp">
+          <thead>
+            <tr>
+              <th style="width:28%;text-align:left">Feature</th>
+              <th>Basic Pro<br><span style="font-size:.75rem;font-weight:500;opacity:.7">$299/mo</span></th>
+              <th class="featured-col">Professional<br><span style="font-size:.75rem;font-weight:500;opacity:.8">$599/mo</span></th>
+              <th>Enterprise<br><span style="font-size:.75rem;font-weight:500;opacity:.7">$999/mo</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><i class="fa-solid fa-percent" style="color:var(--primary);margin-right:7px;width:14px"></i>Commission Rate</td>
+              <td>4%</td>
+              <td class="featured-col" style="font-weight:700;color:var(--primary)">3%</td>
+              <td style="font-weight:700;color:#7c3aed">2%</td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-boxes-stacked" style="color:var(--accent);margin-right:7px;width:14px"></i>Products Listed</td>
+              <td>50 max</td>
+              <td class="featured-col" style="font-weight:700;color:var(--primary)">Unlimited</td>
+              <td style="font-weight:700">Unlimited</td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-video" style="color:#ef4444;margin-right:7px;width:14px"></i>Monthly Live Streams</td>
+              <td><span class="check-no">✗</span></td>
+              <td class="featured-col">4 hrs/month</td>
+              <td style="font-weight:700">Unlimited</td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-clipboard-check" style="color:#d97706;margin-right:7px;width:14px"></i>Inspections / Year</td>
+              <td>1</td>
+              <td class="featured-col" style="font-weight:700;color:var(--primary)">2</td>
+              <td style="font-weight:700">5</td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-chart-line" style="color:var(--primary);margin-right:7px;width:14px"></i>Analytics</td>
+              <td>Basic</td>
+              <td class="featured-col" style="font-weight:700;color:var(--primary)">Advanced</td>
+              <td style="font-weight:700">Custom</td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-headset" style="color:var(--muted);margin-right:7px;width:14px"></i>Support</td>
+              <td>Email only</td>
+              <td class="featured-col">Priority (24h)</td>
+              <td style="font-weight:700">Dedicated manager</td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-star" style="color:#d97706;margin-right:7px;width:14px"></i>Featured Listing</td>
+              <td><span class="check-no">✗</span></td>
+              <td class="featured-col"><span class="check-yes">✓</span></td>
+              <td><span style="font-weight:700;color:#7c3aed">Premium</span></td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-code" style="color:var(--muted);margin-right:7px;width:14px"></i>API Access</td>
+              <td><span class="check-no">✗</span></td>
+              <td class="featured-col"><span class="check-no">✗</span></td>
+              <td><span class="check-yes">✓</span></td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-user-tie" style="color:#7c3aed;margin-right:7px;width:14px"></i>Dedicated Manager</td>
+              <td><span class="check-no">✗</span></td>
+              <td class="featured-col"><span class="check-no">✗</span></td>
+              <td><span class="check-yes">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer links -->
+    <div class="footer-links" style="margin-bottom:12px">
+      <a href="#" onclick="confirmCancel(event)">Cancel subscription</a>
+      <span style="color:var(--border);margin:0 12px">|</span>
+      <a href="mailto:sales@globexsky.com"><i class="fa-solid fa-envelope" style="margin-right:5px"></i>Questions? Contact our sales team</a>
+    </div>
+
+  </div>
+</main>
+
+<!-- ===== UPGRADE MODAL ===== -->
+<div class="modal-overlay" id="upgradeModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Confirm Upgrade</h2>
+      <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--bg);border-radius:12px;padding:16px 18px;margin-bottom:18px;display:flex;gap:14px;align-items:center">
+        <div style="width:44px;height:44px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.2rem;flex-shrink:0"><i class="fa-solid fa-arrow-up"></i></div>
+        <div>
+          <div style="font-size:.8rem;color:var(--muted);font-weight:500">Upgrading to</div>
+          <div style="font-size:1rem;font-weight:700;font-family:'Poppins',sans-serif" id="modalPlanName">Professional Pro</div>
+          <div style="font-size:.85rem;color:var(--primary);font-weight:600" id="modalPlanPrice">$599/month</div>
+        </div>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+        <li style="display:flex;align-items:center;gap:9px;font-size:.87rem"><i class="fa-solid fa-circle-check" style="color:#16a34a;font-size:.95rem"></i>14-day free trial — no charge today</li>
+        <li style="display:flex;align-items:center;gap:9px;font-size:.87rem"><i class="fa-solid fa-circle-check" style="color:#16a34a;font-size:.95rem"></i>Prorated credit applied from current plan</li>
+        <li style="display:flex;align-items:center;gap:9px;font-size:.87rem"><i class="fa-solid fa-circle-check" style="color:#16a34a;font-size:.95rem"></i>Cancel anytime with no penalty</li>
+        <li style="display:flex;align-items:center;gap:9px;font-size:.87rem"><i class="fa-solid fa-circle-check" style="color:#16a34a;font-size:.95rem"></i>All features unlocked immediately after trial</li>
+      </ul>
+      <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:12px 15px;font-size:.83rem;color:#92400e">
+        <i class="fa-solid fa-info-circle" style="margin-right:6px;color:#d97706"></i>
+        By confirming, you agree to the <a href="#" style="color:#0052CC;font-weight:600">GlobexSky Supplier Terms</a>. Your first charge occurs after the 14-day trial ends.
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button style="flex:1;padding:12px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:.9rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;color:var(--muted)" onclick="closeModal()">Cancel</button>
+      <button style="flex:2;padding:12px;border-radius:10px;border:none;background:var(--primary);color:#fff;font-size:.92rem;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:background .18s" onmouseover="this.style.background='#0044aa'" onmouseout="this.style.background='var(--primary)'" onclick="confirmUpgrade()">
+        <i class="fa-solid fa-crown" style="margin-right:7px"></i>Start Free Trial
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer style="background:#0a0e27;color:#94a3b8;padding:20px 0;margin-top:auto">
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;text-align:center">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  function openUpgradeModal(planName, planPrice) {
+    document.getElementById('modalTitle').textContent = 'Confirm Upgrade — ' + planName;
+    document.getElementById('modalPlanName').textContent = planName;
+    document.getElementById('modalPlanPrice').textContent = planPrice;
+    document.getElementById('upgradeModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('upgradeModal').classList.remove('open');
+  }
+
+  function confirmUpgrade() {
+    const plan = document.getElementById('modalPlanName').textContent;
+    closeModal();
+    const toast = document.createElement('div');
+    toast.textContent = '🎉 Trial started! Welcome to ' + plan + '.';
+    Object.assign(toast.style, {
+      position:'fixed', bottom:'28px', right:'28px', background:'#0052CC', color:'#fff',
+      padding:'14px 22px', borderRadius:'12px', fontFamily:'Inter,sans-serif',
+      fontSize:'.9rem', fontWeight:'600', zIndex:'9999', boxShadow:'0 6px 24px rgba(0,82,204,.35)',
+      animation:'fadeInUp .3s ease'
+    });
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .5s'; }, 3500);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  function confirmCancel(e) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to cancel your Basic Pro subscription?\n\nYour plan will remain active until the end of the current billing period (Jul 15, 2025).')) {
+      alert('Your subscription has been scheduled for cancellation on Jul 15, 2025. We\'re sorry to see you go!');
+    }
+  }
+
+  document.getElementById('upgradeModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('upgradeModal')) closeModal();
+  });
+</script>
+</body>
+</html>

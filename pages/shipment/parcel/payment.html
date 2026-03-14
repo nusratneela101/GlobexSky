@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parcel Payment | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh}
+    a{text-decoration:none}
+    header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-inner{max-width:1400px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-logo span{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark)}
+    .nav-logo span em{color:var(--primary);font-style:normal}
+    .nav-right{margin-left:auto}
+    .btn-login{padding:8px 16px;background:var(--primary);color:#fff;border-radius:8px;font-size:.88rem;font-weight:600}
+    main{flex:1}
+    .container{max-width:1400px;margin:0 auto;padding:32px 24px}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary);font-weight:500}
+    .breadcrumb i.fa-chevron-right{font-size:.7rem}
+    .breadcrumb .step-done{color:var(--muted)}
+    .breadcrumb .step-active{color:var(--primary);font-weight:700}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:var(--dark);margin-bottom:4px}
+    .page-subtitle{color:var(--muted);font-size:.9rem;margin-bottom:28px}
+    .ref-display{display:inline-flex;align-items:center;gap:10px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:8px 18px;margin-bottom:28px}
+    .ref-display .ref-label{font-size:.78rem;color:var(--muted);font-weight:600}
+    .ref-display .ref-code{font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:var(--primary);letter-spacing:.05em}
+    .layout{display:grid;grid-template-columns:3fr 2fr;gap:24px;align-items:start}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}}
+    .card{background:#fff;border-radius:16px;padding:24px 28px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .card-title i{color:var(--primary)}
+    /* ORDER SUMMARY */
+    .order-card{position:sticky;top:80px}
+    .route-pill{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+    .route-pill .rp-code{font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:var(--dark)}
+    .route-pill i{color:var(--secondary)}
+    .route-pill .rp-meta{font-size:.78rem;color:var(--muted);margin-top:2px}
+    .dims-row{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+    .dim-badge{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:.8rem;font-weight:600;color:var(--dark);display:flex;align-items:center;gap:5px}
+    .dim-badge i{color:var(--muted);font-size:.75rem}
+    .invoice-list{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+    .inv-row{display:flex;justify-content:space-between;padding:10px 14px;font-size:.84rem;border-bottom:1px solid var(--border)}
+    .inv-row:last-child{border-bottom:none}
+    .inv-row .ir-label{color:var(--muted)}
+    .inv-row .ir-val{font-weight:600;color:var(--dark);font-family:'Poppins',sans-serif}
+    .inv-row.total-row{background:linear-gradient(135deg,#eff6ff,#dbeafe);padding:14px}
+    .inv-row.total-row .ir-label{font-weight:700;color:var(--dark);font-size:.9rem}
+    .inv-row.total-row .ir-val{color:var(--primary);font-size:1.3rem;font-weight:800}
+    .eta-row{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);background:#f0fdf4;border-radius:8px;padding:10px 14px}
+    .eta-row i{color:var(--accent)}
+    .eta-row strong{color:var(--dark)}
+    /* PAYMENT FORM */
+    .method-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px}
+    .method-tab{flex:1;padding:11px 8px;border:none;background:#fff;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;border-right:1px solid var(--border)}
+    .method-tab:last-child{border-right:none}
+    .method-tab i{font-size:1rem}
+    .method-tab.active{background:var(--primary);color:#fff}
+    .method-tab:hover:not(.active){background:var(--bg)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+    .form-group label{font-size:.82rem;font-weight:600;color:var(--text)}
+    .form-group input,.form-group select{padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:.92rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;color:var(--text)}
+    .form-group input:focus,.form-group select:focus{border-color:var(--primary)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:500px){.form-row{grid-template-columns:1fr}}
+    /* CARD PREVIEW */
+    .card-preview{background:linear-gradient(135deg,#0052CC,#0041a8,#0A0E27);border-radius:16px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden;color:#fff;min-height:140px}
+    .card-preview::before{content:'';position:absolute;top:-30%;right:-10%;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06)}
+    .card-preview::after{content:'';position:absolute;bottom:-40%;left:10%;width:150px;height:150px;border-radius:50%;background:rgba(0,201,167,.08)}
+    .cp-brand{font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:20px;text-transform:uppercase;letter-spacing:.1em}
+    .cp-number{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:.2em;margin-bottom:20px;color:#fff}
+    .cp-bottom{display:flex;justify-content:space-between;align-items:flex-end}
+    .cp-name{font-size:.82rem;color:rgba(255,255,255,.85);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+    .cp-expiry{font-size:.8rem;color:rgba(255,255,255,.7)}
+    .cp-chip{width:32px;height:24px;background:linear-gradient(135deg,#ffd700,#b8860b);border-radius:4px;margin-bottom:16px}
+    /* PAY BUTTON */
+    .btn-pay{width:100%;padding:15px;background:linear-gradient(135deg,var(--secondary),#c0392b);color:#fff;border:none;border-radius:12px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-top:8px}
+    .btn-pay:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,53,.35)}
+    /* OTHER TABS */
+    .paypal-btn{width:100%;padding:14px;background:#003087;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;transition:all .2s}
+    .paypal-btn:hover{background:#002070}
+    .bank-info{background:var(--bg);border-radius:12px;padding:20px;border:1px solid var(--border)}
+    .bank-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.87rem}
+    .bank-row:last-child{border-bottom:none}
+    .bank-row .bk-label{color:var(--muted);font-weight:500}
+    .bank-row .bk-val{font-weight:700;font-family:'Poppins',sans-serif;color:var(--dark)}
+    /* SECURITY BADGES */
+    .security-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;justify-content:center}
+    .sec-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:.75rem;font-weight:600;color:var(--muted)}
+    .sec-badge i{color:var(--accent)}
+    .stripe-note{text-align:center;font-size:.75rem;color:var(--muted);margin-top:10px}
+    .stripe-note i{color:var(--primary);margin-right:4px}
+    /* SUCCESS MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(10,14,39,.65);z-index:9000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;visibility:hidden;transition:all .3s}
+    .modal-overlay.open{opacity:1;visibility:visible}
+    .modal{background:#fff;border-radius:20px;width:100%;max-width:460px;padding:40px;text-align:center;transform:scale(.9);transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+    .modal-overlay.open .modal{transform:scale(1)}
+    .modal-icon{width:72px;height:72px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2rem;color:#16a34a}
+    .modal h2{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:var(--dark);margin-bottom:8px}
+    .modal p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+    .modal .ref-display{justify-content:center}
+    .btn-modal{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:'Poppins',sans-serif;transition:all .2s}
+    .btn-modal:hover{background:#0041a8}
+    footer{background:var(--dark);color:#94a3b8;padding:20px 0;margin-top:auto}
+    .footer-inner{max-width:1400px;margin:0 auto;padding:0 24px;text-align:center;font-size:.85rem}
+  </style>
+</head>
+<body>
+<header>
+  <div class="nav-inner">
+    <a href="../../../index.html" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+      <span>Globex<em>Sky</em></span>
+    </a>
+    <div class="nav-right"><a href="../../auth/login.html" class="btn-login">Login</a></div>
+  </div>
+</header>
+<main>
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="#">Create Shipment</a>
+      <i class="fa fa-chevron-right"></i>
+      <span class="step-done">Review</span>
+      <i class="fa fa-chevron-right"></i>
+      <span class="step-active"><i class="fa fa-lock" style="margin-right:4px"></i>Payment</span>
+    </nav>
+    <div class="page-title"><i class="fa fa-credit-card" style="color:var(--primary);margin-right:10px"></i>Complete Your Payment</div>
+    <div class="page-subtitle">Your shipment is ready — complete payment to confirm booking</div>
+    <div class="ref-display">
+      <span class="ref-label">Shipment Reference</span>
+      <span class="ref-code">GS-P-2025-4821</span>
+      <i class="fa fa-copy" style="color:var(--primary);cursor:pointer" onclick="navigator.clipboard&&navigator.clipboard.writeText('GS-P-2025-4821')"></i>
+    </div>
+
+    <div class="layout">
+      <!-- PAYMENT FORM -->
+      <div>
+        <div class="card">
+          <div class="card-title"><i class="fa fa-wallet"></i> Payment Method</div>
+          <div class="method-tabs">
+            <button class="method-tab active" onclick="switchTab('card',this)"><i class="fa fa-credit-card"></i>Card</button>
+            <button class="method-tab" onclick="switchTab('paypal',this)"><i class="fab fa-paypal"></i>PayPal</button>
+            <button class="method-tab" onclick="switchTab('bank',this)"><i class="fa fa-building-columns"></i>Bank</button>
+            <button class="method-tab" onclick="switchTab('mobile',this)"><i class="fa fa-mobile-screen"></i>Mobile</button>
+          </div>
+
+          <!-- CARD TAB -->
+          <div class="tab-panel active" id="tab-card">
+            <div class="card-preview">
+              <div class="cp-brand">GlobexSky · Visa</div>
+              <div class="cp-chip"></div>
+              <div class="cp-number" id="prevNumber">•••• •••• •••• ••••</div>
+              <div class="cp-bottom">
+                <div class="cp-name" id="prevName">YOUR NAME</div>
+                <div class="cp-expiry" id="prevExpiry">MM/YY</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label><i class="fa fa-credit-card" style="color:var(--muted);margin-right:4px"></i>Card Number</label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" autocomplete="cc-number">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fa fa-calendar-alt" style="color:var(--muted);margin-right:4px"></i>Expiry Date</label>
+                <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" autocomplete="cc-exp">
+              </div>
+              <div class="form-group">
+                <label><i class="fa fa-lock" style="color:var(--muted);margin-right:4px"></i>CVV</label>
+                <input type="password" id="cardCvv" placeholder="•••" maxlength="4" autocomplete="cc-csc">
+              </div>
+            </div>
+            <div class="form-group">
+              <label><i class="fa fa-user" style="color:var(--muted);margin-right:4px"></i>Name on Card</label>
+              <input type="text" id="cardName" placeholder="Alex Johnson" oninput="updatePreview()" autocomplete="cc-name">
+            </div>
+            <button class="btn-pay" onclick="handlePay()">
+              <i class="fa fa-lock"></i> Pay $89.05 Now
+            </button>
+          </div>
+
+          <!-- PAYPAL TAB -->
+          <div class="tab-panel" id="tab-paypal">
+            <div style="text-align:center;padding:20px 0">
+              <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_200x51.png" alt="PayPal" style="height:40px;object-fit:contain;margin-bottom:20px" onerror="this.style.display='none'">
+              <div style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:800;color:#003087;margin-bottom:20px">PayPal</div>
+              <button class="paypal-btn" onclick="handlePay()">
+                <i class="fab fa-paypal"></i> Pay with PayPal — $89.05
+              </button>
+              <p style="font-size:.82rem;color:var(--muted);margin-top:8px"><i class="fa fa-arrow-right" style="margin-right:4px"></i>You will be redirected to PayPal to complete payment securely</p>
+            </div>
+          </div>
+
+          <!-- BANK TAB -->
+          <div class="tab-panel" id="tab-bank">
+            <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px">Transfer <strong style="color:var(--dark)">$89.05</strong> to the account below and use your shipment reference as the payment note.</p>
+            <div class="bank-info">
+              <div class="bank-row"><span class="bk-label">Bank Name</span><span class="bk-val">Chase Bank</span></div>
+              <div class="bank-row"><span class="bk-label">Account Name</span><span class="bk-val">GlobexSky Inc.</span></div>
+              <div class="bank-row"><span class="bk-label">Account Number</span><span class="bk-val">1234567890</span></div>
+              <div class="bank-row"><span class="bk-label">Routing Number</span><span class="bk-val">021000021</span></div>
+              <div class="bank-row"><span class="bk-label">Reference</span><span class="bk-val" style="color:var(--primary)">GS-P-2025-4821</span></div>
+              <div class="bank-row"><span class="bk-label">Amount</span><span class="bk-val" style="color:var(--accent)">$89.05 USD</span></div>
+            </div>
+            <p style="font-size:.78rem;color:var(--muted);margin-top:12px"><i class="fa fa-circle-info" style="color:var(--primary);margin-right:4px"></i>Shipment will be activated within 1–2 business hours after payment confirmation.</p>
+          </div>
+
+          <!-- MOBILE TAB -->
+          <div class="tab-panel" id="tab-mobile">
+            <div class="form-group">
+              <label><i class="fa fa-mobile-screen" style="color:var(--muted);margin-right:4px"></i>Mobile Money Provider</label>
+              <select>
+                <option>M-Pesa</option><option>MTN Mobile Money</option><option>Airtel Money</option>
+                <option>Orange Money</option><option>Vodacom M-Pesa</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fa fa-phone" style="color:var(--muted);margin-right:4px"></i>Phone Number</label>
+              <input type="tel" placeholder="+1 (555) 000-0000">
+            </div>
+            <button class="btn-pay" onclick="handlePay()">
+              <i class="fa fa-mobile-screen"></i> Pay $89.05 via Mobile Money
+            </button>
+          </div>
+
+          <!-- SECURITY BADGES -->
+          <div class="security-badges">
+            <span class="sec-badge"><i class="fa fa-lock"></i> SSL Encrypted</span>
+            <span class="sec-badge"><i class="fa fa-shield-halved"></i> Secure Payment</span>
+            <span class="sec-badge"><i class="fa fa-check-circle"></i> PCI Compliant</span>
+          </div>
+          <div class="stripe-note"><i class="fab fa-stripe"></i>Secure payment powered by Stripe</div>
+        </div>
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="order-card">
+        <div class="card">
+          <div class="card-title"><i class="fa fa-receipt"></i> Order Summary</div>
+          <div class="route-pill">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="rp-code">JFK</span>
+                <i class="fa fa-arrow-right"></i>
+                <span class="rp-code">PVG</span>
+              </div>
+              <div class="rp-meta">New York, USA → Shanghai, China</div>
+            </div>
+          </div>
+          <div class="dims-row">
+            <span class="dim-badge"><i class="fa fa-weight-hanging"></i> 2.3 kg</span>
+            <span class="dim-badge"><i class="fa fa-cube"></i> 30×20×15 cm</span>
+            <span class="dim-badge"><i class="fa fa-bolt" style="color:#f59e0b"></i> Express</span>
+          </div>
+          <div class="invoice-list">
+            <div class="inv-row"><span class="ir-label">Base Cost</span><span class="ir-val">$35.00</span></div>
+            <div class="inv-row"><span class="ir-label">Weight Cost (2.3 kg)</span><span class="ir-val">$10.35</span></div>
+            <div class="inv-row"><span class="ir-label">Express Delivery</span><span class="ir-val">$25.00</span></div>
+            <div class="inv-row"><span class="ir-label">Fragile Handling</span><span class="ir-val">$10.00</span></div>
+            <div class="inv-row"><span class="ir-label">Insurance (3%)</span><span class="ir-val">$2.10</span></div>
+            <div class="inv-row"><span class="ir-label">Platform Fee (8%)</span><span class="ir-val">$6.60</span></div>
+            <div class="inv-row total-row"><span class="ir-label">Total</span><span class="ir-val">$89.05</span></div>
+          </div>
+          <div class="eta-row">
+            <i class="fa fa-calendar-check"></i>
+            <span>Estimated Delivery: <strong>3–5 business days</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="footer-inner"><p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p></div>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon"><i class="fa fa-circle-check"></i></div>
+    <h2>Payment Successful!</h2>
+    <p>Your shipment <strong>GS-P-2025-4821</strong> has been confirmed. You will receive a confirmation email shortly.</p>
+    <div class="ref-display" style="justify-content:center;margin-bottom:24px">
+      <span class="ref-label">Reference</span>
+      <span class="ref-code">GS-P-2025-4821</span>
+    </div>
+    <button class="btn-modal" onclick="document.getElementById('successModal').classList.remove('open')">
+      <i class="fa fa-arrow-right"></i> Track My Shipment
+    </button>
+  </div>
+</div>
+
+<script>
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.method-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+
+  function formatCard(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 16);
+    input.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+    const masked = v.padEnd(16, '•');
+    const display = masked.replace(/(.{4})/g, '$1 ').trim();
+    document.getElementById('prevNumber').textContent = display;
+  }
+
+  function formatExpiry(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 4);
+    if (v.length >= 3) v = v.substring(0,2) + '/' + v.substring(2);
+    input.value = v;
+    document.getElementById('prevExpiry').textContent = v || 'MM/YY';
+  }
+
+  function updatePreview() {
+    const n = document.getElementById('cardName').value.trim();
+    document.getElementById('prevName').textContent = n.toUpperCase() || 'YOUR NAME';
+  }
+
+  function handlePay() {
+    document.getElementById('successModal').classList.add('open');
+  }
+
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
