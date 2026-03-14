@@ -244,6 +244,8 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
 </footer>
 
 <script>
+const PLATFORM_FEE_RATE = 0.10; // 10% platform fee deducted from carrier earnings
+const PLATFORM_BONUS = 10; // On-time delivery bonus in USD
 const PRODUCTS = [
   {id:'smartphones',name:'Smartphones',icon:'fas fa-mobile-alt',rate:50},
   {id:'laptops',name:'Laptops',icon:'fas fa-laptop',rate:60},
@@ -307,8 +309,8 @@ function updateEarnings() {
   }
   breakdown.innerHTML = selected.map(s => `<div class="earnings-row"><span>${s.name} (${s.wt}kg)</span><span>$${s.earn.toFixed(2)}</span></div>`).join('');
   summary.style.display = 'block';
-  const bonus = 10;
-  const fee = (base + bonus) * 0.10;
+  const bonus = PLATFORM_BONUS;
+  const fee = (base + bonus) * PLATFORM_FEE_RATE;
   const total = base + bonus - fee;
   document.getElementById('base-pay').textContent = '$' + base.toFixed(2);
   document.getElementById('platform-fee').textContent = '-$' + fee.toFixed(2);
@@ -375,8 +377,8 @@ function populateReview() {
   });
   document.getElementById('rv-products').innerHTML = prodList.length ? prodList.map(x => `<div style="padding:4px 0;font-size:.88rem;color:#374151">${x}</div>`).join('') : '—';
   document.getElementById('rv-total-weight').textContent = totalWt.toFixed(1) + ' kg';
-  const fee = (base + 10) * 0.10;
-  document.getElementById('rv-total-earn').textContent = '$' + (base + 10 - fee).toFixed(2);
+  const fee = (base + PLATFORM_BONUS) * PLATFORM_FEE_RATE;
+  document.getElementById('rv-total-earn').textContent = '$' + (base + PLATFORM_BONUS - fee).toFixed(2);
 }
 
 function submitRequest() {

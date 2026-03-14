@@ -154,6 +154,9 @@ textarea.form-control{min-height:120px;resize:vertical}
 </footer>
 
 <script>
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 function submitTicket() {
   const name = document.getElementById('t-name').value.trim();
   const email = document.getElementById('t-email').value.trim();
@@ -165,12 +168,14 @@ function submitTicket() {
   const btn = event.target;
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
   setTimeout(() => {
     document.getElementById('ticket-form').innerHTML = `
       <div style="text-align:center;padding:48px 20px">
         <div style="width:70px;height:70px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.8rem;color:#059669"><i class="fas fa-check"></i></div>
         <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:8px">Ticket Submitted!</h3>
-        <p style="color:#64748b;max-width:380px;margin:0 auto">Thank you, ${name}! We've received your ticket and will respond to ${email} within 24 hours.</p>
+        <p style="color:#64748b;max-width:380px;margin:0 auto">Thank you, ${safeName}! We've received your ticket and will respond to ${safeEmail} within 24 hours.</p>
       </div>`;
   }, 1500);
 }
