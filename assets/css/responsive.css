@@ -1,0 +1,1018 @@
+/* ==========================================================================
+   GlobexSky Platform — Responsive Stylesheet
+   Mobile-first breakpoint system with full layout adaptation
+   ========================================================================== */
+
+/**
+ * Breakpoint reference:
+ *   xs  —  0px      (default, mobile-first base)
+ *   sm  —  480px    (large mobile / small phones landscape)
+ *   md  —  768px    (tablet portrait)
+ *   lg  —  1024px   (tablet landscape / small desktop)
+ *   xl  —  1280px   (desktop)
+ *   2xl —  1440px   (large desktop / widescreen)
+ */
+
+/* ==========================================================================
+   1. Base (Mobile-First Defaults — 0px+)
+   Everything below applies at all screen sizes and is overridden upward.
+   ========================================================================== */
+
+/* --- Layout --- */
+.container {
+  width: 100%;
+  padding-inline: 1rem;
+}
+
+/* Single-column everything by default */
+.grid-2,
+.grid-3,
+.grid-4,
+.grid-auto {
+  grid-template-columns: 1fr;
+}
+
+/* --- Navigation --- */
+.navbar-nav {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 14, 39, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 300;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar-nav.open {
+  display: flex;
+  transform: translateX(0);
+}
+
+.navbar-toggle {
+  display: flex;
+}
+
+.nav-link {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.75rem 1.5rem;
+  width: 100%;
+  text-align: center;
+  border-radius: 0.75rem;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.nav-link::after { display: none; }
+
+/* Nav dropdown resets on mobile */
+.nav-dropdown-menu {
+  position: static;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  box-shadow: none;
+  border: none;
+  background: none;
+  padding: 0;
+  display: none;
+}
+
+.nav-dropdown.open .nav-dropdown-menu { display: flex; flex-direction: column; }
+
+.navbar-actions .btn {
+  display: none;
+}
+
+/* Show only essential actions on mobile */
+.navbar-actions .cart-icon,
+.navbar-actions .btn-icon {
+  display: flex;
+}
+
+/* --- Hero --- */
+.hero-inner {
+  grid-template-columns: 1fr;
+  padding-block: 4rem;
+  gap: 2rem;
+  text-align: center;
+}
+
+.hero-visual {
+  display: none;
+}
+
+.hero-cta {
+  justify-content: center;
+}
+
+.hero-stats {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.hero-eyebrow {
+  justify-content: center;
+}
+
+/* --- Product Grid --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* --- Supplier Grid --- */
+.supplier-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* --- Pricing Grid --- */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* --- Footer --- */
+.footer-grid {
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.footer-bottom {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.footer-legal {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* --- Admin Sidebar (hidden off-screen on mobile) --- */
+.sidebar {
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 400;
+}
+
+.sidebar.sidebar-open {
+  transform: translateX(0);
+}
+
+/* Overlay behind open sidebar on mobile */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 14, 39, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 399;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.visible {
+  display: block;
+  opacity: 1;
+}
+
+/* Admin content takes full width on mobile */
+.admin-content {
+  margin-left: 0 !important;
+}
+
+.admin-topbar {
+  padding-inline: 1rem;
+}
+
+.admin-main {
+  padding: 1rem;
+}
+
+/* --- Table --- */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide non-essential table columns on mobile */
+.table .col-hide-mobile {
+  display: none;
+}
+
+/* --- Step Indicator (stack on mobile) --- */
+.steps {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.steps::before { display: none; }
+
+.step-item {
+  flex-direction: row;
+  width: 100%;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  position: relative;
+}
+
+.step-item::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--light-tertiary, #DDE2EE);
+}
+
+.step-item:last-child::before { display: none; }
+
+.step-item.completed::before {
+  background: var(--gradient-primary, linear-gradient(135deg, #0052CC 0%, #00C9A7 100%));
+}
+
+.step-label {
+  text-align: left;
+  line-height: 1.4;
+  padding-top: 0.5rem;
+}
+
+/* --- Quick-view modal grid --- */
+.quick-view-grid {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* --- FAB positioning on mobile --- */
+.fab {
+  bottom: calc(4rem + 1rem); /* above bottom nav bar */
+  right: 1rem;
+}
+
+/* --- Door animation size on mobile --- */
+.door-brand-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+}
+
+.door-brand-text { font-size: 1.125rem; }
+.door-progress { width: 140px; }
+
+/* --- Stat cards --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+/* --- Mobile bottom navigation bar --- */
+.bottom-nav {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: var(--white, #ffffff);
+  border-top: 1px solid var(--light-secondary, #E8ECF4);
+  z-index: 200;
+  box-shadow: 0 -4px 16px rgba(10, 14, 39, 0.08);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: #9CA3AF;
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  text-decoration: none;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav-item.active {
+  color: var(--primary, #0052CC);
+}
+
+.bottom-nav-item i {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+/* Push main content up above bottom nav on mobile */
+body.has-bottom-nav .admin-main,
+body.has-bottom-nav .page-content {
+  padding-bottom: calc(64px + 1rem);
+}
+
+/* --- Pagination compact on mobile --- */
+.pagination .pagination-btn:not(.pagination-btn-prev):not(.pagination-btn-next):not(.active) {
+  display: none;
+}
+
+/* ==========================================================================
+   2. Small Mobile and Up — sm: 480px+
+   ========================================================================== */
+
+@media (min-width: 480px) {
+
+  /* Container */
+  .container {
+    padding-inline: 1.25rem;
+  }
+
+  /* Product grid — 2 columns */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Supplier grid — 2 columns */
+  .supplier-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Stats grid — 2 columns */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Pricing — still single column, cards are wider */
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin-inline: auto;
+  }
+
+  /* Pagination — show all buttons */
+  .pagination .pagination-btn {
+    display: flex;
+  }
+
+  /* Hero title sizing */
+  .hero-title { font-size: 2rem; }
+
+  /* Footer — 2-column layout */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Toast containers adjust */
+  .toast-container.top-right    { top: 1rem; right: 1rem; }
+  .toast-container.bottom-right { bottom: 1rem; right: 1rem; }
+
+  /* Door */
+  .door-brand-logo { width: 64px; height: 64px; }
+  .door-brand-text { font-size: 1.25rem; }
+}
+
+/* ==========================================================================
+   3. Tablet Portrait and Up — md: 768px+
+   ========================================================================== */
+
+@media (min-width: 768px) {
+
+  /* Container */
+  .container {
+    padding-inline: 1.5rem;
+  }
+
+  /* Remove bottom nav */
+  .bottom-nav { display: none; }
+  body.has-bottom-nav .admin-main,
+  body.has-bottom-nav .page-content {
+    padding-bottom: inherit;
+  }
+
+  /* --- Navbar: switch from hamburger to inline links --- */
+  .navbar-nav {
+    display: flex;
+    position: static;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.25rem;
+    padding: 0;
+    transform: none;
+    overflow: visible;
+    flex: 1;
+  }
+
+  .navbar-toggle { display: none; }
+
+  .nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    padding: 0.5rem 0.75rem;
+    width: auto;
+    text-align: left;
+  }
+
+  .nav-link::after { display: block; }
+
+  .nav-dropdown-menu {
+    position: absolute;
+    transform: translateX(-50%) translateY(-8px);
+    opacity: 0;
+    visibility: hidden;
+    display: block;
+    box-shadow: var(--shadow-xl, 0 20px 50px rgba(10, 14, 39, 0.16));
+    border: 1px solid var(--light-tertiary, #DDE2EE);
+    background: white;
+    padding: 0.5rem;
+  }
+
+  .navbar-actions .btn {
+    display: inline-flex;
+  }
+
+  /* --- Hero: 2-column layout --- */
+  .hero-inner {
+    grid-template-columns: 1fr 1fr;
+    text-align: left;
+    padding-block: 5rem;
+    gap: 3rem;
+  }
+
+  .hero-visual { display: flex; }
+  .hero-cta { justify-content: flex-start; }
+  .hero-stats { justify-content: flex-start; }
+  .hero-eyebrow { justify-content: flex-start; }
+  .hero-title { font-size: clamp(2rem, 4vw, 3rem); }
+
+  /* --- Product grid — 2 columns on tablet --- */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  /* --- Supplier grid — 2 columns --- */
+  .supplier-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* --- Pricing — 2 columns --- */
+  .pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  /* --- Stats grid — 4 columns --- */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* --- Footer — 2 columns (brand takes full width, others share row) --- */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .footer-brand-col {
+    grid-column: 1 / -1;
+  }
+
+  /* --- Steps: row layout again --- */
+  .steps {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .steps::before { display: block; }
+
+  .step-item {
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 0;
+  }
+
+  .step-item::before { display: none; }
+
+  .step-label { text-align: center; }
+
+  /* --- Quick-view modal grid --- */
+  .quick-view-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* --- Table: show all columns --- */
+  .table .col-hide-mobile {
+    display: table-cell;
+  }
+
+  /* --- Modal: better sizing --- */
+  .modal {
+    max-width: 560px;
+    max-height: 85vh;
+  }
+
+  /* --- Door sizing on tablet --- */
+  .door-brand-logo { width: 72px; height: 72px; }
+  .door-brand-text { font-size: 1.5rem; }
+  .door-progress { width: 160px; }
+
+  /* --- FAB reposition --- */
+  .fab {
+    bottom: 2rem;
+    right: 2rem;
+  }
+
+  /* --- Form side-by-side layout helper --- */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-row-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  /* --- Toast positioning adjustment --- */
+  .toast-container.top-right    { top: 1.5rem; right: 1.5rem; }
+  .toast-container.bottom-right { bottom: 1.5rem; right: 1.5rem; }
+}
+
+/* ==========================================================================
+   4. Tablet Landscape / Small Desktop — lg: 1024px+
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+
+  /* Container */
+  .container {
+    padding-inline: 2rem;
+  }
+
+  /* --- Admin sidebar: always visible, no overlay needed --- */
+  .sidebar {
+    transform: translateX(0);
+    position: fixed;
+  }
+
+  .sidebar-overlay { display: none !important; }
+
+  .admin-content {
+    margin-left: var(--sidebar-width, 260px) !important;
+  }
+
+  .admin-content.sidebar-mini-active {
+    margin-left: var(--sidebar-width-mini, 72px) !important;
+  }
+
+  .admin-main {
+    padding: 1.5rem;
+  }
+
+  /* --- Product grid — 3 columns --- */
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* --- Supplier grid — 3 columns --- */
+  .supplier-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* --- Pricing — 3 columns --- */
+  .pricing-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* --- Footer — 3 columns (brand col wider) --- */
+  .footer-grid {
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .footer-brand-col {
+    grid-column: auto;
+  }
+
+  /* --- Hero typography --- */
+  .hero-title {
+    font-size: clamp(2.5rem, 3.5vw, 3.5rem);
+  }
+
+  /* --- Grid utilities restored --- */
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+
+  /* --- Navbar: full dropdown support --- */
+  .navbar-nav { gap: 0.25rem; }
+
+  /* --- Section padding upgrade --- */
+  .section { padding-block: 5rem; }
+  .section-lg { padding-block: clamp(5rem, 8vw, 6rem); }
+
+  /* --- Door at full size --- */
+  .door-brand-logo { width: 80px; height: 80px; border-radius: 24px; }
+  .door-brand-text { font-size: 1.75rem; }
+  .door-progress { width: 180px; }
+
+  /* --- Collapsible sidebar on tablet landscape --- */
+  .sidebar.sidebar-collapsible {
+    width: var(--sidebar-width, 260px);
+    transform: translateX(0);
+  }
+
+  .sidebar.sidebar-collapsible.collapsed {
+    width: var(--sidebar-width-mini, 72px);
+  }
+}
+
+/* ==========================================================================
+   5. Desktop — xl: 1280px+
+   ========================================================================== */
+
+@media (min-width: 1280px) {
+
+  /* Container max-width upgrade */
+  .container {
+    max-width: var(--container-xl, 1280px);
+    margin-inline: auto;
+    padding-inline: 2rem;
+  }
+
+  /* --- Product grid — 4 columns --- */
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .product-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* --- Supplier grid — 4 columns --- */
+  .supplier-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* --- Grid utilities full --- */
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-auto { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+  /* --- Footer — full 4-column layout --- */
+  .footer-grid {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .footer-brand-col { grid-column: auto; }
+
+  /* --- Hero --- */
+  .hero-inner {
+    padding-block: 6rem;
+    gap: 4rem;
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 4vw, 3.75rem);
+  }
+
+  /* --- Admin layout --- */
+  .admin-main { padding: 2rem; }
+  .admin-topbar { padding-inline: 2rem; }
+
+  /* --- Navbar --- */
+  .navbar-inner { padding-inline: 2rem; }
+}
+
+/* ==========================================================================
+   6. Large Desktop / Widescreen — 2xl: 1440px+
+   ========================================================================== */
+
+@media (min-width: 1440px) {
+
+  .container {
+    max-width: var(--container-2xl, 1440px);
+    padding-inline: 3rem;
+  }
+
+  /* --- Hero full bleed --- */
+  .hero-inner {
+    padding-inline: 3rem;
+    gap: 5rem;
+  }
+
+  .hero-title {
+    font-size: 3.75rem;
+  }
+
+  /* --- Product grid — up to 5 columns for special layouts --- */
+  .product-grid-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  /* --- Section heading max-width --- */
+  .section-heading { max-width: 800px; }
+
+  /* --- Admin layout spacious --- */
+  .admin-main { padding: 2.5rem; }
+}
+
+/* ==========================================================================
+   7. Component-Level Responsive Overrides
+   ========================================================================== */
+
+/* --- Navbar search bar --- */
+.navbar-search {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .navbar-search {
+    display: flex;
+    width: 260px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .navbar-search { width: 320px; }
+}
+
+/* --- Mobile search bar (full width) --- */
+.mobile-search {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--light-secondary, #E8ECF4);
+}
+
+@media (min-width: 768px) {
+  .mobile-search { display: none; }
+}
+
+/* --- Stat cards responsive --- */
+@media (max-width: 479px) {
+  .stat-card {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .stat-value { font-size: 1.5rem; }
+}
+
+/* --- Card actions always visible on touch --- */
+@media (hover: none) {
+  .product-card-actions {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .product-card:hover .product-card-image img {
+    transform: none;
+  }
+}
+
+/* --- Timeline responsive --- */
+@media (max-width: 767px) {
+  .timeline {
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    left: 8px;
+  }
+
+  .timeline-dot {
+    left: calc(-2rem + 1px);
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* --- Breadcrumb truncation on small screens --- */
+@media (max-width: 479px) {
+  .breadcrumb-item:not(:last-child):not(:first-child) {
+    display: none;
+  }
+
+  .breadcrumb-item:not(:last-child):not(:first-child) + .breadcrumb-item::before {
+    content: '…/';
+  }
+}
+
+/* --- Pricing card: featured scaling on desktop only --- */
+@media (min-width: 1024px) {
+  .pricing-card.pricing-featured {
+    transform: scale(1.04);
+    z-index: 1;
+  }
+
+  .pricing-card.pricing-featured:hover {
+    transform: scale(1.04) translateY(-4px);
+  }
+}
+
+/* --- Table compact on small screens --- */
+@media (max-width: 767px) {
+  .table th,
+  .table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* --- Modal bottom-sheet on mobile --- */
+@media (max-width: 767px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    max-width: 100%;
+    width: 100%;
+    /* Rounded top corners only; bottom flush with screen edge for bottom-sheet layout */
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    /* 92vh leaves room for the status bar and allows the user to tap-dismiss above */
+    max-height: 92vh;
+  }
+
+  .modal-overlay.open .modal {
+    transform: translateY(0) scale(1);
+    animation: slideUpSheet 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Large modals fill the screen */
+  .modal-lg,
+  .modal-xl {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* --- Toast full-width on small screens --- */
+@media (max-width: 479px) {
+  .toast-container {
+    left: 0.75rem !important;
+    right: 0.75rem !important;
+    top: 0.75rem !important;
+    align-items: stretch !important;
+  }
+
+  .toast {
+    min-width: unset;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* --- Drawer full width on mobile --- */
+@media (max-width: 479px) {
+  .drawer-right,
+  .drawer-left {
+    width: 100%;
+  }
+}
+
+/* --- Footer compact text --- */
+@media (max-width: 479px) {
+  .footer-description {
+    font-size: 0.8125rem;
+  }
+
+  .footer-col-title {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* --- FAB hides on very small screens if overlapping --- */
+@media (max-width: 359px) {
+  .fab { bottom: calc(4rem + 0.5rem); right: 0.75rem; }
+  .fab-main { width: 48px; height: 48px; font-size: 1rem; }
+}
+
+/* --- Admin topbar responsive actions --- */
+@media (max-width: 767px) {
+  .admin-topbar-actions .btn-text {
+    display: none;
+  }
+}
+
+/* --- Section headings scale down --- */
+@media (max-width: 479px) {
+  .section-title { font-size: 1.75rem; }
+  .section-subtitle { font-size: 0.9375rem; }
+
+  .heading-display { font-size: 2.25rem; }
+}
+
+/* --- Hero stats compact --- */
+@media (max-width: 479px) {
+  .hero-stats {
+    gap: 1rem;
+  }
+
+  .hero-stat-value { font-size: 1.5rem; }
+  .hero-stat-label { font-size: 0.75rem; }
+}
+
+/* --- Supplier stats responsive --- */
+@media (max-width: 479px) {
+  .supplier-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+/* --- Chart container min-height adjustment --- */
+@media (max-width: 767px) {
+  .chart-body { min-height: 200px; }
+  .chart-placeholder { min-height: 180px; }
+
+  .chart-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+}
+
+/* ==========================================================================
+   8. Print Styles
+   ========================================================================== */
+
+@media print {
+  .sidebar,
+  .navbar,
+  .bottom-nav,
+  .fab,
+  .toast-container,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  .admin-content {
+    margin-left: 0 !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+    font-size: 11pt;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  .product-card,
+  .supplier-card,
+  .pricing-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .table {
+    font-size: 9pt;
+  }
+
+  .btn { display: none; }
+}
