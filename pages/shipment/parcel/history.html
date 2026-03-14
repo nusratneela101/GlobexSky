@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Shipments – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.container{max-width:1300px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#0a0e27}
+.btn{padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-outline{background:#fff;color:#0052CC;border:1.5px solid #0052CC}.btn-outline:hover{background:#eff6ff}
+.btn-sm{padding:5px 12px;font-size:.78rem;border-radius:6px}
+.btn-ghost{background:transparent;color:#64748b;border:1px solid #e2e8f0}.btn-ghost:hover{background:#f1f5f9}
+.filter-bar{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.filter-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.status-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .2s;background:#f1f5f9;color:#64748b}
+.tab.active{background:#eff6ff;color:#0052CC;border-color:#0052CC}
+.tab:hover:not(.active){background:#e2e8f0}
+.filter-controls{display:flex;gap:10px;flex:1;align-items:center;flex-wrap:wrap}
+.filter-input{padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;color:#374151;outline:none;transition:border-color .2s}
+.filter-input:focus{border-color:#0052CC}
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;margin-bottom:24px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th{font-size:.75rem;font-weight:600;color:#64748b;text-align:left;padding:12px 14px;border-bottom:2px solid #f1f5f9;white-space:nowrap;background:#fafbff}
+td{padding:12px 14px;font-size:.85rem;color:#374151;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr.data-row:hover td{background:#fafbff;cursor:pointer}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;white-space:nowrap}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-warning{background:#fff7ed;color:#f97316}
+.badge-info{background:#eff6ff;color:#0052CC}
+.badge-danger{background:#fef2f2;color:#ef4444}
+.badge-transit{background:#fdf4ff;color:#9333ea}
+.badge-grey{background:#f1f5f9;color:#64748b}
+.actions{display:flex;gap:6px;flex-wrap:nowrap}
+.expand-row{display:none;background:#f8faff}
+.expand-row.open{display:table-row}
+.expand-content{padding:16px 20px}
+.expand-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.expand-item label{font-size:.72rem;color:#64748b;display:block;margin-bottom:2px}
+.expand-item span{font-weight:600;color:#0a0e27;font-size:.85rem}
+.timeline-mini{display:flex;gap:4px;align-items:center;margin-top:12px;overflow-x:auto;padding-bottom:4px}
+.tl-mini-step{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:70px}
+.tl-mini-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;border:2px solid #e2e8f0}
+.tl-mini-dot.done{background:#059669;border-color:#059669;color:#fff}
+.tl-mini-dot.active{background:#0052CC;border-color:#0052CC;color:#fff}
+.tl-mini-label{font-size:.65rem;color:#64748b;text-align:center}
+.tl-mini-connector{flex:1;height:2px;background:#e2e8f0;margin-bottom:16px}
+.tl-mini-connector.done{background:#059669}
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:20px}
+.page-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;color:#374151;font-size:.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.page-btn.active{background:#0052CC;border-color:#0052CC;color:#fff}
+.page-btn:hover:not(.active){background:#f1f5f9}
+.empty-state{text-align:center;padding:64px 24px}
+.empty-state i{font-size:3rem;color:#cbd5e1;margin-bottom:16px;display:block}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:600px){.filter-row{flex-direction:column;align-items:stretch}.filter-controls{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">My Shipments</h1>
+      <a href="create.html" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Shipment</a>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-row">
+        <div class="status-tabs" role="tablist" aria-label="Filter by status">
+          <button class="tab active" onclick="filterByStatus(this,'all')" role="tab">All</button>
+          <button class="tab" onclick="filterByStatus(this,'Pending')" role="tab">Pending</button>
+          <button class="tab" onclick="filterByStatus(this,'Processing')" role="tab">Processing</button>
+          <button class="tab" onclick="filterByStatus(this,'Shipped')" role="tab">Shipped</button>
+          <button class="tab" onclick="filterByStatus(this,'In Transit')" role="tab">In Transit</button>
+          <button class="tab" onclick="filterByStatus(this,'Delivered')" role="tab">Delivered</button>
+          <button class="tab" onclick="filterByStatus(this,'Cancelled')" role="tab">Cancelled</button>
+        </div>
+      </div>
+      <div class="filter-row" style="margin-top:12px">
+        <div class="filter-controls">
+          <input type="text" class="filter-input" id="search-ref" placeholder="Search by reference #" oninput="applyFilters()" style="min-width:200px">
+          <input type="date" class="filter-input" id="date-from" onchange="applyFilters()">
+          <input type="date" class="filter-input" id="date-to" onchange="applyFilters()">
+          <select class="filter-input" id="dest-filter" onchange="applyFilters()">
+            <option value="">All Destinations</option>
+            <option>United Kingdom</option>
+            <option>United States</option>
+            <option>UAE</option>
+            <option>Germany</option>
+            <option>Nigeria</option>
+            <option>Canada</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHIPMENTS TABLE -->
+    <div class="card" id="table-container">
+      <div class="table-wrap">
+        <table id="shipments-table">
+          <thead>
+            <tr>
+              <th>Reference #</th>
+              <th>Destination</th>
+              <th>Weight</th>
+              <th>Service</th>
+              <th>Declared Value</th>
+              <th>Shipping Cost</th>
+              <th>Status</th>
+              <th>Created Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <!-- EMPTY STATE -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <i class="fas fa-box-open"></i>
+        <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:8px">No Shipments Found</h3>
+        <p style="color:#64748b">No shipments match your current filters. Try adjusting your search criteria.</p>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination" id="pagination">
+      <button class="page-btn" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i></button>
+      <button class="page-btn active" id="p1" onclick="setPage(1)">1</button>
+      <button class="page-btn" id="p2" onclick="setPage(2)">2</button>
+      <button class="page-btn" id="p3" onclick="setPage(3)">3</button>
+      <button class="page-btn" onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const SHIPMENTS = [
+  {ref:'GS-20260310-48291',dest:'United Kingdom',weight:'2.5 kg',service:'Standard',value:'$120.00',cost:'$36.00',status:'In Transit',date:'Mar 10, 2026',receiver:'James Brown, London',dims:'30×25×15 cm',carrier:'DHL – 1Z999AA10123456784'},
+  {ref:'GS-20260305-31042',dest:'United States',weight:'1.2 kg',service:'Express',value:'$350.00',cost:'$31.20',status:'Delivered',date:'Mar 05, 2026',receiver:'Sarah Lee, New York',dims:'20×15×10 cm',carrier:'FedEx – 794614217798'},
+  {ref:'GS-20260228-77318',dest:'UAE',weight:'3.8 kg',service:'Economy',value:'$80.00',cost:'$38.76',status:'Shipped',date:'Feb 28, 2026',receiver:'Ali Hassan, Dubai',dims:'40×30×20 cm',carrier:'Aramex – AX882930'},
+  {ref:'GS-20260220-55124',dest:'Germany',weight:'0.8 kg',service:'Standard',value:'$200.00',cost:'$14.40',status:'Delivered',date:'Feb 20, 2026',receiver:'Klaus Müller, Berlin',dims:'15×12×8 cm',carrier:'DHL – 1Z888BB20234567891'},
+  {ref:'GS-20260215-12093',dest:'Canada',weight:'5.0 kg',service:'Standard',value:'$550.00',cost:'$35.00',status:'Processing',date:'Feb 15, 2026',receiver:'Maria Chen, Toronto',dims:'50×40×30 cm',carrier:'Pending assignment'},
+  {ref:'GS-20260208-63811',dest:'Nigeria',weight:'2.0 kg',service:'Economy',value:'$45.00',cost:'$25.50',status:'Delivered',date:'Feb 08, 2026',receiver:'Emeka Okafor, Abuja',dims:'25×20×15 cm',carrier:'DHL – 1Z777CC30345678902'},
+  {ref:'GS-20260201-29045',dest:'United Kingdom',weight:'4.5 kg',service:'Express',value:'$800.00',cost:'$115.20',status:'Delivered',date:'Feb 01, 2026',receiver:'Emma Wilson, Manchester',dims:'45×35×25 cm',carrier:'DHL – 1Z666DD40456789013'},
+  {ref:'GS-20260125-84730',dest:'UAE',weight:'1.5 kg',service:'Standard',value:'$150.00',cost:'$27.00',status:'Cancelled',date:'Jan 25, 2026',receiver:'Fatima Al-Said, Abu Dhabi',dims:'20×16×12 cm',carrier:'N/A'},
+  {ref:'GS-20260118-37512',dest:'United States',weight:'3.2 kg',service:'Economy',value:'$90.00',cost:'$21.76',status:'Delivered',date:'Jan 18, 2026',receiver:'Tom Rodriguez, Miami',dims:'35×28×20 cm',carrier:'USPS – 9400111899223412'},
+  {ref:'GS-20260110-91856',dest:'Germany',weight:'0.5 kg',service:'Express',value:'$450.00',cost:'$28.80',status:'Pending',date:'Jan 10, 2026',receiver:'Anna Schmidt, Munich',dims:'12×10×6 cm',carrier:'Pending payment'}
+];
+
+const STATUS_BADGE = {
+  'Pending':'badge-grey','Processing':'badge-info','Shipped':'badge-warning',
+  'In Transit':'badge-transit','Delivered':'badge-success','Cancelled':'badge-danger'
+};
+
+const TL_STAGES = ['Created','Received','Shipped','In Transit','Customs','Delivered'];
+
+let currentFilter = 'all';
+let currentPage = 1;
+
+function getFilteredData() {
+  let data = [...SHIPMENTS];
+  if (currentFilter !== 'all') data = data.filter(s => s.status === currentFilter);
+  const ref = document.getElementById('search-ref').value.trim().toLowerCase();
+  if (ref) data = data.filter(s => s.ref.toLowerCase().includes(ref));
+  const dest = document.getElementById('dest-filter').value;
+  if (dest) data = data.filter(s => s.dest === dest);
+  return data;
+}
+
+function filterByStatus(el, status) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = status;
+  currentPage = 1;
+  renderTable();
+}
+
+function applyFilters() { currentPage = 1; renderTable(); }
+
+function renderTable() {
+  const data = getFilteredData();
+  const perPage = 7;
+  const start = (currentPage - 1) * perPage;
+  const pageData = data.slice(start, start + perPage);
+  const tbody = document.getElementById('table-body');
+  const empty = document.getElementById('empty-state');
+
+  if (data.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = pageData.map((s, i) => {
+    const idx = start + i;
+    const stageIdx = ['Pending','Processing','Shipped','In Transit','Delivered','Cancelled'].indexOf(s.status);
+    const progress = Math.max(0, Math.min(stageIdx, 5));
+    return `
+      <tr class="data-row" onclick="toggleExpand(${idx})">
+        <td><span style="font-family:'Poppins',sans-serif;font-weight:600;font-size:.82rem">${s.ref}</span></td>
+        <td>${s.dest}</td>
+        <td>${s.weight}</td>
+        <td>${s.service}</td>
+        <td>${s.value}</td>
+        <td style="font-weight:600">${s.cost}</td>
+        <td><span class="badge ${STATUS_BADGE[s.status] || 'badge-grey'}">${s.status}</span></td>
+        <td>${s.date}</td>
+        <td><div class="actions" onclick="event.stopPropagation()">
+          <a href="tracking.html?ref=${s.ref}" class="btn btn-sm btn-outline" title="Track"><i class="fas fa-search-location"></i></a>
+          <button class="btn btn-sm btn-ghost" title="Download Receipt" onclick="downloadReceipt('${s.ref}')"><i class="fas fa-download"></i></button>
+          <button class="btn btn-sm btn-ghost" title="View Details" onclick="toggleExpand(${idx})"><i class="fas fa-eye"></i></button>
+        </div></td>
+      </tr>
+      <tr class="expand-row" id="exp-${idx}">
+        <td colspan="9">
+          <div class="expand-content">
+            <div class="expand-grid">
+              <div class="expand-item"><label>Receiver</label><span>${s.receiver}</span></div>
+              <div class="expand-item"><label>Dimensions</label><span>${s.dims}</span></div>
+              <div class="expand-item"><label>Carrier / Tracking</label><span>${s.carrier}</span></div>
+              <div class="expand-item"><label>Reference</label><span>${s.ref}</span></div>
+            </div>
+            <div style="margin-top:14px">
+              <div style="font-size:.75rem;color:#64748b;margin-bottom:6px;font-weight:600">Shipment Progress</div>
+              <div class="timeline-mini">
+                ${TL_STAGES.map((name, ti) => `
+                  ${ti > 0 ? `<div class="tl-mini-connector ${ti <= progress ? 'done' : ''}"></div>` : ''}
+                  <div class="tl-mini-step">
+                    <div class="tl-mini-dot ${ti < progress ? 'done' : ti === progress ? 'active' : ''}">${ti < progress ? '<i class="fas fa-check" style="font-size:.5rem"></i>' : ti + 1}</div>
+                    <div class="tl-mini-label">${name}</div>
+                  </div>`).join('')}
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function toggleExpand(idx) {
+  const row = document.getElementById('exp-' + idx);
+  row.classList.toggle('open');
+}
+
+function downloadReceipt(ref) {
+  alert('Downloading receipt for ' + ref + '…\n(In production, this would generate a PDF receipt.)');
+}
+
+function changePage(dir) {
+  const maxPage = Math.ceil(getFilteredData().length / 7);
+  currentPage = Math.max(1, Math.min(maxPage, currentPage + dir));
+  setPage(currentPage);
+}
+
+function setPage(n) {
+  currentPage = n;
+  document.querySelectorAll('.page-btn[id]').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('p' + n);
+  if (btn) btn.classList.add('active');
+  renderTable();
+  window.scrollTo(0, 0);
+}
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+renderTable();
+</script>
+</body>
+</html>
