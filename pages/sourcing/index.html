@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Source any product from anywhere in the world. Browse 1M+ products from 50K+ verified suppliers across 150+ countries on GlobexSky."/>
+  <title>Product Sourcing | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* NAVBAR */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .navbar{padding:0}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-search{flex:1;max-width:600px}
+    .search-wrapper{display:flex;align-items:center;border:2px solid #e2e8f0;border-radius:50px;overflow:hidden;background:#fff;transition:border-color .2s}
+    .search-wrapper:focus-within{border-color:#0052CC}
+    .search-input{flex:1;border:none;outline:none;padding:10px 16px;font-size:.9rem;font-family:'Inter',sans-serif}
+    .search-actions{display:flex;align-items:center;padding:0 8px;gap:4px}
+    .search-btn{border:none;background:none;cursor:pointer;padding:6px 8px;color:#64748b;border-radius:50%;transition:background .2s,color .2s}
+    .search-btn:hover{background:#f0f4ff;color:#0052CC}
+    .search-submit{background:#0052CC;color:#fff;border-radius:50px;padding:8px 16px}
+    .search-submit:hover{background:#003d99;color:#fff}
+    .nav-controls{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .nav-select-group{position:relative}
+    .nav-select{border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px;font-size:.8rem;cursor:pointer;background:#fff;color:#374151;font-family:'Inter',sans-serif}
+    .btn-nav{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .nav-cart:hover{color:#0052CC}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{display:flex;align-items:center;gap:6px;border:none;background:none;cursor:pointer;padding:4px}
+    .user-avatar{border-radius:50%;object-fit:cover}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu,.nav-user-dropdown:focus-within .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem;transition:background .15s}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .hamburger{display:none;flex-direction:column;gap:5px;border:none;background:none;cursor:pointer;padding:6px}
+    .hamburger-line{display:block;width:24px;height:2px;background:#374151;border-radius:2px;transition:all .3s}
+    .mobile-nav{display:none}
+    .nav-secondary{background:#f8faff;border-top:1px solid #e2e8f0}
+    .secondary-nav-list{display:flex;list-style:none;gap:0;max-width:1400px;margin:0 auto;padding:0 24px;overflow-x:auto}
+    .secondary-nav-list li a{display:flex;align-items:center;gap:6px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.85rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+    .secondary-nav-list li a:hover{color:#0052CC;border-bottom-color:#0052CC}
+
+    /* HERO */
+    .hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+    .hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.3);color:#FF6B35;padding:6px 16px;border-radius:50px;font-size:.8rem;font-weight:600;margin-bottom:20px;letter-spacing:.5px}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:16px}
+    .hero h1 span{color:#00C9A7}
+    .hero p{color:rgba(255,255,255,.8);font-size:1.1rem;margin-bottom:36px;line-height:1.6}
+    .hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+    .btn-hero-primary{display:inline-flex;align-items:center;gap:8px;background:#FF6B35;color:#fff;padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:600;text-decoration:none;transition:all .3s;font-family:'Poppins',sans-serif}
+    .btn-hero-primary:hover{background:#e85a24;transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,53,.4)}
+    .btn-hero-secondary{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);color:#fff;padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:600;text-decoration:none;border:1.5px solid rgba(255,255,255,.3);transition:all .3s;font-family:'Poppins',sans-serif;backdrop-filter:blur(10px)}
+    .btn-hero-secondary:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+    .hero-search{background:rgba(255,255,255,.1);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:20px;max-width:700px;margin:0 auto}
+    .hero-search-inner{display:flex;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+    .hero-search-input{flex:1;border:none;outline:none;padding:14px 20px;font-size:1rem;font-family:'Inter',sans-serif;color:#374151}
+    .hero-search-btn{background:#0052CC;color:#fff;border:none;padding:14px 28px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;transition:background .2s}
+    .hero-search-btn:hover{background:#003d99}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+    .hero-tag{display:inline-block;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);padding:4px 12px;border-radius:50px;font-size:.78rem;cursor:pointer;transition:background .2s}
+    .hero-tag:hover{background:rgba(255,255,255,.22)}
+
+    /* STATS BAR */
+    .stats-bar{background:#fff;padding:28px 24px;box-shadow:0 4px 20px rgba(0,82,204,.06)}
+    .stats-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .stat-item{display:flex;align-items:center;gap:16px;padding:16px;border-radius:12px;background:#f8faff;border:1px solid #e8edff}
+    .stat-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .stat-icon.blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#0052CC}
+    .stat-icon.orange{background:linear-gradient(135deg,#ffedd5,#fed7aa);color:#FF6B35}
+    .stat-icon.green{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#00C9A7}
+    .stat-icon.purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27;display:block}
+    .stat-label{color:#64748b;font-size:.85rem}
+
+    /* CATEGORIES */
+    .section{padding:64px 24px}
+    .container{max-width:1400px;margin:0 auto}
+    .section-header{text-align:center;margin-bottom:48px}
+    .section-tag{display:inline-flex;align-items:center;gap:6px;background:#eef3ff;color:#0052CC;padding:6px 14px;border-radius:50px;font-size:.8rem;font-weight:600;margin-bottom:12px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#0a0e27;margin-bottom:12px}
+    .section-subtitle{color:#64748b;font-size:1rem;max-width:560px;margin:0 auto}
+    .categories-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+    .category-card{background:#fff;border-radius:16px;padding:24px 16px;text-align:center;text-decoration:none;color:#374151;border:1.5px solid #e8edff;transition:all .3s;cursor:pointer}
+    .category-card:hover{border-color:#0052CC;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,82,204,.12)}
+    .category-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 14px;background:linear-gradient(135deg,#f0f4ff,#e8edff);color:#0052CC;transition:all .3s}
+    .category-card:hover .category-icon{background:linear-gradient(135deg,#0052CC,#003d99);color:#fff}
+    .category-name{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;line-height:1.3}
+    .category-count{font-size:.75rem;color:#94a3b8;margin-top:4px}
+
+    /* HOW IT WORKS */
+    .how-it-works{background:#f8faff}
+    .steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+    .steps-row::before{content:'';position:absolute;top:44px;left:calc(12.5% + 12px);right:calc(12.5% + 12px);height:2px;background:linear-gradient(90deg,#0052CC,#00C9A7);z-index:0}
+    .step-item{text-align:center;padding:24px 16px;position:relative;z-index:1}
+    .step-number{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#003d99);color:#fff;font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 24px rgba(0,82,204,.3);border:4px solid #fff}
+    .step-number i{font-size:1.6rem}
+    .step-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:10px}
+    .step-desc{color:#64748b;font-size:.88rem;line-height:1.6}
+
+    /* SUPPLIERS */
+    .suppliers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .supplier-card{background:#fff;border-radius:16px;padding:24px;border:1.5px solid #e8edff;transition:all .3s}
+    .supplier-card:hover{border-color:#0052CC;box-shadow:0 8px 32px rgba(0,82,204,.1);transform:translateY(-2px)}
+    .supplier-header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+    .supplier-avatar{border-radius:12px;object-fit:cover}
+    .supplier-name{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .supplier-location{color:#64748b;font-size:.85rem;margin-top:2px}
+    .supplier-badge{display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;font-size:.72rem;font-weight:600;padding:3px 8px;border-radius:50px}
+    .supplier-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+    .supplier-stat{text-align:center;padding:10px;background:#f8faff;border-radius:8px}
+    .supplier-stat-value{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0052CC;display:block}
+    .supplier-stat-label{font-size:.72rem;color:#94a3b8}
+    .supplier-rating{display:flex;align-items:center;gap:4px;color:#f59e0b;font-size:.9rem}
+    .supplier-rating span{color:#374151;font-size:.85rem;font-weight:600}
+    .btn-view-supplier{display:block;text-align:center;padding:10px;background:#f0f4ff;color:#0052CC;border-radius:10px;text-decoration:none;font-weight:600;font-size:.88rem;margin-top:14px;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-view-supplier:hover{background:#0052CC;color:#fff}
+
+    /* TRUST */
+    .trust-section{background:#0a0e27}
+    .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+    .trust-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px 20px;text-align:center;transition:all .3s}
+    .trust-card:hover{background:rgba(255,255,255,.08);border-color:rgba(0,201,167,.3);transform:translateY(-4px)}
+    .trust-icon{font-size:2.2rem;margin-bottom:16px;display:block}
+    .trust-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#fff;margin-bottom:8px}
+    .trust-desc{color:rgba(255,255,255,.6);font-size:.85rem;line-height:1.6}
+
+    /* BOTTOM CTA */
+    .bottom-cta{background:linear-gradient(135deg,#00C9A7,#0052CC);padding:72px 24px;text-align:center}
+    .bottom-cta h2{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#fff;margin-bottom:12px}
+    .bottom-cta p{color:rgba(255,255,255,.85);font-size:1.05rem;margin-bottom:32px}
+    .bottom-cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+    .btn-cta-white{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0052CC;padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:600;text-decoration:none;font-family:'Poppins',sans-serif;transition:all .3s}
+    .btn-cta-white:hover{background:#f0f4ff;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+    .btn-cta-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#fff;padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:600;text-decoration:none;border:2px solid rgba(255,255,255,.5);font-family:'Poppins',sans-serif;transition:all .3s}
+    .btn-cta-outline:hover{background:rgba(255,255,255,.1);border-color:#fff}
+
+    /* FOOTER */
+    .site-footer{background:#0a0e27;color:#e2e8f0}
+    .footer-main{padding:60px 24px 40px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:40px;max-width:1400px;margin:0 auto}
+    .footer-tagline{color:rgba(255,255,255,.6);font-size:.88rem;line-height:1.7;margin:16px 0 20px}
+    .footer-col-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#fff;margin-bottom:16px}
+    .footer-links{list-style:none}
+    .footer-links li{margin-bottom:10px}
+    .footer-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.88rem;display:flex;align-items:center;gap:8px;transition:color .2s}
+    .footer-links a:hover{color:#00C9A7}
+    .footer-links a i{font-size:.65rem;color:#0052CC}
+    .footer-social{display:flex;gap:10px}
+    .social-link{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .2s}
+    .social-link:hover{background:#0052CC;color:#fff}
+    .footer-contact{font-style:normal}
+    .footer-contact-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:.88rem;color:rgba(255,255,255,.6)}
+    .footer-contact-item i{color:#0052CC;margin-top:2px;flex-shrink:0}
+    .footer-contact-item a{color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s}
+    .footer-contact-item a:hover{color:#00C9A7}
+    .footer-payments{margin-top:20px}
+    .footer-payments-label{font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:10px}
+    .payment-badges{display:flex;gap:8px;flex-wrap:wrap}
+    .payment-badge{background:rgba(255,255,255,.08);border-radius:6px;padding:6px 10px;font-size:1.3rem;color:rgba(255,255,255,.7)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:20px 24px}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;flex-wrap:wrap;gap:12px}
+    .footer-copyright{font-size:.83rem;color:rgba(255,255,255,.5)}
+    .footer-legal-links{display:flex;gap:20px}
+    .footer-legal-links a{font-size:.83rem;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s}
+    .footer-legal-links a:hover{color:#00C9A7}
+    .footer-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .footer-logo .logo-text{color:#fff}
+    .footer-logo .logo-accent{color:#00C9A7}
+
+    @media(max-width:1100px){.categories-grid{grid-template-columns:repeat(4,1fr)}.steps-row{grid-template-columns:repeat(2,1fr)}.steps-row::before{display:none}.suppliers-grid{grid-template-columns:repeat(2,1fr)}.trust-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.stats-inner{grid-template-columns:repeat(2,1fr)}.categories-grid{grid-template-columns:repeat(3,1fr)}.steps-row{grid-template-columns:1fr}.suppliers-grid{grid-template-columns:1fr}.trust-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.hamburger{display:flex}.nav-search,.nav-controls,.nav-select-group{display:none}.mobile-nav{display:block;background:#fff;border-top:1px solid #e2e8f0}.mobile-nav-list{list-style:none;padding:12px}.mobile-nav-list li a{display:flex;align-items:center;gap:10px;padding:12px 16px;color:#374151;text-decoration:none;border-radius:8px;font-size:.92rem}.mobile-nav-list li a:hover{background:#f0f4ff;color:#0052CC}}
+  </style>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo" aria-label="GlobexSky Home">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="2" y1="11" x2="34" y2="11" stroke="#0052CC" stroke-width="1"/>
+          <line x1="2" y1="25" x2="34" y2="25" stroke="#0052CC" stroke-width="1"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-search" role="search">
+        <div class="search-wrapper">
+          <input type="search" class="search-input" placeholder="Search products, suppliers, categories..." aria-label="Search products, suppliers, and categories"/>
+          <div class="search-actions">
+            <button class="search-btn search-voice" aria-label="Voice search"><i class="fas fa-microphone" aria-hidden="true"></i></button>
+            <button class="search-btn search-image" aria-label="Image search"><i class="fas fa-camera" aria-hidden="true"></i></button>
+            <button class="search-btn search-submit" aria-label="Submit search"><i class="fas fa-search" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="nav-controls">
+        <div class="nav-select-group">
+          <label for="lang-select" class="sr-only">Language</label>
+          <select id="lang-select" class="nav-select" aria-label="Select language">
+            <option value="en">🌐 EN</option><option value="fr">🇫🇷 FR</option><option value="es">🇪🇸 ES</option><option value="de">🇩🇪 DE</option><option value="zh">🇨🇳 ZH</option>
+          </select>
+        </div>
+        <div class="nav-select-group">
+          <label for="currency-select" class="sr-only">Currency</label>
+          <select id="currency-select" class="nav-select" aria-label="Select currency">
+            <option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="GBP">£ GBP</option><option value="CNY">¥ CNY</option>
+          </select>
+        </div>
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt" aria-hidden="true"></i><span>Login</span></a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus" aria-hidden="true"></i><span>Register</span></a>
+        <a href="cart.html" class="nav-cart" aria-label="Shopping cart"><i class="fas fa-shopping-cart" aria-hidden="true"></i><span class="cart-badge" id="cart-count">3</span></a>
+        <div class="nav-user-dropdown" id="user-dropdown">
+          <button class="user-avatar-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="User account menu">
+            <img src="https://ui-avatars.com/api/?name=Guest+User&background=0052CC&color=fff&size=36" alt="User avatar" class="user-avatar" width="36" height="36"/>
+            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <ul class="dropdown-menu" id="user-menu" role="menu">
+            <li role="menuitem"><a href="../account/dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li role="menuitem"><a href="../account/orders.html"><i class="fas fa-box"></i> My Orders</a></li>
+            <li role="menuitem"><a href="../account/wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+            <li role="menuitem"><a href="../account/settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="dropdown-divider" role="separator"></li>
+            <li role="menuitem"><a href="../auth/logout.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+      <button class="hamburger" id="hamburger-btn" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-nav">
+        <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+      </button>
+    </div>
+    <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+      <ul class="mobile-nav-list" role="list">
+        <li><a href="index.html"><i class="fas fa-boxes"></i> Sourcing</a></li>
+        <li><a href="../shipment/index.html"><i class="fas fa-shipping-fast"></i> Shipment</a></li>
+        <li><a href="../suppliers/index.html"><i class="fas fa-store"></i> Suppliers</a></li>
+        <li><a href="../dropshipping/index.html"><i class="fas fa-truck"></i> Dropshipping</a></li>
+        <li><a href="../auth/login.html" class="mobile-login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li><a href="../auth/register.html" class="mobile-register"><i class="fas fa-user-plus"></i> Register</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="nav-secondary" role="navigation" aria-label="Category navigation">
+    <div class="nav-container">
+      <ul class="secondary-nav-list" role="list">
+        <li><a href="index.html"><i class="fas fa-boxes"></i> Sourcing</a></li>
+        <li><a href="../shipment/index.html"><i class="fas fa-shipping-fast"></i> Shipment</a></li>
+        <li><a href="../dropshipping/index.html"><i class="fas fa-truck"></i> Dropshipping</a></li>
+        <li><a href="../suppliers/index.html"><i class="fas fa-store"></i> Suppliers</a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i> Live Streams</a></li>
+        <li><a href="trade-shows.html"><i class="fas fa-handshake"></i> Trade Shows</a></li>
+        <li><a href="vr-showroom.html"><i class="fas fa-vr-cardboard"></i> VR Showroom</a></li>
+        <li><a href="inspection.html"><i class="fas fa-search-plus"></i> Inspection</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-globe"></i> Global Trade Platform</div>
+      <h1 id="hero-heading">Source <span>Anything</span>, From Anywhere</h1>
+      <p>Connect with 50,000+ verified global suppliers. Get competitive quotes, ensure quality, and ship worldwide — all on one platform.</p>
+      <div class="hero-cta">
+        <a href="products.html" class="btn-hero-primary"><i class="fas fa-search"></i> Browse Products</a>
+        <a href="rfq.html" class="btn-hero-secondary"><i class="fas fa-file-alt"></i> Post RFQ</a>
+      </div>
+      <div class="hero-search" role="search" aria-label="Hero product search">
+        <div class="hero-search-inner">
+          <input type="search" class="hero-search-input" placeholder="What product are you looking for?" aria-label="Search for products"/>
+          <button class="hero-search-btn"><i class="fas fa-search"></i> Search</button>
+        </div>
+        <div class="hero-tags" role="list" aria-label="Popular searches">
+          <span class="hero-tag" role="listitem">📱 Electronics</span>
+          <span class="hero-tag" role="listitem">👗 Fashion</span>
+          <span class="hero-tag" role="listitem">⚙️ Industrial</span>
+          <span class="hero-tag" role="listitem">🏠 Home Goods</span>
+          <span class="hero-tag" role="listitem">🚗 Automotive</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <section class="stats-bar" aria-label="Platform statistics">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-icon blue"><i class="fas fa-box" aria-hidden="true"></i></div>
+        <div>
+          <span class="stat-value">1M+</span>
+          <span class="stat-label">Products Listed</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon orange"><i class="fas fa-store" aria-hidden="true"></i></div>
+        <div>
+          <span class="stat-value">50K+</span>
+          <span class="stat-label">Verified Suppliers</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon green"><i class="fas fa-globe" aria-hidden="true"></i></div>
+        <div>
+          <span class="stat-value">150+</span>
+          <span class="stat-label">Countries Served</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon purple"><i class="fas fa-star" aria-hidden="true"></i></div>
+        <div>
+          <span class="stat-value">95%</span>
+          <span class="stat-label">Satisfaction Rate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="section" aria-labelledby="categories-heading">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag"><i class="fas fa-th-large"></i> Browse by Category</div>
+        <h2 class="section-title" id="categories-heading">Find Products in Every Industry</h2>
+        <p class="section-subtitle">Explore our wide range of product categories sourced from trusted global suppliers.</p>
+      </div>
+      <div class="categories-grid" role="list">
+        <a href="products.html?cat=electronics" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-microchip" aria-hidden="true"></i></div>
+          <div class="category-name">Electronics</div>
+          <div class="category-count">248,500+ products</div>
+        </a>
+        <a href="products.html?cat=fashion" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-tshirt" aria-hidden="true"></i></div>
+          <div class="category-name">Fashion &amp; Apparel</div>
+          <div class="category-count">182,300+ products</div>
+        </a>
+        <a href="products.html?cat=industrial" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-industry" aria-hidden="true"></i></div>
+          <div class="category-name">Industrial Equipment</div>
+          <div class="category-count">96,700+ products</div>
+        </a>
+        <a href="products.html?cat=consumer" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-shopping-bag" aria-hidden="true"></i></div>
+          <div class="category-name">Consumer Goods</div>
+          <div class="category-count">143,200+ products</div>
+        </a>
+        <a href="products.html?cat=food" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-utensils" aria-hidden="true"></i></div>
+          <div class="category-name">Food &amp; Beverage</div>
+          <div class="category-count">67,400+ products</div>
+        </a>
+        <a href="products.html?cat=chemicals" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-flask" aria-hidden="true"></i></div>
+          <div class="category-name">Chemicals &amp; Materials</div>
+          <div class="category-count">54,800+ products</div>
+        </a>
+        <a href="products.html?cat=health" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-spa" aria-hidden="true"></i></div>
+          <div class="category-name">Health &amp; Beauty</div>
+          <div class="category-count">89,600+ products</div>
+        </a>
+        <a href="products.html?cat=packaging" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-box-open" aria-hidden="true"></i></div>
+          <div class="category-name">Packaging</div>
+          <div class="category-count">38,900+ products</div>
+        </a>
+        <a href="products.html?cat=automotive" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-car" aria-hidden="true"></i></div>
+          <div class="category-name">Automotive</div>
+          <div class="category-count">76,200+ products</div>
+        </a>
+        <a href="products.html?cat=sports" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-dumbbell" aria-hidden="true"></i></div>
+          <div class="category-name">Sports &amp; Outdoors</div>
+          <div class="category-count">52,100+ products</div>
+        </a>
+        <a href="products.html?cat=home" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-seedling" aria-hidden="true"></i></div>
+          <div class="category-name">Home &amp; Garden</div>
+          <div class="category-count">118,400+ products</div>
+        </a>
+        <a href="products.html?cat=office" class="category-card" role="listitem">
+          <div class="category-icon"><i class="fas fa-briefcase" aria-hidden="true"></i></div>
+          <div class="category-name">Office Supplies</div>
+          <div class="category-count">43,700+ products</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section how-it-works" aria-labelledby="how-heading">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag"><i class="fas fa-route"></i> Simple Process</div>
+        <h2 class="section-title" id="how-heading">How Sourcing Works</h2>
+        <p class="section-subtitle">Source products from global suppliers in just four easy steps.</p>
+      </div>
+      <div class="steps-row" role="list">
+        <div class="step-item" role="listitem">
+          <div class="step-number"><i class="fas fa-file-alt" aria-hidden="true"></i></div>
+          <h3 class="step-title">Post Your RFQ</h3>
+          <p class="step-desc">Describe the product you need, including specifications, quantity, and target price. Our platform matches you with suitable suppliers instantly.</p>
+        </div>
+        <div class="step-item" role="listitem">
+          <div class="step-number"><i class="fas fa-inbox" aria-hidden="true"></i></div>
+          <h3 class="step-title">Get Quotes</h3>
+          <p class="step-desc">Receive competitive quotes from multiple verified suppliers within 24 hours. All suppliers are pre-vetted for quality and reliability.</p>
+        </div>
+        <div class="step-item" role="listitem">
+          <div class="step-number"><i class="fas fa-balance-scale" aria-hidden="true"></i></div>
+          <h3 class="step-title">Compare &amp; Select</h3>
+          <p class="step-desc">Compare quotes side-by-side using our smart comparison tool. Review supplier ratings, certifications, and production capacity.</p>
+        </div>
+        <div class="step-item" role="listitem">
+          <div class="step-number"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+          <h3 class="step-title">Secure Payment</h3>
+          <p class="step-desc">Pay safely through our Trade Assurance escrow system. Funds are only released once you confirm quality and receive your goods.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED SUPPLIERS -->
+  <section class="section" aria-labelledby="suppliers-heading">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag"><i class="fas fa-star"></i> Top Rated</div>
+        <h2 class="section-title" id="suppliers-heading">Featured Suppliers</h2>
+        <p class="section-subtitle">Handpicked, verified suppliers with exceptional track records and buyer satisfaction.</p>
+      </div>
+      <div class="suppliers-grid" role="list">
+        <article class="supplier-card" role="listitem">
+          <div class="supplier-header">
+            <img src="https://ui-avatars.com/api/?name=TechPro+Electronics&background=0052CC&color=fff&size=60" alt="TechPro Electronics" class="supplier-avatar" width="60" height="60"/>
+            <div>
+              <div class="supplier-name">TechPro Electronics</div>
+              <div class="supplier-location">🇨🇳 Shenzhen, China</div>
+              <span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>
+            </div>
+          </div>
+          <div class="supplier-rating" aria-label="Rating: 4.9 out of 5">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <span>4.9 (1,247 reviews)</span>
+          </div>
+          <div class="supplier-stats">
+            <div class="supplier-stat"><span class="supplier-stat-value">8,500+</span><span class="supplier-stat-label">Products</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">98%</span><span class="supplier-stat-label">Response</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">2019</span><span class="supplier-stat-label">Member Since</span></div>
+          </div>
+          <a href="../suppliers/index.html" class="btn-view-supplier">View Supplier <i class="fas fa-arrow-right"></i></a>
+        </article>
+        <article class="supplier-card" role="listitem">
+          <div class="supplier-header">
+            <img src="https://ui-avatars.com/api/?name=FashionHub+Global&background=FF6B35&color=fff&size=60" alt="FashionHub Global" class="supplier-avatar" width="60" height="60"/>
+            <div>
+              <div class="supplier-name">FashionHub Global</div>
+              <div class="supplier-location">🇮🇳 Mumbai, India</div>
+              <span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>
+            </div>
+          </div>
+          <div class="supplier-rating" aria-label="Rating: 4.8 out of 5">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+            <span>4.8 (892 reviews)</span>
+          </div>
+          <div class="supplier-stats">
+            <div class="supplier-stat"><span class="supplier-stat-value">5,200+</span><span class="supplier-stat-label">Products</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">96%</span><span class="supplier-stat-label">Response</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">2020</span><span class="supplier-stat-label">Member Since</span></div>
+          </div>
+          <a href="../suppliers/index.html" class="btn-view-supplier">View Supplier <i class="fas fa-arrow-right"></i></a>
+        </article>
+        <article class="supplier-card" role="listitem">
+          <div class="supplier-header">
+            <img src="https://ui-avatars.com/api/?name=IndusTech+GmbH&background=00C9A7&color=fff&size=60" alt="IndusTech GmbH" class="supplier-avatar" width="60" height="60"/>
+            <div>
+              <div class="supplier-name">IndusTech GmbH</div>
+              <div class="supplier-location">🇩🇪 Berlin, Germany</div>
+              <span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>
+            </div>
+          </div>
+          <div class="supplier-rating" aria-label="Rating: 5 out of 5">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <span>5.0 (654 reviews)</span>
+          </div>
+          <div class="supplier-stats">
+            <div class="supplier-stat"><span class="supplier-stat-value">3,100+</span><span class="supplier-stat-label">Products</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">99%</span><span class="supplier-stat-label">Response</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">2018</span><span class="supplier-stat-label">Member Since</span></div>
+          </div>
+          <a href="../suppliers/index.html" class="btn-view-supplier">View Supplier <i class="fas fa-arrow-right"></i></a>
+        </article>
+        <article class="supplier-card" role="listitem">
+          <div class="supplier-header">
+            <img src="https://ui-avatars.com/api/?name=AutoParts+Vietnam&background=7c3aed&color=fff&size=60" alt="AutoParts Vietnam" class="supplier-avatar" width="60" height="60"/>
+            <div>
+              <div class="supplier-name">AutoParts Vietnam</div>
+              <div class="supplier-location">🇻🇳 Ho Chi Minh, Vietnam</div>
+              <span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>
+            </div>
+          </div>
+          <div class="supplier-rating" aria-label="Rating: 4.7 out of 5">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+            <span>4.7 (432 reviews)</span>
+          </div>
+          <div class="supplier-stats">
+            <div class="supplier-stat"><span class="supplier-stat-value">4,800+</span><span class="supplier-stat-label">Products</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">94%</span><span class="supplier-stat-label">Response</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">2021</span><span class="supplier-stat-label">Member Since</span></div>
+          </div>
+          <a href="../suppliers/index.html" class="btn-view-supplier">View Supplier <i class="fas fa-arrow-right"></i></a>
+        </article>
+        <article class="supplier-card" role="listitem">
+          <div class="supplier-header">
+            <img src="https://ui-avatars.com/api/?name=HomeDecor+Plus&background=e11d48&color=fff&size=60" alt="HomeDecor Plus" class="supplier-avatar" width="60" height="60"/>
+            <div>
+              <div class="supplier-name">HomeDecor Plus</div>
+              <div class="supplier-location">🇺🇸 Los Angeles, USA</div>
+              <span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>
+            </div>
+          </div>
+          <div class="supplier-rating" aria-label="Rating: 4.6 out of 5">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+            <span>4.6 (387 reviews)</span>
+          </div>
+          <div class="supplier-stats">
+            <div class="supplier-stat"><span class="supplier-stat-value">2,900+</span><span class="supplier-stat-label">Products</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">95%</span><span class="supplier-stat-label">Response</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">2020</span><span class="supplier-stat-label">Member Since</span></div>
+          </div>
+          <a href="../suppliers/index.html" class="btn-view-supplier">View Supplier <i class="fas fa-arrow-right"></i></a>
+        </article>
+        <article class="supplier-card" role="listitem">
+          <div class="supplier-header">
+            <img src="https://ui-avatars.com/api/?name=FoodGlobal+Co&background=16a34a&color=fff&size=60" alt="FoodGlobal Co" class="supplier-avatar" width="60" height="60"/>
+            <div>
+              <div class="supplier-name">FoodGlobal Co</div>
+              <div class="supplier-location">🇧🇷 São Paulo, Brazil</div>
+              <span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>
+            </div>
+          </div>
+          <div class="supplier-rating" aria-label="Rating: 4.8 out of 5">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+            <span>4.8 (561 reviews)</span>
+          </div>
+          <div class="supplier-stats">
+            <div class="supplier-stat"><span class="supplier-stat-value">1,700+</span><span class="supplier-stat-label">Products</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">97%</span><span class="supplier-stat-label">Response</span></div>
+            <div class="supplier-stat"><span class="supplier-stat-value">2022</span><span class="supplier-stat-label">Member Since</span></div>
+          </div>
+          <a href="../suppliers/index.html" class="btn-view-supplier">View Supplier <i class="fas fa-arrow-right"></i></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BADGES -->
+  <section class="section trust-section" aria-labelledby="trust-heading">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" style="background:rgba(255,255,255,.1);color:#00C9A7"><i class="fas fa-shield-alt"></i> Why Choose Us</div>
+        <h2 class="section-title" id="trust-heading" style="color:#fff">Trade with Confidence</h2>
+        <p class="section-subtitle" style="color:rgba(255,255,255,.6)">Built-in protections keep your business and investments secure on every transaction.</p>
+      </div>
+      <div class="trust-grid" role="list">
+        <div class="trust-card" role="listitem">
+          <span class="trust-icon" aria-hidden="true">🛡️</span>
+          <h3 class="trust-title">Trade Assurance</h3>
+          <p class="trust-desc">Your payment is protected until you confirm quality. Funds held in escrow and only released upon your approval.</p>
+        </div>
+        <div class="trust-card" role="listitem">
+          <span class="trust-icon" aria-hidden="true">🔒</span>
+          <h3 class="trust-title">Secure Payment</h3>
+          <p class="trust-desc">Bank-grade 256-bit SSL encryption on all transactions. Accept Visa, Mastercard, PayPal, and wire transfers.</p>
+        </div>
+        <div class="trust-card" role="listitem">
+          <span class="trust-icon" aria-hidden="true">🔍</span>
+          <h3 class="trust-title">Quality Inspection</h3>
+          <p class="trust-desc">Book professional third-party inspection before shipment. Comprehensive reports with photos and measurements.</p>
+        </div>
+        <div class="trust-card" role="listitem">
+          <span class="trust-icon" aria-hidden="true">💬</span>
+          <h3 class="trust-title">24/7 Support</h3>
+          <p class="trust-desc">Dedicated trade specialists available around the clock via live chat, email, and phone to assist your deals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section class="bottom-cta" aria-labelledby="cta-heading">
+    <h2 id="cta-heading">Ready to Source Globally?</h2>
+    <p>Join 2 million businesses already sourcing smarter with GlobexSky. Start for free today.</p>
+    <div class="bottom-cta-btns">
+      <a href="../auth/register.html" class="btn-cta-white"><i class="fas fa-rocket"></i> Start Sourcing Free</a>
+      <a href="rfq.html" class="btn-cta-outline"><i class="fas fa-file-alt"></i> Post an RFQ</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../../index.html" class="footer-logo" aria-label="GlobexSky Home">
+            <svg class="logo-icon" width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/>
+              <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/>
+              <line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/>
+              <line x1="2" y1="11" x2="34" y2="11" stroke="#fff" stroke-width="1"/>
+              <line x1="2" y1="25" x2="34" y2="25" stroke="#fff" stroke-width="1"/>
+              <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+            </svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway. Connecting buyers and suppliers across 150+ countries for seamless sourcing and logistics.</p>
+          <nav class="footer-social" aria-label="Social media links">
+            <a href="#" class="social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links" role="list">
+            <li><a href="../../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+            <li><a href="../suppliers/index.html"><i class="fas fa-chevron-right"></i> Suppliers</a></li>
+            <li><a href="../shipment/index.html"><i class="fas fa-chevron-right"></i> Shipping</a></li>
+            <li><a href="../dropshipping/index.html"><i class="fas fa-chevron-right"></i> Dropshipping</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Services</h3>
+          <ul class="footer-links" role="list">
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Product Sourcing</a></li>
+            <li><a href="rfq.html"><i class="fas fa-chevron-right"></i> Request for Quotation</a></li>
+            <li><a href="inspection.html"><i class="fas fa-chevron-right"></i> Quality Inspection</a></li>
+            <li><a href="trade-shows.html"><i class="fas fa-chevron-right"></i> Trade Shows</a></li>
+            <li><a href="vr-showroom.html"><i class="fas fa-chevron-right"></i> VR Showroom</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Contact Us</h3>
+          <address class="footer-contact" aria-label="Contact information">
+            <p class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:support@globexsky.com">support@globexsky.com</a></p>
+            <p class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+18005551234">+1 (800) 555-1234</a></p>
+            <p class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>123 Trade Tower, Dubai, UAE</span></p>
+          </address>
+          <div class="footer-payments" aria-label="Accepted payment methods">
+            <p class="footer-payments-label">We Accept:</p>
+            <div class="payment-badges">
+              <span class="payment-badge"><i class="fab fa-cc-visa"></i></span>
+              <span class="payment-badge"><i class="fab fa-cc-mastercard"></i></span>
+              <span class="payment-badge"><i class="fab fa-cc-paypal"></i></span>
+              <span class="payment-badge"><i class="fab fa-cc-stripe"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+        <nav class="footer-legal-links" aria-label="Legal links">
+          <a href="../legal/privacy.html">Privacy Policy</a>
+          <a href="../legal/terms.html">Terms of Service</a>
+          <a href="../legal/cookies.html">Cookie Policy</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cart.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/search.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+  const hamburger = document.getElementById('hamburger-btn');
+  const mobileNav = document.getElementById('mobile-nav');
+  if(hamburger && mobileNav){
+    hamburger.addEventListener('click', function(){
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', String(!expanded));
+      mobileNav.style.display = expanded ? 'none' : 'block';
+      mobileNav.setAttribute('aria-hidden', String(expanded));
+    });
+  }
+</script>
+</body>
+</html>
