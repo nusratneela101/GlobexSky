@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Products | GlobexSky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:200}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    /* Stats Bar */
+    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+    .stat-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;border-top:3px solid}
+    .stat-card.blue{border-top-color:#0052CC}
+    .stat-card.green{border-top-color:#22c55e}
+    .stat-card.red{border-top-color:#ef4444}
+    .stat-card.orange{border-top-color:#f97316}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:#0a0e27}
+    .stat-label{font-size:.8rem;color:#64748b;margin-top:2px}
+    /* Filter Tabs */
+    .filter-tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;margin-bottom:20px}
+    .filter-tab{padding:7px 16px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s}
+    .filter-tab.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    /* Search/Filter Bar */
+    .search-filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .search-input-wrap{position:relative;flex:1;min-width:200px}
+    .search-input-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem}
+    .search-input{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px 8px 34px;font-size:.85rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .search-input:focus{outline:none;border-color:#0052CC}
+    .filter-select{border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:.83rem;font-family:'Inter',sans-serif;color:#374151;background:#fff;cursor:pointer}
+    /* Table */
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .product-cell{display:flex;align-items:center;gap:10px}
+    .product-thumb{width:42px;height:42px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.65rem;color:#0052CC;font-weight:600}
+    .product-cell-name{font-weight:600;color:#0a0e27;font-size:.85rem}
+    .product-cell-sku{font-size:.73rem;color:#94a3b8}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .actions-cell{display:flex;gap:6px;flex-wrap:wrap}
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+    .modal-close{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#64748b;padding:4px}
+    .modal-close:hover{color:#ef4444}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .tier-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;padding-top:16px;border-top:1px solid #f1f5f9}
+    /* Toast */
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    .toast.show{transform:translateY(0);opacity:1}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.stats-bar{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <div>
+          <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          <div class="nav-subtitle">Supplier Dashboard</div>
+        </div>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="../account/profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html" class="active"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="#" style="color:#f97316!important"><i class="fas fa-rocket"></i> Upgrade Plan</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card blue"><div class="stat-value">127</div><div class="stat-label">Total Products</div></div>
+      <div class="stat-card green"><div class="stat-value">98</div><div class="stat-label">Active</div></div>
+      <div class="stat-card red"><div class="stat-value">29</div><div class="stat-label">Out of Stock</div></div>
+      <div class="stat-card orange"><div class="stat-value">12</div><div class="stat-label">Pending Review</div></div>
+    </div>
+
+    <div class="page-card">
+      <div class="page-card-header">
+        <div class="page-card-title"><i class="fas fa-boxes-stacked" style="color:#0052CC"></i> My Products</div>
+        <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Add Product</button>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="setTab(this,'all')">All (127)</button>
+        <button class="filter-tab" onclick="setTab(this,'active')">Active (98)</button>
+        <button class="filter-tab" onclick="setTab(this,'oos')">Out of Stock (29)</button>
+        <button class="filter-tab" onclick="setTab(this,'pending')">Pending (12)</button>
+      </div>
+
+      <!-- Search / Filter Bar -->
+      <div class="search-filter-bar">
+        <div class="search-input-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" class="search-input" placeholder="Search products..."/>
+        </div>
+        <select class="filter-select">
+          <option>All Categories</option>
+          <option>Electronics</option>
+          <option>Accessories</option>
+          <option>Components</option>
+        </select>
+        <select class="filter-select">
+          <option>Sort: Newest</option>
+          <option>Sort: Price ↑</option>
+          <option>Sort: Price ↓</option>
+          <option>Sort: Stock ↑</option>
+        </select>
+      </div>
+
+      <!-- Products Table -->
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>MOQ</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody">
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">4K Smart LED TV 55"</div><div class="product-cell-sku">SKU: ST-TV-001</div></div></div></td>
+              <td>Electronics</td><td>$189–$245</td><td>50 pcs</td><td>340</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">Wireless Earbuds Pro X</div><div class="product-cell-sku">SKU: ST-AUD-012</div></div></div></td>
+              <td>Accessories</td><td>$12–$18</td><td>100 pcs</td><td>0</td>
+              <td><span class="badge badge-red">Out of Stock</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">USB-C Hub 7-in-1</div><div class="product-cell-sku">SKU: ST-HUB-007</div></div></div></td>
+              <td>Accessories</td><td>$8–$12</td><td>200 pcs</td><td>1,200</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">Mechanical Keyboard TKL</div><div class="product-cell-sku">SKU: ST-KB-034</div></div></div></td>
+              <td>Electronics</td><td>$34–$45</td><td>30 pcs</td><td>180</td>
+              <td><span class="badge badge-orange">Pending</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">Solar Power Bank 20000mAh</div><div class="product-cell-sku">SKU: ST-PB-021</div></div></div></td>
+              <td>Accessories</td><td>$22–$29</td><td>50 pcs</td><td>620</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">Wireless Security Camera</div><div class="product-cell-sku">SKU: ST-CAM-009</div></div></div></td>
+              <td>Electronics</td><td>$28–$36</td><td>20 pcs</td><td>0</td>
+              <td><span class="badge badge-red">Out of Stock</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">Smart Home Hub Z3</div><div class="product-cell-sku">SKU: ST-HM-018</div></div></div></td>
+              <td>Electronics</td><td>$45–$58</td><td>10 pcs</td><td>95</td>
+              <td><span class="badge badge-orange">Pending</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">LED Strip Lights 5m RGB</div><div class="product-cell-sku">SKU: ST-LED-045</div></div></div></td>
+              <td>Accessories</td><td>$4–$7</td><td>500 pcs</td><td>3,200</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">HDMI Cable 2.1 (3m)</div><div class="product-cell-sku">SKU: ST-HDMI-003</div></div></div></td>
+              <td>Accessories</td><td>$3–$5</td><td>300 pcs</td><td>4,500</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="product-cell"><div class="product-thumb">IMG</div><div><div class="product-cell-name">Laptop Stand Aluminium</div><div class="product-cell-sku">SKU: ST-LS-066</div></div></div></td>
+              <td>Accessories</td><td>$18–$24</td><td>50 pcs</td><td>0</td>
+              <td><span class="badge badge-red">Out of Stock</span></td>
+              <td><div class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal-overlay" id="addModal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-plus-circle" style="color:#0052CC;margin-right:8px"></i>Add New Product</div>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="add-product-form" onsubmit="submitProduct(event)">
+      <div class="form-group">
+        <label class="form-label">Product Name *</label>
+        <input type="text" class="form-control" placeholder="e.g., 4K Smart LED TV 55&quot;" required/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-control" required>
+            <option value="">Select category</option>
+            <option>Electronics</option>
+            <option>Accessories</option>
+            <option>Components</option>
+            <option>Industrial Machinery</option>
+            <option>Home & Garden</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Weight (kg)</label>
+          <input type="number" class="form-control" placeholder="0.00" step="0.01" min="0"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" rows="3" placeholder="Describe your product..."></textarea>
+      </div>
+      <!-- Tiered Pricing -->
+      <div class="form-group">
+        <label class="form-label">Tiered Pricing</label>
+        <div id="tiers">
+          <div class="tier-row">
+            <div><label class="form-label" style="font-size:.75rem">Min Qty</label><input type="number" class="form-control" placeholder="1" min="1"/></div>
+            <div><label class="form-label" style="font-size:.75rem">Price / Unit ($)</label><input type="number" class="form-control" placeholder="0.00" step="0.01" min="0"/></div>
+            <div style="padding-bottom:0"><button type="button" class="btn btn-danger btn-sm" onclick="removeTier(this)" style="margin-top:22px"><i class="fas fa-times"></i></button></div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="addTier()" id="add-tier-btn"><i class="fas fa-plus"></i> Add Tier</button>
+        <p style="font-size:.75rem;color:#94a3b8;margin-top:4px">Add up to 3 pricing tiers</p>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">MOQ (Minimum Order Qty) *</label>
+          <input type="number" class="form-control" placeholder="e.g., 50" min="1" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stock Quantity *</label>
+          <input type="number" class="form-control" placeholder="e.g., 500" min="0" required/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px"></i> Product added successfully!</div>
+
+<script>
+  function setTab(el, tab) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function openModal() { document.getElementById('addModal').classList.add('open'); }
+  function closeModal() { document.getElementById('addModal').classList.remove('open'); }
+  function handleOverlayClick(e) { if(e.target === document.getElementById('addModal')) closeModal(); }
+
+  let tierCount = 1;
+  function addTier() {
+    if(tierCount >= 3) return;
+    tierCount++;
+    const d = document.createElement('div');
+    d.className = 'tier-row';
+    d.innerHTML = `<div><label class="form-label" style="font-size:.75rem">Min Qty</label><input type="number" class="form-control" placeholder="1" min="1"/></div><div><label class="form-label" style="font-size:.75rem">Price / Unit ($)</label><input type="number" class="form-control" placeholder="0.00" step="0.01" min="0"/></div><div style="padding-bottom:0"><button type="button" class="btn btn-danger btn-sm" onclick="removeTier(this)" style="margin-top:22px"><i class="fas fa-times"></i></button></div>`;
+    document.getElementById('tiers').appendChild(d);
+    if(tierCount >= 3) document.getElementById('add-tier-btn').disabled = true;
+  }
+  function removeTier(btn) {
+    btn.closest('.tier-row').remove();
+    tierCount--;
+    document.getElementById('add-tier-btn').disabled = false;
+  }
+  function submitProduct(e) {
+    e.preventDefault();
+    closeModal();
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+    e.target.reset();
+    tierCount = 1;
+  }
+</script>
+</body>
+</html>

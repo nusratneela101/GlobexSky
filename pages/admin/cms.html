@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CMS – GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto}
+    .admin-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:7px 18px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s;white-space:nowrap}
+    .tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .tab-content{display:none}.tab-content.active{display:block}
+    .data-table{width:100%;border-collapse:collapse;font-size:.84rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:9px 10px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:9px 10px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}.badge-orange{background:#ffedd5;color:#f97316}.badge-blue{background:#dbeafe;color:#0052CC}.badge-red{background:#fee2e2;color:#ef4444}
+    .btn{padding:5px 12px;border-radius:6px;font-size:.77rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:4px}
+    .btn-sm-primary{background:#0052CC;color:#fff}.btn-sm-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-sm-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}
+    /* Banners */
+    .banners-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    .banner-card{border:1.5px solid #e2e8f0;border-radius:12px;overflow:hidden;transition:all .2s}
+    .banner-card:hover{border-color:#0052CC;box-shadow:0 4px 12px rgba(0,82,204,.1)}
+    .banner-thumb{height:100px;background:linear-gradient(135deg,#dbeafe,#0052CC);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:600}
+    .banner-body{padding:14px}
+    .banner-title{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;font-size:.9rem;margin-bottom:4px}
+    .banner-meta{font-size:.75rem;color:#64748b;margin-bottom:10px}
+    .banner-footer{display:flex;align-items:center;justify-content:space-between}
+    /* Toggle switch */
+    .toggle-switch{position:relative;display:inline-flex;width:44px;height:24px}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:12px;transition:.3s}
+    .toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .toggle-switch input:checked+.toggle-slider{background:#0052CC}
+    .toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px)}
+    /* Media Library */
+    .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+    .media-item{border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;transition:all .2s}
+    .media-item:hover{border-color:#0052CC}
+    .media-thumb{height:90px;background:linear-gradient(135deg,#f0f4ff,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#93c5fd}
+    .media-info{padding:8px}
+    .media-name{font-size:.72rem;font-weight:500;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+    .media-size{font-size:.68rem;color:#94a3b8;margin-bottom:4px}
+    @media(max-width:900px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i> <span>Marketing</span></a></li>
+        <li><a href="inspection.html"><i class="fas fa-search"></i> <span>Inspection</span></a></li>
+        <li><a href="cms.html" class="active"><i class="fas fa-file-alt"></i> <span>CMS</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i> <span>Live Streams</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-tags"></i> <span>Campaigns</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <h1 class="admin-page-title">Content Management</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-card">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(this,'pages')">Pages</button>
+          <button class="tab-btn" onclick="switchTab(this,'banners')">Banners</button>
+          <button class="tab-btn" onclick="switchTab(this,'email')">Email Templates</button>
+          <button class="tab-btn" onclick="switchTab(this,'media')">Media Library</button>
+        </div>
+
+        <!-- Pages Tab -->
+        <div class="tab-content active" id="tab-pages">
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>Title</th><th>URL</th><th>Status</th><th>Last Updated</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:600">Home</td><td style="color:#64748b;font-size:.8rem">/index.html</td><td><span class="badge badge-green">Published</span></td><td>May 20, 2025</td><td><div style="display:flex;gap:5px"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-primary"><i class="fas fa-eye"></i> Preview</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div></td></tr>
+                <tr><td style="font-weight:600">About Us</td><td style="color:#64748b;font-size:.8rem">/pages/about.html</td><td><span class="badge badge-green">Published</span></td><td>May 15, 2025</td><td><div style="display:flex;gap:5px"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-primary"><i class="fas fa-eye"></i> Preview</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div></td></tr>
+                <tr><td style="font-weight:600">Contact</td><td style="color:#64748b;font-size:.8rem">/pages/contact.html</td><td><span class="badge badge-green">Published</span></td><td>May 10, 2025</td><td><div style="display:flex;gap:5px"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-primary"><i class="fas fa-eye"></i> Preview</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div></td></tr>
+                <tr><td style="font-weight:600">Terms of Service</td><td style="color:#64748b;font-size:.8rem">/pages/terms.html</td><td><span class="badge badge-green">Published</span></td><td>Apr 30, 2025</td><td><div style="display:flex;gap:5px"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-primary"><i class="fas fa-eye"></i> Preview</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div></td></tr>
+                <tr><td style="font-weight:600">Privacy Policy</td><td style="color:#64748b;font-size:.8rem">/pages/privacy.html</td><td><span class="badge badge-green">Published</span></td><td>Apr 30, 2025</td><td><div style="display:flex;gap:5px"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-primary"><i class="fas fa-eye"></i> Preview</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div></td></tr>
+                <tr><td style="font-weight:600">Supplier Landing</td><td style="color:#64748b;font-size:.8rem">/pages/supplier-landing</td><td><span class="badge badge-orange">Draft</span></td><td>May 22, 2025</td><td><div style="display:flex;gap:5px"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-primary"><i class="fas fa-eye"></i> Preview</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Banners Tab -->
+        <div class="tab-content" id="tab-banners">
+          <div class="banners-grid">
+            <div class="banner-card">
+              <div class="banner-thumb">Hero Banner – Homepage</div>
+              <div class="banner-body">
+                <div class="banner-title">Homepage Hero</div>
+                <div class="banner-meta">Deployed: Home, Landing · 1200×500px</div>
+                <div class="banner-footer"><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></div>
+              </div>
+            </div>
+            <div class="banner-card">
+              <div class="banner-thumb" style="background:linear-gradient(135deg,#ff6b35,#0a0e27)">Flash Sale Banner</div>
+              <div class="banner-body">
+                <div class="banner-title">Flash Sale</div>
+                <div class="banner-meta">Deployed: Products, Cart · 800×200px</div>
+                <div class="banner-footer"><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></div>
+              </div>
+            </div>
+            <div class="banner-card">
+              <div class="banner-thumb" style="background:linear-gradient(135deg,#00C9A7,#0052CC)">Supplier CTA</div>
+              <div class="banner-body">
+                <div class="banner-title">Become a Supplier</div>
+                <div class="banner-meta">Deployed: Home · 1200×300px</div>
+                <div class="banner-footer"><label class="toggle-switch"><input type="checkbox"/><span class="toggle-slider"></span></label><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></div>
+              </div>
+            </div>
+            <div class="banner-card">
+              <div class="banner-thumb" style="background:linear-gradient(135deg,#7c3aed,#0052CC)">Premium Banner</div>
+              <div class="banner-body">
+                <div class="banner-title">Pro Supplier Promo</div>
+                <div class="banner-meta">Deployed: Dashboard · 600×200px</div>
+                <div class="banner-footer"><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Templates Tab -->
+        <div class="tab-content" id="tab-email">
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>Template</th><th>Subject</th><th>Last Edited</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td><i class="fas fa-envelope" style="color:#0052CC;margin-right:8px"></i><strong>Welcome Email</strong></td><td>Welcome to GlobexSky!</td><td>May 1, 2025</td><td><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>
+                <tr><td><i class="fas fa-shopping-bag" style="color:#0052CC;margin-right:8px"></i><strong>Order Confirmation</strong></td><td>Your order #{{order_id}} is confirmed</td><td>May 5, 2025</td><td><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>
+                <tr><td><i class="fas fa-shipping-fast" style="color:#0052CC;margin-right:8px"></i><strong>Shipment Update</strong></td><td>Your order has shipped!</td><td>May 5, 2025</td><td><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>
+                <tr><td><i class="fas fa-lock" style="color:#0052CC;margin-right:8px"></i><strong>Password Reset</strong></td><td>Reset your GlobexSky password</td><td>Apr 20, 2025</td><td><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>
+                <tr><td><i class="fas fa-newspaper" style="color:#0052CC;margin-right:8px"></i><strong>Newsletter</strong></td><td>GlobexSky Monthly Update – {{month}}</td><td>May 20, 2025</td><td><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>
+                <tr><td><i class="fas fa-tag" style="color:#0052CC;margin-right:8px"></i><strong>Promotional Offer</strong></td><td>Exclusive deal just for you!</td><td>May 18, 2025</td><td><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Media Library Tab -->
+        <div class="tab-content" id="tab-media">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+            <span style="font-size:.85rem;color:#64748b">24 files · 48.2 MB used</span>
+            <button class="btn btn-sm-primary"><i class="fas fa-upload"></i> Upload</button>
+          </div>
+          <div class="media-grid" id="media-grid"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  // Render media library items
+  const mediaFiles = [
+    {name:'hero-banner.jpg',size:'420 KB'},{name:'logo-white.png',size:'18 KB'},{name:'product-1.jpg',size:'310 KB'},{name:'category-elec.jpg',size:'256 KB'},
+    {name:'supplier-bg.png',size:'512 KB'},{name:'flash-sale.jpg',size:'380 KB'},{name:'team-photo.jpg',size:'748 KB'},{name:'about-hero.jpg',size:'620 KB'},
+    {name:'icon-set.svg',size:'24 KB'},{name:'map-thumb.png',size:'190 KB'},{name:'packaging.jpg',size:'445 KB'},{name:'warehouse.jpg',size:'830 KB'}
+  ];
+  const grid = document.getElementById('media-grid');
+  mediaFiles.forEach(f => {
+    grid.innerHTML += `<div class="media-item"><div class="media-thumb"><i class="fas fa-image"></i></div><div class="media-info"><div class="media-name" title="${f.name}">${f.name}</div><div class="media-size">${f.size}</div><button class="btn btn-sm-danger" style="padding:2px 8px;font-size:.7rem"><i class="fas fa-trash"></i></button></div></div>`;
+  });
+</script>
+</body>
+</html>

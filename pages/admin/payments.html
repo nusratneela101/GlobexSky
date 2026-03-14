@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Payments – GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto}
+    /* KPI Cards */
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .kpi-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-top:3px solid}
+    .kpi-card.green{border-top-color:#22c55e}.kpi-card.orange{border-top-color:#f97316}.kpi-card.red{border-top-color:#ef4444}.kpi-card.blue{border-top-color:#0052CC}
+    .kpi-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:10px}
+    .kpi-icon.green{background:#dcfce7;color:#16a34a}.kpi-icon.orange{background:#ffedd5;color:#f97316}.kpi-icon.red{background:#fee2e2;color:#ef4444}.kpi-icon.blue{background:#dbeafe;color:#0052CC}
+    .kpi-value{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27;margin-bottom:2px}
+    .kpi-label{font-size:.78rem;color:#64748b}
+    /* Admin Card */
+    .admin-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27;margin-bottom:16px}
+    /* Tabs */
+    .tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:7px 18px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s;white-space:nowrap}
+    .tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .tab-content{display:none}.tab-content.active{display:block}
+    /* Search/Filter */
+    .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .search-wrap{position:relative;flex:1;min-width:180px}
+    .search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.8rem}
+    .search-inp{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px 7px 30px;font-size:.83rem;font-family:'Inter',sans-serif}
+    .filter-sel{border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:.82rem;font-family:'Inter',sans-serif;background:#fff}
+    /* Table */
+    .data-table{width:100%;border-collapse:collapse;font-size:.84rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:9px 10px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:9px 10px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}.badge-orange{background:#ffedd5;color:#f97316}.badge-red{background:#fee2e2;color:#ef4444}.badge-blue{background:#dbeafe;color:#0052CC}.badge-purple{background:#ede9fe;color:#7c3aed}
+    .btn{padding:5px 12px;border-radius:6px;font-size:.77rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:4px}
+    .btn-sm-primary{background:#0052CC;color:#fff}.btn-sm-primary:hover{background:#003d99}
+    .btn-sm-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-sm-secondary:hover{background:#e2e8f0}
+    .btn-sm-success{background:#dcfce7;color:#059669;border:1px solid #bbf7d0}.btn-sm-success:hover{background:#bbf7d0}
+    .btn-sm-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-sm-danger:hover{background:#fecaca}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="payments.html" class="active"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i> <span>Marketing</span></a></li>
+        <li><a href="inspection.html"><i class="fas fa-search"></i> <span>Inspection</span></a></li>
+        <li><a href="cms.html"><i class="fas fa-file-alt"></i> <span>CMS</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i> <span>Live Streams</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-tags"></i> <span>Campaigns</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <h1 class="admin-page-title">Payments</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card green"><div class="kpi-icon green"><i class="fas fa-dollar-sign"></i></div><div class="kpi-value">$847K</div><div class="kpi-label">Total Processed</div></div>
+        <div class="kpi-card orange"><div class="kpi-icon orange"><i class="fas fa-clock"></i></div><div class="kpi-value">$23,450</div><div class="kpi-label">Pending</div></div>
+        <div class="kpi-card red"><div class="kpi-icon red"><i class="fas fa-undo"></i></div><div class="kpi-value">$4,200</div><div class="kpi-label">Refunds</div></div>
+        <div class="kpi-card blue"><div class="kpi-icon blue"><i class="fas fa-percentage"></i></div><div class="kpi-value">$84,700</div><div class="kpi-label">Platform Fees</div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-card">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(this,'transactions')">Transactions</button>
+          <button class="tab-btn" onclick="switchTab(this,'payouts')">Supplier Payouts</button>
+          <button class="tab-btn" onclick="switchTab(this,'withdrawals')">Carrier Withdrawals</button>
+          <button class="tab-btn" onclick="switchTab(this,'refunds')">Refund Requests</button>
+        </div>
+
+        <!-- Transactions -->
+        <div class="tab-content active" id="tab-transactions">
+          <div class="filter-row">
+            <div class="search-wrap"><i class="fas fa-search"></i><input class="search-inp" type="text" placeholder="Search transactions..."/></div>
+            <select class="filter-sel"><option>All Types</option><option>Payment</option><option>Refund</option><option>Payout</option></select>
+            <select class="filter-sel"><option>All Status</option><option>Completed</option><option>Pending</option><option>Failed</option></select>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>ID</th><th>Type</th><th>User</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8821</td><td>Payment</td><td>James D.</td><td style="font-weight:600">$3,240.00</td><td><i class="fab fa-stripe" style="color:#635bff"></i> Stripe</td><td><span class="badge badge-green">Completed</span></td><td>May 21, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8820</td><td>Refund</td><td>Sarah K.</td><td style="font-weight:600;color:#ef4444">-$89.00</td><td><i class="fab fa-paypal" style="color:#003087"></i> PayPal</td><td><span class="badge badge-red">Refunded</span></td><td>May 20, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8819</td><td>Payment</td><td>Marco L.</td><td style="font-weight:600">$1,560.00</td><td><i class="fas fa-credit-card"></i> Visa</td><td><span class="badge badge-green">Completed</span></td><td>May 19, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8818</td><td>Payment</td><td>Priya M.</td><td style="font-weight:600">$4,100.00</td><td><i class="fab fa-stripe" style="color:#635bff"></i> Stripe</td><td><span class="badge badge-orange">Pending</span></td><td>May 18, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8817</td><td>Payout</td><td>Tom W.</td><td style="font-weight:600">$920.00</td><td><i class="fas fa-university"></i> Bank</td><td><span class="badge badge-green">Completed</span></td><td>May 17, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8816</td><td>Payment</td><td>Ahmed R.</td><td style="font-weight:600">$760.00</td><td><i class="fab fa-paypal" style="color:#003087"></i> PayPal</td><td><span class="badge badge-red">Failed</span></td><td>May 16, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8815</td><td>Payment</td><td>Elena V.</td><td style="font-weight:600">$2,340.00</td><td><i class="fas fa-credit-card"></i> Mastercard</td><td><span class="badge badge-green">Completed</span></td><td>May 15, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8814</td><td>Refund</td><td>David C.</td><td style="font-weight:600;color:#ef4444">-$245.00</td><td><i class="fab fa-stripe" style="color:#635bff"></i> Stripe</td><td><span class="badge badge-orange">Processing</span></td><td>May 14, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8813</td><td>Payment</td><td>Yuki T.</td><td style="font-weight:600">$5,890.00</td><td><i class="fas fa-university"></i> Wire</td><td><span class="badge badge-green">Completed</span></td><td>May 13, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#TXN-8812</td><td>Payment</td><td>Maria G.</td><td style="font-weight:600">$1,120.00</td><td><i class="fab fa-paypal" style="color:#003087"></i> PayPal</td><td><span class="badge badge-green">Completed</span></td><td>May 12, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Supplier Payouts -->
+        <div class="tab-content" id="tab-payouts">
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>Supplier</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:600">ShenzTech Electronics</td><td style="font-weight:600">$12,450</td><td>Bank Transfer</td><td><span class="badge badge-orange">Pending</span></td><td>May 21, 2025</td><td><div style="display:flex;gap:6px"><button class="btn btn-sm-success">Approve</button><button class="btn btn-sm-danger">Reject</button></div></td></tr>
+                <tr><td style="font-weight:600">AudioMax Co.</td><td style="font-weight:600">$4,200</td><td>PayPal</td><td><span class="badge badge-green">Paid</span></td><td>May 18, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600">EcoTech Supply</td><td style="font-weight:600">$7,890</td><td>Bank Transfer</td><td><span class="badge badge-green">Paid</span></td><td>May 15, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600">HomeIQ Corp</td><td style="font-weight:600">$3,340</td><td>Wire Transfer</td><td><span class="badge badge-orange">Pending</span></td><td>May 22, 2025</td><td><div style="display:flex;gap:6px"><button class="btn btn-sm-success">Approve</button><button class="btn btn-sm-danger">Reject</button></div></td></tr>
+                <tr><td style="font-weight:600">ConnectPlus Ltd</td><td style="font-weight:600">$2,150</td><td>PayPal</td><td><span class="badge badge-green">Paid</span></td><td>May 12, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600">BrightLine Mfg</td><td style="font-weight:600">$890</td><td>Bank Transfer</td><td><span class="badge badge-red">Failed</span></td><td>May 10, 2025</td><td><div style="display:flex;gap:6px"><button class="btn btn-sm-primary">Retry</button><button class="btn btn-sm-secondary">View</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Carrier Withdrawals -->
+        <div class="tab-content" id="tab-withdrawals">
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>Carrier</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:600">FastFreight Inc.</td><td style="font-weight:600">$8,200</td><td>Bank Transfer</td><td><span class="badge badge-orange">Pending</span></td><td>May 21, 2025</td><td><div style="display:flex;gap:6px"><button class="btn btn-sm-success">Approve</button><button class="btn btn-sm-danger">Reject</button></div></td></tr>
+                <tr><td style="font-weight:600">AirCargo Express</td><td style="font-weight:600">$14,500</td><td>Wire Transfer</td><td><span class="badge badge-green">Approved</span></td><td>May 18, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600">SeaRoute Logistics</td><td style="font-weight:600">$6,780</td><td>Bank Transfer</td><td><span class="badge badge-orange">Pending</span></td><td>May 20, 2025</td><td><div style="display:flex;gap:6px"><button class="btn btn-sm-success">Approve</button><button class="btn btn-sm-danger">Reject</button></div></td></tr>
+                <tr><td style="font-weight:600">GlobalShip Ltd</td><td style="font-weight:600">$3,450</td><td>PayPal</td><td><span class="badge badge-green">Approved</span></td><td>May 15, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600">SwiftDel Co.</td><td style="font-weight:600">$1,890</td><td>Bank Transfer</td><td><span class="badge badge-red">Rejected</span></td><td>May 12, 2025</td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Refund Requests -->
+        <div class="tab-content" id="tab-refunds">
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>Order ID</th><th>User</th><th>Amount</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:600;color:#0052CC">#GS-2025-0892</td><td>Sarah K.</td><td style="font-weight:600">$89.00</td><td>Item not as described</td><td><span class="badge badge-orange">Pending Review</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm-success">Approve</button><button class="btn btn-sm-danger">Reject</button></div></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#GS-2025-0877</td><td>David C.</td><td style="font-weight:600">$245.00</td><td>Wrong item received</td><td><span class="badge badge-blue">Processing</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm-success">Approve</button><button class="btn btn-sm-danger">Reject</button></div></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#GS-2025-0856</td><td>Maria G.</td><td style="font-weight:600">$120.00</td><td>Defective product</td><td><span class="badge badge-green">Approved</span></td><td><button class="btn btn-sm-secondary">View</button></td></tr>
+                <tr><td style="font-weight:600;color:#0052CC">#GS-2025-0831</td><td>Tom W.</td><td style="font-weight:600">$340.00</td><td>Order cancelled</td><td><span class="badge badge-red">Rejected</span></td><td><button class="btn btn-sm-secondary">Appeal</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+</script>
+</body>
+</html>

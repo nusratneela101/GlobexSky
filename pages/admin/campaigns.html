@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Campaigns – GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto}
+    .admin-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;margin-bottom:0;flex-wrap:wrap}
+    .tab-btn{padding:7px 18px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s;white-space:nowrap}
+    .tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .tab-content{display:none;margin-top:20px}.tab-content.active{display:block}
+    /* Campaign cards */
+    .campaigns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .campaign-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;transition:all .2s}
+    .campaign-card:hover{border-color:#0052CC;box-shadow:0 4px 16px rgba(0,82,204,.1)}
+    .campaign-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+    .campaign-name{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.98rem}
+    .campaign-discount{font-size:1.4rem;font-weight:800;font-family:'Poppins',sans-serif;color:#FF6B35;margin-bottom:4px}
+    .campaign-dates{font-size:.78rem;color:#64748b;margin-bottom:8px}
+    .campaign-countdown{font-size:.8rem;font-weight:600;color:#0052CC;background:#eff6ff;padding:4px 10px;border-radius:6px;margin-bottom:12px;display:inline-block}
+    .campaign-footer{display:flex;gap:6px;flex-wrap:wrap}
+    .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}.badge-orange{background:#ffedd5;color:#f97316}.badge-blue{background:#dbeafe;color:#0052CC}.badge-red{background:#fee2e2;color:#ef4444}.badge-purple{background:#ede9fe;color:#7c3aed}
+    .btn{padding:5px 12px;border-radius:6px;font-size:.77rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:4px}
+    .btn-primary{background:#0052CC;color:#fff;padding:8px 18px;font-size:.85rem;border-radius:8px}.btn-primary:hover{background:#003d99}
+    .btn-sm-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-sm-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-sm-warning{background:#ffedd5;color:#f97316;border:1px solid #fed7aa}
+    /* Referral form */
+    .ref-form{max-width:500px}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e}
+    .form-control:focus{outline:none;border-color:#0052CC}
+    /* Email campaigns */
+    .email-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .email-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:18px;transition:all .2s}
+    .email-card:hover{border-color:#0052CC;box-shadow:0 4px 12px rgba(0,82,204,.1)}
+    .email-subject{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;margin-bottom:8px;font-size:.9rem}
+    .email-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+    .email-stat{background:#f8faff;border-radius:8px;padding:8px;text-align:center}
+    .email-stat-value{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.95rem}
+    .email-stat-label{font-size:.7rem;color:#64748b}
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27}
+    .modal-close{border:none;background:none;cursor:pointer;font-size:1.1rem;color:#64748b}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9}
+    @media(max-width:900px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i> <span>Marketing</span></a></li>
+        <li><a href="inspection.html"><i class="fas fa-search"></i> <span>Inspection</span></a></li>
+        <li><a href="cms.html"><i class="fas fa-file-alt"></i> <span>CMS</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i> <span>Live Streams</span></a></li>
+        <li><a href="campaigns.html" class="active"><i class="fas fa-tags"></i> <span>Campaigns</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <h1 class="admin-page-title">Campaigns</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'flash')">Flash Sales</button>
+            <button class="tab-btn" onclick="switchTab(this,'seasonal')">Seasonal</button>
+            <button class="tab-btn" onclick="switchTab(this,'referral')">Referral</button>
+            <button class="tab-btn" onclick="switchTab(this,'email')">Email</button>
+          </div>
+          <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Create Campaign</button>
+        </div>
+
+        <!-- Flash Sales -->
+        <div class="tab-content active" id="tab-flash">
+          <div class="campaigns-grid">
+            <div class="campaign-card">
+              <div class="campaign-header"><div><div class="campaign-name">Weekend Flash Sale</div><div class="campaign-dates">May 24–26, 2025</div></div><span class="badge badge-green">Active</span></div>
+              <div class="campaign-discount">25% OFF</div>
+              <div class="campaign-countdown" id="countdown-1">Loading...</div>
+              <div class="campaign-footer"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-warning"><i class="fas fa-pause"></i> Pause</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div>
+            </div>
+            <div class="campaign-card">
+              <div class="campaign-header"><div><div class="campaign-name">Electronics Blitz</div><div class="campaign-dates">Jun 1–2, 2025</div></div><span class="badge badge-blue">Scheduled</span></div>
+              <div class="campaign-discount">30% OFF</div>
+              <div class="campaign-countdown" id="countdown-2">Loading...</div>
+              <div class="campaign-footer"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-warning"><i class="fas fa-pause"></i> Pause</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div>
+            </div>
+            <div class="campaign-card">
+              <div class="campaign-header"><div><div class="campaign-name">B2B Bulk Deal</div><div class="campaign-dates">Jun 10–11, 2025</div></div><span class="badge badge-orange">Draft</span></div>
+              <div class="campaign-discount">20% OFF</div>
+              <div class="campaign-countdown" id="countdown-3">Loading...</div>
+              <div class="campaign-footer"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-warning"><i class="fas fa-pause"></i> Pause</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div>
+            </div>
+            <div class="campaign-card">
+              <div class="campaign-header"><div><div class="campaign-name">Midnight Deals</div><div class="campaign-dates">Jun 20, 2025 00:00–06:00</div></div><span class="badge badge-blue">Scheduled</span></div>
+              <div class="campaign-discount">40% OFF</div>
+              <div class="campaign-countdown" id="countdown-4">Loading...</div>
+              <div class="campaign-footer"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-warning"><i class="fas fa-pause"></i> Pause</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seasonal -->
+        <div class="tab-content" id="tab-seasonal">
+          <div class="campaigns-grid">
+            <div class="campaign-card">
+              <div class="campaign-header"><div><div class="campaign-name">Summer Sale 2025</div><div class="campaign-dates">Jun 21 – Jul 31, 2025</div></div><span class="badge badge-blue">Scheduled</span></div>
+              <div class="campaign-discount">Up to 35% OFF</div>
+              <div class="campaign-countdown" id="countdown-5">Loading...</div>
+              <div class="campaign-footer"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div>
+            </div>
+            <div class="campaign-card">
+              <div class="campaign-header"><div><div class="campaign-name">Back to School</div><div class="campaign-dates">Aug 1–31, 2025</div></div><span class="badge badge-orange">Draft</span></div>
+              <div class="campaign-discount">15% OFF</div>
+              <div class="campaign-countdown" id="countdown-6">Loading...</div>
+              <div class="campaign-footer"><button class="btn btn-sm-secondary"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-sm-danger"><i class="fas fa-trash"></i></button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Referral -->
+        <div class="tab-content" id="tab-referral">
+          <div class="ref-form">
+            <h3 style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px">Referral Program Settings</h3>
+            <div class="form-group">
+              <label class="form-label">Referral Reward (USD)</label>
+              <input type="number" class="form-control" value="10" min="1"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Referee Discount (%)</label>
+              <input type="number" class="form-control" value="5" min="1" max="50"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Referrals per User</label>
+              <input type="number" class="form-control" value="20" min="1"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Program Status</label>
+              <select class="form-control"><option>Active</option><option>Paused</option><option>Disabled</option></select>
+            </div>
+            <button class="btn btn-primary" onclick="showToast()"><i class="fas fa-save"></i> Save Settings</button>
+          </div>
+        </div>
+
+        <!-- Email Campaigns -->
+        <div class="tab-content" id="tab-email">
+          <div class="email-cards">
+            <div class="email-card">
+              <div class="email-subject">Re-engagement: Come back for deals!</div>
+              <div class="email-stats">
+                <div class="email-stat"><div class="email-stat-value">12,450</div><div class="email-stat-label">Sent</div></div>
+                <div class="email-stat"><div class="email-stat-value">34.2%</div><div class="email-stat-label">Open Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">8.7%</div><div class="email-stat-label">Click Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">2.1%</div><div class="email-stat-label">Conversion</div></div>
+              </div>
+              <span class="badge badge-green">Sent</span>
+            </div>
+            <div class="email-card">
+              <div class="email-subject">New arrivals in Electronics</div>
+              <div class="email-stats">
+                <div class="email-stat"><div class="email-stat-value">8,900</div><div class="email-stat-label">Sent</div></div>
+                <div class="email-stat"><div class="email-stat-value">41.5%</div><div class="email-stat-label">Open Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">12.3%</div><div class="email-stat-label">Click Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">3.8%</div><div class="email-stat-label">Conversion</div></div>
+              </div>
+              <span class="badge badge-green">Sent</span>
+            </div>
+            <div class="email-card">
+              <div class="email-subject">Flash Sale starts Saturday!</div>
+              <div class="email-stats">
+                <div class="email-stat"><div class="email-stat-value">0</div><div class="email-stat-label">Sent</div></div>
+                <div class="email-stat"><div class="email-stat-value">—</div><div class="email-stat-label">Open Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">—</div><div class="email-stat-label">Click Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">—</div><div class="email-stat-label">Conversion</div></div>
+              </div>
+              <span class="badge badge-blue">Scheduled</span>
+            </div>
+            <div class="email-card">
+              <div class="email-subject">Your cart is waiting for you</div>
+              <div class="email-stats">
+                <div class="email-stat"><div class="email-stat-value">5,210</div><div class="email-stat-label">Sent</div></div>
+                <div class="email-stat"><div class="email-stat-value">28.4%</div><div class="email-stat-label">Open Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">9.2%</div><div class="email-stat-label">Click Rate</div></div>
+                <div class="email-stat"><div class="email-stat-value">4.5%</div><div class="email-stat-label">Conversion</div></div>
+              </div>
+              <span class="badge badge-green">Sent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Create Campaign Modal -->
+<div class="modal-overlay" id="createModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-plus-circle" style="color:#0052CC;margin-right:8px"></i>Create Campaign</div>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Campaign Name *</label>
+      <input type="text" class="form-control" placeholder="e.g., Summer Flash Sale"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Campaign Type</label>
+      <select class="form-control">
+        <option>Flash Sale</option><option>Seasonal</option><option>Referral</option><option>Email</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Discount (%)</label>
+        <input type="number" class="form-control" placeholder="20" min="1" max="90"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Target Audience</label>
+        <select class="form-control">
+          <option>All Users</option><option>B2B Buyers</option><option>New Users</option><option>Returning</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="form-control"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">End Date</label>
+        <input type="date" class="form-control"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-sm-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal()"><i class="fas fa-save"></i> Create</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-msg" style="position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s"><i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px"></i> Settings saved!</div>
+
+<script>
+  function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+  function openModal() { document.getElementById('createModal').classList.add('open'); }
+  function closeModal() { document.getElementById('createModal').classList.remove('open'); }
+  function showToast() {
+    const t = document.getElementById('toast-msg');
+    t.style.transform = 'translateY(0)'; t.style.opacity = '1';
+    setTimeout(() => { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 3000);
+  }
+
+  // Countdown timers
+  const endDates = [
+    new Date('2025-05-26T23:59:59'),
+    new Date('2025-06-02T23:59:59'),
+    new Date('2025-06-11T23:59:59'),
+    new Date('2025-06-20T06:00:00'),
+    new Date('2025-07-31T23:59:59'),
+    new Date('2025-08-31T23:59:59')
+  ];
+
+  function updateCountdowns() {
+    const now = new Date();
+    endDates.forEach((end, i) => {
+      const el = document.getElementById('countdown-' + (i + 1));
+      if (!el) return;
+      const diff = end - now;
+      if (diff <= 0) { el.textContent = 'Ended'; return; }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      el.textContent = d > 0 ? `Ends in ${d}d ${h}h ${m}m` : `Ends in ${h}h ${m}m ${s}s`;
+    });
+  }
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+</script>
+</body>
+</html>
