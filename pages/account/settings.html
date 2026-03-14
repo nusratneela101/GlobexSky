@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .navbar{padding:0}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .container{max-width:1400px;margin:0 auto;padding:0 24px}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+    .btn-danger-outline{background:transparent;color:#ef4444;border:1.5px solid #ef4444}.btn-danger-outline:hover{background:#fef2f2}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .toggle-switch{position:relative;display:inline-block;width:44px;height:24px}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:24px;transition:.3s}
+    .toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+    .toggle-switch input:checked+.toggle-slider{background:#0052CC}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px)}
+    /* Notification table */
+    .notif-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .notif-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 14px;text-align:center;border-bottom:2px solid #e2e8f0}
+    .notif-table th:first-child{text-align:left}
+    .notif-table td{padding:12px 14px;border-bottom:1px solid #f1f5f9;text-align:center}
+    .notif-table td:first-child{text-align:left;color:#374151;font-size:.88rem}
+    .notif-table tr:hover td{background:#f8faff}
+    .notif-row-label{font-weight:500;color:#0a0e27;margin-bottom:2px;font-size:.88rem}
+    .notif-row-desc{font-size:.75rem;color:#64748b}
+    /* Privacy & connected */
+    .setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1f5f9;gap:16px}
+    .setting-row:last-child{border-bottom:none}
+    .setting-info h4{font-size:.92rem;font-weight:600;color:#0a0e27;margin-bottom:2px}
+    .setting-info p{font-size:.8rem;color:#64748b}
+    .connected-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1f5f9;gap:16px}
+    .connected-row:last-child{border-bottom:none}
+    .connected-brand{display:flex;align-items:center;gap:12px}
+    .brand-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .brand-google{background:#fef2f2;color:#ef4444}
+    .brand-facebook{background:#eff6ff;color:#2563eb}
+    .brand-apple{background:#f8faff;color:#1a1a2e}
+    .connected-brand-info h4{font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:2px}
+    .connected-brand-info p{font-size:.78rem;color:#64748b}
+    .badge-connected{background:#d1fae5;color:#059669;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:50px}
+    /* Danger zone */
+    .danger-card{border:2px solid #fca5a5;border-radius:16px;padding:24px;background:#fff}
+    .danger-action{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #fef2f2}
+    .danger-action:last-child{border-bottom:none}
+    .danger-action-info h4{font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:2px}
+    .danger-action-info p{font-size:.78rem;color:#64748b}
+    .site-footer{background:#0a0e27;color:#94a3b8}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:center}
+    .footer-copyright{font-size:.85rem}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.notif-table{font-size:.78rem}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">JD</div>
+    <div class="account-sidebar-name">James Davidson</div>
+    <div class="account-sidebar-email">j.davidson@example.com</div>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+
+    <!-- Notifications -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-bell" style="color:#0052CC"></i> Notification Preferences</div>
+      <table class="notif-table">
+        <thead>
+          <tr>
+            <th style="width:40%">Notification Type</th>
+            <th><i class="fas fa-envelope" style="margin-right:4px"></i>Email</th>
+            <th><i class="fas fa-comment-sms" style="margin-right:4px"></i>SMS</th>
+            <th><i class="fas fa-bell" style="margin-right:4px"></i>Push</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="notif-row-label">New Order</div><div class="notif-row-desc">When a new order is placed</div></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+          </tr>
+          <tr>
+            <td><div class="notif-row-label">Shipment Update</div><div class="notif-row-desc">Tracking and delivery status</div></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox"/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+          </tr>
+          <tr>
+            <td><div class="notif-row-label">Price Alert</div><div class="notif-row-desc">Products on your watchlist change price</div></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox"/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+          </tr>
+          <tr>
+            <td><div class="notif-row-label">Promotions</div><div class="notif-row-desc">Deals, discounts and platform offers</div></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox"/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox"/><span class="toggle-slider"></span></label></td>
+          </tr>
+          <tr>
+            <td><div class="notif-row-label">Security Alerts</div><div class="notif-row-desc">Login attempts and account changes</div></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+            <td><label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:18px"><button class="btn btn-primary"><i class="fas fa-save" style="margin-right:6px"></i>Save Preferences</button></div>
+    </div>
+
+    <!-- Privacy Settings -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-shield-halved" style="color:#0052CC"></i> Privacy Settings</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Profile Visibility</h4>
+          <p>Control who can see your profile information on the platform</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:.82rem;color:#64748b" id="visibility-label">Public</span>
+          <label class="toggle-switch"><input type="checkbox" checked onchange="document.getElementById('visibility-label').textContent=this.checked?'Public':'Private'"/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Data Sharing for Analytics</h4>
+          <p>Allow GlobexSky to use anonymised data to improve platform features</p>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Marketing Emails</h4>
+          <p>Receive personalised product recommendations and platform news</p>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <!-- Connected Accounts -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-link" style="color:#0052CC"></i> Connected Accounts</div>
+      <div class="connected-row">
+        <div class="connected-brand">
+          <div class="brand-icon brand-google"><i class="fab fa-google"></i></div>
+          <div class="connected-brand-info">
+            <h4>Google <span class="badge-connected">Connected</span></h4>
+            <p>j.davidson@gmail.com · Sign in with Google enabled</p>
+          </div>
+        </div>
+        <button class="btn btn-sm btn-danger-outline">Disconnect</button>
+      </div>
+      <div class="connected-row">
+        <div class="connected-brand">
+          <div class="brand-icon brand-facebook"><i class="fab fa-facebook-f"></i></div>
+          <div class="connected-brand-info">
+            <h4>Facebook</h4>
+            <p>Not connected · Link your Facebook account</p>
+          </div>
+        </div>
+        <button class="btn btn-sm btn-secondary"><i class="fas fa-link" style="margin-right:6px"></i>Connect</button>
+      </div>
+      <div class="connected-row">
+        <div class="connected-brand">
+          <div class="brand-icon brand-apple"><i class="fab fa-apple"></i></div>
+          <div class="connected-brand-info">
+            <h4>Apple</h4>
+            <p>Not connected · Sign in with Apple</p>
+          </div>
+        </div>
+        <button class="btn btn-sm btn-secondary"><i class="fas fa-link" style="margin-right:6px"></i>Connect</button>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="danger-card">
+      <div class="page-card-title" style="color:#ef4444"><i class="fas fa-triangle-exclamation"></i> Danger Zone</div>
+      <div class="danger-action">
+        <div class="danger-action-info">
+          <h4>Deactivate Account</h4>
+          <p>Temporarily disable your account. You can reactivate it at any time by logging back in.</p>
+        </div>
+        <button class="btn btn-danger-outline">Deactivate</button>
+      </div>
+      <div class="danger-action">
+        <div class="danger-action-info">
+          <h4>Delete Account</h4>
+          <p>Permanently delete your account and all associated data. <strong>This action cannot be undone.</strong></p>
+        </div>
+        <button class="btn btn-danger">Delete Account</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
