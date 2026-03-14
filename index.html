@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="GlobexSky - Connect with 50,000+ verified suppliers worldwide. Source products, ship parcels, and grow your business on the global trade gateway." />
+  <meta name="keywords" content="global trade, B2B marketplace, product sourcing, international shipping, suppliers, logistics" />
+  <meta property="og:title" content="GlobexSky - Your Global Trade Gateway" />
+  <meta property="og:description" content="Connect with 50,000+ verified suppliers worldwide. Source products, ship parcels, and grow your business." />
+  <meta property="og:type" content="website" />
+  <title>GlobexSky - Your Global Trade Gateway</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6.5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       DOOR ENTRY ANIMATION
+  ============================================================ -->
+  <div id="door-entry" class="door-entry" role="presentation" aria-label="Welcome animation">
+    <div class="door-wrapper">
+      <div class="door door-left">
+        <div class="door-content">
+          <i class="fas fa-boxes" aria-hidden="true"></i>
+          <h2>Product Sourcing</h2>
+          <p>Find global suppliers</p>
+        </div>
+      </div>
+      <div class="door door-right">
+        <div class="door-content">
+          <i class="fas fa-shipping-fast" aria-hidden="true"></i>
+          <h2>Shipment Services</h2>
+          <p>Ship worldwide</p>
+        </div>
+      </div>
+    </div>
+    <button id="skip-animation" class="btn-skip" aria-label="Skip animation">
+      Skip <i class="fas fa-forward" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <!-- ============================================================
+       MAIN CONTENT (hidden until door animation completes)
+  ============================================================ -->
+  <div id="main-content" class="main-content" aria-hidden="true">
+
+    <!-- ============================================================
+         STICKY NAVIGATION
+    ============================================================ -->
+    <header class="site-header" role="banner">
+      <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+
+          <!-- Logo -->
+          <a href="index.html" class="nav-logo" aria-label="GlobexSky Home">
+            <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+              <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+              <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+              <line x1="2" y1="11" x2="34" y2="11" stroke="#0052CC" stroke-width="1"/>
+              <line x1="2" y1="25" x2="34" y2="25" stroke="#0052CC" stroke-width="1"/>
+              <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+            </svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+
+          <!-- Search Bar -->
+          <div class="nav-search" role="search">
+            <div class="search-wrapper">
+              <input
+                type="search"
+                class="search-input"
+                placeholder="Search products, suppliers, categories..."
+                aria-label="Search products, suppliers, and categories"
+              />
+              <div class="search-actions">
+                <button class="search-btn search-voice" aria-label="Voice search">
+                  <i class="fas fa-microphone" aria-hidden="true"></i>
+                </button>
+                <button class="search-btn search-image" aria-label="Image search">
+                  <i class="fas fa-camera" aria-hidden="true"></i>
+                </button>
+                <button class="search-btn search-submit" aria-label="Submit search">
+                  <i class="fas fa-search" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nav Controls -->
+          <div class="nav-controls">
+
+            <!-- Language Selector -->
+            <div class="nav-select-group">
+              <label for="lang-select" class="sr-only">Language</label>
+              <select id="lang-select" class="nav-select" aria-label="Select language">
+                <option value="en">🌐 EN</option>
+                <option value="fr">🇫🇷 FR</option>
+                <option value="es">🇪🇸 ES</option>
+                <option value="de">🇩🇪 DE</option>
+                <option value="zh">🇨🇳 ZH</option>
+                <option value="ar">🇸🇦 AR</option>
+              </select>
+            </div>
+
+            <!-- Currency Selector -->
+            <div class="nav-select-group">
+              <label for="currency-select" class="sr-only">Currency</label>
+              <select id="currency-select" class="nav-select" aria-label="Select currency">
+                <option value="USD">$ USD</option>
+                <option value="EUR">€ EUR</option>
+                <option value="GBP">£ GBP</option>
+                <option value="CNY">¥ CNY</option>
+                <option value="AED">د.إ AED</option>
+              </select>
+            </div>
+
+            <!-- Auth Buttons -->
+            <a href="pages/auth/login.html" class="btn-nav btn-login">
+              <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+              <span>Login</span>
+            </a>
+            <a href="pages/auth/register.html" class="btn-nav btn-register">
+              <i class="fas fa-user-plus" aria-hidden="true"></i>
+              <span>Register</span>
+            </a>
+
+            <!-- Cart -->
+            <a href="pages/cart/index.html" class="nav-cart" aria-label="Shopping cart, 3 items">
+              <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+              <span class="cart-badge" id="cart-count">3</span>
+            </a>
+
+            <!-- User Avatar Dropdown -->
+            <div class="nav-user-dropdown" id="user-dropdown">
+              <button class="user-avatar-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="User account menu">
+                <img src="https://ui-avatars.com/api/?name=Guest+User&background=0052CC&color=fff&size=36" alt="User avatar" class="user-avatar" width="36" height="36" />
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <ul class="dropdown-menu" id="user-menu" role="menu" aria-label="User menu">
+                <li role="menuitem"><a href="pages/account/dashboard.html"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a></li>
+                <li role="menuitem"><a href="pages/account/orders.html"><i class="fas fa-box" aria-hidden="true"></i> My Orders</a></li>
+                <li role="menuitem"><a href="pages/account/wishlist.html"><i class="fas fa-heart" aria-hidden="true"></i> Wishlist</a></li>
+                <li role="menuitem"><a href="pages/account/settings.html"><i class="fas fa-cog" aria-hidden="true"></i> Settings</a></li>
+                <li class="dropdown-divider" role="separator"></li>
+                <li role="menuitem"><a href="pages/auth/logout.html" class="logout-link"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout</a></li>
+              </ul>
+            </div>
+
+          </div><!-- /.nav-controls -->
+
+          <!-- Hamburger (mobile) -->
+          <button class="hamburger" id="hamburger-btn" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-nav">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+
+        </div><!-- /.nav-container -->
+
+        <!-- Mobile Nav -->
+        <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+          <ul class="mobile-nav-list" role="list">
+            <li><a href="pages/sourcing/index.html"><i class="fas fa-boxes" aria-hidden="true"></i> Sourcing</a></li>
+            <li><a href="pages/shipment/index.html"><i class="fas fa-shipping-fast" aria-hidden="true"></i> Shipment</a></li>
+            <li><a href="pages/suppliers/index.html"><i class="fas fa-store" aria-hidden="true"></i> Suppliers</a></li>
+            <li><a href="pages/dropshipping/index.html"><i class="fas fa-truck" aria-hidden="true"></i> Dropshipping</a></li>
+            <li><a href="pages/livestream/index.html"><i class="fas fa-video" aria-hidden="true"></i> Live Streams</a></li>
+            <li><a href="pages/auth/login.html" class="mobile-login"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</a></li>
+            <li><a href="pages/auth/register.html" class="mobile-register"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</a></li>
+          </ul>
+        </div>
+
+      </nav><!-- /.navbar -->
+
+      <!-- Secondary Nav Bar -->
+      <div class="nav-secondary" role="navigation" aria-label="Category navigation">
+        <div class="nav-container">
+          <ul class="secondary-nav-list" role="list">
+            <li><a href="pages/sourcing/index.html"><i class="fas fa-boxes" aria-hidden="true"></i> Sourcing</a></li>
+            <li><a href="pages/shipment/index.html"><i class="fas fa-shipping-fast" aria-hidden="true"></i> Shipment</a></li>
+            <li><a href="pages/carry/index.html"><i class="fas fa-people-carry" aria-hidden="true"></i> Carry Service</a></li>
+            <li><a href="pages/dropshipping/index.html"><i class="fas fa-truck" aria-hidden="true"></i> Dropshipping</a></li>
+            <li><a href="pages/suppliers/index.html"><i class="fas fa-store" aria-hidden="true"></i> Suppliers</a></li>
+            <li><a href="pages/livestream/index.html"><i class="fas fa-video" aria-hidden="true"></i> Live Streams</a></li>
+            <li><a href="pages/trade-shows/index.html"><i class="fas fa-handshake" aria-hidden="true"></i> Trade Shows</a></li>
+            <li><a href="pages/api/index.html"><i class="fas fa-code" aria-hidden="true"></i> API Platform</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </header><!-- /.site-header -->
+
+    <!-- ============================================================
+         HERO SECTION
+    ============================================================ -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-container">
+        <div class="hero-content">
+          <span class="hero-eyebrow">
+            <i class="fas fa-globe-americas" aria-hidden="true"></i>
+            Trusted by 500,000+ businesses worldwide
+          </span>
+          <h1 id="hero-heading" class="hero-title">
+            Your Global Trade
+            <span class="hero-title-accent">Gateway</span>
+          </h1>
+          <p class="hero-subtitle">
+            Connect with 50,000+ verified suppliers worldwide. Source products,
+            ship parcels, and grow your business.
+          </p>
+          <div class="hero-actions">
+            <a href="pages/sourcing/index.html" class="btn btn-primary btn-lg">
+              Start Sourcing <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+            <a href="pages/shipment/index.html" class="btn btn-outline-light btn-lg">
+              Ship a Parcel <i class="fas fa-shipping-fast" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Stat Badges -->
+        <div class="hero-stats" role="list" aria-label="Platform statistics">
+          <div class="stat-badge" role="listitem">
+            <i class="fas fa-box-open" aria-hidden="true"></i>
+            <strong>1M+</strong>
+            <span>Products</span>
+          </div>
+          <div class="stat-badge" role="listitem">
+            <i class="fas fa-store" aria-hidden="true"></i>
+            <strong>50K+</strong>
+            <span>Suppliers</span>
+          </div>
+          <div class="stat-badge" role="listitem">
+            <i class="fas fa-flag" aria-hidden="true"></i>
+            <strong>150+</strong>
+            <span>Countries</span>
+          </div>
+          <div class="stat-badge" role="listitem">
+            <i class="fas fa-truck" aria-hidden="true"></i>
+            <strong>500K+</strong>
+            <span>Deliveries</span>
+          </div>
+        </div>
+      </div>
+    </section><!-- /.hero -->
+
+    <!-- ============================================================
+         FEATURED CATEGORIES
+    ============================================================ -->
+    <section class="section categories-section" aria-labelledby="categories-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="categories-heading" class="section-title">Browse Categories</h2>
+          <a href="pages/sourcing/categories.html" class="section-link">
+            View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="categories-scroll" role="list" aria-label="Product categories">
+          <a href="pages/sourcing/categories.html?cat=electronics" class="category-chip" role="listitem">
+            <i class="fas fa-microchip" aria-hidden="true"></i>
+            <span>Electronics</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=fashion" class="category-chip" role="listitem">
+            <i class="fas fa-tshirt" aria-hidden="true"></i>
+            <span>Fashion</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=home-garden" class="category-chip" role="listitem">
+            <i class="fas fa-home" aria-hidden="true"></i>
+            <span>Home &amp; Garden</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=industrial" class="category-chip" role="listitem">
+            <i class="fas fa-industry" aria-hidden="true"></i>
+            <span>Industrial</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=beauty" class="category-chip" role="listitem">
+            <i class="fas fa-spa" aria-hidden="true"></i>
+            <span>Beauty</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=automotive" class="category-chip" role="listitem">
+            <i class="fas fa-car" aria-hidden="true"></i>
+            <span>Automotive</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=sports" class="category-chip" role="listitem">
+            <i class="fas fa-football-ball" aria-hidden="true"></i>
+            <span>Sports</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=food-bev" class="category-chip" role="listitem">
+            <i class="fas fa-utensils" aria-hidden="true"></i>
+            <span>Food &amp; Bev</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=health" class="category-chip" role="listitem">
+            <i class="fas fa-heartbeat" aria-hidden="true"></i>
+            <span>Health</span>
+          </a>
+          <a href="pages/sourcing/categories.html?cat=office" class="category-chip" role="listitem">
+            <i class="fas fa-briefcase" aria-hidden="true"></i>
+            <span>Office</span>
+          </a>
+        </div>
+      </div>
+    </section><!-- /.categories-section -->
+
+    <!-- ============================================================
+         TRENDING PRODUCTS
+    ============================================================ -->
+    <section class="section products-section" aria-labelledby="products-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="products-heading" class="section-title">
+            <i class="fas fa-fire text-secondary" aria-hidden="true"></i>
+            Trending Products
+          </h2>
+          <a href="pages/sourcing/products.html" class="section-link">
+            View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="products-grid" role="list" aria-label="Trending products">
+
+          <!-- Product Card 1 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product1/320/240" alt="Wireless Earbuds Pro X200" width="320" height="240" loading="lazy" />
+              <span class="product-badge badge-hot">HOT</span>
+              <button class="product-wishlist" aria-label="Add Wireless Earbuds Pro X200 to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                TechSource Global
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=1">Wireless Earbuds Pro X200</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.8 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>(4.8)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$12 - $28</span>
+                <span class="product-moq">MOQ: 50 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=1" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <!-- Product Card 2 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product2/320/240" alt="Smart LED Desk Lamp" width="320" height="240" loading="lazy" />
+              <span class="product-badge badge-new">NEW</span>
+              <button class="product-wishlist" aria-label="Add Smart LED Desk Lamp to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                BrightHome Co.
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=2">Smart LED Desk Lamp</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.6 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="far fa-star" aria-hidden="true"></i>
+                <span>(4.6)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$8 - $18</span>
+                <span class="product-moq">MOQ: 100 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=2" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <!-- Product Card 3 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product3/320/240" alt="Organic Cotton T-Shirt Bundle" width="320" height="240" loading="lazy" />
+              <button class="product-wishlist" aria-label="Add Organic Cotton T-Shirt Bundle to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                FashionForward Ltd.
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=3">Organic Cotton T-Shirt Bundle</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.9 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <span>(4.9)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$3 - $9</span>
+                <span class="product-moq">MOQ: 200 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=3" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <!-- Product Card 4 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product4/320/240" alt="Stainless Steel Water Bottle" width="320" height="240" loading="lazy" />
+              <span class="product-badge badge-sale">SALE</span>
+              <button class="product-wishlist" aria-label="Add Stainless Steel Water Bottle to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                EcoWare Industries
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=4">Stainless Steel Water Bottle</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.7 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>(4.7)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$5 - $14</span>
+                <span class="product-moq">MOQ: 150 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=4" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <!-- Product Card 5 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product5/320/240" alt="Portable Solar Charger" width="320" height="240" loading="lazy" />
+              <span class="product-badge badge-hot">HOT</span>
+              <button class="product-wishlist" aria-label="Add Portable Solar Charger to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                GreenEnergy Corp.
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=5">Portable Solar Charger 20W</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.5 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>(4.5)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$18 - $45</span>
+                <span class="product-moq">MOQ: 30 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=5" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <!-- Product Card 6 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product6/320/240" alt="Ergonomic Office Chair" width="320" height="240" loading="lazy" />
+              <button class="product-wishlist" aria-label="Add Ergonomic Office Chair to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                ComfortSeating Pro
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=6">Ergonomic Office Chair</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.8 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>(4.8)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$65 - $120</span>
+                <span class="product-moq">MOQ: 10 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=6" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <!-- Product Card 7 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product7/320/240" alt="Facial Serum Vitamin C" width="320" height="240" loading="lazy" />
+              <span class="product-badge badge-new">NEW</span>
+              <button class="product-wishlist" aria-label="Add Facial Serum Vitamin C to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                BeautyLab HK
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=7">Facial Serum Vitamin C 30ml</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.7 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>(4.7)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$4 - $12</span>
+                <span class="product-moq">MOQ: 500 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=7" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <!-- Product Card 8 -->
+          <article class="product-card" role="listitem">
+            <div class="product-card-image">
+              <img src="https://picsum.photos/seed/product8/320/240" alt="Bluetooth Mechanical Keyboard" width="320" height="240" loading="lazy" />
+              <button class="product-wishlist" aria-label="Add Bluetooth Mechanical Keyboard to wishlist">
+                <i class="far fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="product-card-body">
+              <p class="product-supplier">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                KeyMaster Tech
+                <span class="supplier-verified" aria-label="Verified supplier">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                </span>
+              </p>
+              <h3 class="product-name">
+                <a href="pages/sourcing/product-detail.html?id=8">Bluetooth Mechanical Keyboard</a>
+              </h3>
+              <div class="product-rating" aria-label="Rating: 4.6 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="far fa-star" aria-hidden="true"></i>
+                <span>(4.6)</span>
+              </div>
+              <div class="product-footer">
+                <span class="product-price">$22 - $55</span>
+                <span class="product-moq">MOQ: 20 pcs</span>
+              </div>
+              <a href="pages/sourcing/product-detail.html?id=8" class="btn btn-outline-primary btn-sm">
+                View Details
+              </a>
+            </div>
+          </article>
+
+        </div><!-- /.products-grid -->
+      </div>
+    </section><!-- /.products-section -->
+
+    <!-- ============================================================
+         FEATURED SUPPLIERS
+    ============================================================ -->
+    <section class="section suppliers-section" aria-labelledby="suppliers-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="suppliers-heading" class="section-title">
+            <i class="fas fa-award text-accent" aria-hidden="true"></i>
+            Featured Suppliers
+          </h2>
+          <a href="pages/suppliers/index.html" class="section-link">
+            View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="suppliers-grid" role="list" aria-label="Featured suppliers">
+
+          <!-- Supplier Card 1 -->
+          <article class="supplier-card" role="listitem">
+            <div class="supplier-card-header">
+              <img src="https://ui-avatars.com/api/?name=TechSource+Global&background=0052CC&color=fff&size=80&bold=true" alt="TechSource Global logo" class="supplier-logo" width="80" height="80" loading="lazy" />
+              <div class="supplier-verified-badge" aria-label="Gold verified supplier">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Gold
+              </div>
+            </div>
+            <div class="supplier-card-body">
+              <h3 class="supplier-name">TechSource Global</h3>
+              <p class="supplier-country">🇨🇳 China · Shenzhen</p>
+              <p class="supplier-products">
+                <i class="fas fa-box" aria-hidden="true"></i> 2,450 Products
+              </p>
+              <div class="supplier-rating" aria-label="Rating: 4.9 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <span>4.9 (1.2k reviews)</span>
+              </div>
+            </div>
+            <a href="pages/suppliers/profile.html?id=1" class="btn btn-outline-primary btn-sm supplier-btn">
+              View Supplier
+            </a>
+          </article>
+
+          <!-- Supplier Card 2 -->
+          <article class="supplier-card" role="listitem">
+            <div class="supplier-card-header">
+              <img src="https://ui-avatars.com/api/?name=FashionForward+Ltd&background=FF6B35&color=fff&size=80&bold=true" alt="FashionForward Ltd logo" class="supplier-logo" width="80" height="80" loading="lazy" />
+              <div class="supplier-verified-badge supplier-verified-silver" aria-label="Silver verified supplier">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Silver
+              </div>
+            </div>
+            <div class="supplier-card-body">
+              <h3 class="supplier-name">FashionForward Ltd.</h3>
+              <p class="supplier-country">🇹🇷 Turkey · Istanbul</p>
+              <p class="supplier-products">
+                <i class="fas fa-box" aria-hidden="true"></i> 1,830 Products
+              </p>
+              <div class="supplier-rating" aria-label="Rating: 4.7 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>4.7 (980 reviews)</span>
+              </div>
+            </div>
+            <a href="pages/suppliers/profile.html?id=2" class="btn btn-outline-primary btn-sm supplier-btn">
+              View Supplier
+            </a>
+          </article>
+
+          <!-- Supplier Card 3 -->
+          <article class="supplier-card" role="listitem">
+            <div class="supplier-card-header">
+              <img src="https://ui-avatars.com/api/?name=EcoWare+Industries&background=00C9A7&color=fff&size=80&bold=true" alt="EcoWare Industries logo" class="supplier-logo" width="80" height="80" loading="lazy" />
+              <div class="supplier-verified-badge" aria-label="Gold verified supplier">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Gold
+              </div>
+            </div>
+            <div class="supplier-card-body">
+              <h3 class="supplier-name">EcoWare Industries</h3>
+              <p class="supplier-country">🇩🇪 Germany · Berlin</p>
+              <p class="supplier-products">
+                <i class="fas fa-box" aria-hidden="true"></i> 960 Products
+              </p>
+              <div class="supplier-rating" aria-label="Rating: 4.8 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>4.8 (760 reviews)</span>
+              </div>
+            </div>
+            <a href="pages/suppliers/profile.html?id=3" class="btn btn-outline-primary btn-sm supplier-btn">
+              View Supplier
+            </a>
+          </article>
+
+          <!-- Supplier Card 4 -->
+          <article class="supplier-card" role="listitem">
+            <div class="supplier-card-header">
+              <img src="https://ui-avatars.com/api/?name=BeautyLab+HK&background=E91E8C&color=fff&size=80&bold=true" alt="BeautyLab HK logo" class="supplier-logo" width="80" height="80" loading="lazy" />
+              <div class="supplier-verified-badge supplier-verified-silver" aria-label="Silver verified supplier">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Silver
+              </div>
+            </div>
+            <div class="supplier-card-body">
+              <h3 class="supplier-name">BeautyLab HK</h3>
+              <p class="supplier-country">🇭🇰 Hong Kong · Central</p>
+              <p class="supplier-products">
+                <i class="fas fa-box" aria-hidden="true"></i> 1,240 Products
+              </p>
+              <div class="supplier-rating" aria-label="Rating: 4.6 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="far fa-star" aria-hidden="true"></i>
+                <span>4.6 (540 reviews)</span>
+              </div>
+            </div>
+            <a href="pages/suppliers/profile.html?id=4" class="btn btn-outline-primary btn-sm supplier-btn">
+              View Supplier
+            </a>
+          </article>
+
+          <!-- Supplier Card 5 -->
+          <article class="supplier-card" role="listitem">
+            <div class="supplier-card-header">
+              <img src="https://ui-avatars.com/api/?name=GreenEnergy+Corp&background=4CAF50&color=fff&size=80&bold=true" alt="GreenEnergy Corp logo" class="supplier-logo" width="80" height="80" loading="lazy" />
+              <div class="supplier-verified-badge" aria-label="Gold verified supplier">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Gold
+              </div>
+            </div>
+            <div class="supplier-card-body">
+              <h3 class="supplier-name">GreenEnergy Corp.</h3>
+              <p class="supplier-country">🇯🇵 Japan · Tokyo</p>
+              <p class="supplier-products">
+                <i class="fas fa-box" aria-hidden="true"></i> 680 Products
+              </p>
+              <div class="supplier-rating" aria-label="Rating: 4.9 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <span>4.9 (890 reviews)</span>
+              </div>
+            </div>
+            <a href="pages/suppliers/profile.html?id=5" class="btn btn-outline-primary btn-sm supplier-btn">
+              View Supplier
+            </a>
+          </article>
+
+          <!-- Supplier Card 6 -->
+          <article class="supplier-card" role="listitem">
+            <div class="supplier-card-header">
+              <img src="https://ui-avatars.com/api/?name=KeyMaster+Tech&background=673AB7&color=fff&size=80&bold=true" alt="KeyMaster Tech logo" class="supplier-logo" width="80" height="80" loading="lazy" />
+              <div class="supplier-verified-badge supplier-verified-silver" aria-label="Silver verified supplier">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Silver
+              </div>
+            </div>
+            <div class="supplier-card-body">
+              <h3 class="supplier-name">KeyMaster Tech</h3>
+              <p class="supplier-country">🇰🇷 South Korea · Seoul</p>
+              <p class="supplier-products">
+                <i class="fas fa-box" aria-hidden="true"></i> 420 Products
+              </p>
+              <div class="supplier-rating" aria-label="Rating: 4.7 out of 5 stars">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span>4.7 (310 reviews)</span>
+              </div>
+            </div>
+            <a href="pages/suppliers/profile.html?id=6" class="btn btn-outline-primary btn-sm supplier-btn">
+              View Supplier
+            </a>
+          </article>
+
+        </div><!-- /.suppliers-grid -->
+      </div>
+    </section><!-- /.suppliers-section -->
+
+    <!-- ============================================================
+         LIVE STREAMS SECTION
+    ============================================================ -->
+    <section class="section livestream-section" aria-labelledby="livestream-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="livestream-heading" class="section-title">
+            <span class="live-dot" aria-hidden="true"></span>
+            Live Streams
+          </h2>
+          <a href="pages/livestream/index.html" class="section-link">
+            All Streams <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <h3 class="subsection-label">
+          <span class="live-dot" aria-hidden="true"></span> Currently Live
+        </h3>
+        <div class="livestream-grid" role="list" aria-label="Currently live streams">
+
+          <!-- Live Stream Card 1 -->
+          <article class="stream-card" role="listitem">
+            <div class="stream-thumbnail">
+              <img src="https://picsum.photos/seed/stream1/400/225" alt="Live product showcase stream" width="400" height="225" loading="lazy" />
+              <div class="stream-live-badge" aria-label="Live stream">
+                <span class="live-dot-sm" aria-hidden="true"></span> LIVE
+              </div>
+              <div class="stream-viewers">
+                <i class="fas fa-eye" aria-hidden="true"></i>
+                <span>3,421</span>
+              </div>
+            </div>
+            <div class="stream-card-body">
+              <div class="stream-streamer">
+                <img src="https://ui-avatars.com/api/?name=TechSource+Global&background=0052CC&color=fff&size=32" alt="TechSource Global" width="32" height="32" />
+                <span>TechSource Global</span>
+              </div>
+              <h4 class="stream-title">New Electronics Showcase - Q4 2025</h4>
+              <a href="pages/livestream/watch.html?id=1" class="btn btn-primary btn-sm stream-btn">
+                <i class="fas fa-play" aria-hidden="true"></i> Join Stream
+              </a>
+            </div>
+          </article>
+
+          <!-- Live Stream Card 2 -->
+          <article class="stream-card" role="listitem">
+            <div class="stream-thumbnail">
+              <img src="https://picsum.photos/seed/stream2/400/225" alt="Fashion collection live stream" width="400" height="225" loading="lazy" />
+              <div class="stream-live-badge" aria-label="Live stream">
+                <span class="live-dot-sm" aria-hidden="true"></span> LIVE
+              </div>
+              <div class="stream-viewers">
+                <i class="fas fa-eye" aria-hidden="true"></i>
+                <span>1,892</span>
+              </div>
+            </div>
+            <div class="stream-card-body">
+              <div class="stream-streamer">
+                <img src="https://ui-avatars.com/api/?name=FashionForward+Ltd&background=FF6B35&color=fff&size=32" alt="FashionForward Ltd" width="32" height="32" />
+                <span>FashionForward Ltd.</span>
+              </div>
+              <h4 class="stream-title">Summer 2025 Collection Launch</h4>
+              <a href="pages/livestream/watch.html?id=2" class="btn btn-primary btn-sm stream-btn">
+                <i class="fas fa-play" aria-hidden="true"></i> Join Stream
+              </a>
+            </div>
+          </article>
+
+          <!-- Live Stream Card 3 -->
+          <article class="stream-card" role="listitem">
+            <div class="stream-thumbnail">
+              <img src="https://picsum.photos/seed/stream3/400/225" alt="Eco products live stream" width="400" height="225" loading="lazy" />
+              <div class="stream-live-badge" aria-label="Live stream">
+                <span class="live-dot-sm" aria-hidden="true"></span> LIVE
+              </div>
+              <div class="stream-viewers">
+                <i class="fas fa-eye" aria-hidden="true"></i>
+                <span>567</span>
+              </div>
+            </div>
+            <div class="stream-card-body">
+              <div class="stream-streamer">
+                <img src="https://ui-avatars.com/api/?name=EcoWare+Industries&background=00C9A7&color=fff&size=32" alt="EcoWare Industries" width="32" height="32" />
+                <span>EcoWare Industries</span>
+              </div>
+              <h4 class="stream-title">Sustainable Products Mega Drop</h4>
+              <a href="pages/livestream/watch.html?id=3" class="btn btn-primary btn-sm stream-btn">
+                <i class="fas fa-play" aria-hidden="true"></i> Join Stream
+              </a>
+            </div>
+          </article>
+
+        </div><!-- /.livestream-grid -->
+
+        <!-- Upcoming Streams -->
+        <h3 class="subsection-label upcoming-label">
+          <i class="fas fa-calendar-alt" aria-hidden="true"></i> Upcoming Streams
+        </h3>
+        <ul class="upcoming-streams-list" aria-label="Upcoming live streams">
+          <li class="upcoming-stream-item">
+            <div class="upcoming-stream-info">
+              <img src="https://ui-avatars.com/api/?name=BeautyLab+HK&background=E91E8C&color=fff&size=40" alt="BeautyLab HK" width="40" height="40" loading="lazy" />
+              <div>
+                <strong>BeautyLab HK</strong>
+                <span>Skincare Masterclass &amp; Live Sales</span>
+              </div>
+            </div>
+            <div class="upcoming-stream-time">
+              <i class="fas fa-clock" aria-hidden="true"></i>
+              <time datetime="2025-07-20T14:00">Today, 2:00 PM GMT</time>
+            </div>
+            <a href="pages/livestream/schedule.html?id=4" class="btn btn-outline-primary btn-xs">
+              Set Reminder
+            </a>
+          </li>
+          <li class="upcoming-stream-item">
+            <div class="upcoming-stream-info">
+              <img src="https://ui-avatars.com/api/?name=GreenEnergy+Corp&background=4CAF50&color=fff&size=40" alt="GreenEnergy Corp" width="40" height="40" loading="lazy" />
+              <div>
+                <strong>GreenEnergy Corp.</strong>
+                <span>Solar Tech Innovation Demo</span>
+              </div>
+            </div>
+            <div class="upcoming-stream-time">
+              <i class="fas fa-clock" aria-hidden="true"></i>
+              <time datetime="2025-07-20T18:00">Today, 6:00 PM GMT</time>
+            </div>
+            <a href="pages/livestream/schedule.html?id=5" class="btn btn-outline-primary btn-xs">
+              Set Reminder
+            </a>
+          </li>
+          <li class="upcoming-stream-item">
+            <div class="upcoming-stream-info">
+              <img src="https://ui-avatars.com/api/?name=KeyMaster+Tech&background=673AB7&color=fff&size=40" alt="KeyMaster Tech" width="40" height="40" loading="lazy" />
+              <div>
+                <strong>KeyMaster Tech</strong>
+                <span>Keyboard &amp; Peripheral Auction Night</span>
+              </div>
+            </div>
+            <div class="upcoming-stream-time">
+              <i class="fas fa-clock" aria-hidden="true"></i>
+              <time datetime="2025-07-21T10:00">Tomorrow, 10:00 AM GMT</time>
+            </div>
+            <a href="pages/livestream/schedule.html?id=6" class="btn btn-outline-primary btn-xs">
+              Set Reminder
+            </a>
+          </li>
+        </ul>
+
+      </div>
+    </section><!-- /.livestream-section -->
+
+    <!-- ============================================================
+         FLASH SALE BANNER
+    ============================================================ -->
+    <section class="flash-sale-banner" aria-labelledby="flash-sale-heading">
+      <div class="container">
+        <div class="flash-sale-content">
+          <div class="flash-sale-text">
+            <span class="flash-sale-label">
+              <i class="fas fa-bolt" aria-hidden="true"></i> FLASH SALE
+            </span>
+            <h2 id="flash-sale-heading" class="flash-sale-title">Up to 60% Off Selected Products!</h2>
+            <p class="flash-sale-subtitle">Limited time offer. Grab the deals before they expire!</p>
+          </div>
+          <div class="flash-sale-timer" aria-label="Flash sale countdown timer">
+            <p class="timer-label">Ends In:</p>
+            <div class="countdown-display">
+              <div class="countdown-unit">
+                <span id="flash-hours" class="countdown-value">08</span>
+                <span class="countdown-label">HRS</span>
+              </div>
+              <span class="countdown-separator" aria-hidden="true">:</span>
+              <div class="countdown-unit">
+                <span id="flash-minutes" class="countdown-value">45</span>
+                <span class="countdown-label">MIN</span>
+              </div>
+              <span class="countdown-separator" aria-hidden="true">:</span>
+              <div class="countdown-unit">
+                <span id="flash-seconds" class="countdown-value">30</span>
+                <span class="countdown-label">SEC</span>
+              </div>
+            </div>
+            <!-- Hidden accessible countdown for screen readers -->
+            <time id="flash-countdown" datetime="" aria-live="off" class="sr-only">
+              Flash sale countdown
+            </time>
+          </div>
+          <a href="pages/sourcing/flash-sale.html" class="btn btn-flash-sale">
+            Shop Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section><!-- /.flash-sale-banner -->
+
+    <!-- ============================================================
+         STATISTICS SECTION
+    ============================================================ -->
+    <section class="section stats-section" aria-labelledby="stats-heading">
+      <div class="container">
+        <h2 id="stats-heading" class="section-title text-center text-light">
+          GlobexSky by the Numbers
+        </h2>
+        <p class="section-subtitle text-center text-light-muted">
+          Trusted by businesses across the globe
+        </p>
+        <div class="stats-grid" role="list" aria-label="Platform statistics">
+
+          <div class="stats-card" role="listitem">
+            <i class="fas fa-box-open stats-icon" aria-hidden="true"></i>
+            <div class="stats-number counter" data-target="1000000" aria-label="1 million plus products">
+              0
+            </div>
+            <div class="stats-suffix">+</div>
+            <p class="stats-label">Products Listed</p>
+          </div>
+
+          <div class="stats-card" role="listitem">
+            <i class="fas fa-store stats-icon" aria-hidden="true"></i>
+            <div class="stats-number counter" data-target="50000" aria-label="50 thousand plus suppliers">
+              0
+            </div>
+            <div class="stats-suffix">+</div>
+            <p class="stats-label">Verified Suppliers</p>
+          </div>
+
+          <div class="stats-card" role="listitem">
+            <i class="fas fa-globe stats-icon" aria-hidden="true"></i>
+            <div class="stats-number counter" data-target="150" aria-label="150 plus countries">
+              0
+            </div>
+            <div class="stats-suffix">+</div>
+            <p class="stats-label">Countries Served</p>
+          </div>
+
+          <div class="stats-card" role="listitem">
+            <i class="fas fa-truck stats-icon" aria-hidden="true"></i>
+            <div class="stats-number counter" data-target="500000" aria-label="500 thousand plus deliveries">
+              0
+            </div>
+            <div class="stats-suffix">+</div>
+            <p class="stats-label">Successful Deliveries</p>
+          </div>
+
+        </div>
+      </div>
+    </section><!-- /.stats-section -->
+
+    <!-- ============================================================
+         HOW IT WORKS
+    ============================================================ -->
+    <section class="section how-it-works-section" aria-labelledby="how-it-works-heading">
+      <div class="container">
+        <div class="section-header text-center">
+          <h2 id="how-it-works-heading" class="section-title">How It Works</h2>
+          <p class="section-subtitle">Two powerful services to grow your business</p>
+        </div>
+
+        <div class="how-it-works-grid">
+
+          <!-- Sourcing Timeline -->
+          <div class="timeline-column">
+            <div class="timeline-header">
+              <div class="timeline-icon-wrapper timeline-sourcing">
+                <i class="fas fa-boxes" aria-hidden="true"></i>
+              </div>
+              <h3>Product Sourcing</h3>
+            </div>
+            <ol class="timeline" aria-label="Product sourcing process steps">
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-search" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Browse Products</h4>
+                  <p>Search from over 1 million products across 150+ countries with advanced filters.</p>
+                </div>
+              </li>
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-comments" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Contact Supplier</h4>
+                  <p>Connect directly with verified suppliers via live chat, email, or video call.</p>
+                </div>
+              </li>
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-handshake" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Negotiate &amp; Sample</h4>
+                  <p>Request samples, negotiate pricing, and finalise product specifications.</p>
+                </div>
+              </li>
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-credit-card" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Order &amp; Pay Securely</h4>
+                  <p>Place your bulk order with escrow-protected payments and trade assurance.</p>
+                </div>
+              </li>
+            </ol>
+            <a href="pages/sourcing/index.html" class="btn btn-primary btn-how">
+              Start Sourcing <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <!-- Shipping Timeline -->
+          <div class="timeline-column">
+            <div class="timeline-header">
+              <div class="timeline-icon-wrapper timeline-shipping">
+                <i class="fas fa-shipping-fast" aria-hidden="true"></i>
+              </div>
+              <h3>Parcel Shipping</h3>
+            </div>
+            <ol class="timeline" aria-label="Parcel shipping process steps">
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-file-alt" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Create Shipment Request</h4>
+                  <p>Enter parcel details, dimensions, weight, and choose your destination.</p>
+                </div>
+              </li>
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-box" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Package &amp; Label</h4>
+                  <p>Receive your printable shipping label. Securely pack your items.</p>
+                </div>
+              </li>
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Drop Off or Collect</h4>
+                  <p>Drop off at a nearby partner location or schedule a free home collection.</p>
+                </div>
+              </li>
+              <li class="timeline-step">
+                <div class="timeline-step-icon">
+                  <i class="fas fa-satellite-dish" aria-hidden="true"></i>
+                </div>
+                <div class="timeline-step-content">
+                  <h4>Track &amp; Receive</h4>
+                  <p>Real-time GPS tracking at every step until your parcel is delivered.</p>
+                </div>
+              </li>
+            </ol>
+            <a href="pages/shipment/index.html" class="btn btn-secondary btn-how">
+              Ship a Parcel <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+
+        </div><!-- /.how-it-works-grid -->
+      </div>
+    </section><!-- /.how-it-works-section -->
+
+    <!-- ============================================================
+         TESTIMONIALS SLIDER
+    ============================================================ -->
+    <section class="section testimonials-section" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <div class="section-header text-center">
+          <h2 id="testimonials-heading" class="section-title">What Our Customers Say</h2>
+          <p class="section-subtitle">Real stories from real businesses</p>
+        </div>
+
+        <div class="testimonials-slider" id="testimonials-slider" role="region" aria-label="Customer testimonials" aria-roledescription="carousel">
+          <div class="testimonials-track" id="testimonials-track">
+
+            <!-- Testimonial 1 -->
+            <article class="testimonial-card" role="group" aria-roledescription="slide" aria-label="Testimonial 1 of 3">
+              <div class="testimonial-stars" aria-label="5 star rating">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+              </div>
+              <blockquote class="testimonial-text">
+                "GlobexSky transformed our supply chain. We found verified suppliers in Shenzhen within 48 hours and our first order arrived on time. The escrow payment system gave us total peace of mind."
+              </blockquote>
+              <footer class="testimonial-author">
+                <img src="https://ui-avatars.com/api/?name=Sarah+Mitchell&background=0052CC&color=fff&size=56&bold=true" alt="Sarah Mitchell" class="testimonial-avatar" width="56" height="56" loading="lazy" />
+                <div class="testimonial-author-info">
+                  <cite class="testimonial-name">Sarah Mitchell</cite>
+                  <span class="testimonial-role">CEO, Ember Retail</span>
+                  <span class="testimonial-country">🇬🇧 United Kingdom</span>
+                </div>
+              </footer>
+            </article>
+
+            <!-- Testimonial 2 -->
+            <article class="testimonial-card" role="group" aria-roledescription="slide" aria-label="Testimonial 2 of 3">
+              <div class="testimonial-stars" aria-label="5 star rating">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+              </div>
+              <blockquote class="testimonial-text">
+                "The shipping platform is incredibly easy to use. We ship 300+ parcels monthly across 40 countries and GlobexSky's bulk rates save us 35% compared to our previous courier. Outstanding service!"
+              </blockquote>
+              <footer class="testimonial-author">
+                <img src="https://ui-avatars.com/api/?name=Carlos+Mendez&background=FF6B35&color=fff&size=56&bold=true" alt="Carlos Mendez" class="testimonial-avatar" width="56" height="56" loading="lazy" />
+                <div class="testimonial-author-info">
+                  <cite class="testimonial-name">Carlos Mendez</cite>
+                  <span class="testimonial-role">Logistics Manager, Vivo Commerce</span>
+                  <span class="testimonial-country">🇲🇽 Mexico</span>
+                </div>
+              </footer>
+            </article>
+
+            <!-- Testimonial 3 -->
+            <article class="testimonial-card" role="group" aria-roledescription="slide" aria-label="Testimonial 3 of 3">
+              <div class="testimonial-stars" aria-label="5 star rating">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+              </div>
+              <blockquote class="testimonial-text">
+                "As a small business owner, I was worried about finding trustworthy international suppliers. GlobexSky's verification system and trade shows gave me the confidence to scale globally. Highly recommended!"
+              </blockquote>
+              <footer class="testimonial-author">
+                <img src="https://ui-avatars.com/api/?name=Aisha+Okonkwo&background=00C9A7&color=fff&size=56&bold=true" alt="Aisha Okonkwo" class="testimonial-avatar" width="56" height="56" loading="lazy" />
+                <div class="testimonial-author-info">
+                  <cite class="testimonial-name">Aisha Okonkwo</cite>
+                  <span class="testimonial-role">Founder, Radiance Naturals</span>
+                  <span class="testimonial-country">🇳🇬 Nigeria</span>
+                </div>
+              </footer>
+            </article>
+
+          </div><!-- /.testimonials-track -->
+
+          <div class="testimonials-controls" role="group" aria-label="Testimonial slider controls">
+            <button class="testimonial-btn testimonial-prev" id="testimonial-prev" aria-label="Previous testimonial">
+              <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="testimonials-dots" role="tablist" aria-label="Testimonial indicators">
+              <button class="testimonial-dot active" role="tab" aria-selected="true" aria-label="Testimonial 1" data-index="0"></button>
+              <button class="testimonial-dot" role="tab" aria-selected="false" aria-label="Testimonial 2" data-index="1"></button>
+              <button class="testimonial-dot" role="tab" aria-selected="false" aria-label="Testimonial 3" data-index="2"></button>
+            </div>
+            <button class="testimonial-btn testimonial-next" id="testimonial-next" aria-label="Next testimonial">
+              <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+
+        </div><!-- /.testimonials-slider -->
+      </div>
+    </section><!-- /.testimonials-section -->
+
+    <!-- ============================================================
+         NEWSLETTER SECTION
+    ============================================================ -->
+    <section class="newsletter-section" aria-labelledby="newsletter-heading">
+      <div class="container">
+        <div class="newsletter-content">
+          <div class="newsletter-icon" aria-hidden="true">
+            <i class="fas fa-envelope-open-text"></i>
+          </div>
+          <div class="newsletter-text">
+            <h2 id="newsletter-heading" class="newsletter-title">
+              Stay Updated with Global Trade News
+            </h2>
+            <p class="newsletter-subtitle">
+              Get the latest sourcing tips, shipping rates, trade opportunities, and exclusive deals delivered to your inbox.
+            </p>
+          </div>
+          <form class="newsletter-form" id="newsletter-form" novalidate aria-label="Newsletter subscription form">
+            <div class="newsletter-input-group" role="group" aria-label="Email subscription">
+              <label for="newsletter-email" class="sr-only">Email address</label>
+              <input
+                type="email"
+                id="newsletter-email"
+                name="email"
+                class="newsletter-input"
+                placeholder="Enter your business email..."
+                autocomplete="email"
+                required
+                aria-required="true"
+                aria-describedby="newsletter-privacy"
+              />
+              <button type="submit" class="btn btn-newsletter">
+                Subscribe <i class="fas fa-paper-plane" aria-hidden="true"></i>
+              </button>
+            </div>
+            <p id="newsletter-privacy" class="newsletter-privacy">
+              <i class="fas fa-lock" aria-hidden="true"></i>
+              No spam. Unsubscribe at any time. Read our
+              <a href="pages/legal/privacy.html">Privacy Policy</a>.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section><!-- /.newsletter-section -->
+
+    <!-- ============================================================
+         FOOTER
+    ============================================================ -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-main">
+        <div class="container">
+          <div class="footer-grid">
+
+            <!-- Col 1: Brand -->
+            <div class="footer-col footer-brand-col">
+              <a href="index.html" class="footer-logo" aria-label="GlobexSky Home">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/>
+                  <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/>
+                  <line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/>
+                  <line x1="2" y1="11" x2="34" y2="11" stroke="#fff" stroke-width="1"/>
+                  <line x1="2" y1="25" x2="34" y2="25" stroke="#fff" stroke-width="1"/>
+                  <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+                </svg>
+                <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+              </a>
+              <p class="footer-tagline">
+                Your Global Trade Gateway. Connecting buyers and suppliers across 150+ countries for seamless sourcing and logistics.
+              </p>
+              <nav class="footer-social" aria-label="Social media links">
+                <a href="https://twitter.com/globexsky" class="social-link" aria-label="GlobexSky on Twitter" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+                <a href="https://linkedin.com/company/globexsky" class="social-link" aria-label="GlobexSky on LinkedIn" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-linkedin" aria-hidden="true"></i>
+                </a>
+                <a href="https://instagram.com/globexsky" class="social-link" aria-label="GlobexSky on Instagram" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-instagram" aria-hidden="true"></i>
+                </a>
+                <a href="https://youtube.com/@globexsky" class="social-link" aria-label="GlobexSky on YouTube" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-youtube" aria-hidden="true"></i>
+                </a>
+                <a href="https://facebook.com/globexsky" class="social-link" aria-label="GlobexSky on Facebook" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+              </nav>
+            </div>
+
+            <!-- Col 2: Quick Links -->
+            <div class="footer-col">
+              <h3 class="footer-col-title">Quick Links</h3>
+              <ul class="footer-links" role="list">
+                <li><a href="pages/about/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> About Us</a></li>
+                <li><a href="pages/sourcing/products.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Products</a></li>
+                <li><a href="pages/suppliers/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Suppliers</a></li>
+                <li><a href="pages/shipment/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Shipping</a></li>
+                <li><a href="pages/dropshipping/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Dropshipping</a></li>
+                <li><a href="pages/blog/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Blog</a></li>
+                <li><a href="pages/careers/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Careers</a></li>
+              </ul>
+            </div>
+
+            <!-- Col 3: Services -->
+            <div class="footer-col">
+              <h3 class="footer-col-title">Services</h3>
+              <ul class="footer-links" role="list">
+                <li><a href="pages/sourcing/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Product Sourcing</a></li>
+                <li><a href="pages/shipment/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Parcel Delivery</a></li>
+                <li><a href="pages/carry/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Carry Service</a></li>
+                <li><a href="pages/api/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> API Platform</a></li>
+                <li><a href="pages/trade-shows/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Trade Shows</a></li>
+                <li><a href="pages/suppliers/become-supplier.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Become a Supplier</a></li>
+                <li><a href="pages/legal/trade-assurance.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Trade Assurance</a></li>
+              </ul>
+            </div>
+
+            <!-- Col 4: Contact + Payments -->
+            <div class="footer-col">
+              <h3 class="footer-col-title">Contact Us</h3>
+              <address class="footer-contact" aria-label="Contact information">
+                <p class="footer-contact-item">
+                  <i class="fas fa-envelope" aria-hidden="true"></i>
+                  <a href="mailto:support@globexsky.com">support@globexsky.com</a>
+                </p>
+                <p class="footer-contact-item">
+                  <i class="fas fa-phone" aria-hidden="true"></i>
+                  <a href="tel:+18005551234">+1 (800) 555-1234</a>
+                </p>
+                <p class="footer-contact-item">
+                  <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                  <span>123 Trade Tower, Global District,<br />Dubai, UAE 00000</span>
+                </p>
+                <p class="footer-contact-item">
+                  <i class="fas fa-headset" aria-hidden="true"></i>
+                  <a href="pages/support/index.html">24/7 Live Support</a>
+                </p>
+              </address>
+
+              <div class="footer-payments" aria-label="Accepted payment methods">
+                <p class="footer-payments-label">We Accept:</p>
+                <div class="payment-badges">
+                  <span class="payment-badge" aria-label="Visa">
+                    <i class="fab fa-cc-visa" aria-hidden="true"></i>
+                  </span>
+                  <span class="payment-badge" aria-label="Mastercard">
+                    <i class="fab fa-cc-mastercard" aria-hidden="true"></i>
+                  </span>
+                  <span class="payment-badge" aria-label="PayPal">
+                    <i class="fab fa-cc-paypal" aria-hidden="true"></i>
+                  </span>
+                  <span class="payment-badge" aria-label="Stripe">
+                    <i class="fab fa-cc-stripe" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.footer-grid -->
+        </div>
+      </div><!-- /.footer-main -->
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="container">
+          <div class="footer-bottom-inner">
+            <p class="footer-copyright">
+              &copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.
+            </p>
+            <nav class="footer-legal-links" aria-label="Legal links">
+              <a href="pages/legal/privacy.html">Privacy Policy</a>
+              <a href="pages/legal/terms.html">Terms of Service</a>
+              <a href="pages/legal/cookies.html">Cookie Policy</a>
+              <a href="pages/legal/accessibility.html">Accessibility</a>
+            </nav>
+          </div>
+        </div>
+      </div><!-- /.footer-bottom -->
+
+    </footer><!-- /.site-footer -->
+
+  </div><!-- /#main-content -->
+
+  <!-- Scripts -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/auth.js"></script>
+
+</body>
+</html>
