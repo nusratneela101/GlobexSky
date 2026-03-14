@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Help Centre | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../assets/css/main.css"/>
+  <link rel="stylesheet" href="../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1e293b;background:#fff}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+    /* ── Navbar ── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0A0E27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+
+    /* ── Hero ── */
+    .help-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:90px 24px 80px;text-align:center;position:relative;overflow:hidden}
+    .help-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+    .hero-content{position:relative;z-index:1;max-width:680px;margin:0 auto}
+    .help-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;color:#fff;margin-bottom:12px;line-height:1.15}
+    .help-hero h1 span{color:#00C9A7}
+    .help-hero p{color:rgba(255,255,255,.75);font-size:.95rem;margin-bottom:36px;line-height:1.7}
+    .help-search-wrap{max-width:580px;margin:0 auto;position:relative}
+    .help-search-input{width:100%;border:none;border-radius:14px;padding:16px 60px 16px 22px;font-size:1rem;font-family:'Inter',sans-serif;color:#1e293b;background:#fff;outline:none;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+    .help-search-input::placeholder{color:#94a3b8}
+    .help-search-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#0052CC;color:#fff;border:none;border-radius:10px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;transition:background .2s}
+    .help-search-btn:hover{background:#003d99}
+    .help-search-hint{color:rgba(255,255,255,.5);font-size:.78rem;margin-top:12px}
+    .help-search-hint a{color:#00C9A7;text-decoration:none}
+
+    /* ── Categories ── */
+    .categories-section{padding:80px 24px 60px}
+    .section-header{text-align:center;margin-bottom:44px}
+    .section-badge{display:inline-block;background:#eff6ff;color:#0052CC;padding:4px 14px;border-radius:50px;font-size:.75rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+    .section-header h2{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.3rem);font-weight:700;color:#0A0E27;margin-bottom:10px}
+    .section-header p{color:#64748b;font-size:.9rem;max-width:540px;margin:0 auto;line-height:1.6}
+    .categories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    @media(max-width:900px){.categories-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:500px){.categories-grid{grid-template-columns:1fr}}
+    .cat-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:28px 24px;cursor:pointer;transition:all .22s;text-decoration:none;color:inherit;display:block}
+    .cat-card:hover{border-color:#0052CC;box-shadow:0 8px 28px rgba(0,82,204,.12);transform:translateY(-4px)}
+    .cat-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:16px;transition:all .22s}
+    .cat-card:nth-child(1) .cat-icon{background:#eff6ff;color:#0052CC}
+    .cat-card:nth-child(2) .cat-icon{background:#ecfdf5;color:#00C9A7}
+    .cat-card:nth-child(3) .cat-icon{background:#fff7ed;color:#FF6B35}
+    .cat-card:nth-child(4) .cat-icon{background:#f5f3ff;color:#8b5cf6}
+    .cat-card:nth-child(5) .cat-icon{background:#fff1f2;color:#f43f5e}
+    .cat-card:nth-child(6) .cat-icon{background:#f0fdf4;color:#16a34a}
+    .cat-card:hover .cat-icon{transform:scale(1.08)}
+    .cat-card h3{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#0A0E27;margin-bottom:6px}
+    .cat-card p{font-size:.8rem;color:#64748b;line-height:1.55;margin-bottom:12px}
+    .cat-count{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:600;color:#0052CC;background:#eff6ff;padding:3px 10px;border-radius:50px}
+    .cat-count i{font-size:.65rem}
+
+    /* ── Popular Articles ── */
+    .articles-section{padding:0 24px 80px;background:#f4f6fa;padding-top:72px}
+    .articles-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:700px){.articles-grid{grid-template-columns:1fr}}
+    .article-link{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px 18px;text-decoration:none;color:inherit;transition:all .2s}
+    .article-link:hover{border-color:#0052CC;box-shadow:0 4px 16px rgba(0,82,204,.1);transform:translateX(3px)}
+    .article-link-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+    .article-link:nth-child(odd) .article-link-icon{background:#eff6ff;color:#0052CC}
+    .article-link:nth-child(even) .article-link-icon{background:#ecfdf5;color:#00C9A7}
+    .article-link-body{flex:1;min-width:0}
+    .article-link-body strong{display:block;font-size:.87rem;font-weight:600;color:#0A0E27;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .article-link-body span{font-size:.76rem;color:#94a3b8}
+    .article-link i.arrow{color:#94a3b8;font-size:.75rem;flex-shrink:0;transition:color .2s,transform .2s}
+    .article-link:hover i.arrow{color:#0052CC;transform:translateX(3px)}
+
+    /* ── Still Need Help CTA ── */
+    .still-help-section{padding:80px 24px}
+    .still-help-inner{text-align:center;max-width:640px;margin:0 auto 48px}
+    .still-help-inner h2{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#0A0E27;margin-bottom:12px}
+    .still-help-inner p{color:#64748b;font-size:.9rem;line-height:1.7}
+    .cta-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:700px;margin:0 auto}
+    @media(max-width:580px){.cta-cards{grid-template-columns:1fr}}
+    .cta-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:36px 28px;text-align:center;transition:all .22s}
+    .cta-card:hover{box-shadow:0 12px 36px rgba(0,0,0,.08);transform:translateY(-4px)}
+    .cta-card-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 20px}
+    .cta-card:nth-child(1) .cta-card-icon{background:#eff6ff;color:#0052CC}
+    .cta-card:nth-child(2) .cta-card-icon{background:#ecfdf5;color:#00C9A7}
+    .cta-card h3{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0A0E27;margin-bottom:8px}
+    .cta-card p{font-size:.83rem;color:#64748b;line-height:1.6;margin-bottom:24px}
+    .btn-cta-primary{display:inline-flex;align-items:center;gap:8px;background:#0052CC;color:#fff;border:none;border-radius:10px;padding:12px 26px;font-size:.9rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;text-decoration:none;transition:all .22s}
+    .btn-cta-primary:hover{background:#003d99;transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,82,204,.3)}
+    .btn-cta-teal{display:inline-flex;align-items:center;gap:8px;background:#00C9A7;color:#fff;border:none;border-radius:10px;padding:12px 26px;font-size:.9rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;text-decoration:none;transition:all .22s}
+    .btn-cta-teal:hover{background:#00a88d;transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,201,167,.3)}
+
+    /* ── Footer ── */
+    .site-footer{background:#0A0E27;color:#fff}
+    .footer-main{padding:60px 24px 40px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr;gap:40px}
+    @media(max-width:640px){.footer-grid{grid-template-columns:1fr}}
+    .footer-logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:16px}
+    .footer-tagline{color:rgba(255,255,255,.6);font-size:.85rem;line-height:1.6}
+    .footer-col-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#fff;margin-bottom:16px;text-transform:uppercase;letter-spacing:.5px}
+    .footer-links{list-style:none}
+    .footer-links li{margin-bottom:10px}
+    .footer-links a{color:rgba(255,255,255,.65);font-size:.85rem;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
+    .footer-links a:hover{color:#00C9A7}
+    .footer-links a i{font-size:.7rem;color:#00C9A7}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding:20px 24px}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:center;max-width:1200px;margin:0 auto}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── Hero ── -->
+<section class="help-hero" id="getting-started">
+  <div class="hero-content">
+    <h1>How can we <span>help?</span></h1>
+    <p>Search our knowledge base, browse categories, or contact our support team directly.</p>
+    <div class="help-search-wrap">
+      <input type="search" class="help-search-input" placeholder="Search for answers… e.g. track shipment, refund policy" id="help-search" aria-label="Search help articles"/>
+      <button class="help-search-btn" aria-label="Search"><i class="fas fa-magnifying-glass"></i></button>
+    </div>
+    <p class="help-search-hint">Popular: <a href="#">Track Order</a> · <a href="#">Request Refund</a> · <a href="#">Verify Supplier</a></p>
+  </div>
+</section>
+
+<!-- ── Category Cards ── -->
+<section class="categories-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Browse by Topic</span>
+      <h2>Help Categories</h2>
+      <p>Find answers organised by topic — from account setup to advanced API integration.</p>
+    </div>
+    <div class="categories-grid">
+      <a href="#getting-started" class="cat-card">
+        <div class="cat-icon"><i class="fas fa-rocket"></i></div>
+        <h3>Getting Started</h3>
+        <p>Everything you need to set up your account, verify your identity and make your first deal.</p>
+        <span class="cat-count"><i class="fas fa-file-lines"></i> 24 articles</span>
+      </a>
+      <a href="#buying" class="cat-card" id="orders">
+        <div class="cat-icon"><i class="fas fa-shopping-bag"></i></div>
+        <h3>Buying</h3>
+        <p>How to find products, request quotes, place orders and manage your purchases.</p>
+        <span class="cat-count"><i class="fas fa-file-lines"></i> 31 articles</span>
+      </a>
+      <a href="#selling" class="cat-card">
+        <div class="cat-icon"><i class="fas fa-store"></i></div>
+        <h3>Selling</h3>
+        <p>List products, manage inventory, respond to buyer requests and grow your business.</p>
+        <span class="cat-count"><i class="fas fa-file-lines"></i> 28 articles</span>
+      </a>
+      <a href="#shipping" class="cat-card" id="shipping">
+        <div class="cat-icon"><i class="fas fa-truck-fast"></i></div>
+        <h3>Shipping</h3>
+        <p>Carriers, rates, tracking numbers, customs documentation and delivery disputes.</p>
+        <span class="cat-count"><i class="fas fa-file-lines"></i> 19 articles</span>
+      </a>
+      <a href="#payments" class="cat-card" id="payments">
+        <div class="cat-icon"><i class="fas fa-credit-card"></i></div>
+        <h3>Payments</h3>
+        <p>Payment methods, escrow system, currency exchange, invoices and refunds.</p>
+        <span class="cat-count"><i class="fas fa-file-lines"></i> 22 articles</span>
+      </a>
+      <a href="#api" class="cat-card" id="api">
+        <div class="cat-icon"><i class="fas fa-code"></i></div>
+        <h3>API &amp; Integrations</h3>
+        <p>REST API docs, webhooks, ERP integrations and developer resources.</p>
+        <span class="cat-count"><i class="fas fa-file-lines"></i> 15 articles</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Popular Articles ── -->
+<section class="articles-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Most Viewed</span>
+      <h2>Popular Articles</h2>
+      <p>Quick answers to the questions our users ask most often.</p>
+    </div>
+    <div class="articles-grid">
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-user-check"></i></div>
+        <div class="article-link-body">
+          <strong>How to verify your supplier account</strong>
+          <span>Getting Started · 5 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-location-dot"></i></div>
+        <div class="article-link-body">
+          <strong>Track your shipment in real time</strong>
+          <span>Shipping · 3 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-shield-halved"></i></div>
+        <div class="article-link-body">
+          <strong>Understanding the GlobexSky escrow system</strong>
+          <span>Payments · 7 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-rotate-left"></i></div>
+        <div class="article-link-body">
+          <strong>How to request a refund or return</strong>
+          <span>Buying · 4 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-boxes-stacked"></i></div>
+        <div class="article-link-body">
+          <strong>Listing your first product as a supplier</strong>
+          <span>Selling · 6 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+        <div class="article-link-body">
+          <strong>Managing invoices and billing history</strong>
+          <span>Payments · 4 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-webhook"></i></div>
+        <div class="article-link-body">
+          <strong>Setting up webhooks with the GlobexSky API</strong>
+          <span>API &amp; Integrations · 10 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+      <a href="#" class="article-link">
+        <div class="article-link-icon"><i class="fas fa-plane-departure"></i></div>
+        <div class="article-link-body">
+          <strong>Customs documentation for international shipping</strong>
+          <span>Shipping · 8 min read</span>
+        </div>
+        <i class="fas fa-arrow-right arrow"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Still Need Help ── -->
+<section class="still-help-section">
+  <div class="container">
+    <div class="still-help-inner">
+      <h2>Still need help?</h2>
+      <p>Can't find the answer you're looking for? Our support team is standing by to help you personally.</p>
+    </div>
+    <div class="cta-cards">
+      <div class="cta-card">
+        <div class="cta-card-icon"><i class="fas fa-envelope-open-text"></i></div>
+        <h3>Submit a Ticket</h3>
+        <p>Describe your issue in detail and our team will respond within 24 hours with a solution.</p>
+        <a href="contact.html" class="btn-cta-primary"><i class="fas fa-paper-plane"></i> Open a Ticket</a>
+      </div>
+      <div class="cta-card">
+        <div class="cta-card-icon"><i class="fas fa-comments"></i></div>
+        <h3>Live Chat</h3>
+        <p>Get an instant response from a real support agent — available Monday to Friday, 9am–6pm EST.</p>
+        <a href="#" class="btn-cta-teal" id="live-chat-btn"><i class="fas fa-comment-dots"></i> Start Chat</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../index.html" class="footer-logo">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway.</p>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="sourcing/products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+            <li><a href="shipment/index.html"><i class="fas fa-chevron-right"></i> Shipping</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  // Search: highlight matching category cards
+  const searchInput = document.getElementById('help-search');
+  const catCards = document.querySelectorAll('.cat-card');
+  searchInput.addEventListener('input', function(){
+    const q = this.value.toLowerCase().trim();
+    catCards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.opacity = (!q || text.includes(q)) ? '1' : '0.35';
+    });
+  });
+
+  document.getElementById('live-chat-btn').addEventListener('click', function(e){
+    e.preventDefault();
+    this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Connecting…';
+    setTimeout(() => {
+      this.innerHTML = '<i class="fas fa-comment-dots"></i> Start Chat';
+      alert('Live chat is currently outside business hours. Please submit a ticket instead.');
+    }, 1800);
+  });
+</script>
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

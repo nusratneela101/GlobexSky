@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../assets/css/main.css"/>
+  <link rel="stylesheet" href="../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1e293b;background:#fff}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+    /* ── Navbar ── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0A0E27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+
+    /* ── Hero ── */
+    .contact-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:80px 24px 72px;text-align:center;position:relative;overflow:hidden}
+    .contact-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+    .hero-content{position:relative;z-index:1;max-width:680px;margin:0 auto}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.3);color:#FF6B35;padding:6px 18px;border-radius:50px;font-size:.78rem;font-weight:600;margin-bottom:20px;letter-spacing:.6px;text-transform:uppercase}
+    .contact-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;color:#fff;margin-bottom:16px;line-height:1.15}
+    .contact-hero p{color:rgba(255,255,255,.8);font-size:1rem;line-height:1.7}
+
+    /* ── Main Content ── */
+    .contact-main{padding:80px 24px}
+    .contact-grid{display:grid;grid-template-columns:1fr 380px;gap:56px;align-items:start}
+    @media(max-width:960px){.contact-grid{grid-template-columns:1fr;gap:40px}}
+
+    /* ── Form side ── */
+    .contact-form-section h2{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0A0E27;margin-bottom:8px}
+    .contact-form-section>p{color:#64748b;font-size:.88rem;margin-bottom:32px;line-height:1.6}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:540px){.form-row{grid-template-columns:1fr}}
+    .form-group{margin-bottom:20px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:7px}
+    .form-label span{color:#ef4444;margin-left:2px}
+    .input-wrapper{position:relative}
+    .input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem;pointer-events:none}
+    .ta-icon{top:14px;transform:none}
+    .form-input,.form-select,.form-textarea{width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px 11px 38px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1e293b;background:#fff;transition:border-color .2s,box-shadow .2s;outline:none}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-input::placeholder,.form-textarea::placeholder{color:#94a3b8}
+    .form-textarea{resize:vertical;min-height:140px;padding-top:12px;line-height:1.5}
+    .form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+    .btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#0052CC;color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:.95rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .25s}
+    .btn-primary:hover{background:#003d99;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,82,204,.35)}
+    .btn-primary-full{width:100%}
+
+    /* ── Info side ── */
+    .contact-info-section h2{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0A0E27;margin-bottom:8px}
+    .contact-info-section>p{color:#64748b;font-size:.88rem;margin-bottom:28px;line-height:1.6}
+    .info-card{display:flex;align-items:flex-start;gap:16px;background:#f8faff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:16px;transition:all .22s}
+    .info-card:hover{border-color:#0052CC;background:#eff6ff;transform:translateX(4px)}
+    .info-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+    .info-card:nth-child(1) .info-icon{background:#eff6ff;color:#0052CC}
+    .info-card:nth-child(2) .info-icon{background:#ecfdf5;color:#00C9A7}
+    .info-card:nth-child(3) .info-icon{background:#fff7ed;color:#FF6B35}
+    .info-card:nth-child(4) .info-icon{background:#f5f3ff;color:#8b5cf6}
+    .info-card-body strong{display:block;font-size:.85rem;font-weight:600;color:#0A0E27;margin-bottom:4px}
+    .info-card-body span,.info-card-body a{font-size:.83rem;color:#64748b;text-decoration:none;line-height:1.6;display:block}
+    .info-card-body a:hover{color:#0052CC}
+
+    /* ── Map ── */
+    .map-section{padding:0 24px 80px}
+    .map-section h2{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0A0E27;margin-bottom:20px;text-align:center}
+    .map-placeholder{background:#f1f5f9;border-radius:20px;height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border:2px dashed #e2e8f0;position:relative;overflow:hidden}
+    .map-placeholder::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#f8faff 0%,#e8f0fe 100%)}
+    .map-placeholder-icon{position:relative;z-index:1;width:72px;height:72px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+    .map-placeholder-icon i{font-size:1.8rem;color:#0052CC}
+    .map-placeholder p{position:relative;z-index:1;font-size:.9rem;color:#64748b;font-weight:500}
+    .map-placeholder small{position:relative;z-index:1;font-size:.8rem;color:#94a3b8}
+
+    /* ── FAQ Quick links ── */
+    .faq-section{padding:0 24px 80px;background:#f4f6fa;padding-top:60px}
+    .section-header{text-align:center;margin-bottom:40px}
+    .section-badge{display:inline-block;background:#eff6ff;color:#0052CC;padding:4px 14px;border-radius:50px;font-size:.75rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+    .section-header h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:#0A0E27;margin-bottom:10px}
+    .section-header p{color:#64748b;font-size:.9rem;max-width:520px;margin:0 auto;line-height:1.6}
+    .faq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+    @media(max-width:900px){.faq-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:500px){.faq-grid{grid-template-columns:1fr}}
+    .faq-card{background:#fff;border-radius:14px;padding:24px 20px;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:all .22s;text-decoration:none;color:inherit;display:block}
+    .faq-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,82,204,.12);border-color:#0052CC}
+    .faq-card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:14px}
+    .faq-card:nth-child(1) .faq-card-icon{background:#eff6ff;color:#0052CC}
+    .faq-card:nth-child(2) .faq-card-icon{background:#ecfdf5;color:#00C9A7}
+    .faq-card:nth-child(3) .faq-card-icon{background:#fff7ed;color:#FF6B35}
+    .faq-card:nth-child(4) .faq-card-icon{background:#f5f3ff;color:#8b5cf6}
+    .faq-card h3{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0A0E27;margin-bottom:6px}
+    .faq-card p{font-size:.78rem;color:#64748b;line-height:1.55;margin-bottom:14px}
+    .faq-card .faq-link{font-size:.78rem;color:#0052CC;font-weight:500;display:flex;align-items:center;gap:5px}
+    .faq-card .faq-link i{font-size:.65rem}
+
+    /* ── Footer ── */
+    .site-footer{background:#0A0E27;color:#fff}
+    .footer-main{padding:60px 24px 40px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr;gap:40px}
+    @media(max-width:640px){.footer-grid{grid-template-columns:1fr}}
+    .footer-logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:16px}
+    .footer-tagline{color:rgba(255,255,255,.6);font-size:.85rem;line-height:1.6}
+    .footer-col-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#fff;margin-bottom:16px;text-transform:uppercase;letter-spacing:.5px}
+    .footer-links{list-style:none}
+    .footer-links li{margin-bottom:10px}
+    .footer-links a{color:rgba(255,255,255,.65);font-size:.85rem;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
+    .footer-links a:hover{color:#00C9A7}
+    .footer-links a i{font-size:.7rem;color:#00C9A7}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding:20px 24px}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:center;max-width:1200px;margin:0 auto}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── Hero ── -->
+<section class="contact-hero">
+  <div class="hero-content">
+    <span class="hero-badge"><i class="fas fa-headset"></i> Support</span>
+    <h1>Contact Us</h1>
+    <p>Have a question or need help? Our global support team is here for you around the clock.</p>
+  </div>
+</section>
+
+<!-- ── Main Contact Section ── -->
+<section class="contact-main">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- ── Contact Form ── -->
+      <div class="contact-form-section">
+        <h2>Send us a Message</h2>
+        <p>Fill in the form and we'll get back to you within 24 hours.</p>
+
+        <form id="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="c-name">Your Name <span>*</span></label>
+              <div class="input-wrapper">
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" id="c-name" name="name" class="form-input" placeholder="Full name" required/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="c-email">Email Address <span>*</span></label>
+              <div class="input-wrapper">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="c-email" name="email" class="form-input" placeholder="you@example.com" required/>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="c-subject">Subject <span>*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-tag input-icon"></i>
+              <select id="c-subject" name="subject" class="form-select" required>
+                <option value="" disabled selected>Select a subject</option>
+                <option>General Inquiry</option>
+                <option>Order Support</option>
+                <option>Supplier Verification</option>
+                <option>Shipping &amp; Tracking</option>
+                <option>Payments &amp; Billing</option>
+                <option>Account &amp; Security</option>
+                <option>API &amp; Integration</option>
+                <option>Partnership</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="c-message">Message <span>*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-comment-dots input-icon ta-icon"></i>
+              <textarea id="c-message" name="message" class="form-textarea" placeholder="Describe your question or issue in detail…" required></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary btn-primary-full">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+
+      <!-- ── Contact Info ── -->
+      <div class="contact-info-section">
+        <h2>Get in Touch</h2>
+        <p>Multiple ways to reach our team whenever you need us.</p>
+
+        <div class="info-card">
+          <div class="info-icon"><i class="fas fa-envelope"></i></div>
+          <div class="info-card-body">
+            <strong>Email Support</strong>
+            <a href="mailto:support@globexsky.com">support@globexsky.com</a>
+            <span>Response within 24 hours</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon"><i class="fas fa-phone"></i></div>
+          <div class="info-card-body">
+            <strong>Phone Support</strong>
+            <a href="tel:+18005550100">+1 (800) 555-0100</a>
+            <span>Mon–Fri, 9am–6pm EST</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon"><i class="fas fa-map-pin"></i></div>
+          <div class="info-card-body">
+            <strong>Headquarters</strong>
+            <span>350 Fifth Avenue, Suite 4200</span>
+            <span>New York, NY 10118, USA</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon"><i class="fas fa-clock"></i></div>
+          <div class="info-card-body">
+            <strong>Business Hours</strong>
+            <span>Mon–Fri: 9:00 AM – 6:00 PM EST</span>
+            <span>Sat–Sun: Emergency support only</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Map Placeholder ── -->
+<section class="map-section">
+  <div class="container">
+    <h2>Visit Us at Our Office</h2>
+    <div class="map-placeholder">
+      <div class="map-placeholder-icon">
+        <i class="fas fa-map-pin"></i>
+      </div>
+      <p>350 Fifth Avenue, Suite 4200, New York, NY</p>
+      <small>Interactive map coming soon</small>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ Quick Links ── -->
+<section class="faq-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Self-Service</span>
+      <h2>Find Answers Fast</h2>
+      <p>Browse our help centre for quick answers to common questions.</p>
+    </div>
+    <div class="faq-grid">
+      <a href="help.html#getting-started" class="faq-card">
+        <div class="faq-card-icon"><i class="fas fa-rocket"></i></div>
+        <h3>Getting Started</h3>
+        <p>Account setup, verification and first steps on GlobexSky.</p>
+        <span class="faq-link">Browse articles <i class="fas fa-arrow-right"></i></span>
+      </a>
+      <a href="help.html#orders" class="faq-card">
+        <div class="faq-card-icon"><i class="fas fa-shopping-bag"></i></div>
+        <h3>Orders &amp; Buying</h3>
+        <p>How to place orders, track shipments and manage returns.</p>
+        <span class="faq-link">Browse articles <i class="fas fa-arrow-right"></i></span>
+      </a>
+      <a href="help.html#payments" class="faq-card">
+        <div class="faq-card-icon"><i class="fas fa-credit-card"></i></div>
+        <h3>Payments</h3>
+        <p>Payment methods, escrow protection and invoice management.</p>
+        <span class="faq-link">Browse articles <i class="fas fa-arrow-right"></i></span>
+      </a>
+      <a href="help.html#shipping" class="faq-card">
+        <div class="faq-card-icon"><i class="fas fa-truck-fast"></i></div>
+        <h3>Shipping</h3>
+        <p>Carriers, rates, tracking numbers and customs guidance.</p>
+        <span class="faq-link">Browse articles <i class="fas fa-arrow-right"></i></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../index.html" class="footer-logo">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway.</p>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="sourcing/products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+            <li><a href="shipment/index.html"><i class="fas fa-chevron-right"></i> Shipping</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+  document.getElementById('contact-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = this.querySelector('[type="submit"]');
+    btn.innerHTML = '<i class="fas fa-circle-check"></i> Message Sent!';
+    btn.style.background = '#10b981';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+      btn.style.background = '';
+      btn.disabled = false;
+      this.reset();
+    }, 3000);
+  });
+</script>
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
