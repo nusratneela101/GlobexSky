@@ -230,7 +230,7 @@ function startVoiceSearch(inputEl, onResult) {
   recognition.onerror = (e) => {
     console.warn('[GlobexSky Search] Voice recognition error:', e.error);
     if (window.GlobexSky?.showToast) {
-      window.GlobexSky.showToast('Could not recognise voice. Please try again.', 'error');
+      window.GlobexSky.showToast('Could not recognize voice. Please try again.', 'error');
     }
   };
 
