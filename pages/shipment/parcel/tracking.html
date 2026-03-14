@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Track Your Parcel – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.hero{background:linear-gradient(135deg,#0052CC 0%,#003d99 50%,#00C9A7 100%);padding:64px 24px;text-align:center}
+.hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:#fff;margin-bottom:12px}
+.hero-sub{color:rgba(255,255,255,.8);font-size:1rem;margin-bottom:32px}
+.search-box{display:flex;max-width:560px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.search-box input{flex:1;padding:14px 20px;border:none;font-size:1rem;font-family:'Inter',sans-serif;outline:none;color:#0a0e27}
+.search-box button{padding:14px 24px;background:#FF6B35;color:#fff;border:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:background .2s}
+.search-box button:hover{background:#e85a2a}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
+.summary-item label{font-size:.75rem;color:#64748b;display:block;margin-bottom:3px}
+.summary-item span{font-weight:600;color:#0a0e27;font-size:.9rem}
+.timeline{position:relative;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:16px;top:0;bottom:0;width:2px;background:#e2e8f0}
+.tl-step{position:relative;margin-bottom:32px;padding-left:16px}
+.tl-dot{position:absolute;left:-40px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;border:3px solid #e2e8f0;background:#fff;transition:all .3s}
+.tl-dot.completed{background:#059669;border-color:#059669;color:#fff}
+.tl-dot.current{background:#0052CC;border-color:#0052CC;color:#fff;animation:pulse 2s infinite}
+.tl-dot.pending{background:#fff;border-color:#e2e8f0;color:#94a3b8}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,82,204,.4)}50%{box-shadow:0 0 0 8px rgba(0,82,204,0)}}
+.tl-content{background:#fff;border-radius:10px;padding:14px 18px;border:1px solid #f1f5f9}
+.tl-step.current .tl-content{border-color:#0052CC;background:#eff6ff}
+.tl-step.pending .tl-content{opacity:.6}
+.tl-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:.92rem;color:#0a0e27;margin-bottom:2px}
+.tl-step.current .tl-title{color:#0052CC}
+.tl-step.pending .tl-title{color:#94a3b8}
+.tl-meta{font-size:.78rem;color:#64748b;display:flex;gap:16px;flex-wrap:wrap;margin-top:4px}
+.tl-desc{font-size:.82rem;color:#64748b;margin-top:4px}
+.photos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:12px}
+.photo-box{height:120px;border-radius:10px;background:#f1f5f9;border:2px dashed #cbd5e1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#94a3b8;font-size:.78rem}
+.photo-box i{font-size:1.5rem;color:#cbd5e1}
+.map-placeholder{height:220px;border-radius:12px;background:linear-gradient(135deg,#eff6ff,#e0ecff);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#64748b;margin-top:12px}
+.map-placeholder i{font-size:2.5rem;color:#0052CC}
+.carrier-info{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.carrier-item label{font-size:.75rem;color:#64748b;display:block;margin-bottom:2px}
+.carrier-item span{font-weight:600;color:#0a0e27;font-size:.88rem}
+.btn-help{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#FF6B35;color:#fff;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem;text-decoration:none;transition:all .2s}
+.btn-help:hover{background:#e85a2a;transform:translateY(-2px)}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:600px){.search-box{flex-direction:column;border-radius:10px}.carrier-info{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <h1 class="hero-title"><i class="fas fa-search-location"></i> Track Your Parcel</h1>
+  <p class="hero-sub">Enter your GlobexSky reference number to see real-time shipment status</p>
+  <div class="search-box">
+    <input type="text" id="ref-input" placeholder="e.g. GS-20260310-48291" value="GS-20260310-48291" aria-label="Reference number">
+    <button onclick="trackParcel()"><i class="fas fa-search"></i> Track</button>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div id="tracking-results">
+      <!-- Pre-loaded demo -->
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const DEMO_DATA = {
+  ref: 'GS-20260310-48291',
+  sender: 'Lagos, Nigeria',
+  receiver: 'London, United Kingdom',
+  weight: '2.5 kg',
+  service: 'Standard (10–15 days)',
+  eta: 'March 25, 2026',
+  dhl: '1Z999AA10123456784'
+};
+
+const STAGES = [
+  {id:'created',icon:'fa-file-alt',title:'Shipment Created',date:'Mar 10, 2026 – 09:14',location:'Lagos, Nigeria',desc:'Reference number GS-20260310-48291 generated.',status:'completed'},
+  {id:'received',icon:'fa-warehouse',title:'Received at GlobexSky Office',date:'Mar 11, 2026 – 11:30',location:'Lagos Office, Nigeria',desc:'Parcel received, inspected, and label attached.',status:'completed'},
+  {id:'payment',icon:'fa-check-circle',title:'Payment Confirmed',date:'Mar 11, 2026 – 14:05',location:'System',desc:'Payment of $36.00 confirmed via PayPal.',status:'completed'},
+  {id:'shipped',icon:'fa-plane-departure',title:'Shipped Internationally',date:'Mar 12, 2026 – 08:00',location:'Lagos Airport, Nigeria',desc:'Handed over to DHL. Tracking: 1Z999AA10123456784.',status:'completed'},
+  {id:'transit',icon:'fa-shipping-fast',title:'In Transit',date:'Mar 13, 2026 – 16:22',location:'Dubai Hub, UAE',desc:'Parcel is in transit via air freight.',status:'current'},
+  {id:'customs',icon:'fa-stamp',title:'Customs Clearance',date:'Pending',location:'London Heathrow, UK',desc:'Awaiting customs inspection at destination.',status:'pending'},
+  {id:'delivery',icon:'fa-truck',title:'Out for Delivery',date:'Pending',location:'London, UK',desc:'Parcel assigned to local delivery courier.',status:'pending'},
+  {id:'delivered',icon:'fa-home',title:'Delivered',date:'Pending',location:'Receiver Address, London',desc:'Parcel delivered to recipient.',status:'pending'}
+];
+
+function trackParcel() {
+  const ref = document.getElementById('ref-input').value.trim();
+  if (!ref) { alert('Please enter a reference number.'); return; }
+  renderResults(ref === DEMO_DATA.ref ? DEMO_DATA : null, ref);
+}
+
+function renderResults(data, ref) {
+  const container = document.getElementById('tracking-results');
+  if (!data) {
+    container.innerHTML = `<div class="card" style="text-align:center;padding:48px">
+      <i class="fas fa-search" style="font-size:2.5rem;color:#cbd5e1;margin-bottom:16px;display:block"></i>
+      <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:8px">No Shipment Found</h3>
+      <p style="color:#64748b">Reference number <strong>${ref}</strong> was not found. Please check and try again.</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <!-- SUMMARY CARD -->
+    <div class="card">
+      <h3 class="card-title"><i class="fas fa-box" style="color:#0052CC"></i> Shipment Summary</h3>
+      <div class="summary-grid">
+        <div class="summary-item"><label>Reference #</label><span>${data.ref}</span></div>
+        <div class="summary-item"><label>From</label><span>${data.sender}</span></div>
+        <div class="summary-item"><label>To</label><span>${data.receiver}</span></div>
+        <div class="summary-item"><label>Weight</label><span>${data.weight}</span></div>
+        <div class="summary-item"><label>Service</label><span>${data.service}</span></div>
+        <div class="summary-item"><label>Estimated Delivery</label><span style="color:#059669;font-weight:700">${data.eta}</span></div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="card">
+      <h3 class="card-title"><i class="fas fa-route" style="color:#0052CC"></i> Tracking Timeline</h3>
+      <div class="timeline">
+        ${STAGES.map(s => `
+          <div class="tl-step ${s.status}">
+            <div class="tl-dot ${s.status}">
+              ${s.status === 'completed' ? '<i class="fas fa-check"></i>' : s.status === 'current' ? '<i class="fas fa-circle" style="font-size:.4rem"></i>' : '<i class="fas fa-clock"></i>'}
+            </div>
+            <div class="tl-content">
+              <div class="tl-title">${s.title} ${s.status === 'current' ? '<span style="background:#0052CC;color:#fff;font-size:.65rem;padding:2px 8px;border-radius:10px;margin-left:6px">CURRENT</span>' : ''}</div>
+              <div class="tl-meta">
+                <span><i class="fas fa-clock"></i> ${s.date}</span>
+                <span><i class="fas fa-map-marker-alt"></i> ${s.location}</span>
+              </div>
+              <div class="tl-desc">${s.desc}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="card">
+      <h3 class="card-title"><i class="fas fa-camera" style="color:#0052CC"></i> Stage Photos</h3>
+      <div class="photos-grid">
+        <div class="photo-box"><i class="fas fa-image"></i><span>Package received photo</span></div>
+        <div class="photo-box"><i class="fas fa-image"></i><span>Label attached photo</span></div>
+        <div class="photo-box" style="opacity:.5"><i class="fas fa-lock"></i><span>Pending stage</span></div>
+        <div class="photo-box" style="opacity:.5"><i class="fas fa-lock"></i><span>Pending stage</span></div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="card">
+      <h3 class="card-title"><i class="fas fa-map-marked-alt" style="color:#0052CC"></i> Live Map</h3>
+      <div class="map-placeholder">
+        <i class="fas fa-map-pin"></i>
+        <p style="font-weight:600;color:#374151">Live map tracking will appear here</p>
+        <p style="font-size:.82rem">Real-time GPS tracking powered by integration with carrier APIs</p>
+      </div>
+    </div>
+
+    <!-- CARRIER INFO -->
+    <div class="card">
+      <h3 class="card-title"><i class="fas fa-truck" style="color:#0052CC"></i> Carrier Information</h3>
+      <div class="carrier-info">
+        <div class="carrier-item"><label>Carrier</label><span>DHL Express</span></div>
+        <div class="carrier-item"><label>DHL Tracking #</label><span><a href="https://www.dhl.com/en/express/tracking.html?AWB=${data.dhl}" target="_blank" rel="noopener" style="color:#0052CC">${data.dhl}</a></span></div>
+        <div class="carrier-item"><label>Est. Customs Clearance</label><span>Mar 18–20, 2026</span></div>
+        <div class="carrier-item"><label>Final Mile Carrier</label><span>Royal Mail (UK)</span></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:8px">
+      <a href="../../support/index.html" class="btn-help"><i class="fas fa-headset"></i> Need Help? Contact Support</a>
+    </div>`;
+}
+
+// Auto-load demo on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref') || 'GS-20260310-48291';
+  document.getElementById('ref-input').value = ref;
+  renderResults(ref === DEMO_DATA.ref ? DEMO_DATA : null, ref);
+});
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

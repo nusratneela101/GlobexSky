@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>VR Showroom – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.hero{background:linear-gradient(135deg,#0a0e27 0%,#1a1f4e 50%,#0052CC 100%);padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,201,167,.15) 0%,transparent 70%)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.3);border-radius:20px;color:#FF6B35;font-size:.8rem;font-weight:600;margin-bottom:20px}
+.hero-title{font-family:'Poppins',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;color:#fff;margin-bottom:12px}
+.hero-title span{background:linear-gradient(135deg,#0052CC,#00C9A7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{color:rgba(255,255,255,.7);font-size:1rem;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 24px;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.section{padding:56px 24px}
+.section-title{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;margin-bottom:8px}
+.section-sub{color:#64748b;margin-bottom:32px;font-size:.95rem}
+.showrooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.showroom-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:all .2s}
+.showroom-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,82,204,.1)}
+.showroom-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative}
+.showroom-thumb .coming-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.showroom-thumb .coming-overlay span{background:#FF6B35;color:#fff;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:20px;font-family:'Poppins',sans-serif}
+.showroom-body{padding:18px}
+.showroom-name{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.95rem;margin-bottom:4px}
+.showroom-cat{font-size:.78rem;color:#64748b;margin-bottom:10px}
+.showroom-stats{display:flex;gap:12px;font-size:.75rem;color:#64748b}
+.stat-badge{background:#f1f5f9;border-radius:6px;padding:3px 8px}
+.notify-section{background:#fff;border-radius:14px;padding:32px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;margin-top:48px}
+.notify-section h3{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:1.2rem;margin-bottom:8px}
+.notify-form{display:flex;max-width:440px;margin:20px auto 0;gap:10px}
+.notify-form input{flex:1;padding:11px 16px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.notify-form input:focus{border-color:#0052CC}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:500px){.notify-form{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge"><i class="fas fa-vr-cardboard"></i> Launching Q3 2026</div>
+  <h1 class="hero-title">Step into the <span>VR Showroom</span></h1>
+  <p class="hero-sub">Explore supplier products in immersive 3D virtual reality — no headset required. Browse, inspect, and order from the comfort of your screen.</p>
+  <div class="hero-actions">
+    <button class="btn btn-primary" onclick="notifyMe()"><i class="fas fa-bell"></i> Notify Me at Launch</button>
+    <a href="index.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Sourcing</a>
+  </div>
+</div>
+
+<!-- FEATURED SHOWROOMS -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Featured Supplier Showrooms</h2>
+    <p class="section-sub">Preview the showrooms launching with our VR platform. Click to get notified.</p>
+    <div class="showrooms-grid">
+      <div class="showroom-card">
+        <div class="showroom-thumb" style="background:linear-gradient(135deg,#1a1f4e,#0052CC)">
+          <span>💻</span>
+          <div class="coming-overlay"><span>Coming Soon</span></div>
+        </div>
+        <div class="showroom-body">
+          <div class="showroom-name">TechPro Electronics</div>
+          <div class="showroom-cat">Smartphones • Laptops • Accessories</div>
+          <div class="showroom-stats"><span class="stat-badge">⭐ 4.9</span><span class="stat-badge">Shenzhen, China</span><span class="stat-badge">500+ Products</span></div>
+        </div>
+      </div>
+      <div class="showroom-card">
+        <div class="showroom-thumb" style="background:linear-gradient(135deg,#4a1942,#9333ea)">
+          <span>👗</span>
+          <div class="coming-overlay"><span>Coming Soon</span></div>
+        </div>
+        <div class="showroom-body">
+          <div class="showroom-name">StyleForward Apparel</div>
+          <div class="showroom-cat">Fashion • Clothing • Accessories</div>
+          <div class="showroom-stats"><span class="stat-badge">⭐ 4.7</span><span class="stat-badge">Istanbul, Turkey</span><span class="stat-badge">800+ Products</span></div>
+        </div>
+      </div>
+      <div class="showroom-card">
+        <div class="showroom-thumb" style="background:linear-gradient(135deg,#14532d,#059669)">
+          <span>🏠</span>
+          <div class="coming-overlay"><span>Coming Soon</span></div>
+        </div>
+        <div class="showroom-body">
+          <div class="showroom-name">HomeVista Furnishings</div>
+          <div class="showroom-cat">Furniture • Decor • Home Goods</div>
+          <div class="showroom-stats"><span class="stat-badge">⭐ 4.8</span><span class="stat-badge">Guangzhou, China</span><span class="stat-badge">300+ Products</span></div>
+        </div>
+      </div>
+      <div class="showroom-card">
+        <div class="showroom-thumb" style="background:linear-gradient(135deg,#7c2d12,#FF6B35)">
+          <span>💎</span>
+          <div class="coming-overlay"><span>Coming Soon</span></div>
+        </div>
+        <div class="showroom-body">
+          <div class="showroom-name">LuxeGems &amp; Jewelry</div>
+          <div class="showroom-cat">Jewelry • Accessories • Watches</div>
+          <div class="showroom-stats"><span class="stat-badge">⭐ 5.0</span><span class="stat-badge">Dubai, UAE</span><span class="stat-badge">150+ Products</span></div>
+        </div>
+      </div>
+      <div class="showroom-card">
+        <div class="showroom-thumb" style="background:linear-gradient(135deg,#0c4a6e,#0052CC)">
+          <span>⚽</span>
+          <div class="coming-overlay"><span>Coming Soon</span></div>
+        </div>
+        <div class="showroom-body">
+          <div class="showroom-name">SportZone International</div>
+          <div class="showroom-cat">Sports Equipment • Fitness • Outdoors</div>
+          <div class="showroom-stats"><span class="stat-badge">⭐ 4.6</span><span class="stat-badge">Seoul, South Korea</span><span class="stat-badge">400+ Products</span></div>
+        </div>
+      </div>
+      <div class="showroom-card">
+        <div class="showroom-thumb" style="background:linear-gradient(135deg,#164e63,#00C9A7)">
+          <span>🏥</span>
+          <div class="coming-overlay"><span>Coming Soon</span></div>
+        </div>
+        <div class="showroom-body">
+          <div class="showroom-name">MediCare Supplies</div>
+          <div class="showroom-cat">Medical Devices • Health • Wellness</div>
+          <div class="showroom-stats"><span class="stat-badge">⭐ 4.9</span><span class="stat-badge">Osaka, Japan</span><span class="stat-badge">200+ Products</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFY FORM -->
+    <div class="notify-section" id="notify-section">
+      <h3>Be the First to Access VR Showrooms</h3>
+      <p style="color:#64748b;font-size:.9rem">Enter your email to get early access when we launch in Q3 2026.</p>
+      <div class="notify-form">
+        <input type="email" id="notify-email" placeholder="your@email.com" aria-label="Email for notification">
+        <button class="btn btn-primary" onclick="submitNotify()"><i class="fas fa-bell"></i> Notify Me</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+function notifyMe() {
+  document.getElementById('notify-section').scrollIntoView({behavior:'smooth'});
+}
+function submitNotify() {
+  const email = document.getElementById('notify-email').value.trim();
+  const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRx.test(email)) { alert('Please enter a valid email address.'); return; }
+  const btn = event.target; btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  setTimeout(() => {
+    document.getElementById('notify-section').innerHTML = `<div style="padding:24px"><div style="width:60px;height:60px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.6rem;color:#059669"><i class="fas fa-check"></i></div><h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:6px">You're on the list!</h3><p style="color:#64748b;font-size:.9rem">We'll notify <strong>${email}</strong> when VR Showrooms launch.</p></div>`;
+  }, 1000);
+}
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

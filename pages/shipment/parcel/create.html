@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Send a Parcel – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:20px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:#0a0e27;margin-bottom:24px}
+.step-progress{display:flex;align-items:center;margin-bottom:40px;overflow-x:auto;padding:8px 0}
+.step-item{display:flex;flex-direction:column;align-items:center;flex:1;min-width:90px;position:relative}
+.step-item:not(:last-child)::after{content:'';position:absolute;top:20px;left:60%;right:-40%;height:2px;background:#e2e8f0;z-index:0}
+.step-item.completed:not(:last-child)::after,.step-item.active:not(:last-child)::after{background:#0052CC}
+.step-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;border:2px solid #e2e8f0;background:#fff;color:#94a3b8;position:relative;z-index:1;transition:all .3s}
+.step-item.active .step-circle{border-color:#0052CC;background:#0052CC;color:#fff}
+.step-item.completed .step-circle{border-color:#0052CC;background:#0052CC;color:#fff}
+.step-label{font-size:.72rem;color:#64748b;margin-top:6px;text-align:center;font-weight:500}
+.step-item.active .step-label{color:#0052CC;font-weight:600}
+.step-panel{display:none}.step-panel.active{display:block}
+.main-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+.card{background:#fff;border-radius:14px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:0}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.check-group{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.check-item{display:flex;align-items:center;gap:10px;font-size:.88rem;color:#374151;cursor:pointer}
+.check-item input{width:16px;height:16px;accent-color:#0052CC;cursor:pointer}
+.radio-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.radio-card{display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .2s}
+.radio-card:has(input:checked){border-color:#0052CC;background:#eff6ff}
+.radio-card input{width:16px;height:16px;accent-color:#0052CC;cursor:pointer}
+.radio-card-label{flex:1}
+.radio-card-label strong{display:block;font-weight:600;font-size:.88rem;color:#0a0e27}
+.radio-card-label span{font-size:.78rem;color:#64748b}
+.radio-card-price{font-weight:700;font-size:.88rem;color:#0052CC}
+.btn-row{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}
+.btn{padding:10px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+.pricing-panel{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);position:sticky;top:88px}
+.pricing-panel h3{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.95rem;margin-bottom:14px}
+.price-row{display:flex;justify-content:space-between;font-size:.85rem;padding:7px 0;border-bottom:1px solid #f1f5f9;color:#374151}
+.price-row:last-of-type{border-bottom:none}
+.price-total{display:flex;justify-content:space-between;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;padding-top:12px;margin-top:4px;border-top:2px solid #e2e8f0;color:#0a0e27}
+.price-total span:last-child{color:#0052CC}
+.price-note{font-size:.75rem;color:#64748b;margin-top:8px;text-align:center}
+.review-section{margin-bottom:20px}
+.review-section h4{font-family:'Poppins',sans-serif;font-weight:600;color:#0052CC;font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #f1f5f9}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.review-item label{font-size:.75rem;color:#64748b;display:block}
+.review-item span{font-weight:600;color:#0a0e27;font-size:.85rem}
+.ref-badge{background:#eff6ff;border:1.5px solid #0052CC;border-radius:10px;padding:12px 18px;font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:1.1rem;text-align:center;letter-spacing:.5px;margin-bottom:20px}
+.payment-methods{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.pm-option{display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .2s}
+.pm-option:has(input:checked){border-color:#0052CC;background:#eff6ff}
+.pm-option input{width:16px;height:16px;accent-color:#0052CC;cursor:pointer}
+.next-steps{background:#f0fdf4;border-radius:10px;padding:16px;margin-top:16px}
+.next-steps h4{font-family:'Poppins',sans-serif;font-weight:600;color:#059669;font-size:.88rem;margin-bottom:10px}
+.next-steps ol{padding-left:18px}
+.next-steps li{font-size:.82rem;color:#374151;margin-bottom:6px;line-height:1.5}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:900px){.main-layout{grid-template-columns:1fr}.pricing-panel{position:static}}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.form-row-3{grid-template-columns:1fr}.review-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../../index.html">Home</a><span>/</span>
+      <a href="../index.html">Shipment</a><span>/</span>
+      <a href="#">Send Parcel</a><span>/</span>
+      <span>Create Shipment</span>
+    </nav>
+    <h1 class="page-title">Create Shipment</h1>
+
+    <!-- STEP PROGRESS -->
+    <div class="step-progress" role="list" aria-label="Form steps">
+      <div class="step-item active" id="si-1" role="listitem"><div class="step-circle">1</div><span class="step-label">Sender Info</span></div>
+      <div class="step-item" id="si-2" role="listitem"><div class="step-circle">2</div><span class="step-label">Receiver Info</span></div>
+      <div class="step-item" id="si-3" role="listitem"><div class="step-circle">3</div><span class="step-label">Package Details</span></div>
+      <div class="step-item" id="si-4" role="listitem"><div class="step-circle">4</div><span class="step-label">Review &amp; Pay</span></div>
+    </div>
+
+    <!-- STEP 1: SENDER INFO -->
+    <div class="step-panel active" id="step-1">
+      <div class="card">
+        <h3 class="card-title"><i class="fas fa-user" style="color:#0052CC"></i> Sender Details</h3>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="s-name">Full Name *</label><input type="text" class="form-control" id="s-name" placeholder="Your full name" required></div>
+          <div class="form-group"><label class="form-label" for="s-email">Email Address *</label><input type="email" class="form-control" id="s-email" placeholder="you@example.com" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="s-phone">Phone Number *</label><input type="tel" class="form-control" id="s-phone" placeholder="+1 234 567 8900" required></div>
+          <div class="form-group"><label class="form-label" for="s-country">Country *</label>
+            <select class="form-control" id="s-country" required>
+              <option value="">Select country</option>
+              <option>United States</option><option>United Kingdom</option><option>Canada</option><option>Australia</option>
+              <option>Germany</option><option>France</option><option>Nigeria</option><option>Ghana</option>
+              <option>Kenya</option><option>South Africa</option><option>UAE</option><option>India</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="s-city">City *</label><input type="text" class="form-control" id="s-city" placeholder="Your city" required></div>
+          <div class="form-group"><label class="form-label" for="s-address">Address *</label><input type="text" class="form-control" id="s-address" placeholder="Street address" required></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="nextStep(1)">Next Step <i class="fas fa-arrow-right"></i></button></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: RECEIVER INFO -->
+    <div class="step-panel" id="step-2">
+      <div class="card">
+        <h3 class="card-title"><i class="fas fa-map-marker-alt" style="color:#FF6B35"></i> Receiver Details</h3>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="r-name">Full Name *</label><input type="text" class="form-control" id="r-name" placeholder="Receiver's full name" required></div>
+          <div class="form-group"><label class="form-label" for="r-phone">Phone Number *</label><input type="tel" class="form-control" id="r-phone" placeholder="+44 20 7946 0958" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="r-country">Country *</label>
+            <select class="form-control" id="r-country" onchange="updateZone()" required>
+              <option value="">Select destination country</option>
+              <option value="Z1">United States</option><option value="Z1">Canada</option><option value="Z1">Mexico</option>
+              <option value="Z2">United Kingdom</option><option value="Z2">Germany</option><option value="Z2">France</option>
+              <option value="Z2">Italy</option><option value="Z2">Spain</option><option value="Z2">Netherlands</option>
+              <option value="Z2">Sweden</option><option value="Z2">Norway</option><option value="Z2">Denmark</option>
+              <option value="Z3">UAE</option><option value="Z3">Saudi Arabia</option><option value="Z3">Qatar</option>
+              <option value="Z3">India</option><option value="Z3">China</option><option value="Z3">Japan</option>
+              <option value="Z3">South Korea</option><option value="Z3">Singapore</option><option value="Z3">Malaysia</option>
+              <option value="Z3">Thailand</option><option value="Z3">Indonesia</option><option value="Z3">Pakistan</option>
+              <option value="Z3">Bangladesh</option><option value="Z3">Sri Lanka</option>
+              <option value="Z4">Nigeria</option><option value="Z4">Ghana</option><option value="Z4">Kenya</option>
+              <option value="Z4">South Africa</option><option value="Z4">Tanzania</option><option value="Z4">Ethiopia</option>
+              <option value="Z4">Egypt</option><option value="Z4">Morocco</option><option value="Z4">Brazil</option>
+              <option value="Z4">Argentina</option><option value="Z4">Colombia</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label" for="r-city">City *</label><input type="text" class="form-control" id="r-city" placeholder="Receiver's city" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="r-address">Address *</label><input type="text" class="form-control" id="r-address" placeholder="Street address" required></div>
+          <div class="form-group"><label class="form-label" for="r-postal">Postal Code *</label><input type="text" class="form-control" id="r-postal" placeholder="e.g. SW1A 2AA" required></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="r-email">Recipient Email <span style="color:#64748b;font-weight:400">(optional)</span></label>
+          <input type="email" class="form-control" id="r-email" placeholder="receiver@example.com">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="prevStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-primary" onclick="nextStep(2)">Next Step <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: PACKAGE DETAILS -->
+    <div class="step-panel" id="step-3">
+      <div class="main-layout">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-box" style="color:#0052CC"></i> Package Details</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="p-type">Product Type *</label>
+              <select class="form-control" id="p-type" onchange="calcPrice()" required>
+                <option value="">Select product type</option>
+                <option>Electronics</option><option>Fashion / Clothing</option><option>Documents</option>
+                <option>Home Goods</option><option>Jewelry</option><option>Food</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="p-weight">Weight (kg) *</label>
+              <input type="number" class="form-control" id="p-weight" placeholder="e.g. 1.5" min="0.1" max="30" step="0.1" oninput="calcPrice()" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dimensions (cm)</label>
+            <div class="form-row-3">
+              <input type="number" class="form-control" id="p-len" placeholder="Length" min="1" oninput="calcPrice()">
+              <input type="number" class="form-control" id="p-wid" placeholder="Width" min="1" oninput="calcPrice()">
+              <input type="number" class="form-control" id="p-hgt" placeholder="Height" min="1" oninput="calcPrice()">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="p-value">Declared Value ($) *</label>
+            <input type="number" class="form-control" id="p-value" placeholder="e.g. 150.00" min="1" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Special Handling</label>
+            <div class="check-group">
+              <label class="check-item"><input type="checkbox" id="add-fragile" onchange="calcPrice()"> <span>Fragile Handling (+$3.00)</span></label>
+              <label class="check-item"><input type="checkbox" id="add-insurance" onchange="calcPrice()"> <span>Insurance (+$5.00)</span></label>
+              <label class="check-item"><input type="checkbox" id="add-customs" onchange="calcPrice()"> <span>Customs Clearance Assistance (+$10.00)</span></label>
+              <label class="check-item"><input type="checkbox" id="add-signature" onchange="calcPrice()"> <span>Signature Required (+$5.00)</span></label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Delivery Speed *</label>
+            <div class="radio-group">
+              <label class="radio-card"><input type="radio" name="speed" value="0.85" onchange="calcPrice()"><div class="radio-card-label"><strong>Economy</strong><span>20–30 days</span></div><span class="radio-card-price">Cheapest</span></label>
+              <label class="radio-card"><input type="radio" name="speed" value="1.0" checked onchange="calcPrice()"><div class="radio-card-label"><strong>Standard</strong><span>10–15 days</span></div><span class="radio-card-price">Popular</span></label>
+              <label class="radio-card"><input type="radio" name="speed" value="1.8" onchange="calcPrice()"><div class="radio-card-label"><strong>Express</strong><span>5–7 days</span></div><span class="radio-card-price">Fastest</span></label>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="prevStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn btn-primary" onclick="nextStep(3)">Next Step <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+        <!-- PRICING PANEL -->
+        <div class="pricing-panel">
+          <h3><i class="fas fa-tags" style="color:#0052CC;margin-right:8px"></i> Live Pricing</h3>
+          <div class="price-row"><span>Destination Zone</span><span id="pr-zone">—</span></div>
+          <div class="price-row"><span>Actual Weight</span><span id="pr-actual">—</span></div>
+          <div class="price-row"><span>Volumetric Weight</span><span id="pr-vol">—</span></div>
+          <div class="price-row"><span>Chargeable Weight</span><span id="pr-charge">—</span></div>
+          <div class="price-row"><span>Base Rate/kg</span><span id="pr-rate">—</span></div>
+          <div class="price-row"><span>Base Cost</span><span id="pr-base">—</span></div>
+          <div class="price-row"><span>Speed Multiplier</span><span id="pr-speed">1.0×</span></div>
+          <div class="price-row"><span>Add-ons</span><span id="pr-addons">$0.00</span></div>
+          <div class="price-total"><span>Grand Total</span><span id="pr-total">$15.00</span></div>
+          <p class="price-note">Minimum charge: $15.00</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: REVIEW & PAY -->
+    <div class="step-panel" id="step-4">
+      <div class="card">
+        <h3 class="card-title"><i class="fas fa-clipboard-check" style="color:#0052CC"></i> Review &amp; Pay</h3>
+        <div class="ref-badge" id="ref-num">GS-00000000-00000</div>
+        <div class="review-section">
+          <h4>Sender</h4>
+          <div class="review-grid">
+            <div class="review-item"><label>Name</label><span id="rv-s-name">—</span></div>
+            <div class="review-item"><label>Email</label><span id="rv-s-email">—</span></div>
+            <div class="review-item"><label>Phone</label><span id="rv-s-phone">—</span></div>
+            <div class="review-item"><label>Country</label><span id="rv-s-country">—</span></div>
+          </div>
+        </div>
+        <div class="review-section">
+          <h4>Receiver</h4>
+          <div class="review-grid">
+            <div class="review-item"><label>Name</label><span id="rv-r-name">—</span></div>
+            <div class="review-item"><label>Phone</label><span id="rv-r-phone">—</span></div>
+            <div class="review-item"><label>Country</label><span id="rv-r-country">—</span></div>
+            <div class="review-item"><label>City</label><span id="rv-r-city">—</span></div>
+          </div>
+        </div>
+        <div class="review-section">
+          <h4>Package &amp; Pricing</h4>
+          <div class="review-grid">
+            <div class="review-item"><label>Product Type</label><span id="rv-p-type">—</span></div>
+            <div class="review-item"><label>Weight</label><span id="rv-p-weight">—</span></div>
+            <div class="review-item"><label>Delivery Speed</label><span id="rv-speed">—</span></div>
+            <div class="review-item"><label>Total Price</label><span id="rv-total" style="color:#0052CC;font-weight:700">—</span></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method *</label>
+          <div class="payment-methods">
+            <label class="pm-option"><input type="radio" name="pay-method" value="card" checked> <i class="fas fa-credit-card" style="color:#0052CC"></i> Credit / Debit Card</label>
+            <label class="pm-option"><input type="radio" name="pay-method" value="paypal"> <i class="fab fa-paypal" style="color:#003087"></i> PayPal</label>
+            <label class="pm-option"><input type="radio" name="pay-method" value="bank"> <i class="fas fa-university" style="color:#374151"></i> Bank Transfer</label>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="prevStep(4)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-primary" onclick="placeOrder()" style="min-width:180px"><i class="fas fa-lock"></i> Place Order</button>
+        </div>
+        <div class="next-steps">
+          <h4><i class="fas fa-info-circle"></i> What happens next?</h4>
+          <ol>
+            <li>Ship your parcel to the GlobexSky office address (provided after order).</li>
+            <li>We verify, label, and prepare your parcel for international shipping.</li>
+            <li>Your parcel is shipped via our partner carriers (DHL, FedEx, etc.).</li>
+            <li>Track your delivery using your reference number.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const ZONE_RATES = {Z1: 5, Z2: 8, Z3: 12, Z4: 15};
+const ZONE_NAMES = {Z1: 'Zone 1 (Americas)', Z2: 'Zone 2 (Europe/UK)', Z3: 'Zone 3 (Middle East/Asia)', Z4: 'Zone 4 (Africa/Others)'};
+const SPEED_NAMES = {'0.85': 'Economy (20–30 days)', '1.0': 'Standard (10–15 days)', '1.8': 'Express (5–7 days)'};
+let currentZone = 'Z4';
+
+function updateZone() {
+  const sel = document.getElementById('r-country');
+  const opt = sel.options[sel.selectedIndex];
+  currentZone = opt.value || 'Z4';
+  calcPrice();
+}
+
+function calcPrice() {
+  const weight = parseFloat(document.getElementById('p-weight').value) || 0;
+  const len = parseFloat(document.getElementById('p-len').value) || 0;
+  const wid = parseFloat(document.getElementById('p-wid').value) || 0;
+  const hgt = parseFloat(document.getElementById('p-hgt').value) || 0;
+  // Volumetric weight formula: (L × W × H in cm) / 5000 = kg (industry-standard dimensional weight divisor)
+  const volWeight = (len * wid * hgt) / 5000;
+  const chargeWeight = Math.max(weight, volWeight);
+  const rate = ZONE_RATES[currentZone] || 15;
+  const speedEl = document.querySelector('input[name=speed]:checked');
+  const speed = speedEl ? parseFloat(speedEl.value) : 1.0;
+  let addons = 0;
+  if (document.getElementById('add-fragile').checked) addons += 3;
+  if (document.getElementById('add-insurance').checked) addons += 5;
+  if (document.getElementById('add-customs').checked) addons += 10;
+  if (document.getElementById('add-signature').checked) addons += 5;
+  const base = chargeWeight * rate;
+  const total = Math.max(15, base * speed + addons);
+
+  document.getElementById('pr-zone').textContent = ZONE_NAMES[currentZone] || '—';
+  document.getElementById('pr-actual').textContent = weight ? weight.toFixed(2) + ' kg' : '—';
+  document.getElementById('pr-vol').textContent = volWeight > 0 ? volWeight.toFixed(2) + ' kg' : '—';
+  document.getElementById('pr-charge').textContent = chargeWeight > 0 ? chargeWeight.toFixed(2) + ' kg' : '—';
+  document.getElementById('pr-rate').textContent = '$' + rate + '/kg';
+  document.getElementById('pr-base').textContent = base > 0 ? '$' + base.toFixed(2) : '—';
+  document.getElementById('pr-speed').textContent = speed + '×';
+  document.getElementById('pr-addons').textContent = '$' + addons.toFixed(2);
+  document.getElementById('pr-total').textContent = '$' + total.toFixed(2);
+}
+
+function nextStep(from) {
+  if (from === 1) {
+    if (!document.getElementById('s-name').value || !document.getElementById('s-email').value ||
+        !document.getElementById('s-phone').value || !document.getElementById('s-country').value ||
+        !document.getElementById('s-city').value || !document.getElementById('s-address').value) {
+      alert('Please fill in all required sender fields.'); return;
+    }
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRx.test(document.getElementById('s-email').value)) { alert('Please enter a valid email address.'); return; }
+  }
+  if (from === 2) {
+    if (!document.getElementById('r-name').value || !document.getElementById('r-phone').value ||
+        !document.getElementById('r-country').value || !document.getElementById('r-city').value ||
+        !document.getElementById('r-address').value || !document.getElementById('r-postal').value) {
+      alert('Please fill in all required receiver fields.'); return;
+    }
+  }
+  if (from === 3) {
+    if (!document.getElementById('p-type').value || !document.getElementById('p-weight').value ||
+        !document.getElementById('p-value').value) {
+      alert('Please fill in product type, weight, and declared value.'); return;
+    }
+    populateReview();
+  }
+  goStep(from + 1);
+}
+
+function prevStep(from) { goStep(from - 1); }
+
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-item').forEach(s => { s.classList.remove('active'); s.classList.remove('completed'); });
+  document.getElementById('step-' + n).classList.add('active');
+  document.getElementById('si-' + n).classList.add('active');
+  for (let i = 1; i < n; i++) {
+    document.getElementById('si-' + i).classList.add('completed');
+    document.getElementById('si-' + i).querySelector('.step-circle').innerHTML = '<i class="fas fa-check" style="font-size:.7rem"></i>';
+  }
+  window.scrollTo(0, 0);
+}
+
+function populateReview() {
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0,10).replace(/-/g,'');
+  const rand = Math.floor(10000 + Math.random() * 89999);
+  document.getElementById('ref-num').textContent = 'GS-' + dateStr + '-' + rand;
+
+  document.getElementById('rv-s-name').textContent = document.getElementById('s-name').value || '—';
+  document.getElementById('rv-s-email').textContent = document.getElementById('s-email').value || '—';
+  document.getElementById('rv-s-phone').textContent = document.getElementById('s-phone').value || '—';
+  document.getElementById('rv-s-country').textContent = document.getElementById('s-country').value || '—';
+  document.getElementById('rv-r-name').textContent = document.getElementById('r-name').value || '—';
+  document.getElementById('rv-r-phone').textContent = document.getElementById('r-phone').value || '—';
+  const rcSel = document.getElementById('r-country');
+  document.getElementById('rv-r-country').textContent = rcSel.options[rcSel.selectedIndex]?.text || '—';
+  document.getElementById('rv-r-city').textContent = document.getElementById('r-city').value || '—';
+  document.getElementById('rv-p-type').textContent = document.getElementById('p-type').value || '—';
+  document.getElementById('rv-p-weight').textContent = (document.getElementById('p-weight').value || '—') + ' kg';
+  const sp = document.querySelector('input[name=speed]:checked');
+  document.getElementById('rv-speed').textContent = sp ? SPEED_NAMES[sp.value] : '—';
+  document.getElementById('rv-total').textContent = document.getElementById('pr-total').textContent;
+}
+
+function placeOrder() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…';
+  setTimeout(() => {
+    const ref = document.getElementById('ref-num').textContent;
+    document.querySelector('#step-4 .card').innerHTML = `
+      <div style="text-align:center;padding:48px 20px">
+        <div style="width:80px;height:80px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2rem;color:#059669"><i class="fas fa-check"></i></div>
+        <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:8px">Order Placed!</h3>
+        <p style="color:#64748b;margin-bottom:6px">Your reference number:</p>
+        <div style="background:#eff6ff;border:2px solid #0052CC;border-radius:10px;padding:12px;font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:1.2rem;margin-bottom:20px">${ref}</div>
+        <p style="color:#64748b;max-width:420px;margin:0 auto 24px;font-size:.9rem">Ship your parcel to our office. We'll send you the drop-off address by email. Track your shipment using the reference number above.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="tracking.html?ref=${ref}" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:600"><i class="fas fa-search-location"></i> Track Shipment</a>
+          <a href="history.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:#f1f5f9;color:#374151;border-radius:8px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:600"><i class="fas fa-list"></i> My Shipments</a>
+        </div>
+      </div>`;
+  }, 2000);
+}
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+calcPrice();
+</script>
+</body>
+</html>
