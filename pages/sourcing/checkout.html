@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Securely complete your purchase on GlobexSky. Enter shipping details, choose a payment method, and confirm your order."/>
+  <title>Checkout | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+
+    /* HEADER */
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark)}
+    .logo-accent{color:var(--primary)}
+    .nav-controls{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;padding:8px;transition:color .2s}
+    .nav-cart:hover{color:var(--primary)}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:var(--secondary);color:var(--white);font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+    /* PROGRESS STEPPER */
+    .checkout-progress{background:var(--white);border-bottom:1px solid var(--border);padding:24px}
+    .stepper{display:flex;align-items:center;justify-content:center;max-width:800px;margin:0 auto;gap:0}
+    .step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative}
+    .step:not(:last-child)::after{content:'';position:absolute;top:20px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+    .step.done:not(:last-child)::after,.step.active:not(:last-child)::after{background:var(--primary)}
+    .step-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;position:relative;z-index:1;transition:all .3s;border:2px solid var(--border);background:var(--white);color:var(--muted)}
+    .step.done .step-circle{background:var(--accent);border-color:var(--accent);color:var(--white)}
+    .step.active .step-circle{background:var(--primary);border-color:var(--primary);color:var(--white);box-shadow:0 0 0 4px rgba(0,82,204,.15)}
+    .step-label{font-size:.78rem;font-weight:500;color:var(--muted);white-space:nowrap;text-align:center}
+    .step.active .step-label{color:var(--primary);font-weight:600}
+    .step.done .step-label{color:var(--accent)}
+
+    /* MAIN LAYOUT */
+    .checkout-layout{max-width:1200px;margin:32px auto;padding:0 24px;display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}
+
+    /* FORM CARDS */
+    .form-card{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
+    .form-card-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .form-card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+    .form-card-icon.blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:var(--primary)}
+    .form-card-icon.orange{background:linear-gradient(135deg,#ffedd5,#fed7aa);color:var(--secondary)}
+    .form-card-icon.green{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669}
+    .form-card-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:1rem;color:var(--dark)}
+    .form-card-body{padding:24px}
+
+    /* STEP PANELS */
+    .step-panel{display:none}
+    .step-panel.active{display:block}
+
+    /* FORM ELEMENTS */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:1/-1}
+    .form-label{font-size:.85rem;font-weight:500;color:#374151}
+    .form-label .required{color:#ef4444;margin-left:2px}
+    .form-input,.form-select{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:.9rem;font-family:'Inter',sans-serif;color:var(--dark);outline:none;transition:all .2s;background:var(--white);width:100%}
+    .form-input:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,82,204,.08)}
+    .form-input::placeholder{color:#cbd5e1}
+    .form-select{cursor:pointer}
+
+    /* PAYMENT METHODS */
+    .payment-methods{display:flex;flex-direction:column;gap:12px}
+    .payment-radio{display:none}
+    .payment-card{border:2px solid var(--border);border-radius:14px;padding:16px 20px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:0}
+    .payment-radio:checked + .payment-card{border-color:var(--primary);background:#f0f4ff;box-shadow:0 0 0 3px rgba(0,82,204,.08)}
+    .payment-card-top{display:flex;align-items:center;gap:14px}
+    .payment-card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+    .payment-card-info{flex:1}
+    .payment-card-name{font-weight:600;color:var(--dark);font-size:.92rem}
+    .payment-card-desc{color:var(--muted);font-size:.78rem}
+    .payment-card-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+    .payment-radio:checked + .payment-card .payment-card-check{background:var(--primary);border-color:var(--primary);color:var(--white)}
+    .card-fields{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:none;gap:14px;flex-direction:column}
+    .payment-radio:checked + .payment-card .card-fields{display:flex}
+    .card-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+    /* ORDER REVIEW */
+    .review-items{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
+    .review-item{display:flex;align-items:center;gap:14px;padding:14px;background:#f8faff;border-radius:12px;border:1px solid var(--border)}
+    .review-item-img{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:1.4rem;flex-shrink:0}
+    .review-item-details{flex:1;min-width:0}
+    .review-item-name{font-weight:600;font-size:.88rem;color:var(--dark);margin-bottom:3px}
+    .review-item-meta{font-size:.78rem;color:var(--muted)}
+    .review-item-price{font-family:'Poppins',sans-serif;font-weight:700;color:var(--primary);font-size:.92rem;white-space:nowrap}
+    .review-address-box{background:#f8faff;border:1px solid var(--border);border-radius:12px;padding:16px;font-size:.88rem;color:#374151;line-height:1.8}
+
+    /* CONFIRMATION */
+    .confirmation{text-align:center;padding:48px 24px}
+    .confirmation-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#d1fae5,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#059669;margin:0 auto 24px}
+    .confirmation h2{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:var(--dark);margin-bottom:10px}
+    .confirmation p{color:var(--muted);font-size:.95rem;margin-bottom:6px}
+    .order-number-box{background:linear-gradient(135deg,#f0f4ff,#e8edff);border:1px solid #c7d2fe;border-radius:12px;padding:16px 24px;display:inline-block;margin:20px 0}
+    .order-number-label{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+    .order-number-value{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:var(--primary);letter-spacing:1px}
+    .confirmation-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+    .btn-track{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:var(--white);padding:12px 24px;border-radius:10px;font-weight:600;font-size:.9rem;transition:all .2s}
+    .btn-track:hover{background:#003d99}
+    .btn-continue-shop{display:inline-flex;align-items:center;gap:8px;background:none;color:var(--primary);border:1.5px solid var(--primary);padding:12px 24px;border-radius:10px;font-weight:600;font-size:.9rem;transition:all .2s}
+    .btn-continue-shop:hover{background:var(--primary);color:var(--white)}
+
+    /* NAV BUTTONS */
+    .step-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+    .btn-next{background:var(--primary);color:var(--white);border:none;padding:13px 28px;border-radius:11px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:8px}
+    .btn-next:hover{background:#003d99;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,82,204,.25)}
+    .btn-back{background:none;color:var(--muted);border:1.5px solid var(--border);padding:12px 24px;border-radius:11px;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px}
+    .btn-back:hover{border-color:var(--primary);color:var(--primary)}
+
+    /* ORDER SUMMARY SIDEBAR */
+    .sidebar-summary{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;position:sticky;top:80px}
+    .sidebar-summary-header{background:linear-gradient(135deg,var(--dark),#1a1f4e);color:var(--white);padding:20px 24px}
+    .sidebar-summary-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px}
+    .sidebar-items{padding:16px 20px;border-bottom:1px solid var(--border)}
+    .sidebar-item{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .sidebar-item:last-child{margin-bottom:0}
+    .sidebar-item-img{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:1rem;flex-shrink:0}
+    .sidebar-item-name{font-size:.82rem;font-weight:500;color:var(--dark);flex:1;line-height:1.3}
+    .sidebar-item-price{font-size:.85rem;font-weight:700;color:var(--primary);font-family:'Poppins',sans-serif;white-space:nowrap}
+    .sidebar-totals{padding:16px 20px}
+    .sidebar-row{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:8px;color:#374151}
+    .sidebar-row.total{border-top:2px solid var(--border);padding-top:12px;margin-top:4px}
+    .sidebar-row.total span:first-child{font-weight:700;font-family:'Poppins',sans-serif;color:var(--dark)}
+    .sidebar-row.total span:last-child{font-weight:800;color:var(--primary);font-family:'Poppins',sans-serif;font-size:1.05rem}
+    .trust-badges{padding:14px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+    .trust-badge{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted)}
+    .trust-badge i{color:var(--accent);width:16px}
+
+    /* FOOTER */
+    .site-footer{background:var(--dark);color:rgba(255,255,255,.85);margin-top:60px}
+    .footer-main{padding:60px 24px 40px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;max-width:1400px;margin:0 auto}
+    .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .footer-tagline{color:rgba(255,255,255,.5);font-size:.88rem;margin-bottom:18px}
+    .footer-social{display:flex;gap:10px}
+    .social-link{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);transition:all .2s;font-size:.9rem}
+    .social-link:hover{background:var(--primary);color:var(--white)}
+    .footer-col-title{font-family:'Poppins',sans-serif;font-weight:600;color:var(--white);font-size:.95rem;margin-bottom:16px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .footer-links li a{color:rgba(255,255,255,.6);font-size:.88rem;transition:color .2s;display:flex;align-items:center;gap:6px}
+    .footer-links li a:hover{color:var(--accent)}
+    .footer-links li a i{font-size:.65rem;color:var(--accent)}
+    .footer-contact{font-style:normal;display:flex;flex-direction:column;gap:10px}
+    .footer-contact-item{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.6);font-size:.88rem}
+    .footer-contact-item i{color:var(--accent);width:16px}
+    .footer-contact-item a{color:rgba(255,255,255,.6);transition:color .2s}
+    .footer-contact-item a:hover{color:var(--accent)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:20px 24px}
+    .footer-bottom-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .footer-copyright{color:rgba(255,255,255,.4);font-size:.82rem}
+    .footer-legal-links{display:flex;gap:20px}
+    .footer-legal-links a{color:rgba(255,255,255,.4);font-size:.82rem;transition:color .2s}
+    .footer-legal-links a:hover{color:var(--accent)}
+    .container{max-width:1400px;margin:0 auto}
+
+    @media(max-width:900px){.checkout-layout{grid-template-columns:1fr}.sidebar-summary{position:static}}
+    @media(max-width:640px){.form-grid{grid-template-columns:1fr}.stepper{gap:4px}.step-label{font-size:.68rem}.card-row{grid-template-columns:1fr}.checkout-layout{padding:0 16px}.footer-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo" aria-label="GlobexSky Home">
+        <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/>
+          <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/>
+          <line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/>
+          <line x1="2" y1="11" x2="34" y2="11" stroke="#0052CC" stroke-width="1"/>
+          <line x1="2" y1="25" x2="34" y2="25" stroke="#0052CC" stroke-width="1"/>
+          <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+        </svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="cart.html" class="nav-cart" aria-label="Shopping cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">2</span></a>
+        <a href="../../pages/auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../pages/auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- PROGRESS STEPPER -->
+  <div class="checkout-progress" aria-label="Checkout progress">
+    <div class="stepper" role="list">
+      <div class="step active" id="step-indicator-1" role="listitem" aria-label="Step 1: Shipping">
+        <div class="step-circle" id="step-circle-1"><i class="fas fa-truck"></i></div>
+        <div class="step-label">Shipping</div>
+      </div>
+      <div class="step" id="step-indicator-2" role="listitem" aria-label="Step 2: Payment">
+        <div class="step-circle" id="step-circle-2"><i class="fas fa-credit-card"></i></div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step" id="step-indicator-3" role="listitem" aria-label="Step 3: Review">
+        <div class="step-circle" id="step-circle-3"><i class="fas fa-clipboard-list"></i></div>
+        <div class="step-label">Review</div>
+      </div>
+      <div class="step" id="step-indicator-4" role="listitem" aria-label="Step 4: Confirmation">
+        <div class="step-circle" id="step-circle-4"><i class="fas fa-check"></i></div>
+        <div class="step-label">Confirmed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT LAYOUT -->
+  <div class="checkout-layout">
+    <!-- MAIN CONTENT -->
+    <div>
+      <!-- STEP 1: SHIPPING -->
+      <div class="step-panel active" id="panel-1">
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-card-icon blue"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <div class="form-card-title">Shipping Address</div>
+              <div style="font-size:.78rem;color:#64748b">Where should we deliver your order?</div>
+            </div>
+          </div>
+          <div class="form-card-body">
+            <form id="shipping-form" novalidate>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="full-name">Full Name <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="full-name" placeholder="Jane Smith" required autocomplete="name"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="company">Company Name</label>
+                  <input type="text" class="form-input" id="company" placeholder="Acme Corp (optional)" autocomplete="organization"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+                  <input type="email" class="form-input" id="email" placeholder="jane@example.com" required autocomplete="email"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="phone">Phone Number <span class="required">*</span></label>
+                  <input type="tel" class="form-input" id="phone" placeholder="+1 (555) 000-0000" required autocomplete="tel"/>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label" for="address1">Address Line 1 <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="address1" placeholder="Street address, P.O. box" required autocomplete="address-line1"/>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label" for="address2">Address Line 2</label>
+                  <input type="text" class="form-input" id="address2" placeholder="Apartment, suite, unit, building (optional)" autocomplete="address-line2"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="country">Country / Region <span class="required">*</span></label>
+                  <select class="form-select" id="country" required autocomplete="country-name">
+                    <option value="">Select country</option>
+                    <option value="US" selected>🇺🇸 United States</option>
+                    <option value="GB">🇬🇧 United Kingdom</option>
+                    <option value="CA">🇨🇦 Canada</option>
+                    <option value="AU">🇦🇺 Australia</option>
+                    <option value="DE">🇩🇪 Germany</option>
+                    <option value="FR">🇫🇷 France</option>
+                    <option value="IN">🇮🇳 India</option>
+                    <option value="SG">🇸🇬 Singapore</option>
+                    <option value="JP">🇯🇵 Japan</option>
+                    <option value="BR">🇧🇷 Brazil</option>
+                    <option value="AE">🇦🇪 UAE</option>
+                    <option value="ZA">🇿🇦 South Africa</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="city">City <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="city" placeholder="New York" required autocomplete="address-level2"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="state">State / Province</label>
+                  <input type="text" class="form-input" id="state" placeholder="NY" autocomplete="address-level1"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="zip">ZIP / Postal Code <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="zip" placeholder="10001" required autocomplete="postal-code"/>
+                </div>
+              </div>
+              <!-- SHIPPING METHOD -->
+              <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
+                <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:var(--dark);margin-bottom:14px;"><i class="fas fa-shipping-fast" style="color:var(--primary);margin-right:6px"></i>Shipping Method</div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <label style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--primary);border-radius:12px;padding:14px 16px;background:#f0f4ff;cursor:pointer">
+                    <input type="radio" name="shipping-method" value="sea" checked style="accent-color:var(--primary);width:16px;height:16px">
+                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-ship" style="color:#0052CC;margin-right:6px"></i>Sea Freight (FCL/LCL)</div><div style="font-size:.78rem;color:var(--muted)">20–35 business days · Most economical for bulk</div></div>
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#16a34a;font-size:.9rem">FREE</div>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer">
+                    <input type="radio" name="shipping-method" value="air" style="accent-color:var(--primary);width:16px;height:16px">
+                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-plane" style="color:#FF6B35;margin-right:6px"></i>Air Freight Express</div><div style="font-size:.78rem;color:var(--muted)">5–8 business days · Best for urgent orders</div></div>
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.9rem">$480.00</div>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer">
+                    <input type="radio" name="shipping-method" value="express" style="accent-color:var(--primary);width:16px;height:16px">
+                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-bolt" style="color:#7c3aed;margin-right:6px"></i>DHL / FedEx Express</div><div style="font-size:.78rem;color:var(--muted)">3–5 business days · Door-to-door tracking</div></div>
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.9rem">$720.00</div>
+                  </label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="step-nav">
+          <a href="cart.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Cart</a>
+          <button class="btn-next" onclick="goStep(2)">Continue to Payment <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: PAYMENT -->
+      <div class="step-panel" id="panel-2">
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-card-icon orange"><i class="fas fa-credit-card"></i></div>
+            <div>
+              <div class="form-card-title">Payment Method</div>
+              <div style="font-size:.78rem;color:#64748b">Choose how you'd like to pay. All transactions are encrypted.</div>
+            </div>
+          </div>
+          <div class="form-card-body">
+            <div class="payment-methods">
+              <!-- CREDIT CARD -->
+              <div>
+                <input type="radio" name="payment" id="pay-card" class="payment-radio" checked/>
+                <label for="pay-card" class="payment-card">
+                  <div class="payment-card-top">
+                    <div class="payment-card-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">
+                      <i class="far fa-credit-card" style="color:#0052CC"></i>
+                    </div>
+                    <div class="payment-card-info">
+                      <div class="payment-card-name">Credit / Debit Card</div>
+                      <div class="payment-card-desc">Visa, Mastercard, Amex — Instant payment</div>
+                    </div>
+                    <div class="payment-card-check"><i class="fas fa-check" style="font-size:.7rem"></i></div>
+                  </div>
+                  <div class="card-fields">
+                    <div class="form-group full" style="width:100%">
+                      <label class="form-label" for="card-number">Card Number <span class="required">*</span></label>
+                      <input type="text" class="form-input" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number"/>
+                    </div>
+                    <div class="card-row">
+                      <div class="form-group">
+                        <label class="form-label" for="card-expiry">Expiry Date <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="card-expiry" placeholder="MM / YY" maxlength="7" autocomplete="cc-exp"/>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label" for="card-cvv">CVV <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="card-cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc"/>
+                      </div>
+                    </div>
+                    <div class="form-group" style="width:100%">
+                      <label class="form-label" for="card-name">Cardholder Name <span class="required">*</span></label>
+                      <input type="text" class="form-input" id="card-name" placeholder="Jane Smith" autocomplete="cc-name"/>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:#64748b">
+                      <i class="fas fa-lock" style="color:#00C9A7"></i> Your card details are encrypted and never stored on our servers.
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <!-- PAYPAL -->
+              <div>
+                <input type="radio" name="payment" id="pay-paypal" class="payment-radio"/>
+                <label for="pay-paypal" class="payment-card">
+                  <div class="payment-card-top">
+                    <div class="payment-card-icon" style="background:linear-gradient(135deg,#dbeafe,#93c5fd)">
+                      <i class="fab fa-paypal" style="color:#003087;font-size:1.5rem"></i>
+                    </div>
+                    <div class="payment-card-info">
+                      <div class="payment-card-name">PayPal</div>
+                      <div class="payment-card-desc">Pay via your PayPal account — buyer protection included</div>
+                    </div>
+                    <div class="payment-card-check"><i class="fas fa-check" style="font-size:.7rem"></i></div>
+                  </div>
+                  <div class="card-fields">
+                    <p style="font-size:.88rem;color:#374151">You'll be redirected to PayPal to complete your payment securely. Return to GlobexSky to confirm your order.</p>
+                  </div>
+                </label>
+              </div>
+              <!-- BANK TRANSFER -->
+              <div>
+                <input type="radio" name="payment" id="pay-bank" class="payment-radio"/>
+                <label for="pay-bank" class="payment-card">
+                  <div class="payment-card-top">
+                    <div class="payment-card-icon" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)">
+                      <i class="fas fa-university" style="color:#059669"></i>
+                    </div>
+                    <div class="payment-card-info">
+                      <div class="payment-card-name">Bank / Wire Transfer</div>
+                      <div class="payment-card-desc">T/T — 1–3 business days · Best for large orders</div>
+                    </div>
+                    <div class="payment-card-check"><i class="fas fa-check" style="font-size:.7rem"></i></div>
+                  </div>
+                  <div class="card-fields">
+                    <div style="background:#f0fdf9;border:1px solid #a7f3d0;border-radius:10px;padding:14px;font-size:.85rem;color:#374151;line-height:1.8">
+                      <div><strong>Bank Name:</strong> GlobexSky Trade Bank</div>
+                      <div><strong>Account Name:</strong> GlobexSky Inc.</div>
+                      <div><strong>Account No.:</strong> 1234-5678-9012</div>
+                      <div><strong>SWIFT/BIC:</strong> GSKYUS33XXX</div>
+                      <div><strong>Reference:</strong> Use your order number</div>
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <!-- ESCROW -->
+              <div>
+                <input type="radio" name="payment" id="pay-escrow" class="payment-radio"/>
+                <label for="pay-escrow" class="payment-card">
+                  <div class="payment-card-top">
+                    <div class="payment-card-icon" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)">
+                      <i class="fas fa-shield-halved" style="color:#7c3aed"></i>
+                    </div>
+                    <div class="payment-card-info">
+                      <div class="payment-card-name">Escrow (Trade Assurance)</div>
+                      <div class="payment-card-desc">Funds held securely until you confirm delivery</div>
+                    </div>
+                    <div class="payment-card-check"><i class="fas fa-check" style="font-size:.7rem"></i></div>
+                  </div>
+                  <div class="card-fields">
+                    <p style="font-size:.88rem;color:#374151">GlobexSky holds your payment in a secure escrow account until you confirm the order has been received and meets your specifications. Full buyer protection on orders over $1,000.</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn-next" onclick="goStep(3)">Review Order <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: REVIEW -->
+      <div class="step-panel" id="panel-3">
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-card-icon green"><i class="fas fa-clipboard-check"></i></div>
+            <div>
+              <div class="form-card-title">Review Your Order</div>
+              <div style="font-size:.78rem;color:#64748b">Please verify all details before placing your order.</div>
+            </div>
+          </div>
+          <div class="form-card-body">
+            <div class="review-items">
+              <div class="review-item">
+                <div class="review-item-img"><i class="fas fa-headphones"></i></div>
+                <div class="review-item-details">
+                  <div class="review-item-name">Wireless Bluetooth Headphones Pro X500</div>
+                  <div class="review-item-meta">SoundHarvest Electronics · Qty: 100 units · $15.40/unit</div>
+                </div>
+                <div class="review-item-price">$1,540.00</div>
+              </div>
+              <div class="review-item">
+                <div class="review-item-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669"><i class="fas fa-mobile-screen"></i></div>
+                <div class="review-item-details">
+                  <div class="review-item-name">Portable Bluetooth Speaker 360° Surround</div>
+                  <div class="review-item-meta">AcoustiTech Manufacturing · Qty: 200 units · $14.20/unit</div>
+                </div>
+                <div class="review-item-price">$2,840.00</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px">
+              <div>
+                <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:.88rem;color:var(--dark);margin-bottom:10px;"><i class="fas fa-location-dot" style="color:#0052CC;margin-right:6px"></i>Shipping Address</div>
+                <div class="review-address-box">
+                  <div id="review-name">Jane Smith</div>
+                  <div id="review-addr">123 Commerce Street, Suite 400</div>
+                  <div id="review-city">New York, NY 10001</div>
+                  <div id="review-country">🇺🇸 United States</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:.88rem;color:var(--dark);margin-bottom:10px;"><i class="fas fa-credit-card" style="color:#FF6B35;margin-right:6px"></i>Payment Method</div>
+                <div class="review-address-box">
+                  <div id="review-payment"><i class="far fa-credit-card" style="margin-right:6px;color:#0052CC"></i> Credit / Debit Card</div>
+                  <div style="color:#64748b;font-size:.82rem;margin-top:4px;">Ending in •••• 3456</div>
+                </div>
+              </div>
+            </div>
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin-top:20px;font-size:.85rem;color:#92400e;display:flex;align-items:flex-start;gap:10px">
+              <i class="fas fa-triangle-exclamation" style="color:#f59e0b;margin-top:2px;flex-shrink:0"></i>
+              <span>By placing your order you agree to GlobexSky's <a href="../legal/terms.html" style="color:#0052CC">Terms of Service</a> and <a href="../legal/privacy.html" style="color:#0052CC">Privacy Policy</a>. International trade regulations apply.</span>
+            </div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn-next" style="background:#16a34a" onclick="goStep(4)"><i class="fas fa-lock"></i> Place Order — $4,380.00</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: CONFIRMATION -->
+      <div class="step-panel" id="panel-4">
+        <div class="form-card">
+          <div class="confirmation">
+            <div class="confirmation-icon"><i class="fas fa-check"></i></div>
+            <h2>Order Confirmed! 🎉</h2>
+            <p>Thank you for your purchase. Your order has been placed successfully.</p>
+            <p style="font-size:.85rem">A confirmation email has been sent to <strong>jane@example.com</strong></p>
+            <div class="order-number-box">
+              <div class="order-number-label">Your Order Number</div>
+              <div class="order-number-value">#GS-2025-48291</div>
+            </div>
+            <div style="background:#f8faff;border-radius:12px;padding:16px 24px;margin:0 auto;max-width:400px;text-align:left;font-size:.85rem;color:#374151;line-height:2;border:1px solid var(--border)">
+              <div><i class="fas fa-calendar-check" style="color:#0052CC;margin-right:8px;width:16px"></i><strong>Order Date:</strong> <span id="order-date"></span></div>
+              <div><i class="fas fa-truck" style="color:#00C9A7;margin-right:8px;width:16px"></i><strong>Shipping:</strong> Sea Freight FCL/LCL</div>
+              <div><i class="fas fa-clock" style="color:#FF6B35;margin-right:8px;width:16px"></i><strong>Est. Delivery:</strong> 25–35 business days</div>
+              <div><i class="fas fa-shield-halved" style="color:#7c3aed;margin-right:8px;width:16px"></i><strong>Trade Assurance:</strong> Active</div>
+            </div>
+            <div class="confirmation-actions">
+              <a href="order-tracking.html" class="btn-track"><i class="fas fa-map-pin"></i> Track Order</a>
+              <a href="products.html" class="btn-continue-shop"><i class="fas fa-store"></i> Continue Shopping</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR SUMMARY -->
+    <aside aria-label="Order summary" id="sidebar-summary">
+      <div class="sidebar-summary">
+        <div class="sidebar-summary-header">
+          <div class="sidebar-summary-title"><i class="fas fa-shopping-bag"></i> Order Summary</div>
+        </div>
+        <div class="sidebar-items">
+          <div class="sidebar-item">
+            <div class="sidebar-item-img"><i class="fas fa-headphones"></i></div>
+            <div class="sidebar-item-name">Wireless BT Headphones X500 × 100</div>
+            <div class="sidebar-item-price">$1,540.00</div>
+          </div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669"><i class="fas fa-mobile-screen"></i></div>
+            <div class="sidebar-item-name">Bluetooth Speaker 360° × 200</div>
+            <div class="sidebar-item-price">$2,840.00</div>
+          </div>
+        </div>
+        <div class="sidebar-totals">
+          <div class="sidebar-row"><span>Subtotal</span><span>$4,380.00</span></div>
+          <div class="sidebar-row"><span>Shipping</span><span style="color:#16a34a">Free</span></div>
+          <div class="sidebar-row"><span>Tax</span><span style="color:#64748b">At checkout</span></div>
+          <div class="sidebar-row total"><span>Total</span><span>$4,380.00</span></div>
+        </div>
+        <div class="trust-badges">
+          <div class="trust-badge"><i class="fas fa-shield-halved"></i> 256-bit SSL Encryption</div>
+          <div class="trust-badge"><i class="fas fa-rotate-left"></i> 30-Day Return Guarantee</div>
+          <div class="trust-badge"><i class="fas fa-headset"></i> 24/7 Buyer Support</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand-col">
+          <a href="../../index.html" class="footer-logo" aria-label="GlobexSky Home">
+            <svg class="logo-icon" width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="18" cy="18" r="17" stroke="#fff" stroke-width="2" fill="none"/>
+              <ellipse cx="18" cy="18" rx="8" ry="17" stroke="#fff" stroke-width="1.5" fill="none"/>
+              <line x1="1" y1="18" x2="35" y2="18" stroke="#fff" stroke-width="1.5"/>
+              <line x1="2" y1="11" x2="34" y2="11" stroke="#fff" stroke-width="1"/>
+              <line x1="2" y1="25" x2="34" y2="25" stroke="#fff" stroke-width="1"/>
+              <path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/>
+            </svg>
+            <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          </a>
+          <p class="footer-tagline">Your Global Trade Gateway.</p>
+          <nav class="footer-social" aria-label="Social media links">
+            <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="../../index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
+            <li><a href="../shipment/index.html"><i class="fas fa-chevron-right"></i> Shipping</a></li>
+            <li><a href="../auth/login.html"><i class="fas fa-chevron-right"></i> Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Contact Us</h3>
+          <address class="footer-contact">
+            <p class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:support@globexsky.com">support@globexsky.com</a></p>
+            <p class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+18005551234">+1 (800) 555-1234</a></p>
+          </address>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+        <nav class="footer-legal-links">
+          <a href="../legal/privacy.html">Privacy Policy</a>
+          <a href="../legal/terms.html">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cart.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+  document.getElementById('order-date').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  let currentStep = 1;
+
+  function goStep(n) {
+    document.getElementById('panel-' + currentStep).classList.remove('active');
+    document.getElementById('step-indicator-' + currentStep).classList.remove('active');
+    if (n > currentStep) {
+      document.getElementById('step-indicator-' + currentStep).classList.add('done');
+    } else {
+      document.getElementById('step-indicator-' + currentStep).classList.remove('done');
+    }
+    currentStep = n;
+    document.getElementById('panel-' + currentStep).classList.add('active');
+    document.getElementById('step-indicator-' + currentStep).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+
+    if (n === 3) {
+      const name = document.getElementById('full-name').value || 'Jane Smith';
+      const addr1 = document.getElementById('address1').value || '123 Commerce Street, Suite 400';
+      const city = document.getElementById('city').value || 'New York';
+      const st = document.getElementById('state').value || 'NY';
+      const zip = document.getElementById('zip').value || '10001';
+      const country = document.getElementById('country');
+      const countryText = country.options[country.selectedIndex]?.text || '🇺🇸 United States';
+      document.getElementById('review-name').textContent = name;
+      document.getElementById('review-addr').textContent = addr1;
+      document.getElementById('review-city').textContent = [city, st, zip].filter(Boolean).join(', ');
+      document.getElementById('review-country').textContent = countryText;
+      const payRadios = document.querySelectorAll('input[name="payment"]');
+      let payName = 'Credit / Debit Card';
+      payRadios.forEach(r => { if (r.checked) { const label = r.nextElementSibling.querySelector('.payment-card-name'); if (label) payName = label.textContent; } });
+      document.getElementById('review-payment').innerHTML = '<i class="far fa-credit-card" style="margin-right:6px;color:#0052CC"></i>' + payName;
+    }
+
+    if (n === 4) {
+      document.getElementById('step-indicator-3').classList.add('done');
+      document.getElementById('step-indicator-3').classList.remove('active');
+      document.getElementById('step-indicator-4').classList.add('active');
+      if (document.getElementById('sidebar-summary')) document.getElementById('sidebar-summary').style.display = 'none';
+    }
+  }
+</script>
+</body>
+</html>
