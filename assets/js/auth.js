@@ -8,6 +8,7 @@
  */
 
 const AUTH_KEY = 'globexUser';
+const SESSION_KEY = 'globexSession';
 
 /* ─────────────────────────────────────────────
    SESSION HELPERS
@@ -30,9 +31,16 @@ function saveUser(user) {
   localStorage.setItem(AUTH_KEY, JSON.stringify(user));
 }
 
+/** Persist a session (token + user) to localStorage. */
+function saveSession(token, refreshToken, user) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ token, refresh_token: refreshToken }));
+  saveUser(user);
+}
+
 /** Remove the user session from localStorage. */
 function clearUser() {
   localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(SESSION_KEY);
 }
 
 /* ─────────────────────────────────────────────
@@ -221,51 +229,82 @@ function validateRegisterForm(form) {
 ───────────────────────────────────────────── */
 
 /**
- * Simulate a login by storing a mock user in localStorage.
+ * Attempt real API login; falls back to mock login in development.
  * @param {string} email
- * @param {string} _password - Not stored; included for API parity.
+ * @param {string} password
  */
-function mockLogin(email, _password) {
+async function mockLogin(email, password) {
+  // Try real API if available
+  if (window.API) {
+    try {
+      const res = await window.API.auth.login(email, password);
+      const { token, refresh_token, user } = res.data;
+      const profile = user.profile || {};
+      const userData = {
+        name: profile.full_name || email.split('@')[0],
+        email: user.email,
+        avatar: profile.avatar_url || '',
+        role: profile.role || 'buyer',
+        id: user.id,
+        loggedInAt: new Date().toISOString(),
+      };
+      saveSession(token, refresh_token, userData);
+      updateNavUI();
+      closeLoginModal();
+      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Welcome back, ${userData.name}!`, 'success');
+      return;
+    } catch (err) {
+      const msg = err.message || 'Login failed. Please check your credentials.';
+      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
+      return;
+    }
+  }
+
+  // Fallback mock (development without backend)
   const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-  const user = {
-    name,
-    email: email.trim().toLowerCase(),
-    avatar: '',
-    loggedInAt: new Date().toISOString(),
-  };
+  const user = { name, email: email.trim().toLowerCase(), avatar: '', loggedInAt: new Date().toISOString() };
   saveUser(user);
   updateNavUI();
   closeLoginModal();
-
-  if (window.GlobexSky?.showToast) {
-    window.GlobexSky.showToast(`Welcome back, ${user.name}!`, 'success');
-  }
+  if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Welcome back, ${user.name}!`, 'success');
 }
 
 /**
- * Simulate registration and auto-login.
+ * Attempt real API registration; falls back to mock in development.
  * @param {string} name
  * @param {string} email
+ * @param {string} password
+ * @param {string} role
  */
-function mockRegister(name, email) {
-  const user = {
-    name: name.trim(),
-    email: email.trim().toLowerCase(),
-    avatar: '',
-    registeredAt: new Date().toISOString(),
-  };
+async function mockRegister(name, email, password = '', role = 'buyer') {
+  if (window.API) {
+    try {
+      await window.API.auth.register(name, email, password, role);
+      closeRegisterModal();
+      if (window.GlobexSky?.showToast) {
+        window.GlobexSky.showToast('Account created! Please check your email to verify your account.', 'success');
+      }
+      return;
+    } catch (err) {
+      const msg = err.message || 'Registration failed. Please try again.';
+      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
+      return;
+    }
+  }
+
+  // Fallback mock
+  const user = { name: name.trim(), email: email.trim().toLowerCase(), avatar: '', registeredAt: new Date().toISOString() };
   saveUser(user);
   updateNavUI();
   closeRegisterModal();
-
-  if (window.GlobexSky?.showToast) {
-    window.GlobexSky.showToast(`Account created! Welcome, ${user.name}!`, 'success');
-  }
+  if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Account created! Welcome, ${user.name}!`, 'success');
 }
 
 /** Log out the current user. */
-function logout() {
-  const user = getCurrentUser();
+async function logout() {
+  if (window.API) {
+    try { await window.API.auth.logout(); } catch (_) { /* ignore */ }
+  }
   clearUser();
   updateNavUI();
 
@@ -378,7 +417,9 @@ function initAuthEvents() {
 
       const name = registerForm.querySelector('[name="name"]')?.value || '';
       const email = registerForm.querySelector('[name="email"], input[type="email"]')?.value || '';
-      mockRegister(name, email);
+      const password = registerForm.querySelector('[name="password"]')?.value || '';
+      const role = registerForm.querySelector('[name="role"]')?.value || 'buyer';
+      mockRegister(name, email, password, role);
     });
   }
 
