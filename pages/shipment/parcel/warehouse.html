@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Virtual Warehouse – GlobexSky Parcel</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+.btn-logout{background:#ef4444;color:#fff}
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:40px 24px}
+.hero-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#fff;margin-bottom:4px}
+.hero-sub{color:rgba(255,255,255,.75);font-size:.9rem}
+.btn-new{padding:12px 24px;background:#FF6B35;color:#fff;border-radius:10px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;transition:background .2s}
+.btn-new:hover{background:#e85a2a}
+.btn-consolidate{padding:12px 24px;background:#00C9A7;color:#fff;border-radius:10px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;transition:background .2s}
+.btn-consolidate:hover{background:#00a98c}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+.stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.stat-icon-blue{background:#eff6ff;color:#0052CC}
+.stat-icon-green{background:#d1fae5;color:#059669}
+.stat-icon-orange{background:#fff7ed;color:#f97316}
+.stat-icon-purple{background:#fdf4ff;color:#9333ea}
+.stat-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;line-height:1}
+.stat-label{font-size:.78rem;color:#64748b;margin-top:3px}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px}
+.warehouse-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.wh-tab{padding:8px 20px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.wh-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+.parcel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.parcel-card{border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;transition:all .2s}
+.parcel-card:hover{border-color:#c7d7f0;box-shadow:0 4px 16px rgba(0,82,204,.08)}
+.parcel-card.selected{border-color:#0052CC;background:#f8fbff}
+.parcel-photo{width:100%;height:120px;border-radius:10px;background:linear-gradient(135deg,#eff6ff,#e0edff);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:2.5rem;position:relative}
+.parcel-photo-badge{position:absolute;top:8px;right:8px}
+.parcel-id{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.9rem;margin-bottom:4px}
+.parcel-store{font-size:.8rem;color:#64748b;margin-bottom:10px}
+.parcel-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.meta-item label{font-size:.7rem;color:#64748b;display:block;margin-bottom:1px}
+.meta-item span{font-size:.82rem;font-weight:600;color:#0a0e27}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.73rem;font-weight:600}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-info{background:#eff6ff;color:#0052CC}
+.badge-warning{background:#fff7ed;color:#f97316}
+.parcel-actions{display:flex;gap:8px}
+.btn-sm{padding:8px 14px;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:none;border:none;display:flex;align-items:center;gap:5px;transition:all .2s}
+.btn-sm-primary{background:#eff6ff;color:#0052CC}
+.btn-sm-success{background:#d1fae5;color:#059669}
+.btn-sm-purple{background:#fdf4ff;color:#9333ea}
+.select-cb{width:20px;height:20px;accent-color:#0052CC;cursor:pointer}
+.selected-actions{background:#0052CC;color:#fff;border-radius:12px;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;display:none}
+.selected-actions.visible{display:flex}
+.btn-forward{padding:12px 24px;background:#FF6B35;color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:700;cursor:pointer;font-size:.9rem;display:flex;align-items:center;gap:8px;transition:background .2s}
+.btn-forward:hover{background:#e85a2a}
+.storage-bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-top:6px}
+.storage-fill{height:100%;background:linear-gradient(90deg,#0052CC,#00C9A7);border-radius:4px}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px;text-align:center}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem}
+@media(max-width:768px){.nav-links{display:none}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Parcel Home</a>
+        <a href="new-parcel.html">New Parcel</a>
+        <a href="tracking.html">Track</a>
+        <a href="warehouse.html" class="active">Warehouse</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+      <div class="nav-controls">
+        <a href="../../../pages/auth/login.html" class="btn-nav btn-logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-title"><i class="fas fa-warehouse"></i> My Virtual Warehouse</h1>
+      <p class="hero-sub">All your parcels stored at our global warehouses — ready to forward</p>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="new-parcel.html" class="btn-new"><i class="fas fa-plus"></i> Add Parcel</a>
+      <a href="consolidation.html" class="btn-consolidate"><i class="fas fa-compress-arrows-alt"></i> Consolidate</a>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue"><i class="fas fa-boxes"></i></div>
+        <div><div class="stat-value">5</div><div class="stat-label">Parcels in Storage</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-orange"><i class="fas fa-weight"></i></div>
+        <div><div class="stat-value">8.4 kg</div><div class="stat-label">Total Weight</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green"><i class="fas fa-dollar-sign"></i></div>
+        <div><div class="stat-value">$680</div><div class="stat-label">Total Declared Value</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-purple"><i class="fas fa-clock"></i></div>
+        <div><div class="stat-value">23 days</div><div class="stat-label">Avg. Storage Days</div></div>
+      </div>
+    </div>
+
+    <!-- STORAGE USAGE -->
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><i class="fas fa-hdd" style="color:#0052CC"></i> Storage Usage</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:4px"><span>🇺🇸 USA — New Jersey</span><span>3 parcels · 5.2 kg</span></div>
+          <div class="storage-bar"><div class="storage-fill" style="width:65%"></div></div>
+          <div style="font-size:.75rem;color:#64748b;margin-top:4px">Free until Apr 25, 2024 (30 days remaining)</div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:4px"><span>🇬🇧 UK — London</span><span>1 parcel · 1.8 kg</span></div>
+          <div class="storage-bar"><div class="storage-fill" style="width:22%" style="background:linear-gradient(90deg,#059669,#00C9A7)"></div></div>
+          <div style="font-size:.75rem;color:#64748b;margin-top:4px">Free until May 10, 2024 (45 days remaining)</div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:4px"><span>🇦🇪 UAE — Dubai</span><span>1 parcel · 1.4 kg</span></div>
+          <div class="storage-bar"><div class="storage-fill" style="width:18%;background:linear-gradient(90deg,#9333ea,#6d28d9)"></div></div>
+          <div style="font-size:.75rem;color:#64748b;margin-top:4px">Free until May 3, 2024 (38 days remaining)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PARCELS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-boxes" style="color:#0052CC"></i> Warehouse Inventory</div>
+        <div style="font-size:.82rem;color:#64748b">Select parcels to consolidate or forward</div>
+      </div>
+
+      <!-- WAREHOUSE FILTER TABS -->
+      <div class="warehouse-tabs">
+        <button class="wh-tab active" onclick="filterWH('all',this)"><i class="fas fa-globe"></i> All (5)</button>
+        <button class="wh-tab" onclick="filterWH('us',this)">🇺🇸 USA (3)</button>
+        <button class="wh-tab" onclick="filterWH('uk',this)">🇬🇧 UK (1)</button>
+        <button class="wh-tab" onclick="filterWH('uae',this)">🇦🇪 UAE (1)</button>
+      </div>
+
+      <!-- SELECTED ACTIONS BAR -->
+      <div class="selected-actions" id="selected-bar">
+        <div><i class="fas fa-check-square"></i> <span id="selected-count">0</span> parcels selected · <span id="selected-weight">0</span> kg total</div>
+        <div style="display:flex;gap:10px">
+          <a href="consolidation.html" class="btn-forward"><i class="fas fa-compress-arrows-alt"></i> Consolidate</a>
+          <button class="btn-forward" style="background:#059669"><i class="fas fa-paper-plane"></i> Forward Now</button>
+        </div>
+      </div>
+
+      <!-- PARCEL CARDS -->
+      <div class="parcel-grid">
+        <!-- Parcel 1 -->
+        <div class="parcel-card" data-wh="us" data-weight="2.1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input type="checkbox" class="select-cb" onchange="updateSelection()">
+            <div class="badge badge-success"><i class="fas fa-check"></i> Received</div>
+          </div>
+          <div class="parcel-photo">📱<span class="parcel-photo-badge"><span class="badge badge-info">🇺🇸 US</span></span></div>
+          <div class="parcel-id">GS-PAR-2024-512</div>
+          <div class="parcel-store"><i class="fas fa-store" style="color:#0052CC"></i> Amazon.com · Order #112-3456-789</div>
+          <div class="parcel-meta">
+            <div class="meta-item"><label>Item</label><span>iPhone 15 Case</span></div>
+            <div class="meta-item"><label>Weight</label><span>2.1 kg</span></div>
+            <div class="meta-item"><label>Arrived</label><span>Mar 18, 2024</span></div>
+            <div class="meta-item"><label>Value</label><span>$120</span></div>
+          </div>
+          <div class="parcel-actions">
+            <button class="btn-sm btn-sm-primary"><i class="fas fa-image"></i> Photos</button>
+            <a href="consolidation.html" class="btn-sm btn-sm-success"><i class="fas fa-compress-arrows-alt"></i> Consolidate</a>
+            <button class="btn-sm btn-sm-purple"><i class="fas fa-paper-plane"></i> Forward</button>
+          </div>
+        </div>
+
+        <!-- Parcel 2 -->
+        <div class="parcel-card" data-wh="us" data-weight="1.5">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input type="checkbox" class="select-cb" onchange="updateSelection()">
+            <div class="badge badge-success"><i class="fas fa-check"></i> Received</div>
+          </div>
+          <div class="parcel-photo">👗<span class="parcel-photo-badge"><span class="badge badge-info">🇺🇸 US</span></span></div>
+          <div class="parcel-id">GS-PAR-2024-508</div>
+          <div class="parcel-store"><i class="fas fa-store" style="color:#0052CC"></i> ASOS.com · Order #AOS-88721</div>
+          <div class="parcel-meta">
+            <div class="meta-item"><label>Item</label><span>Summer Dress x2</span></div>
+            <div class="meta-item"><label>Weight</label><span>1.5 kg</span></div>
+            <div class="meta-item"><label>Arrived</label><span>Mar 15, 2024</span></div>
+            <div class="meta-item"><label>Value</label><span>$95</span></div>
+          </div>
+          <div class="parcel-actions">
+            <button class="btn-sm btn-sm-primary"><i class="fas fa-image"></i> Photos</button>
+            <a href="consolidation.html" class="btn-sm btn-sm-success"><i class="fas fa-compress-arrows-alt"></i> Consolidate</a>
+            <button class="btn-sm btn-sm-purple"><i class="fas fa-paper-plane"></i> Forward</button>
+          </div>
+        </div>
+
+        <!-- Parcel 3 -->
+        <div class="parcel-card" data-wh="us" data-weight="1.6">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input type="checkbox" class="select-cb" onchange="updateSelection()">
+            <div class="badge badge-warning"><i class="fas fa-clock"></i> Processing</div>
+          </div>
+          <div class="parcel-photo">💻<span class="parcel-photo-badge"><span class="badge badge-info">🇺🇸 US</span></span></div>
+          <div class="parcel-id">GS-PAR-2024-515</div>
+          <div class="parcel-store"><i class="fas fa-store" style="color:#0052CC"></i> BestBuy.com · Order #BB-445123</div>
+          <div class="parcel-meta">
+            <div class="meta-item"><label>Item</label><span>Laptop Stand</span></div>
+            <div class="meta-item"><label>Weight</label><span>1.6 kg</span></div>
+            <div class="meta-item"><label>Arrived</label><span>Mar 20, 2024</span></div>
+            <div class="meta-item"><label>Value</label><span>$85</span></div>
+          </div>
+          <div class="parcel-actions">
+            <button class="btn-sm btn-sm-primary" disabled style="opacity:.5;cursor:not-allowed"><i class="fas fa-clock"></i> Processing</button>
+          </div>
+        </div>
+
+        <!-- Parcel 4 (UK) -->
+        <div class="parcel-card" data-wh="uk" data-weight="1.8">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input type="checkbox" class="select-cb" onchange="updateSelection()">
+            <div class="badge badge-success"><i class="fas fa-check"></i> Received</div>
+          </div>
+          <div class="parcel-photo">📚<span class="parcel-photo-badge"><span class="badge" style="background:#eff6ff;color:#0052CC">🇬🇧 UK</span></span></div>
+          <div class="parcel-id">GS-PAR-2024-499</div>
+          <div class="parcel-store"><i class="fas fa-store" style="color:#0052CC"></i> Waterstones.com · Order #WS-2281</div>
+          <div class="parcel-meta">
+            <div class="meta-item"><label>Item</label><span>Books x5</span></div>
+            <div class="meta-item"><label>Weight</label><span>1.8 kg</span></div>
+            <div class="meta-item"><label>Arrived</label><span>Mar 12, 2024</span></div>
+            <div class="meta-item"><label>Value</label><span>$180</span></div>
+          </div>
+          <div class="parcel-actions">
+            <button class="btn-sm btn-sm-primary"><i class="fas fa-image"></i> Photos</button>
+            <button class="btn-sm btn-sm-purple"><i class="fas fa-paper-plane"></i> Forward</button>
+          </div>
+        </div>
+
+        <!-- Parcel 5 (UAE) -->
+        <div class="parcel-card" data-wh="uae" data-weight="1.4">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input type="checkbox" class="select-cb" onchange="updateSelection()">
+            <div class="badge badge-success"><i class="fas fa-check"></i> Received</div>
+          </div>
+          <div class="parcel-photo">⌚<span class="parcel-photo-badge"><span class="badge" style="background:#fdf4ff;color:#9333ea">🇦🇪 UAE</span></span></div>
+          <div class="parcel-id">GS-PAR-2024-490</div>
+          <div class="parcel-store"><i class="fas fa-store" style="color:#0052CC"></i> Noon.com · Order #NOO-77821</div>
+          <div class="parcel-meta">
+            <div class="meta-item"><label>Item</label><span>Smartwatch</span></div>
+            <div class="meta-item"><label>Weight</label><span>1.4 kg</span></div>
+            <div class="meta-item"><label>Arrived</label><span>Mar 10, 2024</span></div>
+            <div class="meta-item"><label>Value</label><span>$200</span></div>
+          </div>
+          <div class="parcel-actions">
+            <button class="btn-sm btn-sm-primary"><i class="fas fa-image"></i> Photos</button>
+            <button class="btn-sm btn-sm-purple"><i class="fas fa-paper-plane"></i> Forward</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+function filterWH(wh, btn){
+  document.querySelectorAll('.wh-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.parcel-card').forEach(c => {
+    c.style.display = (wh === 'all' || c.dataset.wh === wh) ? 'block' : 'none';
+  });
+}
+function updateSelection(){
+  var cbs = document.querySelectorAll('.select-cb:checked');
+  var count = cbs.length;
+  var weight = 0;
+  cbs.forEach(cb => { weight += parseFloat(cb.closest('.parcel-card').dataset.weight)||0; });
+  document.getElementById('selected-count').textContent = count;
+  document.getElementById('selected-weight').textContent = weight.toFixed(1);
+  var bar = document.getElementById('selected-bar');
+  bar.classList.toggle('visible', count > 0);
+  document.querySelectorAll('.parcel-card').forEach(c => {
+    var cb = c.querySelector('.select-cb');
+    if(cb) c.classList.toggle('selected', cb.checked);
+  });
+}
+</script>
+</body>
+</html>

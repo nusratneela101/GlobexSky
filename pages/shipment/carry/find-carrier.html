@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Find a Carrier – GlobexSky Carry</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}
+.btn-signup{background:#0052CC;color:#fff}
+.search-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:48px 24px}
+.search-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px;text-align:center}
+.search-hero p{color:rgba(255,255,255,.8);text-align:center;margin-bottom:28px}
+.search-form{background:#fff;border-radius:16px;padding:24px;max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:16px;align-items:flex-end}
+.search-field{display:flex;flex-direction:column;gap:6px}
+.search-field label{font-size:.8rem;font-weight:600;color:#374151}
+.search-field input,.search-field select{padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Inter',sans-serif;font-size:.9rem;color:#0a0e27;outline:none;transition:border-color .2s}
+.search-field input:focus,.search-field select:focus{border-color:#0052CC}
+.btn-search{padding:12px 24px;background:#0052CC;color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;white-space:nowrap;transition:background .2s}
+.btn-search:hover{background:#003d99}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.results-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+.results-count{color:#64748b;font-size:.88rem}
+.sort-select{padding:8px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;color:#374151;outline:none}
+.carriers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.carrier-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:all .2s}
+.carrier-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,82,204,.12)}
+.carrier-top{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.carrier-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;flex-shrink:0}
+.carrier-name{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:1rem;margin-bottom:2px}
+.carrier-trips{font-size:.78rem;color:#64748b}
+.carrier-route{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#f8faff;border-radius:10px;margin-bottom:14px;font-size:.9rem;font-weight:600;color:#0a0e27}
+.carrier-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.meta-item label{font-size:.72rem;color:#64748b;display:block;margin-bottom:2px}
+.meta-item span{font-size:.88rem;font-weight:600;color:#0a0e27}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-info{background:#eff6ff;color:#0052CC}
+.badge-verified{background:#fdf4ff;color:#9333ea}
+.rating{display:flex;align-items:center;gap:4px;color:#f97316;font-weight:700;font-size:.9rem}
+.btn-request{width:100%;padding:11px;background:#0052CC;color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s}
+.btn-request:hover{background:#003d99}
+.filter-bar{background:#fff;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.filter-chip{padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;font-size:.82rem;font-weight:500;color:#374151;cursor:pointer;transition:all .2s}
+.filter-chip:hover,.filter-chip.active{background:#eff6ff;border-color:#0052CC;color:#0052CC}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px;text-align:center}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem}
+@media(max-width:768px){.nav-links{display:none}.search-form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Carry Home</a>
+        <a href="find-carrier.html" class="active">Find Carrier</a>
+        <a href="post-trip.html">Post a Trip</a>
+        <a href="tracking.html">Track</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+      <div class="nav-controls">
+        <a href="../../../pages/auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../../../pages/auth/register.html" class="btn-nav btn-signup">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- SEARCH HERO -->
+<div class="search-hero">
+  <h1><i class="fas fa-search"></i> Find a Carrier</h1>
+  <p>Search verified travelers going your route</p>
+  <form class="search-form" onsubmit="return false">
+    <div class="search-field">
+      <label>From</label>
+      <input type="text" placeholder="Origin city or airport" value="Dhaka">
+    </div>
+    <div class="search-field">
+      <label>To</label>
+      <input type="text" placeholder="Destination city" value="New York">
+    </div>
+    <div class="search-field">
+      <label>Travel Date</label>
+      <input type="date">
+    </div>
+    <button type="submit" class="btn-search"><i class="fas fa-search"></i> Search</button>
+  </form>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- FILTERS -->
+    <div class="filter-bar">
+      <span style="font-size:.82rem;font-weight:600;color:#374151">Filter:</span>
+      <button class="filter-chip active">All Carriers</button>
+      <button class="filter-chip">Verified Only</button>
+      <button class="filter-chip">Rating 4.5+</button>
+      <button class="filter-chip">10+ kg</button>
+      <button class="filter-chip">Departing Soon</button>
+    </div>
+
+    <div class="results-header">
+      <div>
+        <div class="results-title">Available Carriers</div>
+        <div class="results-count">Showing 6 of 24 results for Dhaka → New York</div>
+      </div>
+      <select class="sort-select">
+        <option>Sort: Departure Date</option>
+        <option>Sort: Price (Low to High)</option>
+        <option>Sort: Rating</option>
+        <option>Sort: Capacity</option>
+      </select>
+    </div>
+
+    <div class="carriers-grid">
+      <!-- Carrier 1 -->
+      <div class="carrier-card">
+        <div class="carrier-top">
+          <div class="carrier-avatar" style="background:linear-gradient(135deg,#0052CC,#00C9A7)">AR</div>
+          <div>
+            <div class="carrier-name">Ahmed Rahman</div>
+            <div class="carrier-trips"><span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span> · 47 trips</div>
+          </div>
+          <div class="rating" style="margin-left:auto"><i class="fas fa-star"></i> 4.9</div>
+        </div>
+        <div class="carrier-route"><i class="fas fa-plane-departure" style="color:#0052CC"></i> Dhaka <i class="fas fa-arrow-right" style="color:#94a3b8;font-size:.7rem"></i> New York</div>
+        <div class="carrier-meta">
+          <div class="meta-item"><label>Departure</label><span>Mar 25, 2024</span></div>
+          <div class="meta-item"><label>Available</label><span>12 kg</span></div>
+          <div class="meta-item"><label>Price</label><span style="color:#059669">$50/kg</span></div>
+          <div class="meta-item"><label>Airline</label><span>Biman BG-502</span></div>
+        </div>
+        <a href="request.html?carrier=ahmed" class="btn-request"><i class="fas fa-paper-plane"></i> Send Request</a>
+      </div>
+
+      <!-- Carrier 2 -->
+      <div class="carrier-card">
+        <div class="carrier-top">
+          <div class="carrier-avatar" style="background:linear-gradient(135deg,#f97316,#ef4444)">SK</div>
+          <div>
+            <div class="carrier-name">Sofia Karim</div>
+            <div class="carrier-trips"><span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span> · 23 trips</div>
+          </div>
+          <div class="rating" style="margin-left:auto"><i class="fas fa-star"></i> 4.8</div>
+        </div>
+        <div class="carrier-route"><i class="fas fa-plane-departure" style="color:#0052CC"></i> Dhaka <i class="fas fa-arrow-right" style="color:#94a3b8;font-size:.7rem"></i> New York (via London)</div>
+        <div class="carrier-meta">
+          <div class="meta-item"><label>Departure</label><span>Mar 28, 2024</span></div>
+          <div class="meta-item"><label>Available</label><span>6 kg</span></div>
+          <div class="meta-item"><label>Price</label><span style="color:#059669">$45/kg</span></div>
+          <div class="meta-item"><label>Airline</label><span>Emirates EK-582</span></div>
+        </div>
+        <a href="request.html?carrier=sofia" class="btn-request"><i class="fas fa-paper-plane"></i> Send Request</a>
+      </div>
+
+      <!-- Carrier 3 -->
+      <div class="carrier-card">
+        <div class="carrier-top">
+          <div class="carrier-avatar" style="background:linear-gradient(135deg,#9333ea,#6d28d9)">MI</div>
+          <div>
+            <div class="carrier-name">Mehedi Islam</div>
+            <div class="carrier-trips"><span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span> · 61 trips</div>
+          </div>
+          <div class="rating" style="margin-left:auto"><i class="fas fa-star"></i> 5.0</div>
+        </div>
+        <div class="carrier-route"><i class="fas fa-plane-departure" style="color:#0052CC"></i> Dhaka <i class="fas fa-arrow-right" style="color:#94a3b8;font-size:.7rem"></i> New York (JFK)</div>
+        <div class="carrier-meta">
+          <div class="meta-item"><label>Departure</label><span>Apr 2, 2024</span></div>
+          <div class="meta-item"><label>Available</label><span>18 kg</span></div>
+          <div class="meta-item"><label>Price</label><span style="color:#059669">$55/kg</span></div>
+          <div class="meta-item"><label>Airline</label><span>Qatar QR-642</span></div>
+        </div>
+        <a href="request.html?carrier=mehedi" class="btn-request"><i class="fas fa-paper-plane"></i> Send Request</a>
+      </div>
+
+      <!-- Carrier 4 -->
+      <div class="carrier-card">
+        <div class="carrier-top">
+          <div class="carrier-avatar" style="background:linear-gradient(135deg,#059669,#047857)">NA</div>
+          <div>
+            <div class="carrier-name">Nadia Akter</div>
+            <div class="carrier-trips"><span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span> · 15 trips</div>
+          </div>
+          <div class="rating" style="margin-left:auto"><i class="fas fa-star"></i> 4.7</div>
+        </div>
+        <div class="carrier-route"><i class="fas fa-plane-departure" style="color:#0052CC"></i> Dhaka <i class="fas fa-arrow-right" style="color:#94a3b8;font-size:.7rem"></i> New York (EWR)</div>
+        <div class="carrier-meta">
+          <div class="meta-item"><label>Departure</label><span>Apr 5, 2024</span></div>
+          <div class="meta-item"><label>Available</label><span>8 kg</span></div>
+          <div class="meta-item"><label>Price</label><span style="color:#059669">$48/kg</span></div>
+          <div class="meta-item"><label>Airline</label><span>Turkish TK-12</span></div>
+        </div>
+        <a href="request.html?carrier=nadia" class="btn-request"><i class="fas fa-paper-plane"></i> Send Request</a>
+      </div>
+
+      <!-- Carrier 5 -->
+      <div class="carrier-card">
+        <div class="carrier-top">
+          <div class="carrier-avatar" style="background:linear-gradient(135deg,#ca8a04,#b45309)">RH</div>
+          <div>
+            <div class="carrier-name">Rafiq Hossain</div>
+            <div class="carrier-trips"><span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span> · 38 trips</div>
+          </div>
+          <div class="rating" style="margin-left:auto"><i class="fas fa-star"></i> 4.6</div>
+        </div>
+        <div class="carrier-route"><i class="fas fa-plane-departure" style="color:#0052CC"></i> Dhaka <i class="fas fa-arrow-right" style="color:#94a3b8;font-size:.7rem"></i> New York (JFK)</div>
+        <div class="carrier-meta">
+          <div class="meta-item"><label>Departure</label><span>Apr 8, 2024</span></div>
+          <div class="meta-item"><label>Available</label><span>15 kg</span></div>
+          <div class="meta-item"><label>Price</label><span style="color:#059669">$42/kg</span></div>
+          <div class="meta-item"><label>Airline</label><span>Air Arabia G9-45</span></div>
+        </div>
+        <a href="request.html?carrier=rafiq" class="btn-request"><i class="fas fa-paper-plane"></i> Send Request</a>
+      </div>
+
+      <!-- Carrier 6 -->
+      <div class="carrier-card">
+        <div class="carrier-top">
+          <div class="carrier-avatar" style="background:linear-gradient(135deg,#0891b2,#0369a1)">TB</div>
+          <div>
+            <div class="carrier-name">Tahmina Begum</div>
+            <div class="carrier-trips"><span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span> · 9 trips</div>
+          </div>
+          <div class="rating" style="margin-left:auto"><i class="fas fa-star"></i> 4.9</div>
+        </div>
+        <div class="carrier-route"><i class="fas fa-plane-departure" style="color:#0052CC"></i> Dhaka <i class="fas fa-arrow-right" style="color:#94a3b8;font-size:.7rem"></i> New York (JFK)</div>
+        <div class="carrier-meta">
+          <div class="meta-item"><label>Departure</label><span>Apr 10, 2024</span></div>
+          <div class="meta-item"><label>Available</label><span>5 kg</span></div>
+          <div class="meta-item"><label>Price</label><span style="color:#059669">$52/kg</span></div>
+          <div class="meta-item"><label>Airline</label><span>Etihad EY-303</span></div>
+        </div>
+        <a href="request.html?carrier=tahmina" class="btn-request"><i class="fas fa-paper-plane"></i> Send Request</a>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:32px">
+      <button style="padding:12px 32px;border:1.5px solid #0052CC;background:#fff;color:#0052CC;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer;font-size:.9rem">Load More Carriers</button>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+document.querySelectorAll('.filter-chip').forEach(c => {
+  c.addEventListener('click', function(){
+    document.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

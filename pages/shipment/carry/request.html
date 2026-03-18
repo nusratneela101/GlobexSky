@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Send Carry Request – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+.btn-logout{background:#ef4444;color:#fff}
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:48px 24px;text-align:center}
+.page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+.page-hero p{color:rgba(255,255,255,.8);font-size:.95rem}
+.container{max-width:1000px;margin:0 auto;padding:0 24px}
+.section{padding:48px 24px}
+.layout-grid{display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:start}
+.form-card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 16px rgba(0,0,0,.08)}
+.side-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.form-section-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:#0a0e27;margin:24px 0 16px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;display:flex;align-items:center;gap:8px}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0}
+.form-group label{font-size:.83rem;font-weight:600;color:#374151}
+.form-group input,.form-group select,.form-group textarea{padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Inter',sans-serif;font-size:.9rem;color:#0a0e27;outline:none;transition:border-color .2s;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#0052CC}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-hint{font-size:.77rem;color:#64748b}
+.carrier-preview{display:flex;align-items:center;gap:12px;padding:16px;background:#f8faff;border-radius:12px;margin-bottom:20px}
+.carrier-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;flex-shrink:0}
+.carrier-info-name{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.95rem;margin-bottom:2px}
+.carrier-info-route{font-size:.82rem;color:#64748b}
+.price-breakdown{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.price-row{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;color:#374151}
+.price-row.total{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27;padding-top:10px;border-top:1.5px solid #f1f5f9}
+.price-row .price-val{font-weight:600}
+.price-row.total .price-val{color:#059669;font-size:1.1rem}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-verified{background:#fdf4ff;color:#9333ea}
+.btn-submit{width:100%;padding:14px;background:#0052CC;color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-submit:hover{background:#003d99}
+.upload-area{border:2px dashed #c7d7f0;border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#f8fbff}
+.upload-area:hover{border-color:#0052CC;background:#eff6ff}
+.upload-icon{font-size:2rem;color:#0052CC;margin-bottom:8px}
+.upload-text{font-size:.88rem;color:#64748b}
+.info-box{background:#eff6ff;border-radius:10px;padding:14px 16px;font-size:.82rem;color:#374151;line-height:1.6;margin-top:16px}
+.info-box i{color:#0052CC;margin-right:6px}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px;text-align:center}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem}
+@media(max-width:768px){.nav-links{display:none}.layout-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Carry Home</a>
+        <a href="find-carrier.html">Find Carrier</a>
+        <a href="post-trip.html">Post a Trip</a>
+        <a href="tracking.html">Track</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+      <div class="nav-controls">
+        <a href="../../../pages/auth/login.html" class="btn-nav btn-logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-paper-plane"></i> Send Carry Request</h1>
+  <p>Fill in your item details to request a carry from a verified traveler</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="layout-grid">
+      <!-- FORM -->
+      <form class="form-card" onsubmit="return handleSubmit(event)">
+        <!-- CARRIER PREVIEW -->
+        <div class="carrier-preview">
+          <div class="carrier-avatar">AR</div>
+          <div>
+            <div class="carrier-info-name">Ahmed Rahman <span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span></div>
+            <div class="carrier-info-route"><i class="fas fa-route" style="color:#0052CC"></i> Dhaka → New York · Mar 25, 2024 · ⭐ 4.9</div>
+          </div>
+        </div>
+
+        <!-- SENDER INFO -->
+        <div class="form-section-title"><i class="fas fa-user" style="color:#0052CC"></i> Sender Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name <span style="color:#ef4444">*</span></label>
+            <input type="text" placeholder="Your full name" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number <span style="color:#ef4444">*</span></label>
+            <input type="tel" placeholder="+880 1X XXXX XXXX" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Pickup Address (where carrier collects item) <span style="color:#ef4444">*</span></label>
+          <input type="text" placeholder="Full address in origin city" required>
+        </div>
+
+        <!-- RECEIVER INFO -->
+        <div class="form-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Receiver Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Receiver Name <span style="color:#ef4444">*</span></label>
+            <input type="text" placeholder="Receiver's full name" required>
+          </div>
+          <div class="form-group">
+            <label>Receiver Phone <span style="color:#ef4444">*</span></label>
+            <input type="tel" placeholder="+1 XXX XXX XXXX" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Delivery Address (destination) <span style="color:#ef4444">*</span></label>
+          <input type="text" placeholder="Full delivery address" required>
+        </div>
+
+        <!-- ITEM DETAILS -->
+        <div class="form-section-title"><i class="fas fa-box" style="color:#9333ea"></i> Item Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Item Category <span style="color:#ef4444">*</span></label>
+            <select required>
+              <option value="">Select category</option>
+              <option>Electronics &amp; Gadgets</option>
+              <option>Clothing &amp; Fashion</option>
+              <option>Documents &amp; Books</option>
+              <option>Cosmetics &amp; Beauty</option>
+              <option>Accessories &amp; Jewelry</option>
+              <option>Food &amp; Snacks (packaged)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Weight (kg) <span style="color:#ef4444">*</span></label>
+            <input type="number" min="0.1" step="0.1" placeholder="e.g. 2.5" required id="weight-input" oninput="updatePrice()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Item Description <span style="color:#ef4444">*</span></label>
+          <textarea placeholder="Describe the item(s): name, model, condition, approximate value..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Item Photos</label>
+          <div class="upload-area" onclick="document.getElementById('file-input').click()">
+            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <div class="upload-text">Click to upload photos (max 5, 5MB each)</div>
+            <input type="file" id="file-input" multiple accept="image/*" style="display:none">
+          </div>
+          <span class="form-hint">Clear photos help the carrier verify the item</span>
+        </div>
+
+        <!-- PRICE -->
+        <div class="form-section-title"><i class="fas fa-dollar-sign" style="color:#059669"></i> Price &amp; Payment</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Offer Price (USD)</label>
+            <input type="number" placeholder="Carrier rate: $50/kg" id="offer-price" oninput="updatePrice()">
+            <span class="form-hint">Leave blank to use carrier's listed rate</span>
+          </div>
+          <div class="form-group">
+            <label>Payment Method</label>
+            <select>
+              <option>Escrow (Recommended)</option>
+              <option>bKash</option>
+              <option>Nagad</option>
+              <option>Bank Transfer</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Special Instructions</label>
+          <textarea placeholder="Any special handling instructions for the carrier..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Send Carry Request</button>
+      </form>
+
+      <!-- SIDEBAR -->
+      <div>
+        <!-- PRICE SUMMARY -->
+        <div class="side-card" style="margin-bottom:20px">
+          <div class="card-title"><i class="fas fa-receipt" style="color:#0052CC"></i> Price Summary</div>
+          <div class="price-breakdown">
+            <div class="price-row"><span>Carrier rate</span><span class="price-val">$50/kg</span></div>
+            <div class="price-row"><span>Weight</span><span class="price-val" id="weight-display">— kg</span></div>
+            <div class="price-row"><span>Carry fee</span><span class="price-val" id="carry-fee">—</span></div>
+            <div class="price-row"><span>Service fee (5%)</span><span class="price-val" id="service-fee">—</span></div>
+            <div class="price-row total"><span>Total</span><span class="price-val" id="total-price">—</span></div>
+          </div>
+          <div class="info-box"><i class="fas fa-lock"></i> Payment is held in escrow and released only after confirmed delivery.</div>
+        </div>
+
+        <!-- CARRIER INFO -->
+        <div class="side-card" style="margin-bottom:20px">
+          <div class="card-title"><i class="fas fa-user-check" style="color:#059669"></i> Carrier Details</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div class="carrier-avatar">AR</div>
+            <div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.95rem">Ahmed Rahman</div>
+              <div style="font-size:.78rem;color:#64748b">⭐ 4.9 · 47 completed trips</div>
+            </div>
+          </div>
+          <div style="font-size:.82rem;color:#374151;line-height:1.8">
+            <div><i class="fas fa-plane" style="color:#0052CC;width:16px"></i> Dhaka → New York</div>
+            <div><i class="fas fa-calendar" style="color:#f97316;width:16px"></i> Departing Mar 25, 2024</div>
+            <div><i class="fas fa-weight" style="color:#9333ea;width:16px"></i> 12 kg available</div>
+            <div><i class="fas fa-shield-alt" style="color:#059669;width:16px"></i> ID Verified</div>
+          </div>
+        </div>
+
+        <!-- SAFETY TIPS -->
+        <div class="side-card">
+          <div class="card-title"><i class="fas fa-shield-alt" style="color:#f97316"></i> Safety Tips</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:.82rem;color:#374151">
+            <li><i class="fas fa-check" style="color:#059669;margin-right:8px"></i> Always use escrow payment</li>
+            <li><i class="fas fa-check" style="color:#059669;margin-right:8px"></i> Photo-document your items before handoff</li>
+            <li><i class="fas fa-check" style="color:#059669;margin-right:8px"></i> Meet in public places only</li>
+            <li><i class="fas fa-check" style="color:#059669;margin-right:8px"></i> Do not ship prohibited items</li>
+            <li><i class="fas fa-check" style="color:#059669;margin-right:8px"></i> Confirm carrier identity before handoff</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+function updatePrice(){
+  var w = parseFloat(document.getElementById('weight-input').value)||0;
+  var offerVal = parseFloat(document.getElementById('offer-price').value)||50;
+  var rate = offerVal;
+  var carry = w * rate;
+  var svc = carry * 0.05;
+  var total = carry + svc;
+  document.getElementById('weight-display').textContent = w ? w+'kg' : '—';
+  document.getElementById('carry-fee').textContent = w ? '$'+carry.toFixed(2) : '—';
+  document.getElementById('service-fee').textContent = w ? '$'+svc.toFixed(2) : '—';
+  document.getElementById('total-price').textContent = w ? '$'+total.toFixed(2) : '—';
+}
+function handleSubmit(e){
+  e.preventDefault();
+  alert('Your carry request has been sent successfully! The carrier will respond within 24 hours.');
+  window.location.href = 'my-requests.html';
+}
+</script>
+</body>
+</html>
