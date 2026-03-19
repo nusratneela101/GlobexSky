@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Product Customization – GlobexSky Sourcing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#00C9A7 0%,#0052CC 100%);padding:48px 24px;text-align:center}
+    .page-hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+    .page-hero-sub{color:rgba(255,255,255,.8);font-size:.95rem}
+    .section{padding:48px 24px}
+    .container{max-width:1200px;margin:0 auto}
+    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .option-group{margin-bottom:20px}
+    .option-label{font-size:.85rem;font-weight:600;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .option-chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:7px 16px;border-radius:50px;border:1.5px solid #e2e8f0;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;background:#fff}
+    .chip:hover,.chip.selected{border-color:#0052CC;background:#eff6ff;color:#0052CC;font-weight:600}
+    .color-chips{display:flex;flex-wrap:wrap;gap:8px}
+    .color-chip{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s}
+    .color-chip.selected{border-color:#0a0e27}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .preview-box{background:#f8faff;border:1.5px solid #bfdbfe;border-radius:14px;padding:24px;text-align:center;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .preview-product{width:120px;height:120px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 16px;transition:all .3s}
+    .preview-label{font-size:.8rem;color:#64748b;margin-bottom:8px}
+    .preview-name{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27}
+    .price-calculator{background:#f0fff8;border:1.5px solid #a7f3d0;border-radius:12px;padding:20px;margin-bottom:16px}
+    .price-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.9rem;color:#059669;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+    .price-row{display:flex;justify-content:space-between;font-size:.85rem;padding:6px 0;border-bottom:1px solid #d1fae5}
+    .price-row:last-child{border-bottom:none;font-weight:700;font-size:.95rem;color:#059669}
+    .price-label{color:#374151}
+    .price-val{font-weight:600;color:#0a0e27}
+    .upload-zone{border:2px dashed #cbd5e1;border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:#fafbff;transition:all .2s;margin-bottom:12px}
+    .upload-zone:hover{border-color:#0052CC}
+    .upload-zone i{font-size:1.6rem;color:#0052CC;margin-bottom:6px;display:block}
+    .btn{padding:12px 28px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-teal{background:#00C9A7;color:#fff}.btn-teal:hover{background:#00a88e}
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    @media(max-width:900px){.three-col{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.three-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1 class="page-hero-title"><i class="fas fa-magic"></i> Product Customization</h1>
+  <p class="page-hero-sub">Design your product exactly the way you want it — color, size, material, logo, and packaging.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="index.html">Sourcing</a><span>/</span>
+      <span>Customization</span>
+    </nav>
+
+    <div class="three-col">
+      <!-- Options Builder -->
+      <div style="grid-column:span 2">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-sliders-h" style="color:#00C9A7"></i> Options Builder</h3>
+
+          <div class="option-group">
+            <div class="option-label"><i class="fas fa-palette"></i> Color</div>
+            <div class="color-chips" id="color-chips">
+              <div class="color-chip selected" style="background:#1a1a2e" title="Midnight Black" onclick="selectColor(this,'#1a1a2e')"></div>
+              <div class="color-chip" style="background:#fff;border:2px solid #e2e8f0" title="Pure White" onclick="selectColor(this,'#fff')"></div>
+              <div class="color-chip" style="background:#0052CC" title="Ocean Blue" onclick="selectColor(this,'#0052CC')"></div>
+              <div class="color-chip" style="background:#ef4444" title="Crimson Red" onclick="selectColor(this,'#ef4444')"></div>
+              <div class="color-chip" style="background:#059669" title="Forest Green" onclick="selectColor(this,'#059669')"></div>
+              <div class="color-chip" style="background:#f97316" title="Sunset Orange" onclick="selectColor(this,'#f97316')"></div>
+              <div class="color-chip" style="background:#6d28d9" title="Royal Purple" onclick="selectColor(this,'#6d28d9')"></div>
+              <div class="color-chip" style="background:#f59e0b" title="Golden Yellow" onclick="selectColor(this,'#f59e0b')"></div>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <div class="option-label"><i class="fas fa-ruler-combined"></i> Size</div>
+            <div class="option-chips">
+              <div class="chip" onclick="selectChip(this)">XS</div>
+              <div class="chip selected" onclick="selectChip(this)">S</div>
+              <div class="chip" onclick="selectChip(this)">M</div>
+              <div class="chip" onclick="selectChip(this)">L</div>
+              <div class="chip" onclick="selectChip(this)">XL</div>
+              <div class="chip" onclick="selectChip(this)">XXL</div>
+              <div class="chip" onclick="selectChip(this)">Custom Size</div>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <div class="option-label"><i class="fas fa-leaf"></i> Material</div>
+            <div class="option-chips">
+              <div class="chip selected" onclick="selectChip(this)">Cotton 100%</div>
+              <div class="chip" onclick="selectChip(this)">Polyester</div>
+              <div class="chip" onclick="selectChip(this)">Cotton-Poly Blend</div>
+              <div class="chip" onclick="selectChip(this)">Bamboo Fiber</div>
+              <div class="chip" onclick="selectChip(this)">Linen</div>
+              <div class="chip" onclick="selectChip(this)">Recycled PET</div>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <div class="option-label"><i class="fas fa-tag"></i> Logo / Branding</div>
+            <div class="option-chips" style="margin-bottom:12px">
+              <div class="chip selected" onclick="selectChip(this)">Embroidery</div>
+              <div class="chip" onclick="selectChip(this)">Screen Print</div>
+              <div class="chip" onclick="selectChip(this)">Heat Transfer</div>
+              <div class="chip" onclick="selectChip(this)">Woven Label</div>
+              <div class="chip" onclick="selectChip(this)">No Logo</div>
+            </div>
+            <div class="upload-zone" onclick="document.getElementById('logo-file').click()">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p style="font-size:.82rem;color:#64748b">Upload your logo file (AI, EPS, PDF, PNG)</p>
+              <input type="file" id="logo-file" accept=".ai,.eps,.pdf,.png,.svg" style="display:none"/>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <div class="option-label"><i class="fas fa-box-open"></i> Packaging</div>
+            <div class="option-chips">
+              <div class="chip" onclick="selectChip(this)">Standard Brown Box</div>
+              <div class="chip selected" onclick="selectChip(this)">White Gift Box</div>
+              <div class="chip" onclick="selectChip(this)">Custom Printed Box</div>
+              <div class="chip" onclick="selectChip(this)">Eco Kraft Bag</div>
+              <div class="chip" onclick="selectChip(this)">Retail Hanger</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="custom-notes">Additional Customization Notes</label>
+            <textarea class="form-control" id="custom-notes" placeholder="Describe any special requirements not covered above…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-quantity">Order Quantity *</label>
+            <input type="number" class="form-control" id="cust-quantity" placeholder="Minimum 100 pcs" min="100" value="500" oninput="updatePrice()"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview & Price Calculator -->
+      <div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-eye" style="color:#00C9A7"></i> Live Preview</h3>
+          <div class="preview-box">
+            <div class="preview-product" id="preview-product" style="background:#1a1a2e">
+              <i class="fas fa-tshirt" style="color:rgba(255,255,255,.8)"></i>
+            </div>
+            <div class="preview-label">Your Customized Product</div>
+            <div class="preview-name" id="preview-name">Midnight Black · S · Cotton 100%</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom:12px"><i class="fas fa-calculator" style="color:#059669"></i> Price Calculator</h3>
+          <div class="price-calculator">
+            <div class="price-title"><i class="fas fa-receipt"></i> Estimated Pricing</div>
+            <div class="price-row"><span class="price-label">Base Unit Price</span><span class="price-val">$8.50</span></div>
+            <div class="price-row"><span class="price-label">Color Customization</span><span class="price-val">+$0.50</span></div>
+            <div class="price-row"><span class="price-label">Logo (Embroidery)</span><span class="price-val">+$1.20</span></div>
+            <div class="price-row"><span class="price-label">Custom Packaging</span><span class="price-val">+$0.80</span></div>
+            <div class="price-row"><span class="price-label">Quantity (500 pcs)</span><span class="price-val">× 500</span></div>
+            <div class="price-row"><span class="price-label">Total Estimated Cost</span><span class="price-val" id="total-cost">$5,500</span></div>
+          </div>
+          <button class="btn btn-teal" onclick="requestQuote()"><i class="fas fa-paper-plane"></i> Request Custom Quote</button>
+          <button class="btn btn-primary" style="margin-top:10px" onclick="placeCustomOrder()"><i class="fas fa-shopping-cart"></i> Place Custom Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© 2026 GlobexSky. All rights reserved.</div>
+</footer>
+<script>
+let selectedColor = '#1a1a2e';
+function selectColor(el, color) {
+  document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedColor = color;
+  document.getElementById('preview-product').style.background = color;
+  updatePreviewName();
+}
+function selectChip(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  updatePreviewName();
+}
+function updatePreviewName() {
+  const chips = Array.from(document.querySelectorAll('.chip.selected')).map(c => c.textContent);
+  document.getElementById('preview-name').textContent = chips.join(' · ') || 'Custom Product';
+}
+function updatePrice() {
+  const qty = parseInt(document.getElementById('cust-quantity').value) || 0;
+  const unitPrice = 8.50 + 0.50 + 1.20 + 0.80;
+  const total = (unitPrice * qty).toFixed(2);
+  document.getElementById('total-cost').textContent = '$' + Number(total).toLocaleString('en-US', {minimumFractionDigits:2});
+}
+function requestQuote() {
+  alert('Custom quote requested! Our sourcing team will contact you within 24 hours with a detailed price breakdown.');
+}
+function placeCustomOrder() {
+  const qty = document.getElementById('cust-quantity').value;
+  if (!qty || qty < 100) { alert('Minimum order quantity is 100 pcs.'); return; }
+  alert('Custom order placed! Reference: #CUST-' + Date.now().toString().slice(-6) + '\nWe will confirm your order within 48 hours.');
+}
+</script>
+</body>
+</html>

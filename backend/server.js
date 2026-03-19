@@ -39,6 +39,10 @@ import refundRoutes from './routes/refund.routes.js';
 import codRoutes from './routes/cod.routes.js';
 import warehouseRoutes from './routes/warehouse.routes.js';
 
+import tradeFinanceRoutes from './routes/tradeFinance.routes.js';
+import tradeShowRoutes from './routes/tradeShow.routes.js';
+import sourcingSolutionsRoutes from './routes/sourcingSolutions.routes.js';
+
 import uploadRoutes from './routes/upload.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import pushNotificationRoutes from './routes/pushNotification.routes.js';
@@ -92,6 +96,10 @@ app.use(`${API}/warehouses`, warehouseRoutes);
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
 app.use(`${API}/push`, pushNotificationRoutes);
+
+app.use(`${API}/trade-finance`, tradeFinanceRoutes);
+app.use(`${API}/trade-shows`, tradeShowRoutes);
+app.use(`${API}/sourcing-solutions`, sourcingSolutionsRoutes);
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);
