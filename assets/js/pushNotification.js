@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Push Notification Client
+ * Globex Sky — Push Notification Client
  * Handles service worker registration, push subscription, and permission requests.
  */
 

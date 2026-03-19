@@ -5,8 +5,8 @@ const BASE_URL = process.env.SITE_URL || 'https://globexsky.com';
 // ─── In-memory meta tag store (use DB in production) ─────────────────────────
 const metaStore = {
   home: {
-    title: 'GlobexSky – Global Trade Gateway',
-    description: 'Connect with suppliers and buyers worldwide on GlobexSky.',
+    title: 'Globex Sky – Global Trade Gateway',
+    description: 'Connect with suppliers and buyers worldwide on Globex Sky.',
     keywords: 'B2B, global trade, import, export, suppliers',
     ogImage: `${BASE_URL}/assets/images/og-home.jpg`,
   },
@@ -69,7 +69,7 @@ Sitemap: ${BASE_URL}/api/v1/seo/sitemap.xml
 // ─── Meta tags ────────────────────────────────────────────────────────────────
 export function getMetaTags(pageSlug) {
   const defaults = {
-    title: 'GlobexSky – Global Trade Gateway',
+    title: 'Globex Sky – Global Trade Gateway',
     description: 'Your global trade gateway connecting buyers and suppliers worldwide.',
     keywords: 'B2B trade, global marketplace, import export',
     ogImage: `${BASE_URL}/assets/images/og-default.jpg`,

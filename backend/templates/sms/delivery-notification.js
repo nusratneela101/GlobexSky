@@ -6,6 +6,6 @@
  * @param {string} [vars.platformName] - Platform name
  * @returns {string}
  */
-export default function deliveryNotificationTemplate({ orderId, deliveryDate, platformName = 'GlobexSky' }) {
+export default function deliveryNotificationTemplate({ orderId, deliveryDate, platformName = 'Globex Sky' }) {
   return `[${platformName}] Great news! Order #${orderId} was delivered on ${deliveryDate}. Enjoy your purchase! Need help? Visit globexsky.com/support`;
 }

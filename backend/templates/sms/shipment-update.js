@@ -7,7 +7,7 @@
  * @param {string} [vars.platformName] - Platform name
  * @returns {string}
  */
-export default function shipmentUpdateTemplate({ trackingNumber, status, location, platformName = 'GlobexSky' }) {
+export default function shipmentUpdateTemplate({ trackingNumber, status, location, platformName = 'Globex Sky' }) {
   const locationPart = location ? ` Location: ${location}.` : '';
   return `[${platformName}] Shipment ${trackingNumber}: ${status}.${locationPart} Track at globexsky.com/track`;
 }

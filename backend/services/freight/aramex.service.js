@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Aramex API Service
+ * Globex Sky — Aramex API Service
  * Integrates with Aramex Shipping API v2 for rates, shipment creation, and tracking.
  */
 
@@ -44,7 +44,7 @@ export async function getRates(origin, destination, weight, dimensions) {
 
   const body = {
     ClientInfo: clientInfo(),
-    Transaction: { Reference1: `GlobexSky-${Date.now()}` },
+    Transaction: { Reference1: `Globex Sky-${Date.now()}` },
     OriginAddress: { Line1: 'Origin', City: 'City', CountryCode: origin },
     DestinationAddress: { Line1: 'Destination', City: 'City', CountryCode: destination },
     ShipmentDetails: {
@@ -87,7 +87,7 @@ export async function createShipment(shipmentData) {
 
   const body = {
     ClientInfo: clientInfo(),
-    Transaction: { Reference1: `GlobexSky-${Date.now()}` },
+    Transaction: { Reference1: `Globex Sky-${Date.now()}` },
     Shipments: Array.isArray(shipmentData) ? shipmentData : [shipmentData],
     LabelInfo: { ReportID: 9201, ReportType: 'URL' },
   };
@@ -129,7 +129,7 @@ export async function trackShipment(trackingNumber) {
 
   const body = {
     ClientInfo: clientInfo(),
-    Transaction: { Reference1: `GlobexSky-${Date.now()}` },
+    Transaction: { Reference1: `Globex Sky-${Date.now()}` },
     Shipments: [trackingNumber],
     GetLastTrackingUpdateOnly: false,
   };

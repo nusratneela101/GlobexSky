@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Freight Carrier Configuration
+ * Globex Sky — Freight Carrier Configuration
  * API keys, endpoints, sandbox/production modes for DHL, FedEx, Aramex.
  */
 

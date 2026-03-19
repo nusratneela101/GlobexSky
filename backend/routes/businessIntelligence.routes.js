@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Business Intelligence Routes
+ * Globex Sky — Business Intelligence Routes
  */
 
 import { Router } from 'express';

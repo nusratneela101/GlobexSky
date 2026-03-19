@@ -1,5 +1,5 @@
 /**
- * GlobexSky — config.js
+ * Globex Sky — config.js
  * Environment/API URL configuration. Detects dev vs. production automatically.
  */
 

@@ -1,5 +1,5 @@
 /**
- * GlobexSky — DHL API Service
+ * Globex Sky — DHL API Service
  * Integrates with DHL's MyDHL+ API for rates, shipment creation, tracking, and labels.
  */
 
@@ -17,11 +17,11 @@ function getHeaders() {
     Authorization: `Basic ${credentials}`,
     'Message-Reference': `globexsky-${Date.now()}`,
     'Message-Reference-Date': new Date().toUTCString(),
-    'Plugin-Name': 'GlobexSky',
+    'Plugin-Name': 'Globex Sky',
     'Plugin-Version': '1.0',
-    'Shipping-System-Platform-Name': 'GlobexSky',
+    'Shipping-System-Platform-Name': 'Globex Sky',
     'Shipping-System-Platform-Version': '1.0',
-    'Webstore-Platform-Name': 'GlobexSky',
+    'Webstore-Platform-Name': 'Globex Sky',
     'Webstore-Platform-Version': '1.0',
   };
 }

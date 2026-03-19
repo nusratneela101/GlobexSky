@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Supplier Assessment Service
+ * Globex Sky — Supplier Assessment Service
  * Scoring algorithm, badge/tier system, leaderboard, and verification workflow.
  */
 

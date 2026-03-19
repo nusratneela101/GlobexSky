@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Freight Routes
+ * Globex Sky — Freight Routes
  */
 
 import { Router } from 'express';

@@ -6,6 +6,6 @@
  * @param {string} [vars.platformName] - Platform name
  * @returns {string}
  */
-export default function orderUpdateTemplate({ orderId, status, platformName = 'GlobexSky' }) {
+export default function orderUpdateTemplate({ orderId, status, platformName = 'Globex Sky' }) {
   return `[${platformName}] Order #${orderId} update: Your order is now "${status}". Track your order in the app.`;
 }

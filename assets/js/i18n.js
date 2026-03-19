@@ -1,5 +1,5 @@
 /**
- * GlobexSky — i18n.js
+ * Globex Sky — i18n.js
  * Internationalization engine: detects browser language, loads JSON
  * translation files, translates DOM elements with data-i18n attributes,
  * persists language preference in localStorage, and exposes switchLanguage().
@@ -473,7 +473,7 @@
   ───────────────────────────────────────────── */
 
   /**
-   * Public i18n object exposed on window.GlobexSky.i18n
+   * Public i18n object exposed on window.Globex Sky.i18n
    * and also as window.i18n for convenience.
    */
   const i18n = {
@@ -507,11 +507,11 @@
     translateDOM: translateDOM,
   };
 
-  // Attach to window.GlobexSky namespace (created by main.js if needed)
-  if (!window.GlobexSky) {
-    window.GlobexSky = {};
+  // Attach to window.Globex Sky namespace (created by main.js if needed)
+  if (!window.Globex Sky) {
+    window.Globex Sky = {};
   }
-  window.GlobexSky.i18n = i18n;
+  window.Globex Sky.i18n = i18n;
 
   // Convenience alias
   window.i18n = i18n;

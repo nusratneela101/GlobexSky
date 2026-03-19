@@ -1,4 +1,4 @@
-# 🌐 GlobexSky — Complete Platform Documentation
+# 🌐 Globex Sky — Complete Platform Documentation
 
 > **Domain:** globexsky.com | **Hosting:** Stellar Plus (Namecheap) | **Server:** premium116.web-hosting.com | **IP:** 162.0.229.51
 
@@ -541,4 +541,4 @@ All report parameters set from Admin Panel:
 
 ---
 
-*Document Version: 1.0 | Created: 2026-03-10 | Platform: GlobexSky (globexsky.com)*
+*Document Version: 1.0 | Created: 2026-03-10 | Platform: Globex Sky (globexsky.com)*

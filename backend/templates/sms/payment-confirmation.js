@@ -7,6 +7,6 @@
  * @param {string} [vars.platformName] - Platform name
  * @returns {string}
  */
-export default function paymentConfirmationTemplate({ amount, orderId, paymentMethod, platformName = 'GlobexSky' }) {
+export default function paymentConfirmationTemplate({ amount, orderId, paymentMethod, platformName = 'Globex Sky' }) {
   return `[${platformName}] Payment of ${amount} received for order #${orderId} via ${paymentMethod}. Thank you!`;
 }

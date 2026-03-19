@@ -1,5 +1,5 @@
 /**
- * GlobexSky - main.js
+ * Globex Sky - main.js
  * Global JavaScript: navbar, sidebar, language/currency switchers,
  * tabs, modals, toasts, smooth scroll, counters, countdown,
  * reveal animations, dropdowns, tooltips, and nav link activation.
@@ -650,8 +650,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─────────────────────────────────────────────
    EXPORTS (for use by other modules)
 ───────────────────────────────────────────── */
-window.GlobexSky = window.GlobexSky || {};
-Object.assign(window.GlobexSky, {
+window.Globex Sky = window.Globex Sky || {};
+Object.assign(window.Globex Sky, {
   openModal,
   closeModal,
   showToast,

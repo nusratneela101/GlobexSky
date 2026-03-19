@@ -1,5 +1,5 @@
 /**
- * admin.js – AdminPanel module for GlobexSky admin/dashboard pages.
+ * admin.js – AdminPanel module for Globex Sky admin/dashboard pages.
  * Provides sidebar management, data table features, modal system,
  * form validation, feature toggles, inline pricing editor, and toast notifications.
  */

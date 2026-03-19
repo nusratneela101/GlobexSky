@@ -1,5 +1,5 @@
 /**
- * Currency configuration for GlobexSky.
+ * Currency configuration for Globex Sky.
  */
 export const BASE_CURRENCY = 'USD';
 
