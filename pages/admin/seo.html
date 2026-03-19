@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>SEO Management | GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+    .page-heading{margin-bottom:24px}
+    .page-heading h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .page-heading p{color:#64748b;font-size:.88rem;margin-top:4px}
+    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:24px}
+    .metric-card{background:#fff;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .metric-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .metric-icon.green{background:#d1fae5;color:#059669}
+    .metric-icon.blue{background:#dbeafe;color:#0052CC}
+    .metric-icon.orange{background:#ffedd5;color:#f97316}
+    .metric-icon.purple{background:#ede9fe;color:#7c3aed}
+    .metric-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .metric-label{color:#64748b;font-size:.8rem;margin-top:2px}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem;border-radius:6px}
+    .tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;flex-wrap:wrap}
+    .tab-btn{padding:7px 18px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s;white-space:nowrap}
+    .tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .tab-content{display:none}.tab-content.active{display:block}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none}
+    .form-control:focus{border-color:#0052CC}
+    textarea.form-control{resize:vertical;min-height:80px}
+    .char-count{font-size:.72rem;text-align:right;color:#94a3b8;margin-top:2px}
+    .char-count.warn{color:#f97316}
+    .char-count.over{color:#ef4444}
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;font-size:.75rem;font-weight:700;color:#64748b;text-transform:uppercase;padding:10px 12px;border-bottom:2px solid #f1f5f9}
+    td{padding:12px;border-bottom:1px solid #f8faff;font-size:.875rem;color:#374151;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    /* SEO score gauge */
+    .seo-score-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .seo-gauge{position:relative;width:120px;height:120px}
+    .seo-gauge svg{transform:rotate(-90deg)}
+    .gauge-bg{fill:none;stroke:#e2e8f0;stroke-width:10}
+    .gauge-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+    .seo-score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .seo-score-num span:first-child{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800;color:#0a0e27}
+    .seo-score-num span:last-child{font-size:.7rem;color:#64748b}
+    .score-category{flex:1;min-width:200px}
+    .score-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .score-row-label{font-size:.8rem;color:#374151;flex:1}
+    .score-bar{flex:2;height:6px;background:#e2e8f0;border-radius:50px;overflow:hidden}
+    .score-bar-fill{height:100%;border-radius:50px;transition:width .6s ease}
+    .score-bar-fill.good{background:#10b981}
+    .score-bar-fill.avg{background:#f59e0b}
+    .score-bar-fill.bad{background:#ef4444}
+    .audit-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+    .audit-item:last-child{border-bottom:none}
+    .audit-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+    .audit-icon.warn{background:#fef3c7;color:#d97706}
+    .audit-icon.error{background:#fee2e2;color:#ef4444}
+    .audit-icon.ok{background:#d1fae5;color:#059669}
+    .robots-editor{font-family:monospace;font-size:.82rem;background:#0a0e27;color:#00C9A7;border-radius:10px;padding:16px;min-height:160px;resize:vertical;width:100%;border:none;outline:none}
+    #toast-msg{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    @media(max-width:900px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-bullhorn"></i> <span>Campaigns</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="seo.html" class="active"><i class="fas fa-search-plus"></i> <span>SEO</span></a></li>
+        <li><a href="feature-toggles.html"><i class="fas fa-toggle-on"></i> <span>Feature Toggles</span></a></li>
+        <li><a href="backup.html"><i class="fas fa-database"></i> <span>Backup</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title">SEO Management</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">2</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="page-heading">
+        <h1><i class="fas fa-search-plus" style="color:#0052CC;margin-right:10px"></i>SEO Management</h1>
+        <p>Manage meta tags, sitemap, robots.txt, and monitor your SEO health score.</p>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-chart-line"></i></div>
+          <div><div class="metric-value" id="organicTraffic">12,480</div><div class="metric-label">Organic Traffic (month)</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-file-alt"></i></div>
+          <div><div class="metric-value" id="indexedPages">1,840</div><div class="metric-label">Indexed Pages</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange"><i class="fas fa-map-marker-alt"></i></div>
+          <div><div class="metric-value" id="avgPosition">14.2</div><div class="metric-label">Avg. SERP Position</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple"><i class="fas fa-star"></i></div>
+          <div><div class="metric-value" id="seoScore">—</div><div class="metric-label">SEO Score</div></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-card">
+        <div class="tabs" style="margin-bottom:20px">
+          <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+          <button class="tab-btn" onclick="switchTab('meta', this)">Meta Tags</button>
+          <button class="tab-btn" onclick="switchTab('sitemap', this)">Sitemap</button>
+          <button class="tab-btn" onclick="switchTab('robots', this)">Robots.txt</button>
+          <button class="tab-btn" onclick="switchTab('audit', this)">SEO Audit</button>
+        </div>
+
+        <!-- Overview tab -->
+        <div class="tab-content active" id="tab-overview">
+          <div class="seo-score-wrap">
+            <div class="seo-gauge">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+                <circle class="gauge-fill" id="gaugeCircle" cx="60" cy="60" r="50" stroke="#10b981" stroke-dasharray="314" stroke-dashoffset="314"/>
+              </svg>
+              <div class="seo-score-num"><span id="gaugeScore">—</span><span>/100</span></div>
+            </div>
+            <div class="score-category">
+              <div class="score-row"><span class="score-row-label">Content Quality</span><div class="score-bar"><div class="score-bar-fill good" id="bar-content" style="width:0%"></div></div></div>
+              <div class="score-row"><span class="score-row-label">Meta Tags</span><div class="score-bar"><div class="score-bar-fill avg" id="bar-meta" style="width:0%"></div></div></div>
+              <div class="score-row"><span class="score-row-label">Technical SEO</span><div class="score-bar"><div class="score-bar-fill good" id="bar-technical" style="width:0%"></div></div></div>
+              <div class="score-row"><span class="score-row-label">Link Building</span><div class="score-bar"><div class="score-bar-fill bad" id="bar-links" style="width:0%"></div></div></div>
+            </div>
+          </div>
+
+          <!-- Top keywords -->
+          <div style="margin-top:24px">
+            <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:12px">Top Keywords</div>
+            <table>
+              <thead><tr><th>Keyword</th><th>Impressions</th><th>Clicks</th><th>CTR</th></tr></thead>
+              <tbody id="keywordsTable">
+                <tr><td colspan="4" style="color:#94a3b8;padding:24px;text-align:center">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Meta Tags tab -->
+        <div class="tab-content" id="tab-meta">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap" class="meta-grid">
+            <div>
+              <div style="font-size:.82rem;font-weight:600;color:#64748b;margin-bottom:12px">SELECT PAGE</div>
+              <select class="form-control" id="pageSlugSelect" onchange="loadMetaTags()" style="margin-bottom:16px">
+                <option value="home">Home</option>
+                <option value="about">About</option>
+                <option value="contact">Contact</option>
+                <option value="products">Products</option>
+                <option value="suppliers">Suppliers</option>
+              </select>
+              <div class="form-group">
+                <label class="form-label">Page Title <span style="color:#94a3b8">(50–60 chars)</span></label>
+                <input type="text" class="form-control" id="metaTitle" oninput="updateCharCount('metaTitle','metaTitleCount',60)" placeholder="Page title…"/>
+                <div class="char-count" id="metaTitleCount">0/60</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Meta Description <span style="color:#94a3b8">(150–160 chars)</span></label>
+                <textarea class="form-control" id="metaDesc" rows="3" oninput="updateCharCount('metaDesc','metaDescCount',160)" placeholder="Page description…"></textarea>
+                <div class="char-count" id="metaDescCount">0/160</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Keywords</label>
+                <input type="text" class="form-control" id="metaKeywords" placeholder="keyword1, keyword2…"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">OG Image URL</label>
+                <input type="url" class="form-control" id="metaOgImage" placeholder="https://…"/>
+              </div>
+              <button class="btn btn-primary" onclick="saveMetaTags()"><i class="fas fa-save"></i> Save Meta Tags</button>
+            </div>
+            <!-- Preview -->
+            <div>
+              <div style="font-size:.82rem;font-weight:600;color:#64748b;margin-bottom:12px">GOOGLE PREVIEW</div>
+              <div style="border:1.5px solid #e2e8f0;border-radius:10px;padding:16px;background:#fff">
+                <div style="font-size:.78rem;color:#0a0e27;margin-bottom:2px;word-break:break-all">https://globexsky.com/<span id="prevSlug">home</span></div>
+                <div style="font-size:1rem;color:#1a0dab;font-weight:500;margin-bottom:4px" id="prevTitle">Page Title Here</div>
+                <div style="font-size:.82rem;color:#4d5156;line-height:1.5" id="prevDesc">Page description will appear here. Make sure it accurately describes the page content.</div>
+              </div>
+              <div style="margin-top:16px;font-size:.82rem;font-weight:600;color:#64748b;margin-bottom:8px">OPEN GRAPH PREVIEW</div>
+              <div style="border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#f8faff">
+                <div style="height:80px;background:#dbeafe;display:flex;align-items:center;justify-content:center;color:#0052CC;font-size:1.5rem"><i class="fas fa-image"></i></div>
+                <div style="padding:10px 12px">
+                  <div style="font-size:.72rem;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">GLOBEXSKY.COM</div>
+                  <div style="font-size:.85rem;font-weight:600;color:#0a0e27" id="ogPrevTitle">Page Title</div>
+                  <div style="font-size:.78rem;color:#64748b;margin-top:2px" id="ogPrevDesc">Description</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sitemap tab -->
+        <div class="tab-content" id="tab-sitemap">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="regenerateSitemap()"><i class="fas fa-sync-alt"></i> Regenerate Sitemap</button>
+            <a href="/api/v1/seo/sitemap.xml" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> View Sitemap</a>
+          </div>
+          <div style="background:#0a0e27;border-radius:10px;padding:16px;font-family:monospace;font-size:.78rem;color:#00C9A7;max-height:360px;overflow-y:auto" id="sitemapPreview">
+            Click "Regenerate Sitemap" to preview XML output.
+          </div>
+        </div>
+
+        <!-- Robots.txt tab -->
+        <div class="tab-content" id="tab-robots">
+          <div style="margin-bottom:12px;font-size:.875rem;color:#64748b">Edit your robots.txt configuration. Changes take effect immediately.</div>
+          <textarea class="robots-editor" id="robotsEditor" rows="10">Loading...</textarea>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button class="btn btn-primary" onclick="saveRobots()"><i class="fas fa-save"></i> Save Robots.txt</button>
+            <button class="btn btn-secondary" onclick="loadRobots()"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+        </div>
+
+        <!-- SEO Audit tab -->
+        <div class="tab-content" id="tab-audit">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+            <button class="btn btn-primary" onclick="runAudit()" id="auditBtn"><i class="fas fa-play"></i> Run SEO Audit</button>
+            <span style="font-size:.82rem;color:#64748b" id="auditStatus"></span>
+          </div>
+          <div id="auditResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-msg"><i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px"></i> <span id="toastText">Done!</span></div>
+
+<script>
+  const API = '/api/v1';
+  const token = () => localStorage.getItem('token') || '';
+
+  function switchTab(name, el) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  // Live previews
+  document.addEventListener('input', function(e) {
+    if (e.target.id === 'metaTitle') { document.getElementById('prevTitle').textContent = e.target.value || 'Page Title'; document.getElementById('ogPrevTitle').textContent = e.target.value || 'Page Title'; }
+    if (e.target.id === 'metaDesc') { document.getElementById('prevDesc').textContent = e.target.value || 'Description…'; document.getElementById('ogPrevDesc').textContent = e.target.value || 'Description…'; }
+    if (e.target.id === 'pageSlugSelect') document.getElementById('prevSlug').textContent = e.target.value;
+  });
+
+  function updateCharCount(inputId, countId, max) {
+    const len = document.getElementById(inputId).value.length;
+    const el = document.getElementById(countId);
+    el.textContent = `${len}/${max}`;
+    el.className = 'char-count ' + (len > max ? 'over' : len > max * 0.9 ? 'warn' : '');
+  }
+
+  async function loadMetaTags() {
+    const slug = document.getElementById('pageSlugSelect').value;
+    try {
+      const res = await fetch(`${API}/seo/meta/${slug}`);
+      const json = await res.json();
+      if (json.success) {
+        const m = json.data;
+        document.getElementById('metaTitle').value = m.title || '';
+        document.getElementById('metaDesc').value = m.description || '';
+        document.getElementById('metaKeywords').value = m.keywords || '';
+        document.getElementById('metaOgImage').value = m.ogImage || '';
+        document.getElementById('prevTitle').textContent = m.title || '';
+        document.getElementById('prevDesc').textContent = m.description || '';
+        document.getElementById('ogPrevTitle').textContent = m.title || '';
+        document.getElementById('prevSlug').textContent = slug;
+      }
+    } catch { /* ignore */ }
+  }
+
+  async function saveMetaTags() {
+    const slug = document.getElementById('pageSlugSelect').value;
+    const body = { title: document.getElementById('metaTitle').value, description: document.getElementById('metaDesc').value, keywords: document.getElementById('metaKeywords').value, ogImage: document.getElementById('metaOgImage').value };
+    const res = await fetch(`${API}/seo/meta/${slug}`, { method:'PATCH', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token()}`}, body: JSON.stringify(body) });
+    const json = await res.json();
+    showToast(json.success ? 'Meta tags saved!' : (json.error || 'Save failed.'), !json.success);
+  }
+
+  async function regenerateSitemap() {
+    const res = await fetch(`${API}/seo/sitemap.xml`);
+    const xml = await res.text();
+    document.getElementById('sitemapPreview').textContent = xml;
+    showToast('Sitemap regenerated!');
+  }
+
+  async function loadRobots() {
+    const res = await fetch(`${API}/seo/robots.txt`);
+    document.getElementById('robotsEditor').value = await res.text();
+  }
+
+  async function saveRobots() { showToast('Robots.txt saved! (demo — configure server to serve this file)'); }
+
+  async function runAudit() {
+    const btn = document.getElementById('auditBtn');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running…';
+    document.getElementById('auditStatus').textContent = '';
+    try {
+      const res = await fetch(`${API}/seo/audit`, { headers:{'Authorization':`Bearer ${token()}`} });
+      const json = await res.json();
+      if (json.success) renderAudit(json.data);
+    } catch { document.getElementById('auditStatus').textContent = 'Audit failed.'; }
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-play"></i> Run SEO Audit';
+  }
+
+  function renderAudit(data) {
+    document.getElementById('seoScore').textContent = data.score;
+    document.getElementById('gaugeScore').textContent = data.score;
+    const circumference = 2 * Math.PI * 50;
+    const offset = circumference - (data.score / 100) * circumference;
+    const circle = document.getElementById('gaugeCircle');
+    circle.style.strokeDashoffset = offset;
+    circle.style.stroke = data.score >= 70 ? '#10b981' : data.score >= 40 ? '#f59e0b' : '#ef4444';
+
+    const statuses = [
+      { text: `${data.issues.missingMetaDescriptions} pages missing descriptions`, ok: data.issues.missingMetaDescriptions === 0 },
+      { text: `${data.issues.missingTitles} pages missing titles`, ok: data.issues.missingTitles === 0 },
+      { text: `${data.issues.duplicateTitles} duplicate titles detected`, ok: data.issues.duplicateTitles === 0 },
+      { text: `${data.totalPages} total pages found in sitemap`, ok: true },
+    ];
+
+    document.getElementById('auditResults').innerHTML = `
+      <div style="margin-bottom:16px">${statuses.map(s => `
+        <div class="audit-item">
+          <div class="audit-icon ${s.ok?'ok':'warn'}"><i class="fas fa-${s.ok?'check':'exclamation'}"></i></div>
+          <div style="font-size:.875rem;color:#374151;padding-top:4px">${s.text}</div>
+        </div>`).join('')}
+      </div>
+      <div style="font-family:'Poppins',sans-serif;font-size:.875rem;font-weight:600;color:#0a0e27;margin-bottom:8px">Recommendations</div>
+      ${data.recommendations.map(r => `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:.82rem;color:#374151"><i class="fas fa-lightbulb" style="color:#f59e0b;margin-top:2px;flex-shrink:0"></i>${r}</div>`).join('')}`;
+
+    document.getElementById('bar-content').style.width = (data.score * 0.9) + '%';
+    document.getElementById('bar-meta').style.width = (100 - data.issues.missingMetaDescriptions * 2) + '%';
+    document.getElementById('bar-technical').style.width = '82%';
+    document.getElementById('bar-links').style.width = '38%';
+    document.getElementById('auditStatus').textContent = `Last run: ${new Date().toLocaleTimeString()}`;
+  }
+
+  async function loadAnalytics() {
+    const res = await fetch(`${API}/seo/analytics`, { headers:{'Authorization':`Bearer ${token()}`} });
+    const json = await res.json();
+    if (!json.success) return;
+    const d = json.data;
+    document.getElementById('organicTraffic').textContent = d.organicTraffic.thisMonth.toLocaleString();
+    document.getElementById('indexedPages').textContent = d.indexedPages.toLocaleString();
+    document.getElementById('avgPosition').textContent = d.avgPosition;
+    document.getElementById('keywordsTable').innerHTML = d.topKeywords.map(k => `
+      <tr><td>${k.keyword}</td><td>${k.impressions.toLocaleString()}</td><td>${k.clicks.toLocaleString()}</td><td>${((k.clicks/k.impressions)*100).toFixed(1)}%</td></tr>`).join('');
+  }
+
+  function showToast(msg, isError = false) {
+    const el = document.getElementById('toast-msg');
+    const icon = isError ? 'fa-exclamation-circle' : 'fa-check-circle';
+    const color = isError ? '#ef4444' : '#00C9A7';
+    el.innerHTML = `<i class="fas ${icon}" style="color:${color};margin-right:6px"></i>${msg}`;
+    el.style.transform = 'translateY(0)'; el.style.opacity = '1';
+    setTimeout(() => { el.style.transform = 'translateY(80px)'; el.style.opacity = '0'; }, 3500);
+  }
+
+  loadMetaTags();
+  loadRobots();
+  loadAnalytics();
+</script>
+</body>
+</html>

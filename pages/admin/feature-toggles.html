@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Feature Toggles | GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+    .page-heading{margin-bottom:24px}
+    .page-heading h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .page-heading p{color:#64748b;font-size:.88rem;margin-top:4px}
+    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:24px}
+    .metric-card{background:#fff;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .metric-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .metric-icon.green{background:#d1fae5;color:#059669}
+    .metric-icon.blue{background:#dbeafe;color:#0052CC}
+    .metric-icon.orange{background:#ffedd5;color:#f97316}
+    .metric-icon.purple{background:#ede9fe;color:#7c3aed}
+    .metric-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .metric-label{color:#64748b;font-size:.8rem;margin-top:2px}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+    .btn-sm{padding:5px 12px;font-size:.78rem;border-radius:6px}
+    .toggle-row{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid #f1f5f9}
+    .toggle-row:last-child{border-bottom:none}
+    .toggle-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .toggle-icon.blue{background:#dbeafe;color:#0052CC}
+    .toggle-icon.green{background:#d1fae5;color:#059669}
+    .toggle-icon.orange{background:#ffedd5;color:#f97316}
+    .toggle-icon.purple{background:#ede9fe;color:#7c3aed}
+    .toggle-icon.red{background:#fee2e2;color:#ef4444}
+    .toggle-info{flex:1;min-width:0}
+    .toggle-name{font-weight:600;font-size:.9rem;color:#0a0e27}
+    .toggle-key{font-size:.72rem;color:#94a3b8;font-family:monospace;margin-top:1px}
+    .toggle-desc{font-size:.78rem;color:#64748b;margin-top:2px}
+    .toggle-right{display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
+    .toggle-switch{position:relative;width:46px;height:26px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-track{position:absolute;inset:0;border-radius:50px;background:#cbd5e1;cursor:pointer;transition:background .25s}
+    .toggle-track::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle-switch input:checked + .toggle-track{background:#10b981}
+    .toggle-switch input:checked + .toggle-track::after{transform:translateX(20px)}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .rollout-bar{height:6px;background:#e2e8f0;border-radius:50px;overflow:hidden;margin-top:4px;min-width:80px}
+    .rollout-fill{height:100%;background:linear-gradient(90deg,#0052CC,#00C9A7);border-radius:50px}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none}
+    .form-control:focus{border-color:#0052CC}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27}
+    .modal-close{border:none;background:none;cursor:pointer;font-size:1.1rem;color:#64748b}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9}
+    .env-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+    .env-chip{padding:4px 12px;border-radius:50px;font-size:.75rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#f8faff;color:#64748b;transition:all .2s}
+    .env-chip.selected{background:#dbeafe;color:#0052CC;border-color:#0052CC}
+    #toast-msg{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    @media(max-width:900px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-bullhorn"></i> <span>Campaigns</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="seo.html"><i class="fas fa-search-plus"></i> <span>SEO</span></a></li>
+        <li><a href="feature-toggles.html" class="active"><i class="fas fa-toggle-on"></i> <span>Feature Toggles</span></a></li>
+        <li><a href="backup.html"><i class="fas fa-database"></i> <span>Backup</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title">Feature Toggles</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">2</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="page-heading">
+        <h1><i class="fas fa-toggle-on" style="color:#0052CC;margin-right:10px"></i>Feature Toggles</h1>
+        <p>Control feature availability across environments with fine-grained rollout rules.</p>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-toggle-on"></i></div>
+          <div><div class="metric-value" id="totalToggles">—</div><div class="metric-label">Total Toggles</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+          <div><div class="metric-value" id="enabledToggles">—</div><div class="metric-label">Enabled</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange"><i class="fas fa-percentage"></i></div>
+          <div><div class="metric-value" id="rolloutToggles">—</div><div class="metric-label">Percentage Rollouts</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple"><i class="fas fa-users"></i></div>
+          <div><div class="metric-value" id="userListToggles">—</div><div class="metric-label">User-List Toggles</div></div>
+        </div>
+      </div>
+
+      <!-- Toggles list -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title"><i class="fas fa-list" style="color:#0052CC;margin-right:8px"></i>All Feature Toggles</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select class="form-control" id="envFilter" onchange="renderToggles()" style="width:auto;padding:6px 12px;font-size:.82rem">
+              <option value="">All Environments</option>
+              <option value="development">Development</option>
+              <option value="staging">Staging</option>
+              <option value="production">Production</option>
+            </select>
+            <button class="btn btn-primary" onclick="openCreateModal()"><i class="fas fa-plus"></i> New Toggle</button>
+          </div>
+        </div>
+        <div id="togglesList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Toggle Modal -->
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-plus-circle" style="color:#0052CC;margin-right:8px"></i>Create Feature Toggle</div>
+      <button class="modal-close" onclick="closeModal('createModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" id="newName" placeholder="My Feature"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Key <span style="color:#94a3b8">(snake_case)</span></label>
+        <input type="text" class="form-control" id="newKey" placeholder="my_feature"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Type</label>
+      <select class="form-control" id="newType" onchange="updateTypeUI()">
+        <option value="boolean">Boolean (on/off)</option>
+        <option value="percentage">Percentage Rollout</option>
+        <option value="user_list">User List</option>
+        <option value="environment">Environment-based</option>
+      </select>
+    </div>
+    <div id="percentageGroup" style="display:none" class="form-group">
+      <label class="form-label">Rollout Percentage: <span id="pctLabel">50</span>%</label>
+      <input type="range" min="0" max="100" value="50" class="form-control" id="newPercentage" style="padding:6px" oninput="document.getElementById('pctLabel').textContent=this.value"/>
+    </div>
+    <div id="userListGroup" style="display:none" class="form-group">
+      <label class="form-label">Allowed User IDs <span style="color:#94a3b8">(comma-separated)</span></label>
+      <textarea class="form-control" id="newUserList" rows="2" placeholder="user-uuid-1, user-uuid-2"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Environments</label>
+      <div class="env-chips" id="envChips">
+        <span class="env-chip selected" onclick="toggleEnvChip(this)" data-env="development">Development</span>
+        <span class="env-chip" onclick="toggleEnvChip(this)" data-env="staging">Staging</span>
+        <span class="env-chip" onclick="toggleEnvChip(this)" data-env="production">Production</span>
+      </div>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="newEnabled" style="width:16px;height:16px;accent-color:#0052CC"/>
+      <label for="newEnabled" style="font-size:.875rem;color:#374151;cursor:pointer">Enable immediately</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('createModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createToggle()"><i class="fas fa-save"></i> Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail/Edit panel rendered inline -->
+
+<div id="toast-msg"><i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px"></i> <span id="toastText">Done!</span></div>
+
+<script>
+  const API = '/api/v1';
+  const token = () => localStorage.getItem('token') || '';
+  let togglesData = [];
+  const iconMap = { boolean:'toggle-on', percentage:'percentage', user_list:'users', environment:'server' };
+  const colorMap = { boolean:'blue', percentage:'orange', user_list:'green', environment:'purple' };
+
+  async function loadToggles() {
+    try {
+      const res = await fetch(`${API}/feature-toggles`, { headers:{'Authorization':`Bearer ${token()}`} });
+      const json = await res.json();
+      if (json.success) { togglesData = json.data; updateMetrics(); renderToggles(); }
+    } catch { /* ignore */ }
+  }
+
+  function updateMetrics() {
+    document.getElementById('totalToggles').textContent = togglesData.length;
+    document.getElementById('enabledToggles').textContent = togglesData.filter(t => t.enabled).length;
+    document.getElementById('rolloutToggles').textContent = togglesData.filter(t => t.type === 'percentage').length;
+    document.getElementById('userListToggles').textContent = togglesData.filter(t => t.type === 'user_list').length;
+  }
+
+  function renderToggles() {
+    const envFilter = document.getElementById('envFilter').value;
+    let list = togglesData;
+    if (envFilter) list = list.filter(t => t.environments.includes(envFilter));
+
+    const container = document.getElementById('togglesList');
+    if (list.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:32px;color:#94a3b8">No toggles found. Create your first toggle.</div>';
+      return;
+    }
+    container.innerHTML = list.map(t => `
+      <div class="toggle-row" id="row-${t.key}">
+        <div class="toggle-icon ${colorMap[t.type] || 'blue'}"><i class="fas fa-${iconMap[t.type] || 'toggle-on'}"></i></div>
+        <div class="toggle-info">
+          <div class="toggle-name">${t.name}</div>
+          <div class="toggle-key">${t.key}</div>
+          <div class="toggle-desc">
+            <span class="badge badge-${colorMap[t.type] || 'blue'}">${t.type}</span>
+            ${t.environments.map(e => `<span class="badge badge-gray" style="margin-left:4px">${e}</span>`).join('')}
+            ${t.type === 'percentage' ? `<div class="rollout-bar" style="display:inline-block;vertical-align:middle;margin-left:8px;width:80px"><div class="rollout-fill" style="width:${t.rolloutPercentage}%"></div></div> <span style="font-size:.72rem;color:#64748b">${t.rolloutPercentage}%</span>` : ''}
+          </div>
+        </div>
+        <div class="toggle-right">
+          <label class="toggle-switch">
+            <input type="checkbox" ${t.enabled ? 'checked' : ''} onchange="quickToggle('${t.key}', this.checked)"/>
+            <span class="toggle-track"></span>
+          </label>
+          <span class="toggle-status ${t.enabled ? 'on' : 'off'}" style="font-size:.75rem;font-weight:700;color:${t.enabled ? '#10b981' : '#94a3b8'}">${t.enabled ? 'ON' : 'OFF'}</span>
+          <button class="btn btn-secondary btn-sm" onclick="deleteToggle('${t.key}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('');
+  }
+
+  async function quickToggle(key, enabled) {
+    const res = await fetch(`${API}/feature-toggles/${key}`, { method:'PATCH', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token()}`}, body: JSON.stringify({ enabled }) });
+    const json = await res.json();
+    if (json.success) { const t = togglesData.find(x => x.key === key); if (t) t.enabled = enabled; updateMetrics(); renderToggles(); showToast(`${key} ${enabled ? 'enabled' : 'disabled'}.`); }
+    else showToast(json.error || 'Update failed.', true);
+  }
+
+  async function deleteToggle(key) {
+    if (!confirm(`Delete toggle "${key}"? This cannot be undone.`)) return;
+    const res = await fetch(`${API}/feature-toggles/${key}`, { method:'DELETE', headers:{'Authorization':`Bearer ${token()}`} });
+    const json = await res.json();
+    if (json.success) { togglesData = togglesData.filter(t => t.key !== key); updateMetrics(); renderToggles(); showToast('Toggle deleted.'); }
+    else showToast(json.error || 'Delete failed.', true);
+  }
+
+  function openCreateModal() { document.getElementById('createModal').classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function toggleEnvChip(el) { el.classList.toggle('selected'); }
+
+  function updateTypeUI() {
+    const type = document.getElementById('newType').value;
+    document.getElementById('percentageGroup').style.display = type === 'percentage' ? 'block' : 'none';
+    document.getElementById('userListGroup').style.display = type === 'user_list' ? 'block' : 'none';
+  }
+
+  async function createToggle() {
+    const envs = Array.from(document.querySelectorAll('.env-chip.selected')).map(e => e.dataset.env);
+    const type = document.getElementById('newType').value;
+    const body = {
+      name: document.getElementById('newName').value.trim(),
+      key: document.getElementById('newKey').value.trim(),
+      type,
+      enabled: document.getElementById('newEnabled').checked,
+      environments: envs,
+      rolloutPercentage: type === 'percentage' ? parseInt(document.getElementById('newPercentage').value) : 100,
+      allowedUsers: type === 'user_list' ? document.getElementById('newUserList').value.split(',').map(s => s.trim()).filter(Boolean) : [],
+    };
+    if (!body.name || !body.key) { showToast('Name and key are required.', true); return; }
+    const res = await fetch(`${API}/feature-toggles`, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token()}`}, body: JSON.stringify(body) });
+    const json = await res.json();
+    if (json.success) { closeModal('createModal'); togglesData.unshift(json.data); updateMetrics(); renderToggles(); showToast('Toggle created!'); }
+    else showToast(json.error || 'Creation failed.', true);
+  }
+
+  function showToast(msg, isError = false) {
+    const el = document.getElementById('toast-msg');
+    const icon = isError ? 'fa-exclamation-circle' : 'fa-check-circle';
+    const color = isError ? '#ef4444' : '#00C9A7';
+    el.innerHTML = `<i class="fas ${icon}" style="color:${color};margin-right:6px"></i>${msg}`;
+    el.style.transform = 'translateY(0)'; el.style.opacity = '1';
+    setTimeout(() => { el.style.transform = 'translateY(80px)'; el.style.opacity = '0'; }, 3500);
+  }
+
+  loadToggles();
+</script>
+</body>
+</html>
