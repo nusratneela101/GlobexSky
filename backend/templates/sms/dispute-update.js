@@ -6,6 +6,6 @@
  * @param {string} [vars.platformName] - Platform name
  * @returns {string}
  */
-export default function disputeUpdateTemplate({ disputeId, status, platformName = 'GlobexSky' }) {
+export default function disputeUpdateTemplate({ disputeId, status, platformName = 'Globex Sky' }) {
   return `[${platformName}] Dispute #${disputeId} update: Status changed to "${status}". Log in to your account for details.`;
 }

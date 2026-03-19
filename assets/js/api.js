@@ -1,5 +1,5 @@
 /**
- * GlobexSky — api.js
+ * Globex Sky — api.js
  * Centralised API client. All backend requests go through this module.
  * Automatically attaches the auth token and handles errors consistently.
  */
@@ -41,7 +41,7 @@ const API = (() => {
         // Clear stale session
         localStorage.removeItem('globexSession');
         localStorage.removeItem('globexUser');
-        if (window.GlobexSky?.updateNavUI) window.GlobexSky.updateNavUI();
+        if (window.Globex Sky?.updateNavUI) window.Globex Sky.updateNavUI();
       }
       throw err;
     }

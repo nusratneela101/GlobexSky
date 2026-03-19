@@ -1,5 +1,5 @@
 /**
- * carry.js – CarryService module for GlobexSky Carry (traveller courier) feature.
+ * carry.js – CarryService module for Globex Sky Carry (traveller courier) feature.
  * Handles flight validation, earnings calculation, product selection, weight slider,
  * and withdrawal processing.
  */

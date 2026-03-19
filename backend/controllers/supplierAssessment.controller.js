@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Supplier Assessment Controller
+ * Globex Sky — Supplier Assessment Controller
  */
 
 import {

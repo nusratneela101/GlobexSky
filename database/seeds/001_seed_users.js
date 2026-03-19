@@ -14,7 +14,7 @@ export async function run(supabase) {
       full_name: 'Admin User',
       role: 'admin',
       verification_status: 'verified',
-      company_name: 'GlobexSky HQ',
+      company_name: 'Globex International Trade Co., Ltd.',
       phone: '+8801700000001',
       language: 'en',
       currency: 'USD',

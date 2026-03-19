@@ -1,5 +1,5 @@
 /**
- * parcel.js – ParcelService module for GlobexSky parcel shipping feature.
+ * parcel.js – ParcelService module for Globex Sky parcel shipping feature.
  * Handles shipping cost calculation, tracking timeline rendering, and form management.
  */
 

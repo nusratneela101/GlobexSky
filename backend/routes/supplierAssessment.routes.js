@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Supplier Assessment Routes
+ * Globex Sky — Supplier Assessment Routes
  */
 
 import { Router } from 'express';

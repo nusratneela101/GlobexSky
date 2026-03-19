@@ -6,6 +6,6 @@
  * @param {string} [vars.platformName] - Platform name
  * @returns {string}
  */
-export default function otpTemplate({ otp, expiresIn = '10 minutes', platformName = 'GlobexSky' }) {
+export default function otpTemplate({ otp, expiresIn = '10 minutes', platformName = 'Globex Sky' }) {
   return `[${platformName}] Your verification code is: ${otp}. Valid for ${expiresIn}. Do not share this code with anyone.`;
 }

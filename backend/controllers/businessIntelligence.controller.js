@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Business Intelligence Controller
+ * Globex Sky — Business Intelligence Controller
  */
 
 import {

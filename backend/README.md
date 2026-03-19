@@ -1,6 +1,6 @@
-# GlobexSky Backend
+# Globex Sky Backend
 
-Node.js + Express backend API for the GlobexSky global B2B sourcing and shipment platform.
+Node.js + Express backend API for the Globex Sky global B2B sourcing and shipment platform.
 
 ## Stack
 

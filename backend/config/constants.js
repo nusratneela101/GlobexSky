@@ -73,5 +73,5 @@ export const CAMPAIGN_TYPES = {
 export const DEFAULT_PAGE_SIZE = 20;
 export const MAX_PAGE_SIZE = 100;
 export const DEFAULT_CURRENCY = 'USD';
-export const PLATFORM_NAME = 'GlobexSky';
-export const PLATFORM_EMAIL = 'support@globexsky.com';
+export const PLATFORM_NAME = 'Globex Sky';
+export const PLATFORM_EMAIL = 'info@globexsky.com';

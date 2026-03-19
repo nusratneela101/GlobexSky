@@ -1,5 +1,5 @@
 /**
- * GlobexSky - search.js
+ * Globex Sky - search.js
  * Search functionality: live product filter, debounce, voice search,
  * image search, suggestions dropdown, clear button, and search history.
  */
@@ -198,8 +198,8 @@ function startVoiceSearch(inputEl, onResult) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
-    if (window.GlobexSky?.showToast) {
-      window.GlobexSky.showToast('Voice search is not supported in this browser.', 'warning');
+    if (window.Globex Sky?.showToast) {
+      window.Globex Sky.showToast('Voice search is not supported in this browser.', 'warning');
     } else {
       alert('Voice search is not supported in this browser.');
     }
@@ -228,9 +228,9 @@ function startVoiceSearch(inputEl, onResult) {
   };
 
   recognition.onerror = (e) => {
-    console.warn('[GlobexSky Search] Voice recognition error:', e.error);
-    if (window.GlobexSky?.showToast) {
-      window.GlobexSky.showToast('Could not recognize voice. Please try again.', 'error');
+    console.warn('[Globex Sky Search] Voice recognition error:', e.error);
+    if (window.Globex Sky?.showToast) {
+      window.Globex Sky.showToast('Could not recognize voice. Please try again.', 'error');
     }
   };
 
@@ -289,8 +289,8 @@ function initImageSearch() {
       });
 
       // Placeholder: trigger actual image search
-      if (window.GlobexSky?.showToast) {
-        window.GlobexSky.showToast('Image search is not yet connected to a backend.', 'info');
+      if (window.Globex Sky?.showToast) {
+        window.Globex Sky.showToast('Image search is not yet connected to a backend.', 'info');
       }
     };
 
@@ -442,8 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─────────────────────────────────────────────
    EXPORTS
 ───────────────────────────────────────────── */
-window.GlobexSky = window.GlobexSky || {};
-Object.assign(window.GlobexSky, {
+window.Globex Sky = window.Globex Sky || {};
+Object.assign(window.Globex Sky, {
   filterProducts,
   startVoiceSearch,
   getSearchHistory,

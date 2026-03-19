@@ -1,5 +1,5 @@
 /**
- * GlobexSky Shared Secondary Navigation Component
+ * Globex Sky Shared Secondary Navigation Component
  * Injects a consistent secondary nav with all 10 items into every page.
  * Base path is derived from this script's own URL so relative links always
  * resolve correctly regardless of the page's directory depth.

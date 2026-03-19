@@ -1,5 +1,5 @@
 /**
- * GlobexSky - auth.js
+ * Globex Sky - auth.js
  * Authentication modal management: login, register, mock session,
  * social login placeholders, form validation, and navbar UI updates.
  *
@@ -251,11 +251,11 @@ async function mockLogin(email, password) {
       saveSession(token, refresh_token, userData);
       updateNavUI();
       closeLoginModal();
-      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Welcome back, ${userData.name}!`, 'success');
+      if (window.Globex Sky?.showToast) window.Globex Sky.showToast(`Welcome back, ${userData.name}!`, 'success');
       return;
     } catch (err) {
       const msg = err.message || 'Login failed. Please check your credentials.';
-      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
+      if (window.Globex Sky?.showToast) window.Globex Sky.showToast(msg, 'error');
       return;
     }
   }
@@ -266,7 +266,7 @@ async function mockLogin(email, password) {
   saveUser(user);
   updateNavUI();
   closeLoginModal();
-  if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Welcome back, ${user.name}!`, 'success');
+  if (window.Globex Sky?.showToast) window.Globex Sky.showToast(`Welcome back, ${user.name}!`, 'success');
 }
 
 /**
@@ -281,13 +281,13 @@ async function mockRegister(name, email, password = '', role = 'buyer') {
     try {
       await window.API.auth.register(name, email, password, role);
       closeRegisterModal();
-      if (window.GlobexSky?.showToast) {
-        window.GlobexSky.showToast('Account created! Please check your email to verify your account.', 'success');
+      if (window.Globex Sky?.showToast) {
+        window.Globex Sky.showToast('Account created! Please check your email to verify your account.', 'success');
       }
       return;
     } catch (err) {
       const msg = err.message || 'Registration failed. Please try again.';
-      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
+      if (window.Globex Sky?.showToast) window.Globex Sky.showToast(msg, 'error');
       return;
     }
   }
@@ -297,7 +297,7 @@ async function mockRegister(name, email, password = '', role = 'buyer') {
   saveUser(user);
   updateNavUI();
   closeRegisterModal();
-  if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Account created! Welcome, ${user.name}!`, 'success');
+  if (window.Globex Sky?.showToast) window.Globex Sky.showToast(`Account created! Welcome, ${user.name}!`, 'success');
 }
 
 /** Log out the current user. */
@@ -308,8 +308,8 @@ async function logout() {
   clearUser();
   updateNavUI();
 
-  if (window.GlobexSky?.showToast) {
-    window.GlobexSky.showToast('You have been logged out.', 'info');
+  if (window.Globex Sky?.showToast) {
+    window.Globex Sky.showToast('You have been logged out.', 'info');
   }
 
   // Redirect to home if on a protected page
@@ -324,9 +324,9 @@ async function logout() {
 ───────────────────────────────────────────── */
 function handleSocialLogin(provider) {
   // Placeholder — replace with real OAuth flow
-  console.info(`[GlobexSky Auth] Social login with ${provider} is not yet configured.`);
-  if (window.GlobexSky?.showToast) {
-    window.GlobexSky.showToast(`${provider} login coming soon!`, 'info');
+  console.info(`[Globex Sky Auth] Social login with ${provider} is not yet configured.`);
+  if (window.Globex Sky?.showToast) {
+    window.Globex Sky.showToast(`${provider} login coming soon!`, 'info');
   }
 }
 
@@ -445,8 +445,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─────────────────────────────────────────────
    EXPORTS
 ───────────────────────────────────────────── */
-window.GlobexSky = window.GlobexSky || {};
-Object.assign(window.GlobexSky, {
+window.Globex Sky = window.Globex Sky || {};
+Object.assign(window.Globex Sky, {
   openLoginModal,
   closeLoginModal,
   openRegisterModal,

@@ -1,5 +1,5 @@
 /**
- * GlobexSky — FedEx API Service
+ * Globex Sky — FedEx API Service
  * Integrates with FedEx REST API v1 for rates, shipment creation, tracking, and labels.
  */
 

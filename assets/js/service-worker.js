@@ -1,5 +1,5 @@
 /**
- * GlobexSky Service Worker — Push Notifications
+ * Globex Sky Service Worker — Push Notifications
  * Handles incoming push events and notification click actions.
  */
 
@@ -11,10 +11,10 @@ self.addEventListener('push', (event) => {
   try {
     data = event.data ? event.data.json() : {};
   } catch (_) {
-    data = { title: 'GlobexSky', body: event.data ? event.data.text() : '' };
+    data = { title: 'Globex Sky', body: event.data ? event.data.text() : '' };
   }
 
-  const title = data.title || 'GlobexSky';
+  const title = data.title || 'Globex Sky';
   const options = {
     body: data.body || '',
     icon: data.icon || '/assets/images/logo.png',

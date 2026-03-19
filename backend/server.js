@@ -1,5 +1,5 @@
 /**
- * GlobexSky Backend — server.js
+ * Globex Sky Backend — server.js
  * Main entry point: Express server with all middleware, routes, and health check.
  */
 
@@ -71,7 +71,7 @@ app.use(globalRateLimiter);
 
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
-  res.json({ success: true, message: 'GlobexSky API is running', timestamp: new Date().toISOString() });
+  res.json({ success: true, message: 'Globex Sky API is running', timestamp: new Date().toISOString() });
 });
 
 // ─── API Routes ──────────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`🚀 GlobexSky API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  console.log(`🚀 Globex Sky API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
 
 export default app;

@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Business Intelligence Service
+ * Globex Sky — Business Intelligence Service
  * Trend analysis, price prediction, demand forecasting, competitor monitoring, report generation.
  */
 

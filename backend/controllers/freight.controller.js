@@ -1,5 +1,5 @@
 /**
- * GlobexSky — Freight Controller
+ * Globex Sky — Freight Controller
  * Handles freight rate comparison, booking, tracking, and analytics.
  */
 

@@ -1,5 +1,5 @@
 /**
- * GlobexSky - animations.js
+ * Globex Sky - animations.js
  * Door/reveal entrance animation for the landing page.
  * Handles door-open sequence, skip button, session caching,
  * and prefers-reduced-motion respect.
@@ -181,8 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─────────────────────────────────────────────
    EXPORTS
 ───────────────────────────────────────────── */
-window.GlobexSky = window.GlobexSky || {};
-Object.assign(window.GlobexSky, {
+window.Globex Sky = window.Globex Sky || {};
+Object.assign(window.Globex Sky, {
   skipToContent,
   runDoorAnimation,
 });
