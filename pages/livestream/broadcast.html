@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Live Broadcast – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0d1117;color:#e6edf3}
+    .broadcast-wrapper{display:grid;grid-template-columns:1fr 320px;gap:0;min-height:100vh}
+    .broadcast-main{display:flex;flex-direction:column}
+    .broadcast-topbar{background:#161b22;padding:12px 20px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #30363d}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;text-decoration:none}
+    .brand-logo span{color:#0052CC}
+    .stream-status{display:flex;align-items:center;gap:8px;font-size:.85rem}
+    .status-dot{width:10px;height:10px;border-radius:50%;background:#64748b}
+    .status-dot.live{background:#ef4444;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .viewer-count{display:flex;align-items:center;gap:6px;background:#1c2128;padding:6px 14px;border-radius:20px;font-size:.85rem;color:#8b949e}
+    .viewer-count i{color:#ef4444}
+    .topbar-actions{margin-left:auto;display:flex;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-go-live{background:#ef4444;color:#fff}
+    .btn-go-live:hover{background:#dc2626}
+    .btn-end{background:#374151;color:#fff}
+    .btn-end:hover{background:#1f2937}
+    .btn-outline{background:transparent;color:#8b949e;border:1px solid #30363d}
+    .btn-outline:hover{background:#1c2128;color:#e6edf3}
+    .setup-panel{padding:24px;flex:1;overflow-y:auto}
+    .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.83rem;color:#8b949e;margin-bottom:6px;font-weight:500}
+    .form-input{width:100%;background:#161b22;border:1px solid #30363d;color:#e6edf3;border-radius:8px;padding:10px 14px;font-size:.9rem;font-family:'Inter',sans-serif;transition:border-color .2s}
+    .form-input:focus{outline:none;border-color:#0052CC}
+    .form-textarea{min-height:80px;resize:vertical}
+    .preview-area{background:#161b22;border:1px solid #30363d;border-radius:12px;overflow:hidden}
+    .video-preview{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#30363d;position:relative}
+    .video-preview video{width:100%;height:100%;object-fit:cover;display:none}
+    .video-preview.active video{display:block}
+    .video-preview .preview-placeholder{display:flex;flex-direction:column;align-items:center;gap:12px;color:#8b949e}
+    .video-preview.active .preview-placeholder{display:none}
+    .media-controls{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px}
+    .media-btn{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .media-btn.active{background:#0052CC;color:#fff}
+    .media-btn.inactive{background:#ef4444;color:#fff}
+    .media-btn.off{background:#374151;color:#8b949e}
+    .products-panel{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px}
+    .panel-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:#e6edf3;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .product-search{display:flex;gap:8px;margin-bottom:12px}
+    .product-search input{flex:1}
+    .product-tag-list{display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto}
+    .product-tag-item{display:flex;align-items:center;gap:10px;background:#0d1117;border-radius:8px;padding:8px 10px}
+    .product-tag-img{width:40px;height:40px;border-radius:6px;object-fit:cover;background:#1c2128}
+    .product-tag-name{flex:1;font-size:.83rem}
+    .product-tag-price{font-size:.83rem;color:#0052CC;font-weight:600}
+    .product-tag-remove{background:none;border:none;color:#8b949e;cursor:pointer}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .stat-card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px;text-align:center}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#e6edf3}
+    .stat-label{font-size:.75rem;color:#8b949e;margin-top:4px}
+    .broadcast-sidebar{background:#161b22;border-left:1px solid #30363d;display:flex;flex-direction:column;height:100vh;position:sticky;top:0}
+    .sidebar-tabs{display:flex;border-bottom:1px solid #30363d}
+    .sidebar-tab{flex:1;padding:12px;background:none;border:none;color:#8b949e;cursor:pointer;font-size:.85rem;font-weight:500;border-bottom:2px solid transparent;transition:all .2s}
+    .sidebar-tab.active{color:#e6edf3;border-bottom-color:#0052CC}
+    .chat-area{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+    .chat-msg{display:flex;gap:8px;align-items:flex-start}
+    .chat-avatar{width:28px;height:28px;border-radius:50%;background:#0052CC;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;color:#fff}
+    .chat-bubble{background:#0d1117;border-radius:0 8px 8px 8px;padding:8px 10px;font-size:.82rem;max-width:220px}
+    .chat-user{font-weight:600;color:#0052CC;font-size:.75rem;margin-bottom:3px}
+    .chat-text{color:#c9d1d9}
+    .chat-input-area{padding:12px;border-top:1px solid #30363d}
+    .chat-input-row{display:flex;gap:8px}
+    .chat-input{flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:8px;padding:10px 12px;font-size:.85rem;font-family:'Inter',sans-serif}
+    .chat-input:focus{outline:none;border-color:#0052CC}
+    .chat-send-btn{background:#0052CC;color:#fff;border:none;border-radius:8px;width:40px;cursor:pointer;font-size:1rem}
+    @media(max-width:900px){.broadcast-wrapper{grid-template-columns:1fr}.broadcast-sidebar{height:400px;position:static}.setup-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="broadcast-wrapper">
+  <!-- Main Broadcast Area -->
+  <div class="broadcast-main">
+    <header class="broadcast-topbar">
+      <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+      <div class="stream-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Ready to Broadcast</span>
+      </div>
+      <div class="viewer-count">
+        <i class="fas fa-eye"></i>
+        <span id="viewerCount">0 viewers</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-outline" id="btnPreview" onclick="startPreview()"><i class="fas fa-video"></i> Preview</button>
+        <button class="btn btn-go-live" id="btnGoLive" onclick="goLive()" disabled><i class="fas fa-circle"></i> Go Live</button>
+        <button class="btn btn-end" id="btnEnd" onclick="endStream()" style="display:none"><i class="fas fa-stop"></i> End Stream</button>
+      </div>
+    </header>
+
+    <div class="setup-panel">
+      <!-- Stream Setup Form -->
+      <div class="preview-area" style="margin-bottom:20px">
+        <div class="video-preview" id="videoPreview">
+          <video id="localVideo" autoplay muted playsinline></video>
+          <div class="preview-placeholder">
+            <i class="fas fa-video" style="font-size:3rem"></i>
+            <span>Camera preview will appear here</span>
+            <button class="btn btn-outline" onclick="startPreview()">Enable Camera</button>
+          </div>
+        </div>
+        <div class="media-controls">
+          <button class="media-btn off" id="btnMic" onclick="toggleMic()" title="Toggle Microphone">
+            <i class="fas fa-microphone-slash"></i>
+          </button>
+          <button class="media-btn off" id="btnCam" onclick="toggleCam()" title="Toggle Camera">
+            <i class="fas fa-video-slash"></i>
+          </button>
+          <button class="media-btn off" id="btnScreen" onclick="shareScreen()" title="Share Screen">
+            <i class="fas fa-desktop"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-grid">
+        <div>
+          <div class="form-group">
+            <label class="form-label">Stream Title *</label>
+            <input type="text" class="form-input" id="streamTitle" placeholder="e.g. New Arrivals Summer 2025" maxlength="100"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-input form-textarea" id="streamDesc" placeholder="What will you be showcasing today?"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-input" id="streamCategory">
+              <option value="">Select category</option>
+              <option value="electronics">Electronics</option>
+              <option value="fashion">Fashion</option>
+              <option value="home">Home & Living</option>
+              <option value="beauty">Beauty & Health</option>
+              <option value="sports">Sports & Outdoors</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Scheduled Time (optional)</label>
+            <input type="datetime-local" class="form-input" id="scheduledAt"/>
+          </div>
+        </div>
+
+        <div>
+          <div class="products-panel">
+            <div class="panel-title"><i class="fas fa-tag"></i> Tagged Products</div>
+            <div class="product-search">
+              <input type="text" class="form-input" id="productSearch" placeholder="Search products…" style="margin:0"/>
+              <button class="btn btn-outline" onclick="searchProducts()"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="product-tag-list" id="taggedProducts">
+              <!-- Products appear here -->
+              <div style="text-align:center;color:#8b949e;font-size:.83rem;padding:20px">No products tagged yet</div>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-value" id="statViewers">0</div>
+              <div class="stat-label">Viewers</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statPeak">0</div>
+              <div class="stat-label">Peak</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statDuration">0:00</div>
+              <div class="stat-label">Duration</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Sidebar -->
+  <aside class="broadcast-sidebar">
+    <div class="sidebar-tabs">
+      <button class="sidebar-tab active" onclick="switchTab('chat',this)">Chat</button>
+      <button class="sidebar-tab" onclick="switchTab('products',this)">Products</button>
+    </div>
+    <div class="chat-area" id="chatArea">
+      <div class="chat-msg">
+        <div class="chat-avatar">S</div>
+        <div class="chat-bubble">
+          <div class="chat-user">System</div>
+          <div class="chat-text">Welcome! Start the stream to enable live chat.</div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Send a message…" onkeydown="if(event.key==='Enter')sendChat()"/>
+        <button class="chat-send-btn" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  let streamId = null;
+  let isLive = false;
+  let localStream = null;
+  let micEnabled = false;
+  let camEnabled = false;
+  let startTime = null;
+  let durationTimer = null;
+
+  async function startPreview() {
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const video = document.getElementById('localVideo');
+      video.srcObject = localStream;
+      document.getElementById('videoPreview').classList.add('active');
+      camEnabled = true;
+      micEnabled = true;
+      updateMediaBtns();
+      document.getElementById('btnGoLive').disabled = false;
+    } catch (e) {
+      alert('Camera/mic access denied: ' + e.message);
+    }
+  }
+
+  function toggleMic() {
+    if (!localStream) return;
+    micEnabled = !micEnabled;
+    localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
+    updateMediaBtns();
+  }
+
+  function toggleCam() {
+    if (!localStream) return;
+    camEnabled = !camEnabled;
+    localStream.getVideoTracks().forEach(t => t.enabled = camEnabled);
+    updateMediaBtns();
+  }
+
+  async function shareScreen() {
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const video = document.getElementById('localVideo');
+      video.srcObject = screenStream;
+      screenStream.getVideoTracks()[0].onended = () => { if (localStream) video.srcObject = localStream; };
+    } catch (e) { /* cancelled */ }
+  }
+
+  function updateMediaBtns() {
+    const micBtn = document.getElementById('btnMic');
+    micBtn.className = 'media-btn ' + (micEnabled ? 'active' : 'inactive');
+    micBtn.innerHTML = `<i class="fas fa-microphone${micEnabled ? '' : '-slash'}"></i>`;
+    const camBtn = document.getElementById('btnCam');
+    camBtn.className = 'media-btn ' + (camEnabled ? 'active' : 'inactive');
+    camBtn.innerHTML = `<i class="fas fa-video${camEnabled ? '' : '-slash'}"></i>`;
+  }
+
+  async function goLive() {
+    const title = document.getElementById('streamTitle').value.trim();
+    if (!title) { alert('Please enter a stream title.'); return; }
+    const token = localStorage.getItem('token');
+    if (!token) { window.location.href = '../auth/login.html'; return; }
+
+    const body = {
+      title,
+      description: document.getElementById('streamDesc').value,
+      category: document.getElementById('streamCategory').value,
+      scheduled_at: document.getElementById('scheduledAt').value || null,
+    };
+
+    const res = await fetch('/api/v1/livestreams', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body) });
+    const json = await res.json();
+    if (!json.success) { alert('Failed to create stream: ' + json.error); return; }
+    streamId = json.data.id;
+
+    // Start the stream
+    await fetch(`/api/v1/livestreams/${streamId}/start`, { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } });
+
+    isLive = true;
+    startTime = Date.now();
+    durationTimer = setInterval(updateDuration, 1000);
+    document.getElementById('statusDot').classList.add('live');
+    document.getElementById('statusText').textContent = 'LIVE';
+    document.getElementById('btnGoLive').style.display = 'none';
+    document.getElementById('btnEnd').style.display = '';
+    appendChatMsg('System', 'You are now live! 🎉');
+  }
+
+  async function endStream() {
+    if (!streamId || !confirm('End your live stream?')) return;
+    const token = localStorage.getItem('token');
+    await fetch(`/api/v1/livestreams/${streamId}/end`, { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } });
+    clearInterval(durationTimer);
+    isLive = false;
+    document.getElementById('statusDot').classList.remove('live');
+    document.getElementById('statusText').textContent = 'Stream Ended';
+    document.getElementById('btnEnd').style.display = 'none';
+    appendChatMsg('System', 'Stream has ended. Thank you!');
+  }
+
+  function updateDuration() {
+    const secs = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    document.getElementById('statDuration').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  }
+
+  function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg || !isLive || !streamId) return;
+    const token = localStorage.getItem('token');
+    fetch(`/api/v1/livestreams/${streamId}/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ message: msg }) });
+    appendChatMsg('You', msg);
+    input.value = '';
+  }
+
+  function appendChatMsg(user, text) {
+    const area = document.getElementById('chatArea');
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.innerHTML = `<div class="chat-avatar">${user[0]}</div><div class="chat-bubble"><div class="chat-user">${user}</div><div class="chat-text">${text}</div></div>`;
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function searchProducts() { /* Product search API integration */ }
+</script>
+</body>
+</html>

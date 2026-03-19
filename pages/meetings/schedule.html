@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Video Meetings – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .page-topbar{background:#fff;padding:12px 24px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#0a0e27;text-decoration:none}
+    .brand-logo span{color:#0052CC}
+    .container{max-width:1000px;margin:0 auto;padding:0 20px}
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:50px 20px;text-align:center;color:#fff}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+    .page-hero p{opacity:.85}
+    .hero-actions{display:flex;justify-content:center;gap:14px;margin-top:24px;flex-wrap:wrap}
+    .btn{padding:12px 24px;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-white{background:#fff;color:#0052CC}
+    .btn-white:hover{background:#f0f5ff}
+    .btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
+    .btn-outline-white:hover{background:rgba(255,255,255,.1)}
+    .content-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;padding:32px 0}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-input{width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;font-size:.9rem;font-family:'Inter',sans-serif;transition:border-color .2s;color:#1a1a2e}
+    .form-input:focus{outline:none;border-color:#0052CC}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:6px 14px;border-radius:6px;font-size:.8rem}
+    .join-form{display:flex;gap:10px;margin-bottom:20px}
+    .join-input{flex:1;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;font-size:.9rem;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:2px}
+    .join-input:focus{outline:none;border-color:#0052CC}
+    .meetings-list{display:flex;flex-direction:column;gap:12px}
+    .meeting-item{background:#f8faff;border-radius:12px;padding:16px;border:1px solid #e2e8f0;display:flex;gap:14px;align-items:flex-start}
+    .meeting-item-icon{width:44px;height:44px;border-radius:10px;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .meeting-item-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:#0a0e27;margin-bottom:4px}
+    .meeting-item-meta{font-size:.8rem;color:#64748b}
+    .meeting-item-actions{margin-left:auto;display:flex;gap:8px}
+    .room-code{background:#0052CC;color:#fff;border-radius:6px;padding:3px 8px;font-family:monospace;font-size:.8rem;font-weight:700}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600;margin-top:4px}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .empty-state{text-align:center;padding:40px 20px;color:#94a3b8}
+    .empty-state i{font-size:2.5rem;margin-bottom:10px;display:block}
+    @media(max-width:768px){.content-grid{grid-template-columns:1fr}.hero-actions{flex-direction:column;align-items:center}}
+  </style>
+</head>
+<body>
+<header class="page-topbar">
+  <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+  <a href="../../index.html" style="font-size:.85rem;color:#0052CC;text-decoration:none"><i class="fas fa-arrow-left"></i> Home</a>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-video"></i> Video Meetings</h1>
+  <p>Connect face-to-face with suppliers, buyers, and partners from anywhere in the world.</p>
+  <div class="hero-actions">
+    <button class="btn btn-white" onclick="startInstantMeeting()"><i class="fas fa-video"></i> Start Instant Meeting</button>
+    <button class="btn btn-outline-white" onclick="scrollToSchedule()"><i class="fas fa-calendar-plus"></i> Schedule Meeting</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-grid">
+    <!-- Main Content -->
+    <div>
+      <!-- Join by Room Code -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-sign-in-alt" style="color:#0052CC"></i> Join a Meeting</div>
+        <div class="join-form">
+          <input type="text" class="join-input" id="joinCode" placeholder="Enter room code (e.g. ABC123)" maxlength="6" oninput="this.value=this.value.toUpperCase()"/>
+          <button class="btn btn-primary" onclick="joinByCode()"><i class="fas fa-arrow-right"></i> Join</button>
+        </div>
+      </div>
+
+      <!-- Schedule Meeting Form -->
+      <div class="card" id="scheduleSection">
+        <div class="card-title"><i class="fas fa-calendar-plus" style="color:#7c3aed"></i> Schedule a Meeting</div>
+        <div class="form-group">
+          <label class="form-label">Meeting Title *</label>
+          <input type="text" class="form-input" id="meetTitle" placeholder="e.g. Product Discussion with Supplier"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Date & Time *</label>
+            <input type="datetime-local" class="form-input" id="meetDate"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Duration (minutes)</label>
+            <select class="form-input" id="meetDuration">
+              <option value="30">30 min</option>
+              <option value="60" selected>1 hour</option>
+              <option value="90">1.5 hours</option>
+              <option value="120">2 hours</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (optional)</label>
+          <input type="text" class="form-input" id="meetDesc" placeholder="Meeting agenda or notes"/>
+        </div>
+        <button class="btn btn-primary" onclick="scheduleMeeting()"><i class="fas fa-calendar-check"></i> Schedule Meeting</button>
+      </div>
+
+      <!-- My Meetings -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-calendar-alt" style="color:#0052CC"></i> My Meetings</div>
+        <div class="meetings-list" id="meetingsList">
+          <div class="empty-state"><i class="fas fa-video"></i><p>Loading your meetings…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside>
+      <!-- Quick Start -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-bolt" style="color:#f59e0b"></i> Quick Start</div>
+        <button class="btn btn-primary" style="width:100%;margin-bottom:10px" onclick="startInstantMeeting()"><i class="fas fa-video"></i> Start Instant Meeting</button>
+        <button class="btn btn-secondary" style="width:100%" onclick="document.getElementById('joinCode').focus()"><i class="fas fa-sign-in-alt"></i> Join with Code</button>
+      </div>
+
+      <!-- Tips -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-lightbulb" style="color:#f59e0b"></i> Meeting Tips</div>
+        <ul style="list-style:none;font-size:.83rem;color:#64748b">
+          <li style="padding:7px 0;border-bottom:1px solid #f1f5f9;display:flex;gap:8px"><i class="fas fa-check" style="color:#059669;margin-top:2px"></i> Share your room code to invite participants</li>
+          <li style="padding:7px 0;border-bottom:1px solid #f1f5f9;display:flex;gap:8px"><i class="fas fa-check" style="color:#059669;margin-top:2px"></i> Use screen share to present products</li>
+          <li style="padding:7px 0;border-bottom:1px solid #f1f5f9;display:flex;gap:8px"><i class="fas fa-check" style="color:#059669;margin-top:2px"></i> Up to 10 participants per room</li>
+          <li style="padding:7px 0;display:flex;gap:8px"><i class="fas fa-check" style="color:#059669;margin-top:2px"></i> Works best with Chrome or Firefox</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  const token = localStorage.getItem('token');
+
+  async function startInstantMeeting() {
+    if (!token) { window.location.href = '../auth/login.html'; return; }
+    try {
+      const res = await fetch('/api/v1/video-meetings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ title: 'Instant Meeting' }),
+      });
+      const json = await res.json();
+      if (json.success) { window.location.href = `room.html?id=${json.data.id}`; }
+      else alert('Failed to create meeting: ' + json.error);
+    } catch (e) { alert('Error: ' + e.message); }
+  }
+
+  async function joinByCode() {
+    const code = document.getElementById('joinCode').value.trim().toUpperCase();
+    if (code.length !== 6) { alert('Please enter a valid 6-character room code.'); return; }
+    if (!token) { window.location.href = '../auth/login.html'; return; }
+    try {
+      // Find meeting by room code via dummy join (backend handles lookup)
+      const res = await fetch('/api/v1/video-meetings/join-by-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ room_code: code }),
+      });
+      const json = await res.json();
+      if (json.success) { window.location.href = `room.html?id=${json.data.meeting_id}`; }
+      else alert('Meeting not found with that code. Please check and try again.');
+    } catch (e) { alert('Error: ' + e.message); }
+  }
+
+  async function scheduleMeeting() {
+    if (!token) { window.location.href = '../auth/login.html'; return; }
+    const title = document.getElementById('meetTitle').value.trim();
+    const scheduled_at = document.getElementById('meetDate').value;
+    if (!title || !scheduled_at) { alert('Please fill in title and date/time.'); return; }
+
+    const res = await fetch('/api/v1/video-meetings/schedule', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ title, description: document.getElementById('meetDesc').value, scheduled_at, duration_minutes: parseInt(document.getElementById('meetDuration').value) }),
+    });
+    const json = await res.json();
+    if (json.success) { alert(`Meeting scheduled! Room Code: ${json.data.room_code}`); document.getElementById('meetTitle').value = ''; document.getElementById('meetDate').value = ''; loadMyMeetings(); }
+    else alert('Error: ' + json.error);
+  }
+
+  async function loadMyMeetings() {
+    if (!token) { document.getElementById('meetingsList').innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p><a href="../auth/login.html" style="color:#0052CC">Log in</a> to see your meetings.</p></div>'; return; }
+    try {
+      const res = await fetch('/api/v1/video-meetings/my-meetings', { headers: { Authorization: `Bearer ${token}` } });
+      const json = await res.json();
+      if (!json.success) { document.getElementById('meetingsList').innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i><p>No meetings found.</p></div>'; return; }
+
+      const all = [...(json.data.hosted||[]).map(m => ({...m, role:'host'})), ...(json.data.participated||[]).map(m => ({...m, role:'participant'}))];
+      all.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+      if (!all.length) { document.getElementById('meetingsList').innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i><p>No meetings yet. Start or schedule one!</p></div>'; return; }
+
+      const statusBadge = s => ({ active:'badge-green', waiting:'badge-blue', scheduled:'badge-blue', ended:'badge-gray' })[s] || 'badge-gray';
+
+      document.getElementById('meetingsList').innerHTML = all.map(m => `
+        <div class="meeting-item">
+          <div class="meeting-item-icon"><i class="fas fa-video"></i></div>
+          <div style="flex:1">
+            <div class="meeting-item-title">${m.title}</div>
+            <div class="meeting-item-meta">${m.scheduled_at ? new Date(m.scheduled_at).toLocaleString() : 'Instant meeting'}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+              <span class="room-code">${m.room_code}</span>
+              <span class="badge-pill ${statusBadge(m.status)}">${m.status}</span>
+            </div>
+          </div>
+          ${m.status !== 'ended' ? `<div class="meeting-item-actions"><a href="room.html?id=${m.id}" class="btn btn-sm btn-primary">Join</a></div>` : ''}
+        </div>`).join('');
+    } catch (e) { console.error(e); }
+  }
+
+  function scrollToSchedule() { document.getElementById('scheduleSection').scrollIntoView({ behavior: 'smooth' }); }
+
+  loadMyMeetings();
+</script>
+</body>
+</html>
