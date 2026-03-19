@@ -35,6 +35,12 @@ function skipToContent() {
 
   if (loader) loader.remove();
 
+  // Hide the entire #door-entry container immediately
+  const doorEntry = document.getElementById('door-entry');
+  if (doorEntry) {
+    doorEntry.style.display = 'none';
+  }
+
   // Show main content
   document.body.classList.add('page-revealed');
   if (mainContent) {
@@ -82,6 +88,17 @@ function runDoorAnimation() {
         { once: true }
       );
       doorWrapper.classList.add('door-complete');
+    }
+
+    // Hide the entire #door-entry container (includes .door-seam and .btn-skip)
+    const doorEntry = document.getElementById('door-entry');
+    if (doorEntry) {
+      doorEntry.style.transition = 'opacity 0.5s ease';
+      doorEntry.style.opacity = '0';
+      doorEntry.style.pointerEvents = 'none';
+      setTimeout(() => {
+        doorEntry.style.display = 'none';
+      }, 500);
     }
 
     // Mark session so the animation is skipped on page refreshes
