@@ -1308,3 +1308,22 @@
     transform: none;
   }
 }
+
+/* ==========================================================================
+   Page-Revealed State — CSS fallback to ensure content is visible once
+   the door animation completes or is skipped. These rules complement the
+   inline styles set by animations.js and act as a CSS-only safety net.
+   ========================================================================== */
+
+/* Show main content when the page has been revealed */
+body.page-revealed .main-content {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Hide the door entry overlay once the page is revealed */
+body.page-revealed .door-entry,
+body.page-revealed #door-entry {
+  display: none !important;
+}

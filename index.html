@@ -26,6 +26,14 @@
 </head>
 <body>
 
+  <!-- Show main content and hide door if JavaScript is disabled -->
+  <noscript>
+    <style>
+      #door-entry { display: none !important; }
+      #main-content { display: block !important; opacity: 1 !important; visibility: visible !important; }
+    </style>
+  </noscript>
+
   <!-- ============================================================
        DOOR ENTRY ANIMATION
   ============================================================ -->
@@ -1467,6 +1475,25 @@
   <script src="assets/js/animations.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/auth.js"></script>
+
+  <!-- Safety net: if the door animation hasn't completed after 6 seconds,
+       force-reveal the main content. Protects against JS errors, slow
+       networks, or file:// protocol quirks where sessionStorage may fail. -->
+  <script>
+    setTimeout(function() {
+      var mc = document.getElementById('main-content');
+      var de = document.getElementById('door-entry');
+      if (mc && (mc.getAttribute('aria-hidden') === 'true' || mc.style.display === 'none' || getComputedStyle(mc).display === 'none')) {
+        mc.removeAttribute('aria-hidden');
+        mc.classList.remove('hidden');
+        mc.style.display = 'block';
+        mc.style.opacity = '1';
+        mc.style.visibility = 'visible';
+        if (de) de.style.display = 'none';
+        document.body.classList.add('page-revealed');
+      }
+    }, 6000);
+  </script>
 
 </body>
 </html>
