@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Supplier Assessment – GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-diamond{background:linear-gradient(135deg,#818cf8,#c084fc);color:#fff}
+    .badge-gold{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
+    .badge-silver{background:#e2e8f0;color:#475569}
+    .badge-bronze{background:#ffedd5;color:#c97432}
+    .badge-unverified{background:#f1f5f9;color:#64748b}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .btn-sm{padding:5px 12px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-warning{background:#f97316;color:#fff}
+    .btn-action-group{display:flex;gap:6px;flex-wrap:wrap}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px}
+    .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .stat-icon.blue{background:#dbeafe;color:#0052CC}
+    .stat-icon.green{background:#d1fae5;color:#059669}
+    .stat-icon.orange{background:#ffedd5;color:#f97316}
+    .stat-icon.purple{background:#ede9fe;color:#7c3aed}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .stat-label{font-size:.78rem;color:#64748b;margin-top:2px}
+    .filter-input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif}
+    .filter-input:focus{outline:none;border-color:#0052CC}
+    .search-filter-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    /* Score bar in table */
+    .mini-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;min-width:60px}
+    .mini-bar-fill{height:100%;border-radius:3px;background:#0052CC}
+    /* Sliders */
+    .slider-group{margin-bottom:16px}
+    .slider-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .slider-name{font-size:.83rem;font-weight:600;color:#374151}
+    .slider-val{font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:.9rem;min-width:36px;text-align:right}
+    input[type=range]{width:100%;accent-color:#0052CC;cursor:pointer}
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+    .tabs{display:flex;gap:4px;border-bottom:2px solid #e2e8f0;margin-bottom:20px}
+    .tab-btn{padding:10px 18px;border:none;background:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:500;color:#64748b;transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-2px}
+    .tab-btn.active{color:#0052CC;border-bottom-color:#0052CC;font-weight:600}
+    .tab-content{display:none}.tab-content.active{display:block}
+    @media(max-width:1024px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}.stats-row{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.stats-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span>GlobexSky <span style="color:#00C9A7">Admin</span></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> <span>Warehouses</span></a></li>
+        <li><a href="supplier-assessment.html" class="active"><i class="fas fa-medal"></i> <span>Supplier Assessment</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <h1 class="admin-page-title">Supplier Assessment</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-store"></i></div><div><div class="stat-value" id="statTotal">—</div><div class="stat-label">Total Assessed</div></div></div>
+        <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-gem"></i></div><div><div class="stat-value" id="statDiamond">—</div><div class="stat-label">Diamond Tier</div></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fas fa-medal"></i></div><div><div class="stat-value" id="statGold">—</div><div class="stat-label">Gold Tier</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-clock"></i></div><div><div class="stat-value" id="statPending">—</div><div class="stat-label">Pending Review</div></div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-card">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('suppliers')">Suppliers</button>
+          <button class="tab-btn" onclick="switchTab('leaderboard')">Leaderboard</button>
+          <button class="tab-btn" onclick="switchTab('queue')">Verification Queue</button>
+        </div>
+
+        <!-- Suppliers Tab -->
+        <div class="tab-content active" id="tab-suppliers">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Supplier Scorecards</span>
+            <button class="btn-sm btn-primary" onclick="openAssessModal()"><i class="fas fa-plus"></i> New Assessment</button>
+          </div>
+          <div class="search-filter-bar">
+            <input class="filter-input" id="searchSupplier" placeholder="Search supplier..." oninput="renderSuppliers()"/>
+            <select class="filter-input" id="filterTier" onchange="renderSuppliers()">
+              <option value="">All Tiers</option>
+              <option value="diamond">Diamond</option>
+              <option value="gold">Gold</option>
+              <option value="silver">Silver</option>
+              <option value="bronze">Bronze</option>
+            </select>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>Supplier</th><th>Overall</th><th>Quality</th><th>Delivery</th><th>Comm.</th><th>Compliance</th><th>Tier</th><th>Actions</th></tr></thead>
+              <tbody id="suppliersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Leaderboard Tab -->
+        <div class="tab-content" id="tab-leaderboard">
+          <div class="admin-card-header"><span class="admin-card-title">Top Rated Suppliers</span></div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>#</th><th>Supplier</th><th>Score</th><th>Tier</th><th>Assessed</th></tr></thead>
+              <tbody id="leaderboardBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Queue Tab -->
+        <div class="tab-content" id="tab-queue">
+          <div class="admin-card-header"><span class="admin-card-title">Verification Queue</span></div>
+          <p style="color:#64748b;font-size:.875rem">Suppliers awaiting verification review.</p>
+          <div style="overflow-x:auto;margin-top:16px">
+            <table class="data-table">
+              <thead><tr><th>Supplier</th><th>Score</th><th>Tier</th><th>Submitted</th><th>Actions</th></tr></thead>
+              <tbody id="queueBody"><tr><td colspan="5" style="text-align:center;color:#64748b;padding:24px">No suppliers in verification queue.</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Assessment Modal -->
+<div class="modal-overlay" id="assessModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-clipboard-check" style="color:#0052CC"></i> Supplier Assessment</div>
+    <div class="form-group">
+      <label class="form-label">Supplier ID (UUID)</label>
+      <input class="form-control" id="assessSupplierId" placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"/>
+    </div>
+    <div class="slider-group">
+      <div class="slider-label"><span class="slider-name"><i class="fas fa-star" style="color:#0052CC"></i> Quality Score</span><span class="slider-val" id="qualityVal">80</span></div>
+      <input type="range" min="0" max="100" value="80" id="qualitySlider" oninput="document.getElementById('qualityVal').textContent=this.value"/>
+    </div>
+    <div class="slider-group">
+      <div class="slider-label"><span class="slider-name"><i class="fas fa-truck" style="color:#f59e0b"></i> Delivery Score</span><span class="slider-val" id="deliveryVal">80</span></div>
+      <input type="range" min="0" max="100" value="80" id="deliverySlider" oninput="document.getElementById('deliveryVal').textContent=this.value"/>
+    </div>
+    <div class="slider-group">
+      <div class="slider-label"><span class="slider-name"><i class="fas fa-comments" style="color:#8b5cf6"></i> Communication Score</span><span class="slider-val" id="communicationVal">80</span></div>
+      <input type="range" min="0" max="100" value="80" id="communicationSlider" oninput="document.getElementById('communicationVal').textContent=this.value"/>
+    </div>
+    <div class="slider-group">
+      <div class="slider-label"><span class="slider-name"><i class="fas fa-shield-alt" style="color:#059669"></i> Compliance Score</span><span class="slider-val" id="complianceVal">80</span></div>
+      <input type="range" min="0" max="100" value="80" id="complianceSlider" oninput="document.getElementById('complianceVal').textContent=this.value"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-secondary" onclick="closeAssessModal()">Cancel</button>
+      <button class="btn-sm btn-primary" onclick="submitAssessment()"><i class="fas fa-save"></i> Submit Assessment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Badge Modal -->
+<div class="modal-overlay" id="badgeModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-award" style="color:#f59e0b"></i> Award Badge</div>
+    <input type="hidden" id="badgeSupplierId"/>
+    <div class="form-group">
+      <label class="form-label">Badge Type</label>
+      <select class="form-control" id="badgeType">
+        <option value="verified">Verified</option>
+        <option value="top-rated">Top Rated</option>
+        <option value="gold">Gold Partner</option>
+        <option value="diamond">Diamond Partner</option>
+        <option value="trusted">Trusted Supplier</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-secondary" onclick="document.getElementById('badgeModal').classList.remove('open')">Cancel</button>
+      <button class="btn-sm btn-warning" onclick="submitBadge()"><i class="fas fa-award"></i> Award Badge</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api/v1';
+
+// Mock data for demo
+const mockSuppliers = [
+  { id: '550e8400-e29b-41d4-a716-446655440001', name: 'ShenzTech Electronics', quality_score: 92, delivery_score: 88, communication_score: 85, compliance_score: 94, overall_score: 90, tier: 'diamond', assessed_at: new Date(Date.now()-86400000).toISOString() },
+  { id: '550e8400-e29b-41d4-a716-446655440002', name: 'GlobalTex Fabrics', quality_score: 85, delivery_score: 82, communication_score: 78, compliance_score: 87, overall_score: 83, tier: 'gold', assessed_at: new Date(Date.now()-2*86400000).toISOString() },
+  { id: '550e8400-e29b-41d4-a716-446655440003', name: 'ProMech Industries', quality_score: 74, delivery_score: 70, communication_score: 72, compliance_score: 76, overall_score: 73, tier: 'silver', assessed_at: new Date(Date.now()-3*86400000).toISOString() },
+  { id: '550e8400-e29b-41d4-a716-446655440004', name: 'EcoPackage Co.', quality_score: 63, delivery_score: 65, communication_score: 60, compliance_score: 68, overall_score: 64, tier: 'bronze', assessed_at: new Date(Date.now()-4*86400000).toISOString() },
+];
+
+let suppliers = [...mockSuppliers];
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', ['suppliers','leaderboard','queue'][i] === tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  if (tab === 'leaderboard') renderLeaderboard();
+}
+
+function renderSuppliers() {
+  const search = document.getElementById('searchSupplier').value.toLowerCase();
+  const tier = document.getElementById('filterTier').value;
+  const filtered = suppliers.filter(s => (!search || s.name.toLowerCase().includes(search)) && (!tier || s.tier === tier));
+
+  document.getElementById('statTotal').textContent = suppliers.length;
+  document.getElementById('statDiamond').textContent = suppliers.filter(s => s.tier === 'diamond').length;
+  document.getElementById('statGold').textContent = suppliers.filter(s => s.tier === 'gold').length;
+  document.getElementById('statPending').textContent = 2;
+
+  const tierClass = { diamond: 'badge-diamond', gold: 'badge-gold', silver: 'badge-silver', bronze: 'badge-bronze', unverified: 'badge-unverified' };
+  document.getElementById('suppliersTableBody').innerHTML = filtered.length ? filtered.map(s => `
+    <tr>
+      <td><strong>${s.name}</strong><br><small style="color:#94a3b8">${s.id.substring(0,8)}...</small></td>
+      <td><strong style="color:#0052CC">${s.overall_score}</strong></td>
+      <td><div class="mini-bar"><div class="mini-bar-fill" style="width:${s.quality_score}%"></div></div><small>${s.quality_score}</small></td>
+      <td><div class="mini-bar"><div class="mini-bar-fill" style="width:${s.delivery_score}%;background:#f59e0b"></div></div><small>${s.delivery_score}</small></td>
+      <td><div class="mini-bar"><div class="mini-bar-fill" style="width:${s.communication_score}%;background:#8b5cf6"></div></div><small>${s.communication_score}</small></td>
+      <td><div class="mini-bar"><div class="mini-bar-fill" style="width:${s.compliance_score}%;background:#059669"></div></div><small>${s.compliance_score}</small></td>
+      <td><span class="badge-pill ${tierClass[s.tier] || 'badge-unverified'}">${s.tier}</span></td>
+      <td><div class="btn-action-group">
+        <button class="btn-sm btn-primary" onclick="openReassess('${s.id}')"><i class="fas fa-edit"></i></button>
+        <button class="btn-sm btn-warning" onclick="openBadgeModal('${s.id}')"><i class="fas fa-award"></i></button>
+      </div></td>
+    </tr>`).join('') : `<tr><td colspan="8" style="text-align:center;color:#64748b;padding:24px">No suppliers found.</td></tr>`;
+}
+
+function renderLeaderboard() {
+  const sorted = [...suppliers].sort((a, b) => b.overall_score - a.overall_score);
+  const tierClass = { diamond: 'badge-diamond', gold: 'badge-gold', silver: 'badge-silver', bronze: 'badge-bronze' };
+  document.getElementById('leaderboardBody').innerHTML = sorted.map((s, i) => `
+    <tr>
+      <td><strong style="font-size:1.1rem">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i+1}</strong></td>
+      <td><strong>${s.name}</strong></td>
+      <td><strong style="color:#0052CC;font-size:1rem">${s.overall_score}</strong></td>
+      <td><span class="badge-pill ${tierClass[s.tier] || 'badge-unverified'}">${s.tier}</span></td>
+      <td>${new Date(s.assessed_at).toLocaleDateString()}</td>
+    </tr>`).join('');
+}
+
+function openAssessModal() { document.getElementById('assessModal').classList.add('open'); }
+function closeAssessModal() { document.getElementById('assessModal').classList.remove('open'); }
+
+function openReassess(id) {
+  document.getElementById('assessSupplierId').value = id;
+  openAssessModal();
+}
+
+function openBadgeModal(id) {
+  document.getElementById('badgeSupplierId').value = id;
+  document.getElementById('badgeModal').classList.add('open');
+}
+
+async function submitAssessment() {
+  const supplierId = document.getElementById('assessSupplierId').value.trim();
+  if (!supplierId) { alert('Please enter a Supplier ID.'); return; }
+  const quality = +document.getElementById('qualitySlider').value;
+  const delivery = +document.getElementById('deliverySlider').value;
+  const communication = +document.getElementById('communicationSlider').value;
+  const compliance = +document.getElementById('complianceSlider').value;
+
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API}/supplier-assessment/${supplierId}/assess`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ quality, delivery, communication, compliance }),
+    });
+    const json = await res.json();
+    if (json.success) { alert('Assessment submitted successfully!'); closeAssessModal(); }
+    else alert(json.message || 'Assessment failed.');
+  } catch (_) {
+    alert('Demo mode: Assessment submitted!');
+    closeAssessModal();
+    renderSuppliers();
+  }
+}
+
+async function submitBadge() {
+  const supplierId = document.getElementById('badgeSupplierId').value;
+  const badgeType = document.getElementById('badgeType').value;
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API}/supplier-assessment/${supplierId}/badge`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ badgeType }),
+    });
+    const json = await res.json();
+    if (json.success) { alert('Badge awarded!'); document.getElementById('badgeModal').classList.remove('open'); }
+    else alert(json.message || 'Failed to award badge.');
+  } catch (_) {
+    alert('Demo mode: Badge awarded!');
+    document.getElementById('badgeModal').classList.remove('open');
+  }
+}
+
+// Close modal on overlay click
+['assessModal','badgeModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+// Load leaderboard from API
+async function loadLeaderboard() {
+  try {
+    const res = await fetch(`${API}/supplier-assessment/leaderboard`);
+    const json = await res.json();
+    if (json.success && json.data?.length) {
+      suppliers = json.data.map(s => ({ ...s, name: s.profiles?.full_name || s.supplier_id }));
+    }
+  } catch (_) {}
+  renderSuppliers();
+}
+
+loadLeaderboard();
+</script>
+</body>
+</html>
