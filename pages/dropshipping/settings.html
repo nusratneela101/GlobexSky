@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Store Settings – GlobexSky Dropshipping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+.admin-wrapper{display:flex;min-height:100vh}
+.admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem}
+.sidebar-nav{padding:16px 0;flex:1}
+.sidebar-nav ul{list-style:none}
+.sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s}
+.sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+.admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+.admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.admin-content{padding:24px;overflow-y:auto;background:#f0f2f8;flex:1}
+.page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+.page-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid #f1f5f9}
+.btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:#0052CC;color:#fff}
+.btn-primary:hover{background:#003d99}
+.btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}
+.btn-outline:hover{background:#0052CC;color:#fff}
+.btn-sm{padding:5px 11px;font-size:.78rem}
+.form-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1f5f9;gap:16px;flex-wrap:wrap}
+.form-row:last-child{border-bottom:none;padding-bottom:0}
+.form-label{font-size:.875rem;font-weight:500;color:#374151}
+.form-hint{font-size:.78rem;color:#64748b;margin-top:2px}
+.form-input{padding:8px 13px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;width:200px}
+.form-input:focus{border-color:#0052CC}
+.form-select{padding:8px 13px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;background:#fff;cursor:pointer;width:200px}
+.form-select:focus{border-color:#0052CC}
+.toggle-switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:24px;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-switch input:checked+.toggle-slider{background:#0052CC}
+.toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px)}
+.markup-table{width:100%;border-collapse:collapse;font-size:.875rem}
+.markup-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0}
+.markup-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9}
+.markup-input{width:80px;padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:.85rem;text-align:center;font-family:'Inter',sans-serif}
+.markup-input:focus{outline:none;border-color:#0052CC}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.supplier-pref-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9}
+.supplier-pref-row:last-child{border-bottom:none}
+.supplier-pref-logo{width:38px;height:38px;border-radius:8px;background:#f8faff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#0052CC;border:1.5px solid #e2e8f0;flex-shrink:0}
+.supplier-pref-info{flex:1}
+.supplier-pref-name{font-weight:600;font-size:.88rem;color:#0a0e27}
+.supplier-pref-sub{font-size:.75rem;color:#64748b}
+@media(max-width:900px){.admin-sidebar{width:200px}.two-col{grid-template-columns:1fr}}
+@media(max-width:640px){.admin-sidebar{display:none}.form-input,.form-select{width:100%}}
+</style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <a href="../../index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        Dropshipping
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="dashboard.html"><i class="fas fa-gauge-high"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="orders.html"><i class="fas fa-cart-shopping"></i> Orders</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="suppliers.html"><i class="fas fa-truck"></i> Suppliers</a></li>
+        <li><a href="settings.html" class="active"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <span class="admin-page-title">Store Settings</span>
+      <button class="btn btn-primary btn-sm" onclick="saveAllSettings()"><i class="fas fa-save"></i> Save All</button>
+      <div class="admin-avatar">JD</div>
+    </div>
+
+    <div class="admin-content">
+
+      <div class="two-col">
+
+        <!-- Store Settings -->
+        <div class="page-card">
+          <div class="page-card-title"><i class="fas fa-store" style="color:#0052CC"></i> Store Settings</div>
+          <div class="form-row">
+            <div><div class="form-label">Store Name</div><div class="form-hint">Displayed to customers</div></div>
+            <input type="text" class="form-input" value="My GlobexSky Store">
+          </div>
+          <div class="form-row">
+            <div><div class="form-label">Default Currency</div></div>
+            <select class="form-select">
+              <option>USD ($)</option>
+              <option>EUR (€)</option>
+              <option>GBP (£)</option>
+              <option>BDT (৳)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div><div class="form-label">Order Notification Email</div></div>
+            <input type="email" class="form-input" placeholder="you@example.com">
+          </div>
+          <div class="form-row">
+            <div><div class="form-label">Auto-Sync Inventory</div><div class="form-hint">Sync every 6 hours</div></div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-row">
+            <div><div class="form-label">Auto-Update Prices</div><div class="form-hint">Apply markups to supplier price changes</div></div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-row">
+            <div><div class="form-label">Auto-Route Orders</div><div class="form-hint">Automatically route to best supplier</div></div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-row">
+            <div><div class="form-label">Low Stock Alerts</div><div class="form-hint">Alert when stock &lt; 10 units</div></div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-row">
+            <div><div class="form-label">Low Stock Threshold</div></div>
+            <input type="number" class="form-input" value="10" min="1" max="100" style="width:80px">
+          </div>
+        </div>
+
+        <!-- Auto-Pricing Rules -->
+        <div>
+          <div class="page-card">
+            <div class="page-card-title"><i class="fas fa-tag" style="color:#0052CC"></i> Auto-Pricing Rules</div>
+            <table class="markup-table">
+              <thead>
+                <tr><th>Category</th><th>Markup %</th><th>Min Profit $</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Global Default</td><td><input type="number" class="markup-input" value="25"></td><td><input type="number" class="markup-input" value="2.00" step="0.01"></td></tr>
+                <tr><td>Electronics</td><td><input type="number" class="markup-input" value="20"></td><td><input type="number" class="markup-input" value="3.00" step="0.01"></td></tr>
+                <tr><td>Fashion</td><td><input type="number" class="markup-input" value="35"></td><td><input type="number" class="markup-input" value="2.50" step="0.01"></td></tr>
+                <tr><td>Home &amp; Garden</td><td><input type="number" class="markup-input" value="30"></td><td><input type="number" class="markup-input" value="2.00" step="0.01"></td></tr>
+                <tr><td>Sports</td><td><input type="number" class="markup-input" value="28"></td><td><input type="number" class="markup-input" value="1.50" step="0.01"></td></tr>
+                <tr><td>Beauty</td><td><input type="number" class="markup-input" value="40"></td><td><input type="number" class="markup-input" value="2.00" step="0.01"></td></tr>
+              </tbody>
+            </table>
+            <button class="btn btn-outline btn-sm" style="margin-top:14px" onclick="saveMarkup()"><i class="fas fa-save"></i> Save Pricing Rules</button>
+          </div>
+
+          <!-- Supplier Preferences -->
+          <div class="page-card">
+            <div class="page-card-title"><i class="fas fa-star" style="color:#d97706"></i> Supplier Preferences</div>
+            <div class="supplier-pref-row">
+              <div class="supplier-pref-logo">阿里</div>
+              <div class="supplier-pref-info">
+                <div class="supplier-pref-name">Alibaba</div>
+                <div class="supplier-pref-sub">Priority: High — Best for bulk orders</div>
+              </div>
+              <select class="form-select" style="width:110px">
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+              </select>
+            </div>
+            <div class="supplier-pref-row">
+              <div class="supplier-pref-logo">1688</div>
+              <div class="supplier-pref-info">
+                <div class="supplier-pref-name">1688</div>
+                <div class="supplier-pref-sub">Priority: Medium — Domestic China</div>
+              </div>
+              <select class="form-select" style="width:110px">
+                <option>High</option>
+                <option selected>Medium</option>
+                <option>Low</option>
+              </select>
+            </div>
+            <div class="supplier-pref-row">
+              <div class="supplier-pref-logo" style="font-size:.65rem">AliEx</div>
+              <div class="supplier-pref-info">
+                <div class="supplier-pref-name">AliExpress</div>
+                <div class="supplier-pref-sub">Priority: Low — Slower shipping</div>
+              </div>
+              <select class="form-select" style="width:110px">
+                <option>High</option>
+                <option>Medium</option>
+                <option selected>Low</option>
+              </select>
+            </div>
+            <button class="btn btn-outline btn-sm" style="margin-top:14px" onclick="savePrefs()"><i class="fas fa-save"></i> Save Preferences</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/js/main.js"></script>
+<script>
+  function saveAllSettings() {
+    alert('All settings saved successfully.');
+  }
+  function saveMarkup() {
+    alert('Auto-pricing rules saved.');
+  }
+  function savePrefs() {
+    alert('Supplier preferences saved.');
+  }
+</script>
+</body>
+</html>

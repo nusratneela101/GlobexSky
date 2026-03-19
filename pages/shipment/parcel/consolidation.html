@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Parcel Consolidation – GlobexSky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+.btn-logout{background:#ef4444;color:#fff}
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:48px 24px;text-align:center}
+.page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+.page-hero p{color:rgba(255,255,255,.8);font-size:.95rem}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.section{padding:48px 24px}
+.layout-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.parcel-check-list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.parcel-check-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s}
+.parcel-check-item:hover{border-color:#c7d7f0;background:#f8fbff}
+.parcel-check-item.checked{border-color:#0052CC;background:#eff6ff}
+.parcel-check-item input[type=checkbox]{width:20px;height:20px;accent-color:#0052CC;flex-shrink:0}
+.parcel-icon{width:44px;height:44px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.parcel-info-name{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.88rem;margin-bottom:1px}
+.parcel-info-store{font-size:.76rem;color:#64748b}
+.parcel-info-meta{display:flex;gap:12px;margin-top:4px;font-size:.76rem;font-weight:600;color:#374151}
+.parcel-info-meta span{color:#0052CC}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.73rem;font-weight:600}
+.badge-success{background:#d1fae5;color:#059669}
+.summary-box{background:#f8faff;border-radius:12px;padding:20px;margin-bottom:20px}
+.summary-row{display:flex;justify-content:space-between;font-size:.85rem;color:#374151;padding:6px 0;border-bottom:1px solid #f1f5f9}
+.summary-row:last-child{border-bottom:none}
+.summary-row.total{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27;padding-top:12px;border-top:2px solid #e2e8f0;margin-top:4px}
+.summary-val{font-weight:600}
+.summary-val.green{color:#059669}
+.summary-val.orange{color:#f97316}
+.savings-badge{background:#d1fae5;color:#059669;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:.88rem;font-weight:600}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.form-group label{font-size:.83rem;font-weight:600;color:#374151}
+.form-group input,.form-group select{padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Inter',sans-serif;font-size:.9rem;color:#0a0e27;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:#0052CC}
+.btn-submit{width:100%;padding:14px;background:#0052CC;color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-submit:hover{background:#003d99}
+.btn-back{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#f1f5f9;color:#374151;border-radius:10px;text-decoration:none;font-size:.85rem;font-weight:600;margin-bottom:24px;transition:background .2s}
+.btn-back:hover{background:#e2e8f0}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.how-item{text-align:center;padding:20px 16px;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.how-num{width:32px;height:32px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:.85rem;margin:0 auto 10px}
+.how-text{font-size:.82rem;color:#374151;line-height:1.5}
+.no-selection{text-align:center;padding:32px;color:#94a3b8;font-size:.88rem}
+.no-selection i{font-size:2rem;color:#e2e8f0;display:block;margin-bottom:8px}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px;text-align:center}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem}
+@media(max-width:768px){.nav-links{display:none}.layout-grid{grid-template-columns:1fr}.how-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Parcel Home</a>
+        <a href="new-parcel.html">New Parcel</a>
+        <a href="tracking.html">Track</a>
+        <a href="warehouse.html">Warehouse</a>
+        <a href="consolidation.html" class="active">Consolidate</a>
+      </nav>
+      <div class="nav-controls">
+        <a href="../../../pages/auth/login.html" class="btn-nav btn-logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-compress-arrows-alt"></i> Parcel Consolidation</h1>
+  <p>Combine multiple parcels into one shipment and save up to 60% on international shipping costs</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <a href="warehouse.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Warehouse</a>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-grid">
+      <div class="how-item">
+        <div class="how-num">1</div>
+        <div class="how-text"><strong>Select Parcels</strong><br>Choose the parcels in the same warehouse to consolidate</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num" style="background:#f97316">2</div>
+        <div class="how-text"><strong>We Repack</strong><br>Our team repacks all items into one optimized shipment box</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num" style="background:#059669">3</div>
+        <div class="how-text"><strong>Ship &amp; Save</strong><br>One shipment at a reduced rate — you save on shipping costs</div>
+      </div>
+    </div>
+
+    <div class="layout-grid">
+      <!-- LEFT: SELECT PARCELS -->
+      <div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-boxes" style="color:#0052CC"></i> Select Parcels to Consolidate</div>
+          <p style="font-size:.82rem;color:#64748b;margin-bottom:16px">Only parcels from the same warehouse can be consolidated together. Select at least 2 parcels.</p>
+
+          <div style="display:flex;gap:8px;margin-bottom:16px">
+            <button style="padding:6px 14px;border-radius:20px;border:1.5px solid #0052CC;background:#0052CC;color:#fff;font-size:.8rem;font-weight:600;cursor:pointer">🇺🇸 USA (3)</button>
+            <button style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;font-size:.8rem;font-weight:600;cursor:pointer;color:#374151">🇬🇧 UK (1)</button>
+            <button style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;font-size:.8rem;font-weight:600;cursor:pointer;color:#374151">🇦🇪 UAE (1)</button>
+          </div>
+
+          <div class="parcel-check-list" id="parcel-list">
+            <div class="parcel-check-item checked" onclick="toggleItem(this)">
+              <input type="checkbox" checked onchange="recalc()">
+              <div class="parcel-icon">📱</div>
+              <div style="flex:1">
+                <div class="parcel-info-name">GS-PAR-2024-512 — iPhone 15 Case</div>
+                <div class="parcel-info-store">Amazon.com</div>
+                <div class="parcel-info-meta">Weight: <span>2.1 kg</span> &nbsp;|&nbsp; Value: <span>$120</span></div>
+              </div>
+              <span class="badge badge-success">Received</span>
+            </div>
+            <div class="parcel-check-item checked" onclick="toggleItem(this)">
+              <input type="checkbox" checked onchange="recalc()">
+              <div class="parcel-icon">👗</div>
+              <div style="flex:1">
+                <div class="parcel-info-name">GS-PAR-2024-508 — Summer Dress x2</div>
+                <div class="parcel-info-store">ASOS.com</div>
+                <div class="parcel-info-meta">Weight: <span>1.5 kg</span> &nbsp;|&nbsp; Value: <span>$95</span></div>
+              </div>
+              <span class="badge badge-success">Received</span>
+            </div>
+            <div class="parcel-check-item" onclick="toggleItem(this)">
+              <input type="checkbox" onchange="recalc()" disabled style="opacity:.4">
+              <div class="parcel-icon" style="opacity:.5">💻</div>
+              <div style="flex:1;opacity:.5">
+                <div class="parcel-info-name">GS-PAR-2024-515 — Laptop Stand</div>
+                <div class="parcel-info-store">BestBuy.com</div>
+                <div class="parcel-info-meta">Weight: <span>1.6 kg</span> &nbsp;|&nbsp; Value: <span>$85</span></div>
+              </div>
+              <span class="badge" style="background:#fff7ed;color:#f97316">Processing</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHIPPING OPTIONS -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-shipping-fast" style="color:#f97316"></i> Shipping Method</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <label style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:2px solid #0052CC;border-radius:12px;cursor:pointer;background:#eff6ff">
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="ship" checked style="accent-color:#0052CC;width:18px;height:18px">
+                <div>
+                  <div style="font-weight:600;font-size:.9rem;color:#0a0e27">Air Freight — Standard</div>
+                  <div style="font-size:.76rem;color:#64748b">7-14 business days · Best value</div>
+                </div>
+              </div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#059669">$38.40</div>
+            </label>
+            <label style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:12px;cursor:pointer">
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="ship" style="accent-color:#0052CC;width:18px;height:18px">
+                <div>
+                  <div style="font-weight:600;font-size:.9rem;color:#0a0e27">Air Freight — Express</div>
+                  <div style="font-size:.76rem;color:#64748b">3-5 business days · Faster delivery</div>
+                </div>
+              </div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC">$58.80</div>
+            </label>
+            <label style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:12px;cursor:pointer">
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="ship" style="accent-color:#0052CC;width:18px;height:18px">
+                <div>
+                  <div style="font-weight:600;font-size:.9rem;color:#0a0e27">Sea Freight</div>
+                  <div style="font-size:.76rem;color:#64748b">30-45 days · Cheapest for heavy items</div>
+                </div>
+              </div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#f97316">$19.20</div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: ORDER SUMMARY -->
+      <div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-receipt" style="color:#0052CC"></i> Consolidation Summary</div>
+
+          <!-- SAVINGS BADGE -->
+          <div class="savings-badge">
+            <i class="fas fa-piggy-bank"></i>
+            <div>You save <strong>$28.80</strong> vs. shipping separately!</div>
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-row"><span>Parcels selected</span><span class="summary-val" id="sum-count">2</span></div>
+            <div class="summary-row"><span>Combined weight</span><span class="summary-val" id="sum-weight">3.6 kg</span></div>
+            <div class="summary-row"><span>Declared value</span><span class="summary-val" id="sum-value">$215</span></div>
+            <div class="summary-row"><span>Consolidation fee</span><span class="summary-val">$5.00</span></div>
+            <div class="summary-row"><span>Repacking service</span><span class="summary-val">$3.00</span></div>
+            <div class="summary-row"><span>Shipping (standard)</span><span class="summary-val green">$38.40</span></div>
+            <div class="summary-row" style="color:#059669"><span>Discount (Pro plan)</span><span class="summary-val" style="color:#059669">-$3.84</span></div>
+            <div class="summary-row total"><span>Total</span><span class="summary-val green">$42.56</span></div>
+          </div>
+
+          <!-- DELIVERY DETAILS -->
+          <div class="form-group">
+            <label>Delivery Address</label>
+            <select>
+              <option>Rahman Ali — 45 Banani Road, Dhaka 1213</option>
+              <option>+ Add New Address</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Special Instructions</label>
+            <input type="text" placeholder="e.g. leave at reception, fragile items...">
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;font-weight:400;cursor:pointer;font-size:.88rem;color:#374151">
+              <input type="checkbox" style="accent-color:#0052CC;width:18px;height:18px">
+              I confirm the items don't include any prohibited goods
+            </label>
+          </div>
+
+          <button class="btn-submit" onclick="handleConsolidate()"><i class="fas fa-compress-arrows-alt"></i> Confirm Consolidation</button>
+
+          <p style="font-size:.75rem;color:#94a3b8;text-align:center;margin-top:12px">Payment collected at shipping. Consolidation request processes in 24–48 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+function toggleItem(el){
+  var cb = el.querySelector('input[type=checkbox]');
+  if(cb.disabled) return;
+  cb.checked = !cb.checked;
+  el.classList.toggle('checked', cb.checked);
+  recalc();
+}
+function recalc(){
+  var items = document.querySelectorAll('.parcel-check-item');
+  var count = 0, weight = 0, value = 0;
+  var weights = [2.1, 1.5, 1.6];
+  var values = [120, 95, 85];
+  items.forEach(function(it, i){
+    var cb = it.querySelector('input[type=checkbox]');
+    if(cb && cb.checked && !cb.disabled){ count++; weight += weights[i]||0; value += values[i]||0; }
+  });
+  document.getElementById('sum-count').textContent = count;
+  document.getElementById('sum-weight').textContent = weight.toFixed(1)+' kg';
+  document.getElementById('sum-value').textContent = '$'+value;
+}
+function handleConsolidate(){
+  alert('Consolidation request submitted! Your parcels will be combined and ready to ship within 24-48 hours.');
+  window.location.href = 'warehouse.html';
+}
+</script>
+</body>
+</html>

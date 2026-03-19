@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Refunds | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .container{max-width:1400px;margin:0 auto;padding:0 24px}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-teal{background:#ccfbf1;color:#0d9488}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tab{padding:7px 16px;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    /* Refund request form */
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC}
+    textarea.form-control{resize:vertical;min-height:90px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .alert{border-radius:10px;padding:12px 16px;font-size:.85rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+    .alert-info{background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd}
+    /* Refund card */
+    .refund-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:14px;background:#fff;transition:box-shadow .2s}
+    .refund-card:hover{box-shadow:0 4px 16px rgba(0,82,204,.1)}
+    .refund-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+    .refund-id{font-weight:700;font-size:.92rem;color:#0052CC}
+    .refund-order{font-size:.82rem;color:#374151;margin-bottom:6px}
+    .refund-amount{font-size:1.1rem;font-weight:700;color:#0a0e27;margin-bottom:4px}
+    .refund-reason{font-size:.82rem;color:#64748b;margin-bottom:10px}
+    .refund-meta{display:flex;align-items:center;gap:16px;font-size:.78rem;color:#94a3b8;flex-wrap:wrap}
+    /* Timeline */
+    .timeline{position:relative;padding-left:24px;margin-top:14px}
+    .timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:#e2e8f0}
+    .tl-item{position:relative;margin-bottom:12px;padding-left:8px}
+    .tl-dot{position:absolute;left:-16px;top:3px;width:10px;height:10px;border-radius:50%;border:2px solid #0052CC;background:#fff}
+    .tl-dot.done{background:#0052CC}
+    .tl-dot.pending{border-color:#f97316}
+    .tl-label{font-size:.8rem;font-weight:600;color:#374151}
+    .tl-date{font-size:.74rem;color:#94a3b8}
+    .empty-state{text-align:center;padding:48px 24px;color:#94a3b8}
+    .empty-state i{font-size:3rem;margin-bottom:16px;color:#cbd5e1}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.1rem;color:#374151;margin-bottom:8px}
+    .site-footer{background:#0a0e27;color:#94a3b8}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:center}
+    .footer-copyright{font-size:.85rem}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem" id="avatarInitials">?</div>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-user"></i> My Profile</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+            <li><a href="disputes.html"><i class="fas fa-exclamation-circle"></i> My Disputes</a></li>
+            <li><a href="refunds.html"><i class="fas fa-undo-alt"></i> My Refunds</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="#" class="logout-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar" id="sidebarInitials">?</div>
+    <div class="account-sidebar-name" id="sidebarName">Loading…</div>
+    <div class="account-sidebar-email" id="sidebarEmail"></div>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="disputes.html"><i class="fas fa-exclamation-circle"></i> Disputes</a></li>
+      <li><a href="refunds.html" class="active"><i class="fas fa-undo-alt"></i> Refunds</a></li>
+      <li><a href="address-book.html"><i class="fas fa-map-marker-alt"></i> Address Book</a></li>
+      <li><a href="payment-methods.html"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+
+    <!-- Request a Refund -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-undo-alt" style="color:#0052CC"></i> Request a Refund</div>
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <span>Refund requests are reviewed within 3–5 business days. Approved refunds are processed to your original payment method within 5–7 business days.</span>
+      </div>
+      <form id="refundForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="refundOrderId">Order ID <span style="color:#ef4444">*</span></label>
+            <input type="text" id="refundOrderId" class="form-control" placeholder="e.g. GS-2025-0877" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="refundAmount">Refund Amount (USD) <span style="color:#ef4444">*</span></label>
+            <input type="number" id="refundAmount" class="form-control" placeholder="0.00" min="0.01" step="0.01" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="refundDisputeId">Related Dispute ID (optional)</label>
+          <input type="text" id="refundDisputeId" class="form-control" placeholder="Leave blank if no linked dispute"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="refundReason">Reason for Refund <span style="color:#ef4444">*</span></label>
+          <textarea id="refundReason" class="form-control" placeholder="Please explain why you are requesting a refund…" required></textarea>
+        </div>
+        <div id="refundFormMsg" style="display:none;margin-bottom:12px"></div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Request</button>
+      </form>
+    </div>
+
+    <!-- Refund Tracking List -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-list-alt" style="color:#0052CC"></i> My Refund Requests</div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="pending">Pending</button>
+        <button class="filter-tab" data-filter="approved">Approved</button>
+        <button class="filter-tab" data-filter="processed">Processed</button>
+        <button class="filter-tab" data-filter="rejected">Rejected</button>
+      </div>
+
+      <div id="refundList">
+        <!-- Refund 1 — Processed -->
+        <div class="refund-card" data-status="processed">
+          <div class="refund-card-header">
+            <div>
+              <div class="refund-id">#REF-2025-001</div>
+            </div>
+            <span class="badge-pill badge-teal"><i class="fas fa-check-double" style="font-size:.8rem;margin-right:5px"></i>Processed</span>
+          </div>
+          <div class="refund-order"><i class="fas fa-shopping-bag" style="color:#94a3b8;margin-right:5px"></i>Order #GS-2025-0841 — Guangzhou Fabrics Co.</div>
+          <div class="refund-amount">$250.00</div>
+          <div class="refund-reason">Partial refund for water-damaged fabric rolls. Confirmed via dispute #DSP-2025-002.</div>
+          <div class="refund-meta">
+            <span><i class="fas fa-calendar-alt"></i> Requested May 20, 2025</span>
+            <span><i class="fas fa-calendar-check"></i> Processed Jun 2, 2025</span>
+          </div>
+          <div style="background:#d1fae5;border-radius:8px;padding:10px 14px;font-size:.82rem;color:#065f46;margin-top:12px">
+            <i class="fas fa-check-circle" style="margin-right:6px"></i>Refund of <strong>$250.00</strong> has been processed back to your original payment method.
+          </div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-label">Refund Requested</div><div class="tl-date">May 20, 2025</div></div>
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-label">Approved by Admin</div><div class="tl-date">May 26, 2025</div></div>
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-label">Processed &amp; Sent</div><div class="tl-date">Jun 2, 2025</div></div>
+          </div>
+        </div>
+
+        <!-- Refund 2 — Pending -->
+        <div class="refund-card" data-status="pending">
+          <div class="refund-card-header">
+            <div>
+              <div class="refund-id">#REF-2025-002</div>
+            </div>
+            <span class="badge-pill badge-orange"><i class="fas fa-clock" style="font-size:.8rem;margin-right:5px"></i>Pending Review</span>
+          </div>
+          <div class="refund-order"><i class="fas fa-shopping-bag" style="color:#94a3b8;margin-right:5px"></i>Order #GS-2025-0877 — TechPlus Accessories</div>
+          <div class="refund-amount">$4,560.00</div>
+          <div class="refund-reason">Item not delivered — related to dispute #DSP-2025-001.</div>
+          <div class="refund-meta">
+            <span><i class="fas fa-calendar-alt"></i> Requested Jun 15, 2025</span>
+          </div>
+          <div style="background:#fff8ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:.82rem;color:#92400e;margin-top:12px">
+            <i class="fas fa-hourglass-half" style="margin-right:6px;color:#f97316"></i>Your refund request is under review. We'll notify you once a decision is made.
+          </div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-label">Refund Requested</div><div class="tl-date">Jun 15, 2025</div></div>
+            <div class="tl-item"><div class="tl-dot pending"></div><div class="tl-label">Admin Review</div><div class="tl-date">Pending</div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-label" style="color:#94a3b8">Processing</div><div class="tl-date">—</div></div>
+          </div>
+        </div>
+
+        <!-- Empty state (hidden) -->
+        <div class="empty-state" id="emptyState" style="display:none">
+          <i class="fas fa-undo-alt"></i>
+          <h3>No refund requests yet</h3>
+          <p>Use the form above to request a refund for an eligible order.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+      let visible = 0;
+      document.querySelectorAll('.refund-card').forEach(card => {
+        const show = filter === 'all' || card.dataset.status === filter;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('emptyState').style.display = visible === 0 ? '' : 'none';
+    });
+  });
+
+  document.getElementById('refundForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const msg = document.getElementById('refundFormMsg');
+    msg.style.display = '';
+    msg.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Submitting your refund request…</div>';
+    const disputeId = document.getElementById('refundDisputeId').value.trim();
+    try {
+      const body = {
+        order_id: document.getElementById('refundOrderId').value,
+        amount: parseFloat(document.getElementById('refundAmount').value),
+        reason: document.getElementById('refundReason').value,
+      };
+      if (disputeId) body.dispute_id = disputeId;
+      const res = await fetch('/api/v1/refunds', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (data.success) {
+        msg.innerHTML = '<div class="alert" style="background:#d1fae5;color:#065f46;border:1px solid #6ee7b7"><i class="fas fa-check-circle"></i> Refund request submitted! We will review it within 3–5 business days.</div>';
+        this.reset();
+      } else {
+        msg.innerHTML = `<div class="alert" style="background:#fee2e2;color:#7f1d1d;border:1px solid #fca5a5"><i class="fas fa-exclamation-circle"></i> ${data.error || 'Failed to submit refund request.'}</div>`;
+      }
+    } catch {
+      msg.innerHTML = '<div class="alert" style="background:#fee2e2;color:#7f1d1d;border:1px solid #fca5a5"><i class="fas fa-exclamation-circle"></i> Network error. Please try again.</div>';
+    }
+  });
+</script>
+</body>
+</html>

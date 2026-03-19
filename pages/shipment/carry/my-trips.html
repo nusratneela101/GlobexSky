@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Trips – GlobexSky Carry</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.navbar{padding:0}.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+.logo-accent{color:#0052CC}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+.btn-logout{background:#ef4444;color:#fff}
+.btn-primary{background:#0052CC;color:#fff}
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:40px 24px}
+.hero-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#fff;margin-bottom:4px}
+.hero-sub{color:rgba(255,255,255,.75);font-size:.9rem}
+.btn-post{padding:12px 24px;background:#FF6B35;color:#fff;border-radius:10px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;transition:background .2s}
+.btn-post:hover{background:#e85a2a}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+.stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.stat-icon-blue{background:#eff6ff;color:#0052CC}
+.stat-icon-green{background:#d1fae5;color:#059669}
+.stat-icon-orange{background:#fff7ed;color:#f97316}
+.stat-icon-purple{background:#fdf4ff;color:#9333ea}
+.stat-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;line-height:1}
+.stat-label{font-size:.78rem;color:#64748b;margin-top:3px}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px}
+.tab-bar{display:flex;gap:4px;border-bottom:2px solid #f1f5f9;margin-bottom:20px}
+.tab{padding:10px 20px;cursor:pointer;font-size:.88rem;font-weight:500;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab.active{color:#0052CC;border-bottom-color:#0052CC;font-weight:600}
+.trip-card{border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:16px;transition:all .2s}
+.trip-card:hover{border-color:#c7d7f0;box-shadow:0 4px 16px rgba(0,82,204,.08)}
+.trip-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.trip-id{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:#0a0e27}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-info{background:#eff6ff;color:#0052CC}
+.badge-warning{background:#fff7ed;color:#f97316}
+.badge-danger{background:#fef2f2;color:#ef4444}
+.trip-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px}
+.trip-meta-item label{font-size:.72rem;color:#64748b;display:block;margin-bottom:2px}
+.trip-meta-item span{font-size:.88rem;font-weight:600;color:#0a0e27}
+.trip-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-sm{padding:8px 16px;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;text-decoration:none;border:none;display:flex;align-items:center;gap:6px;transition:all .2s}
+.btn-sm-primary{background:#eff6ff;color:#0052CC}
+.btn-sm-primary:hover{background:#dbeafe}
+.btn-sm-danger{background:#fef2f2;color:#ef4444}
+.btn-sm-danger:hover{background:#fee2e2}
+.btn-sm-edit{background:#f0fdf9;color:#059669}
+.btn-sm-edit:hover{background:#dcfce7}
+.requests-badge{background:#ff6b35;color:#fff;border-radius:20px;padding:2px 8px;font-size:.72rem;font-weight:700}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:.78rem;font-weight:600;color:#64748b;text-align:left;padding:10px 12px;border-bottom:2px solid #f1f5f9;white-space:nowrap}
+td{padding:12px;font-size:.85rem;color:#374151;border-bottom:1px solid #f1f5f9}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.site-footer{background:#0a0e27;padding:24px 0}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px;text-align:center}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem}
+@media(max-width:768px){.nav-links{display:none}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Carry Home</a>
+        <a href="find-carrier.html">Find Carrier</a>
+        <a href="post-trip.html">Post a Trip</a>
+        <a href="my-trips.html" class="active">My Trips</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+      <div class="nav-controls">
+        <a href="../../../pages/auth/login.html" class="btn-nav btn-logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-title"><i class="fas fa-suitcase-rolling"></i> My Posted Trips</h1>
+      <p class="hero-sub">Manage your active trips and carry requests from buyers</p>
+    </div>
+    <a href="post-trip.html" class="btn-post"><i class="fas fa-plus"></i> Post New Trip</a>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue"><i class="fas fa-plane"></i></div>
+        <div><div class="stat-value">2</div><div class="stat-label">Active Trips</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green"><i class="fas fa-check-circle"></i></div>
+        <div><div class="stat-value">47</div><div class="stat-label">Completed Trips</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-orange"><i class="fas fa-inbox"></i></div>
+        <div><div class="stat-value">5</div><div class="stat-label">Pending Requests</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-purple"><i class="fas fa-dollar-sign"></i></div>
+        <div><div class="stat-value">$2,450</div><div class="stat-label">Total Earned</div></div>
+      </div>
+    </div>
+
+    <!-- TRIPS TABS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-list" style="color:#0052CC"></i> My Trips</div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('active',this)">Active <span class="requests-badge">2</span></div>
+        <div class="tab" onclick="switchTab('pending',this)">Pending Requests <span class="requests-badge">5</span></div>
+        <div class="tab" onclick="switchTab('completed',this)">Completed</div>
+      </div>
+
+      <!-- ACTIVE TRIPS -->
+      <div id="tab-active">
+        <div class="trip-card">
+          <div class="trip-header">
+            <div>
+              <div class="trip-id"><i class="fas fa-plane-departure" style="color:#0052CC"></i> GS-TRIP-2024-045</div>
+              <div style="font-size:.82rem;color:#64748b;margin-top:2px">Flight BG-502 · Biman Bangladesh</div>
+            </div>
+            <span class="badge badge-info"><i class="fas fa-circle" style="font-size:.5rem"></i> Active</span>
+          </div>
+          <div class="trip-meta">
+            <div class="trip-meta-item"><label>Route</label><span>Dhaka → New York</span></div>
+            <div class="trip-meta-item"><label>Departure</label><span>Mar 25, 2024</span></div>
+            <div class="trip-meta-item"><label>Available</label><span>12 kg</span></div>
+            <div class="trip-meta-item"><label>Rate</label><span style="color:#059669">$50/kg</span></div>
+            <div class="trip-meta-item"><label>Requests</label><span>3 pending <span class="requests-badge">3</span></span></div>
+          </div>
+          <div class="trip-actions">
+            <button class="btn-sm btn-sm-primary"><i class="fas fa-inbox"></i> View Requests (3)</button>
+            <a href="post-trip.html" class="btn-sm btn-sm-edit"><i class="fas fa-edit"></i> Edit Trip</a>
+            <button class="btn-sm btn-sm-danger"><i class="fas fa-times"></i> Cancel Trip</button>
+          </div>
+        </div>
+
+        <div class="trip-card">
+          <div class="trip-header">
+            <div>
+              <div class="trip-id"><i class="fas fa-plane-departure" style="color:#0052CC"></i> GS-TRIP-2024-046</div>
+              <div style="font-size:.82rem;color:#64748b;margin-top:2px">Flight EK-582 · Emirates</div>
+            </div>
+            <span class="badge badge-info"><i class="fas fa-circle" style="font-size:.5rem"></i> Active</span>
+          </div>
+          <div class="trip-meta">
+            <div class="trip-meta-item"><label>Route</label><span>Dhaka → Dubai</span></div>
+            <div class="trip-meta-item"><label>Departure</label><span>Mar 28, 2024</span></div>
+            <div class="trip-meta-item"><label>Available</label><span>20 kg</span></div>
+            <div class="trip-meta-item"><label>Rate</label><span style="color:#059669">$30/kg</span></div>
+            <div class="trip-meta-item"><label>Requests</label><span>2 pending <span class="requests-badge">2</span></span></div>
+          </div>
+          <div class="trip-actions">
+            <button class="btn-sm btn-sm-primary"><i class="fas fa-inbox"></i> View Requests (2)</button>
+            <a href="post-trip.html" class="btn-sm btn-sm-edit"><i class="fas fa-edit"></i> Edit Trip</a>
+            <button class="btn-sm btn-sm-danger"><i class="fas fa-times"></i> Cancel Trip</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENDING REQUESTS (hidden initially) -->
+      <div id="tab-pending" style="display:none">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Request ID</th><th>Buyer</th><th>Item</th><th>Weight</th><th>Offer</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GS-REQ-1021</td><td>Karim Ali</td><td>Smartphones (2 pcs)</td><td>1.2 kg</td>
+                <td><span style="color:#059669;font-weight:600">$60</span></td>
+                <td><button class="btn-sm btn-sm-primary" style="display:inline-flex">Accept</button> <button class="btn-sm btn-sm-danger" style="display:inline-flex">Decline</button></td>
+              </tr>
+              <tr>
+                <td>GS-REQ-1022</td><td>Fatema Khatun</td><td>Clothing &amp; Accessories</td><td>3.0 kg</td>
+                <td><span style="color:#059669;font-weight:600">$150</span></td>
+                <td><button class="btn-sm btn-sm-primary" style="display:inline-flex">Accept</button> <button class="btn-sm btn-sm-danger" style="display:inline-flex">Decline</button></td>
+              </tr>
+              <tr>
+                <td>GS-REQ-1023</td><td>Reza Hossain</td><td>Laptop &amp; Charger</td><td>2.5 kg</td>
+                <td><span style="color:#059669;font-weight:600">$125</span></td>
+                <td><button class="btn-sm btn-sm-primary" style="display:inline-flex">Accept</button> <button class="btn-sm btn-sm-danger" style="display:inline-flex">Decline</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- COMPLETED (hidden initially) -->
+      <div id="tab-completed" style="display:none">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Trip ID</th><th>Route</th><th>Date</th><th>Items Carried</th><th>Earned</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>GS-TRIP-2024-038</td><td>Dhaka → London</td><td>Mar 1, 2024</td><td>Accessories, 8 kg</td><td style="color:#059669;font-weight:600">$400</td><td><span class="badge badge-success">Completed</span></td></tr>
+              <tr><td>GS-TRIP-2024-032</td><td>Dhaka → New York</td><td>Feb 15, 2024</td><td>Electronics, 12 kg</td><td style="color:#059669;font-weight:600">$600</td><td><span class="badge badge-success">Completed</span></td></tr>
+              <tr><td>GS-TRIP-2024-025</td><td>Dhaka → Canada</td><td>Feb 1, 2024</td><td>Clothing, 10 kg</td><td style="color:#059669;font-weight:600">$500</td><td><span class="badge badge-success">Completed</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+function switchTab(tab, el){
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  ['active','pending','completed'].forEach(t => {
+    var el2 = document.getElementById('tab-'+t);
+    if(el2) el2.style.display = t === tab ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>

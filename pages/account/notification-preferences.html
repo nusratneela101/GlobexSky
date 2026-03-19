@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notification Preferences | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;display:flex;flex-direction:column;min-height:100vh}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-divider{border:none;border-top:1px solid #e2e8f0;margin-bottom:16px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .section-desc{font-size:.83rem;color:#64748b;margin-bottom:18px}
+    .pref-group{margin-bottom:28px}
+    .pref-group:last-child{margin-bottom:0}
+    .pref-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1f5f9}
+    .pref-row:last-child{border-bottom:none}
+    .pref-info{flex:1;padding-right:16px}
+    .pref-label{font-weight:500;font-size:.9rem;color:#0a0e27;margin-bottom:2px}
+    .pref-hint{font-size:.78rem;color:#94a3b8}
+    /* Toggle switch */
+    .toggle{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:26px;transition:.25s}
+    .toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
+    .toggle input:checked + .toggle-slider{background:#0052CC}
+    .toggle input:checked + .toggle-slider::before{transform:translateX(20px)}
+    .toggle input:focus-visible + .toggle-slider{outline:2px solid #0052CC;outline-offset:2px}
+    /* Push banner */
+    .push-banner{background:linear-gradient(135deg,#0052CC 0%,#0070f3 100%);color:#fff;border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:24px}
+    .push-banner-icon{font-size:2rem;flex-shrink:0}
+    .push-banner-text h3{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px}
+    .push-banner-text p{font-size:.82rem;opacity:.9;line-height:1.5}
+    .push-banner-actions{margin-left:auto;flex-shrink:0;display:flex;gap:8px;flex-wrap:wrap}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-white{background:#fff;color:#0052CC}
+    .btn-white:hover{background:#e8f0fe}
+    .btn-outline-white{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.6)}
+    .btn-outline-white:hover{background:rgba(255,255,255,.1)}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:50px;font-size:.78rem;font-weight:600}
+    .status-pill.enabled{background:#d1fae5;color:#065f46}
+    .status-pill.disabled{background:#fee2e2;color:#991b1b}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+    .save-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .save-msg{font-size:.85rem;color:#059669;display:none;align-items:center;gap:6px}
+    footer{background:#0a0e27;color:#94a3b8;padding:20px 0;margin-top:auto}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.push-banner{flex-direction:column;align-items:flex-start}.push-banner-actions{margin-left:0}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#00C9A7" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#00C9A7" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#00C9A7" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <a href="../auth/login.html" style="padding:8px 16px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;font-family:'Inter',sans-serif">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">AJ</div>
+    <div class="account-sidebar-name">Alex Johnson</div>
+    <div class="account-sidebar-email">alex@example.com</div>
+    <hr class="sidebar-divider"/>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="address-book.html"><i class="fas fa-map-marker-alt"></i> Address Book</a></li>
+      <li><a href="payment-methods.html"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+      <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="notification-preferences.html" class="active"><i class="fas fa-sliders-h"></i> Notification Prefs</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+
+    <!-- Push Notification Banner -->
+    <div class="push-banner" id="push-banner">
+      <div class="push-banner-icon"><i class="fas fa-bell"></i></div>
+      <div class="push-banner-text">
+        <h3>Enable Browser Push Notifications</h3>
+        <p>Get real-time alerts for orders, shipments, and promotions — even when the tab is closed.</p>
+      </div>
+      <div class="push-banner-actions">
+        <span class="status-pill disabled" id="push-status"><span class="status-dot"></span> Off</span>
+        <button class="btn btn-white" id="push-toggle-btn" onclick="togglePushSubscription()">
+          <i class="fas fa-bell"></i> Enable Push
+        </button>
+      </div>
+    </div>
+
+    <!-- Notification Preferences -->
+    <div class="page-card">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-sliders-h" style="color:#0052CC"></i> Notification Preferences</h1>
+      </div>
+
+      <!-- Order Updates -->
+      <div class="pref-group">
+        <div class="section-title"><i class="fas fa-shopping-bag" style="color:#0052CC;margin-right:6px"></i> Order Updates</div>
+        <div class="section-desc">Choose how you receive notifications about your orders.</div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Order Confirmed</div>
+            <div class="pref-hint">When a new order is successfully placed</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-order-confirmed" checked/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Order Shipped</div>
+            <div class="pref-hint">When your order leaves the warehouse</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-order-shipped" checked/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Order Delivered</div>
+            <div class="pref-hint">When your order reaches the destination</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-order-delivered" checked/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Order Cancelled</div>
+            <div class="pref-hint">When an order is cancelled or rejected</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-order-cancelled" checked/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Shipment Updates -->
+      <div class="pref-group">
+        <div class="section-title"><i class="fas fa-truck" style="color:#059669;margin-right:6px"></i> Shipment Updates</div>
+        <div class="section-desc">Stay informed about the progress of your shipments.</div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Shipment Tracking Updates</div>
+            <div class="pref-hint">Live tracking status changes (in transit, out for delivery, etc.)</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-shipment-tracking" checked/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Customs Cleared</div>
+            <div class="pref-hint">When your shipment clears customs inspection</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-shipment-customs" checked/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Delivery Exceptions</div>
+            <div class="pref-hint">Delays, failed delivery attempts, or address issues</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-shipment-exceptions" checked/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Promotions & Offers -->
+      <div class="pref-group">
+        <div class="section-title"><i class="fas fa-tag" style="color:#f97316;margin-right:6px"></i> Promotions & Offers</div>
+        <div class="section-desc">Control marketing and promotional alerts.</div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Flash Sales</div>
+            <div class="pref-hint">Limited-time discounts and time-sensitive offers</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-promo-flash" checked/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">New Supplier Listings</div>
+            <div class="pref-hint">When new verified suppliers join GlobexSky</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-promo-suppliers"/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Loyalty & Rewards</div>
+            <div class="pref-hint">Points earned, tier upgrades, and redemption reminders</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-promo-loyalty" checked/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Account & Security -->
+      <div class="pref-group">
+        <div class="section-title"><i class="fas fa-shield-alt" style="color:#8b5cf6;margin-right:6px"></i> Account & Security</div>
+        <div class="section-desc">Important account and security notifications (some cannot be disabled).</div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">New Login Detected</div>
+            <div class="pref-hint">Alert when a login occurs from a new device or browser</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-sec-login" checked disabled style="cursor:not-allowed"/><span class="toggle-slider" style="cursor:not-allowed;opacity:.7"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Password Changed</div>
+            <div class="pref-hint">Confirmation when your password is updated</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-sec-password" checked disabled style="cursor:not-allowed"/><span class="toggle-slider" style="cursor:not-allowed;opacity:.7"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Account Verification Updates</div>
+            <div class="pref-hint">Status of KYC or business verification submissions</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-sec-verification" checked/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="pref-group">
+        <div class="section-title"><i class="fas fa-envelope" style="color:#0ea5e9;margin-right:6px"></i> Messages</div>
+        <div class="section-desc">Notifications for your inbox and supplier communications.</div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">New Message Received</div>
+            <div class="pref-hint">When a supplier or buyer sends you a message</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-msg-new" checked/><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-info">
+            <div class="pref-label">Quotation Response</div>
+            <div class="pref-hint">When a supplier responds to your RFQ or quotation</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="pref-msg-rfq" checked/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div class="save-bar">
+        <div class="save-msg" id="save-msg"><i class="fas fa-check-circle"></i> Preferences saved!</div>
+        <button class="btn btn-primary" onclick="savePreferences()"><i class="fas fa-save"></i> Save Preferences</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;text-align:center">
+    <p>&copy; <span id="copyright-year">2025</span> GlobexSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<script type="module">
+import { subscribeToPush, unsubscribeFromPush, requestPermission } from '../../assets/js/pushNotification.js';
+
+// ─── Push subscription toggle ─────────────────────────────────────────────────
+const AUTH_TOKEN = localStorage.getItem('auth_token') || '';
+
+async function updatePushUI(subscribed) {
+  const status = document.getElementById('push-status');
+  const btn = document.getElementById('push-toggle-btn');
+  if (subscribed) {
+    status.className = 'status-pill enabled';
+    status.innerHTML = '<span class="status-dot"></span> On';
+    btn.innerHTML = '<i class="fas fa-bell-slash"></i> Disable Push';
+    btn.className = 'btn btn-outline-white';
+  } else {
+    status.className = 'status-pill disabled';
+    status.innerHTML = '<span class="status-dot"></span> Off';
+    btn.innerHTML = '<i class="fas fa-bell"></i> Enable Push';
+    btn.className = 'btn btn-white';
+  }
+}
+
+async function checkCurrentPushState() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    document.getElementById('push-banner').style.display = 'none';
+    return;
+  }
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.getSubscription();
+  await updatePushUI(!!sub);
+}
+
+window.togglePushSubscription = async function () {
+  const reg = await navigator.serviceWorker.ready;
+  const existing = await reg.pushManager.getSubscription();
+  if (existing) {
+    await unsubscribeFromPush(AUTH_TOKEN);
+    await updatePushUI(false);
+  } else {
+    const perm = await requestPermission();
+    if (perm !== 'granted') {
+      alert('Please allow notifications in your browser settings to enable push notifications.');
+      return;
+    }
+    await subscribeToPush(AUTH_TOKEN);
+    await updatePushUI(true);
+  }
+};
+
+// ─── Preferences persistence (localStorage fallback) ─────────────────────────
+const PREF_KEY = 'globexsky_notif_prefs';
+
+function loadPreferences() {
+  const saved = JSON.parse(localStorage.getItem(PREF_KEY) || '{}');
+  document.querySelectorAll('[id^="pref-"]:not([disabled])').forEach((el) => {
+    if (Object.prototype.hasOwnProperty.call(saved, el.id)) {
+      el.checked = saved[el.id];
+    }
+  });
+}
+
+window.savePreferences = function () {
+  const prefs = {};
+  document.querySelectorAll('[id^="pref-"]').forEach((el) => {
+    prefs[el.id] = el.checked;
+  });
+  localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
+
+  const msg = document.getElementById('save-msg');
+  msg.style.display = 'flex';
+  setTimeout(() => { msg.style.display = 'none'; }, 3000);
+};
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+checkCurrentPushState();
+loadPreferences();
+document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
