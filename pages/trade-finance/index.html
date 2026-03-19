@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Trade Finance – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+    .hero{background:linear-gradient(135deg,#0052CC 0%,#00C9A7 100%);padding:64px 24px;text-align:center}
+    .hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:#fff;margin-bottom:12px}
+    .hero-sub{color:rgba(255,255,255,.85);font-size:1.05rem;max-width:600px;margin:0 auto 28px}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn{padding:12px 28px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-white{background:#fff;color:#0052CC}.btn-white:hover{background:#f0f5ff}
+    .btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.7)}.btn-outline-white:hover{background:rgba(255,255,255,.1)}
+    .section{padding:56px 24px}
+    .container{max-width:1200px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:28px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px}
+    .kpi-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+    .kpi-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .kpi-icon.blue{background:#dbeafe;color:#0052CC}
+    .kpi-icon.green{background:#d1fae5;color:#059669}
+    .kpi-icon.orange{background:#ffedd5;color:#f97316}
+    .kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+    .kpi-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .kpi-label{font-size:.78rem;color:#64748b;margin-top:2px}
+    .feature-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-bottom:40px}
+    .feature-card{background:#fff;border-radius:14px;padding:28px;box-shadow:0 2px 10px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+    .feature-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,82,204,.12)}
+    .feature-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:16px}
+    .feature-icon.blue{background:#dbeafe;color:#0052CC}
+    .feature-icon.green{background:#d1fae5;color:#059669}
+    .feature-icon.orange{background:#ffedd5;color:#f97316}
+    .feature-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:8px}
+    .feature-desc{font-size:.88rem;color:#64748b;line-height:1.6;margin-bottom:20px}
+    .btn-sm{padding:8px 18px;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1 class="hero-title"><i class="fas fa-university"></i> Trade Finance</h1>
+  <p class="hero-sub">Secure your international transactions with Letters of Credit, Escrow payments, and Invoice Factoring.</p>
+  <div class="hero-actions">
+    <a href="lc.html" class="btn btn-white"><i class="fas fa-file-contract"></i> Letter of Credit</a>
+    <a href="escrow.html" class="btn btn-outline-white"><i class="fas fa-shield-alt"></i> Escrow</a>
+    <a href="invoice-factoring.html" class="btn btn-outline-white"><i class="fas fa-receipt"></i> Invoice Factoring</a>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <span>Trade Finance</span>
+    </nav>
+
+    <!-- Overview KPIs -->
+    <div class="overview-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue"><i class="fas fa-file-contract"></i></div>
+        <div><div class="kpi-value">24</div><div class="kpi-label">Active LCs</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon green"><i class="fas fa-shield-alt"></i></div>
+        <div><div class="kpi-value">$1.2M</div><div class="kpi-label">Escrow Held</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon orange"><i class="fas fa-receipt"></i></div>
+        <div><div class="kpi-value">$340K</div><div class="kpi-label">Invoices Factored</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon purple"><i class="fas fa-check-circle"></i></div>
+        <div><div class="kpi-value">98%</div><div class="kpi-label">Success Rate</div></div>
+      </div>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="feature-cards">
+      <div class="feature-card">
+        <div class="feature-icon blue"><i class="fas fa-file-contract"></i></div>
+        <div class="feature-title">Letter of Credit (L/C)</div>
+        <p class="feature-desc">Guarantee payment to your suppliers and protect yourself as a buyer. Bank-backed trade finance for international transactions.</p>
+        <a href="lc.html" class="btn-sm btn-primary"><i class="fas fa-arrow-right"></i> Manage LCs</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green"><i class="fas fa-shield-alt"></i></div>
+        <div class="feature-title">Escrow Payments</div>
+        <p class="feature-desc">Funds are held securely until both parties fulfil their obligations. Release payment only when goods are received and verified.</p>
+        <a href="escrow.html" class="btn-sm btn-primary"><i class="fas fa-arrow-right"></i> Manage Escrow</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon orange"><i class="fas fa-receipt"></i></div>
+        <div class="feature-title">Invoice Factoring</div>
+        <p class="feature-desc">Convert your outstanding invoices into immediate cash. Get up to 80% advance on verified trade invoices.</p>
+        <a href="invoice-factoring.html" class="btn-sm btn-primary"><i class="fas fa-arrow-right"></i> Factor Invoices</a>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-history" style="color:#0052CC;margin-right:8px"></i>Recent Transactions</h3>
+        <a href="lc.html" class="btn-sm btn-secondary">View All</a>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Counterparty</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#TF-1042</td>
+              <td><span class="badge-pill badge-blue">L/C</span></td>
+              <td>$85,000</td>
+              <td>Shanghai Exports Ltd.</td>
+              <td>Mar 15, 2026</td>
+              <td><span class="badge-pill badge-orange">issued</span></td>
+            </tr>
+            <tr>
+              <td>#TF-1039</td>
+              <td><span class="badge-pill badge-green">Escrow</span></td>
+              <td>$22,500</td>
+              <td>TechParts GmbH</td>
+              <td>Mar 12, 2026</td>
+              <td><span class="badge-pill badge-blue">held</span></td>
+            </tr>
+            <tr>
+              <td>#TF-1036</td>
+              <td><span class="badge-pill badge-orange">Factoring</span></td>
+              <td>$14,200</td>
+              <td>Global Textiles Co.</td>
+              <td>Mar 10, 2026</td>
+              <td><span class="badge-pill badge-green">approved</span></td>
+            </tr>
+            <tr>
+              <td>#TF-1031</td>
+              <td><span class="badge-pill badge-blue">L/C</span></td>
+              <td>$140,000</td>
+              <td>Mumbai Pharma Inc.</td>
+              <td>Mar 5, 2026</td>
+              <td><span class="badge-pill badge-green">fulfilled</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© 2026 GlobexSky. All rights reserved.</div>
+</footer>
+</body>
+</html>
