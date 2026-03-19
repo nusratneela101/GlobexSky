@@ -36,7 +36,6 @@ import dropshippingRoutes from './routes/dropshipping.routes.js';
 import analyticsRoutes from './routes/analytics.routes.js';
 import disputeRoutes from './routes/dispute.routes.js';
 import refundRoutes from './routes/refund.routes.js';
-import codRoutes from './routes/cod.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 
@@ -83,7 +82,7 @@ app.use(`${API}/dropshipping`, dropshippingRoutes);
 app.use(`${API}/analytics`, analyticsRoutes);
 app.use(`${API}/disputes`, disputeRoutes);
 app.use(`${API}/refunds`, refundRoutes);
-app.use(`${API}/cod`, codRoutes);
+
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
 
