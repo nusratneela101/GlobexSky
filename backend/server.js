@@ -34,8 +34,7 @@ import livestreamRoutes from './routes/livestream.routes.js';
 import apiPlatformRoutes from './routes/api-platform.routes.js';
 import dropshippingRoutes from './routes/dropshipping.routes.js';
 import analyticsRoutes from './routes/analytics.routes.js';
-import disputeRoutes from './routes/dispute.routes.js';
-import refundRoutes from './routes/refund.routes.js';
+
 import uploadRoutes from './routes/upload.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import pushNotificationRoutes from './routes/pushNotification.routes.js';
@@ -81,8 +80,7 @@ app.use(`${API}/livestreams`, livestreamRoutes);
 app.use(`${API}/api-platform`, apiPlatformRoutes);
 app.use(`${API}/dropshipping`, dropshippingRoutes);
 app.use(`${API}/analytics`, analyticsRoutes);
-app.use(`${API}/disputes`, disputeRoutes);
-app.use(`${API}/refunds`, refundRoutes);
+
 
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
