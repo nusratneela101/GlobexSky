@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Virtual Trade Show – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+    .hero{background:linear-gradient(135deg,#6d28d9 0%,#0052CC 100%);padding:72px 24px;text-align:center}
+    .hero-title{font-family:'Poppins',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:#fff;margin-bottom:12px}
+    .hero-sub{color:rgba(255,255,255,.85);font-size:1.05rem;max-width:580px;margin:0 auto 28px}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn{padding:12px 28px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-white{background:#fff;color:#6d28d9}.btn-white:hover{background:#f0ebff}
+    .btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.7)}.btn-outline-white:hover{background:rgba(255,255,255,.1)}
+    .section{padding:56px 24px}
+    .container{max-width:1200px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:28px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .search-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;align-items:center}
+    .search-input{flex:1;min-width:220px;padding:11px 16px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif}
+    .search-input:focus{outline:none;border-color:#0052CC}
+    .filter-select{padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif}
+    .btn-sm{padding:8px 18px;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-purple{background:#6d28d9;color:#fff}.btn-purple:hover{background:#5b21b6}
+    .featured-banner{background:linear-gradient(135deg,#f0ebff 0%,#dbeafe 100%);border-radius:16px;padding:28px;margin-bottom:32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .featured-banner-icon{font-size:3rem;color:#6d28d9}
+    .featured-banner-text h2{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;margin-bottom:6px}
+    .featured-banner-text p{color:#64748b;font-size:.9rem}
+    .booth-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:40px}
+    .booth-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+    .booth-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+    .booth-cover{height:120px;background:linear-gradient(135deg,#6d28d9,#0052CC);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:rgba(255,255,255,.8)}
+    .booth-body{padding:18px}
+    .booth-name{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27;margin-bottom:4px}
+    .booth-category{font-size:.78rem;color:#0052CC;font-weight:600;margin-bottom:8px}
+    .booth-desc{font-size:.82rem;color:#64748b;line-height:1.5;margin-bottom:12px}
+    .booth-meta{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:#64748b}
+    .badge-live{background:#fee2e2;color:#ef4444;padding:2px 8px;border-radius:50px;font-weight:700;font-size:.7rem}
+    .badge-upcoming{background:#ffedd5;color:#f97316;padding:2px 8px;border-radius:50px;font-weight:700;font-size:.7rem}
+    .shows-list{display:grid;gap:16px;margin-bottom:40px}
+    .show-item{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .show-date{min-width:64px;text-align:center;background:#f0ebff;border-radius:10px;padding:10px 8px}
+    .show-date-month{font-size:.72rem;font-weight:700;color:#6d28d9;text-transform:uppercase}
+    .show-date-day{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27;line-height:1}
+    .show-info{flex:1}
+    .show-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:4px}
+    .show-meta{font-size:.82rem;color:#64748b}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1 class="hero-title"><i class="fas fa-store"></i> Virtual Trade Shows</h1>
+  <p class="hero-sub">Explore global product showcases, connect with verified suppliers, and book meetings — all from anywhere in the world.</p>
+  <div class="hero-actions">
+    <a href="booth-registration.html" class="btn btn-white"><i class="fas fa-plus-circle"></i> Register Your Booth</a>
+    <a href="schedule.html" class="btn btn-outline-white"><i class="fas fa-calendar-alt"></i> View Schedule</a>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <span>Virtual Trade Shows</span>
+    </nav>
+
+    <!-- Featured Banner -->
+    <div class="featured-banner">
+      <div class="featured-banner-icon"><i class="fas fa-star"></i></div>
+      <div class="featured-banner-text">
+        <h2>GlobexSky Spring Trade Show 2026 — LIVE NOW</h2>
+        <p>450+ exhibitors · 12,000 visitors · 8 virtual halls · 3D booth experience</p>
+      </div>
+      <a href="schedule.html" class="btn btn-purple" style="margin-left:auto"><i class="fas fa-play-circle"></i> Enter Show</a>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="Search exhibitors, products, categories…"/>
+      <select class="filter-select">
+        <option>All Industries</option>
+        <option>Electronics</option>
+        <option>Textiles</option>
+        <option>Chemicals</option>
+        <option>Machinery</option>
+        <option>Food &amp; Agriculture</option>
+      </select>
+      <select class="filter-select">
+        <option>All Countries</option>
+        <option>China</option>
+        <option>India</option>
+        <option>Germany</option>
+        <option>USA</option>
+        <option>Vietnam</option>
+      </select>
+      <button class="btn-sm btn-primary"><i class="fas fa-search"></i> Search</button>
+    </div>
+
+    <!-- Upcoming Shows -->
+    <h2 style="font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0a0e27;margin-bottom:16px">Upcoming &amp; Active Shows</h2>
+    <div class="shows-list">
+      <div class="show-item">
+        <div class="show-date"><div class="show-date-month">MAR</div><div class="show-date-day">20</div></div>
+        <div class="show-info">
+          <div class="show-title">GlobexSky Spring Trade Show 2026</div>
+          <div class="show-meta"><i class="fas fa-map-marker-alt"></i> Virtual · 450 booths · Ends Mar 23</div>
+        </div>
+        <span class="badge-pill badge-green" style="background:#d1fae5;color:#059669">LIVE</span>
+        <a href="schedule.html" class="btn-sm btn-purple"><i class="fas fa-arrow-right"></i> Enter</a>
+      </div>
+      <div class="show-item">
+        <div class="show-date" style="background:#fff7ed"><div class="show-date-month" style="color:#f97316">APR</div><div class="show-date-day">5</div></div>
+        <div class="show-info">
+          <div class="show-title">Asia Electronics Expo 2026</div>
+          <div class="show-meta"><i class="fas fa-map-marker-alt"></i> Virtual + Hybrid · 280 booths · 4 days</div>
+        </div>
+        <span class="badge-pill badge-orange">Upcoming</span>
+        <a href="booth-registration.html" class="btn-sm btn-primary"><i class="fas fa-store"></i> Register Booth</a>
+      </div>
+      <div class="show-item">
+        <div class="show-date" style="background:#f0ebff"><div class="show-date-month" style="color:#6d28d9">MAY</div><div class="show-date-day">12</div></div>
+        <div class="show-info">
+          <div class="show-title">Global Textiles &amp; Fashion Week</div>
+          <div class="show-meta"><i class="fas fa-map-marker-alt"></i> Virtual · 190 booths · 3 days</div>
+        </div>
+        <span class="badge-pill badge-purple">Upcoming</span>
+        <a href="booth-registration.html" class="btn-sm btn-primary"><i class="fas fa-store"></i> Register Booth</a>
+      </div>
+    </div>
+
+    <!-- Booth Gallery -->
+    <h2 style="font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0a0e27;margin-bottom:16px">Featured Exhibitors</h2>
+    <div class="booth-grid">
+      <div class="booth-card">
+        <div class="booth-cover"><i class="fas fa-microchip"></i></div>
+        <div class="booth-body">
+          <div class="booth-name">Shenzhen TechCo Ltd.</div>
+          <div class="booth-category">Electronics &amp; Components</div>
+          <p class="booth-desc">Leading manufacturer of consumer electronics and IoT components. MOQ from 500 units.</p>
+          <div class="booth-meta">
+            <span><i class="fas fa-flag"></i> China</span>
+            <span class="badge-live">LIVE</span>
+          </div>
+        </div>
+      </div>
+      <div class="booth-card">
+        <div class="booth-cover" style="background:linear-gradient(135deg,#059669,#0052CC)"><i class="fas fa-tshirt"></i></div>
+        <div class="booth-body">
+          <div class="booth-name">Apex Textiles Bangladesh</div>
+          <div class="booth-category">Textiles &amp; Apparel</div>
+          <p class="booth-desc">Premium garment manufacturer with GOTS and OEKO-TEX certifications. Custom orders welcome.</p>
+          <div class="booth-meta">
+            <span><i class="fas fa-flag"></i> Bangladesh</span>
+            <span class="badge-live">LIVE</span>
+          </div>
+        </div>
+      </div>
+      <div class="booth-card">
+        <div class="booth-cover" style="background:linear-gradient(135deg,#f97316,#ef4444)"><i class="fas fa-flask"></i></div>
+        <div class="booth-body">
+          <div class="booth-name">ChemIndustries GmbH</div>
+          <div class="booth-category">Chemicals &amp; Materials</div>
+          <p class="booth-desc">European specialty chemicals supplier with ISO 9001 certification and global distribution.</p>
+          <div class="booth-meta">
+            <span><i class="fas fa-flag"></i> Germany</span>
+            <span class="badge-upcoming">Upcoming</span>
+          </div>
+        </div>
+      </div>
+      <div class="booth-card">
+        <div class="booth-cover" style="background:linear-gradient(135deg,#7c3aed,#2563eb)"><i class="fas fa-cogs"></i></div>
+        <div class="booth-body">
+          <div class="booth-name">Precision Machinery India</div>
+          <div class="booth-category">Industrial Machinery</div>
+          <p class="booth-desc">CNC machines, lathe machines and precision engineering equipment. OEM available.</p>
+          <div class="booth-meta">
+            <span><i class="fas fa-flag"></i> India</span>
+            <span class="badge-upcoming">Upcoming</span>
+          </div>
+        </div>
+      </div>
+      <div class="booth-card">
+        <div class="booth-cover" style="background:linear-gradient(135deg,#0d9488,#059669)"><i class="fas fa-seedling"></i></div>
+        <div class="booth-body">
+          <div class="booth-name">Vietnam Agro Exports</div>
+          <div class="booth-category">Food &amp; Agriculture</div>
+          <p class="booth-desc">Organic rice, coffee, and tropical fruits. GlobalGAP certified with reliable export volume.</p>
+          <div class="booth-meta">
+            <span><i class="fas fa-flag"></i> Vietnam</span>
+            <span class="badge-live">LIVE</span>
+          </div>
+        </div>
+      </div>
+      <div class="booth-card">
+        <div class="booth-cover" style="background:linear-gradient(135deg,#dc2626,#f97316)"><i class="fas fa-hard-hat"></i></div>
+        <div class="booth-body">
+          <div class="booth-name">SafeGuard PPE Solutions</div>
+          <div class="booth-category">Safety &amp; PPE</div>
+          <p class="booth-desc">CE and ANSI certified personal protective equipment. Bulk pricing from 1,000 units.</p>
+          <div class="booth-meta">
+            <span><i class="fas fa-flag"></i> Malaysia</span>
+            <span class="badge-live">LIVE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© 2026 GlobexSky. All rights reserved.</div>
+</footer>
+</body>
+</html>

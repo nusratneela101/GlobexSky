@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Supplier Scorecard – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px;margin-bottom:20px}
+    /* Score Circle */
+    .score-hero{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+    .score-circle-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+    .score-circle-wrap svg{transform:rotate(-90deg)}
+    .sc-bg{fill:none;stroke:#e2e8f0;stroke-width:12}
+    .sc-fill{fill:none;stroke-width:12;stroke-linecap:round;stroke-dasharray:345;stroke-dashoffset:104;transition:stroke-dashoffset .8s}
+    .sc-fill.diamond{stroke:url(#diamondGrad)}
+    .sc-fill.gold{stroke:#f59e0b}
+    .sc-fill.silver{stroke:#94a3b8}
+    .sc-fill.bronze{stroke:#c97432}
+    .score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .score-num{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800;color:#0a0e27}
+    .score-label{font-size:.7rem;color:#64748b;font-weight:500}
+    .score-info h3{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0a0e27;margin-bottom:8px}
+    .tier-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;font-family:'Poppins',sans-serif;font-weight:700;font-size:.85rem;margin-bottom:12px}
+    .tier-badge.diamond{background:linear-gradient(135deg,#818cf8,#c084fc);color:#fff}
+    .tier-badge.gold{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
+    .tier-badge.silver{background:linear-gradient(135deg,#94a3b8,#cbd5e1);color:#fff}
+    .tier-badge.bronze{background:linear-gradient(135deg,#c97432,#d4956e);color:#fff}
+    .tier-badge.unverified{background:#f1f5f9;color:#64748b}
+    /* Category Bars */
+    .category-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .category-item{padding:16px;border-radius:12px;background:#f8faff;border:1.5px solid #e2e8f0}
+    .category-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .category-name{font-weight:600;font-size:.9rem;color:#0a0e27;display:flex;align-items:center;gap:8px}
+    .category-score{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#0052CC}
+    .score-bar{height:8px;background:#e2e8f0;border-radius:50px;overflow:hidden}
+    .score-bar-fill{height:100%;border-radius:50px;transition:width .8s}
+    .fill-quality{background:linear-gradient(90deg,#0052CC,#00C9A7)}
+    .fill-delivery{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+    .fill-communication{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+    .fill-compliance{background:linear-gradient(90deg,#059669,#34d399)}
+    /* Review Timeline */
+    .review-timeline{display:flex;flex-direction:column;gap:16px}
+    .review-item{display:flex;gap:14px;padding:14px;background:#f8faff;border-radius:10px;border:1.5px solid #e2e8f0}
+    .review-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .review-body{flex:1}
+    .review-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px}
+    .review-name{font-weight:600;font-size:.88rem;color:#0a0e27}
+    .review-date{font-size:.75rem;color:#94a3b8}
+    .review-text{font-size:.85rem;color:#374151;line-height:1.5}
+    .stars{color:#f59e0b;font-size:.8rem}
+    /* Recommendations */
+    .rec-list{display:flex;flex-direction:column;gap:10px}
+    .rec-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff}
+    .rec-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+    .rec-icon.improve{background:#ffedd5;color:#f97316}
+    .rec-icon.maintain{background:#d1fae5;color:#059669}
+    .rec-text h5{font-size:.87rem;font-weight:600;color:#0a0e27;margin-bottom:2px}
+    .rec-text p{font-size:.8rem;color:#64748b}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.score-hero{flex-direction:column;align-items:flex-start}.category-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <div>
+          <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+          <div class="nav-subtitle">Supplier Dashboard</div>
+        </div>
+      </a>
+      <div class="nav-controls">
+        <div style="position:relative">
+          <button style="border:none;background:none;cursor:pointer;padding:4px">
+            <div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">ST</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name" id="sidebarName">Loading...</div>
+    <div class="account-sidebar-email" id="sidebarEmail">supplier@example.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="scorecard.html" class="active"><i class="fas fa-medal"></i> Scorecard</a></li>
+      <li><a href="#" style="color:#f97316!important"><i class="fas fa-rocket"></i> Upgrade Plan</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+
+    <!-- Overall Score -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-trophy" style="color:#f59e0b"></i> Overall Performance Score</div>
+      <div class="score-hero">
+        <div class="score-circle-wrap">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <defs>
+              <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#818cf8"/>
+                <stop offset="100%" stop-color="#c084fc"/>
+              </linearGradient>
+            </defs>
+            <circle class="sc-bg" cx="70" cy="70" r="55"/>
+            <circle class="sc-fill gold" id="scoreFill" cx="70" cy="70" r="55"/>
+          </svg>
+          <div class="score-center">
+            <div class="score-num" id="overallScore">—</div>
+            <div class="score-label">out of 100</div>
+          </div>
+        </div>
+        <div class="score-info">
+          <div class="tier-badge gold" id="tierBadge"><i class="fas fa-medal"></i> Loading...</div>
+          <h3 id="supplierName">Supplier</h3>
+          <p style="font-size:.85rem;color:#64748b;max-width:360px;line-height:1.6" id="scoreDesc">Loading assessment data...</p>
+          <p style="font-size:.78rem;color:#94a3b8;margin-top:8px" id="assessedDate"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-chart-bar" style="color:#0052CC"></i> Category Breakdown</div>
+      <div class="category-grid" id="categoryGrid">
+        <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-star" style="color:#0052CC"></i> Quality</span><span class="category-score" id="qualityScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-quality" id="qualityBar" style="width:0%"></div></div></div>
+        <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-truck" style="color:#f59e0b"></i> Delivery</span><span class="category-score" id="deliveryScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-delivery" id="deliveryBar" style="width:0%"></div></div></div>
+        <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-comments" style="color:#8b5cf6"></i> Communication</span><span class="category-score" id="communicationScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-communication" id="communicationBar" style="width:0%"></div></div></div>
+        <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-shield-alt" style="color:#059669"></i> Compliance</span><span class="category-score" id="complianceScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-compliance" id="complianceBar" style="width:0%"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Review History -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-history" style="color:#0052CC"></i> Review History</div>
+      <div class="review-timeline" id="reviewTimeline">
+        <div class="review-item"><div class="review-avatar">A</div><div class="review-body"><div class="review-header"><span class="review-name">GlobexSky Admin</span><span class="review-date">Assessment pending</span></div><div class="review-text">No assessments completed yet.</div></div></div>
+      </div>
+    </div>
+
+    <!-- Improvement Recommendations -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-lightbulb" style="color:#f59e0b"></i> Improvement Recommendations</div>
+      <div class="rec-list" id="recList">
+        <div class="rec-item"><div class="rec-icon maintain"><i class="fas fa-spinner fa-spin"></i></div><div class="rec-text"><h5>Loading...</h5><p>Recommendations will appear after your assessment is completed.</p></div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API = '/api/v1';
+
+async function loadScorecard() {
+  const supplierId = new URLSearchParams(location.search).get('id') || localStorage.getItem('supplierId');
+  if (!supplierId) {
+    setDemo();
+    return;
+  }
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API}/supplier-assessment/${supplierId}/scorecard`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const json = await res.json();
+    if (json.success && json.data) renderScorecard(json.data);
+    else setDemo();
+  } catch (_) { setDemo(); }
+}
+
+function setDemo() {
+  renderScorecard({ quality_score: 88, delivery_score: 82, communication_score: 76, compliance_score: 91, overall_score: 85, tier: 'gold', assessed_at: new Date().toISOString() });
+}
+
+function renderScorecard(data) {
+  const overall = data.overall_score || 0;
+  document.getElementById('overallScore').textContent = overall;
+  document.getElementById('assessedDate').textContent = data.assessed_at ? `Last assessed: ${new Date(data.assessed_at).toLocaleDateString()}` : '';
+
+  const tier = data.tier || 'unverified';
+  const tierLabels = { diamond: 'Diamond', gold: 'Gold', silver: 'Silver', bronze: 'Bronze', unverified: 'Unverified' };
+  const tierIcons = { diamond: 'fa-gem', gold: 'fa-medal', silver: 'fa-award', bronze: 'fa-certificate', unverified: 'fa-circle' };
+  const badge = document.getElementById('tierBadge');
+  badge.className = `tier-badge ${tier}`;
+  badge.innerHTML = `<i class="fas ${tierIcons[tier] || 'fa-medal'}"></i> ${tierLabels[tier] || tier}`;
+
+  const offset = 345 - (overall / 100) * 345;
+  const fill = document.getElementById('scoreFill');
+  fill.style.strokeDashoffset = offset;
+  fill.className = `sc-fill ${tier}`;
+
+  const tierDescs = { diamond: 'Exceptional performance across all categories. You are among the top tier suppliers on GlobexSky.', gold: 'Excellent overall performance. Keep maintaining high standards to reach Diamond tier.', silver: 'Good performance. Focus on improving weaker areas to reach Gold tier.', bronze: 'Acceptable performance. There are several areas where you can improve significantly.', unverified: 'No assessment data available. Contact admin to request an assessment.' };
+  document.getElementById('scoreDesc').textContent = tierDescs[tier] || '';
+
+  const cats = ['quality', 'delivery', 'communication', 'compliance'];
+  cats.forEach(c => {
+    const s = data[`${c}_score`] || 0;
+    document.getElementById(`${c}Score`).textContent = s;
+    document.getElementById(`${c}Bar`).style.width = `${s}%`;
+  });
+
+  // Recommendations
+  const recs = [];
+  if ((data.quality_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-star', title: 'Improve Product Quality', text: 'Reduce defect rate and improve consistency to raise your quality score above 80.' });
+  if ((data.delivery_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-truck', title: 'Improve Delivery Performance', text: 'Work on on-time delivery rate and lead time accuracy.' });
+  if ((data.communication_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-comments', title: 'Improve Communication', text: 'Respond to buyer inquiries faster and resolve disputes promptly.' });
+  if ((data.compliance_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-shield-alt', title: 'Improve Compliance', text: 'Ensure all certifications are up to date and documentation is complete.' });
+  if (recs.length === 0) recs.push({ type: 'maintain', icon: 'fa-check-circle', title: 'Keep up the great work!', text: 'All categories are performing well. Maintain your standards to retain your tier.' });
+
+  document.getElementById('recList').innerHTML = recs.map(r => `
+    <div class="rec-item"><div class="rec-icon ${r.type}"><i class="fas ${r.icon}"></i></div><div class="rec-text"><h5>${r.title}</h5><p>${r.text}</p></div></div>`).join('');
+}
+
+loadScorecard();
+</script>
+</body>
+</html>

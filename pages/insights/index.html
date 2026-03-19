@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Market Insights – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-header{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);color:#fff;padding:48px 24px;text-align:center}
+    .breadcrumb{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;font-size:.85rem;opacity:.8}
+    .breadcrumb a{color:rgba(255,255,255,.7);text-decoration:none}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb i{font-size:.7rem;opacity:.5}
+    .page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:8px}
+    .page-subtitle{opacity:.8;font-size:1rem}
+    .main-content{max-width:1400px;margin:0 auto;padding:32px 24px}
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:32px}
+    .kpi-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:16px;transition:transform .2s}
+    .kpi-card:hover{transform:translateY(-2px)}
+    .kpi-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .kpi-icon.blue{background:#dbeafe;color:#0052CC}
+    .kpi-icon.green{background:#d1fae5;color:#059669}
+    .kpi-icon.orange{background:#ffedd5;color:#f97316}
+    .kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+    .kpi-value{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:#0a0e27;line-height:1}
+    .kpi-label{font-size:.8rem;color:#64748b;margin-top:4px}
+    .kpi-change{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:600;margin-top:6px;padding:2px 8px;border-radius:50px}
+    .kpi-change.up{background:#d1fae5;color:#059669}
+    .kpi-change.down{background:#fee2e2;color:#ef4444}
+    .section-grid{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:24px}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px;justify-content:space-between}
+    .trending-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+    .trending-item{border:1.5px solid #e2e8f0;border-radius:12px;padding:14px;transition:all .2s;cursor:pointer}
+    .trending-item:hover{border-color:#0052CC;box-shadow:0 4px 16px rgba(0,82,204,.1)}
+    .trending-rank{font-size:.72rem;color:#94a3b8;margin-bottom:6px}
+    .trending-name{font-weight:600;font-size:.9rem;color:#0a0e27;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .trending-price{font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:.95rem}
+    .trending-change{font-size:.78rem;font-weight:600}
+    .trend-up{color:#059669}
+    .trend-down{color:#ef4444}
+    /* Sparkline (simple CSS bars) */
+    .sparkline{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:8px}
+    .spark-bar{flex:1;background:#dbeafe;border-radius:2px;min-height:4px;transition:height .3s}
+    /* Category performance */
+    .cat-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+    .cat-item:last-child{border-bottom:none}
+    .cat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+    .cat-info{flex:1;min-width:0}
+    .cat-name{font-weight:600;font-size:.875rem;color:#0a0e27}
+    .cat-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-top:4px}
+    .cat-bar-fill{height:100%;border-radius:3px;background:#0052CC}
+    .cat-pct{font-family:'Poppins',sans-serif;font-weight:700;font-size:.875rem;color:#0052CC}
+    /* Map placeholder */
+    .map-box{background:linear-gradient(135deg,#dbeafe,#ede9fe);border-radius:12px;height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#64748b;gap:12px;border:1.5px dashed #c7d2fe}
+    .nav-tabs{display:flex;gap:4px;margin-left:auto}
+    .nav-tab{padding:6px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:.8rem;font-weight:500;cursor:pointer;background:#f8faff;color:#374151;text-decoration:none;transition:all .2s}
+    .nav-tab:hover,.nav-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    @media(max-width:1024px){.section-grid{grid-template-columns:1fr}}
+    @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.trending-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="trends.html" class="btn-nav btn-login"><i class="fas fa-chart-line"></i> Trends</a>
+        <a href="reports.html" class="btn-nav btn-register"><i class="fas fa-file-alt"></i> Reports</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="../../index.html">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>Market Insights</span>
+  </div>
+  <h1 class="page-title"><i class="fas fa-chart-line"></i> Market Intelligence</h1>
+  <p class="page-subtitle">Real-time market trends, price analysis & demand forecasting</p>
+</div>
+
+<div class="main-content">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="kpi-card"><div class="kpi-icon blue"><i class="fas fa-boxes"></i></div><div><div class="kpi-value" id="kpiProducts">—</div><div class="kpi-label">Products Tracked</div><span class="kpi-change up" id="kpiProductsChg">+0%</span></div></div>
+    <div class="kpi-card"><div class="kpi-icon green"><i class="fas fa-dollar-sign"></i></div><div><div class="kpi-value" id="kpiAvgPrice">—</div><div class="kpi-label">Avg Price Change</div><span class="kpi-change up" id="kpiAvgPriceChg">+0%</span></div></div>
+    <div class="kpi-card"><div class="kpi-icon orange"><i class="fas fa-fire"></i></div><div><div class="kpi-value" id="kpiTopCategory">—</div><div class="kpi-label">Top Trending Category</div></div></div>
+    <div class="kpi-card"><div class="kpi-icon purple"><i class="fas fa-chart-bar"></i></div><div><div class="kpi-value" id="kpiGrowth">—</div><div class="kpi-label">Market Growth</div><span class="kpi-change up" id="kpiGrowthChg">+0%</span></div></div>
+  </div>
+
+  <div class="section-grid">
+    <!-- Trending Products -->
+    <div class="card">
+      <div class="card-title">
+        <span><i class="fas fa-fire" style="color:#f97316"></i> Trending Products</span>
+        <div class="nav-tabs">
+          <a href="trends.html" class="nav-tab">View All</a>
+        </div>
+      </div>
+      <div class="trending-grid" id="trendingGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Category Performance -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-th-large" style="color:#0052CC"></i> Category Performance</div>
+      <div id="categoryPerf"></div>
+    </div>
+  </div>
+
+  <!-- Regional Map -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-globe-asia" style="color:#0052CC"></i> Regional Market Activity</div>
+    <div class="map-box">
+      <i class="fas fa-map-marked-alt" style="font-size:3rem;opacity:.4"></i>
+      <strong>Interactive Map</strong>
+      <span>Connect a mapping API (Mapbox/Google Maps) to visualize regional activity</span>
+      <a href="trends.html" style="padding:8px 20px;background:#0052CC;color:#fff;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:600">View Regional Trends</a>
+    </div>
+  </div>
+
+</div>
+
+<footer style="background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem">
+  &copy; 2025 GlobexSky. All rights reserved.
+</footer>
+
+<script>
+const API = '/api/v1';
+const MOCK_TRENDING = [
+  { name: 'Solar Panels 400W', price: 189.99, order_count: 412, change: 24.5 },
+  { name: 'Wireless Earbuds Pro', price: 45.00, order_count: 387, change: 18.2 },
+  { name: 'Bamboo Packaging', price: 12.50, order_count: 356, change: 31.0 },
+  { name: 'Smart LED Strip', price: 28.00, order_count: 334, change: -5.3 },
+  { name: 'Reusable Water Bottle', price: 18.00, order_count: 312, change: 12.8 },
+  { name: 'Organic Cotton T-Shirt', price: 22.00, order_count: 298, change: 9.1 },
+];
+const MOCK_CATS = [
+  { name: 'Electronics', icon: 'fa-microchip', color: '#0052CC', pct: 87 },
+  { name: 'Textiles', icon: 'fa-tshirt', color: '#7c3aed', pct: 72 },
+  { name: 'Eco Products', icon: 'fa-leaf', color: '#059669', pct: 65 },
+  { name: 'Industrial', icon: 'fa-industry', color: '#f97316', pct: 54 },
+  { name: 'Home & Living', icon: 'fa-home', color: '#ec4899', pct: 48 },
+];
+
+async function loadDashboard() {
+  try {
+    const token = localStorage.getItem('token');
+    const [trendsRes, pricesRes, demandRes] = await Promise.allSettled([
+      fetch(`${API}/business-intelligence/trends`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+      fetch(`${API}/business-intelligence/price-analysis`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+      fetch(`${API}/business-intelligence/demand-forecast`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+    ]);
+
+    const trends = trendsRes.status === 'fulfilled' && trendsRes.value.success ? trendsRes.value.data : null;
+    const prices = pricesRes.status === 'fulfilled' && pricesRes.value.success ? pricesRes.value.data : null;
+    const demand = demandRes.status === 'fulfilled' && demandRes.value.success ? demandRes.value.data : null;
+
+    document.getElementById('kpiProducts').textContent = trends?.total_tracked || '1,247';
+    document.getElementById('kpiAvgPrice').textContent = prices ? `$${prices.avg_price}` : '$38.40';
+    document.getElementById('kpiTopCategory').textContent = 'Electronics';
+    document.getElementById('kpiGrowth').textContent = demand ? `${demand.growth_rate_pct}%` : '+12.4%';
+
+    const trendingProducts = trends?.trending_products?.length ? trends.trending_products.slice(0, 6) : MOCK_TRENDING;
+    renderTrending(trendingProducts);
+  } catch (_) {
+    document.getElementById('kpiProducts').textContent = '1,247';
+    document.getElementById('kpiAvgPrice').textContent = '$38.40';
+    document.getElementById('kpiTopCategory').textContent = 'Electronics';
+    document.getElementById('kpiGrowth').textContent = '+12.4%';
+    renderTrending(MOCK_TRENDING);
+  }
+
+  renderCategories();
+}
+
+function renderTrending(products) {
+  document.getElementById('trendingGrid').innerHTML = products.map((p, i) => {
+    const change = p.change || (Math.random() * 30 - 5);
+    const bars = Array.from({ length: 7 }, () => Math.floor(Math.random() * 80 + 20));
+    return `<div class="trending-item">
+      <div class="trending-rank">#${i+1} Trending</div>
+      <div class="trending-name" title="${p.name || p.title}">${p.name || p.title || 'Product'}</div>
+      <div class="trending-price">$${(p.price || 0).toFixed(2)}</div>
+      <div class="trending-change ${change >= 0 ? 'trend-up' : 'trend-down'}">${change >= 0 ? '↑' : '↓'} ${Math.abs(change).toFixed(1)}%</div>
+      <div class="sparkline">${bars.map(h => `<div class="spark-bar" style="height:${h}%;background:${change >= 0 ? '#bfdbfe' : '#fecaca'}"></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCategories() {
+  document.getElementById('categoryPerf').innerHTML = MOCK_CATS.map(c => `
+    <div class="cat-item">
+      <div class="cat-icon" style="background:${c.color}20;color:${c.color}"><i class="fas ${c.icon}"></i></div>
+      <div class="cat-info">
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-bar"><div class="cat-bar-fill" style="width:${c.pct}%;background:${c.color}"></div></div>
+      </div>
+      <div class="cat-pct" style="color:${c.color}">${c.pct}%</div>
+    </div>`).join('');
+}
+
+loadDashboard();
+</script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Event Schedule – GlobexSky Trade Shows</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#6d28d9 100%);padding:48px 24px;text-align:center}
+    .page-hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+    .page-hero-sub{color:rgba(255,255,255,.8);font-size:.95rem}
+    .section{padding:48px 24px}
+    .container{max-width:1100px;margin:0 auto}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+    .cal-header{font-size:.75rem;font-weight:700;color:#64748b;padding:6px 0}
+    .cal-day{padding:8px 4px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:all .2s}
+    .cal-day:hover{background:#f0ebff;color:#6d28d9}
+    .cal-day.today{background:#6d28d9;color:#fff;font-weight:700}
+    .cal-day.event{background:#ede9fe;color:#6d28d9;font-weight:600}
+    .cal-day.empty{color:#d1d5db;cursor:default}
+    .cal-day.empty:hover{background:none}
+    .cal-month-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .cal-month-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27}
+    .cal-nav-btn{background:none;border:none;cursor:pointer;color:#6d28d9;font-size:1rem;padding:4px 8px}
+    .schedule-list{display:flex;flex-direction:column;gap:12px}
+    .schedule-item{display:flex;gap:16px;align-items:flex-start;padding:16px;background:#fafbff;border-radius:10px;border-left:3px solid #6d28d9}
+    .schedule-time{min-width:80px;font-weight:700;font-size:.85rem;color:#6d28d9;padding-top:2px}
+    .schedule-info-title{font-weight:600;font-size:.9rem;color:#0a0e27;margin-bottom:3px}
+    .schedule-info-meta{font-size:.78rem;color:#64748b}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600;margin-left:6px}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#6d28d9;box-shadow:0 0 0 3px rgba(109,40,217,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btn{padding:10px 22px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .btn-purple{background:#6d28d9;color:#fff}.btn-purple:hover{background:#5b21b6}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1 class="page-hero-title"><i class="fas fa-calendar-alt"></i> Event Schedule</h1>
+  <p class="page-hero-sub">Browse sessions, demos, and book 1-on-1 meetings with exhibitors.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="virtual-show.html">Trade Shows</a><span>/</span>
+      <span>Schedule</span>
+    </nav>
+
+    <div class="two-col">
+      <!-- Calendar & Schedule -->
+      <div>
+        <div class="card">
+          <div class="cal-month-header">
+            <button class="cal-nav-btn"><i class="fas fa-chevron-left"></i></button>
+            <div class="cal-month-title">March 2026</div>
+            <button class="cal-nav-btn"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div class="calendar-grid">
+            <div class="cal-header">Sun</div>
+            <div class="cal-header">Mon</div>
+            <div class="cal-header">Tue</div>
+            <div class="cal-header">Wed</div>
+            <div class="cal-header">Thu</div>
+            <div class="cal-header">Fri</div>
+            <div class="cal-header">Sat</div>
+            <div class="cal-day empty"></div>
+            <div class="cal-day">1</div>
+            <div class="cal-day">2</div>
+            <div class="cal-day">3</div>
+            <div class="cal-day">4</div>
+            <div class="cal-day">5</div>
+            <div class="cal-day">6</div>
+            <div class="cal-day">7</div>
+            <div class="cal-day">8</div>
+            <div class="cal-day">9</div>
+            <div class="cal-day">10</div>
+            <div class="cal-day">11</div>
+            <div class="cal-day">12</div>
+            <div class="cal-day">13</div>
+            <div class="cal-day">14</div>
+            <div class="cal-day">15</div>
+            <div class="cal-day">16</div>
+            <div class="cal-day">17</div>
+            <div class="cal-day today">19</div>
+            <div class="cal-day event">20</div>
+            <div class="cal-day event">21</div>
+            <div class="cal-day event">22</div>
+            <div class="cal-day event">23</div>
+            <div class="cal-day">24</div>
+            <div class="cal-day">25</div>
+            <div class="cal-day">26</div>
+            <div class="cal-day">27</div>
+            <div class="cal-day">28</div>
+            <div class="cal-day">29</div>
+            <div class="cal-day">30</div>
+            <div class="cal-day">31</div>
+          </div>
+          <p style="font-size:.78rem;color:#64748b;margin-top:12px;text-align:center"><span style="color:#6d28d9;font-weight:700">■</span> Trade show days</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-list" style="color:#6d28d9"></i> March 20 — Day 1</h3>
+          <div class="schedule-list">
+            <div class="schedule-item">
+              <div class="schedule-time">09:00 AM</div>
+              <div>
+                <div class="schedule-info-title">Opening Ceremony &amp; Welcome Address<span class="badge-pill badge-purple">Keynote</span></div>
+                <div class="schedule-info-meta"><i class="fas fa-microphone"></i> Main Hall · 60 min</div>
+              </div>
+            </div>
+            <div class="schedule-item">
+              <div class="schedule-time">10:30 AM</div>
+              <div>
+                <div class="schedule-info-title">Electronics Hall Opens<span class="badge-pill badge-green">Live</span></div>
+                <div class="schedule-info-meta"><i class="fas fa-store"></i> Hall A · Ongoing</div>
+              </div>
+            </div>
+            <div class="schedule-item">
+              <div class="schedule-time">02:00 PM</div>
+              <div>
+                <div class="schedule-info-title">Smart Home Tech Product Demo<span class="badge-pill badge-blue">Demo</span></div>
+                <div class="schedule-info-meta"><i class="fas fa-video"></i> Shenzhen TechCo · 45 min</div>
+              </div>
+            </div>
+            <div class="schedule-item">
+              <div class="schedule-time">04:00 PM</div>
+              <div>
+                <div class="schedule-info-title">Sustainable Textiles Panel Discussion<span class="badge-pill badge-purple">Panel</span></div>
+                <div class="schedule-info-meta"><i class="fas fa-users"></i> Conference Room B · 90 min</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meeting Booking & Demo Schedule -->
+      <div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-handshake" style="color:#6d28d9"></i> Book a 1-on-1 Meeting</h3>
+          <div class="form-group">
+            <label class="form-label" for="meeting-exhibitor">Exhibitor</label>
+            <select class="form-control" id="meeting-exhibitor">
+              <option value="">Choose exhibitor…</option>
+              <option>Shenzhen TechCo Ltd.</option>
+              <option>Apex Textiles Bangladesh</option>
+              <option>ChemIndustries GmbH</option>
+              <option>Precision Machinery India</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="meeting-date">Date *</label>
+              <input type="date" class="form-control" id="meeting-date" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="meeting-time">Time *</label>
+              <input type="time" class="form-control" id="meeting-time" required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="meeting-duration">Duration</label>
+            <select class="form-control" id="meeting-duration">
+              <option value="15">15 minutes</option>
+              <option value="30" selected>30 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">1 hour</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="meeting-notes">Meeting Notes / Topics</label>
+            <textarea class="form-control" id="meeting-notes" placeholder="What would you like to discuss?"></textarea>
+          </div>
+          <button class="btn btn-purple" onclick="bookMeeting()"><i class="fas fa-calendar-plus"></i> Book Meeting</button>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-desktop" style="color:#6d28d9"></i> Upcoming Demos</h3>
+          <div class="schedule-list">
+            <div class="schedule-item" style="border-left-color:#0052CC">
+              <div class="schedule-time">02:00 PM</div>
+              <div>
+                <div class="schedule-info-title">Smart Home IoT Demo</div>
+                <div class="schedule-info-meta">Shenzhen TechCo · Mar 20 · 45 min</div>
+              </div>
+            </div>
+            <div class="schedule-item" style="border-left-color:#0052CC">
+              <div class="schedule-time">10:00 AM</div>
+              <div>
+                <div class="schedule-info-title">Eco-Fabric Manufacturing Showcase</div>
+                <div class="schedule-info-meta">Apex Textiles · Mar 21 · 30 min</div>
+              </div>
+            </div>
+            <div class="schedule-item" style="border-left-color:#0052CC">
+              <div class="schedule-time">03:00 PM</div>
+              <div>
+                <div class="schedule-info-title">Industrial Chemical Innovations</div>
+                <div class="schedule-info-meta">ChemIndustries GmbH · Mar 22 · 60 min</div>
+              </div>
+            </div>
+          </div>
+          <a href="virtual-show.html" class="btn btn-primary" style="margin-top:16px"><i class="fas fa-play-circle"></i> Watch Live Demo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© 2026 GlobexSky. All rights reserved.</div>
+</footer>
+<script>
+function bookMeeting() {
+  const exhibitor = document.getElementById('meeting-exhibitor').value;
+  const date = document.getElementById('meeting-date').value;
+  const time = document.getElementById('meeting-time').value;
+  if (!exhibitor || !date || !time) { alert('Please fill in all required fields.'); return; }
+  alert('Meeting booked with ' + exhibitor + ' on ' + date + ' at ' + time + '!\nConfirmation sent to your email.');
+}
+</script>
+</body>
+</html>

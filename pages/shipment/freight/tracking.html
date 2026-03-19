@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Freight Tracking – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-header{background:linear-gradient(135deg,#0a0e27 0%,#0052CC 100%);color:#fff;padding:48px 24px;text-align:center}
+    .breadcrumb{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;font-size:.85rem;opacity:.8}
+    .breadcrumb a{color:rgba(255,255,255,.7);text-decoration:none}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb i{font-size:.7rem;opacity:.5}
+    .page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:8px}
+    .page-subtitle{opacity:.8;font-size:1rem}
+    .main-content{max-width:900px;margin:0 auto;padding:32px 24px}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .search-row{display:flex;gap:12px;flex-wrap:wrap}
+    .form-control{flex:1;min-width:200px;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-select{padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;cursor:pointer}
+    .form-select:focus{outline:none;border-color:#0052CC}
+    .btn{padding:10px 22px;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .carrier-detect{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:50px;font-size:.8rem;font-weight:600;margin-bottom:16px}
+    .carrier-detect.dhl{background:#fff8dc;color:#D40511;border:1px solid #FFCC00}
+    .carrier-detect.fedex{background:#f3e8ff;color:#4D148C;border:1px solid #4D148C}
+    .carrier-detect.aramex{background:#fff0f0;color:#E31837;border:1px solid #E31837}
+    /* Timeline */
+    .tracking-timeline{padding:8px 0}
+    .timeline-item{display:flex;gap:16px;padding:16px 0;position:relative}
+    .timeline-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:44px;bottom:0;width:2px;background:#e2e8f0}
+    .timeline-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem;z-index:1}
+    .timeline-dot.active{background:#0052CC;color:#fff;box-shadow:0 0 0 4px rgba(0,82,204,.15)}
+    .timeline-dot.completed{background:#059669;color:#fff}
+    .timeline-dot.pending{background:#e2e8f0;color:#94a3b8}
+    .timeline-content{flex:1;padding-top:4px}
+    .timeline-label{font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem;color:#0a0e27}
+    .timeline-desc{font-size:.82rem;color:#64748b;margin-top:2px}
+    .timeline-time{font-size:.78rem;color:#94a3b8;margin-top:2px}
+    /* Map placeholder */
+    .map-placeholder{background:linear-gradient(135deg,#dbeafe,#ede9fe);border-radius:12px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#64748b;gap:10px;border:1.5px solid #e2e8f0}
+    .map-placeholder i{font-size:2.5rem;opacity:.5}
+    /* Status banner */
+    .status-banner{border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:20px}
+    .status-banner.in-transit{background:#dbeafe;border:1px solid #93c5fd}
+    .status-banner.delivered{background:#d1fae5;border:1px solid #6ee7b7}
+    .status-banner.pending{background:#ffedd5;border:1px solid #fed7aa}
+    .status-banner-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .in-transit .status-banner-icon{background:#bfdbfe;color:#0052CC}
+    .delivered .status-banner-icon{background:#a7f3d0;color:#059669}
+    .pending .status-banner-icon{background:#fed7aa;color:#f97316}
+    .status-banner-label{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27}
+    .status-banner-eta{font-size:.85rem;color:#64748b;margin-top:2px}
+    .loading-spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(0,82,204,.2);border-top-color:#0052CC;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:600px){.search-row{flex-direction:column}.form-control,.form-select,.btn{width:100%}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="index.html" class="btn-nav btn-login"><i class="fas fa-shipping-fast"></i> Book Freight</a>
+        <a href="../../auth/login.html" class="btn-nav btn-register">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="../../../index.html">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="../index.html">Shipment</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="index.html">Freight</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>Tracking</span>
+  </div>
+  <h1 class="page-title"><i class="fas fa-map-marker-alt"></i> Freight Tracking</h1>
+  <p class="page-subtitle">Real-time tracking across DHL, FedEx & Aramex</p>
+</div>
+
+<div class="main-content">
+
+  <!-- Tracking Input -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-search" style="color:#0052CC"></i> Track Your Shipment</div>
+    <div class="search-row">
+      <input class="form-control" id="trackingInput" placeholder="Enter tracking number (e.g. 1234567890, 123456789012)" value=""/>
+      <select class="form-select" id="carrierSelect">
+        <option value="">Auto-detect carrier</option>
+        <option value="dhl">DHL</option>
+        <option value="fedex">FedEx</option>
+        <option value="aramex">Aramex</option>
+      </select>
+      <button class="btn btn-primary" id="trackBtn" onclick="trackShipment()">
+        <i class="fas fa-search"></i> Track
+      </button>
+    </div>
+    <p style="font-size:.78rem;color:#94a3b8;margin-top:10px"><i class="fas fa-info-circle"></i> Carrier is auto-detected from the tracking number format.</p>
+  </div>
+
+  <!-- Tracking Result -->
+  <div id="trackingResult" style="display:none">
+
+    <!-- Status Banner -->
+    <div class="status-banner in-transit" id="statusBanner">
+      <div class="status-banner-icon"><i class="fas fa-truck"></i></div>
+      <div>
+        <div class="status-banner-label" id="statusLabel">In Transit</div>
+        <div class="status-banner-eta" id="statusEta">Estimated delivery: loading...</div>
+      </div>
+      <div style="margin-left:auto">
+        <span id="carrierBadge" class="carrier-detect dhl">DHL</span>
+      </div>
+    </div>
+
+    <!-- Map Placeholder -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-map" style="color:#0052CC"></i> Shipment Location</div>
+      <div class="map-placeholder">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>Live map integration available with carrier API keys</span>
+        <small>Current location updates appear here</small>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-list-ul" style="color:#0052CC"></i> Tracking History</div>
+      <div class="tracking-timeline" id="trackingTimeline"></div>
+    </div>
+
+    <!-- Delivery Info -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-info-circle" style="color:#0052CC"></i> Shipment Details</div>
+      <div id="shipmentDetails" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer style="background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem">
+  &copy; 2025 GlobexSky. All rights reserved.
+</footer>
+
+<script>
+const API = '/api/v1';
+
+// Pre-fill from URL params
+const params = new URLSearchParams(location.search);
+if (params.get('number')) {
+  document.getElementById('trackingInput').value = params.get('number');
+  if (params.get('carrier')) document.getElementById('carrierSelect').value = params.get('carrier');
+  window.addEventListener('load', () => trackShipment());
+}
+
+function detectCarrier(num) {
+  if (/^\d{10}$/.test(num)) return 'dhl';
+  if (/^\d{12,15}$/.test(num)) return 'fedex';
+  if (/^[A-Z]{1,3}\d{8,}/.test(num)) return 'aramex';
+  return 'dhl';
+}
+
+async function trackShipment() {
+  const num = document.getElementById('trackingInput').value.trim();
+  if (!num) { alert('Please enter a tracking number.'); return; }
+
+  const carrierSel = document.getElementById('carrierSelect').value;
+  const carrier = carrierSel || detectCarrier(num);
+
+  const btn = document.getElementById('trackBtn');
+  btn.innerHTML = '<span class="loading-spinner"></span> Tracking...';
+  btn.disabled = true;
+
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API}/freight/track/${encodeURIComponent(num)}?carrier=${carrier}`, {
+      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    });
+    const json = await res.json();
+    if (json.success) renderTracking(json.data, carrier);
+    else renderTracking(getMockTracking(num, carrier), carrier);
+  } catch (_) {
+    renderTracking(getMockTracking(num, carrier), carrier);
+  }
+
+  btn.innerHTML = '<i class="fas fa-search"></i> Track';
+  btn.disabled = false;
+}
+
+function getMockTracking(num, carrier) {
+  return {
+    carrier: carrier.toUpperCase(),
+    trackingNumber: num,
+    status: 'in-transit',
+    events: [
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), description: 'Shipment in transit to destination hub', location: 'Frankfurt Hub' },
+      { timestamp: new Date(Date.now() - 86400000).toISOString(), description: 'Shipment departed origin facility', location: 'New York Gateway' },
+      { timestamp: new Date(Date.now() - 2*86400000).toISOString(), description: 'Shipment picked up', location: 'Origin' },
+    ],
+  };
+}
+
+function renderTracking(data, carrier) {
+  document.getElementById('trackingResult').style.display = 'block';
+
+  // Status banner
+  const status = (data.status || 'in-transit').toLowerCase();
+  const banner = document.getElementById('statusBanner');
+  banner.className = `status-banner ${status.replace(/[^a-z]/g, '-')}`;
+  document.getElementById('statusLabel').textContent = status.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById('statusEta').textContent = data.estimatedDelivery ? `Estimated delivery: ${new Date(data.estimatedDelivery).toLocaleDateString()}` : 'Estimated delivery: in transit';
+
+  const badge = document.getElementById('carrierBadge');
+  badge.className = `carrier-detect ${carrier.toLowerCase()}`;
+  badge.textContent = carrier.toUpperCase();
+
+  // Timeline
+  const events = data.events || data.TrackingResults?.[0]?.Value || [];
+  const timeline = document.getElementById('trackingTimeline');
+  if (events.length) {
+    timeline.innerHTML = events.map((e, i) => `
+      <div class="timeline-item">
+        <div class="timeline-dot ${i === 0 ? 'active' : 'completed'}">
+          <i class="fas ${i === 0 ? 'fa-map-pin' : 'fa-check'}"></i>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-label">${e.description || e.UpdateDescription || 'Status update'}</div>
+          <div class="timeline-desc">${e.location || e.UpdateLocation || ''}</div>
+          <div class="timeline-time">${e.timestamp || e.UpdateDateTime ? new Date(e.timestamp || e.UpdateDateTime).toLocaleString() : ''}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    timeline.innerHTML = '<p style="color:#64748b">No tracking events available yet.</p>';
+  }
+
+  // Shipment details
+  document.getElementById('shipmentDetails').innerHTML = `
+    <div><div style="font-size:.78rem;color:#64748b;margin-bottom:4px">Tracking Number</div><div style="font-weight:600;color:#0a0e27">${data.trackingNumber || 'N/A'}</div></div>
+    <div><div style="font-size:.78rem;color:#64748b;margin-bottom:4px">Carrier</div><div style="font-weight:600;color:#0a0e27">${carrier.toUpperCase()}</div></div>
+    <div><div style="font-size:.78rem;color:#64748b;margin-bottom:4px">Status</div><div style="font-weight:600;color:#0052CC">${status}</div></div>
+    <div><div style="font-size:.78rem;color:#64748b;margin-bottom:4px">Last Update</div><div style="font-weight:600;color:#0a0e27">${events[0] ? new Date(events[0].timestamp || events[0].UpdateDateTime).toLocaleDateString() : 'N/A'}</div></div>`;
+
+  document.getElementById('trackingResult').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

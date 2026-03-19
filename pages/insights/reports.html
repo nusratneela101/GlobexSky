@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Custom Reports – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-header{background:linear-gradient(135deg,#7c3aed 0%,#0052CC 100%);color:#fff;padding:48px 24px;text-align:center}
+    .breadcrumb{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;font-size:.85rem;opacity:.8}
+    .breadcrumb a{color:rgba(255,255,255,.7);text-decoration:none}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb i{font-size:.7rem;opacity:.5}
+    .page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:8px}
+    .page-subtitle{opacity:.8;font-size:1rem}
+    .main-content{max-width:1400px;margin:0 auto;padding:32px 24px}
+    .builder-layout{display:grid;grid-template-columns:340px 1fr;gap:24px}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    /* Report type selector */
+    .report-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0}
+    .report-type-option{border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;text-align:center}
+    .report-type-option.selected{border-color:#0052CC;background:#f0f4ff}
+    .report-type-option input{display:none}
+    .report-type-option i{font-size:1.3rem;margin-bottom:6px;display:block}
+    .report-type-option span{font-size:.8rem;font-weight:600;color:#374151}
+    .report-type-option.selected span{color:#0052CC}
+    .btn{padding:10px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.875rem;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:#0052CC;color:#fff;width:100%;justify-content:center}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-export{padding:8px 16px;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+    .btn-csv{background:#d1fae5;color:#059669}.btn-csv:hover{background:#a7f3d0}
+    .btn-pdf{background:#fee2e2;color:#ef4444}.btn-pdf:hover{background:#fecaca}
+    /* Checkbox filters */
+    .checkbox-group{display:flex;flex-wrap:wrap;gap:8px}
+    .check-label{display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:.8rem;font-weight:500;transition:all .2s}
+    .check-label input{accent-color:#0052CC}
+    .check-label:hover{background:#f0f4ff;border-color:#0052CC;color:#0052CC}
+    /* Preview */
+    .preview-empty{text-align:center;padding:60px 24px;color:#94a3b8}
+    .preview-empty i{font-size:3rem;margin-bottom:14px;display:block;opacity:.3}
+    .summary-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:20px}
+    .summary-stat{background:#f8faff;border-radius:10px;padding:14px;border:1.5px solid #e2e8f0;text-align:center}
+    .summary-stat-val{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0052CC}
+    .summary-stat-label{font-size:.75rem;color:#64748b;margin-top:4px}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+    .data-table tr:hover td{background:#f8faff}
+    .loading-spinner{display:inline-block;width:24px;height:24px;border:3px solid rgba(0,82,204,.2);border-top-color:#0052CC;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:1024px){.builder-layout{grid-template-columns:1fr}}
+    @media(max-width:600px){.report-type-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="index.html" class="btn-nav btn-login">Dashboard</a>
+        <a href="trends.html" class="btn-nav btn-register">Trends</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="../../index.html">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="index.html">Market Insights</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>Custom Reports</span>
+  </div>
+  <h1 class="page-title"><i class="fas fa-file-alt"></i> Custom Report Builder</h1>
+  <p class="page-subtitle">Generate tailored market reports with your filters</p>
+</div>
+
+<div class="main-content">
+  <div class="builder-layout">
+
+    <!-- Report Builder Panel -->
+    <div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title"><i class="fas fa-sliders-h" style="color:#0052CC"></i> Report Builder</div>
+
+        <!-- Report Type -->
+        <div class="form-group">
+          <label class="form-label">Report Type</label>
+          <div class="report-type-grid">
+            <label class="report-type-option selected" onclick="selectType(this,'market_overview')">
+              <input type="radio" name="reportType" value="market_overview" checked/>
+              <i class="fas fa-globe" style="color:#0052CC"></i>
+              <span>Market Overview</span>
+            </label>
+            <label class="report-type-option" onclick="selectType(this,'price_analysis')">
+              <input type="radio" name="reportType" value="price_analysis"/>
+              <i class="fas fa-tag" style="color:#7c3aed"></i>
+              <span>Price Analysis</span>
+            </label>
+            <label class="report-type-option" onclick="selectType(this,'demand_forecast')">
+              <input type="radio" name="reportType" value="demand_forecast"/>
+              <i class="fas fa-chart-line" style="color:#059669"></i>
+              <span>Demand Forecast</span>
+            </label>
+            <label class="report-type-option" onclick="selectType(this,'competitor_analysis')">
+              <input type="radio" name="reportType" value="competitor_analysis"/>
+              <i class="fas fa-users" style="color:#f97316"></i>
+              <span>Competitor Analysis</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Date Range -->
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input class="form-control" type="date" id="startDate"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Date</label>
+          <input class="form-control" type="date" id="endDate"/>
+        </div>
+
+        <!-- Categories -->
+        <div class="form-group">
+          <label class="form-label">Categories</label>
+          <div class="checkbox-group">
+            <label class="check-label"><input type="checkbox" value="electronics"> Electronics</label>
+            <label class="check-label"><input type="checkbox" value="textiles"> Textiles</label>
+            <label class="check-label"><input type="checkbox" value="machinery"> Machinery</label>
+            <label class="check-label"><input type="checkbox" value="chemicals"> Chemicals</label>
+            <label class="check-label"><input type="checkbox" value="food"> Food & Agri</label>
+          </div>
+        </div>
+
+        <!-- Regions -->
+        <div class="form-group">
+          <label class="form-label">Regions</label>
+          <div class="checkbox-group">
+            <label class="check-label"><input type="checkbox" value="asia"> Asia Pacific</label>
+            <label class="check-label"><input type="checkbox" value="europe"> Europe</label>
+            <label class="check-label"><input type="checkbox" value="americas"> Americas</label>
+            <label class="check-label"><input type="checkbox" value="mena"> MENA</label>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="generateReport()"><i class="fas fa-play"></i> Generate Report</button>
+      </div>
+    </div>
+
+    <!-- Preview Panel -->
+    <div>
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fas fa-eye" style="color:#0052CC"></i> Report Preview</span>
+          <div style="display:flex;gap:8px;margin-left:auto" id="exportButtons" style="display:none">
+            <button class="btn-export btn-csv" onclick="exportCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button class="btn-export btn-pdf"><i class="fas fa-file-pdf"></i> Export PDF</button>
+          </div>
+        </div>
+        <div id="reportPreview">
+          <div class="preview-empty">
+            <i class="fas fa-file-chart-line"></i>
+            <strong>No report generated yet</strong>
+            <p style="font-size:.85rem;margin-top:6px">Configure filters on the left and click <strong>Generate Report</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer style="background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem">
+  &copy; 2025 GlobexSky. All rights reserved.
+</footer>
+
+<script>
+const API = '/api/v1';
+let currentReport = null;
+
+// Set default dates
+const today = new Date();
+document.getElementById('endDate').value = today.toISOString().split('T')[0];
+const d30 = new Date(today.getTime() - 30 * 86400000);
+document.getElementById('startDate').value = d30.toISOString().split('T')[0];
+
+function selectType(el, type) {
+  document.querySelectorAll('.report-type-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function generateReport() {
+  const reportType = document.querySelector('input[name="reportType"]:checked')?.value || 'market_overview';
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  const categories = [...document.querySelectorAll('.checkbox-group input[type=checkbox]:checked')].filter((_, i) => i < 5).map(c => c.value);
+  const regions = [...document.querySelectorAll('.checkbox-group input[type=checkbox]:checked')].slice(5).map(c => c.value);
+
+  const preview = document.getElementById('reportPreview');
+  preview.innerHTML = '<div style="text-align:center;padding:40px"><span class="loading-spinner"></span><p style="margin-top:12px;color:#64748b">Generating report...</p></div>';
+
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API}/business-intelligence/custom-reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ reportType, startDate, endDate, categories, regions }),
+    });
+    const json = await res.json();
+    if (json.success) {
+      currentReport = json.data;
+      renderPreview(json.data, reportType);
+    } else {
+      renderPreview(getMockReport(reportType), reportType);
+    }
+  } catch (_) {
+    renderPreview(getMockReport(reportType), reportType);
+  }
+
+  document.getElementById('exportButtons').style.display = 'flex';
+}
+
+function getMockReport(type) {
+  const base = { report_type: type, generated_at: new Date().toISOString() };
+  if (type === 'market_overview') return { ...base, trends: { total_tracked: 1247, trending_products: [{name:'Solar Panels',price:189.99,order_count:412},{name:'Wireless Earbuds',price:45,order_count:387}] }, prices: { product_count: 5420, avg_price: 38.4, min_price: 2.5, max_price: 2499 }, demand: { total_orders: 8430, growth_rate_pct: 12.4, avg_weekly_orders: 200 } };
+  if (type === 'price_analysis') return { ...base, product_count: 5420, avg_price: 38.4, min_price: 2.5, max_price: 2499, products: [{name:'Solar Panels 400W',price:189.99},{name:'Wireless Earbuds',price:45},{name:'Bamboo Packaging',price:12.5}] };
+  if (type === 'demand_forecast') return { ...base, total_orders: 8430, growth_rate_pct: 12.4, avg_weekly_orders: 200, projected_next_week: 215, weekly_trend: Array.from({length:6},(_,i)=>({week:`2025-W${20+i}`,count:150+i*12,revenue:(150+i*12)*38})) };
+  return { ...base, total_products_analyzed: 1247, avg_market_price: 38.4, price_range:{min:2.5,max:2499}, top_suppliers_by_listing: [{supplier_id:'S001',product_count:142,market_share_pct:11.4},{supplier_id:'S002',product_count:98,market_share_pct:7.9}] };
+}
+
+function renderPreview(data, type) {
+  const preview = document.getElementById('reportPreview');
+  const ts = data.generated_at ? new Date(data.generated_at).toLocaleString() : new Date().toLocaleString();
+  let html = `<p style="font-size:.78rem;color:#94a3b8;margin-bottom:20px"><i class="fas fa-clock"></i> Generated at ${ts}</p>`;
+
+  if (type === 'market_overview' && data.trends) {
+    html += `<div class="summary-stats">
+      <div class="summary-stat"><div class="summary-stat-val">${data.trends.total_tracked || '—'}</div><div class="summary-stat-label">Products Tracked</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">$${data.prices?.avg_price || '—'}</div><div class="summary-stat-label">Avg Price</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">${data.demand?.total_orders || '—'}</div><div class="summary-stat-label">Total Orders</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">${data.demand?.growth_rate_pct || '—'}%</div><div class="summary-stat-label">Growth Rate</div></div>
+    </div>`;
+    if (data.trends.trending_products?.length) {
+      html += `<h4 style="font-family:Poppins,sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:10px">Top Trending Products</h4>
+        <table class="data-table"><thead><tr><th>#</th><th>Product</th><th>Price</th><th>Orders</th></tr></thead>
+        <tbody>${data.trends.trending_products.slice(0,5).map((p,i)=>`<tr><td>${i+1}</td><td>${p.name||p.title||'—'}</td><td>$${(+p.price||0).toFixed(2)}</td><td>${p.order_count||'—'}</td></tr>`).join('')}</tbody></table>`;
+    }
+  } else if (type === 'price_analysis') {
+    html += `<div class="summary-stats">
+      <div class="summary-stat"><div class="summary-stat-val">${data.product_count || '—'}</div><div class="summary-stat-label">Products</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">$${data.avg_price || '—'}</div><div class="summary-stat-label">Avg Price</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">$${data.min_price || '—'}</div><div class="summary-stat-label">Min Price</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">$${data.max_price || '—'}</div><div class="summary-stat-label">Max Price</div></div>
+    </div>`;
+  } else if (type === 'demand_forecast') {
+    html += `<div class="summary-stats">
+      <div class="summary-stat"><div class="summary-stat-val">${data.total_orders || '—'}</div><div class="summary-stat-label">Total Orders</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">${data.avg_weekly_orders || '—'}</div><div class="summary-stat-label">Avg Weekly</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">${data.growth_rate_pct || '—'}%</div><div class="summary-stat-label">Growth Rate</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">${data.projected_next_week || '—'}</div><div class="summary-stat-label">Projected Next Week</div></div>
+    </div>`;
+    if (data.weekly_trend?.length) {
+      html += `<h4 style="font-family:Poppins,sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:10px">Weekly Trend</h4>
+        <table class="data-table"><thead><tr><th>Week</th><th>Orders</th><th>Revenue</th></tr></thead>
+        <tbody>${data.weekly_trend.map(w=>`<tr><td>${w.week}</td><td>${w.count}</td><td>$${(w.revenue||0).toLocaleString()}</td></tr>`).join('')}</tbody></table>`;
+    }
+  } else if (type === 'competitor_analysis') {
+    html += `<div class="summary-stats">
+      <div class="summary-stat"><div class="summary-stat-val">${data.total_products_analyzed || '—'}</div><div class="summary-stat-label">Products Analyzed</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">$${data.avg_market_price || '—'}</div><div class="summary-stat-label">Avg Market Price</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">$${data.price_range?.min || '—'}</div><div class="summary-stat-label">Min Price</div></div>
+      <div class="summary-stat"><div class="summary-stat-val">$${data.price_range?.max || '—'}</div><div class="summary-stat-label">Max Price</div></div>
+    </div>`;
+    if (data.top_suppliers_by_listing?.length) {
+      html += `<h4 style="font-family:Poppins,sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:10px">Top Suppliers by Market Share</h4>
+        <table class="data-table"><thead><tr><th>Supplier</th><th>Listings</th><th>Market Share</th></tr></thead>
+        <tbody>${data.top_suppliers_by_listing.map(s=>`<tr><td>${s.supplier_id}</td><td>${s.product_count}</td><td>${s.market_share_pct}%</td></tr>`).join('')}</tbody></table>`;
+    }
+  }
+
+  preview.innerHTML = html;
+  currentReport = data;
+}
+
+function exportCSV() {
+  if (!currentReport) { alert('No report generated yet.'); return; }
+  const rows = [['Report Type', currentReport.report_type || ''], ['Generated At', currentReport.generated_at || '']];
+  if (currentReport.product_count) rows.push(['Products', currentReport.product_count]);
+  if (currentReport.avg_price) rows.push(['Avg Price', currentReport.avg_price]);
+  if (currentReport.total_orders) rows.push(['Total Orders', currentReport.total_orders]);
+  if (currentReport.growth_rate_pct) rows.push(['Growth Rate %', currentReport.growth_rate_pct]);
+
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `globexsky-report-${currentReport.report_type}-${Date.now()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

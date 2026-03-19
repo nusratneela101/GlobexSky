@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Letter of Credit – GlobexSky Trade Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#0078d4 100%);padding:48px 24px;text-align:center}
+    .page-hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+    .page-hero-sub{color:rgba(255,255,255,.8);font-size:.95rem}
+    .section{padding:48px 24px}
+    .container{max-width:1100px;margin:0 auto}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{min-height:100px;resize:vertical}
+    .btn{padding:11px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-sm{padding:6px 14px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .status-steps{display:flex;align-items:center;gap:0;margin-bottom:24px;flex-wrap:wrap}
+    .step{display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px}
+    .step-circle{width:36px;height:36px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;background:#fff;color:#94a3b8}
+    .step.active .step-circle{border-color:#0052CC;background:#0052CC;color:#fff}
+    .step.done .step-circle{border-color:#059669;background:#059669;color:#fff}
+    .step-label{font-size:.72rem;color:#64748b;margin-top:4px;text-align:center}
+    .step-line{flex:1;height:2px;background:#e2e8f0;min-width:20px}
+    .step.done .step-line{background:#059669}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .upload-zone{border:2px dashed #cbd5e1;border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:#fafbff;transition:all .2s}
+    .upload-zone:hover{border-color:#0052CC}
+    .upload-zone i{font-size:1.8rem;color:#0052CC;margin-bottom:8px;display:block}
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1 class="page-hero-title"><i class="fas fa-file-contract"></i> Letter of Credit</h1>
+  <p class="page-hero-sub">Bank-backed payment guarantee for secure international trade.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="index.html">Trade Finance</a><span>/</span>
+      <span>Letter of Credit</span>
+    </nav>
+
+    <div class="two-col">
+      <!-- Create LC Form -->
+      <div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-plus-circle" style="color:#0052CC"></i> Create New L/C</h3>
+          <div class="form-group">
+            <label class="form-label" for="beneficiary">Beneficiary (Supplier) ID</label>
+            <input type="text" class="form-control" id="beneficiary" placeholder="UUID of the beneficiary"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lc-amount">Amount *</label>
+            <input type="number" class="form-control" id="lc-amount" placeholder="e.g. 50000" min="0.01" step="0.01" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lc-currency">Currency</label>
+            <select class="form-control" id="lc-currency">
+              <option value="USD">USD – US Dollar</option>
+              <option value="EUR">EUR – Euro</option>
+              <option value="GBP">GBP – British Pound</option>
+              <option value="CNY">CNY – Chinese Yuan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lc-expiry">Expiry Date *</label>
+            <input type="date" class="form-control" id="lc-expiry" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lc-goods">Goods Description</label>
+            <textarea class="form-control" id="lc-goods" placeholder="Describe the goods or services covered by this L/C…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lc-terms">Special Terms &amp; Conditions</label>
+            <textarea class="form-control" id="lc-terms" placeholder="Any specific conditions for payment release…"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="createLC()"><i class="fas fa-paper-plane"></i> Submit Application</button>
+        </div>
+
+        <!-- Document Upload -->
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-paperclip" style="color:#0052CC"></i> Supporting Documents</h3>
+          <div class="upload-zone" onclick="document.getElementById('lc-docs').click()">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p style="font-weight:600;color:#374151;margin-bottom:4px">Upload Documents</p>
+            <p style="font-size:.8rem;color:#64748b">Invoice, Packing List, Bill of Lading, Insurance Certificate</p>
+            <input type="file" id="lc-docs" multiple accept=".pdf,.jpg,.png,.doc,.docx" style="display:none"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- LC Status Tracking -->
+      <div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-tasks" style="color:#0052CC"></i> LC Status Tracker</h3>
+          <div class="status-steps">
+            <div class="step done">
+              <div class="step-circle"><i class="fas fa-check"></i></div>
+              <div class="step-label">Draft</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step active">
+              <div class="step-circle">2</div>
+              <div class="step-label">Issued</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+              <div class="step-circle">3</div>
+              <div class="step-label">Accepted</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+              <div class="step-circle">4</div>
+              <div class="step-label">Fulfilled</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+              <div class="step-circle">5</div>
+              <div class="step-label">Closed</div>
+            </div>
+          </div>
+          <p style="font-size:.85rem;color:#64748b">Current LC <strong>#LC-2024-0042</strong> is <span class="badge-pill badge-orange">issued</span> — awaiting beneficiary acceptance.</p>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <h3 class="card-title" style="margin:0"><i class="fas fa-list" style="color:#0052CC"></i> My Letters of Credit</h3>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>LC #</th>
+                  <th>Amount</th>
+                  <th>Expiry</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#LC-0042</td>
+                  <td>$85,000</td>
+                  <td>Jun 30, 2026</td>
+                  <td><span class="badge-pill badge-orange">issued</span></td>
+                </tr>
+                <tr>
+                  <td>#LC-0038</td>
+                  <td>$42,000</td>
+                  <td>May 15, 2026</td>
+                  <td><span class="badge-pill badge-blue">accepted</span></td>
+                </tr>
+                <tr>
+                  <td>#LC-0031</td>
+                  <td>$120,000</td>
+                  <td>Apr 1, 2026</td>
+                  <td><span class="badge-pill badge-green">fulfilled</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© 2026 GlobexSky. All rights reserved.</div>
+</footer>
+<script>
+function createLC() {
+  const amount = document.getElementById('lc-amount').value;
+  const expiry = document.getElementById('lc-expiry').value;
+  if (!amount || !expiry) { alert('Please fill in all required fields.'); return; }
+  alert('L/C application submitted successfully! Reference: #LC-' + Date.now().toString().slice(-6));
+}
+</script>
+</body>
+</html>

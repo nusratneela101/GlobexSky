@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Escrow Payments – GlobexSky Trade Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#059669 0%,#0052CC 100%);padding:48px 24px;text-align:center}
+    .page-hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+    .page-hero-sub{color:rgba(255,255,255,.8);font-size:.95rem}
+    .section{padding:48px 24px}
+    .container{max-width:1100px;margin:0 auto}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{min-height:100px;resize:vertical}
+    .btn{padding:11px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-sm{padding:5px 12px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .escrow-item{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:14px;transition:box-shadow .2s}
+    .escrow-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+    .escrow-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+    .escrow-id{font-weight:700;color:#0a0e27;font-size:.95rem}
+    .escrow-amount{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:#059669}
+    .escrow-meta{font-size:.82rem;color:#64748b;margin-bottom:12px}
+    .escrow-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .info-box{background:#f0f5ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px;margin-bottom:20px;font-size:.85rem;color:#374151}
+    .info-box i{color:#0052CC;margin-right:6px}
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1 class="page-hero-title"><i class="fas fa-shield-alt"></i> Escrow Payments</h1>
+  <p class="page-hero-sub">Funds held securely until both parties fulfil their obligations.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="index.html">Trade Finance</a><span>/</span>
+      <span>Escrow Payments</span>
+    </nav>
+
+    <div class="two-col">
+      <!-- Create Escrow Form -->
+      <div>
+        <div class="info-box">
+          <i class="fas fa-info-circle"></i>
+          Funds are held by GlobexSky and released only when you confirm receipt and quality of goods. Both parties are protected.
+        </div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-plus-circle" style="color:#059669"></i> Create Escrow</h3>
+          <div class="form-group">
+            <label class="form-label" for="seller-id">Seller ID</label>
+            <input type="text" class="form-control" id="seller-id" placeholder="Seller's UUID"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="order-ref">Order Reference</label>
+            <input type="text" class="form-control" id="order-ref" placeholder="Order UUID (optional)"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escrow-amount">Amount *</label>
+            <input type="number" class="form-control" id="escrow-amount" placeholder="e.g. 25000" min="0.01" step="0.01" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escrow-currency">Currency</label>
+            <select class="form-control" id="escrow-currency">
+              <option value="USD">USD – US Dollar</option>
+              <option value="EUR">EUR – Euro</option>
+              <option value="GBP">GBP – British Pound</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escrow-conditions">Release Conditions</label>
+            <textarea class="form-control" id="escrow-conditions" placeholder="Describe conditions required for fund release (e.g. goods inspected and accepted)…"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="createEscrow()"><i class="fas fa-lock"></i> Lock Funds in Escrow</button>
+        </div>
+      </div>
+
+      <!-- Active Escrows -->
+      <div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-list" style="color:#059669"></i> Active Escrows</h3>
+
+          <div class="escrow-item">
+            <div class="escrow-header">
+              <div>
+                <div class="escrow-id">#ESC-2024-0019</div>
+                <div class="escrow-meta">Seller: TechParts GmbH · Order #ORD-8821</div>
+              </div>
+              <span class="badge-pill badge-orange">held</span>
+            </div>
+            <div class="escrow-amount">$22,500</div>
+            <div class="escrow-meta" style="margin-top:4px">Created: Mar 12, 2026 · Currency: USD</div>
+            <div class="escrow-actions">
+              <button class="btn-sm btn-success" onclick="releaseEscrow('ESC-0019')"><i class="fas fa-unlock"></i> Release</button>
+              <button class="btn-sm btn-danger" onclick="refundEscrow('ESC-0019')"><i class="fas fa-undo"></i> Refund</button>
+            </div>
+          </div>
+
+          <div class="escrow-item">
+            <div class="escrow-header">
+              <div>
+                <div class="escrow-id">#ESC-2024-0017</div>
+                <div class="escrow-meta">Seller: Apex Textiles Ltd · Order #ORD-8744</div>
+              </div>
+              <span class="badge-pill badge-orange">held</span>
+            </div>
+            <div class="escrow-amount">$9,800</div>
+            <div class="escrow-meta" style="margin-top:4px">Created: Mar 8, 2026 · Currency: USD</div>
+            <div class="escrow-actions">
+              <button class="btn-sm btn-success" onclick="releaseEscrow('ESC-0017')"><i class="fas fa-unlock"></i> Release</button>
+              <button class="btn-sm btn-danger" onclick="refundEscrow('ESC-0017')"><i class="fas fa-undo"></i> Refund</button>
+            </div>
+          </div>
+
+          <div class="escrow-item">
+            <div class="escrow-header">
+              <div>
+                <div class="escrow-id">#ESC-2024-0014</div>
+                <div class="escrow-meta">Seller: Beijing Electronics Co.</div>
+              </div>
+              <span class="badge-pill badge-green">released</span>
+            </div>
+            <div class="escrow-amount">$15,200</div>
+            <div class="escrow-meta" style="margin-top:4px">Released: Mar 1, 2026 · Currency: USD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© 2026 GlobexSky. All rights reserved.</div>
+</footer>
+<script>
+function createEscrow() {
+  const amount = document.getElementById('escrow-amount').value;
+  if (!amount) { alert('Please enter an amount.'); return; }
+  alert('Escrow created! Reference: #ESC-' + Date.now().toString().slice(-6) + '. Funds are now held securely.');
+}
+function releaseEscrow(id) {
+  if (confirm('Release escrow funds to the seller?')) alert('Escrow #' + id + ' funds released successfully.');
+}
+function refundEscrow(id) {
+  if (confirm('Refund escrow funds back to you?')) alert('Escrow #' + id + ' funds refunded successfully.');
+}
+</script>
+</body>
+</html>
