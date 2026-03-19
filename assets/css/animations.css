@@ -12,6 +12,14 @@
  * page content underneath. The .door-open class triggers the transition.
  */
 
+/* Full-screen overlay container */
+.door-entry {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+}
+
 .door-wrapper {
   position: fixed;
   inset: 0;
@@ -36,7 +44,7 @@
   background: linear-gradient(160deg, #0A0E27 0%, #0052CC 60%, #003D99 100%);
   transform-origin: left center;
   transform: rotateY(0deg);
-  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 2.8s cubic-bezier(0.25, 0.1, 0.25, 1);
   transform-style: preserve-3d;
   will-change: transform;
   backface-visibility: hidden;
@@ -56,7 +64,7 @@
   background: linear-gradient(200deg, #003D99 0%, #0052CC 40%, #00C9A7 100%);
   transform-origin: right center;
   transform: rotateY(0deg);
-  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 2.8s cubic-bezier(0.25, 0.1, 0.25, 1);
   transform-style: preserve-3d;
   will-change: transform;
   backface-visibility: hidden;
@@ -89,6 +97,121 @@
   pointer-events: none;
 }
 
+/* Animated shimmer sweep across each door panel */
+.door-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 70%
+  );
+  animation: doorShimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.door-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    75deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 70%
+  );
+  animation: doorShimmerRight 3s ease-in-out 0.4s infinite;
+  pointer-events: none;
+}
+
+/* Floating geometric decoration circles inside each panel */
+.door-left .door-content::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  top: 10%;
+  right: -60px;
+  animation: floatOrb 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.door-left .door-content::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 201, 167, 0.15);
+  bottom: 15%;
+  left: -30px;
+  animation: floatOrb 7s ease-in-out 1s infinite;
+  pointer-events: none;
+}
+
+/* Door content area */
+.door-content {
+  position: relative;
+  padding: 2.5rem;
+  text-align: center;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  margin: 2rem;
+  animation: doorContentFadeIn 0.8s ease 0.3s both;
+}
+
+.door-left .door-content {
+  margin-right: 3rem;
+}
+
+.door-right .door-content {
+  margin-left: 3rem;
+}
+
+.door-content i {
+  font-size: 3rem;
+  color: #ffffff;
+  filter: drop-shadow(0 0 16px rgba(0, 201, 167, 0.7));
+  animation: iconGlow 2.5s ease-in-out infinite;
+}
+
+.door-content h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.02em;
+  margin: 0;
+  animation: doorContentFadeIn 0.8s ease 0.5s both;
+}
+
+.door-content p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  animation: doorContentFadeIn 0.8s ease 0.7s both;
+}
+
 /* Center logo / brand mark on the door */
 .door-brand {
   position: absolute;
@@ -99,6 +222,7 @@
   text-align: center;
   pointer-events: none;
   transition: opacity 0.4s ease 0.8s;
+  animation: doorBrandScaleIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
 }
 
 .door-brand-logo {
@@ -112,6 +236,14 @@
   justify-content: center;
   margin: 0 auto var(--space-4, 1rem);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 24px rgba(0, 201, 167, 0.35), 0 0 60px rgba(0, 82, 204, 0.2);
+  animation: brandLogoPulse 3s ease-in-out infinite;
+}
+
+.door-brand-logo i {
+  font-size: 2rem;
+  color: #ffffff;
 }
 
 .door-brand-text {
@@ -141,7 +273,8 @@
 }
 
 .door-wrapper.door-open .door-brand {
-  opacity: 0;
+  opacity: 0 !important;
+  animation: none;
 }
 
 /* Seam / center line */
@@ -149,41 +282,79 @@
   position: absolute;
   top: 0;
   left: 50%;
-  width: 1px;
+  width: 2px;
   height: 100%;
-  background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.35) 30%, rgba(255,255,255,0.35) 70%, transparent 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.6) 30%, rgba(0,201,167,0.8) 50%, rgba(255,255,255,0.6) 70%, transparent 100%);
   z-index: 11;
   transform: translateX(-50%);
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
   pointer-events: none;
+  animation: seamPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(0, 201, 167, 0.6), 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 .door-wrapper.door-open .door-seam {
   opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 /* Progress bar at the bottom of the door */
 .door-progress {
   position: absolute;
-  bottom: var(--space-8, 2rem);
+  bottom: var(--space-16, 4rem);
   left: 50%;
   transform: translateX(-50%);
-  width: 180px;
+  width: 240px;
   z-index: 12;
+  text-align: center;
 }
 
 .door-progress-bar {
-  height: 3px;
-  background: rgba(255,255,255,0.20);
-  border-radius: 2px;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
   overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 201, 167, 0.2);
 }
 
 .door-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ffffff, #00C9A7);
-  border-radius: 2px;
-  animation: door-load 2s ease-in-out forwards;
+  background: linear-gradient(90deg, #0052CC, #00C9A7, #ffffff);
+  border-radius: 4px;
+  animation: door-load 3.2s ease-in-out forwards;
+  box-shadow: 0 0 8px rgba(0, 201, 167, 0.7);
+}
+
+/* Skip animation button */
+.btn-skip {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  animation: doorContentFadeIn 0.6s ease 1.2s both;
+}
+
+.btn-skip:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateX(-50%) translateY(-2px);
 }
 
 /* Skip animation button — centered at bottom of door overlay */
@@ -809,6 +980,72 @@
   60%  { width: 75%; }
   80%  { width: 88%; }
   100% { width: 100%; }
+}
+
+/* --- Door shimmer sweep (left panel) --- */
+@keyframes doorShimmer {
+  0%   { left: -100%; }
+  60%  { left: 160%; }
+  100% { left: 160%; }
+}
+
+/* --- Door shimmer sweep (right panel) --- */
+@keyframes doorShimmerRight {
+  0%   { right: -100%; }
+  60%  { right: 160%; }
+  100% { right: 160%; }
+}
+
+/* --- Door content fade in --- */
+@keyframes doorContentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Door brand scale in --- */
+@keyframes doorBrandScaleIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* --- Brand logo pulsing glow --- */
+@keyframes brandLogoPulse {
+  0%, 100% {
+    box-shadow: 0 0 24px rgba(0, 201, 167, 0.35), 0 0 60px rgba(0, 82, 204, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 36px rgba(0, 201, 167, 0.60), 0 0 80px rgba(0, 82, 204, 0.35);
+  }
+}
+
+/* --- Seam pulse glow --- */
+@keyframes seamPulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
+}
+
+/* --- Icon glow pulse --- */
+@keyframes iconGlow {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 201, 167, 0.6)); }
+  50%       { filter: drop-shadow(0 0 22px rgba(0, 201, 167, 0.9)); }
+}
+
+/* --- Floating orb decoration --- */
+@keyframes floatOrb {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-18px) scale(1.05); }
 }
 
 /* --- Counter Flip --- */
