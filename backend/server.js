@@ -42,6 +42,10 @@ import warehouseRoutes from './routes/warehouse.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import pushNotificationRoutes from './routes/pushNotification.routes.js';
+import advancedSearchRoutes from './routes/advancedSearch.routes.js';
+import backupRoutes from './routes/backup.routes.js';
+import seoRoutes from './routes/seo.routes.js';
+import featureToggleRoutes from './routes/featureToggle.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -92,6 +96,10 @@ app.use(`${API}/warehouses`, warehouseRoutes);
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
 app.use(`${API}/push`, pushNotificationRoutes);
+app.use(`${API}/search`, advancedSearchRoutes);
+app.use(`${API}/backup`, backupRoutes);
+app.use(`${API}/seo`, seoRoutes);
+app.use(`${API}/feature-toggles`, featureToggleRoutes);
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);

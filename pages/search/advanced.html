@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Advanced Search | GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .search-hero{background:linear-gradient(135deg,#0A0E27 0%,#0052CC 100%);padding:60px 24px 40px;text-align:center;color:#fff}
+    .search-hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+    .search-hero p{color:rgba(255,255,255,.75);font-size:.95rem;margin-bottom:28px}
+    .search-bar-wrap{display:flex;align-items:center;background:#fff;border-radius:14px;padding:6px 6px 6px 16px;max-width:720px;margin:0 auto;gap:8px;box-shadow:0 4px 24px rgba(0,0,0,.15)}
+    .search-bar-wrap input{flex:1;border:none;outline:none;font-size:1rem;color:#1a1a2e;font-family:'Inter',sans-serif;background:transparent}
+    .search-bar-wrap input::placeholder{color:#94a3b8}
+    .search-icon-btn{width:40px;height:40px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:background .2s;flex-shrink:0}
+    .btn-mic{background:#f1f5f9;color:#374151}.btn-mic:hover,.btn-mic.active{background:#fee2e2;color:#ef4444}
+    .btn-img{background:#f1f5f9;color:#374151}.btn-img:hover{background:#dbeafe;color:#0052CC}
+    .btn-barcode{background:#f1f5f9;color:#374151}.btn-barcode:hover{background:#d1fae5;color:#059669}
+    .btn-search-go{background:#0052CC;color:#fff;width:auto;padding:0 20px;border-radius:10px;font-weight:600;font-size:.9rem;gap:6px}.btn-search-go:hover{background:#003d99}
+    .suggestions-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:200;overflow:hidden;display:none}
+    .suggestions-dropdown.open{display:block}
+    .suggestion-item{padding:10px 16px;cursor:pointer;font-size:.875rem;color:#374151;display:flex;align-items:center;gap:10px;transition:background .15s}
+    .suggestion-item:hover{background:#f8faff}
+    .suggestion-item i{color:#94a3b8;font-size:.8rem}
+    .search-bar-container{position:relative;max-width:720px;margin:0 auto}
+    .search-tabs{display:flex;gap:8px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+    .search-tab{padding:7px 18px;border-radius:50px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.75);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+    .search-tab.active,.search-tab:hover{background:rgba(255,255,255,.15);border-color:#fff;color:#fff}
+    .search-layout{display:grid;grid-template-columns:260px 1fr;gap:20px;max-width:1280px;margin:28px auto;padding:0 24px}
+    @media(max-width:900px){.search-layout{grid-template-columns:1fr}}
+    .filter-panel{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);height:fit-content;position:sticky;top:20px}
+    .filter-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+    .filter-section{margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:20px}
+    .filter-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .filter-section-title{font-size:.8rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+    .filter-option{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;font-size:.875rem;color:#374151}
+    .filter-option input[type=checkbox]{width:16px;height:16px;accent-color:#0052CC;cursor:pointer}
+    .price-range{display:flex;gap:8px;align-items:center}
+    .price-input{flex:1;border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:.82rem;color:#1a1a2e;font-family:'Inter',sans-serif;outline:none}
+    .price-input:focus{border-color:#0052CC}
+    .star-filter{display:flex;flex-direction:column;gap:6px}
+    .star-option{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.82rem;color:#374151}
+    .stars{color:#f59e0b;font-size:.8rem}
+    .btn-apply-filter{width:100%;background:#0052CC;color:#fff;border:none;border-radius:8px;padding:10px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;margin-top:4px;transition:background .2s}
+    .btn-apply-filter:hover{background:#003d99}
+    .btn-clear-filter{width:100%;background:#f1f5f9;color:#64748b;border:none;border-radius:8px;padding:9px;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px}
+    .results-panel{min-height:400px}
+    .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .results-count{font-size:.9rem;color:#64748b}
+    .results-count strong{color:#0a0e27}
+    .sort-select{border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 12px;font-size:.82rem;color:#374151;outline:none;cursor:pointer;font-family:'Inter',sans-serif}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+    .product-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:all .2s;cursor:pointer}
+    .product-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,82,204,.12)}
+    .product-img{width:100%;height:160px;object-fit:cover;background:#f1f5f9;display:flex;align-items:center;justify-content:center;color:#cbd5e1;font-size:2rem}
+    .product-body{padding:12px}
+    .product-name{font-weight:600;font-size:.88rem;color:#0a0e27;margin-bottom:4px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .product-price{font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:.95rem}
+    .product-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+    .relevance-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:50px;font-size:.68rem;font-weight:700}
+    .badge-high{background:#d1fae5;color:#059669}
+    .badge-medium{background:#fef3c7;color:#d97706}
+    .badge-low{background:#f1f5f9;color:#64748b}
+    .recent-searches{margin-top:16px}
+    .recent-searches-title{font-size:.8rem;font-weight:600;color:#64748b;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .recent-chip{display:inline-flex;align-items:center;gap:6px;background:#f1f5f9;padding:4px 12px;border-radius:50px;font-size:.78rem;color:#374151;cursor:pointer;transition:background .2s;margin:3px}
+    .recent-chip:hover{background:#dbeafe;color:#0052CC}
+    .spell-suggest{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:10px 16px;font-size:.875rem;color:#92400e;margin-bottom:16px;display:none}
+    .spell-suggest a{color:#0052CC;text-decoration:none;font-weight:600}
+    .special-search-panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+    @media(max-width:600px){.special-search-panels{grid-template-columns:1fr}}
+    .special-panel{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center;cursor:pointer;border:2px solid transparent;transition:all .2s}
+    .special-panel:hover{border-color:#0052CC}
+    .special-panel-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 12px}
+    .special-panel-icon.blue{background:#dbeafe;color:#0052CC}
+    .special-panel-icon.green{background:#d1fae5;color:#059669}
+    .special-panel-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .special-panel-desc{font-size:.78rem;color:#64748b}
+    .upload-area{border:2px dashed #e2e8f0;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;margin-top:12px}
+    .upload-area:hover,.upload-area.dragover{border-color:#0052CC;background:#f0f5ff}
+    .empty-state{text-align:center;padding:60px 24px;color:#94a3b8}
+    .empty-state i{font-size:3rem;margin-bottom:16px;display:block}
+    .empty-state p{font-size:.9rem}
+    .loading-state{text-align:center;padding:60px 24px;display:none}
+    .spinner{width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#0052CC;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+
+<!-- Hero Search -->
+<div class="search-hero">
+  <h1><i class="fas fa-search" style="color:#00C9A7;margin-right:10px"></i>Advanced Search</h1>
+  <p>Search by text, voice, image or barcode — find exactly what you need.</p>
+  <div class="search-bar-container">
+    <div class="search-bar-wrap">
+      <i class="fas fa-search" style="color:#94a3b8;font-size:.95rem;flex-shrink:0"></i>
+      <input type="text" id="searchInput" placeholder="Search products, suppliers…" autocomplete="off" oninput="handleInput()" onkeydown="handleKeydown(event)"/>
+      <button class="search-icon-btn btn-mic" title="Voice search" onclick="toggleVoice()" id="micBtn"><i class="fas fa-microphone"></i></button>
+      <button class="search-icon-btn btn-img" title="Image search" onclick="document.getElementById('imageInput').click()" ><i class="fas fa-camera"></i></button>
+      <button class="search-icon-btn btn-barcode" title="Barcode search" onclick="openBarcodeModal()"><i class="fas fa-barcode"></i></button>
+      <button class="search-icon-btn btn-search-go" onclick="doSearch()"><i class="fas fa-search"></i> Search</button>
+    </div>
+    <input type="file" id="imageInput" accept="image/*" hidden onchange="handleImageUpload(event)"/>
+    <!-- Suggestions -->
+    <div class="suggestions-dropdown" id="suggestionsDropdown"></div>
+  </div>
+  <!-- Recent searches -->
+  <div class="recent-searches" id="recentSearches">
+    <div class="recent-searches-title"><i class="fas fa-history"></i> Recent searches</div>
+    <span class="recent-chip" onclick="setSearch('wireless headphones')"><i class="fas fa-search"></i> wireless headphones</span>
+    <span class="recent-chip" onclick="setSearch('solar panels')"><i class="fas fa-search"></i> solar panels</span>
+    <span class="recent-chip" onclick="setSearch('cotton fabric')"><i class="fas fa-search"></i> cotton fabric</span>
+  </div>
+  <!-- Search mode tabs -->
+  <div class="search-tabs">
+    <button class="search-tab active" onclick="setMode('text', this)">All</button>
+    <button class="search-tab" onclick="setMode('products', this)">Products</button>
+    <button class="search-tab" onclick="setMode('suppliers', this)">Suppliers</button>
+    <button class="search-tab" onclick="setMode('rfq', this)">RFQ</button>
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div class="search-layout">
+
+  <!-- Filter Sidebar -->
+  <aside class="filter-panel">
+    <div class="filter-title">Filters <button style="border:none;background:none;font-size:.78rem;color:#0052CC;cursor:pointer;font-family:'Inter',sans-serif" onclick="clearFilters()">Clear all</button></div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Category</div>
+      <label class="filter-option"><input type="checkbox" value="electronics"/> Electronics</label>
+      <label class="filter-option"><input type="checkbox" value="textiles"/> Textiles</label>
+      <label class="filter-option"><input type="checkbox" value="machinery"/> Machinery</label>
+      <label class="filter-option"><input type="checkbox" value="agriculture"/> Agriculture</label>
+      <label class="filter-option"><input type="checkbox" value="chemicals"/> Chemicals</label>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Price Range (USD)</div>
+      <div class="price-range">
+        <input class="price-input" type="number" placeholder="Min" id="minPrice" min="0"/>
+        <span style="color:#94a3b8;font-size:.8rem">–</span>
+        <input class="price-input" type="number" placeholder="Max" id="maxPrice" min="0"/>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Minimum Rating</div>
+      <div class="star-filter">
+        <label class="star-option"><input type="radio" name="rating" value="4"/> <span class="stars">★★★★</span><span style="color:#94a3b8">+ (4 & up)</span></label>
+        <label class="star-option"><input type="radio" name="rating" value="3"/> <span class="stars">★★★</span><span style="color:#94a3b8">+ (3 & up)</span></label>
+        <label class="star-option"><input type="radio" name="rating" value="2"/> <span class="stars">★★</span><span style="color:#94a3b8">+ (2 & up)</span></label>
+        <label class="star-option"><input type="radio" name="rating" value="0"/> Any rating</label>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Supplier Location</div>
+      <label class="filter-option"><input type="checkbox" value="BD"/> Bangladesh</label>
+      <label class="filter-option"><input type="checkbox" value="CN"/> China</label>
+      <label class="filter-option"><input type="checkbox" value="IN"/> India</label>
+      <label class="filter-option"><input type="checkbox" value="VN"/> Vietnam</label>
+    </div>
+
+    <button class="btn-apply-filter" onclick="doSearch()"><i class="fas fa-sliders-h" style="margin-right:6px"></i>Apply Filters</button>
+    <button class="btn-clear-filter" onclick="clearFilters()">Clear Filters</button>
+  </aside>
+
+  <!-- Results Panel -->
+  <main class="results-panel">
+
+    <!-- Spell check suggestion -->
+    <div class="spell-suggest" id="spellSuggest">
+      Did you mean: <a href="#" id="spellLink" onclick="return useSpellSuggestion()"></a>?
+    </div>
+
+    <!-- Special search panels -->
+    <div class="special-search-panels">
+      <div class="special-panel" onclick="document.getElementById('imageInput').click()">
+        <div class="special-panel-icon blue"><i class="fas fa-camera"></i></div>
+        <div class="special-panel-title">Image Search</div>
+        <div class="special-panel-desc">Upload a product photo to find visually similar items</div>
+        <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+          <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;color:#94a3b8;display:block;margin-bottom:6px"></i>
+          <span style="font-size:.78rem;color:#94a3b8">Drag & drop or click to upload</span>
+        </div>
+      </div>
+      <div class="special-panel" onclick="openBarcodeModal()">
+        <div class="special-panel-icon green"><i class="fas fa-qrcode"></i></div>
+        <div class="special-panel-title">Barcode / QR Search</div>
+        <div class="special-panel-desc">Scan a barcode or enter a product code to find items</div>
+        <div style="margin-top:16px">
+          <input type="text" id="barcodeInput" placeholder="Enter barcode or SKU…" style="width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;color:#1a1a2e" oninput="this.style.borderColor='#0052CC'" onblur="this.style.borderColor='#e2e8f0'"/>
+          <button onclick="doBarcodeSearch()" style="width:100%;margin-top:8px;background:#059669;color:#fff;border:none;border-radius:8px;padding:9px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="fas fa-search" style="margin-right:6px"></i>Search by Code</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results header -->
+    <div class="results-header" id="resultsHeader" style="display:none">
+      <div class="results-count" id="resultsCount"><strong>0</strong> results</div>
+      <select class="sort-select" onchange="doSearch()">
+        <option value="relevance">Sort: Relevance</option>
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="rating">Highest Rated</option>
+        <option value="newest">Newest First</option>
+      </select>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" id="loadingState">
+      <div class="spinner"></div>
+      <p style="font-size:.875rem;color:#64748b">Searching…</p>
+    </div>
+
+    <!-- Results grid -->
+    <div class="products-grid" id="resultsGrid"></div>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <i class="fas fa-search"></i>
+      <p>Enter a search query above to find products and suppliers.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+  const API = '/api/v1';
+  let currentMode = 'text';
+  let spellSuggestion = null;
+  let suggestTimeout = null;
+
+  function setMode(mode, el) {
+    currentMode = mode;
+    document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function setSearch(term) {
+    document.getElementById('searchInput').value = term;
+    doSearch();
+  }
+
+  function handleInput() {
+    const q = document.getElementById('searchInput').value.trim();
+    clearTimeout(suggestTimeout);
+    if (q.length < 2) { closeSuggestions(); return; }
+    suggestTimeout = setTimeout(() => fetchSuggestions(q), 250);
+  }
+
+  function handleKeydown(e) {
+    if (e.key === 'Enter') { closeSuggestions(); doSearch(); }
+    if (e.key === 'Escape') closeSuggestions();
+  }
+
+  async function fetchSuggestions(q) {
+    try {
+      const res = await fetch(`${API}/search/suggestions?q=${encodeURIComponent(q)}`);
+      const json = await res.json();
+      if (json.success && json.suggestions.length > 0) showSuggestions(json.suggestions);
+      else closeSuggestions();
+    } catch { closeSuggestions(); }
+  }
+
+  function showSuggestions(items) {
+    const dd = document.getElementById('suggestionsDropdown');
+    dd.innerHTML = items.map((s) => {
+      const div = document.createElement('div');
+      div.className = 'suggestion-item';
+      div.innerHTML = '<i class="fas fa-search"></i>';
+      div.appendChild(document.createTextNode(s));
+      // We set dataset in string form but read it safely via click delegation
+      return `<div class="suggestion-item" data-q="${s.replace(/"/g,'&quot;')}"><i class="fas fa-search"></i>${s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+    }).join('');
+    dd.classList.add('open');
+    dd.querySelectorAll('.suggestion-item').forEach(el => {
+      el.addEventListener('click', () => setSearch(el.dataset.q));
+    });
+  }
+
+  function closeSuggestions() {
+    document.getElementById('suggestionsDropdown').classList.remove('open');
+  }
+
+  async function doSearch() {
+    closeSuggestions();
+    const q = document.getElementById('searchInput').value.trim();
+    const minPrice = document.getElementById('minPrice').value;
+    const maxPrice = document.getElementById('maxPrice').value;
+    const minRating = document.querySelector('input[name=rating]:checked')?.value;
+
+    showLoading(true);
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('spellSuggest').style.display = 'none';
+
+    let url = `${API}/search?q=${encodeURIComponent(q)}`;
+    if (minPrice) url += `&minPrice=${minPrice}`;
+    if (maxPrice) url += `&maxPrice=${maxPrice}`;
+    if (minRating) url += `&minRating=${minRating}`;
+
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      showLoading(false);
+      if (json.success) renderResults(json.data, json.meta, json.suggestion);
+    } catch {
+      showLoading(false);
+      showEmpty();
+    }
+
+    // Save to recent
+    if (q) saveRecentSearch(q);
+  }
+
+  function renderResults(data, meta, suggestion) {
+    const grid = document.getElementById('resultsGrid');
+    const header = document.getElementById('resultsHeader');
+    const count = document.getElementById('resultsCount');
+
+    if (suggestion) {
+      const spell = document.getElementById('spellSuggest');
+      document.getElementById('spellLink').textContent = suggestion;
+      spellSuggestion = suggestion;
+      spell.style.display = 'block';
+    }
+
+    count.innerHTML = `<strong>${meta?.total ?? data.length}</strong> results`;
+    header.style.display = 'flex';
+
+    if (!data || data.length === 0) { grid.innerHTML = ''; showEmpty(); return; }
+
+    grid.innerHTML = data.map((p, i) => {
+      const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      const tier = i < 3 ? 'badge-high' : i < 8 ? 'badge-medium' : 'badge-low';
+      const label = i < 3 ? '🔥 Top Match' : i < 8 ? 'Good Match' : 'Match';
+      return `
+      <div class="product-card" data-id="${esc(p.id)}">
+        <div class="product-img"><i class="fas fa-box"></i></div>
+        <div class="product-body">
+          <div class="product-name">${esc(p.title)}</div>
+          <div class="product-price">$${esc(p.price ?? '—')}</div>
+          <div class="product-meta">
+            <span class="relevance-badge ${tier}">${label}</span>
+            <span style="font-size:.72rem;color:#94a3b8">${esc(p.supplier?.company_name ?? '')}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('.product-card').forEach(card => {
+      card.addEventListener('click', () => { window.location = `/pages/product-detail.html?id=${encodeURIComponent(card.dataset.id)}`; });
+    });
+  }
+
+  function showLoading(on) {
+    document.getElementById('loadingState').style.display = on ? 'block' : 'none';
+    if (on) document.getElementById('resultsGrid').innerHTML = '';
+  }
+
+  function showEmpty() {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('resultsHeader').style.display = 'none';
+  }
+
+  function clearFilters() {
+    document.querySelectorAll('.filter-option input').forEach(i => i.checked = false);
+    document.querySelectorAll('input[name=rating]').forEach(i => i.checked = false);
+    document.getElementById('minPrice').value = '';
+    document.getElementById('maxPrice').value = '';
+  }
+
+  // Voice Search
+  let recognition = null;
+  function toggleVoice() {
+    const btn = document.getElementById('micBtn');
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      alert('Voice search is not supported in your browser. Try Chrome.');
+      return;
+    }
+    if (recognition) { recognition.stop(); recognition = null; btn.classList.remove('active'); return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      document.getElementById('searchInput').value = transcript;
+      recognition = null;
+      btn.classList.remove('active');
+      doSearch();
+    };
+    recognition.onerror = () => { recognition = null; btn.classList.remove('active'); };
+    recognition.onend = () => { recognition = null; btn.classList.remove('active'); };
+    recognition.start();
+    btn.classList.add('active');
+  }
+
+  // Image upload
+  function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => doImageSearch(ev.target.result);
+    reader.readAsDataURL(file);
+  }
+  function handleDragOver(e) { e.preventDefault(); document.getElementById('uploadArea').classList.add('dragover'); }
+  function handleDragLeave() { document.getElementById('uploadArea').classList.remove('dragover'); }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => doImageSearch(ev.target.result);
+    reader.readAsDataURL(file);
+  }
+  async function doImageSearch(base64) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert('Please log in to use image search.'); return; }
+    showLoading(true);
+    try {
+      const res = await fetch(`${API}/search/image`, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}, body: JSON.stringify({ imageBase64: base64 }) });
+      const json = await res.json();
+      showLoading(false);
+      if (json.success) renderResults(json.data, { total: json.data.length }, null);
+    } catch { showLoading(false); }
+  }
+
+  // Barcode search
+  async function doBarcodeSearch() {
+    const barcode = document.getElementById('barcodeInput').value.trim();
+    if (!barcode) return;
+    showLoading(true);
+    try {
+      const res = await fetch(`${API}/search/barcode`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ barcode }) });
+      const json = await res.json();
+      showLoading(false);
+      if (json.success) renderResults(json.data, { total: json.data.length }, null);
+    } catch { showLoading(false); }
+  }
+
+  function openBarcodeModal() { document.getElementById('barcodeInput').focus(); }
+
+  function useSpellSuggestion() {
+    if (spellSuggestion) { document.getElementById('searchInput').value = spellSuggestion; doSearch(); }
+    return false;
+  }
+
+  function saveRecentSearch(q) {
+    const recent = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    const filtered = recent.filter(r => r !== q).slice(0, 4);
+    filtered.unshift(q);
+    localStorage.setItem('recentSearches', JSON.stringify(filtered));
+  }
+
+  // Close suggestions on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-bar-container')) closeSuggestions();
+  });
+</script>
+</body>
+</html>
