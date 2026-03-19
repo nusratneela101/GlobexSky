@@ -1,4 +1,82 @@
 import supabase from '../config/supabase.js';
+import {
+  createStreamSession,
+  startStreamSession,
+  endStreamSession,
+  getActiveLivestreams,
+  getStreamById,
+  addProductToStream,
+  sendChatMessage,
+  getStreamAnalytics,
+} from '../services/livestream.service.js';
+
+export async function createStream(req, res, next) {
+  try {
+    const { title, description, category, scheduled_at, thumbnail } = req.body;
+    const data = await createStreamSession({
+      hostId: req.user.id,
+      title,
+      description,
+      category,
+      scheduledAt: scheduled_at,
+      thumbnail,
+    });
+    res.status(201).json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function startStream(req, res, next) {
+  try {
+    const data = await startStreamSession(req.params.id, req.user.id);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function endStream(req, res, next) {
+  try {
+    const data = await endStreamSession(req.params.id);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function getActiveStreams(req, res, next) {
+  try {
+    const data = await getActiveLivestreams();
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function getStreamDetails(req, res, next) {
+  try {
+    const data = await getStreamById(req.params.id);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function addStreamProduct(req, res, next) {
+  try {
+    const { product_id, featured_price } = req.body;
+    const data = await addProductToStream(req.params.id, product_id, featured_price ?? null);
+    res.status(201).json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function sendStreamMessage(req, res, next) {
+  try {
+    const { message } = req.body;
+    const data = await sendChatMessage(req.params.id, req.user.id, message);
+    res.status(201).json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function getStreamAnalyticsHandler(req, res, next) {
+  try {
+    const data = await getStreamAnalytics(req.params.id);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+// ─── Legacy handlers (kept for backward compatibility) ──────────────────────
 
 export async function listLivestreams(req, res, next) {
   try {

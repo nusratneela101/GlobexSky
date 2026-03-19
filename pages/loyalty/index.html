@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Loyalty Program – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .page-topbar{background:#fff;padding:12px 24px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#0a0e27;text-decoration:none}
+    .brand-logo span{color:#0052CC}
+    .topbar-nav{display:flex;align-items:center;gap:16px}
+    .topbar-nav a{font-size:.85rem;color:#374151;text-decoration:none}
+    .topbar-nav a:hover{color:#0052CC}
+    .page-header{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:50px 20px;text-align:center;color:#fff}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+    .page-header p{opacity:.85;max-width:480px;margin:0 auto}
+    .container{max-width:1100px;margin:0 auto;padding:0 20px}
+    .content-grid{display:grid;grid-template-columns:1fr 320px;gap:24px;padding:32px 0}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+    .tier-card{background:linear-gradient(135deg,#0052CC,#7c3aed);color:#fff;border-radius:16px;padding:24px;margin-bottom:20px}
+    .tier-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);border-radius:20px;padding:6px 14px;font-size:.85rem;font-weight:700;margin-bottom:12px}
+    .points-display{font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:700;line-height:1}
+    .points-sub{font-size:.85rem;opacity:.85;margin-top:4px}
+    .progress-section{margin-top:16px}
+    .progress-label{display:flex;justify-content:space-between;font-size:.8rem;opacity:.85;margin-bottom:6px}
+    .progress-bar{background:rgba(255,255,255,.2);border-radius:6px;height:10px;overflow:hidden}
+    .progress-fill{height:100%;background:#fff;border-radius:6px;transition:width .5s}
+    .benefits-list{list-style:none}
+    .benefits-list li{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:.88rem}
+    .benefits-list li:last-child{border-bottom:none}
+    .benefit-icon{color:#0052CC;width:20px;text-align:center}
+    .history-table{width:100%;border-collapse:collapse;font-size:.85rem}
+    .history-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0}
+    .history-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+    .history-table tr:hover td{background:#f8faff}
+    .badge-earn{background:#d1fae5;color:#059669;padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:700}
+    .badge-redeem{background:#fee2e2;color:#ef4444;padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:700}
+    .rewards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+    .reward-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;text-align:center;transition:box-shadow .2s,transform .2s}
+    .reward-card:hover{box-shadow:0 6px 20px rgba(0,82,204,.12);transform:translateY(-2px)}
+    .reward-icon{font-size:2rem;margin-bottom:10px}
+    .reward-name{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .reward-points{font-size:.85rem;color:#64748b;margin-bottom:12px}
+    .btn-redeem{background:#0052CC;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.83rem;font-weight:600;cursor:pointer;transition:background .2s;width:100%}
+    .btn-redeem:hover{background:#003d99}
+    .btn-enroll{background:#0052CC;color:#fff;border:none;border-radius:12px;padding:14px 28px;font-size:1rem;font-weight:600;cursor:pointer;display:block;width:100%;transition:background .2s}
+    .btn-enroll:hover{background:#003d99}
+    .referral-box{background:#f0f5ff;border-radius:12px;padding:16px}
+    .referral-link{background:#fff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;font-size:.83rem;color:#374151;margin:8px 0;word-break:break-all}
+    .btn-copy{background:#0052CC;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:.8rem;font-weight:600;cursor:pointer;width:100%}
+    .tier-list{list-style:none}
+    .tier-list-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:.85rem}
+    .tier-list-item:last-child{border-bottom:none}
+    .tier-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0}
+    .tier-member{background:#f1f5f9;color:#64748b}
+    .tier-silver{background:#e2e8f0;color:#475569}
+    .tier-gold{background:#fef3c7;color:#d97706}
+    .tier-platinum{background:#e0e7ff;color:#4338ca}
+    .tier-vip{background:#fce7f3;color:#be185d}
+    @media(max-width:860px){.content-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="page-topbar">
+  <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+  <nav class="topbar-nav">
+    <a href="../account/profile.html"><i class="fas fa-user"></i> My Account</a>
+    <a href="../account/orders.html"><i class="fas fa-box"></i> Orders</a>
+    <a href="../../index.html"><i class="fas fa-arrow-left"></i> Home</a>
+  </nav>
+</header>
+
+<div class="page-header">
+  <h1><i class="fas fa-star"></i> Loyalty Program</h1>
+  <p>Earn points on every purchase, unlock exclusive rewards, and rise through membership tiers.</p>
+</div>
+
+<div class="container">
+  <div class="content-grid">
+    <!-- Main Content -->
+    <div>
+      <!-- Not enrolled state -->
+      <div id="enrollCard" class="card" style="text-align:center;display:none">
+        <div style="font-size:3rem;color:#0052CC;margin-bottom:12px"><i class="fas fa-star"></i></div>
+        <div style="font-family:Poppins;font-size:1.2rem;font-weight:700;margin-bottom:8px">Join the Loyalty Program</div>
+        <div style="color:#64748b;margin-bottom:20px">Start earning points on every purchase and unlock exclusive rewards!</div>
+        <button class="btn-enroll" onclick="enroll()"><i class="fas fa-star"></i> Join Now — Get 100 Free Points!</button>
+      </div>
+
+      <!-- Enrolled state -->
+      <div id="memberContent" style="display:none">
+        <!-- Tier Card -->
+        <div class="tier-card" id="tierCard">
+          <div class="tier-badge"><i class="fas fa-star"></i> <span id="tierName">Member</span></div>
+          <div class="points-display"><span id="pointsBalance">0</span></div>
+          <div class="points-sub">Available Points</div>
+          <div class="progress-section" id="progressSection">
+            <div class="progress-label"><span id="progressLabel">Progress to Silver</span><span id="progressPct">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Rewards Catalog -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-gift" style="color:#0052CC"></i> Rewards Catalog</div>
+          <div class="rewards-grid" id="rewardsGrid">
+            <div style="color:#94a3b8;font-size:.85rem">Loading rewards…</div>
+          </div>
+        </div>
+
+        <!-- Points History -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-history" style="color:#0052CC"></i> Points History</div>
+          <div style="overflow-x:auto">
+            <table class="history-table">
+              <thead><tr><th>Date</th><th>Action</th><th>Points</th><th>Description</th></tr></thead>
+              <tbody id="historyBody"><tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px">Loading history…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside>
+      <!-- Current Benefits -->
+      <div class="card" id="benefitsCard" style="display:none">
+        <div class="card-title"><i class="fas fa-crown" style="color:#f59e0b"></i> Your Benefits</div>
+        <ul class="benefits-list" id="benefitsList"></ul>
+      </div>
+
+      <!-- Tier Guide -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-layer-group" style="color:#7c3aed"></i> Membership Tiers</div>
+        <ul class="tier-list">
+          <li class="tier-list-item"><div class="tier-icon tier-member">M</div><div><strong>Member</strong><br/><span style="color:#94a3b8">0+ pts</span></div></li>
+          <li class="tier-list-item"><div class="tier-icon tier-silver">S</div><div><strong>Silver</strong><br/><span style="color:#94a3b8">5,000+ pts · 5% discount</span></div></li>
+          <li class="tier-list-item"><div class="tier-icon tier-gold">G</div><div><strong>Gold</strong><br/><span style="color:#94a3b8">15,000+ pts · 10% discount</span></div></li>
+          <li class="tier-list-item"><div class="tier-icon tier-platinum">P</div><div><strong>Platinum</strong><br/><span style="color:#94a3b8">50,000+ pts · 15% discount</span></div></li>
+          <li class="tier-list-item"><div class="tier-icon tier-vip">V</div><div><strong>VIP</strong><br/><span style="color:#94a3b8">100,000+ pts · 20% discount</span></div></li>
+        </ul>
+      </div>
+
+      <!-- Referral -->
+      <div class="card" id="referralCard" style="display:none">
+        <div class="card-title"><i class="fas fa-share-alt" style="color:#059669"></i> Referral Program</div>
+        <p style="font-size:.83rem;color:#64748b;margin-bottom:10px">Earn 200 points for every friend you refer!</p>
+        <div class="referral-box">
+          <div style="font-size:.75rem;color:#64748b;margin-bottom:4px">Your referral link:</div>
+          <div class="referral-link" id="referralLink">Loading…</div>
+          <button class="btn-copy" onclick="copyReferral()"><i class="fas fa-copy"></i> Copy Link</button>
+        </div>
+      </div>
+
+      <!-- How to Earn -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-coins" style="color:#f59e0b"></i> How to Earn Points</div>
+        <ul class="benefits-list">
+          <li><span class="benefit-icon"><i class="fas fa-shopping-cart"></i></span><div><strong>Purchase</strong><br/><span style="color:#64748b;font-size:.8rem">$1 = 10 points</span></div></li>
+          <li><span class="benefit-icon"><i class="fas fa-star"></i></span><div><strong>Write a Review</strong><br/><span style="color:#64748b;font-size:.8rem">50 points each</span></div></li>
+          <li><span class="benefit-icon"><i class="fas fa-user-plus"></i></span><div><strong>Refer a Friend</strong><br/><span style="color:#64748b;font-size:.8rem">200 points each</span></div></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  const token = localStorage.getItem('token');
+
+  async function loadLoyaltyData() {
+    if (!token) { document.getElementById('enrollCard').style.display = 'block'; return; }
+    try {
+      const res = await fetch('/api/v1/loyalty/points', { headers: { Authorization: `Bearer ${token}` } });
+      if (res.status === 404 || res.status === 400) { document.getElementById('enrollCard').style.display = 'block'; return; }
+      const json = await res.json();
+      if (!json.success) { document.getElementById('enrollCard').style.display = 'block'; return; }
+
+      const d = json.data;
+      document.getElementById('memberContent').style.display = 'block';
+      document.getElementById('benefitsCard').style.display = 'block';
+      document.getElementById('referralCard').style.display = 'block';
+      document.getElementById('pointsBalance').textContent = d.available_points.toLocaleString();
+      document.getElementById('tierName').textContent = d.tier.name;
+
+      if (d.next_tier) {
+        const pct = Math.min(100, Math.round((d.total_points / d.next_tier.min) * 100));
+        document.getElementById('progressLabel').textContent = `Progress to ${d.next_tier.name}`;
+        document.getElementById('progressPct').textContent = pct + '%';
+        document.getElementById('progressFill').style.width = pct + '%';
+      } else {
+        document.getElementById('progressSection').innerHTML = '<div style="font-size:.85rem;opacity:.8">🎉 You have reached the highest tier!</div>';
+      }
+
+      // Benefits
+      const benefits = [
+        d.tier.discount > 0 && `<i class="fas fa-percent benefit-icon"></i> ${d.tier.discount}% discount on all orders`,
+        d.tier.free_shipping_threshold !== null && `<i class="fas fa-truck benefit-icon"></i> Free shipping on orders over $${d.tier.free_shipping_threshold}`,
+        d.tier.priority_support && `<i class="fas fa-headset benefit-icon"></i> Priority customer support`,
+        d.tier.exclusive_access && `<i class="fas fa-lock-open benefit-icon"></i> Exclusive product access`,
+      ].filter(Boolean);
+      document.getElementById('benefitsList').innerHTML = benefits.length
+        ? benefits.map(b => `<li>${b}</li>`).join('')
+        : '<li><i class="fas fa-info-circle benefit-icon"></i> Reach Silver tier to unlock benefits</li>';
+
+      // Transactions history
+      const tbody = document.getElementById('historyBody');
+      if (d.transactions.length) {
+        tbody.innerHTML = d.transactions.map(t => `
+          <tr>
+            <td>${new Date(t.created_at).toLocaleDateString()}</td>
+            <td>${t.action || t.type}</td>
+            <td><span class="${t.type === 'earn' ? 'badge-earn' : 'badge-redeem'}">${t.type === 'earn' ? '+' : ''}${t.points}</span></td>
+            <td style="color:#64748b;font-size:.83rem">${t.description || '—'}</td>
+          </tr>`).join('');
+      } else { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px">No transactions yet.</td></tr>'; }
+
+      // Referral link
+      const userId = JSON.parse(atob(token.split('.')[1]))?.sub || '';
+      document.getElementById('referralLink').textContent = `${window.location.origin}?ref=${userId}`;
+    } catch (e) { document.getElementById('enrollCard').style.display = 'block'; }
+  }
+
+  async function loadRewards() {
+    try {
+      const res = await fetch('/api/v1/loyalty/rewards', { headers: { Authorization: `Bearer ${token}` } });
+      const json = await res.json();
+      const grid = document.getElementById('rewardsGrid');
+      if (!json.success || !json.data.length) {
+        grid.innerHTML = '<div style="color:#94a3b8;font-size:.85rem;grid-column:1/-1">No rewards available yet. Check back soon!</div>';
+        return;
+      }
+      grid.innerHTML = json.data.map(r => `
+        <div class="reward-card">
+          <div class="reward-icon">${r.icon || '🎁'}</div>
+          <div class="reward-name">${r.name}</div>
+          <div class="reward-points"><i class="fas fa-star" style="color:#f59e0b"></i> ${r.points_required.toLocaleString()} pts</div>
+          <button class="btn-redeem" onclick="redeemReward('${r.id}','${r.name}',${r.points_required})">Redeem</button>
+        </div>`).join('');
+    } catch (e) { console.error(e); }
+  }
+
+  async function enroll() {
+    if (!token) { window.location.href = '../auth/login.html'; return; }
+    const res = await fetch('/api/v1/loyalty/enroll', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    const json = await res.json();
+    if (json.success) { document.getElementById('enrollCard').style.display = 'none'; loadLoyaltyData(); loadRewards(); }
+    else alert('Enrollment failed: ' + (json.error || 'Unknown error'));
+  }
+
+  async function redeemReward(id, name, points) {
+    if (!confirm(`Redeem "${name}" for ${points} points?`)) return;
+    const res = await fetch('/api/v1/loyalty/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ points, reward_id: id, description: `Redeemed: ${name}` }),
+    });
+    const json = await res.json();
+    if (json.success) { alert('Reward redeemed! 🎉'); loadLoyaltyData(); }
+    else alert('Error: ' + (json.error || 'Failed to redeem'));
+  }
+
+  function copyReferral() {
+    const link = document.getElementById('referralLink').textContent;
+    navigator.clipboard.writeText(link).then(() => alert('Referral link copied!'));
+  }
+
+  loadLoyaltyData();
+  loadRewards();
+</script>
+</body>
+</html>

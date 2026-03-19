@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Watch Live – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0d1117;color:#e6edf3}
+    .watch-wrapper{display:grid;grid-template-columns:1fr 360px;min-height:100vh}
+    .watch-main{display:flex;flex-direction:column}
+    .watch-topbar{background:#161b22;padding:12px 20px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #30363d}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;text-decoration:none}
+    .brand-logo span{color:#0052CC}
+    .live-badge{background:#ef4444;color:#fff;font-size:.75rem;font-weight:700;padding:3px 8px;border-radius:4px;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+    .viewer-badge{display:flex;align-items:center;gap:6px;background:#1c2128;padding:5px 12px;border-radius:20px;font-size:.82rem;color:#8b949e}
+    .viewer-badge i{color:#ef4444}
+    .topbar-actions{margin-left:auto;display:flex;gap:10px}
+    .btn{padding:8px 16px;border-radius:8px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-follow{background:#0052CC;color:#fff}
+    .btn-follow:hover{background:#003d99}
+    .btn-follow.following{background:#374151;color:#8b949e}
+    .btn-outline{background:transparent;color:#8b949e;border:1px solid #30363d}
+    .btn-outline:hover{background:#1c2128;color:#e6edf3}
+    .video-container{background:#000;position:relative}
+    .video-player{width:100%;aspect-ratio:16/9;background:#000;display:block}
+    .video-overlay{position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+    .stream-title-overlay{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:6px}
+    .host-info-overlay{display:flex;align-items:center;gap:10px;font-size:.85rem;color:#c9d1d9}
+    .host-avatar{width:32px;height:32px;border-radius:50%;background:#0052CC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff}
+    .stream-info-bar{background:#161b22;padding:16px 20px;border-bottom:1px solid #30363d}
+    .stream-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .stream-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#e6edf3}
+    .host-pill{display:flex;align-items:center;gap:8px;font-size:.85rem;color:#8b949e}
+    .stream-actions{margin-left:auto;display:flex;gap:8px}
+    .products-showcase{padding:20px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#e6edf3;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+    .product-card{background:#161b22;border:1px solid #30363d;border-radius:10px;overflow:hidden;transition:border-color .2s}
+    .product-card:hover{border-color:#0052CC}
+    .product-img{width:100%;aspect-ratio:1;object-fit:cover;background:#1c2128}
+    .product-info{padding:10px}
+    .product-name{font-size:.82rem;color:#c9d1d9;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .product-price{font-size:.9rem;font-weight:700;color:#0052CC}
+    .product-buy-btn{width:100%;background:#0052CC;color:#fff;border:none;border-radius:6px;padding:7px;font-size:.8rem;font-weight:600;cursor:pointer;margin-top:6px;transition:background .2s}
+    .product-buy-btn:hover{background:#003d99}
+    .watch-sidebar{background:#161b22;border-left:1px solid #30363d;display:flex;flex-direction:column;height:100vh;position:sticky;top:0}
+    .sidebar-tabs{display:flex;border-bottom:1px solid #30363d}
+    .sidebar-tab{flex:1;padding:12px;background:none;border:none;color:#8b949e;cursor:pointer;font-size:.85rem;font-weight:500;border-bottom:2px solid transparent;transition:all .2s}
+    .sidebar-tab.active{color:#e6edf3;border-bottom-color:#0052CC}
+    .chat-area{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+    .chat-msg{display:flex;gap:8px;align-items:flex-start}
+    .chat-avatar{width:28px;height:28px;border-radius:50%;background:#374151;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;color:#fff}
+    .chat-bubble{background:#0d1117;border-radius:0 8px 8px 8px;padding:8px 10px;font-size:.82rem;max-width:240px}
+    .chat-user{font-weight:600;color:#0052CC;font-size:.75rem;margin-bottom:3px}
+    .chat-text{color:#c9d1d9;line-height:1.4}
+    .chat-input-area{padding:12px;border-top:1px solid #30363d}
+    .chat-quick-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+    .quick-btn{background:#0d1117;border:1px solid #30363d;color:#8b949e;border-radius:16px;padding:4px 10px;font-size:.75rem;cursor:pointer}
+    .quick-btn:hover{border-color:#0052CC;color:#0052CC}
+    .chat-input-row{display:flex;gap:8px}
+    .chat-input{flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:8px;padding:10px 12px;font-size:.85rem;font-family:'Inter',sans-serif}
+    .chat-input:focus{outline:none;border-color:#0052CC}
+    .chat-send-btn{background:#0052CC;color:#fff;border:none;border-radius:8px;width:40px;cursor:pointer;font-size:1rem}
+    .products-sidebar{flex:1;overflow-y:auto;padding:12px}
+    .sidebar-product-card{display:flex;gap:10px;align-items:center;background:#0d1117;border-radius:8px;padding:10px;margin-bottom:8px;border:1px solid #30363d}
+    .sidebar-product-img{width:48px;height:48px;border-radius:8px;object-fit:cover;background:#1c2128}
+    .sidebar-product-name{font-size:.82rem;color:#c9d1d9;margin-bottom:3px}
+    .sidebar-product-price{font-size:.88rem;font-weight:700;color:#0052CC}
+    .sidebar-buy-btn{margin-left:auto;background:#0052CC;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap}
+    @media(max-width:900px){.watch-wrapper{grid-template-columns:1fr}.watch-sidebar{height:400px;position:static}.products-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<div class="watch-wrapper">
+  <!-- Main Video Area -->
+  <div class="watch-main">
+    <header class="watch-topbar">
+      <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+      <span class="live-badge" id="liveBadge">● LIVE</span>
+      <div class="viewer-badge">
+        <i class="fas fa-eye"></i>
+        <span id="viewerCount">—</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-follow" id="btnFollow" onclick="toggleFollow()"><i class="fas fa-plus"></i> Follow</button>
+        <a href="../../index.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+    </header>
+
+    <div class="video-container">
+      <video class="video-player" id="remoteVideo" autoplay playsinline controls>
+        <source src="" type="video/mp4"/>
+      </video>
+      <div class="video-overlay">
+        <div class="stream-title-overlay" id="streamTitleOverlay">Loading stream…</div>
+        <div class="host-info-overlay">
+          <div class="host-avatar" id="hostAvatar">H</div>
+          <span id="hostName">Host</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stream-info-bar">
+      <div class="stream-meta">
+        <div class="stream-title" id="streamTitle">Loading…</div>
+        <div class="host-pill"><i class="fas fa-store"></i> <span id="supplierName">Loading…</span></div>
+        <div class="stream-actions">
+          <button class="btn btn-outline" onclick="shareStream()"><i class="fas fa-share-alt"></i> Share</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="products-showcase" id="productsShowcase">
+      <div class="section-title"><i class="fas fa-tag"></i> Featured Products</div>
+      <div class="products-grid" id="productsGrid">
+        <div style="color:#8b949e;font-size:.85rem">Loading products…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="watch-sidebar">
+    <div class="sidebar-tabs">
+      <button class="sidebar-tab active" onclick="switchTab('chat',this)">Chat</button>
+      <button class="sidebar-tab" onclick="switchTab('products',this)">Shop</button>
+    </div>
+
+    <!-- Chat Tab -->
+    <div class="chat-area" id="chatArea">
+      <div class="chat-msg">
+        <div class="chat-avatar">S</div>
+        <div class="chat-bubble">
+          <div class="chat-user">System</div>
+          <div class="chat-text">Welcome to the live stream! Chat is loading…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Tab -->
+    <div class="products-sidebar" id="productsSidebar" style="display:none">
+      <div style="color:#8b949e;font-size:.83rem;text-align:center;padding:20px">Featured products will appear here</div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-quick-btns">
+        <button class="quick-btn" onclick="quickMsg('❤️')">❤️</button>
+        <button class="quick-btn" onclick="quickMsg('🔥')">🔥</button>
+        <button class="quick-btn" onclick="quickMsg('👏')">👏</button>
+        <button class="quick-btn" onclick="quickMsg('💯')">💯</button>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Say something…" onkeydown="if(event.key==='Enter')sendChat()"/>
+        <button class="chat-send-btn" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  const streamId = new URLSearchParams(window.location.search).get('id');
+
+  async function loadStreamDetails() {
+    if (!streamId) return;
+    try {
+      const res = await fetch(`/api/v1/livestreams/${streamId}`);
+      const json = await res.json();
+      if (!json.success) return;
+      const s = json.data;
+      document.title = s.title + ' – GlobexSky Live';
+      document.getElementById('streamTitle').textContent = s.title;
+      document.getElementById('streamTitleOverlay').textContent = s.title;
+      document.getElementById('hostName').textContent = s.supplier?.company_name || 'Host';
+      document.getElementById('supplierName').textContent = s.supplier?.company_name || 'Seller';
+      document.getElementById('hostAvatar').textContent = (s.supplier?.company_name || 'H')[0].toUpperCase();
+      document.getElementById('viewerCount').textContent = (s.viewer_count || 0) + ' watching';
+
+      if (s.status !== 'live') {
+        document.getElementById('liveBadge').textContent = s.status === 'ended' ? 'ENDED' : 'SCHEDULED';
+        document.getElementById('liveBadge').style.background = s.status === 'ended' ? '#374151' : '#f97316';
+      }
+
+      // Render tagged products
+      const products = s.products || [];
+      const grid = document.getElementById('productsGrid');
+      const sidebar = document.getElementById('productsSidebar');
+      if (products.length > 0) {
+        grid.innerHTML = products.map(p => `
+          <div class="product-card">
+            <img class="product-img" src="${p.product?.images?.[0] || ''}" alt="${p.product?.name || ''}" onerror="this.style.display='none'"/>
+            <div class="product-info">
+              <div class="product-name">${p.product?.name || 'Product'}</div>
+              <div class="product-price">$${(p.featured_price || p.product?.price || 0).toFixed(2)}</div>
+              <button class="product-buy-btn" onclick="window.location.href='../sourcing/product-detail.html?id=${p.product_id}'">Buy Now</button>
+            </div>
+          </div>`).join('');
+        sidebar.innerHTML = products.map(p => `
+          <div class="sidebar-product-card">
+            <img class="sidebar-product-img" src="${p.product?.images?.[0] || ''}" alt="" onerror="this.style.display='none'"/>
+            <div><div class="sidebar-product-name">${p.product?.name || 'Product'}</div><div class="sidebar-product-price">$${(p.featured_price || p.product?.price || 0).toFixed(2)}</div></div>
+            <button class="sidebar-buy-btn" onclick="window.location.href='../sourcing/product-detail.html?id=${p.product_id}'">Buy</button>
+          </div>`).join('');
+      } else {
+        grid.innerHTML = '<div style="color:#8b949e;font-size:.85rem">No featured products yet</div>';
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg || !streamId) return;
+    const token = localStorage.getItem('token');
+    if (!token) { alert('Please log in to chat.'); return; }
+    try {
+      await fetch(`/api/v1/livestreams/${streamId}/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ message: msg }) });
+      appendChatMsg('You', msg);
+      input.value = '';
+    } catch (e) { console.error(e); }
+  }
+
+  function quickMsg(emoji) {
+    document.getElementById('chatInput').value = emoji;
+    sendChat();
+  }
+
+  function appendChatMsg(user, text) {
+    const area = document.getElementById('chatArea');
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.innerHTML = `<div class="chat-avatar">${user[0]}</div><div class="chat-bubble"><div class="chat-user">${user}</div><div class="chat-text">${text}</div></div>`;
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  let following = false;
+  function toggleFollow() {
+    following = !following;
+    const btn = document.getElementById('btnFollow');
+    btn.className = 'btn ' + (following ? 'btn-follow following' : 'btn-follow');
+    btn.innerHTML = following ? '<i class="fas fa-check"></i> Following' : '<i class="fas fa-plus"></i> Follow';
+  }
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('chatArea').style.display = tab === 'chat' ? '' : 'none';
+    document.getElementById('productsSidebar').style.display = tab === 'products' ? '' : 'none';
+    const inputArea = document.querySelector('.chat-input-area');
+    if (inputArea) inputArea.style.display = tab === 'chat' ? '' : 'none';
+  }
+
+  function shareStream() {
+    if (navigator.share) navigator.share({ title: document.getElementById('streamTitle').textContent, url: window.location.href });
+    else { navigator.clipboard.writeText(window.location.href); alert('Stream link copied!'); }
+  }
+
+  loadStreamDetails();
+  // Poll for viewer count updates
+  if (streamId) setInterval(loadStreamDetails, 30000);
+</script>
+</body>
+</html>
