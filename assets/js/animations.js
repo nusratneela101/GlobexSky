@@ -60,9 +60,9 @@ function runDoorAnimation() {
     // Also target individual door panels if present
     if (doorLeft) doorLeft.classList.add('door-open');
     if (doorRight) doorRight.classList.add('door-open');
-  }, 200);
+  }, 800);
 
-  // After the CSS transition finishes (~2 s), reveal page content
+  // After the CSS transition finishes (~3.2 s), reveal page content
   setTimeout(() => {
     document.body.classList.add('page-revealed');
 
@@ -90,7 +90,7 @@ function runDoorAnimation() {
     } catch (_) {
       // sessionStorage may be unavailable in private browsing on some browsers
     }
-  }, 2200); // 200 ms delay + 2000 ms animation
+  }, 4000); // 800 ms delay + 3200 ms animation
 }
 
 /* ─────────────────────────────────────────────
