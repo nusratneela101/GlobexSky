@@ -719,3 +719,87 @@ CREATE POLICY "Users manage own API keys"
 -- ─── webhooks ────────────────────────────────────────────────────
 CREATE POLICY "Users manage own webhooks"
   ON webhooks USING (auth.uid() = user_id);
+
+-- ─────────────────────────────────────────────────────────────────
+-- Migration 012: Dispute & Return/Refund System
+-- ─────────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS disputes (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id    UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  user_id     UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  type        TEXT NOT NULL CHECK (type IN ('item_not_received','item_not_as_described','damaged','wrong_item','other')),
+  reason      TEXT NOT NULL,
+  description TEXT NOT NULL,
+  status      TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open','pending','escalated','resolved','closed')),
+  resolution  TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS dispute_messages (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  dispute_id  UUID NOT NULL REFERENCES disputes(id) ON DELETE CASCADE,
+  sender_id   UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  message     TEXT NOT NULL,
+  attachments TEXT[] DEFAULT '{}',
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS refunds (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id     UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  dispute_id   UUID REFERENCES disputes(id) ON DELETE SET NULL,
+  amount       NUMERIC(10,2) NOT NULL CHECK (amount > 0),
+  reason       TEXT NOT NULL,
+  status       TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected','processed')),
+  processed_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  processed_at TIMESTAMPTZ,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ─── Indexes ──────────────────────────────────────────────────────
+CREATE INDEX IF NOT EXISTS idx_disputes_user_id    ON disputes(user_id);
+CREATE INDEX IF NOT EXISTS idx_disputes_order_id   ON disputes(order_id);
+CREATE INDEX IF NOT EXISTS idx_disputes_status     ON disputes(status);
+CREATE INDEX IF NOT EXISTS idx_dispute_messages_dispute_id ON dispute_messages(dispute_id);
+CREATE INDEX IF NOT EXISTS idx_refunds_order_id    ON refunds(order_id);
+CREATE INDEX IF NOT EXISTS idx_refunds_status      ON refunds(status);
+
+-- ─── RLS ──────────────────────────────────────────────────────────
+ALTER TABLE disputes         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE dispute_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE refunds          ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Buyers manage own disputes"
+  ON disputes USING (auth.uid() = user_id);
+
+CREATE POLICY "Admins manage all disputes"
+  ON disputes USING (
+    EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role = 'admin')
+  );
+
+CREATE POLICY "Dispute participants can view messages"
+  ON dispute_messages FOR SELECT USING (
+    auth.uid() = sender_id OR
+    EXISTS (SELECT 1 FROM disputes d WHERE d.id = dispute_id AND d.user_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role = 'admin')
+  );
+
+CREATE POLICY "Dispute participants can insert messages"
+  ON dispute_messages FOR INSERT WITH CHECK (
+    auth.uid() = sender_id AND (
+      EXISTS (SELECT 1 FROM disputes d WHERE d.id = dispute_id AND d.user_id = auth.uid()) OR
+      EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role = 'admin')
+    )
+  );
+
+CREATE POLICY "Buyers see own refunds"
+  ON refunds FOR SELECT USING (
+    EXISTS (SELECT 1 FROM orders o WHERE o.id = order_id AND o.buyer_id = auth.uid())
+  );
+
+CREATE POLICY "Admins manage all refunds"
+  ON refunds USING (
+    EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role = 'admin')
+  );
