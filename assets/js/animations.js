@@ -41,11 +41,17 @@ function skipToContent() {
     doorEntry.style.display = 'none';
   }
 
-  // Show main content
+  // Show main content — use inline styles as a robust fallback in addition to
+  // the CSS class so the content is always visible even if the stylesheet
+  // hasn't fully applied (e.g. when opened as a local file:// URL).
   document.body.classList.add('page-revealed');
   if (mainContent) {
+    mainContent.removeAttribute('aria-hidden');
     mainContent.classList.remove('hidden');
     mainContent.removeAttribute('hidden');
+    mainContent.style.display = 'block';
+    mainContent.style.opacity = '1';
+    mainContent.style.visibility = 'visible';
   }
 }
 
@@ -73,8 +79,12 @@ function runDoorAnimation() {
     document.body.classList.add('page-revealed');
 
     if (mainContent) {
+      mainContent.removeAttribute('aria-hidden');
       mainContent.classList.remove('hidden');
       mainContent.removeAttribute('hidden');
+      mainContent.style.display = 'block';
+      mainContent.style.opacity = '1';
+      mainContent.style.visibility = 'visible';
     }
 
     // Fade out the door overlay entirely
@@ -106,6 +116,12 @@ function runDoorAnimation() {
       sessionStorage.setItem('skipDoor', '1');
     } catch (_) {
       // sessionStorage may be unavailable in private browsing on some browsers
+    }
+
+    // Clear the safety fallback timer — content is now visible normally
+    if (window._doorSafetyTimer) {
+      clearTimeout(window._doorSafetyTimer);
+      window._doorSafetyTimer = null;
     }
   }, 4000); // 800 ms delay + 3200 ms animation
 }
@@ -164,8 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ensure main content is visible regardless
     const mainContent = document.querySelector('.main-content');
     if (mainContent) {
+      mainContent.removeAttribute('aria-hidden');
       mainContent.classList.remove('hidden');
       mainContent.removeAttribute('hidden');
+      mainContent.style.display = 'block';
+      mainContent.style.opacity = '1';
+      mainContent.style.visibility = 'visible';
     }
     document.body.classList.add('page-revealed');
     return;
@@ -174,7 +194,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Wire up the skip button before the animation starts
   initSkipButton();
 
-  // 5. Run the entrance animation
+  // 5. Safety fallback: if the door animation hasn't completed after 5 s
+  //    (e.g. a CSS transition never fired), force-reveal the main content.
+  window._doorSafetyTimer = setTimeout(() => {
+    const mc = document.querySelector('.main-content');
+    if (mc && (mc.getAttribute('aria-hidden') === 'true' || mc.style.display === 'none' || getComputedStyle(mc).display === 'none')) {
+      skipToContent();
+    }
+  }, 5000);
+
+  // 6. Run the entrance animation
   runDoorAnimation();
 });
 
