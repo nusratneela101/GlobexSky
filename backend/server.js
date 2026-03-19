@@ -38,6 +38,9 @@ import disputeRoutes from './routes/dispute.routes.js';
 import refundRoutes from './routes/refund.routes.js';
 import codRoutes from './routes/cod.routes.js';
 import warehouseRoutes from './routes/warehouse.routes.js';
+import freightRoutes from './routes/freight.routes.js';
+import supplierAssessmentRoutes from './routes/supplierAssessment.routes.js';
+import businessIntelligenceRoutes from './routes/businessIntelligence.routes.js';
 
 import tradeFinanceRoutes from './routes/tradeFinance.routes.js';
 import tradeShowRoutes from './routes/tradeShow.routes.js';
@@ -92,6 +95,9 @@ app.use(`${API}/disputes`, disputeRoutes);
 app.use(`${API}/refunds`, refundRoutes);
 app.use(`${API}/cod`, codRoutes);
 app.use(`${API}/warehouses`, warehouseRoutes);
+app.use(`${API}/freight`, freightRoutes);
+app.use(`${API}/supplier-assessment`, supplierAssessmentRoutes);
+app.use(`${API}/business-intelligence`, businessIntelligenceRoutes);
 
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);

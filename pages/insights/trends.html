@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Market Trends – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .logo-accent{color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-header{background:linear-gradient(135deg,#0a0e27 0%,#7c3aed 100%);color:#fff;padding:48px 24px;text-align:center}
+    .breadcrumb{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;font-size:.85rem;opacity:.8}
+    .breadcrumb a{color:rgba(255,255,255,.7);text-decoration:none}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb i{font-size:.7rem;opacity:.5}
+    .page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:8px}
+    .page-subtitle{opacity:.8;font-size:1rem}
+    .main-content{max-width:1400px;margin:0 auto;padding:32px 24px}
+    .filter-bar{background:#fff;border-radius:12px;padding:18px 24px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:24px}
+    .filter-group{display:flex;flex-direction:column;gap:5px}
+    .filter-label{font-size:.78rem;font-weight:600;color:#374151}
+    .filter-input{padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .filter-input:focus{outline:none;border-color:#0052CC}
+    .btn{padding:9px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:600;font-size:.875rem;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;align-self:flex-end}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    /* Charts (CSS-only bar/line approximations) */
+    .chart-container{height:200px;display:flex;align-items:flex-end;gap:4px;padding-top:20px;position:relative;overflow:hidden}
+    .chart-bar{flex:1;border-radius:4px 4px 0 0;transition:height .6s;position:relative;cursor:pointer}
+    .chart-bar:hover::after{content:attr(data-val);position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:#0a0e27;color:#fff;padding:3px 8px;border-radius:4px;font-size:.72rem;white-space:nowrap}
+    .chart-axis{display:flex;gap:4px;border-top:1px solid #e2e8f0;padding-top:6px;margin-top:4px}
+    .chart-axis-label{flex:1;text-align:center;font-size:.68rem;color:#94a3b8}
+    .chart-grid-line{position:absolute;left:0;right:0;border-top:1px dashed #f1f5f9}
+    .two-col{display:grid;grid-template-columns:3fr 2fr;gap:24px}
+    /* Trend table */
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .change-up{color:#059669;font-weight:600}
+    .change-down{color:#ef4444;font-weight:600}
+    .badge-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    /* Category comparison bars */
+    .compare-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .compare-label{font-size:.83rem;font-weight:500;color:#374151;width:120px;flex-shrink:0}
+    .compare-bar{flex:1;height:10px;background:#e2e8f0;border-radius:5px;overflow:hidden}
+    .compare-fill{height:100%;border-radius:5px;background:#0052CC;transition:width .6s}
+    .compare-val{font-size:.82rem;font-weight:600;color:#0052CC;min-width:40px;text-align:right}
+    @media(max-width:1024px){.two-col{grid-template-columns:1fr}}
+    @media(max-width:600px){.filter-bar{flex-direction:column}.filter-input,.btn{width:100%}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" stroke="#0052CC" stroke-width="2" fill="none"/><ellipse cx="18" cy="18" rx="8" ry="17" stroke="#0052CC" stroke-width="1.5" fill="none"/><line x1="1" y1="18" x2="35" y2="18" stroke="#0052CC" stroke-width="1.5"/><path d="M22 10 L30 14 L26 16 L28 24 L20 20 L22 10Z" fill="#FF6B35"/></svg>
+        <span class="logo-text">Globex<span class="logo-accent">Sky</span></span>
+      </a>
+      <div class="nav-controls">
+        <a href="index.html" class="btn-nav btn-login">Dashboard</a>
+        <a href="reports.html" class="btn-nav btn-register">Reports</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="../../index.html">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="index.html">Market Insights</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>Trends</span>
+  </div>
+  <h1 class="page-title"><i class="fas fa-chart-line"></i> Market Trends & Analysis</h1>
+  <p class="page-subtitle">Discover emerging product trends, price movements & category insights</p>
+</div>
+
+<div class="main-content">
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label class="filter-label">Date Range</label>
+      <select class="filter-input" id="filterDays">
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="180">Last 180 days</option>
+        <option value="365">Last 12 months</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label">Category</label>
+      <select class="filter-input" id="filterCategory">
+        <option value="">All Categories</option>
+        <option value="electronics">Electronics</option>
+        <option value="textiles">Textiles</option>
+        <option value="machinery">Machinery</option>
+        <option value="chemicals">Chemicals</option>
+        <option value="food">Food & Agri</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label">Region</label>
+      <select class="filter-input" id="filterRegion">
+        <option value="">Global</option>
+        <option value="asia">Asia Pacific</option>
+        <option value="europe">Europe</option>
+        <option value="america">Americas</option>
+        <option value="mena">Middle East & Africa</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="loadTrends()"><i class="fas fa-filter"></i> Apply Filters</button>
+  </div>
+
+  <div class="two-col">
+    <!-- Price Trend Chart -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-chart-line" style="color:#0052CC"></i> Average Price Trend</div>
+      <div class="chart-container" id="priceChart">
+        <!-- Populated by JS -->
+      </div>
+      <div class="chart-axis" id="priceAxis"></div>
+    </div>
+
+    <!-- Volume Chart -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-chart-bar" style="color:#7c3aed"></i> Order Volume</div>
+      <div class="chart-container" id="volumeChart"></div>
+      <div class="chart-axis" id="volumeAxis"></div>
+    </div>
+  </div>
+
+  <!-- Trending Products Table -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-fire" style="color:#f97316"></i> Top Trending Products</div>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Current Price</th>
+            <th>Price Change</th>
+            <th>Orders (30d)</th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody id="trendingTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Category Comparison -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-th" style="color:#0052CC"></i> Category-wise Trend Comparison</div>
+    <div id="catComparison"></div>
+  </div>
+
+</div>
+
+<footer style="background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem">
+  &copy; 2025 GlobexSky. All rights reserved.
+</footer>
+
+<script>
+const API = '/api/v1';
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MOCK_PRODUCTS = [
+  { name: 'Solar Panels 400W', category: 'Electronics', price: 189.99, change: 24.5, orders: 412 },
+  { name: 'Wireless Earbuds Pro', category: 'Electronics', price: 45.00, change: 18.2, orders: 387 },
+  { name: 'Bamboo Packaging Set', category: 'Eco Products', price: 12.50, change: 31.0, orders: 356 },
+  { name: 'Smart LED Strip 5m', category: 'Electronics', price: 28.00, change: -5.3, orders: 334 },
+  { name: 'Reusable Water Bottle', category: 'Home & Living', price: 18.00, change: 12.8, orders: 312 },
+  { name: 'Organic Cotton T-Shirt', category: 'Textiles', price: 22.00, change: 9.1, orders: 298 },
+  { name: 'Industrial Air Filter', category: 'Industrial', price: 74.00, change: -2.4, orders: 276 },
+  { name: 'Ceramic Coffee Mug', category: 'Home & Living', price: 8.50, change: 5.6, orders: 254 },
+];
+const CAT_DATA = [
+  { name: 'Electronics', color: '#0052CC', pct: 87, priceChange: 15.2 },
+  { name: 'Textiles', color: '#7c3aed', pct: 72, priceChange: 8.4 },
+  { name: 'Eco Products', color: '#059669', pct: 65, priceChange: 22.1 },
+  { name: 'Industrial', color: '#f97316', pct: 54, priceChange: -3.2 },
+  { name: 'Home & Living', color: '#ec4899', pct: 48, priceChange: 6.7 },
+];
+
+async function loadTrends() {
+  const days = document.getElementById('filterDays').value;
+  const category = document.getElementById('filterCategory').value;
+  const region = document.getElementById('filterRegion').value;
+
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API}/business-intelligence/trends?days=${days}&category=${category}&region=${region}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const json = await res.json();
+    if (json.success && json.data?.trending_products?.length) {
+      renderTrendingTable(json.data.trending_products);
+    } else {
+      renderTrendingTable(MOCK_PRODUCTS);
+    }
+  } catch (_) {
+    renderTrendingTable(MOCK_PRODUCTS);
+  }
+
+  renderCharts(+days);
+  renderCatComparison();
+}
+
+function renderCharts(days) {
+  const n = Math.min(days, 12);
+  const now = new Date();
+  const priceData = Array.from({ length: n }, (_, i) => ({ label: MONTHS[(now.getMonth() - n + 1 + i + 12) % 12], val: 30 + Math.random() * 40 }));
+  const volData = Array.from({ length: n }, (_, i) => ({ label: MONTHS[(now.getMonth() - n + 1 + i + 12) % 12], val: 50 + Math.random() * 120 }));
+
+  const maxP = Math.max(...priceData.map(d => d.val));
+  document.getElementById('priceChart').innerHTML = priceData.map(d => `<div class="chart-bar" style="height:${(d.val/maxP*90)}%;background:linear-gradient(to top,#0052CC,#60a5fa)" data-val="$${d.val.toFixed(2)}"></div>`).join('');
+  document.getElementById('priceAxis').innerHTML = priceData.map(d => `<div class="chart-axis-label">${d.label}</div>`).join('');
+
+  const maxV = Math.max(...volData.map(d => d.val));
+  document.getElementById('volumeChart').innerHTML = volData.map(d => `<div class="chart-bar" style="height:${(d.val/maxV*90)}%;background:linear-gradient(to top,#7c3aed,#a78bfa)" data-val="${Math.round(d.val)}"></div>`).join('');
+  document.getElementById('volumeAxis').innerHTML = volData.map(d => `<div class="chart-axis-label">${d.label}</div>`).join('');
+}
+
+function renderTrendingTable(products) {
+  document.getElementById('trendingTable').innerHTML = products.map((p, i) => `
+    <tr>
+      <td><strong>${i + 1}</strong></td>
+      <td><strong>${p.name || p.title}</strong></td>
+      <td><span class="badge-pill badge-blue">${p.category || 'General'}</span></td>
+      <td><strong>$${(+p.price || 0).toFixed(2)}</strong></td>
+      <td class="${(p.change || 0) >= 0 ? 'change-up' : 'change-down'}">${(p.change || 0) >= 0 ? '↑' : '↓'} ${Math.abs(p.change || 0).toFixed(1)}%</td>
+      <td>${p.orders || p.order_count || '—'}</td>
+      <td>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:20px">
+          ${Array.from({length:6}, () => `<div style="flex:1;border-radius:2px;background:${(p.change||0) >= 0 ? '#bfdbfe' : '#fecaca'};height:${Math.random()*80+20}%"></div>`).join('')}
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function renderCatComparison() {
+  document.getElementById('catComparison').innerHTML = CAT_DATA.map(c => `
+    <div class="compare-row">
+      <div class="compare-label">${c.name}</div>
+      <div class="compare-bar"><div class="compare-fill" style="width:${c.pct}%;background:${c.color}"></div></div>
+      <div class="compare-val" style="color:${c.color}">${c.pct}%</div>
+      <div style="font-size:.78rem;min-width:56px;text-align:right;${c.priceChange >= 0 ? 'color:#059669' : 'color:#ef4444'};font-weight:600">${c.priceChange >= 0 ? '↑' : '↓'} ${Math.abs(c.priceChange)}%</div>
+    </div>`).join('');
+}
+
+loadTrends();
+</script>
+</body>
+</html>
