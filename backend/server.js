@@ -40,6 +40,16 @@ import codRoutes from './routes/cod.routes.js';
 import warehouseRoutes from './routes/warehouse.routes.js';
 
 
+import tradeFinanceRoutes from './routes/tradeFinance.routes.js';
+import tradeShowRoutes from './routes/tradeShow.routes.js';
+import sourcingSolutionsRoutes from './routes/sourcingSolutions.routes.js';
+import freightRoutes from './routes/freight.routes.js';
+import supplierAssessmentRoutes from './routes/supplierAssessment.routes.js';
+import businessIntelligenceRoutes from './routes/businessIntelligence.routes.js';
+import flashSaleRoutes from './routes/flashSale.routes.js';
+import chatbotRoutes from './routes/chatbot.routes.js';
+import loyaltyRoutes from './routes/loyalty.routes.js';
+import videoMeetingRoutes from './routes/videoMeeting.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import pushNotificationRoutes from './routes/pushNotification.routes.js';
@@ -98,14 +108,20 @@ app.use(`${API}/warehouses`, warehouseRoutes);
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
 app.use(`${API}/push`, pushNotificationRoutes);
+app.use(`${API}/trade-finance`, tradeFinanceRoutes);
+app.use(`${API}/trade-shows`, tradeShowRoutes);
+app.use(`${API}/sourcing-solutions`, sourcingSolutionsRoutes);
+app.use(`${API}/freight`, freightRoutes);
+app.use(`${API}/supplier-assessment`, supplierAssessmentRoutes);
+app.use(`${API}/business-intelligence`, businessIntelligenceRoutes);
+app.use(`${API}/flash-sales`, flashSaleRoutes);
+app.use(`${API}/chatbot`, chatbotRoutes);
+app.use(`${API}/loyalty`, loyaltyRoutes);
+app.use(`${API}/video-meetings`, videoMeetingRoutes);
 app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/backup`, backupRoutes);
 app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
-
-app.use(`${API}/trade-finance`, tradeFinanceRoutes);
-app.use(`${API}/trade-shows`, tradeShowRoutes);
-app.use(`${API}/sourcing-solutions`, sourcingSolutionsRoutes);
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);
