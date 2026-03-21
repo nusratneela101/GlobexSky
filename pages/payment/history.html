@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Payment History – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/payment.css"/>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<main>
+  <div class="payment-wrapper">
+    <div class="page-header">
+      <h1 class="page-title">Payment History</h1>
+      <p class="page-subtitle">View all your past transactions</p>
+    </div>
+
+    <div class="payment-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <h2 class="payment-card-title" style="margin-bottom:0">Transactions</h2>
+        <div class="history-filters">
+          <select id="filter-status" class="filter-select" aria-label="Filter by status">
+            <option value="">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+            <option value="refunded">Refunded</option>
+            <option value="held">In Escrow</option>
+          </select>
+          <select id="filter-method" class="filter-select" aria-label="Filter by method">
+            <option value="">All Methods</option>
+            <option value="card">Credit / Debit Card</option>
+            <option value="paypal">PayPal</option>
+            <option value="bank_transfer">Bank Transfer</option>
+            <option value="escrow">Escrow</option>
+            <option value="cod">Cash on Delivery</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="history-table" aria-label="Payment history">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Order</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr><td colspan="6" style="text-align:center;padding:40px;color:#64748b">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#0052CC;border-radius:50%;animation:spin .8s linear infinite"></div>
+                <span>Loading transactions…</span>
+              </div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px">
+      <a href="payment.html" style="color:#0052CC;text-decoration:none;font-size:.88rem;font-weight:500">
+        <i class="fas fa-plus"></i> Make a New Payment
+      </a>
+    </div>
+  </div>
+</main>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<script src="../../assets/js/navbar.js" type="module"></script>
+<script src="../../assets/js/payment.js" type="module"></script>
+<script type="module">
+  import { loadPaymentHistory } from '../../assets/js/payment.js';
+  document.addEventListener('DOMContentLoaded', () => {
+    loadPaymentHistory();
+    document.querySelectorAll('.filter-select').forEach(sel => {
+      sel.addEventListener('change', loadPaymentHistory);
+    });
+  });
+</script>
+</body>
+</html>
