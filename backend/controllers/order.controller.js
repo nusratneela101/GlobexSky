@@ -131,8 +131,82 @@ export async function cancelOrder(req, res, next) {
 /** GET /api/v1/orders/:id/tracking */
 export async function getOrderTracking(req, res, next) {
   try {
-    const { data, error } = await supabase.from('orders').select('tracking_number,status,updated_at').eq('id', req.params.id).single();
+    const { data, error } = await supabase.from('orders').select('tracking_number,carrier,status,updated_at').eq('id', req.params.id).single();
     if (error || !data) return res.status(404).json({ success: false, error: 'Order not found.' });
     res.json({ success: true, data });
   } catch (err) { next(err); }
 }
+
+/** PUT /api/v1/orders/:id/tracking — Update tracking info (admin) */
+export async function updateOrderTracking(req, res, next) {
+  try {
+    const { tracking_number, carrier } = req.body;
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ tracking_number, carrier: carrier || null, updated_at: new Date().toISOString() })
+      .eq('id', req.params.id)
+      .select()
+      .single();
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/orders/:id/refund — Request or process a refund */
+export async function requestRefund(req, res, next) {
+  try {
+    const { reason, amount } = req.body;
+    const userId = req.user.id;
+    const role = req.user.profile?.role;
+
+    const { data: order } = await supabase.from('orders').select('id,total,buyer_id').eq('id', req.params.id).single();
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found.' });
+
+    // Buyers can only refund their own orders
+    if (role !== 'admin' && order.buyer_id !== userId) {
+      return res.status(403).json({ success: false, error: 'Forbidden.' });
+    }
+
+    const refundAmount = amount ? Math.min(parseFloat(amount), order.total) : order.total;
+
+    const { data, error } = await supabase
+      .from('refunds')
+      .insert({
+        order_id: req.params.id,
+        amount: refundAmount,
+        reason,
+        status: role === 'admin' ? 'approved' : 'pending',
+        processed_by: role === 'admin' ? userId : null,
+      })
+      .select()
+      .single();
+
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.status(201).json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/** GET /api/v1/orders/:id/invoice — Return basic invoice data */
+export async function getInvoice(req, res, next) {
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        items:order_items(*, product:products(title)),
+        shipping_address:addresses!shipping_address_id(*)
+      `)
+      .eq('id', req.params.id)
+      .single();
+
+    if (error || !data) return res.status(404).json({ success: false, error: 'Order not found.' });
+
+    if (data.buyer_id !== req.user.id && req.user.profile?.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Forbidden.' });
+    }
+
+    // Return invoice data as JSON (PDF generation can be added server-side later)
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+

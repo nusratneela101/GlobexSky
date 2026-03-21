@@ -64,8 +64,8 @@ function addToCart(product) {
   saveCart(cart);
   updateCartBadge();
 
-  if (window.Globex Sky?.showToast) {
-    window.Globex Sky.showToast(`"${product.name || 'Item'}" added to cart`, 'success');
+  if (window.GlobexSky?.showToast) {
+    window.GlobexSky.showToast(`"${product.name || 'Item'}" added to cart`, 'success');
   }
 }
 
@@ -152,7 +152,7 @@ function renderCart() {
 
   const cart = getCart();
   const currency = localStorage.getItem('globexCurrency') || 'USD';
-  const symbol = (window.Globex Sky?.CURRENCY_SYMBOLS?.[currency]) || '$';
+  const symbol = (window.GlobexSky?.CURRENCY_SYMBOLS?.[currency]) || '$';
 
   if (cart.length === 0) {
     list.innerHTML = `
@@ -314,8 +314,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─────────────────────────────────────────────
    EXPORTS
 ───────────────────────────────────────────── */
-window.Globex Sky = window.Globex Sky || {};
-Object.assign(window.Globex Sky, {
+window.GlobexSky = window.GlobexSky || {};
+Object.assign(window.GlobexSky, {
   addToCart,
   removeFromCart,
   updateQuantity,

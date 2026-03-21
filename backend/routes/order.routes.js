@@ -22,5 +22,17 @@ router.patch('/:id/status',
 );
 router.post('/:id/cancel', [param('id').isUUID()], validate, ctrl.cancelOrder);
 router.get('/:id/tracking', [param('id').isUUID()], validate, ctrl.getOrderTracking);
+router.put('/:id/tracking',
+  [param('id').isUUID(), body('tracking_number').notEmpty()],
+  validate,
+  ctrl.updateOrderTracking,
+);
+router.post('/:id/refund',
+  [param('id').isUUID(), body('reason').notEmpty()],
+  validate,
+  ctrl.requestRefund,
+);
+router.get('/:id/invoice', [param('id').isUUID()], validate, ctrl.getInvoice);
 
 export default router;
+

@@ -40,6 +40,10 @@ import codRoutes from './routes/cod.routes.js';
 import warehouseRoutes from './routes/warehouse.routes.js';
 
 
+import cartRoutes from './routes/cart.routes.js';
+import checkoutRoutes from './routes/checkout.routes.js';
+import addressRoutes from './routes/address.routes.js';
+import wishlistRoutes from './routes/wishlist.routes.js';
 import tradeFinanceRoutes from './routes/tradeFinance.routes.js';
 import tradeShowRoutes from './routes/tradeShow.routes.js';
 import sourcingSolutionsRoutes from './routes/sourcingSolutions.routes.js';
@@ -104,6 +108,11 @@ app.use(`${API}/refunds`, refundRoutes);
 app.use(`${API}/cod`, codRoutes);
 app.use(`${API}/warehouses`, warehouseRoutes);
 
+
+app.use(`${API}/cart`, cartRoutes);
+app.use(`${API}/checkout`, checkoutRoutes);
+app.use(`${API}/addresses`, addressRoutes);
+app.use(`${API}/wishlist`, wishlistRoutes);
 
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
