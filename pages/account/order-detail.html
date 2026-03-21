@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="View your order details, track shipment, and manage your purchase on Globex Sky."/>
+  <title>Order Details | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/cart.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;display:flex;flex-direction:column;min-height:100vh}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:#fff;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#f0f4ff}
+    .btn-ghost{background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0}
+    .btn-ghost:hover{background:#e2e8f0}
+    .btn-danger{background:#fff;color:#ef4444;border:1.5px solid #fca5a5}
+    .btn-danger:hover{background:#fee2e2}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:#64748b;font-size:.88rem;text-decoration:none;margin-bottom:20px;transition:color .2s}
+    .back-link:hover{color:#0052CC}
+    .order-header-card{background:#fff;border-radius:16px;padding:24px 28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .order-header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+    .order-number-heading{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27}
+    .order-meta{display:flex;gap:24px;flex-wrap:wrap;font-size:.85rem;color:#64748b}
+    .order-meta span{display:flex;align-items:center;gap:6px}
+    .order-actions-bar{display:flex;gap:10px;flex-wrap:wrap}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+    .info-block{background:#f8faff;border-radius:12px;padding:16px}
+    .info-block-title{font-weight:600;font-size:.85rem;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+    .info-block-content{font-size:.88rem;color:#374151;line-height:1.6}
+    .tracking-block{background:linear-gradient(135deg,#f0f4ff,#f0fdf9);border-radius:12px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .tracking-icon{font-size:2rem;color:#0052CC}
+    .tracking-info h3{font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:#0a0e27;margin-bottom:4px}
+    .tracking-info p{font-size:.85rem;color:#64748b}
+    .tracking-number{font-family:monospace;font-size:1rem;font-weight:700;color:#0052CC;letter-spacing:.05em}
+    .summary-table{width:100%;border-collapse:collapse}
+    .summary-table td{padding:8px 0;font-size:.88rem;color:#374151}
+    .summary-table td:last-child{text-align:right;font-weight:500}
+    .summary-table tr.total-row td{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27;border-top:2px solid #e2e8f0;padding-top:12px}
+    .error-msg{background:#fee2e2;color:#dc2626;padding:12px 16px;border-radius:8px;font-size:.88rem;display:none;margin-bottom:16px}
+    .success-msg{background:#d1fae5;color:#059669;padding:12px 16px;border-radius:8px;font-size:.88rem;display:none;margin-bottom:16px}
+    .site-footer{background:#0a0e27;color:#94a3b8;padding:20px 24px;text-align:center;font-size:.85rem;margin-top:auto}
+    @media(max-width:900px){.detail-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">JD</div>
+    <div class="account-sidebar-name">James Davidson</div>
+    <div class="account-sidebar-email">j.davidson@example.com</div>
+    <ul class="account-nav">
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html" class="active"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="addresses.html"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content" id="order-detail-main">
+    <a href="orders.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+
+    <div id="orders-error" class="error-msg"></div>
+    <div id="orders-success" class="success-msg"></div>
+
+    <!-- Order Header -->
+    <div class="order-header-card">
+      <div class="order-header-top">
+        <div>
+          <div class="order-number-heading" id="detail-order-number">#GS-2025-0892</div>
+          <div class="order-meta">
+            <span><i class="fas fa-calendar-alt"></i> <span id="detail-order-date">—</span></span>
+            <span><i class="fas fa-credit-card"></i> <span id="detail-payment-method">—</span></span>
+          </div>
+        </div>
+        <span id="detail-status-badge" class="status-badge status-pending">Pending</span>
+      </div>
+      <div class="order-actions-bar">
+        <a href="#" class="btn btn-ghost btn-sm" id="download-invoice-btn" onclick="downloadInvoice(event)">
+          <i class="fas fa-file-pdf"></i> Download Invoice
+        </a>
+        <button class="btn btn-ghost btn-sm" id="contact-supplier-btn" onclick="contactSupplier()">
+          <i class="fas fa-envelope"></i> Contact Supplier
+        </button>
+        <button class="btn btn-outline btn-sm" id="leave-review-btn" onclick="leaveReview()">
+          <i class="fas fa-star"></i> Leave Review
+        </button>
+        <button class="btn btn-danger btn-sm" id="cancel-order-btn" onclick="handleCancelOrder()">
+          <i class="fas fa-times"></i> Cancel Order
+        </button>
+        <button class="btn btn-outline btn-sm" id="refund-btn" onclick="handleRequestRefund()">
+          <i class="fas fa-undo"></i> Request Refund
+        </button>
+      </div>
+    </div>
+
+    <!-- Tracking Banner -->
+    <div class="tracking-block">
+      <div class="tracking-icon"><i class="fas fa-truck"></i></div>
+      <div class="tracking-info">
+        <h3>Tracking Information</h3>
+        <p>Carrier: <strong id="detail-carrier">—</strong></p>
+        <p>Tracking #: <span class="tracking-number" id="detail-tracking-number">—</span></p>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-box"></i> Items Ordered</div>
+      <div id="detail-items">
+        <div style="text-align:center;padding:40px;color:#94a3b8">
+          <i class="fas fa-spinner fa-spin fa-2x"></i>
+          <p style="margin-top:12px">Loading order details…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address & Payment Details -->
+    <div class="detail-grid">
+      <div class="page-card">
+        <div class="page-card-title"><i class="fas fa-map-marker-alt"></i> Shipping Address</div>
+        <div id="detail-shipping-address" class="info-block-content">—</div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-title"><i class="fas fa-receipt"></i> Order Summary</div>
+        <table class="summary-table">
+          <tr><td>Subtotal</td><td id="detail-subtotal">—</td></tr>
+          <tr><td>Shipping</td><td id="detail-shipping">—</td></tr>
+          <tr><td>Tax</td><td id="detail-tax">—</td></tr>
+          <tr><td>Discount</td><td id="detail-discount">—</td></tr>
+          <tr class="total-row"><td>Total</td><td id="detail-total">—</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Order Timeline -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-history"></i> Order Timeline</div>
+      <div id="order-timeline">
+        <p style="color:#94a3b8;font-size:.88rem">Loading timeline…</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>&copy; <span id="copyright-year"></span> Globex International Trade Co., Ltd. All rights reserved.</p>
+</footer>
+
+<script src="../../assets/js/cart.js"></script>
+<script src="../../assets/js/orders.js"></script>
+<script>
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+  function getCurrentOrderId() {
+    return new URLSearchParams(window.location.search).get('id');
+  }
+
+  function handleCancelOrder() {
+    const id = getCurrentOrderId();
+    if (id) window.GlobexSky.cancelOrder(id);
+  }
+
+  function handleRequestRefund() {
+    const id = getCurrentOrderId();
+    if (id) window.GlobexSky.requestRefund(id);
+  }
+
+  function downloadInvoice(e) {
+    e.preventDefault();
+    const id = getCurrentOrderId();
+    if (id) window.open(`/api/v1/orders/${id}/invoice`, '_blank');
+  }
+
+  function contactSupplier() {
+    window.location.href = 'messages.html';
+  }
+
+  function leaveReview() {
+    const id = getCurrentOrderId();
+    if (id) window.location.href = `reviews.html?order=${id}`;
+  }
+</script>
+</body>
+</html>
