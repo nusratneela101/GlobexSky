@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Secure Payment – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/payment.css"/>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<main>
+  <div class="payment-wrapper">
+    <div class="page-header">
+      <h1 class="page-title">Secure Checkout</h1>
+      <p class="page-subtitle">Complete your payment safely and securely</p>
+    </div>
+
+    <!-- Spinner overlay -->
+    <div id="payment-spinner" class="payment-spinner" role="status" aria-live="polite">
+      <div class="spinner-ring"></div>
+      <span class="spinner-text">Processing your payment…</span>
+    </div>
+
+    <form id="payment-form">
+      <div class="payment-grid">
+
+        <!-- ── Left: Payment Methods ── -->
+        <div>
+          <div class="payment-card">
+            <h2 class="payment-card-title"><i class="fas fa-lock" style="color:#0052CC;margin-right:8px"></i>Payment Method</h2>
+
+            <div class="secure-notice">
+              <i class="fas fa-shield-alt"></i>
+              <span>All transactions are encrypted with 256-bit SSL</span>
+            </div>
+
+            <!-- Method Selection -->
+            <div class="method-grid">
+              <button type="button" class="method-card active" data-method="card" aria-pressed="true">
+                <div class="method-icon card"><i class="fas fa-credit-card"></i></div>
+                <div>
+                  <div class="method-label">Credit / Debit Card</div>
+                  <div class="method-sub">Visa, Mastercard, Amex</div>
+                </div>
+              </button>
+              <button type="button" class="method-card" data-method="paypal" aria-pressed="false">
+                <div class="method-icon paypal"><i class="fab fa-paypal"></i></div>
+                <div>
+                  <div class="method-label">PayPal</div>
+                  <div class="method-sub">Fast &amp; secure checkout</div>
+                </div>
+              </button>
+              <button type="button" class="method-card" data-method="bank" aria-pressed="false">
+                <div class="method-icon bank"><i class="fas fa-university"></i></div>
+                <div>
+                  <div class="method-label">Bank Transfer</div>
+                  <div class="method-sub">SWIFT / Wire Transfer</div>
+                </div>
+              </button>
+              <button type="button" class="method-card" data-method="escrow" aria-pressed="false">
+                <div class="method-icon escrow"><i class="fas fa-shield-alt"></i></div>
+                <div>
+                  <div class="method-label">Escrow / Trade Assurance</div>
+                  <div class="method-sub">Buyer-protected payment</div>
+                </div>
+              </button>
+            </div>
+
+            <!-- Credit Card Form (Stripe Elements) -->
+            <div id="section-card" class="payment-section active">
+              <div id="stripe-form">
+                <div class="form-group">
+                  <label class="form-label" for="card-holder-name">Cardholder Name</label>
+                  <input id="card-holder-name" type="text" class="form-input" placeholder="As it appears on the card" autocomplete="cc-name" required/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Card Details</label>
+                  <div id="stripe-card-element" aria-label="Card number"></div>
+                  <div id="stripe-errors" role="alert"></div>
+                </div>
+                <button type="submit" class="btn-pay" id="card-pay-btn">
+                  <i class="fas fa-lock"></i> Pay Now
+                </button>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png" alt="Visa" height="22" style="opacity:.7"/>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/200px-Mastercard-logo.svg.png" alt="Mastercard" height="22" style="opacity:.7"/>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/200px-American_Express_logo_%282018%29.svg.png" alt="Amex" height="22" style="opacity:.7"/>
+              </div>
+            </div>
+
+            <!-- PayPal -->
+            <div id="section-paypal" class="payment-section">
+              <p style="font-size:.88rem;color:#64748b;margin-bottom:12px">Click the PayPal button below to complete your purchase.</p>
+              <div id="paypal-button-container"></div>
+            </div>
+
+            <!-- Bank Transfer -->
+            <div id="section-bank" class="payment-section">
+              <p style="font-size:.88rem;color:#64748b;margin-bottom:16px">Please transfer the exact amount to the account below and include your Order ID as reference.</p>
+              <table class="bank-info-table">
+                <tr><td>Bank Name</td><td>Global Bank Ltd. <button class="bank-copy-btn" data-copy="Global Bank Ltd.">Copy</button></td></tr>
+                <tr><td>Account Name</td><td>Globex International Trade Co., Ltd. <button class="bank-copy-btn" data-copy="Globex International Trade Co., Ltd.">Copy</button></td></tr>
+                <tr><td>Account Number</td><td>8801-2345-6789 <button class="bank-copy-btn" data-copy="8801-2345-6789">Copy</button></td></tr>
+                <tr><td>Routing / ABA</td><td>021000021 <button class="bank-copy-btn" data-copy="021000021">Copy</button></td></tr>
+                <tr><td>SWIFT / BIC</td><td>GLOBUSXX <button class="bank-copy-btn" data-copy="GLOBUSXX">Copy</button></td></tr>
+                <tr><td>IBAN</td><td>GB29NWBK60161331926819 <button class="bank-copy-btn" data-copy="GB29NWBK60161331926819">Copy</button></td></tr>
+              </table>
+              <form id="bank-transfer-form" style="margin-top:20px">
+                <div class="form-group">
+                  <label class="form-label" for="bank-reference">Transfer Reference / Transaction ID (optional)</label>
+                  <input id="bank-reference" type="text" class="form-input" placeholder="Bank transaction reference number"/>
+                </div>
+                <button type="submit" class="btn-pay">
+                  <i class="fas fa-check-circle"></i> Confirm Transfer Initiated
+                </button>
+              </form>
+            </div>
+
+            <!-- Escrow / Trade Assurance -->
+            <div id="section-escrow" class="payment-section">
+              <div class="escrow-steps">
+                <div class="escrow-step"><div class="escrow-step-num">1</div><div class="escrow-step-text">You fund the escrow account — funds are held securely</div></div>
+                <div class="escrow-step"><div class="escrow-step-num">2</div><div class="escrow-step-text">Supplier ships your goods and provides tracking</div></div>
+                <div class="escrow-step"><div class="escrow-step-num">3</div><div class="escrow-step-text">You confirm receipt and release funds to supplier</div></div>
+              </div>
+              <form id="escrow-form" style="margin-top:20px">
+                <div class="form-group">
+                  <label class="form-label" for="seller-id">Supplier User ID</label>
+                  <input id="seller-id" type="text" class="form-input" placeholder="Supplier's user ID (from their store page)" required/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="release-conditions">Release Conditions</label>
+                  <textarea id="release-conditions" class="form-input" rows="2" placeholder="Buyer confirms receipt of goods in described condition." style="resize:vertical">Buyer confirms receipt of goods in described condition.</textarea>
+                </div>
+                <button type="submit" class="btn-pay">
+                  <i class="fas fa-shield-alt"></i> Create Escrow
+                </button>
+              </form>
+            </div>
+
+            <!-- Error display -->
+            <div id="payment-error" role="alert" style="color:#ef4444;font-size:.85rem;margin-top:12px;min-height:18px"></div>
+
+            <!-- Security Badges -->
+            <div class="security-badges">
+              <span class="security-badge"><i class="fas fa-lock"></i> SSL Secured</span>
+              <span class="security-badge"><i class="fas fa-shield-alt"></i> PCI Compliant</span>
+              <span class="security-badge"><i class="fas fa-check-circle"></i> 256-bit Encryption</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Right: Order Summary ── -->
+        <div>
+          <div class="payment-card">
+            <h2 class="payment-card-title">Order Summary</h2>
+            <div id="order-summary">
+              <!-- Dynamically populated by payment.js -->
+              <div class="order-summary-row">
+                <span class="order-summary-label">Loading order details…</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-card" style="margin-top:16px">
+            <h3 style="font-size:.88rem;font-weight:600;color:#0a0e27;margin-bottom:12px"><i class="fas fa-headset" style="color:#0052CC;margin-right:6px"></i>Need Help?</h3>
+            <p style="font-size:.82rem;color:#64748b;margin-bottom:10px">Our support team is available 24/7.</p>
+            <a href="../help.html" style="font-size:.85rem;color:#0052CC;text-decoration:none;font-weight:500"><i class="fas fa-external-link-alt" style="font-size:.75rem"></i> Visit Help Center</a>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+<!-- PayPal SDK (replace client-id in production) -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD" data-sdk-integration-source="button-factory"></script>
+<script src="../../assets/js/navbar.js" type="module"></script>
+<script src="../../assets/js/payment.js" type="module"></script>
+</body>
+</html>
