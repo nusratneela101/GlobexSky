@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Meetings – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;display:flex;flex-direction:column;min-height:100vh}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);color:#fff;padding:48px 24px;text-align:center}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800;margin-bottom:8px}
+    .page-hero p{opacity:.85;font-size:1rem;max-width:520px;margin:0 auto 24px}
+    .hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+    .btn{padding:11px 22px;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+    .btn-white{background:#fff;color:#0052CC}
+    .btn-white:hover{background:#f0f5ff}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.65)}
+    .btn-outline:hover{background:rgba(255,255,255,.12)}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-sm{padding:7px 14px;font-size:.8rem;}
+    .container{max-width:1100px;margin:0 auto;padding:0 20px}
+    .content-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;padding:32px 0}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.84rem;font-weight:600;color:#374151;margin-bottom:5px}
+    .form-input{width:100%;padding:9px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:.87rem;color:#374151;outline:none;transition:border-color .2s;font-family:'Inter',sans-serif}
+    .form-input:focus{border-color:#0052CC}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .meeting-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #f1f5f9;transition:background .15s}
+    .meeting-item:last-child{border-bottom:none}
+    .meeting-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .meeting-icon.scheduled{background:#dbeafe;color:#0052CC}
+    .meeting-icon.completed{background:#d1fae5;color:#059669}
+    .meeting-icon.cancelled{background:#fee2e2;color:#ef4444}
+    .meeting-icon.in_progress{background:#fef3c7;color:#d97706}
+    .meeting-info{flex:1;min-width:0}
+    .meeting-title-text{font-weight:600;font-size:.9rem;color:#0a0e27;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .meeting-meta{font-size:.78rem;color:#64748b;margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .status-badge{padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .status-badge.scheduled{background:#dbeafe;color:#0052CC}
+    .status-badge.completed{background:#d1fae5;color:#059669}
+    .status-badge.cancelled{background:#fee2e2;color:#ef4444}
+    .status-badge.in_progress{background:#fef3c7;color:#d97706}
+    .empty-state{text-align:center;padding:40px;color:#94a3b8}
+    .empty-state i{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+    .empty-state p{font-size:.85rem}
+    .loading-spinner{text-align:center;padding:30px;color:#94a3b8;font-size:.85rem}
+    .stat-card{background:linear-gradient(135deg,#0052CC,#3375D6);color:#fff;border-radius:14px;padding:20px;text-align:center;margin-bottom:12px}
+    .stat-card.green{background:linear-gradient(135deg,#059669,#10b981)}
+    .stat-card.purple{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+    .stat-num{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:800}
+    .stat-label{font-size:.8rem;opacity:.85;margin-top:4px}
+    .quick-join{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border:1.5px solid #c7d2fe;border-radius:14px;padding:20px;margin-bottom:16px}
+    @media(max-width:768px){.content-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────────────────────── -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="nav-container">
+        <a href="../../index.html" class="nav-logo" aria-label="Globex Sky Home">
+          <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"/>
+        </a>
+        <div style="flex:1;"></div>
+        <a href="chat.html" class="btn btn-outline" style="border-color:#0052CC;color:#0052CC;background:#f0f4ff;font-size:.82rem;margin-right:8px;">
+          <i class="fas fa-comments"></i> Chat
+        </a>
+        <a href="../account/profile.html" class="btn btn-primary" style="font-size:.82rem;">
+          <i class="fas fa-user"></i> My Account
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <div class="page-hero">
+    <div class="container">
+      <h1><i class="fas fa-video" style="margin-right:10px;"></i>Video Meetings</h1>
+      <p>Schedule and join HD video meetings with suppliers and buyers from anywhere in the world.</p>
+      <div class="hero-actions">
+        <button class="btn btn-white" id="scheduleBtn"><i class="fas fa-calendar-plus"></i> Schedule Meeting</button>
+        <button class="btn btn-outline" id="joinBtn"><i class="fas fa-sign-in-alt"></i> Join with Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Content ────────────────────────────────────────────────────────── -->
+  <div class="container" style="flex:1;">
+    <div class="content-grid">
+
+      <!-- ── Left: Schedule Form + Meeting List ──────────────────────── -->
+      <div>
+
+        <!-- Schedule form (hidden by default, shown on button click) -->
+        <div class="card" id="scheduleCard" style="display:none;">
+          <div class="card-title"><i class="fas fa-calendar-plus" style="color:#0052CC;"></i> Schedule New Meeting</div>
+          <form id="scheduleMeetingForm">
+            <div class="form-group">
+              <label class="form-label">Meeting Title *</label>
+              <input type="text" class="form-input" id="meetingTitle" placeholder="e.g. Product Discussion with Supplier" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea class="form-input" id="meetingDesc" rows="2" placeholder="Optional agenda or notes…" style="resize:vertical;"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Date & Time *</label>
+                <input type="datetime-local" class="form-input" id="meetingDateTime" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Duration (minutes)</label>
+                <select class="form-input" id="meetingDuration">
+                  <option value="30">30 min</option>
+                  <option value="60" selected>60 min</option>
+                  <option value="90">90 min</option>
+                  <option value="120">2 hours</option>
+                  <option value="180">3 hours</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Invite (User IDs or emails, comma-separated)</label>
+              <input type="text" class="form-input" id="meetingInvitees" placeholder="user@example.com, another@example.com"/>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="submit" class="btn btn-primary" id="scheduleMeetingBtn"><i class="fas fa-calendar-check"></i> Schedule</button>
+              <button type="button" class="btn btn-outline" id="cancelScheduleBtn" style="color:#0052CC;border-color:#0052CC;background:#f0f4ff;">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Meeting list -->
+        <div class="card">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span><i class="fas fa-list" style="color:#0052CC;"></i> My Meetings</span>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-sm btn-primary" id="filterUpcoming" onclick="filterMeetings('upcoming')">Upcoming</button>
+              <button class="btn btn-sm" id="filterAll" onclick="filterMeetings('all')" style="background:#f1f5f9;color:#374151;">All</button>
+              <button class="btn btn-sm" id="filterPast" onclick="filterMeetings('past')" style="background:#f1f5f9;color:#374151;">Past</button>
+            </div>
+          </div>
+          <div id="meetingListLoading" class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading meetings…</div>
+          <div id="meetingList"></div>
+          <div id="meetingEmptyState" class="empty-state" style="display:none;">
+            <i class="fas fa-calendar-times"></i>
+            <p>No meetings found.<br/>Schedule your first meeting above.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: Stats + Quick Join ──────────────────────────────────── -->
+      <aside>
+        <!-- Quick join -->
+        <div class="quick-join">
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-sign-in-alt" style="color:#0052CC;"></i> Quick Join
+          </div>
+          <form id="joinMeetingForm" style="display:flex;gap:8px;">
+            <input type="text" id="roomCodeInput" class="form-input" placeholder="Enter room code…" maxlength="8" style="letter-spacing:.1em;font-weight:600;text-transform:uppercase;" aria-label="Room code"/>
+            <button type="submit" class="btn btn-primary btn-sm" style="flex-shrink:0;white-space:nowrap;">Join</button>
+          </form>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-card">
+          <div class="stat-num" id="statTotal">–</div>
+          <div class="stat-label"><i class="fas fa-video"></i> Total Meetings</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-num" id="statCompleted">–</div>
+          <div class="stat-label"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-num" id="statUpcoming">–</div>
+          <div class="stat-label"><i class="fas fa-clock"></i> Upcoming</div>
+        </div>
+
+        <!-- Tips -->
+        <div class="card" style="margin-top:0;">
+          <div class="card-title"><i class="fas fa-lightbulb" style="color:#f59e0b;"></i> Tips</div>
+          <ul style="font-size:.82rem;color:#64748b;line-height:1.9;padding-left:16px;">
+            <li>Schedule meetings at least 1 hour in advance.</li>
+            <li>Share the room code with participants.</li>
+            <li>Use screen sharing to present products.</li>
+            <li>Record meetings for future reference.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+  <footer style="background:#0a0e27;color:#9ca3af;text-align:center;padding:20px;font-size:.82rem;">
+    <p>&copy; 2025 Globex International Trade Co., Ltd. All rights reserved.</p>
+  </footer>
+
+  <script src="../../assets/js/config.js"></script>
+  <script>
+    const API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE) || '/api/v1';
+    let allMeetings = [];
+    let currentFilter = 'upcoming';
+
+    function getToken() {
+      return localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+    }
+    function authHeaders() {
+      return { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() };
+    }
+
+    /* ── Fetch meetings ─────────────────────────────────────────────────── */
+    async function fetchMeetings() {
+      try {
+        const res = await fetch(API_BASE + '/video-meetings/my-meetings', { headers: authHeaders() });
+        if (!res.ok) { renderMeetings([]); return; }
+        const json = await res.json();
+        allMeetings = json.data || [];
+        updateStats(allMeetings);
+        filterMeetings(currentFilter);
+      } catch (e) {
+        console.warn('Meetings: failed to load', e);
+        renderMeetings([]);
+      }
+    }
+
+    function filterMeetings(filter) {
+      currentFilter = filter;
+      const now = new Date();
+      let list = allMeetings;
+      if (filter === 'upcoming') list = allMeetings.filter(m => new Date(m.scheduled_at) >= now && m.status !== 'cancelled');
+      if (filter === 'past') list = allMeetings.filter(m => new Date(m.scheduled_at) < now || m.status === 'completed' || m.status === 'cancelled');
+
+      // Update active button
+      ['filterUpcoming','filterAll','filterPast'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const isActive = (id === 'filter' + filter.charAt(0).toUpperCase() + filter.slice(1));
+        el.className = isActive ? 'btn btn-sm btn-primary' : 'btn btn-sm';
+        if (!isActive) el.style.cssText = 'background:#f1f5f9;color:#374151;';
+        else el.style.cssText = '';
+      });
+
+      renderMeetings(list);
+    }
+
+    function updateStats(meetings) {
+      const total = meetings.length;
+      const completed = meetings.filter(m => m.status === 'completed').length;
+      const upcoming = meetings.filter(m => new Date(m.scheduled_at) >= new Date() && m.status !== 'cancelled').length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statCompleted').textContent = completed;
+      document.getElementById('statUpcoming').textContent = upcoming;
+    }
+
+    function renderMeetings(list) {
+      const loadingEl = document.getElementById('meetingListLoading');
+      const listEl = document.getElementById('meetingList');
+      const emptyEl = document.getElementById('meetingEmptyState');
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (!list.length) {
+        if (listEl) listEl.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = 'block';
+        return;
+      }
+      if (emptyEl) emptyEl.style.display = 'none';
+
+      listEl.innerHTML = list.map(m => {
+        const dt = new Date(m.scheduled_at);
+        const dateStr = dt.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric',year:'numeric'});
+        const timeStr = dt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+        const statusClass = m.status || 'scheduled';
+        const isPast = dt < new Date() && m.status !== 'in_progress';
+        const icon = {scheduled:'fa-calendar',completed:'fa-check-circle',cancelled:'fa-times-circle',in_progress:'fa-video'}[m.status] || 'fa-calendar';
+        return `<div class="meeting-item">
+          <div class="meeting-icon ${statusClass}"><i class="fas ${icon}"></i></div>
+          <div class="meeting-info">
+            <div class="meeting-title-text">${escHtml(m.title)}</div>
+            <div class="meeting-meta">
+              <span><i class="fas fa-calendar-day"></i> ${dateStr}</span>
+              <span><i class="fas fa-clock"></i> ${timeStr}</span>
+              ${m.duration_minutes ? `<span><i class="fas fa-hourglass-half"></i> ${m.duration_minutes}min</span>` : ''}
+              <span class="status-badge ${statusClass}">${escHtml(m.status || 'scheduled')}</span>
+            </div>
+            ${m.room_code ? `<div style="font-size:.75rem;color:#94a3b8;margin-top:3px;font-family:monospace;">Room: ${escHtml(m.room_code)}</div>` : ''}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+            ${m.status === 'scheduled' && !isPast ? `<a href="../meetings/room.html?id=${m.id}" class="btn btn-sm btn-primary"><i class="fas fa-video"></i> Join</a>` : ''}
+            ${m.status === 'scheduled' ? `<button class="btn btn-sm btn-danger" onclick="cancelMeeting('${m.id}')"><i class="fas fa-times"></i> Cancel</button>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── Schedule meeting ───────────────────────────────────────────────── */
+    document.getElementById('scheduleMeetingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('scheduleMeetingBtn');
+      const title = document.getElementById('meetingTitle').value.trim();
+      const desc = document.getElementById('meetingDesc').value.trim();
+      const dt = document.getElementById('meetingDateTime').value;
+      const duration = parseInt(document.getElementById('meetingDuration').value, 10);
+      const inviteesRaw = document.getElementById('meetingInvitees').value.trim();
+      const invitees = inviteesRaw ? inviteesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+      if (!title || !dt) { alert('Please fill in required fields.'); return; }
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scheduling…';
+      try {
+        const res = await fetch(API_BASE + '/video-meetings/schedule', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({ title, description: desc, scheduled_at: new Date(dt).toISOString(), duration_minutes: duration, invitees }),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          alert(err.error || 'Failed to schedule meeting.');
+        } else {
+          document.getElementById('scheduleCard').style.display = 'none';
+          document.getElementById('scheduleMeetingForm').reset();
+          await fetchMeetings();
+          alert('Meeting scheduled successfully!');
+        }
+      } catch(ex) { alert('Error scheduling meeting.'); }
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-calendar-check"></i> Schedule';
+    });
+
+    /* ── Cancel meeting ─────────────────────────────────────────────────── */
+    async function cancelMeeting(id) {
+      if (!confirm('Cancel this meeting?')) return;
+      try {
+        await fetch(API_BASE + '/video-meetings/' + id + '/cancel', { method: 'PUT', headers: authHeaders() });
+        await fetchMeetings();
+      } catch(e) { alert('Failed to cancel meeting.'); }
+    }
+
+    /* ── Join with code ─────────────────────────────────────────────────── */
+    document.getElementById('joinMeetingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+      if (!code) { alert('Please enter a room code.'); return; }
+      window.location.href = '../meetings/room.html?code=' + encodeURIComponent(code);
+    });
+
+    /* ── Toggle schedule form ───────────────────────────────────────────── */
+    document.getElementById('scheduleBtn').addEventListener('click', function() {
+      const card = document.getElementById('scheduleCard');
+      card.style.display = card.style.display === 'none' ? 'block' : 'none';
+      if (card.style.display === 'block') card.scrollIntoView({behavior:'smooth'});
+    });
+    document.getElementById('joinBtn').addEventListener('click', function() {
+      document.getElementById('roomCodeInput').focus();
+      document.getElementById('roomCodeInput').scrollIntoView({behavior:'smooth'});
+    });
+    document.getElementById('cancelScheduleBtn').addEventListener('click', function() {
+      document.getElementById('scheduleCard').style.display = 'none';
+    });
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Init
+    fetchMeetings();
+
+    // Pre-fill min datetime
+    const dtInput = document.getElementById('meetingDateTime');
+    if (dtInput) {
+      const now = new Date(); now.setMinutes(now.getMinutes() + 60);
+      dtInput.min = now.toISOString().slice(0,16);
+    }
+  </script>
+</body>
+</html>
