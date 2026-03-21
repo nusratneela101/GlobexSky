@@ -95,6 +95,13 @@ app.use(`${API}/shipments`, shipmentRoutes);
 app.use(`${API}/carry`, carryRoutes);
 app.use(`${API}/parcels`, parcelRoutes);
 app.use(`${API}/payments`, paymentRoutes);
+
+// New detailed admin routes (registered before generic /admin to take precedence)
+app.use(`${API}/admin/users`, adminUsersRoutes);
+app.use(`${API}/admin/products`, adminProductsRoutes);
+app.use(`${API}/admin/settings`, adminSettingsRoutes);
+app.use(`${API}/admin/roles`, adminRolesRoutes);
+app.use(`${API}/admin/cms`, adminCmsRoutes);
 app.use(`${API}/admin`, adminRoutes);
 app.use(`${API}/pricing`, pricingRoutes);
 app.use(`${API}/inspections`, inspectionRoutes);
@@ -136,11 +143,6 @@ app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/backup`, backupRoutes);
 app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
-app.use(`${API}/admin/users`, adminUsersRoutes);
-app.use(`${API}/admin/products`, adminProductsRoutes);
-app.use(`${API}/admin/settings`, adminSettingsRoutes);
-app.use(`${API}/admin/roles`, adminRolesRoutes);
-app.use(`${API}/admin/cms`, adminCmsRoutes);
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);
