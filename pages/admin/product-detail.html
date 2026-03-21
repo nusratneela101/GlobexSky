@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Product Detail – Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-teal{background:#ccfbf1;color:#0d9488}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .btn-sm{padding:5px 12px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
+    .btn-warning{background:#f97316;color:#fff}
+    .tab-bar{display:flex;gap:4px;border-bottom:2px solid #e2e8f0;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:10px 18px;border:none;background:none;cursor:pointer;font-size:.875rem;font-weight:500;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+    .tab-btn.active{color:#0052CC;border-bottom-color:#0052CC;font-weight:600}
+    .tab-pane{display:none}
+    .tab-pane.active{display:block}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+    .modal-close{border:none;background:none;font-size:1.3rem;cursor:pointer;color:#64748b}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif}
+    .form-control:focus{outline:none;border-color:#0052CC}
+    .product-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
+    .product-thumb{width:100%;aspect-ratio:1;border-radius:12px;background:#f8faff;display:flex;align-items:center;justify-content:center;font-size:4rem;color:#cbd5e1;border:2px dashed #e2e8f0;margin-bottom:14px}
+    .product-meta-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:.875rem}
+    .product-meta-row:last-child{border-bottom:none}
+    .product-meta-label{color:#94a3b8;font-weight:500}
+    .product-meta-value{color:#374151;font-weight:600;text-align:right}
+    .admin-actions-panel{display:flex;flex-direction:column;gap:8px}
+    .spec-table{width:100%;font-size:.875rem}
+    .spec-table tr td{padding:8px 12px;border-bottom:1px solid #f1f5f9}
+    .spec-table tr td:first-child{color:#94a3b8;font-weight:500;width:40%}
+    .spec-table tr td:last-child{color:#374151;font-weight:600}
+    .tag{display:inline-flex;padding:3px 10px;border-radius:6px;background:#f1f5f9;color:#374151;font-size:.78rem;font-weight:500;margin:3px}
+    .review-card{padding:14px;background:#f8faff;border-radius:10px;margin-bottom:12px}
+    .review-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .review-author{font-weight:700;font-size:.875rem;color:#1a1a2e}
+    .stars{color:#f59e0b;font-size:.9rem}
+    .review-text{font-size:.875rem;color:#374151;line-height:1.6}
+    .review-date{font-size:.75rem;color:#94a3b8;margin-top:6px}
+    .back-btn{display:inline-flex;align-items:center;gap:8px;color:#0052CC;font-size:.875rem;font-weight:600;text-decoration:none;margin-bottom:16px;padding:6px 0}
+    .back-btn:hover{text-decoration:underline}
+    .image-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .image-thumb{aspect-ratio:1;border-radius:8px;background:#f8faff;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#cbd5e1;border:1px solid #e2e8f0}
+    @media(max-width:900px){.product-layout{grid-template-columns:1fr}.image-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html" class="active"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="categories.html"><i class="fas fa-sitemap"></i> <span>Categories</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="supplier-verification.html"><i class="fas fa-store"></i> <span>Suppliers</span></a></li>
+        <li><a href="carrier-verification.html"><i class="fas fa-truck"></i> <span>Carriers</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="roles.html"><i class="fas fa-user-shield"></i> <span>Roles</span></a></li>
+        <li><a href="pages.html"><i class="fas fa-file-alt"></i> <span>Pages</span></a></li>
+        <li><a href="banners.html"><i class="fas fa-images"></i> <span>Banners</span></a></li>
+        <li><a href="blog.html"><i class="fas fa-blog"></i> <span>Blog</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="admin-page-title">Product Detail</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">A</div>
+          <span>Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <a href="products.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Products</a>
+
+      <div class="product-layout">
+        <!-- Left: Product Card -->
+        <div>
+          <div class="admin-card">
+            <div class="product-thumb"><i class="fas fa-box"></i></div>
+            <div style="text-align:center;margin-bottom:12px">
+              <div style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:6px">Hydraulic Seal Kit Pro X200</div>
+              <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
+                <span class="badge-pill badge-orange">Pending Review</span>
+                <span class="badge-pill badge-blue">New</span>
+              </div>
+            </div>
+            <div class="product-meta-row"><span class="product-meta-label">SKU</span><span class="product-meta-value">HSK-PRO-X200</span></div>
+            <div class="product-meta-row"><span class="product-meta-label">Category</span><span class="product-meta-value">Industrial Parts</span></div>
+            <div class="product-meta-row"><span class="product-meta-label">Supplier</span><span class="product-meta-value">ShenZhen Parts Co.</span></div>
+            <div class="product-meta-row"><span class="product-meta-label">Unit Price</span><span class="product-meta-value">$148.00</span></div>
+            <div class="product-meta-row"><span class="product-meta-label">MOQ</span><span class="product-meta-value">10 units</span></div>
+            <div class="product-meta-row"><span class="product-meta-label">Stock</span><span class="product-meta-value">2,400 units</span></div>
+            <div class="product-meta-row"><span class="product-meta-label">Weight</span><span class="product-meta-value">2.3 kg</span></div>
+            <div class="admin-actions-panel" style="margin-top:16px">
+              <button class="btn-sm btn-success" style="justify-content:center"><i class="fas fa-check-circle"></i> Approve Product</button>
+              <button class="btn-sm btn-danger" style="justify-content:center" onclick="document.getElementById('rejectModal').classList.add('open')"><i class="fas fa-times-circle"></i> Reject Product</button>
+              <button class="btn-sm" style="background:#f59e0b;color:#fff;justify-content:center"><i class="fas fa-star"></i> Set as Featured</button>
+              <button class="btn-sm" style="background:#7c3aed;color:#fff;justify-content:center"><i class="fas fa-fire"></i> Set as Trending</button>
+              <button class="btn-sm btn-primary" style="justify-content:center"><i class="fas fa-edit"></i> Edit Product</button>
+              <button class="btn-sm btn-danger" style="justify-content:center"><i class="fas fa-trash"></i> Delete Product</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Tabs -->
+        <div>
+          <div class="admin-card" style="padding-bottom:0">
+            <div class="tab-bar">
+              <button class="tab-btn active" onclick="switchTab(this,'tab-details')">Details</button>
+              <button class="tab-btn" onclick="switchTab(this,'tab-images')">Images</button>
+              <button class="tab-btn" onclick="switchTab(this,'tab-variants')">Variants</button>
+              <button class="tab-btn" onclick="switchTab(this,'tab-reviews')">Reviews</button>
+              <button class="tab-btn" onclick="switchTab(this,'tab-analytics')">Analytics</button>
+            </div>
+
+            <!-- Details Tab -->
+            <div id="tab-details" class="tab-pane active" style="padding-bottom:20px">
+              <div style="margin-bottom:16px">
+                <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:8px">Description</div>
+                <p style="font-size:.875rem;color:#374151;line-height:1.7">The Hydraulic Seal Kit Pro X200 is a precision-engineered sealing solution designed for high-pressure hydraulic systems in industrial machinery, construction equipment, and heavy vehicles. This comprehensive kit includes 48 seal components manufactured from premium NBR rubber, providing superior resistance to hydraulic oils, fuels, and extreme temperature conditions ranging from -40°C to +120°C.</p>
+              </div>
+              <div style="margin-bottom:16px">
+                <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:8px">Specifications</div>
+                <table class="spec-table">
+                  <tr><td>Material</td><td>NBR Rubber (Grade A)</td></tr>
+                  <tr><td>Pressure Rating</td><td>Up to 420 bar</td></tr>
+                  <tr><td>Temperature Range</td><td>-40°C to +120°C</td></tr>
+                  <tr><td>Components</td><td>48 pieces</td></tr>
+                  <tr><td>Compatibility</td><td>ISO 6149, DIN 3852</td></tr>
+                  <tr><td>Origin</td><td>China (Made in Shenzhen)</td></tr>
+                  <tr><td>Certification</td><td>ISO 9001:2015</td></tr>
+                  <tr><td>Packaging</td><td>Individual box with insert</td></tr>
+                </table>
+              </div>
+              <div style="margin-bottom:16px">
+                <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:8px">Tags</div>
+                <span class="tag">hydraulic</span>
+                <span class="tag">seal kit</span>
+                <span class="tag">industrial</span>
+                <span class="tag">NBR rubber</span>
+                <span class="tag">heavy machinery</span>
+                <span class="tag">construction</span>
+              </div>
+              <div style="display:flex;gap:24px;font-size:.8rem;color:#94a3b8">
+                <span><i class="fas fa-calendar-plus" style="margin-right:4px"></i>Created: Jun 15, 2025</span>
+                <span><i class="fas fa-calendar-check" style="margin-right:4px"></i>Updated: Jun 20, 2025</span>
+              </div>
+            </div>
+
+            <!-- Images Tab -->
+            <div id="tab-images" class="tab-pane" style="padding-bottom:20px">
+              <div class="image-grid">
+                <div class="image-thumb"><i class="fas fa-image"></i></div>
+                <div class="image-thumb"><i class="fas fa-image"></i></div>
+                <div class="image-thumb"><i class="fas fa-image"></i></div>
+                <div class="image-thumb"><i class="fas fa-plus"></i></div>
+              </div>
+              <p style="font-size:.8rem;color:#94a3b8;margin-top:12px">3 images uploaded. Max 10 images allowed.</p>
+            </div>
+
+            <!-- Variants Tab -->
+            <div id="tab-variants" class="tab-pane" style="padding-bottom:20px">
+              <div style="overflow-x:auto">
+                <table class="data-table">
+                  <thead><tr><th>Size</th><th>Material</th><th>SKU</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>Small (S)</td><td>NBR</td><td>HSK-S-NBR</td><td>$120.00</td><td>800</td><td><span class="badge-pill badge-green">Active</span></td></tr>
+                    <tr><td>Medium (M)</td><td>NBR</td><td>HSK-M-NBR</td><td>$148.00</td><td>1200</td><td><span class="badge-pill badge-green">Active</span></td></tr>
+                    <tr><td>Large (L)</td><td>NBR</td><td>HSK-L-NBR</td><td>$175.00</td><td>400</td><td><span class="badge-pill badge-green">Active</span></td></tr>
+                    <tr><td>Medium (M)</td><td>Viton</td><td>HSK-M-VIT</td><td>$210.00</td><td>200</td><td><span class="badge-pill badge-orange">Low Stock</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div id="tab-reviews" class="tab-pane" style="padding-bottom:20px">
+              <div class="review-card">
+                <div class="review-header">
+                  <span class="review-author">Mohammed Al-Rashid</span>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                </div>
+                <div class="review-text">Excellent quality seals. We've used these in our CAT excavators and they perform flawlessly even in extreme desert heat. Highly recommend to any maintenance team.</div>
+                <div class="review-date">Jun 18, 2025 · Verified Purchase</div>
+              </div>
+              <div class="review-card">
+                <div class="review-header">
+                  <span class="review-author">Elena Kowalski</span>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+                </div>
+                <div class="review-text">Good product overall. Seals fit perfectly in our hydraulic press systems. Delivery was a bit delayed but the quality makes up for it.</div>
+                <div class="review-date">Jun 12, 2025 · Verified Purchase</div>
+              </div>
+              <div class="review-card">
+                <div class="review-header">
+                  <span class="review-author">Tunde Adeyemi</span>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</div>
+                </div>
+                <div class="review-text">Decent seals but one of the 48 pieces had a visible defect. Supplier was responsive and replaced the kit. Would buy again with caution.</div>
+                <div class="review-date">Jun 5, 2025 · Verified Purchase</div>
+              </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="tab-analytics" class="tab-pane" style="padding-bottom:20px">
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px">
+                <div style="background:#f8faff;border-radius:10px;padding:14px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:700;color:#0052CC;font-family:'Poppins',sans-serif">1,284</div>
+                  <div style="font-size:.78rem;color:#94a3b8;margin-top:4px">Total Views</div>
+                </div>
+                <div style="background:#f8faff;border-radius:10px;padding:14px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:700;color:#059669;font-family:'Poppins',sans-serif">342</div>
+                  <div style="font-size:.78rem;color:#94a3b8;margin-top:4px">Add to Cart</div>
+                </div>
+                <div style="background:#f8faff;border-radius:10px;padding:14px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:700;color:#f97316;font-family:'Poppins',sans-serif">87</div>
+                  <div style="font-size:.78rem;color:#94a3b8;margin-top:4px">Orders</div>
+                </div>
+              </div>
+              <p style="font-size:.875rem;color:#64748b">Conversion rate: <strong style="color:#0052CC">6.77%</strong> · Average order value: <strong style="color:#0052CC">$312.00</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Rejection Reason Modal -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header">
+      <span class="modal-title">Reject Product</span>
+      <button class="modal-close" onclick="document.getElementById('rejectModal').classList.remove('open')">&times;</button>
+    </div>
+    <p style="font-size:.875rem;color:#64748b;margin-bottom:16px">Please provide a reason for rejecting <strong>Hydraulic Seal Kit Pro X200</strong>. This will be sent to the supplier.</p>
+    <div class="form-group">
+      <label class="form-label">Rejection Category</label>
+      <select class="form-control">
+        <option>Inaccurate product description</option>
+        <option>Poor quality images</option>
+        <option>Prohibited item</option>
+        <option>Incomplete specifications</option>
+        <option>Counterfeit / IP violation</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Detailed Reason</label>
+      <textarea class="form-control" rows="4" placeholder="Provide specific details to help the supplier correct and resubmit…"></textarea>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px">
+      <button class="btn-sm btn-secondary" onclick="document.getElementById('rejectModal').classList.remove('open')">Cancel</button>
+      <button class="btn-sm btn-danger"><i class="fas fa-times"></i> Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/js/admin.js"></script>
+<script>
+  function switchTab(btn, tabId) {
+    btn.closest('.admin-card').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.closest('.admin-card').querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+</script>
+</body>
+</html>

@@ -61,6 +61,11 @@ import advancedSearchRoutes from './routes/advancedSearch.routes.js';
 import backupRoutes from './routes/backup.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
+import adminUsersRoutes from './routes/adminUsers.js';
+import adminProductsRoutes from './routes/adminProducts.js';
+import adminSettingsRoutes from './routes/settings.js';
+import adminRolesRoutes from './routes/adminRoles.js';
+import adminCmsRoutes from './routes/cms.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -131,6 +136,11 @@ app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/backup`, backupRoutes);
 app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
+app.use(`${API}/admin/users`, adminUsersRoutes);
+app.use(`${API}/admin/products`, adminProductsRoutes);
+app.use(`${API}/admin/settings`, adminSettingsRoutes);
+app.use(`${API}/admin/roles`, adminRolesRoutes);
+app.use(`${API}/admin/cms`, adminCmsRoutes);
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);
