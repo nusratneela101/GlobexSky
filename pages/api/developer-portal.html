@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Developer Portal – Globex Sky API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;left:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .page-hero::after{content:'';position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:rgba(124,58,237,.15)}
+    .hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:8px}
+    .page-hero p{font-size:1rem;opacity:.88;max-width:560px;margin:0 auto 20px}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn-hero-primary{background:#fff;color:#0052CC;padding:10px 22px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:.9rem;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:background .2s}
+    .btn-hero-primary:hover{background:#f0f5ff}
+    .btn-hero-outline{background:transparent;color:#fff;padding:10px 22px;border-radius:8px;border:2px solid rgba(255,255,255,.6);cursor:pointer;font-weight:700;font-size:.9rem;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:all .2s}
+    .btn-hero-outline:hover{background:rgba(255,255,255,.1)}
+    .section{padding:44px 24px}
+    .container{max-width:1240px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .sec-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .sec-sub{font-size:.85rem;color:#64748b;margin-bottom:24px}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    /* Quick Start Steps */
+    .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:40px}
+    .step-card{background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(0,0,0,.06);position:relative;overflow:hidden}
+    .step-num{width:36px;height:36px;border-radius:10px;background:#0052CC;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+    .step-title{font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:700;color:#0a0e27;margin-bottom:6px}
+    .step-desc{font-size:.8rem;color:#64748b;line-height:1.6}
+    .step-bg{position:absolute;right:-8px;bottom:-8px;font-size:3.5rem;opacity:.04;color:#0052CC}
+    /* Code Tabs */
+    .code-card{background:#fff;border-radius:16px;padding:0;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:40px;overflow:hidden}
+    .code-tabs{display:flex;border-bottom:2px solid #f1f5f9;padding:0 20px;background:#fff}
+    .code-tab{padding:12px 18px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:'Inter',sans-serif}
+    .code-tab.active{color:#0052CC;border-bottom-color:#0052CC}
+    .code-pane{display:none;padding:0}
+    .code-pane.active{display:block}
+    .code-header{background:#1e293b;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+    .code-lang{color:#94a3b8;font-size:.78rem;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px}
+    .code-lang i{color:#fbbf24}
+    .btn-copy-code{background:rgba(255,255,255,.1);border:none;color:#94a3b8;padding:4px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .2s}
+    .btn-copy-code:hover{background:rgba(255,255,255,.2);color:#fff}
+    pre.code-block{background:#0f172a;color:#e2e8f0;padding:24px 20px;font-size:.82rem;font-family:'Courier New',monospace;line-height:1.65;overflow-x:auto;margin:0}
+    .kw{color:#93c5fd}.fn{color:#fde68a}.str{color:#86efac}.cm{color:#64748b}.val{color:#f9a8d4}
+    /* Endpoints Table */
+    .table-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:40px;overflow-x:auto}
+    table.endpoint-table{width:100%;border-collapse:collapse;min-width:640px}
+    .endpoint-table th{background:#f8fafc;padding:11px 14px;text-align:left;font-size:.78rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #e2e8f0}
+    .endpoint-table td{padding:13px 14px;font-size:.83rem;color:#374151;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .endpoint-table tr:last-child td{border-bottom:none}
+    .endpoint-table tr:hover td{background:#f8fafc}
+    .method-badge{padding:3px 10px;border-radius:6px;font-size:.72rem;font-weight:700;font-family:'Poppins',sans-serif;white-space:nowrap}
+    .method-get{background:#d1fae5;color:#059669}
+    .method-post{background:#dbeafe;color:#0052CC}
+    .method-put{background:#fff7ed;color:#f97316}
+    .method-delete{background:#fee2e2;color:#ef4444}
+    code.endpoint-path{background:#f1f5f9;color:#0052CC;padding:2px 8px;border-radius:5px;font-size:.78rem;font-family:'Courier New',monospace}
+    /* Auth Guide */
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px}
+    @media(max-width:700px){.auth-grid{grid-template-columns:1fr}}
+    /* Rate Limits */
+    .limits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:40px}
+    .limit-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,.06);text-align:center}
+    .limit-plan{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:6px}
+    .limit-rpm{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:800;color:#0052CC;line-height:1}
+    .limit-unit{font-size:.75rem;color:#94a3b8;margin-bottom:8px}
+    .limit-daily{font-size:.82rem;color:#374151}
+    /* Sandbox Banner */
+    .sandbox-banner{background:linear-gradient(135deg,#0a0e27,#0052CC);border-radius:20px;padding:32px;color:#fff;margin-bottom:40px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;position:relative;overflow:hidden}
+    .sandbox-banner::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05)}
+    .sandbox-text{flex:1;position:relative;z-index:1}
+    .sandbox-text h3{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:6px}
+    .sandbox-text p{font-size:.88rem;opacity:.8;max-width:500px}
+    .btn-sandbox{background:#fbbf24;color:#0a0e27;border:none;border-radius:8px;padding:11px 24px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;transition:all .2s;flex-shrink:0;position:relative;z-index:1}
+    .btn-sandbox:hover{background:#f59e0b}
+    /* Footer */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    .toast{position:fixed;bottom:28px;right:24px;background:#059669;color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(120px);transition:transform .3s}
+    .toast.show{transform:translateY(0)}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-code" style="color:#93c5fd"></i> Developer Portal</h1>
+    <p>Integrate Globex Sky's trade platform into your systems with our RESTful API. Automate orders, track shipments, and manage products programmatically.</p>
+    <div class="hero-btns">
+      <a href="keys.html" class="btn-hero-primary"><i class="fas fa-key"></i> Get API Key</a>
+      <button class="btn-hero-outline" onclick="openSandbox()"><i class="fas fa-flask"></i> Try Sandbox</button>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="#">API</a><span>/</span>
+      <span>Developer Portal</span>
+    </nav>
+
+    <!-- Getting Started -->
+    <div class="sec-title"><i class="fas fa-rocket" style="color:#0052CC"></i> Getting Started</div>
+    <p class="sec-sub">Four steps to make your first API call in under 5 minutes.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Create an Account</div>
+        <div class="step-desc">Register as a supplier or buyer on Globex Sky. Business verification may be required for full access.</div>
+        <div class="step-bg"><i class="fas fa-user-plus"></i></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">Generate an API Key</div>
+        <div class="step-desc">Navigate to API &rarr; Keys, create a new key, and copy your secret token. Store it securely — it won't be shown again.</div>
+        <div class="step-bg"><i class="fas fa-key"></i></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Make Your First Request</div>
+        <div class="step-desc">Use your key in the <code style="font-size:.78rem;background:#f1f5f9;padding:2px 5px;border-radius:4px">Authorization: Bearer</code> header to call any endpoint below.</div>
+        <div class="step-bg"><i class="fas fa-paper-plane"></i></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-title">Set Up Webhooks</div>
+        <div class="step-desc">Register webhook URLs to receive real-time push events for orders, payments, and shipment updates.</div>
+        <div class="step-bg"><i class="fas fa-webhook"></i></div>
+      </div>
+    </div>
+
+    <!-- Sandbox Banner -->
+    <div class="sandbox-banner">
+      <div class="sandbox-text">
+        <h3><i class="fas fa-flask"></i> Try the Sandbox Environment</h3>
+        <p>Test all API endpoints without affecting real data. Use our pre-seeded test data and simulate order flows safely. Base URL: <code style="background:rgba(255,255,255,.15);padding:2px 7px;border-radius:4px;font-size:.82rem">https://sandbox.api.globexsky.com/v2</code></p>
+      </div>
+      <button class="btn-sandbox" onclick="openSandbox()"><i class="fas fa-play"></i> Launch Sandbox</button>
+    </div>
+
+    <!-- Code Examples -->
+    <div class="sec-title"><i class="fas fa-terminal" style="color:#7c3aed"></i> Code Examples</div>
+    <p class="sec-sub">Copy-ready snippets for the most common API operations.</p>
+    <div class="code-card">
+      <div class="code-tabs">
+        <button class="code-tab active" onclick="switchCode(this,'js')"><i class="fab fa-js" style="color:#fbbf24"></i> JavaScript</button>
+        <button class="code-tab" onclick="switchCode(this,'python')"><i class="fab fa-python" style="color:#3b82f6"></i> Python</button>
+        <button class="code-tab" onclick="switchCode(this,'php')"><i class="fab fa-php" style="color:#7c3aed"></i> PHP</button>
+      </div>
+      <!-- JS -->
+      <div class="code-pane active" id="pane-js">
+        <div class="code-header">
+          <span class="code-lang"><i class="fab fa-js"></i> Fetch Products – JavaScript (fetch API)</span>
+          <button class="btn-copy-code" onclick="copySnippet('js')"><i class="far fa-copy"></i> Copy</button>
+        </div>
+        <pre class="code-block" id="code-js"><span class="cm">// Fetch first page of products from Globex Sky API</span>
+<span class="kw">const</span> <span class="fn">API_KEY</span> = <span class="str">'gsx_your_api_key_here'</span>;
+<span class="kw">const</span> <span class="fn">BASE_URL</span> = <span class="str">'https://api.globexsky.com/v2'</span>;
+
+<span class="kw">async function</span> <span class="fn">fetchProducts</span>(page = <span class="val">1</span>, limit = <span class="val">20</span>) {
+  <span class="kw">const</span> response = <span class="kw">await</span> fetch(
+    <span class="str">`${BASE_URL}/products?page=${page}&amp;limit=${limit}`</span>,
+    {
+      method: <span class="str">'GET'</span>,
+      headers: {
+        <span class="str">'Authorization'</span>: <span class="str">`Bearer ${API_KEY}`</span>,
+        <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+        <span class="str">'Accept'</span>: <span class="str">'application/json'</span>
+      }
+    }
+  );
+  <span class="kw">if</span> (!response.ok) <span class="kw">throw new</span> Error(<span class="str">`HTTP ${response.status}`</span>);
+  <span class="kw">const</span> data = <span class="kw">await</span> response.json();
+  console.log(<span class="str">'Products:'</span>, data.items);
+  <span class="kw">return</span> data;
+}
+
+<span class="cm">// Create a new order</span>
+<span class="kw">async function</span> <span class="fn">createOrder</span>(payload) {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">`${BASE_URL}/orders`</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: { <span class="str">'Authorization'</span>: <span class="str">`Bearer ${API_KEY}`</span>, <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    body: JSON.stringify(payload)
+  });
+  <span class="kw">return</span> res.json();
+}
+
+fetchProducts(<span class="val">1</span>, <span class="val">20</span>).then(console.log).catch(console.error);</pre>
+      </div>
+      <!-- Python -->
+      <div class="code-pane" id="pane-python">
+        <div class="code-header">
+          <span class="code-lang"><i class="fab fa-python"></i> Fetch Products – Python (requests)</span>
+          <button class="btn-copy-code" onclick="copySnippet('python')"><i class="far fa-copy"></i> Copy</button>
+        </div>
+        <pre class="code-block" id="code-python"><span class="kw">import</span> requests
+
+<span class="fn">API_KEY</span> = <span class="str">"gsx_your_api_key_here"</span>
+<span class="fn">BASE_URL</span> = <span class="str">"https://api.globexsky.com/v2"</span>
+
+HEADERS = {
+    <span class="str">"Authorization"</span>: <span class="str">f"Bearer {API_KEY}"</span>,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+    <span class="str">"Accept"</span>: <span class="str">"application/json"</span>,
+}
+
+<span class="kw">def</span> <span class="fn">fetch_products</span>(page=<span class="val">1</span>, limit=<span class="val">20</span>):
+    params = {<span class="str">"page"</span>: page, <span class="str">"limit"</span>: limit}
+    response = requests.get(<span class="str">f"{BASE_URL}/products"</span>, headers=HEADERS, params=params)
+    response.raise_for_status()
+    <span class="kw">return</span> response.json()
+
+<span class="kw">def</span> <span class="fn">create_order</span>(payload: dict):
+    response = requests.post(<span class="str">f"{BASE_URL}/orders"</span>, headers=HEADERS, json=payload)
+    response.raise_for_status()
+    <span class="kw">return</span> response.json()
+
+<span class="kw">def</span> <span class="fn">track_shipment</span>(shipment_id: str):
+    response = requests.get(<span class="str">f"{BASE_URL}/shipments/{shipment_id}"</span>, headers=HEADERS)
+    response.raise_for_status()
+    <span class="kw">return</span> response.json()
+
+<span class="cm"># Example usage</span>
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    products = fetch_products(page=<span class="val">1</span>, limit=<span class="val">10</span>)
+    print(<span class="str">f"Found {products['total']} products"</span>)</pre>
+      </div>
+      <!-- PHP -->
+      <div class="code-pane" id="pane-php">
+        <div class="code-header">
+          <span class="code-lang"><i class="fab fa-php"></i> Fetch Products – PHP (cURL)</span>
+          <button class="btn-copy-code" onclick="copySnippet('php')"><i class="far fa-copy"></i> Copy</button>
+        </div>
+        <pre class="code-block" id="code-php"><span class="kw">&lt;?php</span>
+
+<span class="fn">$apiKey</span>  = <span class="str">'gsx_your_api_key_here'</span>;
+<span class="fn">$baseUrl</span> = <span class="str">'https://api.globexsky.com/v2'</span>;
+
+<span class="kw">function</span> <span class="fn">gsxRequest</span>(<span class="fn">$method</span>, <span class="fn">$endpoint</span>, <span class="fn">$data</span> = <span class="kw">null</span>) {
+    <span class="kw">global</span> <span class="fn">$apiKey</span>, <span class="fn">$baseUrl</span>;
+    <span class="fn">$ch</span> = curl_init(<span class="fn">$baseUrl</span> . <span class="fn">$endpoint</span>);
+    curl_setopt_array(<span class="fn">$ch</span>, [
+        CURLOPT_RETURNTRANSFER =&gt; <span class="kw">true</span>,
+        CURLOPT_CUSTOMREQUEST  =&gt; <span class="fn">$method</span>,
+        CURLOPT_HTTPHEADER     =&gt; [
+            <span class="str">'Authorization: Bearer '</span> . <span class="fn">$apiKey</span>,
+            <span class="str">'Content-Type: application/json'</span>,
+            <span class="str">'Accept: application/json'</span>,
+        ],
+    ]);
+    <span class="kw">if</span> (<span class="fn">$data</span>) curl_setopt(<span class="fn">$ch</span>, CURLOPT_POSTFIELDS, json_encode(<span class="fn">$data</span>));
+    <span class="fn">$response</span> = curl_exec(<span class="fn">$ch</span>);
+    <span class="fn">$code</span>     = curl_getinfo(<span class="fn">$ch</span>, CURLINFO_HTTP_CODE);
+    curl_close(<span class="fn">$ch</span>);
+    <span class="kw">if</span> (<span class="fn">$code</span> &gt;= <span class="val">400</span>) <span class="kw">throw new</span> Exception(<span class="str">"API Error: {$code}"</span>);
+    <span class="kw">return</span> json_decode(<span class="fn">$response</span>, <span class="kw">true</span>);
+}
+
+<span class="cm">// Fetch products</span>
+<span class="fn">$products</span> = <span class="fn">gsxRequest</span>(<span class="str">'GET'</span>, <span class="str">'/products?page=1&amp;limit=20'</span>);
+echo <span class="str">"Total: "</span> . <span class="fn">$products</span>[<span class="str">'total'</span>] . PHP_EOL;
+
+<span class="cm">// Create an order</span>
+<span class="fn">$order</span> = <span class="fn">gsxRequest</span>(<span class="str">'POST'</span>, <span class="str">'/orders'</span>, [
+    <span class="str">'supplier_id'</span> =&gt; <span class="str">'sup_123'</span>,
+    <span class="str">'items'</span>       =&gt; [[<span class="str">'product_id'</span> =&gt; <span class="str">'prod_456'</span>, <span class="str">'qty'</span> =&gt; <span class="val">100</span>]],
+    <span class="str">'currency'</span>    =&gt; <span class="str">'USD'</span>,
+]);</pre>
+      </div>
+    </div>
+
+    <!-- API Endpoints -->
+    <div class="sec-title"><i class="fas fa-list" style="color:#0052CC"></i> API Endpoints Reference</div>
+    <p class="sec-sub">Current version: <strong>v2</strong> — Base URL: <code style="background:#f1f5f9;padding:2px 8px;border-radius:5px;font-size:.82rem">https://api.globexsky.com/v2</code></p>
+    <div class="table-card">
+      <table class="endpoint-table">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Auth Required</th>
+            <th>Rate Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/products</code></td><td>List all products with filters</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>120/min</td></tr>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/products/{id}</code></td><td>Get single product details</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>120/min</td></tr>
+          <tr><td><span class="method-badge method-post">POST</span></td><td><code class="endpoint-path">/products</code></td><td>Create a new product listing</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>30/min</td></tr>
+          <tr><td><span class="method-badge method-put">PUT</span></td><td><code class="endpoint-path">/products/{id}</code></td><td>Update product details</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>30/min</td></tr>
+          <tr><td><span class="method-badge method-delete">DELETE</span></td><td><code class="endpoint-path">/products/{id}</code></td><td>Remove a product listing</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>10/min</td></tr>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/orders</code></td><td>List orders for authenticated user</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>60/min</td></tr>
+          <tr><td><span class="method-badge method-post">POST</span></td><td><code class="endpoint-path">/orders</code></td><td>Place a new bulk order</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>10/min</td></tr>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/orders/{id}</code></td><td>Get order status and details</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>60/min</td></tr>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/shipments/{id}</code></td><td>Track shipment status</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>120/min</td></tr>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/suppliers</code></td><td>List verified suppliers</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>60/min</td></tr>
+          <tr><td><span class="method-badge method-post">POST</span></td><td><code class="endpoint-path">/inquiries</code></td><td>Send an RFQ to a supplier</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>20/min</td></tr>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/payments/{id}</code></td><td>Get payment transaction details</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>60/min</td></tr>
+          <tr><td><span class="method-badge method-post">POST</span></td><td><code class="endpoint-path">/webhooks</code></td><td>Register a webhook endpoint</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>10/min</td></tr>
+          <tr><td><span class="method-badge method-get">GET</span></td><td><code class="endpoint-path">/me</code></td><td>Get authenticated user profile</td><td><i class="fas fa-check" style="color:#059669"></i></td><td>120/min</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Auth Guide -->
+    <div class="sec-title"><i class="fas fa-lock" style="color:#f97316"></i> Authentication Guide</div>
+    <p class="sec-sub">All API requests must be authenticated using Bearer token authentication.</p>
+    <div class="auth-grid">
+      <div class="card">
+        <h3 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;margin-bottom:12px;color:#0a0e27"><i class="fas fa-key" style="color:#0052CC;margin-right:6px"></i>Bearer Token</h3>
+        <p style="font-size:.85rem;color:#64748b;line-height:1.7;margin-bottom:14px">Include your API key as a Bearer token in every request's <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:.78rem">Authorization</code> header.</p>
+        <pre style="background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:10px;font-size:.78rem;font-family:'Courier New',monospace;overflow-x:auto"><span class="fn">Authorization:</span> <span class="str">Bearer gsx_your_api_key_here</span></pre>
+        <p style="font-size:.78rem;color:#ef4444;margin-top:10px;display:flex;align-items:center;gap:5px"><i class="fas fa-exclamation-triangle"></i> Never expose your API key in client-side code.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;margin-bottom:12px;color:#0a0e27"><i class="fas fa-shield-alt" style="color:#059669;margin-right:6px"></i>Security Best Practices</h3>
+        <ul style="list-style:none;font-size:.85rem;color:#374151;line-height:1.8">
+          <li style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid #f1f5f9"><i class="fas fa-check" style="color:#059669;margin-top:3px;flex-shrink:0"></i> Rotate keys regularly via the Keys dashboard</li>
+          <li style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid #f1f5f9"><i class="fas fa-check" style="color:#059669;margin-top:3px;flex-shrink:0"></i> Use environment variables to store keys server-side</li>
+          <li style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid #f1f5f9"><i class="fas fa-check" style="color:#059669;margin-top:3px;flex-shrink:0"></i> Restrict key permissions to only required scopes</li>
+          <li style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid #f1f5f9"><i class="fas fa-check" style="color:#059669;margin-top:3px;flex-shrink:0"></i> Monitor key usage via the analytics dashboard</li>
+          <li style="display:flex;align-items:flex-start;gap:8px;padding:4px 0"><i class="fas fa-check" style="color:#059669;margin-top:3px;flex-shrink:0"></i> Revoke compromised keys immediately</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Rate Limits -->
+    <div class="sec-title"><i class="fas fa-tachometer-alt" style="color:#7c3aed"></i> Rate Limits</div>
+    <p class="sec-sub">Limits are applied per API key, per minute. Exceed the limit and you'll receive a <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:.82rem">429 Too Many Requests</code> response.</p>
+    <div class="limits-grid">
+      <div class="limit-card">
+        <div class="limit-plan">Free</div>
+        <div class="limit-rpm">60</div>
+        <div class="limit-unit">requests / min</div>
+        <div class="limit-daily">1,000 / day</div>
+      </div>
+      <div class="limit-card">
+        <div class="limit-plan">Basic</div>
+        <div class="limit-rpm">120</div>
+        <div class="limit-unit">requests / min</div>
+        <div class="limit-daily">10,000 / day</div>
+      </div>
+      <div class="limit-card" style="border:2px solid #0052CC">
+        <div class="limit-plan" style="color:#0052CC">Gold</div>
+        <div class="limit-rpm" style="color:#0052CC">300</div>
+        <div class="limit-unit">requests / min</div>
+        <div class="limit-daily">50,000 / day</div>
+      </div>
+      <div class="limit-card">
+        <div class="limit-plan">Platinum</div>
+        <div class="limit-rpm">600</div>
+        <div class="limit-unit">requests / min</div>
+        <div class="limit-daily">200,000 / day</div>
+      </div>
+      <div class="limit-card">
+        <div class="limit-plan">Diamond</div>
+        <div class="limit-rpm">∞</div>
+        <div class="limit-unit">custom limits</div>
+        <div class="limit-daily">SLA guaranteed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Done!</span></div>
+
+<script>
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    document.getElementById('toast-msg').textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
+  }
+  function switchCode(btn,lang){
+    document.querySelectorAll('.code-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.code-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('pane-'+lang).classList.add('active');
+  }
+  function copySnippet(lang){
+    const el=document.getElementById('code-'+lang);
+    navigator.clipboard.writeText(el.innerText).catch(()=>{});
+    showToast('Code snippet copied to clipboard!');
+  }
+  function openSandbox(){
+    showToast('Opening sandbox environment…');
+  }
+</script>
+</body>
+</html>

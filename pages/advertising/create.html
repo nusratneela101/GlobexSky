@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Create Advertisement – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;left:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .page-hero::after{content:'';position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:rgba(124,58,237,.15)}
+    .hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:8px}
+    .page-hero p{font-size:1rem;opacity:.88;max-width:540px;margin:0 auto}
+    .section{padding:44px 24px}
+    .container{max-width:1300px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .sec-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .sec-sub{font-size:.85rem;color:#64748b;margin-bottom:24px}
+    /* Layout */
+    .create-layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
+    @media(max-width:1000px){.create-layout{grid-template-columns:1fr}}
+    .form-col{display:flex;flex-direction:column;gap:24px}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .card-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #f1f5f9;padding-bottom:12px}
+    /* Ad Type Selector */
+    .ad-types{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .ad-type{border:2px solid #e2e8f0;border-radius:14px;padding:18px 14px;cursor:pointer;text-align:center;transition:all .2s;position:relative}
+    .ad-type:hover{border-color:#0052CC;background:#f8fbff}
+    .ad-type.selected{border-color:#0052CC;background:#eff6ff}
+    .ad-type input{position:absolute;opacity:0;width:0;height:0}
+    .ad-type-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 10px}
+    .at-featured .ad-type-icon{background:#eff6ff;color:#0052CC}
+    .at-banner .ad-type-icon{background:#fff7ed;color:#f97316}
+    .at-sponsored .ad-type-icon{background:#ecfdf5;color:#059669}
+    .at-email .ad-type-icon{background:#fdf4ff;color:#7c3aed}
+    .ad-type-name{font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;color:#0a0e27;margin-bottom:3px}
+    .ad-type-desc{font-size:.74rem;color:#64748b;line-height:1.4}
+    .ad-type.selected .ad-type-name{color:#0052CC}
+    /* Form Elements */
+    .form-group{margin-bottom:18px}
+    .form-group:last-child{margin-bottom:0}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-label span.req{color:#ef4444}
+    .form-input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.88rem;font-family:'Inter',sans-serif;color:#374151;transition:border-color .2s;outline:none;background:#fff}
+    .form-input:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.08)}
+    textarea.form-input{resize:vertical;min-height:90px;font-family:'Inter',sans-serif}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:500px){.form-row{grid-template-columns:1fr}}
+    .input-hint{font-size:.74rem;color:#94a3b8;margin-top:5px}
+    /* Tags / Checkboxes */
+    .tag-group{display:flex;flex-wrap:wrap;gap:8px}
+    .tag-chip{padding:6px 14px;border:1.5px solid #e2e8f0;border-radius:50px;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;color:#374151;background:#fff}
+    .tag-chip:hover{border-color:#0052CC;color:#0052CC}
+    .tag-chip.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    /* Budget Slider */
+    .budget-slider{width:100%;accent-color:#0052CC;height:6px;cursor:pointer}
+    .budget-display{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:800;color:#0052CC;margin-bottom:4px}
+    .budget-display small{font-size:.78rem;font-weight:400;color:#94a3b8}
+    .budget-presets{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+    .budget-preset{padding:5px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;color:#374151;transition:all .2s}
+    .budget-preset:hover{border-color:#0052CC;color:#0052CC}
+    /* Duration Picker */
+    .duration-chips{display:flex;gap:6px;flex-wrap:wrap}
+    .dur-chip{padding:7px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;color:#374151;transition:all .2s}
+    .dur-chip:hover{border-color:#0052CC;color:#0052CC}
+    .dur-chip.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    /* Targeting */
+    .target-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9}
+    .target-row:last-child{border-bottom:none}
+    .target-label{font-size:.85rem;font-weight:600;color:#374151}
+    .target-val{font-size:.82rem;color:#0052CC;font-weight:600;text-align:right}
+    /* Preview Panel */
+    .preview-col{position:sticky;top:80px}
+    .preview-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .preview-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+    .preview-mock{border:2px dashed #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px;min-height:180px;background:#f8fafc;position:relative}
+    .preview-featured{background:linear-gradient(135deg,#f0f5ff,#fdf4ff);border:none;border-radius:12px;padding:20px}
+    .preview-badge{display:inline-flex;align-items:center;gap:4px;background:#fbbf24;color:#0a0e27;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:8px;text-transform:uppercase}
+    .preview-product-img{width:80px;height:80px;background:linear-gradient(135deg,#dbeafe,#ede9fe);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:10px}
+    .preview-product-name{font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;color:#0a0e27;margin-bottom:3px}
+    .preview-product-price{font-size:.82rem;color:#059669;font-weight:600;margin-bottom:8px}
+    .preview-cta{display:inline-block;background:#0052CC;color:#fff;padding:7px 16px;border-radius:7px;font-size:.78rem;font-weight:700;border:none;cursor:pointer;font-family:'Poppins',sans-serif}
+    .preview-banner{background:linear-gradient(135deg,#f97316,#fbbf24);border-radius:12px;padding:18px;text-align:center;border:none}
+    .preview-banner h3{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px}
+    .preview-banner p{font-size:.78rem;color:rgba(255,255,255,.9);margin-bottom:10px}
+    .preview-email{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .preview-email-header{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:14px 18px;color:#fff}
+    .preview-email-header p{font-size:.75rem;opacity:.8;margin-top:2px}
+    .preview-email-body{padding:14px 18px;font-size:.78rem;color:#374151}
+    .preview-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+    .prev-stat{text-align:center;background:#f8fafc;border-radius:8px;padding:10px 6px}
+    .prev-stat-num{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0052CC}
+    .prev-stat-lbl{font-size:.68rem;color:#94a3b8;margin-top:1px}
+    /* Submit buttons */
+    .submit-row{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
+    .btn-submit{background:#0052CC;color:#fff;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;font-weight:700;font-size:.92rem;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:background .2s;flex:1}
+    .btn-submit:hover{background:#003d99}
+    .btn-draft{background:#f1f5f9;color:#374151;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:600;font-size:.88rem;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:6px;transition:background .2s}
+    .btn-draft:hover{background:#e2e8f0}
+    /* Footer */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    .toast{position:fixed;bottom:28px;right:24px;background:#059669;color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(120px);transition:transform .3s}
+    .toast.show{transform:translateY(0)}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-bullhorn" style="color:#fbbf24"></i> Create Advertisement</h1>
+    <p>Reach millions of B2B buyers across Globex Sky's global marketplace with targeted, high-impact advertising.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="#">Advertising</a><span>/</span>
+      <span>Create Ad</span>
+    </nav>
+
+    <div class="create-layout">
+      <!-- Form Column -->
+      <div class="form-col">
+
+        <!-- Step 1: Ad Type -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-shapes" style="color:#0052CC"></i> Step 1 — Choose Ad Type</div>
+          <div class="ad-types">
+            <label class="ad-type at-featured selected" onclick="selectAdType('featured',this)">
+              <input type="radio" name="adType" value="featured" checked/>
+              <div class="ad-type-icon"><i class="fas fa-star"></i></div>
+              <div class="ad-type-name">Featured Product</div>
+              <div class="ad-type-desc">Highlight a single product at the top of search results</div>
+            </label>
+            <label class="ad-type at-banner" onclick="selectAdType('banner',this)">
+              <input type="radio" name="adType" value="banner"/>
+              <div class="ad-type-icon"><i class="fas fa-image"></i></div>
+              <div class="ad-type-name">Banner Ad</div>
+              <div class="ad-type-desc">Full-width banner on category and homepage feeds</div>
+            </label>
+            <label class="ad-type at-sponsored" onclick="selectAdType('sponsored',this)">
+              <input type="radio" name="adType" value="sponsored"/>
+              <div class="ad-type-icon"><i class="fas fa-trophy"></i></div>
+              <div class="ad-type-name">Sponsored Listing</div>
+              <div class="ad-type-desc">Boost your supplier profile in buyer search results</div>
+            </label>
+            <label class="ad-type at-email" onclick="selectAdType('email',this)">
+              <input type="radio" name="adType" value="email"/>
+              <div class="ad-type-icon"><i class="fas fa-envelope-open-text"></i></div>
+              <div class="ad-type-name">Email Marketing</div>
+              <div class="ad-type-desc">Reach targeted buyers via curated email newsletters</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 2: Ad Details -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-edit" style="color:#7c3aed"></i> Step 2 — Ad Details</div>
+          <div class="form-group">
+            <label class="form-label">Campaign Name <span class="req">*</span></label>
+            <input class="form-input" id="adName" type="text" placeholder="e.g. Q1 Electronics Push — January 2026" oninput="updatePreview()"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Headline / Title <span class="req">*</span></label>
+            <input class="form-input" id="adHeadline" type="text" placeholder="e.g. Premium Industrial Sensors — Bulk B2B Pricing" maxlength="80" oninput="updatePreview()"/>
+            <div class="input-hint" id="headlineCount">0 / 80 characters</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-input" id="adDesc" rows="3" placeholder="Describe your product or offer for buyers…" oninput="updatePreview()"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Destination URL <span class="req">*</span></label>
+            <input class="form-input" type="url" placeholder="https://globexsky.com/products/your-product"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">CTA Button Text</label>
+              <input class="form-input" id="adCta" type="text" placeholder="e.g. Get Quote, Buy Now…" oninput="updatePreview()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Display Price / Offer</label>
+              <input class="form-input" id="adPrice" type="text" placeholder="e.g. From $4.50/unit" oninput="updatePreview()"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Targeting -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-crosshairs" style="color:#059669"></i> Step 3 — Targeting Options</div>
+          <div class="form-group">
+            <label class="form-label">Target Regions</label>
+            <div class="tag-group" id="regionTags">
+              <span class="tag-chip active" onclick="toggleTag(this)">North America</span>
+              <span class="tag-chip active" onclick="toggleTag(this)">Europe</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Southeast Asia</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Middle East</span>
+              <span class="tag-chip" onclick="toggleTag(this)">South Asia</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Africa</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Latin America</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Global</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Industries</label>
+            <div class="tag-group">
+              <span class="tag-chip active" onclick="toggleTag(this)">Electronics</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Textiles</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Machinery</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Chemicals</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Food &amp; Beverage</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Automotive</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Construction</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Healthcare</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Buyer Type</label>
+            <div class="tag-group">
+              <span class="tag-chip active" onclick="toggleTag(this)">Wholesale Buyer</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Retailer</span>
+              <span class="tag-chip active" onclick="toggleTag(this)">Distributor</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Manufacturer</span>
+              <span class="tag-chip" onclick="toggleTag(this)">Government</span>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Minimum Order Value</label>
+            <select class="form-input">
+              <option>Any</option>
+              <option>$500+</option>
+              <option>$2,000+</option>
+              <option selected>$5,000+</option>
+              <option>$10,000+</option>
+              <option>$50,000+</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Step 4: Budget & Schedule -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-dollar-sign" style="color:#f97316"></i> Step 4 — Budget &amp; Schedule</div>
+          <div class="form-group">
+            <label class="form-label">Daily Budget</label>
+            <div class="budget-display" id="budgetDisplay">$50 <small>/ day</small></div>
+            <input type="range" class="budget-slider" id="budgetSlider" min="10" max="500" step="5" value="50" oninput="updateBudget(this.value)"/>
+            <div style="display:flex;justify-content:space-between;font-size:.72rem;color:#94a3b8;margin-top:4px"><span>$10</span><span>$500</span></div>
+            <div class="budget-presets">
+              <span class="budget-preset" onclick="setBudget(25)">$25/day</span>
+              <span class="budget-preset" onclick="setBudget(50)">$50/day</span>
+              <span class="budget-preset" onclick="setBudget(100)">$100/day</span>
+              <span class="budget-preset" onclick="setBudget(200)">$200/day</span>
+              <span class="budget-preset" onclick="setBudget(500)">$500/day</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Campaign Duration</label>
+            <div class="duration-chips">
+              <span class="dur-chip" onclick="selectDur(this)">7 days</span>
+              <span class="dur-chip active" onclick="selectDur(this)">14 days</span>
+              <span class="dur-chip" onclick="selectDur(this)">30 days</span>
+              <span class="dur-chip" onclick="selectDur(this)">60 days</span>
+              <span class="dur-chip" onclick="selectDur(this)">90 days</span>
+              <span class="dur-chip" onclick="selectDur(this)">Custom</span>
+            </div>
+          </div>
+          <div class="form-row" id="dateRange">
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input class="form-input" type="date" id="startDate"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Date</label>
+              <input class="form-input" type="date" id="endDate"/>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Total Budget Estimate</label>
+            <div style="background:#f8fafc;border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+              <span style="font-size:.85rem;color:#64748b">14 days × <span id="budgetDailyLabel">$50</span>/day</span>
+              <span style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:800;color:#0052CC" id="totalBudget">$700</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button class="btn-submit" onclick="submitAd()"><i class="fas fa-rocket"></i> Launch Campaign</button>
+          <button class="btn-draft" onclick="saveDraft()"><i class="fas fa-save"></i> Save Draft</button>
+        </div>
+      </div>
+
+      <!-- Preview Panel -->
+      <div class="preview-col">
+        <div class="preview-card">
+          <div class="preview-title"><i class="fas fa-eye" style="color:#0052CC"></i> Live Preview</div>
+
+          <!-- Featured Product Preview -->
+          <div id="preview-featured" class="preview-mock preview-featured">
+            <div class="preview-badge"><i class="fas fa-star"></i> Sponsored</div>
+            <div class="preview-product-img">📦</div>
+            <div class="preview-product-name" id="prev-name">Your Product Headline Here</div>
+            <div class="preview-product-price" id="prev-price">From $4.50/unit</div>
+            <button class="preview-cta" id="prev-cta">Get Quote</button>
+          </div>
+
+          <!-- Banner Preview -->
+          <div id="preview-banner" class="preview-mock preview-banner" style="display:none">
+            <div class="preview-badge" style="background:rgba(255,255,255,.25);color:#fff"><i class="fas fa-ad"></i> Banner Ad</div>
+            <h3 id="prev-banner-title">Your Banner Headline</h3>
+            <p id="prev-banner-desc">Your compelling description goes here…</p>
+            <button class="preview-cta" style="background:rgba(255,255,255,.9);color:#f97316" id="prev-banner-cta">Learn More</button>
+          </div>
+
+          <!-- Sponsored Listing Preview -->
+          <div id="preview-sponsored" style="display:none" class="preview-mock">
+            <div class="preview-badge"><i class="fas fa-trophy"></i> Featured Supplier</div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+              <div style="width:44px;height:44px;background:linear-gradient(135deg,#eff6ff,#fdf4ff);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem">🏭</div>
+              <div>
+                <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:.88rem;color:#0a0e27" id="prev-supplier-name">Your Company Name</div>
+                <div style="font-size:.75rem;color:#64748b">Verified Supplier · Gold Member</div>
+              </div>
+            </div>
+            <div style="font-size:.78rem;color:#64748b;margin-top:10px;line-height:1.5" id="prev-sponsor-desc">Your sponsored listing description appears here for buyers searching in your category.</div>
+          </div>
+
+          <!-- Email Preview -->
+          <div id="preview-email" style="display:none" class="preview-mock" style="padding:0">
+            <div class="preview-email">
+              <div class="preview-email-header">
+                <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:.9rem" id="prev-email-subject">Your Email Subject Line</div>
+                <p>From: Globex Sky Marketplace &lt;deals@globexsky.com&gt;</p>
+              </div>
+              <div class="preview-email-body">
+                <p style="margin-bottom:8px;font-weight:600" id="prev-email-headline">Special Offer for B2B Buyers</p>
+                <p id="prev-email-body" style="color:#64748b;line-height:1.6">Your email body content will appear here, reaching thousands of verified buyers in your target segments.</p>
+                <div style="margin-top:12px"><button class="preview-cta" id="prev-email-cta">Shop Now</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estimated Reach Stats -->
+          <div class="preview-stats">
+            <div class="prev-stat">
+              <div class="prev-stat-num" id="est-impressions">42K</div>
+              <div class="prev-stat-lbl">Est. Impressions</div>
+            </div>
+            <div class="prev-stat">
+              <div class="prev-stat-num" id="est-clicks">1.2K</div>
+              <div class="prev-stat-lbl">Est. Clicks</div>
+            </div>
+            <div class="prev-stat">
+              <div class="prev-stat-num" id="est-ctr">2.9%</div>
+              <div class="prev-stat-lbl">Est. CTR</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;font-size:.72rem;color:#94a3b8;line-height:1.5">
+            <i class="fas fa-info-circle"></i> Estimates are based on current targeting settings and historical campaign data. Actual results may vary.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Done!</span></div>
+
+<script>
+  // Set default dates
+  const today=new Date();
+  document.getElementById('startDate').value=today.toISOString().split('T')[0];
+  const end=new Date(today); end.setDate(end.getDate()+14);
+  document.getElementById('endDate').value=end.toISOString().split('T')[0];
+
+  function showToast(msg,color){
+    const t=document.getElementById('toast');
+    t.style.background=color||'#059669';
+    document.getElementById('toast-msg').textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3200);
+  }
+
+  let selectedAdType='featured';
+  let dailyBudget=50;
+  let durationDays=14;
+
+  function selectAdType(type,el){
+    document.querySelectorAll('.ad-type').forEach(a=>a.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedAdType=type;
+    document.getElementById('preview-featured').style.display='none';
+    document.getElementById('preview-banner').style.display='none';
+    document.getElementById('preview-sponsored').style.display='none';
+    document.getElementById('preview-email').style.display='none';
+    document.getElementById('preview-'+type).style.display='block';
+    updateEstimates();
+  }
+
+  function updatePreview(){
+    const headline=document.getElementById('adHeadline').value||'Your Product Headline Here';
+    const desc=document.getElementById('adDesc').value||'Your compelling description goes here…';
+    const cta=document.getElementById('adCta').value||'Get Quote';
+    const price=document.getElementById('adPrice').value||'From $4.50/unit';
+    const hLen=document.getElementById('adHeadline').value.length;
+    document.getElementById('headlineCount').textContent=hLen+' / 80 characters';
+    document.getElementById('prev-name').textContent=headline;
+    document.getElementById('prev-price').textContent=price;
+    document.getElementById('prev-cta').textContent=cta;
+    document.getElementById('prev-banner-title').textContent=headline;
+    document.getElementById('prev-banner-desc').textContent=desc;
+    document.getElementById('prev-banner-cta').textContent=cta||'Learn More';
+    document.getElementById('prev-supplier-name').textContent=headline;
+    document.getElementById('prev-sponsor-desc').textContent=desc||'Your sponsored listing description appears here.';
+    document.getElementById('prev-email-subject').textContent=headline;
+    document.getElementById('prev-email-headline').textContent=headline;
+    document.getElementById('prev-email-body').textContent=desc||'Your email body content will appear here.';
+    document.getElementById('prev-email-cta').textContent=cta||'Shop Now';
+  }
+
+  function toggleTag(el){el.classList.toggle('active');}
+
+  function updateBudget(val){
+    dailyBudget=parseInt(val);
+    document.getElementById('budgetDisplay').innerHTML='$'+dailyBudget+' <small>/ day</small>';
+    document.getElementById('budgetDailyLabel').textContent='$'+dailyBudget;
+    document.getElementById('totalBudget').textContent='$'+(dailyBudget*durationDays).toLocaleString();
+    updateEstimates();
+  }
+
+  function setBudget(val){
+    document.getElementById('budgetSlider').value=val;
+    updateBudget(val);
+  }
+
+  function selectDur(el){
+    document.querySelectorAll('.dur-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    const map={'7 days':7,'14 days':14,'30 days':30,'60 days':60,'90 days':90,'Custom':30};
+    durationDays=map[el.textContent]||14;
+    document.getElementById('totalBudget').textContent='$'+(dailyBudget*durationDays).toLocaleString();
+    const end=new Date(); end.setDate(end.getDate()+durationDays);
+    document.getElementById('endDate').value=end.toISOString().split('T')[0];
+    updateEstimates();
+  }
+
+  function updateEstimates(){
+    const base={featured:{imp:42000,ctr:2.9},banner:{imp:85000,ctr:1.4},sponsored:{imp:28000,ctr:3.8},email:{imp:12000,ctr:5.2}};
+    const b=base[selectedAdType]||base.featured;
+    const mult=dailyBudget/50*durationDays/14;
+    const imp=Math.round(b.imp*mult);
+    const clicks=Math.round(imp*b.ctr/100);
+    document.getElementById('est-impressions').textContent=imp>=1000?Math.round(imp/1000)+'K':imp;
+    document.getElementById('est-clicks').textContent=clicks>=1000?(clicks/1000).toFixed(1)+'K':clicks;
+    document.getElementById('est-ctr').textContent=b.ctr+'%';
+  }
+
+  function submitAd(){
+    const name=document.getElementById('adName').value.trim();
+    const headline=document.getElementById('adHeadline').value.trim();
+    if(!name||!headline){showToast('Please fill in all required fields.','#ef4444');return;}
+    showToast('🚀 Campaign "'+(name||'Your Campaign')+'" submitted for review! Approval within 24 hours.');
+  }
+
+  function saveDraft(){showToast('Draft saved successfully!','#7c3aed');}
+</script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>API Keys – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;left:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .page-hero::after{content:'';position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:rgba(124,58,237,.15)}
+    .hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:8px}
+    .page-hero p{font-size:1rem;opacity:.88;max-width:540px;margin:0 auto}
+    .section{padding:44px 24px}
+    .container{max-width:1240px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .sec-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .sec-sub{font-size:.85rem;color:#64748b;margin-bottom:24px}
+    /* Toolbar */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+    .btn-primary{background:#0052CC;color:#fff;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:.88rem;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:background .2s}
+    .btn-primary:hover{background:#003d99}
+    /* Table */
+    .table-card{background:#fff;border-radius:16px;padding:0;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:32px;overflow:hidden}
+    table.keys-table{width:100%;border-collapse:collapse;min-width:680px}
+    .keys-table thead{background:#f8fafc}
+    .keys-table th{padding:12px 16px;text-align:left;font-size:.78rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #e2e8f0}
+    .keys-table td{padding:14px 16px;font-size:.85rem;color:#374151;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .keys-table tr:last-child td{border-bottom:none}
+    .keys-table tr:hover td{background:#f8fbff}
+    .key-name{font-weight:600;color:#0a0e27}
+    .key-preview{font-family:'Courier New',monospace;font-size:.82rem;background:#f1f5f9;padding:3px 10px;border-radius:6px;color:#475569;display:inline-flex;align-items:center;gap:8px}
+    .key-reveal{background:none;border:none;color:#0052CC;cursor:pointer;font-size:.78rem;padding:2px 6px;border-radius:4px;transition:background .15s}
+    .key-reveal:hover{background:#eff6ff}
+    .status-pill{padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700}
+    .pill-active{background:#d1fae5;color:#059669}
+    .pill-inactive{background:#f1f5f9;color:#94a3b8}
+    .pill-revoked{background:#fee2e2;color:#ef4444}
+    .usage-bar-wrap{min-width:120px}
+    .usage-meta{display:flex;justify-content:space-between;font-size:.72rem;color:#64748b;margin-bottom:3px}
+    .usage-bar{background:#f1f5f9;height:5px;border-radius:50px;overflow:hidden}
+    .usage-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#0052CC,#7c3aed)}
+    .action-btns{display:flex;gap:6px}
+    .btn-icon{width:32px;height:32px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;color:#64748b;transition:all .2s}
+    .btn-icon:hover.regen{border-color:#f97316;color:#f97316;background:#fff7ed}
+    .btn-icon:hover.del{border-color:#ef4444;color:#ef4444;background:#fee2e2}
+    .btn-icon.regen:hover{border-color:#f97316;color:#f97316;background:#fff7ed}
+    .btn-icon.del:hover{border-color:#ef4444;color:#ef4444;background:#fee2e2}
+    /* Empty State */
+    .empty-state{text-align:center;padding:48px 24px;color:#64748b}
+    .empty-state i{font-size:3rem;margin-bottom:16px;color:#cbd5e1}
+    /* Create Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:20px;padding:32px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;animation:modalIn .2s ease}
+    @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+    .modal h2{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#0a0e27;margin-bottom:6px}
+    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.2rem;color:#94a3b8;cursor:pointer;padding:4px;border-radius:6px;transition:color .2s}
+    .modal-close:hover{color:#374151}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.88rem;font-family:'Inter',sans-serif;color:#374151;transition:border-color .2s;outline:none}
+    .form-input:focus{border-color:#0052CC}
+    .perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .perm-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.83rem;color:#374151}
+    .perm-item:hover{border-color:#0052CC;background:#f0f5ff}
+    .perm-item input{accent-color:#0052CC}
+    .perm-item.checked{border-color:#0052CC;background:#eff6ff;color:#0052CC;font-weight:600}
+    /* Key Reveal Banner */
+    .new-key-banner{background:#0f172a;border-radius:12px;padding:16px 18px;margin-bottom:18px;display:none}
+    .new-key-banner.show{display:block}
+    .new-key-label{font-size:.72rem;color:#94a3b8;margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+    .new-key-value{font-family:'Courier New',monospace;font-size:.88rem;color:#86efac;word-break:break-all;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .btn-copy-key{background:rgba(255,255,255,.1);border:none;color:#94a3b8;padding:5px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .btn-copy-key:hover{background:rgba(255,255,255,.2);color:#fff}
+    .new-key-warn{font-size:.75rem;color:#fbbf24;margin-top:8px;display:flex;align-items:center;gap:5px}
+    /* Permissions Panel */
+    .perms-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:32px}
+    .perms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px}
+    .perm-scope{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.83rem}
+    .perm-scope-name{display:flex;align-items:center;gap:8px;font-weight:600;color:#0a0e27}
+    .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0}
+    .slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:50px;transition:.3s}
+    .slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+    .toggle input:checked+.slider{background:#0052CC}
+    .toggle input:checked+.slider::before{transform:translateX(18px)}
+    /* Footer */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    .toast{position:fixed;bottom:28px;right:24px;background:#059669;color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(120px);transition:transform .3s}
+    .toast.show{transform:translateY(0)}
+    @media(max-width:600px){.perm-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-key" style="color:#fbbf24"></i> API Key Management</h1>
+    <p>Create, manage, and revoke API keys for secure programmatic access to Globex Sky's trade platform.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="developer-portal.html">API</a><span>/</span>
+      <span>Keys</span>
+    </nav>
+
+    <!-- New Key Banner (shown after creation) -->
+    <div class="new-key-banner" id="newKeyBanner">
+      <div class="new-key-label"><i class="fas fa-exclamation-triangle"></i> Your new API key — copy it now, it will not be shown again</div>
+      <div class="new-key-value" id="newKeyValue">
+        <span id="newKeyText"></span>
+        <button class="btn-copy-key" onclick="copyNewKey()"><i class="far fa-copy"></i> Copy Key</button>
+      </div>
+      <div class="new-key-warn"><i class="fas fa-shield-alt"></i> Store this key securely. Treat it like a password.</div>
+    </div>
+
+    <!-- Keys List -->
+    <div class="toolbar">
+      <div>
+        <div class="sec-title" style="margin-bottom:2px"><i class="fas fa-list-ul" style="color:#0052CC"></i> Your API Keys</div>
+        <div style="font-size:.82rem;color:#64748b">Manage access tokens for your integrations. <a href="developer-portal.html" style="color:#0052CC;text-decoration:none">View docs</a></div>
+      </div>
+      <button class="btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Create New Key</button>
+    </div>
+
+    <div style="overflow-x:auto" class="table-card">
+      <table class="keys-table">
+        <thead>
+          <tr>
+            <th>Key Name</th>
+            <th>Key Preview</th>
+            <th>Created</th>
+            <th>Last Used</th>
+            <th>Usage (30d)</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="keys-tbody">
+          <tr data-id="1">
+            <td class="key-name"><i class="fas fa-server" style="color:#0052CC;margin-right:6px"></i>Production Server</td>
+            <td><span class="key-preview">gsx_prod_••••••••••••<span id="reveal-1" style="display:none">ABcDeFgHiJkL</span><button class="key-reveal" onclick="revealKey(1)"><i class="fas fa-eye"></i></button></span></td>
+            <td>Oct 01, 2025</td>
+            <td>5 min ago</td>
+            <td>
+              <div class="usage-bar-wrap">
+                <div class="usage-meta"><span>28,441</span><span>50k</span></div>
+                <div class="usage-bar"><div class="usage-fill" style="width:57%"></div></div>
+              </div>
+            </td>
+            <td><span class="status-pill pill-active">Active</span></td>
+            <td><div class="action-btns">
+              <button class="btn-icon regen" title="Regenerate key" onclick="regenKey(this,'Production Server')"><i class="fas fa-sync-alt"></i></button>
+              <button class="btn-icon del" title="Delete key" onclick="deleteKey(this,'Production Server')"><i class="fas fa-trash-alt"></i></button>
+            </div></td>
+          </tr>
+          <tr data-id="2">
+            <td class="key-name"><i class="fas fa-flask" style="color:#7c3aed;margin-right:6px"></i>Staging / Testing</td>
+            <td><span class="key-preview">gsx_stg_••••••••••••<span id="reveal-2" style="display:none">MnOpQrStUvWx</span><button class="key-reveal" onclick="revealKey(2)"><i class="fas fa-eye"></i></button></span></td>
+            <td>Oct 15, 2025</td>
+            <td>Yesterday</td>
+            <td>
+              <div class="usage-bar-wrap">
+                <div class="usage-meta"><span>3,200</span><span>10k</span></div>
+                <div class="usage-bar"><div class="usage-fill" style="width:32%"></div></div>
+              </div>
+            </td>
+            <td><span class="status-pill pill-active">Active</span></td>
+            <td><div class="action-btns">
+              <button class="btn-icon regen" title="Regenerate key" onclick="regenKey(this,'Staging / Testing')"><i class="fas fa-sync-alt"></i></button>
+              <button class="btn-icon del" title="Delete key" onclick="deleteKey(this,'Staging / Testing')"><i class="fas fa-trash-alt"></i></button>
+            </div></td>
+          </tr>
+          <tr data-id="3">
+            <td class="key-name"><i class="fas fa-mobile-alt" style="color:#059669;margin-right:6px"></i>Mobile App v2</td>
+            <td><span class="key-preview">gsx_mob_••••••••••••<span id="reveal-3" style="display:none">YzAbCdEfGhIj</span><button class="key-reveal" onclick="revealKey(3)"><i class="fas fa-eye"></i></button></span></td>
+            <td>Sep 05, 2025</td>
+            <td>3 days ago</td>
+            <td>
+              <div class="usage-bar-wrap">
+                <div class="usage-meta"><span>12,900</span><span>50k</span></div>
+                <div class="usage-bar"><div class="usage-fill" style="width:26%"></div></div>
+              </div>
+            </td>
+            <td><span class="status-pill pill-active">Active</span></td>
+            <td><div class="action-btns">
+              <button class="btn-icon regen" title="Regenerate key" onclick="regenKey(this,'Mobile App v2')"><i class="fas fa-sync-alt"></i></button>
+              <button class="btn-icon del" title="Delete key" onclick="deleteKey(this,'Mobile App v2')"><i class="fas fa-trash-alt"></i></button>
+            </div></td>
+          </tr>
+          <tr data-id="4">
+            <td class="key-name"><i class="fas fa-ban" style="color:#94a3b8;margin-right:6px"></i>Legacy Integration</td>
+            <td><span class="key-preview">gsx_leg_••••••••••••<span id="reveal-4" style="display:none">KlMnOpQrStUv</span><button class="key-reveal" onclick="revealKey(4)"><i class="fas fa-eye"></i></button></span></td>
+            <td>Jun 12, 2025</td>
+            <td>45 days ago</td>
+            <td>
+              <div class="usage-bar-wrap">
+                <div class="usage-meta"><span>0</span><span>50k</span></div>
+                <div class="usage-bar"><div class="usage-fill" style="width:0%"></div></div>
+              </div>
+            </td>
+            <td><span class="status-pill pill-revoked">Revoked</span></td>
+            <td><div class="action-btns">
+              <button class="btn-icon regen" title="Regenerate key" onclick="regenKey(this,'Legacy Integration')"><i class="fas fa-sync-alt"></i></button>
+              <button class="btn-icon del" title="Delete key" onclick="deleteKey(this,'Legacy Integration')"><i class="fas fa-trash-alt"></i></button>
+            </div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Key Permissions -->
+    <div class="sec-title"><i class="fas fa-sliders-h" style="color:#7c3aed"></i> Default Key Permissions</div>
+    <p class="sec-sub">Configure which scopes are granted by default to newly created keys. Individual key permissions can be customised during creation.</p>
+    <div class="perms-card">
+      <div class="perms-grid">
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-box" style="color:#0052CC"></i> products:read</div>
+          <label class="toggle"><input type="checkbox" checked onchange="togglePerm(this,'products:read')"><span class="slider"></span></label>
+        </div>
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-pen" style="color:#0052CC"></i> products:write</div>
+          <label class="toggle"><input type="checkbox" checked onchange="togglePerm(this,'products:write')"><span class="slider"></span></label>
+        </div>
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-shopping-cart" style="color:#059669"></i> orders:read</div>
+          <label class="toggle"><input type="checkbox" checked onchange="togglePerm(this,'orders:read')"><span class="slider"></span></label>
+        </div>
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-plus-circle" style="color:#059669"></i> orders:create</div>
+          <label class="toggle"><input type="checkbox" onchange="togglePerm(this,'orders:create')"><span class="slider"></span></label>
+        </div>
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-shipping-fast" style="color:#f97316"></i> shipments:read</div>
+          <label class="toggle"><input type="checkbox" checked onchange="togglePerm(this,'shipments:read')"><span class="slider"></span></label>
+        </div>
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-credit-card" style="color:#ef4444"></i> payments:read</div>
+          <label class="toggle"><input type="checkbox" onchange="togglePerm(this,'payments:read')"><span class="slider"></span></label>
+        </div>
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-user" style="color:#7c3aed"></i> account:read</div>
+          <label class="toggle"><input type="checkbox" checked onchange="togglePerm(this,'account:read')"><span class="slider"></span></label>
+        </div>
+        <div class="perm-scope">
+          <div class="perm-scope-name"><i class="fas fa-webhook" style="color:#0891b2"></i> webhooks:manage</div>
+          <label class="toggle"><input type="checkbox" onchange="togglePerm(this,'webhooks:manage')"><span class="slider"></span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Create Key Modal -->
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-key" style="color:#0052CC;margin-right:6px"></i> Create New API Key</h2>
+    <p style="font-size:.83rem;color:#64748b;margin-bottom:20px">Give your key a descriptive name and select the permissions it needs.</p>
+    <div class="form-group">
+      <label class="form-label">Key Name <span style="color:#ef4444">*</span></label>
+      <input class="form-input" id="newKeyName" type="text" placeholder="e.g. Production Server, Mobile App…"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Expiry</label>
+      <select class="form-input" id="newKeyExpiry">
+        <option value="never">Never</option>
+        <option value="30">30 days</option>
+        <option value="90">90 days</option>
+        <option value="365">1 year</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Permissions</label>
+      <div class="perm-grid" id="permGrid">
+        <label class="perm-item"><input type="checkbox" checked> products:read</label>
+        <label class="perm-item"><input type="checkbox"> products:write</label>
+        <label class="perm-item"><input type="checkbox" checked> orders:read</label>
+        <label class="perm-item"><input type="checkbox"> orders:create</label>
+        <label class="perm-item"><input type="checkbox" checked> shipments:read</label>
+        <label class="perm-item"><input type="checkbox"> payments:read</label>
+        <label class="perm-item"><input type="checkbox" checked> account:read</label>
+        <label class="perm-item"><input type="checkbox"> webhooks:manage</label>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
+      <button style="background:#f1f5f9;color:#374151;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:.88rem" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="createKey()"><i class="fas fa-plus"></i> Create Key</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Done!</span></div>
+
+<script>
+  function showToast(msg,color){
+    const t=document.getElementById('toast');
+    t.style.background=color||'#059669';
+    document.getElementById('toast-msg').textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
+  }
+  function openModal(){document.getElementById('createModal').classList.add('open');}
+  function closeModal(){document.getElementById('createModal').classList.remove('open');}
+  document.getElementById('createModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+  function generateKey(prefix){
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let key=prefix+'_';
+    for(let i=0;i<32;i++)key+=chars.charAt(Math.floor(Math.random()*chars.length));
+    return key;
+  }
+
+  function createKey(){
+    const name=document.getElementById('newKeyName').value.trim();
+    if(!name){document.getElementById('newKeyName').style.borderColor='#ef4444';return;}
+    closeModal();
+    const key=generateKey('gsx_new');
+    document.getElementById('newKeyText').textContent=key;
+    const banner=document.getElementById('newKeyBanner');
+    banner.classList.add('show');
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+    showToast('API key "'+name+'" created successfully!');
+    document.getElementById('newKeyName').value='';
+  }
+
+  function copyNewKey(){
+    const key=document.getElementById('newKeyText').textContent;
+    navigator.clipboard.writeText(key).catch(()=>{});
+    showToast('API key copied to clipboard!');
+  }
+
+  function revealKey(id){
+    const el=document.getElementById('reveal-'+id);
+    el.style.display=el.style.display==='none'?'inline':'none';
+  }
+
+  function regenKey(btn,name){
+    if(!confirm('Regenerate key for "'+name+'"? The old key will stop working immediately.'))return;
+    showToast('Key "'+name+'" regenerated. Update your integrations!','#f97316');
+  }
+
+  function deleteKey(btn,name){
+    if(!confirm('Delete key "'+name+'"? This action is permanent.'))return;
+    const row=btn.closest('tr');
+    row.style.opacity='0';
+    row.style.transition='opacity .3s';
+    setTimeout(()=>row.remove(),300);
+    showToast('Key "'+name+'" deleted.','#ef4444');
+  }
+
+  function togglePerm(input,scope){
+    showToast('Default permission "'+scope+'" '+(input.checked?'enabled':'disabled')+'.');
+  }
+
+  // Style checked permission items in modal
+  document.getElementById('permGrid').addEventListener('change',e=>{
+    if(e.target.tagName==='INPUT'){
+      e.target.closest('label').classList.toggle('checked',e.target.checked);
+    }
+  });
+</script>
+</body>
+</html>
