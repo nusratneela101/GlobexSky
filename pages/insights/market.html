@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Market Insights – GlobexSky</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="../../assets/css/main.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--primary:#0052CC;--secondary:#7c3aed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+a{text-decoration:none;color:inherit}
+
+/* Header */
+.site-header{position:sticky;top:0;z-index:100;background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px}
+.nav-logo img{display:block}
+.nav-actions{display:flex;gap:12px}
+.btn-login{background:transparent;border:1.5px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+.btn-register{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+
+/* Hero */
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);color:#fff;padding:48px 24px;text-align:center}
+.breadcrumb{font-size:.85rem;opacity:.8;margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.85)}
+.breadcrumb span{margin:0 6px}
+.page-hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+.page-hero p{font-size:1rem;opacity:.9;max-width:600px;margin:0 auto}
+
+/* Main */
+.main-content{max-width:1200px;margin:0 auto;padding:32px 24px}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
+.kpi-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+.kpi-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem}
+.kpi-icon.blue{background:#dbeafe;color:#0052CC}
+.kpi-icon.green{background:#d1fae5;color:#059669}
+.kpi-icon.orange{background:#ffedd5;color:#f97316}
+.kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+.kpi-body{}
+.kpi-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;line-height:1}
+.kpi-label{font-size:.8rem;color:#64748b;margin-top:4px}
+.kpi-change{font-size:.78rem;font-weight:600;margin-top:4px}
+.kpi-change.up{color:#059669}
+.kpi-change.neutral{color:#64748b}
+
+/* Section */
+.section-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:20px;color:#1a1a2e;display:flex;align-items:center;gap:8px}
+.section-title i{color:var(--primary)}
+
+/* Chart grid */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
+.chart-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.chart-card.full{grid-column:1/-1}
+.chart-wrapper{position:relative;height:260px}
+
+/* Categories */
+.categories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px}
+.cat-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.cat-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.cat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.cat-name{font-weight:600;font-size:.95rem}
+.cat-growth{font-size:1.2rem;font-weight:700;font-family:'Poppins',sans-serif;color:#059669;margin-bottom:8px}
+.trend-bar-bg{background:#f1f5f9;border-radius:4px;height:6px}
+.trend-bar-fill{height:6px;border-radius:4px;background:linear-gradient(90deg,#0052CC,#7c3aed)}
+
+/* News */
+.news-list{display:flex;flex-direction:column;gap:16px}
+.news-item{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:16px}
+.news-icon-wrap{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.news-icon-wrap.alert{background:#fee2e2;color:#dc2626}
+.news-icon-wrap.trend{background:#dbeafe;color:#0052CC}
+.news-icon-wrap.opportunity{background:#d1fae5;color:#059669}
+.news-icon-wrap.info{background:#ede9fe;color:#7c3aed}
+.news-body{flex:1}
+.news-title{font-weight:600;font-size:.95rem;margin-bottom:4px}
+.news-meta{font-size:.8rem;color:#64748b;display:flex;align-items:center;gap:10px}
+.news-tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.72rem;font-weight:600}
+.news-tag.price-alert{background:#fee2e2;color:#dc2626}
+.news-tag.trend{background:#dbeafe;color:#0052CC}
+.news-tag.opportunity{background:#d1fae5;color:#059669}
+.news-tag.market{background:#ede9fe;color:#7c3aed}
+
+/* Footer */
+footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem;margin-top:40px}
+
+/* Responsive */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .chart-grid{grid-template-columns:1fr}
+  .categories-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:1fr}
+  .categories-grid{grid-template-columns:1fr}
+  .page-hero h1{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo">
+      <img src="../../assets/images/logo.png" width="180" height="56" alt="GlobexSky"/>
+    </a>
+    <div class="nav-actions">
+      <button class="btn-login" onclick="location.href='../../index.html'">Log In</button>
+      <button class="btn-register" onclick="location.href='../../index.html'">Register</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="../../index.html">Home</a><span>›</span>Insights<span>›</span>Market Insights
+  </div>
+  <h1><i class="fa-solid fa-chart-line"></i> Market Insights</h1>
+  <p>Real-time global trade intelligence, price trends, and demand analytics to drive smarter sourcing decisions.</p>
+</div>
+
+<main class="main-content">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon blue"><i class="fa-solid fa-boxes-stacked"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">1,247</div>
+        <div class="kpi-label">Products Tracked</div>
+        <div class="kpi-change up"><i class="fa-solid fa-arrow-up"></i> +8.3% this month</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon green"><i class="fa-solid fa-tag"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">$38.40</div>
+        <div class="kpi-label">Avg Product Price</div>
+        <div class="kpi-change up"><i class="fa-solid fa-arrow-up"></i> +2.1% vs last week</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon orange"><i class="fa-solid fa-trophy"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">Electronics</div>
+        <div class="kpi-label">Top Category</div>
+        <div class="kpi-change neutral">34.2% of volume</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon purple"><i class="fa-solid fa-arrow-trend-up"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">+12.4%</div>
+        <div class="kpi-label">Market Growth (YoY)</div>
+        <div class="kpi-change up"><i class="fa-solid fa-arrow-up"></i> Outperforming avg</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="section-title"><i class="fa-solid fa-chart-line"></i> Trending Products (Last 7 Days)</div>
+      <div class="chart-wrapper"><canvas id="trendingChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="section-title"><i class="fa-solid fa-chart-bar"></i> Demand Analysis by Category</div>
+      <div class="chart-wrapper"><canvas id="demandChart"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="section-title"><i class="fa-solid fa-chart-area"></i> Price Trends – Last 12 Months</div>
+      <div class="chart-wrapper"><canvas id="priceChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Top Growing Categories -->
+  <div class="section-title"><i class="fa-solid fa-fire"></i> Top Growing Categories</div>
+  <div class="categories-grid">
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#dbeafe;color:#0052CC"><i class="fa-solid fa-microchip"></i></div>
+        <div class="cat-name">Electronics & Tech</div>
+      </div>
+      <div class="cat-growth">+24.7%</div>
+      <div style="font-size:.82rem;color:#64748b;margin-bottom:10px">Driven by AI hardware, wearables, and IoT devices</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:88%"></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#d1fae5;color:#059669"><i class="fa-solid fa-leaf"></i></div>
+        <div class="cat-name">Eco Products</div>
+      </div>
+      <div class="cat-growth">+19.2%</div>
+      <div style="font-size:.82rem;color:#64748b;margin-bottom:10px">Sustainability mandates boosting demand globally</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:72%"></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#ffedd5;color:#f97316"><i class="fa-solid fa-shirt"></i></div>
+        <div class="cat-name">Textiles & Apparel</div>
+      </div>
+      <div class="cat-growth">+14.8%</div>
+      <div style="font-size:.82rem;color:#64748b;margin-bottom:10px">Fast fashion recovery + reshoring trends</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:60%"></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#ede9fe;color:#7c3aed"><i class="fa-solid fa-industry"></i></div>
+        <div class="cat-name">Industrial Parts</div>
+      </div>
+      <div class="cat-growth">+11.3%</div>
+      <div style="font-size:.82rem;color:#64748b;margin-bottom:10px">Infrastructure investment driving B2B orders</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:50%"></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#fef3c7;color:#d97706"><i class="fa-solid fa-pills"></i></div>
+        <div class="cat-name">Health & Medical</div>
+      </div>
+      <div class="cat-growth">+9.6%</div>
+      <div style="font-size:.82rem;color:#64748b;margin-bottom:10px">Post-pandemic stockpiling and aging demographics</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:44%"></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#fce7f3;color:#db2777"><i class="fa-solid fa-couch"></i></div>
+        <div class="cat-name">Furniture & Home</div>
+      </div>
+      <div class="cat-growth">+7.1%</div>
+      <div style="font-size:.82rem;color:#64748b;margin-bottom:10px">Remote work driving ergonomic product demand</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:36%"></div></div>
+    </div>
+  </div>
+
+  <!-- Market News -->
+  <div class="section-title" style="margin-top:32px"><i class="fa-solid fa-newspaper"></i> Market News & Alerts</div>
+  <div class="news-list">
+    <div class="news-item">
+      <div class="news-icon-wrap alert"><i class="fa-solid fa-bell"></i></div>
+      <div class="news-body">
+        <div class="news-title">Semiconductor prices spike 18% amid Q4 demand surge</div>
+        <div class="news-meta">
+          <span><i class="fa-regular fa-calendar"></i> Dec 18, 2024</span>
+          <span class="news-tag price-alert">Price Alert</span>
+        </div>
+        <div style="font-size:.85rem;color:#64748b;margin-top:6px">Global electronics manufacturers report sharp price increases for logic chips and memory modules. Buyers advised to lock in Q1 contracts early.</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-icon-wrap trend"><i class="fa-solid fa-arrow-trend-up"></i></div>
+      <div class="news-body">
+        <div class="news-title">Eco-friendly packaging demand up 31% YoY in EU markets</div>
+        <div class="news-meta">
+          <span><i class="fa-regular fa-calendar"></i> Dec 15, 2024</span>
+          <span class="news-tag trend">Trend</span>
+        </div>
+        <div style="font-size:.85rem;color:#64748b;margin-top:6px">New EU regulations taking effect in March 2025 are accelerating the shift to biodegradable materials across consumer goods categories.</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-icon-wrap opportunity"><i class="fa-solid fa-star"></i></div>
+      <div class="news-body">
+        <div class="news-title">Vietnam manufacturing gap creates sourcing opportunity</div>
+        <div class="news-meta">
+          <span><i class="fa-regular fa-calendar"></i> Dec 12, 2024</span>
+          <span class="news-tag opportunity">Opportunity</span>
+        </div>
+        <div style="font-size:.85rem;color:#64748b;margin-top:6px">Supply chain diversification continues as buyers explore Vietnamese factories for textiles, electronics assembly, and furniture manufacturing.</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-icon-wrap info"><i class="fa-solid fa-globe"></i></div>
+      <div class="news-body">
+        <div class="news-title">RCEP trade agreement boosts Asia-Pacific volumes by 14%</div>
+        <div class="news-meta">
+          <span><i class="fa-regular fa-calendar"></i> Dec 10, 2024</span>
+          <span class="news-tag market">Market Update</span>
+        </div>
+        <div style="font-size:.85rem;color:#64748b;margin-top:6px">The Regional Comprehensive Economic Partnership continues to reduce tariffs, making intra-APAC trade more competitive and driving new supplier relationships.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  © 2025 Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.
+</footer>
+
+<script>
+// Trending Products Chart
+const trendCtx = document.getElementById('trendingChart').getContext('2d');
+new Chart(trendCtx, {
+  type: 'line',
+  data: {
+    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets: [
+      {label:'Electronics',data:[820,950,880,1020,1150,1080,1200],borderColor:'#0052CC',backgroundColor:'rgba(0,82,204,.08)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#0052CC'},
+      {label:'Textiles',data:[540,580,620,590,670,700,660],borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.06)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#7c3aed'},
+      {label:'Eco Products',data:[310,340,380,420,460,490,530],borderColor:'#059669',backgroundColor:'rgba(5,150,105,.06)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#059669'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Inter',size:11}}}},scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{family:'Inter',size:10}}},x:{grid:{display:false},ticks:{font:{family:'Inter',size:10}}}}}
+});
+
+// Demand Analysis Chart
+const demandCtx = document.getElementById('demandChart').getContext('2d');
+new Chart(demandCtx, {
+  type: 'bar',
+  data: {
+    labels:['Electronics','Textiles','Eco Prod.','Industrial','Health','Furniture'],
+    datasets:[{label:'Order Volume',data:[3420,2180,1640,1290,980,720],backgroundColor:['#0052CC','#7c3aed','#059669','#f97316','#dc2626','#d97706'],borderRadius:6}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{family:'Inter',size:10}}},x:{grid:{display:false},ticks:{font:{family:'Inter',size:10}}}}}
+});
+
+// Price Trends Chart
+const priceCtx = document.getElementById('priceChart').getContext('2d');
+new Chart(priceCtx, {
+  type: 'line',
+  data: {
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets:[
+      {label:'Avg Price Index',data:[32.1,33.4,34.2,33.8,35.1,36.4,35.9,37.2,38.0,37.8,39.1,38.4],borderColor:'#0052CC',backgroundColor:'rgba(0,82,204,.12)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#0052CC'},
+      {label:'Electronics',data:[44.2,46.1,47.3,45.9,48.2,51.4,50.1,53.8,56.2,54.9,58.3,59.1],borderColor:'#f97316',backgroundColor:'transparent',tension:.4,fill:false,pointRadius:3,pointBackgroundColor:'#f97316'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Inter',size:11}}}},scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{family:'Inter',size:10}}},x:{grid:{display:false},ticks:{font:{family:'Inter',size:10}}}}}
+});
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Shipping Calculator – GlobexSky</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="../../assets/css/main.css"/>
+<style>
+:root{--primary:#0052CC;--secondary:#7c3aed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+a{text-decoration:none;color:inherit}
+.site-header{position:sticky;top:0;z-index:100;background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px}
+.btn-login{background:transparent;border:1.5px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+.btn-register{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+.nav-actions{display:flex;gap:12px}
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);color:#fff;padding:48px 24px;text-align:center}
+.breadcrumb{font-size:.85rem;opacity:.8;margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.85)}
+.breadcrumb span{margin:0 6px}
+.page-hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+.page-hero p{font-size:1rem;opacity:.9;max-width:600px;margin:0 auto}
+.main-content{max-width:1200px;margin:0 auto;padding:32px 24px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
+.kpi-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+.kpi-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem}
+.kpi-icon.blue{background:#dbeafe;color:#0052CC}
+.kpi-icon.green{background:#d1fae5;color:#059669}
+.kpi-icon.orange{background:#ffedd5;color:#f97316}
+.kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+.kpi-value{font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;line-height:1}
+.kpi-label{font-size:.8rem;color:#64748b;margin-top:4px}
+.section-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:20px;color:#1a1a2e;display:flex;align-items:center;gap:8px}
+.section-title i{color:var(--primary)}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:.85rem;font-weight:600;color:#374151}
+input,select{border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;width:100%;outline:none;font-family:'Inter',sans-serif;font-size:.9rem;background:#fff;color:#1a1a2e}
+input:focus,select:focus{border-color:#0052CC}
+.btn-primary{background:var(--primary);color:#fff;border-radius:8px;padding:10px 22px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.95rem}
+.btn-primary:hover{background:#003fa3}
+.btn-sm{padding:6px 16px;font-size:.82rem}
+table{width:100%;border-collapse:collapse}
+thead{background:#f8faff}
+th{padding:12px 16px;text-align:left;font-size:.82rem;font-weight:600;color:#64748b;border-bottom:2px solid #e2e8f0}
+td{padding:12px 16px;font-size:.88rem;border-bottom:1px solid #f1f5f9}
+tr:hover td{background:#f8faff}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600}
+.badge.green{background:#d1fae5;color:#059669}
+.badge.blue{background:#dbeafe;color:#0052CC}
+.badge.orange{background:#ffedd5;color:#f97316}
+.rel-bar{height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden}
+.rel-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#059669,#10b981)}
+/* Timeline */
+.timeline-wrap{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.timeline-bar-wrap{position:relative;height:40px;background:#f1f5f9;border-radius:8px;overflow:hidden;margin-top:12px}
+.timeline-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#0052CC,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:600}
+/* Duties */
+.duties-result{background:#f8faff;border-radius:10px;padding:18px;border:1.5px solid #dbeafe;margin-top:14px;display:none}
+footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem;margin-top:40px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.form-grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.kpi-grid{grid-template-columns:1fr}.form-grid-3{grid-template-columns:1fr}.page-hero h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" width="180" height="56" alt="GlobexSky"/></a>
+    <div class="nav-actions">
+      <button class="btn-login">Log In</button>
+      <button class="btn-register">Register</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="breadcrumb"><a href="../../index.html">Home</a><span>›</span>Logistics<span>›</span>Shipping Calculator</div>
+  <h1><i class="fa-solid fa-calculator"></i> Shipping Calculator</h1>
+  <p>Instantly compare shipping rates from 150+ carriers. Get real-time quotes including duties, taxes, and delivery timelines.</p>
+</div>
+
+<main class="main-content">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon blue"><i class="fa-solid fa-truck-fast"></i></div>
+      <div><div class="kpi-value">150+</div><div class="kpi-label">Carrier Partners</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon green"><i class="fa-solid fa-bolt"></i></div>
+      <div><div class="kpi-value">Real-time</div><div class="kpi-label">Live Rate Quotes</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon orange"><i class="fa-solid fa-clock"></i></div>
+      <div><div class="kpi-value">Instant</div><div class="kpi-label">Quote Generation</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon purple"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+      <div><div class="kpi-value">Duties</div><div class="kpi-label">Included in Quotes</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><i class="fa-solid fa-sliders"></i> Calculate Shipping Rate</div>
+    <div class="form-grid" style="margin-bottom:18px">
+      <div class="form-group"><label>From Country</label>
+        <select id="fromCountry">
+          <option value="">Select origin country</option>
+          <option>China</option><option>Germany</option><option>United States</option>
+          <option>India</option><option>Turkey</option><option>Vietnam</option>
+          <option>United Arab Emirates</option><option>Japan</option>
+        </select>
+      </div>
+      <div class="form-group"><label>To Country</label>
+        <select id="toCountry">
+          <option value="">Select destination country</option>
+          <option>United Kingdom</option><option>Australia</option><option>United States</option>
+          <option>Germany</option><option>France</option><option>Canada</option>
+          <option>Brazil</option><option>Saudi Arabia</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Weight (kg)</label><input type="number" id="shipWeight" placeholder="e.g. 20" min="0.1" step="0.1"/></div>
+      <div class="form-group"><label>Service Type</label>
+        <select id="serviceType">
+          <option value="">Select service</option>
+          <option>Express</option><option>Standard</option><option>Economy</option>
+          <option>Air Freight</option><option>Sea Freight</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Quantity</label><input type="number" id="shipQty" placeholder="e.g. 100" min="1"/></div>
+    </div>
+    <div class="form-grid-3" style="margin-bottom:20px">
+      <div class="form-group"><label>Length (cm)</label><input type="number" id="shipL" placeholder="Length" min="1"/></div>
+      <div class="form-group"><label>Width (cm)</label><input type="number" id="shipW" placeholder="Width" min="1"/></div>
+      <div class="form-group"><label>Height (cm)</label><input type="number" id="shipH" placeholder="Height" min="1"/></div>
+    </div>
+    <button class="btn-primary" onclick="calcShipping()"><i class="fa-solid fa-calculator"></i> Calculate Shipping</button>
+  </div>
+
+  <div id="resultsSection" style="display:none">
+    <div class="section-title"><i class="fa-solid fa-table"></i> Shipping Quote Results</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+      <table>
+        <thead><tr><th>Carrier</th><th>Service</th><th>Transit Time</th><th>Price (USD)</th><th>Reliability</th><th>Action</th></tr></thead>
+        <tbody id="ratesBody"></tbody>
+      </table>
+    </div>
+
+    <div class="timeline-wrap">
+      <div class="section-title" style="margin-bottom:12px"><i class="fa-solid fa-timeline"></i> Estimated Delivery Timeline</div>
+      <div style="display:flex;justify-content:space-between;font-size:.82rem;color:#64748b;margin-bottom:6px"><span>Fastest: 2 days</span><span>Standard: 7–10 days</span><span>Economy: 20–30 days</span></div>
+      <div class="timeline-bar-wrap">
+        <div class="timeline-fill" style="width:100%">2 – 35 days depending on service</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px;text-align:center;font-size:.78rem">
+        <div style="background:#dbeafe;border-radius:6px;padding:6px"><div style="font-weight:700;color:#0052CC">Express</div><div style="color:#64748b">2–4 days</div></div>
+        <div style="background:#d1fae5;border-radius:6px;padding:6px"><div style="font-weight:700;color:#059669">Standard</div><div style="color:#64748b">5–10 days</div></div>
+        <div style="background:#ffedd5;border-radius:6px;padding:6px"><div style="font-weight:700;color:#f97316">Economy</div><div style="color:#64748b">10–20 days</div></div>
+        <div style="background:#ede9fe;border-radius:6px;padding:6px"><div style="font-weight:700;color:#7c3aed">Air Freight</div><div style="color:#64748b">3–7 days</div></div>
+        <div style="background:#f1f5f9;border-radius:6px;padding:6px"><div style="font-weight:700;color:#64748b">Sea Freight</div><div style="color:#64748b">20–35 days</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Duties & Taxes -->
+  <div class="card">
+    <div class="section-title"><i class="fa-solid fa-file-invoice-dollar"></i> Duties &amp; Taxes Estimate</div>
+    <div class="form-grid">
+      <div class="form-group"><label>HS Code</label><input type="text" id="hsCode" placeholder="e.g. 8471.30"/></div>
+      <div class="form-group"><label>Product Value (USD)</label><input type="number" id="prodValue" placeholder="e.g. 5000" min="1"/></div>
+    </div>
+    <button class="btn-primary" style="margin-top:14px" onclick="calcDuties()"><i class="fa-solid fa-percent"></i> Calculate Duties</button>
+    <div class="duties-result" id="dutiesResult">
+      <div style="font-weight:700;margin-bottom:12px;color:#1a1a2e">Estimated Duties & Taxes Breakdown</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:.88rem">
+        <div style="background:#fff;border-radius:8px;padding:14px;text-align:center">
+          <div style="color:#64748b;font-size:.75rem;margin-bottom:4px">IMPORT DUTY</div>
+          <div id="dutyAmt" style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0052CC"></div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:14px;text-align:center">
+          <div style="color:#64748b;font-size:.75rem;margin-bottom:4px">VAT / GST</div>
+          <div id="vatAmt" style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#7c3aed"></div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:14px;text-align:center">
+          <div style="color:#64748b;font-size:.75rem;margin-bottom:4px">TOTAL ESTIMATE</div>
+          <div id="totalDuty" style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#059669"></div>
+        </div>
+      </div>
+      <div style="font-size:.78rem;color:#64748b;margin-top:10px"><i class="fa-solid fa-circle-info"></i> Estimates based on standard rates. Actual amounts may vary by destination country and HS classification.</div>
+    </div>
+  </div>
+</main>
+
+<footer>© 2025 Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</footer>
+
+<script>
+const baseRates={
+  'Express':[{c:'DHL Express',t:'2–4 days',m:1.4,r:98},{c:'FedEx Priority',t:'3–5 days',m:1.25,r:97},{c:'UPS Express',t:'2–4 days',m:1.35,r:96},{c:'TNT Express',t:'4–6 days',m:1.15,r:94},{c:'Aramex Express',t:'3–5 days',m:1.0,r:93}],
+  'Standard':[{c:'DHL Standard',t:'5–8 days',m:.9,r:95},{c:'FedEx Economy',t:'6–10 days',m:.8,r:94},{c:'UPS Standard',t:'5–9 days',m:.85,r:93},{c:'Aramex Standard',t:'7–10 days',m:.7,r:91},{c:'SF Express',t:'6–9 days',m:.65,r:90}],
+  'Economy':[{c:'PostNL',t:'10–15 days',m:.45,r:88},{c:'China Post EMS',t:'12–20 days',m:.38,r:85},{c:'Singapore Post',t:'10–18 days',m:.42,r:86},{c:'Royal Mail',t:'8–14 days',m:.5,r:87},{c:'Yanwen',t:'14–22 days',m:.32,r:83}],
+  'Air Freight':[{c:'Cathay Cargo',t:'3–6 days',m:1.1,r:96},{c:'Emirates SkyCargo',t:'3–5 days',m:1.2,r:97},{c:'Air China Cargo',t:'4–7 days',m:.95,r:94},{c:'Lufthansa Cargo',t:'3–6 days',m:1.15,r:95},{c:'Qatar Airways Cargo',t:'3–5 days',m:1.18,r:96}],
+  'Sea Freight':[{c:'MSC',t:'20–30 days',m:.18,r:92},{c:'COSCO',t:'22–35 days',m:.15,r:90},{c:'Evergreen',t:'21–32 days',m:.16,r:91},{c:'Maersk',t:'20–28 days',m:.2,r:93},{c:'CMA CGM',t:'23–35 days',m:.17,r:91}]
+};
+function calcShipping(){
+  const from=document.getElementById('fromCountry').value;
+  const to=document.getElementById('toCountry').value;
+  const weight=parseFloat(document.getElementById('shipWeight').value)||10;
+  const svc=document.getElementById('serviceType').value||'Standard';
+  const qty=parseInt(document.getElementById('shipQty').value)||1;
+  const rates=baseRates[svc]||baseRates['Standard'];
+  const tbody=document.getElementById('ratesBody');
+  tbody.innerHTML='';
+  rates.forEach(r=>{
+    const price=(r.m*weight*qty).toFixed(2);
+    tbody.innerHTML+=`<tr>
+      <td><strong>${r.c}</strong></td>
+      <td><span class="badge blue">${svc}</span></td>
+      <td>${r.t}</td>
+      <td><strong>$${parseFloat(price).toLocaleString()}</strong></td>
+      <td><div class="rel-bar"><div class="rel-fill" style="width:${r.r}%"></div></div><div style="font-size:.75rem;color:#64748b;margin-top:2px">${r.r}%</div></td>
+      <td><button class="btn-primary btn-sm" onclick="alert('Booking: ${r.c} selected.')">Select</button></td>
+    </tr>`;
+  });
+  document.getElementById('resultsSection').style.display='block';
+  document.getElementById('resultsSection').scrollIntoView({behavior:'smooth'});
+}
+function calcDuties(){
+  const val=parseFloat(document.getElementById('prodValue').value);
+  if(!val||val<=0){alert('Please enter a product value.');return;}
+  const duty=(val*0.065).toFixed(2);
+  const vat=(val*0.2).toFixed(2);
+  const total=(parseFloat(duty)+parseFloat(vat)).toFixed(2);
+  document.getElementById('dutyAmt').textContent='$'+parseFloat(duty).toLocaleString();
+  document.getElementById('vatAmt').textContent='$'+parseFloat(vat).toLocaleString();
+  document.getElementById('totalDuty').textContent='$'+parseFloat(total).toLocaleString();
+  document.getElementById('dutiesResult').style.display='block';
+}
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
