@@ -109,7 +109,7 @@ export async function logActivity(adminId, action, resourceType, resourceId, det
       action,
       resource_type: resourceType,
       resource_id: resourceId,
-      details: details ? JSON.stringify(details) : null,
+      details: details || null,
       ip_address: ipAddress,
       created_at: new Date().toISOString(),
     });

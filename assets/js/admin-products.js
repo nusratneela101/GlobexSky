@@ -17,7 +17,19 @@ function statusBadge(status) {
     active: 'badge-green', inactive: 'badge-gray',
     pending: 'badge-orange', rejected: 'badge-red', deleted: 'badge-red',
   };
-  return `<span class="badge-pill ${map[status] || 'badge-gray'}">${status ?? 'unknown'}</span>`;
+  const safeStatus = status ? String(status).replace(/[<>&"']/g, '') : 'unknown';
+  return `<span class="badge-pill ${map[status] || 'badge-gray'}">${safeStatus}</span>`;
+}
+
+/** Escape HTML to prevent XSS */
+function escHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 async function loadProducts(page = 1, filters = {}) {
@@ -40,26 +52,26 @@ async function loadProducts(page = 1, filters = {}) {
       tbody.innerHTML = products.length
         ? products.map(p => `
           <tr>
-            <td><input type="checkbox" value="${p.id}"/></td>
+            <td><input type="checkbox" value="${escHtml(p.id)}"/></td>
             <td>
-              <a href="product-detail.html?id=${p.id}" style="font-weight:600;text-decoration:none;color:#0a0e27">
-                ${p.name || '—'}
+              <a href="product-detail.html?id=${escHtml(p.id)}" style="font-weight:600;text-decoration:none;color:#0a0e27">
+                ${escHtml(p.name) || '—'}
               </a>
-              <div style="font-size:.78rem;color:#94a3b8">${p.sku || ''}</div>
+              <div style="font-size:.78rem;color:#94a3b8">${escHtml(p.sku) || ''}</div>
             </td>
-            <td>${p.category?.name || '—'}</td>
-            <td>${p.supplier?.company_name || '—'}</td>
+            <td>${escHtml(p.category?.name) || '—'}</td>
+            <td>${escHtml(p.supplier?.company_name) || '—'}</td>
             <td>$${(+p.price || 0).toFixed(2)}</td>
             <td>${p.stock_quantity ?? 0}</td>
             <td>${statusBadge(p.status)}</td>
             <td>
               <div class="btn-action-group">
-                ${p.status === 'pending' ? `<button class="btn-sm btn-success" onclick="approveProduct('${p.id}')"><i class="fas fa-check"></i> Approve</button>` : ''}
-                <a href="product-detail.html?id=${p.id}" class="btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
-                <button class="btn-sm btn-warning" onclick="toggleFeatured('${p.id}', ${!p.is_featured})">
-                  <i class="fas fa-${p.is_featured ? 'star' : 'star'}" style="color:${p.is_featured ? '#f59e0b' : 'inherit'}"></i>
+                ${p.status === 'pending' ? `<button class="btn-sm btn-success" onclick="approveProduct('${escHtml(p.id)}')"><i class="fas fa-check"></i> Approve</button>` : ''}
+                <a href="product-detail.html?id=${escHtml(p.id)}" class="btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
+                <button class="btn-sm btn-warning" onclick="toggleFeatured('${escHtml(p.id)}', ${!p.is_featured})">
+                  <i class="fas fa-star" style="color:${p.is_featured ? '#f59e0b' : 'inherit'}"></i>
                 </button>
-                <button class="btn-sm btn-danger" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                <button class="btn-sm btn-danger" onclick="deleteProduct('${escHtml(p.id)}')"><i class="fas fa-trash"></i></button>
               </div>
             </td>
           </tr>`)

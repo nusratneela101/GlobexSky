@@ -12,6 +12,17 @@ async function authHeaders() {
   return { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
 }
 
+/** Escape HTML to prevent XSS when inserting user-provided text into innerHTML */
+function escHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 function statusBadge(status) {
   const map = {
     active: 'badge-green', inactive: 'badge-gray',
@@ -55,23 +66,23 @@ async function loadUsers(page = 1, filters = {}) {
       tbody.innerHTML = users.length
         ? users.map((u, i) => `
           <tr>
-            <td><input type="checkbox" name="user-select" value="${u.id}"/></td>
+            <td><input type="checkbox" name="user-select" value="${escHtml(u.id)}"/></td>
             <td>
               <div class="user-cell">
-                <div class="user-initials-sm" style="background:${colors[i % 5]};color:${textColors[i % 5]}">${initials(u.full_name)}</div>
-                <a href="user-detail.html?id=${u.id}" class="user-cell-name" style="text-decoration:none;color:inherit">${u.full_name || '—'}</a>
+                <div class="user-initials-sm" style="background:${colors[i % 5]};color:${textColors[i % 5]}">${escHtml(initials(u.full_name))}</div>
+                <a href="user-detail.html?id=${escHtml(u.id)}" class="user-cell-name" style="text-decoration:none;color:inherit">${escHtml(u.full_name) || '—'}</a>
               </div>
             </td>
-            <td>${u.email || '—'}</td>
+            <td>${escHtml(u.email) || '—'}</td>
             <td>${roleBadge(u.role)}</td>
             <td>${statusBadge(u.status || 'active')}</td>
             <td>${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
             <td>
               <div class="btn-action-group">
-                <a href="user-detail.html?id=${u.id}" class="btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
-                <button class="btn-sm btn-success" onclick="verifyUser('${u.id}')"><i class="fas fa-check"></i></button>
-                <button class="btn-sm btn-warning" onclick="suspendUser('${u.id}')"><i class="fas fa-ban"></i></button>
-                <button class="btn-sm btn-danger" onclick="deleteUser('${u.id}')"><i class="fas fa-trash"></i></button>
+                <a href="user-detail.html?id=${escHtml(u.id)}" class="btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
+                <button class="btn-sm btn-success" onclick="verifyUser('${escHtml(u.id)}')"><i class="fas fa-check"></i></button>
+                <button class="btn-sm btn-warning" onclick="suspendUser('${escHtml(u.id)}')"><i class="fas fa-ban"></i></button>
+                <button class="btn-sm btn-danger" onclick="deleteUser('${escHtml(u.id)}')"><i class="fas fa-trash"></i></button>
               </div>
             </td>
           </tr>`)

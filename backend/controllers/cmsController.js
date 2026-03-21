@@ -21,7 +21,8 @@ export async function listPages(req, res, next) {
 
 export async function getPage(req, res, next) {
   try {
-    const field = req.params.id?.includes('-') && !req.params.id.match(/^[0-9a-f-]{36}$/) ? 'slug' : 'id';
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const field = UUID_REGEX.test(req.params.id) ? 'id' : 'slug';
     const { data, error } = await supabase
       .from('pages')
       .select('*')
