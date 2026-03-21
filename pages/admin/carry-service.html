@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Carry Service Management | Globex Sky Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+.admin-wrapper{display:flex;min-height:100vh}
+.admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+.admin-sidebar.collapsed{width:64px}
+.admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+.sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+.sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+.sidebar-nav ul{list-style:none}
+.sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+.sidebar-nav li a:hover{background:rgba(255,255,255,.07);color:#fff}
+.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+.sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+.admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+.sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+.admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+.admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+.topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.admin-content{padding:24px;overflow-y:auto}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:24px}
+.metric-card{background:#fff;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.metric-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.metric-icon.blue{background:#dbeafe;color:#0052CC}
+.metric-icon.green{background:#d1fae5;color:#059669}
+.metric-icon.orange{background:#ffedd5;color:#f97316}
+.metric-icon.purple{background:#ede9fe;color:#7c3aed}
+.metric-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+.metric-label{color:#64748b;font-size:.82rem;margin-top:2px}
+.admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:24px}
+.admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+.tab-bar{display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:4px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{padding:8px 16px;border-radius:8px;border:none;background:transparent;font-size:.85rem;font-weight:500;color:#64748b;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.data-table{width:100%;border-collapse:collapse;font-size:.855rem}
+.data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#fafbff}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-warning{background:#fff7ed;color:#f97316}
+.badge-danger{background:#fee2e2;color:#ef4444}
+.badge-info{background:#dbeafe;color:#0052CC}
+.badge-secondary{background:#f1f5f9;color:#64748b}
+.btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-secondary{background:#f1f5f9;color:#374151}.btn-secondary:hover{background:#e2e8f0}
+.btn-sm{padding:5px 12px;font-size:.8rem}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:#64748b;padding:4px}
+.search-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.search-input{flex:1;min-width:200px;padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif}
+.search-input:focus{outline:none;border-color:#0052CC}
+.table-wrap{overflow-x:auto}
+.actions-cell{display:flex;gap:6px;flex-wrap:wrap}
+@media(max-width:768px){.admin-sidebar{display:none}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="32" height="32">
+        <span>Globex Sky</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-cart"></i><span>Orders</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="carry-service.html" class="active"><i class="fas fa-plane"></i><span>Carry Service</span></a></li>
+        <li><a href="parcel-service.html"><i class="fas fa-shipping-fast"></i><span>Parcel Service</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-truck"></i><span>Shipments</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="inspections.html"><i class="fas fa-clipboard-check"></i><span>Inspections</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i><span>Payments</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title">Carry Service Management</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-avatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-users"></i></div>
+          <div><div class="metric-value" id="totalCarriers">248</div><div class="metric-label">Total Carriers</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-plane"></i></div>
+          <div><div class="metric-value" id="activeTrips">34</div><div class="metric-label">Active Trips</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange"><i class="fas fa-box"></i></div>
+          <div><div class="metric-value" id="pendingDeliveries">87</div><div class="metric-label">Pending Deliveries</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple"><i class="fas fa-dollar-sign"></i></div>
+          <div><div class="metric-value" id="monthlyPayout">$12,450</div><div class="metric-label">Monthly Payouts</div></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('applications')"><i class="fas fa-user-check"></i> Applications</button>
+        <button class="tab-btn" onclick="switchTab('requests')"><i class="fas fa-list"></i> Carry Requests</button>
+        <button class="tab-btn" onclick="switchTab('collection')"><i class="fas fa-qrcode"></i> Office Collection</button>
+        <button class="tab-btn" onclick="switchTab('tracking')"><i class="fas fa-map-marker-alt"></i> Delivery Tracking</button>
+        <button class="tab-btn" onclick="switchTab('catalog')"><i class="fas fa-tags"></i> Product Catalog</button>
+        <button class="tab-btn" onclick="switchTab('payments')"><i class="fas fa-money-bill-wave"></i> Carrier Payments</button>
+        <button class="tab-btn" onclick="switchTab('performance')"><i class="fas fa-star"></i> Performance</button>
+      </div>
+
+      <!-- Tab: Applications -->
+      <div class="tab-content active" id="tab-applications">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-user-check"></i> Carrier Applications</div>
+            <div style="display:flex;gap:8px">
+              <select class="form-control" style="width:auto;padding:7px 12px">
+                <option>All Status</option>
+                <option>Pending</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+              </select>
+            </div>
+          </div>
+          <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search carriers by name, email...">
+            <button class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Search</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Carrier Name</th><th>Email</th><th>Passport</th><th>ID Doc</th><th>Selfie</th><th>Facial Verify</th><th>Applied</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="applicationsTableBody">
+                <tr>
+                  <td>#C001</td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-weight:600;color:#0052CC;font-size:.8rem">MR</div>Mohammed Rahman</div></td>
+                  <td>m.rahman@email.com</td>
+                  <td><a href="#" style="color:#0052CC;font-size:.8rem"><i class="fas fa-file-pdf"></i> View</a></td>
+                  <td><a href="#" style="color:#0052CC;font-size:.8rem"><i class="fas fa-id-card"></i> View</a></td>
+                  <td><a href="#" style="color:#0052CC;font-size:.8rem"><i class="fas fa-camera"></i> View</a></td>
+                  <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Verified</span></td>
+                  <td>2026-03-15</td>
+                  <td><span class="badge badge-warning">Pending</span></td>
+                  <td class="actions-cell">
+                    <button class="btn btn-success btn-sm" onclick="approveCarrier('C001')"><i class="fas fa-check"></i> Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="rejectCarrier('C001')"><i class="fas fa-times"></i> Reject</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#C002</td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-weight:600;color:#059669;font-size:.8rem">SA</div>Sarah Ahmed</div></td>
+                  <td>s.ahmed@email.com</td>
+                  <td><a href="#" style="color:#0052CC;font-size:.8rem"><i class="fas fa-file-pdf"></i> View</a></td>
+                  <td><a href="#" style="color:#0052CC;font-size:.8rem"><i class="fas fa-id-card"></i> View</a></td>
+                  <td><a href="#" style="color:#0052CC;font-size:.8rem"><i class="fas fa-camera"></i> View</a></td>
+                  <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Verified</span></td>
+                  <td>2026-03-14</td>
+                  <td><span class="badge badge-success">Approved</span></td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm" onclick="viewCarrier('C002')"><i class="fas fa-eye"></i> View</button>
+                    <button class="btn btn-danger btn-sm"><i class="fas fa-ban"></i> Suspend</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Carry Requests -->
+      <div class="tab-content" id="tab-requests">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-list"></i> Carry Requests</div>
+            <select class="form-control" style="width:auto;padding:7px 12px">
+              <option>All Status</option><option>Active</option><option>In Transit</option><option>Completed</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>ID</th><th>Carrier</th><th>Flight No.</th><th>Route</th><th>Date</th><th>Capacity</th><th>Items</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#CR001</td><td>Mohammed R.</td><td>BG-402</td><td>DAC → DXB</td><td>2026-03-20</td><td>8 kg</td><td>3 items</td>
+                  <td><span class="badge badge-info">In Transit</span></td>
+                  <td class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Details</button></td>
+                </tr>
+                <tr>
+                  <td>#CR002</td><td>Sarah A.</td><td>EK-582</td><td>DAC → LHR</td><td>2026-03-22</td><td>5 kg</td><td>2 items</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Details</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Office Collection -->
+      <div class="tab-content" id="tab-collection">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-qrcode"></i> Office Collection — Scan &amp; Verify</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px">
+            <div>
+              <h3 style="font-size:.95rem;font-weight:600;color:#0a0e27;margin-bottom:16px">Scan Carrier QR Code</h3>
+              <div style="border:2px dashed #e2e8f0;border-radius:12px;padding:40px;text-align:center;background:#f8faff;margin-bottom:16px">
+                <i class="fas fa-qrcode" style="font-size:3rem;color:#0052CC;margin-bottom:12px"></i>
+                <p style="color:#64748b;font-size:.9rem;margin-bottom:12px">Point camera at carrier QR code</p>
+                <button class="btn btn-primary"><i class="fas fa-camera"></i> Open Scanner</button>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Or enter Reference Number</label>
+                <div style="display:flex;gap:8px">
+                  <input type="text" class="form-control" placeholder="e.g. CR-2026-001">
+                  <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                </div>
+              </div>
+            </div>
+            <div id="collectionResult" style="display:none">
+              <h3 style="font-size:.95rem;font-weight:600;color:#0a0e27;margin-bottom:16px">Carrier Information</h3>
+              <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px;margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                  <div style="width:44px;height:44px;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">MR</div>
+                  <div><div style="font-weight:600;color:#0a0e27">Mohammed Rahman</div><div style="font-size:.82rem;color:#64748b">Carrier ID: C001</div></div>
+                </div>
+                <div style="font-size:.85rem;color:#374151;line-height:1.8">
+                  <div><strong>Flight:</strong> BG-402 (DAC → DXB)</div>
+                  <div><strong>Date:</strong> 2026-03-20</div>
+                  <div><strong>Products:</strong> 3 items / 4.5 kg</div>
+                </div>
+              </div>
+              <button class="btn btn-success" style="width:100%"><i class="fas fa-check-circle"></i> Verify &amp; Hand Over Products</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Delivery Tracking -->
+      <div class="tab-content" id="tab-tracking">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-map-marker-alt"></i> Delivery Tracking</div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Delivery ID</th><th>Carrier</th><th>Receiver</th><th>Destination</th><th>QR Code</th><th>Status</th><th>Last Update</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#DLV001</td><td>Mohammed R.</td><td>John Smith</td><td>Dubai, UAE</td>
+                  <td><button class="btn btn-secondary btn-sm"><i class="fas fa-qrcode"></i> Show QR</button></td>
+                  <td><span class="badge badge-info">In Transit</span></td>
+                  <td>2026-03-19 14:30</td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Track</button>
+                    <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Confirm</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Product Catalog -->
+      <div class="tab-content" id="tab-catalog">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-tags"></i> Carrier Product Catalog</div>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('addProductModal').classList.add('open')"><i class="fas fa-plus"></i> Add Product</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Product</th><th>Category</th><th>Weight Limit</th><th>Payment/kg</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Electronics (Phones)</td><td>Consumer Electronics</td><td>5 kg max</td><td>$8.00/kg</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Clothing &amp; Accessories</td><td>Fashion</td><td>10 kg max</td><td>$5.00/kg</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Documents</td><td>Papers</td><td>1 kg max</td><td>$3.00/kg</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Carrier Payments -->
+      <div class="tab-content" id="tab-payments">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-money-bill-wave"></i> Carrier Payments</div>
+            <div style="display:flex;gap:8px">
+              <select class="form-control" style="width:auto;padding:7px 12px">
+                <option>All Status</option><option>Pending</option><option>Paid</option>
+              </select>
+              <button class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Export</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Carrier</th><th>Delivery ID</th><th>Gross Amount</th><th>Platform Fee</th><th>Net Amount</th><th>Method</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mohammed R.</td><td>#DLV001</td><td>$45.00</td><td>$4.50</td><td>$40.50</td><td>Bank Transfer</td>
+                  <td><span class="badge badge-warning">Pending</span></td>
+                  <td><button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Pay Now</button></td>
+                </tr>
+                <tr>
+                  <td>Sarah A.</td><td>#DLV002</td><td>$32.00</td><td>$3.20</td><td>$28.80</td><td>PayPal</td>
+                  <td><span class="badge badge-success">Paid</span></td>
+                  <td><button class="btn btn-secondary btn-sm"><i class="fas fa-receipt"></i> Receipt</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Performance -->
+      <div class="tab-content" id="tab-performance">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-star"></i> Carrier Performance</div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Carrier</th><th>Total Trips</th><th>Success Rate</th><th>Avg Rating</th><th>Total Earned</th><th>Last Active</th><th>Tier</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mohammed Rahman</td><td>42</td>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div style="width:60px;height:6px;background:#e2e8f0;border-radius:3px"><div style="width:95%;height:100%;background:#059669;border-radius:3px"></div></div>95%</div></td>
+                  <td><span style="color:#f59e0b">★</span> 4.8</td>
+                  <td>$1,890.00</td><td>2026-03-19</td>
+                  <td><span class="badge badge-success">Gold</span></td>
+                </tr>
+                <tr>
+                  <td>Sarah Ahmed</td><td>28</td>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div style="width:60px;height:6px;background:#e2e8f0;border-radius:3px"><div style="width:89%;height:100%;background:#0052CC;border-radius:3px"></div></div>89%</div></td>
+                  <td><span style="color:#f59e0b">★</span> 4.6</td>
+                  <td>$1,260.00</td><td>2026-03-18</td>
+                  <td><span class="badge badge-info">Silver</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add Product to Catalog</span>
+      <button class="modal-close" onclick="document.getElementById('addProductModal').classList.remove('open')">&times;</button>
+    </div>
+    <form onsubmit="return false">
+      <div class="form-group"><label class="form-label">Product Name</label><input type="text" class="form-control" placeholder="e.g. Smartphones"></div>
+      <div class="form-group"><label class="form-label">Category</label>
+        <select class="form-control"><option>Select Category</option><option>Electronics</option><option>Clothing</option><option>Documents</option><option>Cosmetics</option><option>Medicine</option></select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Max Weight (kg)</label><input type="number" class="form-control" placeholder="e.g. 5"></div>
+        <div class="form-group"><label class="form-label">Payment per kg ($)</label><input type="number" class="form-control" placeholder="e.g. 8.00" step="0.01"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-control" rows="2" placeholder="Any special instructions..."></textarea></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('addProductModal').classList.remove('open')">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  event.target.classList.add('active');
+}
+function approveCarrier(id) {
+  if(confirm('Approve carrier ' + id + '?')) {
+    const btn = event.target;
+    btn.closest('tr').querySelector('.badge').textContent = 'Approved';
+    btn.closest('tr').querySelector('.badge').className = 'badge badge-success';
+    alert('Carrier approved successfully!');
+  }
+}
+function rejectCarrier(id) {
+  if(confirm('Reject carrier ' + id + '?')) {
+    const btn = event.target;
+    btn.closest('tr').querySelector('.badge').textContent = 'Rejected';
+    btn.closest('tr').querySelector('.badge').className = 'badge badge-danger';
+  }
+}
+function viewCarrier(id) { alert('Viewing carrier profile: ' + id); }
+
+// Load stats from API
+async function loadStats() {
+  try {
+    const res = await fetch('/api/v1/admin/carry/stats');
+    if (res.ok) {
+      const { data } = await res.json();
+      if (data) {
+        document.getElementById('totalCarriers').textContent = data.total_carriers ?? 248;
+        document.getElementById('activeTrips').textContent = data.active_trips ?? 34;
+        document.getElementById('pendingDeliveries').textContent = data.pending_deliveries ?? 87;
+        document.getElementById('monthlyPayout').textContent = '$' + (data.monthly_payout ?? 12450).toLocaleString();
+      }
+    }
+  } catch(e) { /* use defaults */ }
+}
+loadStats();
+</script>
+</body>
+</html>
