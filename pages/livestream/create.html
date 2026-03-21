@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Create Live Stream – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh}
+
+    /* ── Nav ── */
+    .topnav{background:#161b22;border-bottom:1px solid #30363d;padding:0 24px;position:sticky;top:0;z-index:200}
+    .topnav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;height:62px}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#e6edf3;text-decoration:none;flex-shrink:0}
+    .brand-logo span{color:#0052CC}
+    .nav-links{display:flex;gap:4px;margin-left:16px}
+    .nav-link{text-decoration:none;color:#8b949e;font-size:.875rem;font-weight:500;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-link:hover,.nav-link.active{color:#e6edf3;background:#21262d}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:9px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-ghost{background:transparent;color:#8b949e;border:1px solid #30363d}
+    .btn-ghost:hover{border-color:#8b949e;color:#e6edf3}
+    .btn-danger{background:#dc2626;color:#fff}
+    .btn-danger:hover{background:#b91c1c}
+
+    /* ── Page Header ── */
+    .page-header{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:44px 24px 36px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-header::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 40%,rgba(255,255,255,.08) 0%,transparent 60%)}
+    .page-header-inner{position:relative;z-index:1;max-width:600px;margin:0 auto}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:800;margin-bottom:10px}
+    .page-header p{opacity:.88;font-size:.95rem;line-height:1.6}
+
+    /* ── Steps ── */
+    .steps-bar{background:#161b22;border-bottom:1px solid #30363d;padding:16px 24px}
+    .steps-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:0}
+    .step{display:flex;align-items:center;gap:10px;flex:1}
+    .step-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;border:2px solid #30363d;color:#8b949e;transition:all .3s}
+    .step.active .step-num{background:#0052CC;border-color:#0052CC;color:#fff}
+    .step.done .step-num{background:#16a34a;border-color:#16a34a;color:#fff}
+    .step-text{font-size:.82rem;color:#8b949e;font-weight:500}
+    .step.active .step-text{color:#e6edf3;font-weight:600}
+    .step.done .step-text{color:#16a34a}
+    .step-line{flex:1;height:2px;background:#30363d;margin:0 8px;max-width:60px}
+    .step-line.done{background:#16a34a}
+
+    /* ── Layout ── */
+    .page-body{max-width:1200px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}
+    @media(max-width:960px){.page-body{grid-template-columns:1fr}}
+
+    /* ── Form Card ── */
+    .form-card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:28px;margin-bottom:20px}
+    .form-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#e6edf3;display:flex;align-items:center;gap:8px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid #30363d}
+    .form-card-title i{color:#0052CC}
+    .form-group{margin-bottom:20px}
+    .form-label{display:block;font-size:.83rem;font-weight:600;color:#c9d1d9;margin-bottom:8px}
+    .form-label .req{color:#ef4444;margin-left:2px}
+    .form-input,.form-textarea,.form-select{width:100%;background:#0d1117;border:1.5px solid #30363d;color:#e6edf3;border-radius:10px;padding:11px 14px;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+    .form-input:focus,.form-textarea:focus,.form-select:focus{border-color:#0052CC}
+    .form-input::placeholder,.form-textarea::placeholder{color:#6b7280}
+    .form-textarea{resize:vertical;min-height:100px}
+    .form-select option{background:#161b22}
+    .char-count{font-size:.72rem;color:#6b7280;text-align:right;margin-top:5px}
+    .form-hint{font-size:.75rem;color:#6b7280;margin-top:6px;display:flex;align-items:flex-start;gap:5px}
+    .form-hint i{margin-top:1px;flex-shrink:0}
+    .input-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-radio-group{display:flex;gap:10px;flex-wrap:wrap}
+    .radio-option{flex:1;min-width:120px}
+    .radio-option input{display:none}
+    .radio-label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#0d1117;border:1.5px solid #30363d;border-radius:10px;padding:14px 10px;cursor:pointer;transition:all .2s;text-align:center}
+    .radio-label i{font-size:1.3rem;color:#6b7280}
+    .radio-label span{font-size:.8rem;color:#8b949e;font-weight:600}
+    .radio-option input:checked + .radio-label{border-color:#0052CC;background:rgba(0,82,204,.1)}
+    .radio-option input:checked + .radio-label i,.radio-option input:checked + .radio-label span{color:#0052CC}
+
+    /* ── Thumbnail Upload ── */
+    .thumb-upload{border:2px dashed #30363d;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+    .thumb-upload:hover{border-color:#0052CC;background:rgba(0,82,204,.05)}
+    .thumb-upload.has-preview{padding:0;border:none}
+    .thumb-upload-icon{font-size:2rem;color:#6b7280;margin-bottom:10px}
+    .thumb-upload h4{font-size:.88rem;font-weight:600;color:#c9d1d9;margin-bottom:5px}
+    .thumb-upload p{font-size:.76rem;color:#6b7280}
+    .thumb-upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .thumb-preview{width:100%;border-radius:10px;overflow:hidden;position:relative;aspect-ratio:16/9;background:#21262d;display:flex;align-items:center;justify-content:center;font-size:4rem}
+    .thumb-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);border:none;color:#fff;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+
+    /* ── Product Selection ── */
+    .product-search-bar{display:flex;gap:8px;margin-bottom:14px}
+    .product-search-input{flex:1;background:#0d1117;border:1.5px solid #30363d;color:#e6edf3;border-radius:9px;padding:10px 13px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none}
+    .product-search-input:focus{border-color:#0052CC}
+    .prod-select-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;max-height:320px;overflow-y:auto;padding-right:4px}
+    .prod-select-grid::-webkit-scrollbar{width:4px}
+    .prod-select-grid::-webkit-scrollbar-thumb{background:#30363d;border-radius:4px}
+    .prod-item{background:#0d1117;border:1.5px solid #30363d;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
+    .prod-item:hover{border-color:#0052CC}
+    .prod-item.selected{border-color:#0052CC;background:rgba(0,82,204,.1)}
+    .prod-item-emoji{font-size:1.8rem;margin-bottom:6px}
+    .prod-item-name{font-size:.72rem;color:#c9d1d9;font-weight:600;margin-bottom:3px}
+    .prod-item-price{font-size:.72rem;color:#0052CC;font-weight:700}
+    .prod-check{position:absolute;top:6px;right:6px;width:18px;height:18px;background:#0052CC;border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:.6rem}
+    .prod-item.selected .prod-check{display:flex}
+    .selected-count{font-size:.78rem;color:#8b949e;margin-top:10px}
+    .selected-count span{color:#0052CC;font-weight:700}
+
+    /* ── Stream Tags ── */
+    .tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;background:#0d1117;border:1.5px solid #30363d;border-radius:10px;padding:8px 10px;min-height:46px;cursor:text;transition:border-color .2s}
+    .tags-input-wrap:focus-within{border-color:#0052CC}
+    .tag-pill{background:rgba(0,82,204,.2);border:1px solid rgba(0,82,204,.4);color:#60a5fa;border-radius:20px;padding:3px 10px;font-size:.76rem;display:flex;align-items:center;gap:5px}
+    .tag-remove{background:none;border:none;color:#60a5fa;cursor:pointer;padding:0;font-size:.7rem;line-height:1}
+    .tags-input{background:none;border:none;color:#e6edf3;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;min-width:100px;flex:1}
+
+    /* ── Preview Card (sidebar) ── */
+    .preview-card{background:#161b22;border:1px solid #30363d;border-radius:16px;overflow:hidden;position:sticky;top:80px}
+    .preview-header{background:#0d1117;padding:14px 16px;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:8px}
+    .preview-header h4{font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;color:#e6edf3}
+    .preview-header i{color:#0052CC}
+    .preview-thumb{aspect-ratio:16/9;background:linear-gradient(135deg,#0d1117,#161b22);display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative}
+    .preview-live-badge{position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:4px;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+    .preview-body{padding:16px}
+    .preview-title{font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;color:#e6edf3;margin-bottom:8px;min-height:2.4em}
+    .preview-host-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+    .preview-avatar{width:30px;height:30px;border-radius:50%;background:#0052CC;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff}
+    .preview-host-name{font-size:.8rem;color:#c9d1d9;font-weight:600}
+    .preview-cat-badge{background:rgba(0,82,204,.2);color:#60a5fa;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:5px;margin-bottom:12px;display:inline-block}
+    .preview-meta{font-size:.75rem;color:#8b949e;display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+    .preview-meta span{display:flex;align-items:center;gap:6px}
+    .preview-meta i{width:14px;text-align:center;color:#0052CC}
+    .checklist{display:flex;flex-direction:column;gap:8px}
+    .check-item{display:flex;align-items:center;gap:8px;font-size:.8rem;color:#8b949e;padding:8px 10px;border-radius:8px;background:#0d1117}
+    .check-item.ok{color:#c9d1d9}
+    .check-item i{width:16px;text-align:center;font-size:.75rem}
+    .check-item.ok i{color:#16a34a}
+    .check-item:not(.ok) i{color:#ef4444}
+
+    /* ── Action Bar ── */
+    .action-bar{background:#161b22;border-top:1px solid #30363d;padding:16px 24px;position:sticky;bottom:0;z-index:100}
+    .action-bar-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .action-bar-left{font-size:.82rem;color:#8b949e}
+    .action-bar-left strong{color:#e6edf3}
+    .action-bar-right{display:flex;gap:10px}
+    .btn-lg{padding:12px 28px;font-size:.9rem}
+    .btn-go-live{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-weight:700;border:none;border-radius:10px;padding:12px 28px;font-size:.9rem;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;transition:all .2s}
+    .btn-go-live:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(239,68,68,.4)}
+    .btn-schedule{background:#0052CC;color:#fff}
+
+    @media(max-width:600px){.input-row{grid-template-columns:1fr}.form-radio-group{flex-direction:column}.action-bar-right{flex-direction:column;width:100%}.action-bar-right .btn{width:100%;justify-content:center}}
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="browse.html" class="nav-link">Browse Live</a>
+      <a href="#" class="nav-link active">Go Live</a>
+    </div>
+    <div class="nav-right">
+      <a href="browse.html" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Back to Live</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1><i class="fas fa-video" style="margin-right:10px"></i>Create Your Live Stream</h1>
+    <p>Showcase your products, conduct factory tours, and connect with thousands of global B2B buyers in real time.</p>
+  </div>
+</div>
+
+<!-- Steps -->
+<div class="steps-bar">
+  <div class="steps-inner">
+    <div class="step active" id="step1">
+      <div class="step-num">1</div>
+      <div class="step-text">Stream Details</div>
+    </div>
+    <div class="step-line" id="line1"></div>
+    <div class="step" id="step2">
+      <div class="step-num">2</div>
+      <div class="step-text">Products &amp; Media</div>
+    </div>
+    <div class="step-line" id="line2"></div>
+    <div class="step" id="step3">
+      <div class="step-num">3</div>
+      <div class="step-text">Settings</div>
+    </div>
+    <div class="step-line" id="line3"></div>
+    <div class="step" id="step4">
+      <div class="step-num">4</div>
+      <div class="step-text">Go Live!</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+  <!-- Left: Form -->
+  <div>
+
+    <!-- Section 1: Basic Info -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-info-circle"></i> Stream Information</div>
+
+      <div class="form-group">
+        <label class="form-label">Stream Title <span class="req">*</span></label>
+        <input type="text" class="form-input" id="streamTitle" placeholder="e.g., Solar Panel 2024 New Models — Factory Floor Tour" maxlength="100" oninput="updatePreview()"/>
+        <div class="char-count" id="titleCount">0 / 100</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="streamDesc" placeholder="Tell viewers what to expect — product highlights, special offers, Q&amp;A sessions…" maxlength="500" oninput="updateDesc()"></textarea>
+        <div class="char-count" id="descCount">0 / 500</div>
+      </div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label class="form-label">Category <span class="req">*</span></label>
+          <select class="form-select" id="streamCat" onchange="updatePreview()">
+            <option value="">Select category…</option>
+            <option>Solar Energy</option>
+            <option>Electronics &amp; Components</option>
+            <option>Industrial Machinery</option>
+            <option>Auto Parts</option>
+            <option>Packaging &amp; Printing</option>
+            <option>Textiles &amp; Apparel</option>
+            <option>Consumer Goods</option>
+            <option>Medical Devices</option>
+            <option>Building Materials</option>
+            <option>Food &amp; Agriculture</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Language</label>
+          <select class="form-select">
+            <option>English</option>
+            <option>Mandarin Chinese</option>
+            <option>Spanish</option>
+            <option>Arabic</option>
+            <option>Hindi</option>
+            <option>French</option>
+            <option>German</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tags <span style="color:#6b7280;font-weight:400">(press Enter to add)</span></label>
+        <div class="tags-input-wrap" id="tagsWrap" onclick="document.getElementById('tagInput').focus()">
+          <span class="tag-pill">solar panels <button class="tag-remove" onclick="removeTag(this)" type="button">×</button></span>
+          <span class="tag-pill">factory tour <button class="tag-remove" onclick="removeTag(this)" type="button">×</button></span>
+          <span class="tag-pill">wholesale <button class="tag-remove" onclick="removeTag(this)" type="button">×</button></span>
+          <input type="text" class="tags-input" id="tagInput" placeholder="Add tag…" onkeydown="addTag(event)"/>
+        </div>
+        <div class="form-hint"><i class="fas fa-info-circle"></i> Tags help buyers discover your stream. Add up to 10 relevant keywords.</div>
+      </div>
+    </div>
+
+    <!-- Section 2: Schedule -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-calendar-alt"></i> Schedule</div>
+
+      <div class="form-group">
+        <label class="form-label">Stream Type <span class="req">*</span></label>
+        <div class="form-radio-group">
+          <label class="radio-option">
+            <input type="radio" name="streamType" value="live" checked onchange="toggleSchedule('live')"/>
+            <div class="radio-label"><i class="fas fa-circle" style="color:#ef4444"></i><span>Go Live Now</span></div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="streamType" value="scheduled" onchange="toggleSchedule('scheduled')"/>
+            <div class="radio-label"><i class="fas fa-calendar-check"></i><span>Schedule</span></div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="streamType" value="tour" onchange="toggleSchedule('tour')"/>
+            <div class="radio-label"><i class="fas fa-industry"></i><span>Factory Tour</span></div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="streamType" value="event" onchange="toggleSchedule('event')"/>
+            <div class="radio-label"><i class="fas fa-star"></i><span>Trade Event</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div id="scheduleFields" style="display:none">
+        <div class="input-row">
+          <div class="form-group">
+            <label class="form-label">Date <span class="req">*</span></label>
+            <input type="date" class="form-input" id="schedDate"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time (GMT+8) <span class="req">*</span></label>
+            <input type="time" class="form-input" id="schedTime"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estimated Duration</label>
+          <select class="form-select">
+            <option>30 minutes</option>
+            <option>1 hour</option>
+            <option selected>1.5 hours</option>
+            <option>2 hours</option>
+            <option>3 hours</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Thumbnail -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-image"></i> Stream Thumbnail</div>
+      <div class="thumb-upload" id="thumbUpload">
+        <div class="thumb-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <h4>Upload Thumbnail</h4>
+        <p>Recommended: 1280×720px · JPG or PNG · Max 5MB</p>
+        <input type="file" accept="image/*" onchange="previewThumb(event)"/>
+      </div>
+      <div class="form-hint" style="margin-top:10px"><i class="fas fa-lightbulb"></i> High-quality thumbnails get 3× more clicks. Show your product or factory floor.</div>
+    </div>
+
+    <!-- Section 4: Product Showcase -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-boxes"></i> Products to Showcase</div>
+      <div class="form-hint" style="margin-bottom:14px"><i class="fas fa-info-circle"></i> Select products to feature during your stream. Viewers can click to view details and request quotes.</div>
+      <div class="product-search-bar">
+        <input type="text" class="product-search-input" placeholder="Search your products…" oninput="filterProducts(this.value)"/>
+        <a href="../supplier/products.html" class="btn btn-ghost" style="font-size:.8rem;white-space:nowrap"><i class="fas fa-plus"></i> Add Product</a>
+      </div>
+      <div class="prod-select-grid" id="prodGrid"></div>
+      <div class="selected-count">Selected: <span id="selectedCount">0</span> / 20 products</div>
+    </div>
+
+    <!-- Section 5: Settings -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-cog"></i> Stream Settings</div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label class="form-label">Audience</label>
+          <select class="form-select">
+            <option>Public (Everyone)</option>
+            <option>Verified Buyers Only</option>
+            <option>Invited Buyers</option>
+            <option>Private (Test)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Max Viewers</label>
+          <select class="form-select">
+            <option>Unlimited</option>
+            <option>500</option>
+            <option>1,000</option>
+            <option>5,000</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" checked style="width:16px;height:16px;accent-color:#0052CC"/> Enable Live Chat
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" checked style="width:16px;height:16px;accent-color:#0052CC"/> Allow RFQ Requests During Stream
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" checked style="width:16px;height:16px;accent-color:#0052CC"/> Auto-save Replay
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" style="width:16px;height:16px;accent-color:#0052CC"/> Enable AI Auto-subtitles
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" style="width:16px;height:16px;accent-color:#0052CC"/> Notify my followers before starting
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right: Preview Sidebar -->
+  <div>
+    <div class="preview-card">
+      <div class="preview-header">
+        <i class="fas fa-eye"></i>
+        <h4>Live Preview</h4>
+      </div>
+      <div class="preview-thumb" id="previewThumb">
+        🏭
+        <span class="preview-live-badge">● LIVE</span>
+      </div>
+      <div class="preview-body">
+        <div class="preview-title" id="previewTitle">Your stream title will appear here…</div>
+        <div class="preview-host-row">
+          <div class="preview-avatar">Y</div>
+          <div class="preview-host-name">Your Company Name</div>
+        </div>
+        <div class="preview-cat-badge" id="previewCat">No category selected</div>
+        <div class="preview-meta">
+          <span><i class="fas fa-eye"></i> 0 viewers</span>
+          <span><i class="fas fa-clock"></i> Live now</span>
+          <span><i class="fas fa-globe"></i> Public · English</span>
+        </div>
+
+        <div style="border-top:1px solid #30363d;padding-top:14px;margin-top:4px">
+          <div style="font-size:.78rem;font-weight:600;color:#8b949e;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Stream Checklist</div>
+          <div class="checklist" id="checklist">
+            <div class="check-item" id="chk-title"><i class="fas fa-times-circle"></i> Stream title</div>
+            <div class="check-item" id="chk-cat"><i class="fas fa-times-circle"></i> Category selected</div>
+            <div class="check-item ok" id="chk-tags"><i class="fas fa-check-circle"></i> Tags added</div>
+            <div class="check-item" id="chk-thumb"><i class="fas fa-times-circle"></i> Thumbnail uploaded</div>
+            <div class="check-item" id="chk-products"><i class="fas fa-times-circle"></i> Products selected</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Action Bar -->
+<div class="action-bar">
+  <div class="action-bar-inner">
+    <div class="action-bar-left"><strong id="readyStatus">0/5</strong> checklist items completed</div>
+    <div class="action-bar-right">
+      <button class="btn btn-ghost" onclick="saveDraft()"><i class="fas fa-save"></i> Save Draft</button>
+      <button class="btn btn-schedule btn-primary" onclick="scheduleStream()"><i class="fas fa-calendar-check"></i> Schedule</button>
+      <button class="btn-go-live" onclick="goLive()"><i class="fas fa-circle"></i> Go Live Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const sampleProducts = [
+    {emoji:'☀️',name:'Solar Panel 400W',price:'$62/pc'},
+    {emoji:'🔋',name:'Battery Pack 200Ah',price:'$89/pc'},
+    {emoji:'⚡',name:'EV Charger 22kW',price:'$180/pc'},
+    {emoji:'💡',name:'LED Light 150W',price:'$22/pc'},
+    {emoji:'⚙️',name:'CNC Aluminum Part',price:'$1.20/pc'},
+    {emoji:'🔌',name:'Custom PCBA',price:'$0.85/pc'},
+    {emoji:'🌿',name:'Eco Packaging Box',price:'$0.45/pc'},
+    {emoji:'🔩',name:'Titanium Bolt M8',price:'$0.12/pc'},
+    {emoji:'🏗️',name:'H-Beam 100x100',price:'$420/ton'},
+    {emoji:'🎛️',name:'PLC Controller',price:'$145/pc'},
+    {emoji:'🚿',name:'Flow Sensor IoT',price:'$8.50/pc'},
+    {emoji:'📦',name:'Custom Box 30x20',price:'$0.22/pc'},
+  ];
+  let selectedProducts = new Set();
+
+  function renderProducts(prods) {
+    document.getElementById('prodGrid').innerHTML = prods.map((p, i) => `
+      <div class="prod-item" id="prod-${i}" onclick="toggleProduct(${i})">
+        <div class="prod-check"><i class="fas fa-check"></i></div>
+        <div class="prod-item-emoji">${p.emoji}</div>
+        <div class="prod-item-name">${p.name}</div>
+        <div class="prod-item-price">${p.price}</div>
+      </div>`).join('');
+  }
+
+  function toggleProduct(i) {
+    const el = document.getElementById('prod-' + i);
+    if (selectedProducts.has(i)) {
+      selectedProducts.delete(i);
+      el.classList.remove('selected');
+    } else if (selectedProducts.size < 20) {
+      selectedProducts.add(i);
+      el.classList.add('selected');
+    }
+    document.getElementById('selectedCount').textContent = selectedProducts.size;
+    updateChecklist();
+  }
+
+  function filterProducts(q) {
+    const filtered = sampleProducts.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
+    renderProducts(filtered);
+  }
+
+  function updatePreview() {
+    const title = document.getElementById('streamTitle').value;
+    const cat = document.getElementById('streamCat').value;
+    document.getElementById('previewTitle').textContent = title || 'Your stream title will appear here…';
+    document.getElementById('previewCat').textContent = cat || 'No category selected';
+    document.getElementById('titleCount').textContent = title.length + ' / 100';
+    updateChecklist();
+  }
+
+  function updateDesc() {
+    const desc = document.getElementById('streamDesc').value;
+    document.getElementById('descCount').textContent = desc.length + ' / 500';
+  }
+
+  function updateChecklist() {
+    const title = document.getElementById('streamTitle').value.trim();
+    const cat = document.getElementById('streamCat').value;
+    const hasThumb = document.getElementById('thumbUpload').classList.contains('has-preview');
+    const hasProd = selectedProducts.size > 0;
+    const items = [
+      {id:'chk-title', ok: title.length >= 5},
+      {id:'chk-cat', ok: !!cat},
+      {id:'chk-tags', ok: true},
+      {id:'chk-thumb', ok: hasThumb},
+      {id:'chk-products', ok: hasProd},
+    ];
+    let done = 0;
+    items.forEach(({id, ok}) => {
+      const el = document.getElementById(id);
+      el.className = 'check-item' + (ok ? ' ok' : '');
+      el.querySelector('i').className = ok ? 'fas fa-check-circle' : 'fas fa-times-circle';
+      if (ok) done++;
+    });
+    document.getElementById('readyStatus').textContent = done + '/5';
+  }
+
+  function toggleSchedule(type) {
+    const sf = document.getElementById('scheduleFields');
+    sf.style.display = (type === 'scheduled' || type === 'tour' || type === 'event') ? 'block' : 'none';
+  }
+
+  function addTag(e) {
+    if (e.key !== 'Enter') return;
+    const input = document.getElementById('tagInput');
+    const val = input.value.trim();
+    if (!val) return;
+    const wrap = document.getElementById('tagsWrap');
+    const pill = document.createElement('span');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `${val} <button class="tag-remove" onclick="removeTag(this)" type="button">×</button>`;
+    wrap.insertBefore(pill, input);
+    input.value = '';
+    e.preventDefault();
+  }
+
+  function removeTag(btn) {
+    btn.closest('.tag-pill').remove();
+  }
+
+  function previewThumb(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const wrap = document.getElementById('thumbUpload');
+      wrap.classList.add('has-preview');
+      wrap.innerHTML = `
+        <div class="thumb-preview">
+          <img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover"/>
+          <button class="thumb-remove" onclick="removeThumb(event)" type="button"><i class="fas fa-times"></i></button>
+        </div>`;
+      document.getElementById('previewThumb').innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover"/><span class="preview-live-badge">● LIVE</span>`;
+      updateChecklist();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeThumb(e) {
+    e.stopPropagation();
+    const wrap = document.getElementById('thumbUpload');
+    wrap.classList.remove('has-preview');
+    wrap.innerHTML = `
+      <div class="thumb-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+      <h4>Upload Thumbnail</h4>
+      <p>Recommended: 1280×720px · JPG or PNG · Max 5MB</p>
+      <input type="file" accept="image/*" onchange="previewThumb(event)"/>`;
+    document.getElementById('previewThumb').innerHTML = '🏭<span class="preview-live-badge">● LIVE</span>';
+    updateChecklist();
+  }
+
+  function saveDraft() {
+    alert('Stream draft saved! You can return to it from your Supplier Dashboard.');
+  }
+
+  function scheduleStream() {
+    const title = document.getElementById('streamTitle').value.trim();
+    if (!title) { alert('Please enter a stream title.'); return; }
+    alert(`Stream scheduled successfully!\n\nViewers will be notified before your stream starts. You can manage it from your Supplier Dashboard.`);
+  }
+
+  function goLive() {
+    const title = document.getElementById('streamTitle').value.trim();
+    if (!title) { alert('Please enter a stream title before going live.'); return; }
+    if (confirm(`Go live now with "${title}"?\n\nYour stream will be visible to buyers immediately.`)) {
+      window.location.href = 'watch.html';
+    }
+  }
+
+  // Set default date to tomorrow
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('schedDate').value = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth()+1)}-${pad(tomorrow.getDate())}`;
+  document.getElementById('schedTime').value = '14:00';
+
+  renderProducts(sampleProducts);
+  updateChecklist();
+</script>
+</body>
+</html>
