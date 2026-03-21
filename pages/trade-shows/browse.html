@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Browse Trade Shows – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    /* ── Header ── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    /* ── Hero ── */
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:60px 24px;text-align:center;color:#fff}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:10px}
+    .page-hero p{font-size:1rem;opacity:.88;max-width:560px;margin:0 auto 28px}
+    .hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+    .hero-stat{text-align:center}
+    .hero-stat-num{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+    .hero-stat-label{font-size:.8rem;opacity:.8;margin-top:2px}
+    /* ── Layout ── */
+    .section{padding:48px 24px}
+    .container{max-width:1240px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:28px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    /* ── Filter Bar ── */
+    .filter-bar{background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:32px}
+    .filter-bar-inner{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+    .filter-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:160px}
+    .filter-label{font-size:.76rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em}
+    .filter-control{padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s;width:100%}
+    .filter-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .btn{padding:10px 22px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-purple{background:#7c3aed;color:#fff}.btn-purple:hover{background:#6d28d9}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}.btn-outline:hover{background:#f0f5ff}
+    .btn-sm{padding:8px 16px;font-size:.82rem}
+    /* ── Section Title ── */
+    .sec-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0a0e27;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+    .sec-sub{font-size:.85rem;color:#64748b;margin-bottom:20px}
+    /* ── Featured Banner ── */
+    .featured-hero{background:linear-gradient(120deg,#1e1b4b,#0052CC);border-radius:16px;padding:32px 28px;margin-bottom:36px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;overflow:hidden;position:relative}
+    .featured-hero::before{content:'';position:absolute;right:-40px;top:-40px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .featured-hero::after{content:'';position:absolute;right:40px;bottom:-60px;width:180px;height:180px;border-radius:50%;background:rgba(124,58,237,.2)}
+    .featured-badge{background:#ef4444;color:#fff;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:50px;display:inline-flex;align-items:center;gap:4px;margin-bottom:8px}
+    .featured-badge-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .featured-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:8px}
+    .featured-meta{color:rgba(255,255,255,.75);font-size:.88rem;display:flex;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+    .featured-meta span{display:flex;align-items:center;gap:5px}
+    .featured-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn-white{background:#fff;color:#0052CC;font-weight:700}.btn-white:hover{background:#f0f5ff}
+    .btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}.btn-outline-white:hover{background:rgba(255,255,255,.1)}
+    .featured-right{margin-left:auto;text-align:center;color:rgba(255,255,255,.7)}
+    .featured-count{font-family:'Poppins',sans-serif;font-size:2.8rem;font-weight:700;color:#fff;line-height:1}
+    /* ── View Toggle ── */
+    .view-toggle{display:flex;gap:6px;align-items:center}
+    .view-btn{width:34px;height:34px;border-radius:6px;border:1.5px solid #e2e8f0;background:#fff;color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .2s}
+    .view-btn.active{border-color:#0052CC;background:#f0f5ff;color:#0052CC}
+    .results-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .results-count{font-size:.85rem;color:#64748b}
+    /* ── Event Card (grid) ── */
+    .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;margin-bottom:40px}
+    .event-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;position:relative}
+    .event-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+    .event-banner{height:140px;display:flex;align-items:center;justify-content:center;font-size:3rem;color:rgba(255,255,255,.85);position:relative;overflow:hidden}
+    .event-banner-icon{position:relative;z-index:1}
+    .event-type-badge{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:50px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;z-index:2}
+    .type-virtual{background:rgba(124,58,237,.9);color:#fff}
+    .type-hybrid{background:rgba(0,82,204,.9);color:#fff}
+    .type-inperson{background:rgba(5,150,105,.9);color:#fff}
+    .featured-star{position:absolute;top:12px;right:12px;background:rgba(255,198,0,.95);color:#7c2d12;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:.75rem;z-index:2}
+    .event-body{padding:18px}
+    .event-date{display:flex;align-items:center;gap:6px;font-size:.8rem;color:#64748b;margin-bottom:6px}
+    .event-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.97rem;color:#0a0e27;margin-bottom:8px;line-height:1.4}
+    .event-location{font-size:.82rem;color:#64748b;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+    .event-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+    .chip{padding:3px 9px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .chip-blue{background:#dbeafe;color:#1d4ed8}
+    .chip-green{background:#d1fae5;color:#065f46}
+    .chip-orange{background:#ffedd5;color:#c2410c}
+    .event-stats{display:flex;gap:16px;margin-bottom:14px;border-top:1px solid #f1f5f9;padding-top:12px}
+    .event-stat{text-align:center;flex:1}
+    .event-stat-num{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27}
+    .event-stat-label{font-size:.7rem;color:#94a3b8;margin-top:1px}
+    .event-fee{display:flex;align-items:center;justify-content:space-between}
+    .event-fee-text{font-size:.82rem;color:#64748b}
+    .event-fee-price{font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:.95rem}
+    .event-fee-free{font-family:'Poppins',sans-serif;font-weight:700;color:#059669;font-size:.95rem}
+    .event-actions{margin-top:14px;display:flex;gap:8px}
+    /* ── Event List View ── */
+    .events-list{display:flex;flex-direction:column;gap:14px;margin-bottom:40px}
+    .event-list-item{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;transition:box-shadow .2s}
+    .event-list-item:hover{box-shadow:0 6px 20px rgba(0,0,0,.1)}
+    .event-list-banner{width:100px;height:80px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:rgba(255,255,255,.85);flex-shrink:0;position:relative}
+    .event-list-info{flex:1;min-width:200px}
+    .event-list-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+    .event-list-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27;margin-bottom:6px}
+    .event-list-desc{font-size:.83rem;color:#64748b;margin-bottom:8px;line-height:1.5}
+    .event-list-stats{display:flex;gap:16px;flex-wrap:wrap}
+    .event-list-stat{font-size:.8rem;color:#64748b;display:flex;align-items:center;gap:4px}
+    .event-list-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;min-width:140px}
+    /* ── Registration Status ── */
+    .reg-open{background:#d1fae5;color:#059669}
+    .reg-limited{background:#ffedd5;color:#d97706}
+    .reg-closed{background:#fee2e2;color:#dc2626}
+    .reg-upcoming{background:#dbeafe;color:#1d4ed8}
+    /* ── Pagination ── */
+    .pagination{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:12px}
+    .page-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;color:#374151;cursor:pointer;font-size:.85rem;font-weight:600;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .page-btn:hover{border-color:#0052CC;color:#0052CC}
+    .page-btn.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .page-btn.disabled{color:#d1d5db;cursor:default}
+    /* ── Footer ── */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    /* ── Responsive ── */
+    @media(max-width:768px){
+      .featured-right{display:none}
+      .event-list-right{min-width:auto;align-items:flex-start}
+      .filter-bar-inner{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Hero -->
+<div class="page-hero">
+  <h1><i class="fas fa-globe"></i> Browse Trade Shows</h1>
+  <p>Discover global B2B trade events. Connect with verified suppliers, explore new markets, and grow your business.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">340+</div><div class="hero-stat-label">Active Events</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">85+</div><div class="hero-stat-label">Countries</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">12,000+</div><div class="hero-stat-label">Exhibitors</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">500K+</div><div class="hero-stat-label">Annual Visitors</div></div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="virtual-show.html">Trade Shows</a><span>/</span>
+      <span>Browse</span>
+    </nav>
+
+    <!-- Featured Show Banner -->
+    <div class="featured-hero">
+      <div style="flex:1;min-width:240px;position:relative;z-index:1">
+        <div class="featured-badge"><span class="featured-badge-dot"></span> LIVE NOW</div>
+        <div class="featured-title">Globex Sky Spring Trade Show 2026</div>
+        <div class="featured-meta">
+          <span><i class="fas fa-calendar-alt"></i> Mar 20 – 23, 2026</span>
+          <span><i class="fas fa-map-marker-alt"></i> Virtual + Hybrid</span>
+          <span><i class="fas fa-globe-asia"></i> Asia · Europe · Americas</span>
+        </div>
+        <div class="featured-actions">
+          <a href="register.html" class="btn btn-white btn-sm"><i class="fas fa-ticket-alt"></i> Register Now</a>
+          <a href="virtual-show.html" class="btn btn-outline-white btn-sm"><i class="fas fa-eye"></i> View Details</a>
+        </div>
+      </div>
+      <div class="featured-right" style="position:relative;z-index:1">
+        <div class="featured-count">452</div>
+        <div>Exhibitors</div>
+        <div style="margin-top:12px;font-size:.75rem">12,800+ Visitors Expected</div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-bar-inner">
+        <div class="filter-group" style="flex:2;min-width:220px">
+          <label class="filter-label">Search</label>
+          <div style="position:relative">
+            <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem"></i>
+            <input type="text" class="filter-control" id="search-input" placeholder="Event name, industry, location…" style="padding-left:36px" oninput="applyFilters()"/>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Industry</label>
+          <select class="filter-control" id="filter-industry" onchange="applyFilters()">
+            <option value="">All Industries</option>
+            <option>Electronics</option>
+            <option>Textiles & Apparel</option>
+            <option>Chemicals</option>
+            <option>Machinery & Equipment</option>
+            <option>Food & Agriculture</option>
+            <option>Medical & Health</option>
+            <option>Automotive</option>
+            <option>Construction</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Event Type</label>
+          <select class="filter-control" id="filter-type" onchange="applyFilters()">
+            <option value="">All Types</option>
+            <option value="Virtual">Virtual</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="In-Person">In-Person</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Date Range</label>
+          <select class="filter-control" id="filter-date" onchange="applyFilters()">
+            <option value="">Any Time</option>
+            <option>This Month</option>
+            <option>Next 3 Months</option>
+            <option>Next 6 Months</option>
+            <option>This Year</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Location</label>
+          <select class="filter-control" id="filter-location" onchange="applyFilters()">
+            <option value="">All Regions</option>
+            <option>Asia Pacific</option>
+            <option>Europe</option>
+            <option>North America</option>
+            <option>Middle East</option>
+            <option>South America</option>
+            <option>Africa</option>
+          </select>
+        </div>
+        <div class="filter-group" style="flex:0 0 auto;min-width:auto">
+          <label class="filter-label">&nbsp;</label>
+          <button class="btn btn-primary" onclick="applyFilters()"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+        <div class="filter-group" style="flex:0 0 auto;min-width:auto">
+          <label class="filter-label">&nbsp;</label>
+          <button class="btn btn-outline btn-sm" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Bar -->
+    <div class="results-bar">
+      <div>
+        <div class="sec-title" style="margin-bottom:0"><i class="fas fa-calendar-week" style="color:#0052CC"></i> Upcoming Events</div>
+        <div class="results-count" id="results-count" style="margin-top:4px">Showing 9 events</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <select class="filter-control" id="sort-select" style="width:auto" onchange="applyFilters()">
+          <option>Sort: Date (Earliest)</option>
+          <option>Sort: Date (Latest)</option>
+          <option>Sort: Most Exhibitors</option>
+          <option>Sort: Most Popular</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn active" id="grid-btn" onclick="setView('grid')" title="Grid view"><i class="fas fa-th"></i></button>
+          <button class="view-btn" id="list-btn" onclick="setView('list')" title="List view"><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events Grid View -->
+    <div class="events-grid" id="events-grid"></div>
+
+    <!-- Events List View (hidden by default) -->
+    <div class="events-list" id="events-list" style="display:none"></div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="page-btn disabled"><i class="fas fa-chevron-left"></i></button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn" onclick="this.classList.toggle('active')">2</button>
+      <button class="page-btn">3</button>
+      <span style="color:#94a3b8;font-size:.85rem">…</span>
+      <button class="page-btn">12</button>
+      <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">
+    © <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.
+  </div>
+</footer>
+
+<script>
+const EVENTS = [
+  {
+    id:1, title:'Globex Sky Spring Trade Show 2026', industry:'Electronics', type:'Hybrid',
+    dateRange:'Mar 20 – 23, 2026', location:'Shanghai + Virtual', region:'Asia Pacific',
+    exhibitors:452, visitors:12800, fee:'Free', feeType:'free', regStatus:'open',
+    icon:'fa-microchip', gradient:'linear-gradient(135deg,#0052CC,#7c3aed)',
+    featured:true, tags:['Electronics','IoT','Consumer Tech'],
+    desc:'The flagship spring event featuring over 450 exhibitors across 8 virtual and physical halls.'
+  },
+  {
+    id:2, title:'Asia Electronics Expo 2026', industry:'Electronics', type:'Virtual',
+    dateRange:'Apr 5 – 8, 2026', location:'Virtual – Asia Pacific', region:'Asia Pacific',
+    exhibitors:280, visitors:8400, fee:'$49', feeType:'paid', regStatus:'open',
+    icon:'fa-plug', gradient:'linear-gradient(135deg,#7c3aed,#2563eb)',
+    featured:false, tags:['Electronics','Semiconductors'],
+    desc:'Asia\'s leading electronics showcase, featuring cutting-edge components and smart devices.'
+  },
+  {
+    id:3, title:'Global Textiles & Fashion Week', industry:'Textiles & Apparel', type:'Virtual',
+    dateRange:'May 12 – 14, 2026', location:'Virtual – Global', region:'Europe',
+    exhibitors:190, visitors:5600, fee:'Free', feeType:'free', regStatus:'open',
+    icon:'fa-tshirt', gradient:'linear-gradient(135deg,#059669,#0052CC)',
+    featured:false, tags:['Textiles','Apparel','Sustainable'],
+    desc:'Connect with certified textile manufacturers, garment factories, and fashion brands worldwide.'
+  },
+  {
+    id:4, title:'MedTech World Expo 2026', industry:'Medical & Health', type:'In-Person',
+    dateRange:'Jun 1 – 4, 2026', location:'Frankfurt, Germany', region:'Europe',
+    exhibitors:340, visitors:9200, fee:'$99', feeType:'paid', regStatus:'open',
+    icon:'fa-heartbeat', gradient:'linear-gradient(135deg,#ef4444,#f97316)',
+    featured:false, tags:['Medical','Health Tech','Pharma'],
+    desc:'Europe\'s leading medical technology event. Explore innovations in diagnostics, devices, and digital health.'
+  },
+  {
+    id:5, title:'AgriWorld Summit 2026', industry:'Food & Agriculture', type:'Hybrid',
+    dateRange:'Jun 18 – 20, 2026', location:'Bangkok + Virtual', region:'Asia Pacific',
+    exhibitors:220, visitors:6800, fee:'Free', feeType:'free', regStatus:'limited',
+    icon:'fa-seedling', gradient:'linear-gradient(135deg,#059669,#15803d)',
+    featured:false, tags:['Agriculture','Food','Organic'],
+    desc:'Source organic produce, agri-tech solutions, and food processing equipment from 60+ countries.'
+  },
+  {
+    id:6, title:'Global Machinery & Automation Expo', industry:'Machinery & Equipment', type:'In-Person',
+    dateRange:'Jul 8 – 11, 2026', location:'Munich, Germany', region:'Europe',
+    exhibitors:510, visitors:18000, fee:'$149', feeType:'paid', regStatus:'open',
+    icon:'fa-cogs', gradient:'linear-gradient(135deg,#475569,#0052CC)',
+    featured:true, tags:['Machinery','Automation','CNC','Robotics'],
+    desc:'The world\'s largest industrial machinery expo. Source CNC machines, robots, and automation solutions.'
+  },
+  {
+    id:7, title:'Chemical & Materials Trade Forum', industry:'Chemicals', type:'Virtual',
+    dateRange:'Aug 3 – 5, 2026', location:'Virtual – Americas', region:'North America',
+    exhibitors:145, visitors:4100, fee:'$29', feeType:'paid', regStatus:'open',
+    icon:'fa-flask', gradient:'linear-gradient(135deg,#f97316,#ef4444)',
+    featured:false, tags:['Chemicals','Plastics','Raw Materials'],
+    desc:'Specialty chemicals, industrial compounds, and sustainable materials from verified global suppliers.'
+  },
+  {
+    id:8, title:'Middle East Construction Expo 2026', industry:'Construction', type:'In-Person',
+    dateRange:'Sep 15 – 18, 2026', location:'Dubai, UAE', region:'Middle East',
+    exhibitors:380, visitors:11200, fee:'$79', feeType:'paid', regStatus:'upcoming',
+    icon:'fa-hard-hat', gradient:'linear-gradient(135deg,#d97706,#b45309)',
+    featured:false, tags:['Construction','Building','Real Estate'],
+    desc:'The premier construction materials and technology expo in the Middle East and North Africa region.'
+  },
+  {
+    id:9, title:'Automotive Parts & Accessories Show', industry:'Automotive', type:'Hybrid',
+    dateRange:'Oct 7 – 10, 2026', location:'Detroit + Virtual', region:'North America',
+    exhibitors:290, visitors:8800, fee:'$59', feeType:'paid', regStatus:'upcoming',
+    icon:'fa-car', gradient:'linear-gradient(135deg,#1e40af,#7c3aed)',
+    featured:false, tags:['Automotive','EV','Parts'],
+    desc:'North America\'s top event for automotive parts, accessories, and electric vehicle components.'
+  }
+];
+
+let currentView = 'grid';
+let filtered = [...EVENTS];
+
+function typeClass(t){
+  if(t==='Virtual') return 'type-virtual';
+  if(t==='Hybrid') return 'type-hybrid';
+  return 'type-inperson';
+}
+function regClass(r){
+  if(r==='open') return 'reg-open';
+  if(r==='limited') return 'reg-limited';
+  if(r==='closed') return 'reg-closed';
+  return 'reg-upcoming';
+}
+function regLabel(r){
+  if(r==='open') return 'Registration Open';
+  if(r==='limited') return 'Limited Spots';
+  if(r==='closed') return 'Registration Closed';
+  return 'Coming Soon';
+}
+
+function renderGrid(events){
+  const container = document.getElementById('events-grid');
+  if(!events.length){
+    container.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><i class="fas fa-calendar-times" style="font-size:3rem;display:block;margin-bottom:12px"></i><p>No events found matching your filters.</p></div>';
+    return;
+  }
+  container.innerHTML = events.map(e=>`
+    <div class="event-card">
+      <div class="event-banner" style="background:${e.gradient}">
+        <span class="event-type-badge ${typeClass(e.type)}">${e.type}</span>
+        ${e.featured?'<div class="featured-star"><i class="fas fa-star"></i></div>':''}
+        <span class="event-banner-icon"><i class="fas ${e.icon}"></i></span>
+      </div>
+      <div class="event-body">
+        <div class="event-date"><i class="fas fa-calendar-alt"></i> ${e.dateRange}</div>
+        <div class="event-title">${e.title}</div>
+        <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${e.location}</div>
+        <div class="event-chips">
+          ${e.tags.map(t=>`<span class="chip chip-blue">${t}</span>`).join('')}
+        </div>
+        <div class="event-stats">
+          <div class="event-stat">
+            <div class="event-stat-num">${e.exhibitors.toLocaleString()}</div>
+            <div class="event-stat-label">Exhibitors</div>
+          </div>
+          <div class="event-stat">
+            <div class="event-stat-num">${(e.visitors/1000).toFixed(1)}K</div>
+            <div class="event-stat-label">Expected Visitors</div>
+          </div>
+          <div class="event-stat">
+            <div class="event-stat-num"><span class="chip ${regClass(e.regStatus)}" style="font-size:.68rem;padding:2px 7px">${regLabel(e.regStatus)}</span></div>
+            <div class="event-stat-label">&nbsp;</div>
+          </div>
+        </div>
+        <div class="event-fee">
+          <div class="event-fee-text"><i class="fas fa-ticket-alt"></i> Visitor Entry</div>
+          <div class="${e.feeType==='free'?'event-fee-free':'event-fee-price'}">${e.fee}</div>
+        </div>
+        <div class="event-actions">
+          <a href="register.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center"><i class="fas fa-sign-in-alt"></i> Register</a>
+          <a href="virtual-show.html" class="btn btn-outline btn-sm"><i class="fas fa-info-circle"></i></a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderList(events){
+  const container = document.getElementById('events-list');
+  if(!events.length){
+    container.innerHTML='<div style="text-align:center;padding:60px 20px;color:#94a3b8"><i class="fas fa-calendar-times" style="font-size:3rem;display:block;margin-bottom:12px"></i><p>No events found matching your filters.</p></div>';
+    return;
+  }
+  container.innerHTML = events.map(e=>`
+    <div class="event-list-item">
+      <div class="event-list-banner" style="background:${e.gradient}">
+        <i class="fas ${e.icon}" style="font-size:2rem;color:rgba(255,255,255,.85)"></i>
+      </div>
+      <div class="event-list-info">
+        <div class="event-list-meta">
+          <span class="chip ${typeClass(e.type)}" style="font-size:.72rem;padding:3px 9px;border-radius:50px;font-weight:700">${e.type}</span>
+          <span class="chip ${regClass(e.regStatus)}" style="font-size:.72rem;padding:3px 9px">${regLabel(e.regStatus)}</span>
+          ${e.featured?'<span class="chip" style="background:#fef3c7;color:#92400e;font-size:.72rem;padding:3px 9px"><i class="fas fa-star"></i> Featured</span>':''}
+        </div>
+        <div class="event-list-title">${e.title}</div>
+        <div class="event-list-desc">${e.desc}</div>
+        <div class="event-list-stats">
+          <span class="event-list-stat"><i class="fas fa-calendar-alt"></i> ${e.dateRange}</span>
+          <span class="event-list-stat"><i class="fas fa-map-marker-alt"></i> ${e.location}</span>
+          <span class="event-list-stat"><i class="fas fa-store"></i> ${e.exhibitors.toLocaleString()} Exhibitors</span>
+          <span class="event-list-stat"><i class="fas fa-users"></i> ${e.visitors.toLocaleString()} Visitors</span>
+        </div>
+      </div>
+      <div class="event-list-right">
+        <div style="text-align:right">
+          <div style="font-size:.75rem;color:#64748b">Visitor Entry</div>
+          <div class="${e.feeType==='free'?'event-fee-free':'event-fee-price'}" style="margin-top:2px">${e.fee}</div>
+        </div>
+        <a href="register.html" class="btn btn-primary btn-sm" style="white-space:nowrap"><i class="fas fa-sign-in-alt"></i> Register</a>
+        <a href="schedule-meeting.html" class="btn btn-outline btn-sm" style="white-space:nowrap"><i class="fas fa-calendar-check"></i> Meet</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function applyFilters(){
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const industry = document.getElementById('filter-industry').value;
+  const type = document.getElementById('filter-type').value;
+  const location = document.getElementById('filter-location').value;
+
+  filtered = EVENTS.filter(e=>{
+    if(search && !e.title.toLowerCase().includes(search) && !e.industry.toLowerCase().includes(search) && !e.location.toLowerCase().includes(search)) return false;
+    if(industry && e.industry !== industry) return false;
+    if(type && e.type !== type) return false;
+    if(location && e.region !== location) return false;
+    return true;
+  });
+
+  document.getElementById('results-count').textContent = `Showing ${filtered.length} event${filtered.length!==1?'s':''}`;
+  renderGrid(filtered);
+  renderList(filtered);
+}
+
+function resetFilters(){
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-industry').value = '';
+  document.getElementById('filter-type').value = '';
+  document.getElementById('filter-date').value = '';
+  document.getElementById('filter-location').value = '';
+  applyFilters();
+}
+
+function setView(v){
+  currentView = v;
+  document.getElementById('events-grid').style.display = v==='grid'?'grid':'none';
+  document.getElementById('events-list').style.display = v==='list'?'flex':'none';
+  document.getElementById('grid-btn').classList.toggle('active', v==='grid');
+  document.getElementById('list-btn').classList.toggle('active', v==='list');
+}
+
+// Initial render
+applyFilters();
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

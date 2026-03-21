@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Schedule a Meeting – Globex Sky Trade Shows</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    /* ── Header ── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    /* ── Hero ── */
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:700;margin-bottom:8px}
+    .page-hero p{font-size:.95rem;opacity:.85;max-width:520px;margin:0 auto}
+    /* ── Layout ── */
+    .section{padding:36px 24px}
+    .container{max-width:1080px;margin:0 auto}
+    .layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    /* ── Cards ── */
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    /* ── Exhibitor Search ── */
+    .search-box{position:relative;margin-bottom:14px}
+    .search-box input{width:100%;padding:11px 14px 11px 40px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .search-box input:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .search-box i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8}
+    .search-results{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto}
+    .exhibitor-item{display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .2s}
+    .exhibitor-item:hover{border-color:#0052CC;background:#f0f5ff}
+    .exhibitor-item.selected{border-color:#0052CC;background:#f0f5ff}
+    .ex-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .ex-name{font-weight:600;font-size:.88rem;color:#0a0e27;margin-bottom:2px}
+    .ex-cat{font-size:.75rem;color:#64748b}
+    .ex-country{font-size:.72rem;color:#94a3b8;margin-left:auto;white-space:nowrap}
+    .ex-badge{font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:50px;margin-left:4px}
+    /* ── Meeting Type ── */
+    .meeting-types{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+    .meeting-type-option{border:2px solid #e2e8f0;border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;position:relative;text-align:center}
+    .meeting-type-option.selected{border-color:#0052CC;background:#f0f5ff}
+    .meeting-type-option input{position:absolute;opacity:0;pointer-events:none}
+    .mt-icon{font-size:1.8rem;margin-bottom:8px}
+    .mt-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:.88rem;color:#0a0e27;margin-bottom:3px}
+    .mt-desc{font-size:.75rem;color:#64748b}
+    /* ── Calendar ── */
+    .calendar-wrap{overflow:hidden}
+    .cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .cal-month{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27}
+    .cal-nav{background:none;border:1.5px solid #e2e8f0;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#64748b;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .cal-nav:hover{border-color:#0052CC;color:#0052CC}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+    .cal-dow{font-size:.72rem;font-weight:700;color:#94a3b8;padding:6px 0}
+    .cal-day{padding:8px 4px;border-radius:8px;font-size:.83rem;cursor:pointer;transition:all .2s;border:1.5px solid transparent}
+    .cal-day:hover:not(.empty):not(.past){background:#f0f5ff;color:#0052CC}
+    .cal-day.today{background:#dbeafe;color:#1d4ed8;font-weight:700}
+    .cal-day.has-slots{position:relative}
+    .cal-day.has-slots::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#0052CC}
+    .cal-day.selected{background:#0052CC;color:#fff;font-weight:700;border-color:#0052CC}
+    .cal-day.selected::after{background:#fff}
+    .cal-day.empty,.cal-day.past{color:#d1d5db;cursor:default}
+    .cal-day.past:hover{background:none}
+    /* ── Time Slots ── */
+    .slots-label{font-size:.85rem;font-weight:600;color:#374151;margin-bottom:10px}
+    .slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px}
+    .slot{padding:8px 6px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.8rem;font-weight:600;text-align:center;cursor:pointer;transition:all .2s;color:#374151}
+    .slot:hover:not(.booked){border-color:#0052CC;color:#0052CC;background:#f0f5ff}
+    .slot.selected{background:#0052CC;color:#fff;border-color:#0052CC}
+    .slot.booked{background:#f8faff;color:#d1d5db;cursor:not-allowed;text-decoration:line-through}
+    .slot.limited{border-color:#f97316;color:#f97316}
+    /* ── Duration / Agenda ── */
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{min-height:100px;resize:vertical}
+    .duration-btns{display:flex;gap:8px;flex-wrap:wrap}
+    .dur-btn{padding:7px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;background:#fff;color:#374151;transition:all .2s}
+    .dur-btn.active{border-color:#0052CC;background:#f0f5ff;color:#0052CC}
+    /* ── Sidebar: Booking Summary ── */
+    .summary-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+    .summary-item:last-of-type{border-bottom:none}
+    .summary-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+    .summary-key{font-size:.75rem;color:#94a3b8;margin-bottom:2px}
+    .summary-val{font-size:.88rem;font-weight:600;color:#0a0e27}
+    .btn{padding:12px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff;width:100%;justify-content:center}.btn-primary:hover{background:#003d99}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC;width:100%;justify-content:center}
+    .btn-sm{padding:8px 16px;font-size:.82rem;width:auto}
+    /* ── Confirmation ── */
+    .confirm-card{text-align:center;padding:40px 24px;display:none}
+    .confirm-icon{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#7c3aed);color:#fff;font-size:1.8rem;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+    /* ── Footer ── */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    /* ── Responsive ── */
+    @media(max-width:900px){
+      .layout{grid-template-columns:1fr}
+      .meeting-types{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:480px){.meeting-types{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Hero -->
+<div class="page-hero">
+  <h1><i class="fas fa-calendar-check"></i> Schedule a Business Meeting</h1>
+  <p>Book a 1-on-1 meeting with exhibitors at trade show events. Choose in-booth or video call.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="virtual-show.html">Trade Shows</a><span>/</span>
+      <span>Schedule Meeting</span>
+    </nav>
+
+    <div id="booking-form">
+      <div class="layout">
+        <!-- Left: Form -->
+        <div>
+
+          <!-- Step 1: Event -->
+          <div class="card">
+            <div class="card-title"><i class="fas fa-calendar-alt" style="color:#0052CC"></i> 1. Select Trade Show</div>
+            <div class="form-group" style="margin-bottom:0">
+              <select class="form-control" id="event-selector" onchange="onEventChange()">
+                <option value="">-- Choose event --</option>
+                <option value="spring26">Globex Sky Spring Trade Show 2026 – Mar 20–23</option>
+                <option value="electronics">Asia Electronics Expo 2026 – Apr 5–8</option>
+                <option value="textiles">Global Textiles &amp; Fashion Week – May 12–14</option>
+                <option value="medtech">MedTech World Expo 2026 – Jun 1–4</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Step 2: Exhibitor Search -->
+          <div class="card">
+            <div class="card-title"><i class="fas fa-search" style="color:#0052CC"></i> 2. Find an Exhibitor</div>
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="exhibitor-search" placeholder="Search by company name, product, or industry…" oninput="filterExhibitors()"/>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+              <select class="form-control" style="width:auto;flex:1;min-width:140px" id="industry-filter" onchange="filterExhibitors()">
+                <option value="">All Industries</option>
+                <option>Electronics</option>
+                <option>Textiles</option>
+                <option>Chemicals</option>
+                <option>Machinery</option>
+                <option>Food &amp; Agriculture</option>
+              </select>
+              <select class="form-control" style="width:auto;flex:1;min-width:120px" id="country-filter" onchange="filterExhibitors()">
+                <option value="">All Countries</option>
+                <option>China</option>
+                <option>India</option>
+                <option>Germany</option>
+                <option>Vietnam</option>
+                <option>Bangladesh</option>
+              </select>
+            </div>
+            <div class="search-results" id="exhibitor-list">
+              <!-- populated by JS -->
+            </div>
+          </div>
+
+          <!-- Step 3: Meeting Type -->
+          <div class="card">
+            <div class="card-title"><i class="fas fa-handshake" style="color:#0052CC"></i> 3. Meeting Type</div>
+            <div class="meeting-types">
+              <label class="meeting-type-option selected" onclick="selectMeetType(this,'booth')">
+                <input type="radio" name="meet_type" value="booth" checked/>
+                <div class="mt-icon">🏪</div>
+                <div class="mt-label">In-Booth Meeting</div>
+                <div class="mt-desc">Meet at the exhibitor's physical or virtual booth.</div>
+              </label>
+              <label class="meeting-type-option" onclick="selectMeetType(this,'video')">
+                <input type="radio" name="meet_type" value="video"/>
+                <div class="mt-icon">📹</div>
+                <div class="mt-label">Video Call</div>
+                <div class="mt-desc">Join a private video conference from anywhere.</div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 4: Date & Time -->
+          <div class="card">
+            <div class="card-title"><i class="fas fa-clock" style="color:#0052CC"></i> 4. Select Date &amp; Time</div>
+
+            <!-- Calendar -->
+            <div class="calendar-wrap">
+              <div class="cal-header">
+                <button class="cal-nav" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                <div class="cal-month" id="cal-month-label">March 2026</div>
+                <button class="cal-nav" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+              </div>
+              <div class="cal-grid" id="cal-grid">
+                <div class="cal-dow">Sun</div><div class="cal-dow">Mon</div>
+                <div class="cal-dow">Tue</div><div class="cal-dow">Wed</div>
+                <div class="cal-dow">Thu</div><div class="cal-dow">Fri</div>
+                <div class="cal-dow">Sat</div>
+              </div>
+              <div class="cal-grid" id="cal-days" style="margin-top:4px"></div>
+            </div>
+
+            <!-- Time Slots -->
+            <div style="margin-top:18px" id="slots-section">
+              <div class="slots-label" id="slots-label">
+                <i class="fas fa-clock" style="color:#0052CC"></i> Available time slots — <span id="selected-date-display">select a date above</span>
+              </div>
+              <div class="slots-grid" id="slots-grid">
+                <!-- slots rendered by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5: Duration & Agenda -->
+          <div class="card">
+            <div class="card-title"><i class="fas fa-clipboard-list" style="color:#0052CC"></i> 5. Duration &amp; Agenda</div>
+            <div class="form-group">
+              <label class="form-label">Meeting Duration</label>
+              <div class="duration-btns" id="dur-btns">
+                <button class="dur-btn" onclick="selectDur(this,'15 min')">15 min</button>
+                <button class="dur-btn active" onclick="selectDur(this,'30 min')">30 min</button>
+                <button class="dur-btn" onclick="selectDur(this,'45 min')">45 min</button>
+                <button class="dur-btn" onclick="selectDur(this,'60 min')">60 min</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Meeting Language</label>
+              <select class="form-control" id="lang-select">
+                <option>English</option>
+                <option>Chinese (Mandarin)</option>
+                <option>Arabic</option>
+                <option>Spanish</option>
+                <option>German</option>
+                <option>French</option>
+                <option>Hindi</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Meeting Agenda / Message *</label>
+              <textarea class="form-control" id="agenda-input" placeholder="Describe your goals for this meeting. E.g.: I'm interested in pricing for your ESP32 modules, MOQ 500 pcs. Looking for Q3 supply."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Name *</label>
+              <input type="text" class="form-control" id="your-name" placeholder="Full name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Email *</label>
+              <input type="email" class="form-control" id="your-email" placeholder="your@company.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Company</label>
+              <input type="text" class="form-control" id="your-company" placeholder="Your company name"/>
+            </div>
+            <button class="btn btn-primary" onclick="submitBooking()" style="margin-top:4px"><i class="fas fa-calendar-check"></i> Confirm Meeting Request</button>
+          </div>
+        </div>
+
+        <!-- Sidebar: Booking Summary -->
+        <div>
+          <div class="card" style="position:sticky;top:80px">
+            <div class="card-title"><i class="fas fa-clipboard" style="color:#0052CC"></i> Booking Summary</div>
+
+            <div class="summary-item">
+              <div class="summary-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-calendar-alt"></i></div>
+              <div>
+                <div class="summary-key">Trade Show</div>
+                <div class="summary-val" id="sum-event">—</div>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-store"></i></div>
+              <div>
+                <div class="summary-key">Exhibitor</div>
+                <div class="summary-val" id="sum-exhibitor">Not selected</div>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon" style="background:#d1fae5;color:#059669"><i class="fas fa-handshake"></i></div>
+              <div>
+                <div class="summary-key">Meeting Type</div>
+                <div class="summary-val" id="sum-type">In-Booth Meeting</div>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon" style="background:#ffedd5;color:#c2410c"><i class="fas fa-calendar-day"></i></div>
+              <div>
+                <div class="summary-key">Date</div>
+                <div class="summary-val" id="sum-date">—</div>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon" style="background:#fef3c7;color:#92400e"><i class="fas fa-clock"></i></div>
+              <div>
+                <div class="summary-key">Time</div>
+                <div class="summary-val" id="sum-time">—</div>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon" style="background:#f0f9ff;color:#0369a1"><i class="fas fa-hourglass-half"></i></div>
+              <div>
+                <div class="summary-key">Duration</div>
+                <div class="summary-val" id="sum-dur">30 min</div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;background:#f0f5ff;border-radius:10px;padding:12px;font-size:.8rem;color:#1d4ed8;display:flex;align-items:flex-start;gap:6px">
+              <i class="fas fa-info-circle" style="margin-top:2px;flex-shrink:0"></i>
+              <span>Meeting requests are sent to the exhibitor. You'll receive email confirmation within 2 hours.</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px"><i class="fas fa-lightbulb" style="color:#f97316"></i> Meeting Tips</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;font-size:.82rem;color:#374151">
+              <li style="display:flex;gap:6px"><i class="fas fa-check-circle" style="color:#059669;margin-top:2px;font-size:.8rem"></i> Prepare your requirements in advance</li>
+              <li style="display:flex;gap:6px"><i class="fas fa-check-circle" style="color:#059669;margin-top:2px;font-size:.8rem"></i> Share target price &amp; order volume</li>
+              <li style="display:flex;gap:6px"><i class="fas fa-check-circle" style="color:#059669;margin-top:2px;font-size:.8rem"></i> Join 5 minutes early</li>
+              <li style="display:flex;gap:6px"><i class="fas fa-check-circle" style="color:#059669;margin-top:2px;font-size:.8rem"></i> Use an interpreter if needed</li>
+              <li style="display:flex;gap:6px"><i class="fas fa-check-circle" style="color:#059669;margin-top:2px;font-size:.8rem"></i> Follow up within 24 hours</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation Screen -->
+    <div class="confirm-card" id="confirm-screen">
+      <div class="confirm-icon"><i class="fas fa-calendar-check"></i></div>
+      <h2 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;margin-bottom:6px">Meeting Request Sent!</h2>
+      <p style="color:#64748b;font-size:.9rem;margin-bottom:20px">Your meeting request has been submitted. Reference: <strong id="meet-ref" style="color:#0052CC">MTG-######</strong></p>
+      <div style="background:#f0f5ff;border-radius:12px;padding:20px;max-width:480px;margin:0 auto 24px;text-align:left">
+        <div style="font-size:.85rem;color:#374151;display:flex;flex-direction:column;gap:8px">
+          <div><span style="color:#64748b;min-width:80px;display:inline-block">Event:</span> <strong id="cf-event"></strong></div>
+          <div><span style="color:#64748b;min-width:80px;display:inline-block">With:</span> <strong id="cf-exhibitor"></strong></div>
+          <div><span style="color:#64748b;min-width:80px;display:inline-block">Type:</span> <strong id="cf-type"></strong></div>
+          <div><span style="color:#64748b;min-width:80px;display:inline-block">When:</span> <strong id="cf-datetime"></strong></div>
+        </div>
+      </div>
+      <p style="color:#64748b;font-size:.85rem;max-width:460px;margin:0 auto 24px">A calendar invite has been sent to your email. The exhibitor will confirm within 2 hours.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="browse.html" class="btn btn-outline btn-sm"><i class="fas fa-search"></i> Browse More Events</a>
+        <a href="virtual-show.html" class="btn btn-primary btn-sm"><i class="fas fa-store"></i> Visit Booths</a>
+        <button class="btn btn-sm" style="background:#7c3aed;color:#fff;border:none" onclick="bookAnother()"><i class="fas fa-plus"></i> Book Another</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">
+    © <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凬国际贸易有限公司). All rights reserved.
+  </div>
+</footer>
+
+<script>
+// ── Data ──
+const EXHIBITORS = [
+  { id:1, name:'Shenzhen TechCo Ltd.',       industry:'Electronics',        country:'China',      icon:'fa-microchip',  color:'linear-gradient(135deg,#0052CC,#7c3aed)', verified:true },
+  { id:2, name:'Apex Textiles Bangladesh',   industry:'Textiles',           country:'Bangladesh', icon:'fa-tshirt',     color:'linear-gradient(135deg,#059669,#0052CC)', verified:true },
+  { id:3, name:'ChemIndustries GmbH',        industry:'Chemicals',          country:'Germany',    icon:'fa-flask',      color:'linear-gradient(135deg,#f97316,#ef4444)', verified:true },
+  { id:4, name:'Precision Machinery India',  industry:'Machinery',          country:'India',      icon:'fa-cogs',       color:'linear-gradient(135deg,#7c3aed,#2563eb)', verified:false },
+  { id:5, name:'Vietnam Agro Exports',       industry:'Food & Agriculture', country:'Vietnam',    icon:'fa-seedling',   color:'linear-gradient(135deg,#0d9488,#059669)', verified:true },
+  { id:6, name:'SafeGuard PPE Solutions',    industry:'Electronics',        country:'China',      icon:'fa-hard-hat',   color:'linear-gradient(135deg,#dc2626,#f97316)', verified:true },
+  { id:7, name:'EuroPack Systems',           industry:'Machinery',          country:'Germany',    icon:'fa-boxes',      color:'linear-gradient(135deg,#475569,#0052CC)', verified:false },
+  { id:8, name:'Guangzhou LED Co.',          industry:'Electronics',        country:'China',      icon:'fa-lightbulb',  color:'linear-gradient(135deg,#d97706,#f59e0b)', verified:true },
+];
+
+const EVENT_NAMES = {
+  spring26:'Globex Sky Spring Trade Show 2026',
+  electronics:'Asia Electronics Expo 2026',
+  textiles:'Global Textiles & Fashion Week',
+  medtech:'MedTech World Expo 2026'
+};
+
+// Show all events dates for calendar highlighting
+const EVENT_DAYS = {
+  spring26: [20,21,22,23],
+  electronics:[5,6,7,8],
+  textiles:[12,13,14],
+  medtech:[1,2,3,4]
+};
+
+const TIME_SLOTS = [
+  '09:00','09:30','10:00','10:30','11:00','11:30',
+  '12:00','13:00','13:30','14:00','14:30','15:00',
+  '15:30','16:00','16:30','17:00'
+];
+const BOOKED = ['10:00','13:30','15:30'];
+
+// ── State ──
+let state = {
+  event:'', exhibitor:null, meetType:'booth',
+  selectedDay:null, selectedTime:null, duration:'30 min',
+  calYear:2026, calMonth:2 // 0-indexed March
+};
+
+// ── Event Change ──
+function onEventChange() {
+  const val = document.getElementById('event-selector').value;
+  state.event = val;
+  document.getElementById('sum-event').textContent = val ? EVENT_NAMES[val] : '—';
+  renderCalendar();
+}
+
+// ── Exhibitors ──
+function filterExhibitors() {
+  const q = document.getElementById('exhibitor-search').value.toLowerCase();
+  const ind = document.getElementById('industry-filter').value;
+  const ctry = document.getElementById('country-filter').value;
+  const filtered = EXHIBITORS.filter(e => {
+    if(q && !e.name.toLowerCase().includes(q) && !e.industry.toLowerCase().includes(q)) return false;
+    if(ind && e.industry !== ind) return false;
+    if(ctry && e.country !== ctry) return false;
+    return true;
+  });
+  renderExhibitors(filtered);
+}
+
+function renderExhibitors(list) {
+  const container = document.getElementById('exhibitor-list');
+  if(!list.length) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:.85rem"><i class="fas fa-search" style="display:block;font-size:1.5rem;margin-bottom:8px"></i>No exhibitors found</div>';
+    return;
+  }
+  container.innerHTML = list.map(e => `
+    <div class="exhibitor-item ${state.exhibitor && state.exhibitor.id===e.id?'selected':''}" onclick="selectExhibitor(${e.id})">
+      <div class="ex-icon" style="background:${e.color}">
+        <i class="fas ${e.icon}" style="color:rgba(255,255,255,.9)"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div class="ex-name">${e.name} ${e.verified?'<span class="ex-badge" style="background:#d1fae5;color:#059669"><i class="fas fa-check-circle"></i></span>':''}</div>
+        <div class="ex-cat">${e.industry} · ${e.country}</div>
+      </div>
+      <span style="font-size:.75rem;color:#94a3b8;flex-shrink:0">${e.country}</span>
+    </div>
+  `).join('');
+}
+
+function selectExhibitor(id) {
+  state.exhibitor = EXHIBITORS.find(e => e.id === id);
+  document.getElementById('sum-exhibitor').textContent = state.exhibitor ? state.exhibitor.name : 'Not selected';
+  filterExhibitors();
+}
+
+// ── Calendar ──
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function changeMonth(dir) {
+  state.calMonth += dir;
+  if(state.calMonth > 11) { state.calMonth=0; state.calYear++; }
+  if(state.calMonth < 0) { state.calMonth=11; state.calYear--; }
+  state.selectedDay = null;
+  state.selectedTime = null;
+  document.getElementById('sum-date').textContent = '—';
+  document.getElementById('sum-time').textContent = '—';
+  renderCalendar();
+  renderSlots();
+}
+
+function renderCalendar() {
+  document.getElementById('cal-month-label').textContent = `${MONTH_NAMES[state.calMonth]} ${state.calYear}`;
+  const firstDay = new Date(state.calYear, state.calMonth, 1).getDay();
+  const daysInMonth = new Date(state.calYear, state.calMonth+1, 0).getDate();
+  const today = new Date();
+  const eventDays = state.event ? (EVENT_DAYS[state.event] || []) : [];
+
+  let html = '';
+  for(let i=0; i<firstDay; i++) html += '<div class="cal-day empty"></div>';
+  for(let d=1; d<=daysInMonth; d++) {
+    const date = new Date(state.calYear, state.calMonth, d);
+    const isToday = date.toDateString() === today.toDateString();
+    const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const hasSlots = eventDays.includes(d);
+    const isSelected = state.selectedDay === d;
+    let cls = 'cal-day';
+    if(isPast) cls += ' past';
+    if(isToday) cls += ' today';
+    if(hasSlots && !isPast) cls += ' has-slots';
+    if(isSelected) cls += ' selected';
+    const onClick = isPast ? '' : `onclick="selectDay(${d})"`;
+    html += `<div class="${cls}" ${onClick}>${d}</div>`;
+  }
+  document.getElementById('cal-days').innerHTML = html;
+}
+
+function selectDay(d) {
+  state.selectedDay = d;
+  state.selectedTime = null;
+  document.getElementById('sum-time').textContent = '—';
+  const dateStr = `${MONTH_NAMES[state.calMonth]} ${d}, ${state.calYear}`;
+  document.getElementById('sum-date').textContent = dateStr;
+  document.getElementById('selected-date-display').textContent = dateStr;
+  renderCalendar();
+  renderSlots();
+}
+
+function renderSlots() {
+  const grid = document.getElementById('slots-grid');
+  if(!state.selectedDay) {
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:.82rem;color:#94a3b8;padding:12px 0">Select a date to see available slots.</div>';
+    return;
+  }
+  // Randomize some booked slots per day for realism
+  const seed = state.selectedDay + state.calMonth * 31;
+  const dayBooked = TIME_SLOTS.filter((_,i) => (i + seed) % 5 === 0 || BOOKED.includes(TIME_SLOTS[i]));
+  grid.innerHTML = TIME_SLOTS.map(t => {
+    if(dayBooked.includes(t)) return `<div class="slot booked" title="Already booked">${t}</div>`;
+    const isSelected = state.selectedTime === t;
+    const isLimited = (TIME_SLOTS.indexOf(t) + seed) % 7 === 0;
+    let cls = 'slot' + (isSelected?' selected':'') + (!isSelected&&isLimited?' limited':'');
+    return `<div class="${cls}" onclick="selectTime('${t}')">${t}${isLimited&&!isSelected?'<br><span style="font-size:.62rem">1 left</span>':''}</div>`;
+  }).join('');
+}
+
+function selectTime(t) {
+  state.selectedTime = t;
+  document.getElementById('sum-time').textContent = `${t} (${state.duration})`;
+  renderSlots();
+}
+
+// ── Meeting Type ──
+function selectMeetType(el, type) {
+  document.querySelectorAll('.meeting-type-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.meetType = type;
+  document.getElementById('sum-type').textContent = type === 'booth' ? 'In-Booth Meeting' : 'Video Call';
+}
+
+// ── Duration ──
+function selectDur(el, dur) {
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  state.duration = dur;
+  document.getElementById('sum-dur').textContent = dur;
+  if(state.selectedTime) document.getElementById('sum-time').textContent = `${state.selectedTime} (${dur})`;
+}
+
+// ── Submit ──
+function submitBooking() {
+  const name = document.getElementById('your-name').value.trim();
+  const email = document.getElementById('your-email').value.trim();
+  const agenda = document.getElementById('agenda-input').value.trim();
+  if(!state.event) { alert('Please select a trade show.'); return; }
+  if(!state.exhibitor) { alert('Please select an exhibitor.'); return; }
+  if(!state.selectedDay) { alert('Please select a date.'); return; }
+  if(!state.selectedTime) { alert('Please select a time slot.'); return; }
+  if(!name || !email) { alert('Please fill in your name and email.'); return; }
+  if(!agenda) { alert('Please add a meeting agenda or message.'); return; }
+
+  const ref = 'MTG-' + Math.random().toString(36).substring(2,8).toUpperCase();
+  document.getElementById('meet-ref').textContent = ref;
+  document.getElementById('cf-event').textContent = EVENT_NAMES[state.event] || state.event;
+  document.getElementById('cf-exhibitor').textContent = state.exhibitor.name;
+  document.getElementById('cf-type').textContent = state.meetType === 'booth' ? 'In-Booth Meeting' : 'Video Call';
+  document.getElementById('cf-datetime').textContent = `${MONTH_NAMES[state.calMonth]} ${state.selectedDay}, ${state.calYear} at ${state.selectedTime} (${state.duration})`;
+
+  document.getElementById('booking-form').style.display = 'none';
+  document.getElementById('confirm-screen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function bookAnother() {
+  document.getElementById('booking-form').style.display = 'block';
+  document.getElementById('confirm-screen').style.display = 'none';
+  state = { event:'', exhibitor:null, meetType:'booth', selectedDay:null, selectedTime:null, duration:'30 min', calYear:2026, calMonth:2 };
+  document.getElementById('event-selector').value = '';
+  document.getElementById('your-name').value = '';
+  document.getElementById('your-email').value = '';
+  document.getElementById('agenda-input').value = '';
+  document.getElementById('sum-event').textContent = '—';
+  document.getElementById('sum-exhibitor').textContent = 'Not selected';
+  document.getElementById('sum-date').textContent = '—';
+  document.getElementById('sum-time').textContent = '—';
+  renderCalendar();
+  renderSlots();
+  filterExhibitors();
+}
+
+// ── Init ──
+renderCalendar();
+renderSlots();
+filterExhibitors();
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

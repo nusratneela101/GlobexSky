@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Register for Trade Show – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    /* ── Header ── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    /* ── Hero ── */
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:700;margin-bottom:8px}
+    .page-hero p{font-size:.95rem;opacity:.85;max-width:520px;margin:0 auto}
+    /* ── Progress Stepper ── */
+    .stepper-wrap{background:#fff;border-bottom:1px solid #f1f5f9;padding:18px 24px}
+    .stepper{display:flex;align-items:center;max-width:860px;margin:0 auto;gap:0}
+    .step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+    .step:not(:last-child)::after{content:'';position:absolute;top:18px;left:calc(50% + 20px);right:calc(-50% + 20px);height:2px;background:#e2e8f0;z-index:0}
+    .step.completed:not(:last-child)::after{background:#0052CC}
+    .step-circle{width:36px;height:36px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#94a3b8;position:relative;z-index:1;transition:all .3s}
+    .step.active .step-circle{border-color:#0052CC;background:#0052CC;color:#fff;box-shadow:0 0 0 4px rgba(0,82,204,.15)}
+    .step.completed .step-circle{border-color:#059669;background:#059669;color:#fff}
+    .step-label{font-size:.75rem;color:#94a3b8;margin-top:6px;font-weight:500;text-align:center}
+    .step.active .step-label{color:#0052CC;font-weight:600}
+    .step.completed .step-label{color:#059669}
+    /* ── Layout ── */
+    .section{padding:36px 24px}
+    .container{max-width:1060px;margin:0 auto}
+    .layout{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    /* ── Cards ── */
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    /* ── Event Detail Panel ── */
+    .event-banner{background:linear-gradient(135deg,#0052CC,#7c3aed);border-radius:12px;padding:20px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden}
+    .event-banner::after{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06)}
+    .event-banner-name{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:6px}
+    .event-banner-meta{font-size:.82rem;opacity:.85;display:flex;flex-wrap:wrap;gap:12px}
+    .event-banner-meta span{display:flex;align-items:center;gap:4px}
+    .event-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .ebadge{padding:3px 9px;border-radius:50px;font-size:.7rem;font-weight:700;background:rgba(255,255,255,.2);color:#fff}
+    /* ── Registration Type ── */
+    .reg-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:4px}
+    .reg-type-option{border:2px solid #e2e8f0;border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;position:relative}
+    .reg-type-option.selected{border-color:#0052CC;background:#f0f5ff}
+    .reg-type-option input{position:absolute;opacity:0;pointer-events:none}
+    .reg-type-icon{font-size:1.6rem;margin-bottom:8px}
+    .reg-type-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:.92rem;color:#0a0e27;margin-bottom:3px}
+    .reg-type-desc{font-size:.78rem;color:#64748b;line-height:1.4}
+    .reg-type-price{font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:.9rem;margin-top:6px}
+    .reg-type-free{color:#059669}
+    /* ── Booth Tiers ── */
+    .booth-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+    .booth-tier{border:2px solid #e2e8f0;border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;position:relative}
+    .booth-tier.selected{border-color:#7c3aed;background:#faf5ff}
+    .booth-tier input{position:absolute;opacity:0;pointer-events:none}
+    .tier-name{font-family:'Poppins',sans-serif;font-weight:700;font-size:.92rem;color:#0a0e27;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .tier-popular{background:#7c3aed;color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:50px}
+    .tier-price{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#7c3aed;margin-bottom:10px}
+    .tier-price span{font-size:.75rem;font-weight:400;color:#94a3b8}
+    .tier-features{list-style:none;display:flex;flex-direction:column;gap:5px}
+    .tier-features li{font-size:.8rem;color:#374151;display:flex;align-items:flex-start;gap:6px}
+    .tier-features li i{color:#059669;margin-top:2px;font-size:.75rem;flex-shrink:0}
+    /* ── Form ── */
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{min-height:88px;resize:vertical}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-hint{font-size:.75rem;color:#94a3b8;margin-top:4px}
+    /* ── Payment Summary ── */
+    .summary-line{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;padding:8px 0;border-bottom:1px solid #f1f5f9}
+    .summary-line:last-of-type{border-bottom:none}
+    .summary-total{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;border-top:2px solid #e2e8f0;margin-top:6px}
+    .total-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27}
+    .total-price{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#0052CC}
+    .payment-methods{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+    .pay-method{border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:.8rem;font-weight:600;color:#374151;transition:all .2s;display:flex;align-items:center;gap:5px}
+    .pay-method.active{border-color:#0052CC;background:#f0f5ff;color:#0052CC}
+    .btn{padding:12px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-purple{background:#7c3aed;color:#fff}.btn-purple:hover{background:#6d28d9}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}
+    /* ── Checklist ── */
+    .checklist{display:flex;flex-direction:column;gap:8px}
+    .check-item{display:flex;align-items:center;gap:8px;font-size:.83rem;color:#374151}
+    .check-item i{color:#059669;font-size:.85rem}
+    /* ── Success ── */
+    .success-screen{display:none;text-align:center;padding:48px 24px}
+    .success-icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+    /* ── Footer ── */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    @media(max-width:900px){
+      .layout{grid-template-columns:1fr}
+      .reg-type-grid{grid-template-columns:1fr}
+      .booth-tiers{grid-template-columns:1fr 1fr}
+      .form-row{grid-template-columns:1fr}
+    }
+    @media(max-width:500px){.booth-tiers{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Hero -->
+<div class="page-hero">
+  <h1><i class="fas fa-ticket-alt"></i> Trade Show Registration</h1>
+  <p>Register as a visitor or exhibitor. Book your booth and connect with the global trade community.</p>
+</div>
+
+<!-- Progress Stepper -->
+<div class="stepper-wrap">
+  <div class="stepper">
+    <div class="step active" id="step1">
+      <div class="step-circle" id="s1"><i class="fas fa-check" style="display:none"></i><span>1</span></div>
+      <div class="step-label">Event &amp; Type</div>
+    </div>
+    <div class="step" id="step2">
+      <div class="step-circle" id="s2"><span>2</span></div>
+      <div class="step-label">Details</div>
+    </div>
+    <div class="step" id="step3">
+      <div class="step-circle" id="s3"><span>3</span></div>
+      <div class="step-label">Payment</div>
+    </div>
+    <div class="step" id="step4">
+      <div class="step-circle" id="s4"><span>4</span></div>
+      <div class="step-label">Confirm</div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="virtual-show.html">Trade Shows</a><span>/</span>
+      <a href="browse.html">Browse</a><span>/</span>
+      <span>Register</span>
+    </nav>
+
+    <!-- Multi-step Form -->
+    <div id="form-step-1">
+      <div class="layout">
+        <div>
+          <!-- Event Info -->
+          <div class="card">
+            <div class="card-title"><i class="fas fa-calendar-star" style="color:#0052CC"></i> Select Trade Show</div>
+            <div class="form-group">
+              <label class="form-label" for="event-select">Trade Show *</label>
+              <select class="form-control" id="event-select" onchange="updateEventPanel()">
+                <option value="">-- Choose a trade show --</option>
+                <option value="spring26">Globex Sky Spring Trade Show 2026 – Mar 20–23</option>
+                <option value="electronics">Asia Electronics Expo 2026 – Apr 5–8</option>
+                <option value="textiles">Global Textiles &amp; Fashion Week – May 12–14</option>
+                <option value="medtech">MedTech World Expo 2026 – Jun 1–4</option>
+                <option value="agri">AgriWorld Summit 2026 – Jun 18–20</option>
+              </select>
+            </div>
+            <!-- Dynamic Event Panel -->
+            <div id="event-panel" style="display:none">
+              <div class="event-banner">
+                <div class="event-banner-name" id="ep-name"></div>
+                <div class="event-banner-meta">
+                  <span><i class="fas fa-calendar-alt"></i> <span id="ep-date"></span></span>
+                  <span><i class="fas fa-map-marker-alt"></i> <span id="ep-location"></span></span>
+                  <span><i class="fas fa-store"></i> <span id="ep-exhibitors"></span> Exhibitors</span>
+                </div>
+                <div class="event-badges">
+                  <span class="ebadge" id="ep-type"></span>
+                  <span class="ebadge" id="ep-status"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Registration Type -->
+          <div class="card">
+            <div class="card-title"><i class="fas fa-user-tag" style="color:#0052CC"></i> Registration Type</div>
+            <div class="reg-type-grid">
+              <label class="reg-type-option selected" onclick="selectRegType(this,'visitor')">
+                <input type="radio" name="reg_type" value="visitor" checked/>
+                <div class="reg-type-icon">🪪</div>
+                <div class="reg-type-label">Visitor</div>
+                <div class="reg-type-desc">Browse exhibitors, attend sessions, schedule meetings with suppliers.</div>
+                <div class="reg-type-price reg-type-free">Free</div>
+              </label>
+              <label class="reg-type-option" onclick="selectRegType(this,'exhibitor')">
+                <input type="radio" name="reg_type" value="exhibitor"/>
+                <div class="reg-type-icon">🏪</div>
+                <div class="reg-type-label">Exhibitor</div>
+                <div class="reg-type-desc">Showcase products, manage a virtual booth, connect with buyers.</div>
+                <div class="reg-type-price">From $299</div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Booth Type (only shown for Exhibitor) -->
+          <div class="card" id="booth-type-card" style="display:none">
+            <div class="card-title"><i class="fas fa-store" style="color:#7c3aed"></i> Select Booth Type</div>
+            <div class="booth-tiers">
+              <label class="booth-tier" onclick="selectTier(this,'basic',299)">
+                <input type="radio" name="booth_tier" value="basic"/>
+                <div class="tier-name">🟦 Basic</div>
+                <div class="tier-price">$299 <span>/ show</span></div>
+                <ul class="tier-features">
+                  <li><i class="fas fa-check"></i> Standard booth listing</li>
+                  <li><i class="fas fa-check"></i> Up to 10 products</li>
+                  <li><i class="fas fa-check"></i> Live chat support</li>
+                  <li><i class="fas fa-check"></i> 2 downloadable files</li>
+                  <li style="color:#94a3b8"><i class="fas fa-times" style="color:#e2e8f0"></i> No analytics</li>
+                </ul>
+              </label>
+              <label class="booth-tier selected" onclick="selectTier(this,'premium',499)">
+                <input type="radio" name="booth_tier" value="premium" checked/>
+                <div class="tier-name">🔷 Premium <span class="tier-popular">POPULAR</span></div>
+                <div class="tier-price">$499 <span>/ show</span></div>
+                <ul class="tier-features">
+                  <li><i class="fas fa-check"></i> Featured booth listing</li>
+                  <li><i class="fas fa-check"></i> Up to 30 products</li>
+                  <li><i class="fas fa-check"></i> Video chat &amp; live demo</li>
+                  <li><i class="fas fa-check"></i> 10 downloadable files</li>
+                  <li><i class="fas fa-check"></i> Visitor analytics</li>
+                </ul>
+              </label>
+              <label class="booth-tier" onclick="selectTier(this,'enterprise',799)">
+                <input type="radio" name="booth_tier" value="enterprise"/>
+                <div class="tier-name">⭐ Enterprise</div>
+                <div class="tier-price">$799 <span>/ show</span></div>
+                <ul class="tier-features">
+                  <li><i class="fas fa-check"></i> Top-placement booth</li>
+                  <li><i class="fas fa-check"></i> Unlimited products</li>
+                  <li><i class="fas fa-check"></i> 3D booth simulator</li>
+                  <li><i class="fas fa-check"></i> Unlimited files</li>
+                  <li><i class="fas fa-check"></i> Dedicated account manager</li>
+                </ul>
+              </label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="goToStep(2)"><i class="fas fa-arrow-right"></i> Continue to Details</button>
+        </div>
+
+        <!-- Payment Summary Sidebar -->
+        <div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-receipt" style="color:#0052CC"></i> Registration Summary</div>
+            <div id="summary-event" class="summary-line">
+              <span style="color:#64748b">Event</span>
+              <span id="sum-event-name" style="font-weight:600;text-align:right;max-width:160px;font-size:.82rem">Not selected</span>
+            </div>
+            <div class="summary-line">
+              <span style="color:#64748b">Type</span>
+              <span id="sum-type" style="font-weight:600">Visitor</span>
+            </div>
+            <div class="summary-line" id="sum-booth-row" style="display:none">
+              <span style="color:#64748b">Booth</span>
+              <span id="sum-booth" style="font-weight:600">Premium</span>
+            </div>
+            <div class="summary-line">
+              <span style="color:#64748b">Base Fee</span>
+              <span id="sum-fee" style="font-weight:600;color:#059669">Free</span>
+            </div>
+            <div class="summary-line">
+              <span style="color:#64748b">Platform Fee</span>
+              <span id="sum-platform">$0.00</span>
+            </div>
+            <div class="summary-total">
+              <div class="total-label">Total</div>
+              <div class="total-price" id="sum-total">$0.00</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px"><i class="fas fa-shield-alt" style="color:#059669"></i> What's Included</div>
+            <div class="checklist" id="includes-checklist">
+              <div class="check-item"><i class="fas fa-check-circle"></i> Full show access</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i> 1-on-1 meeting scheduling</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i> Exhibitor directory access</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i> Downloadable catalogues</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i> Post-show networking</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Attendee Details -->
+    <div id="form-step-2" style="display:none">
+      <div class="layout">
+        <div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-user" style="color:#0052CC"></i> Your Details</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First Name *</label>
+                <input type="text" class="form-control" placeholder="John" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name *</label>
+                <input type="text" class="form-control" placeholder="Smith" required/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Business Email *</label>
+                <input type="email" class="form-control" placeholder="john@company.com" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" placeholder="+1 555 000 0000"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Company Name *</label>
+                <input type="text" class="form-control" placeholder="Your Company Ltd." required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Job Title</label>
+                <input type="text" class="form-control" placeholder="Procurement Manager"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Country *</label>
+                <select class="form-control" required>
+                  <option value="">Select country</option>
+                  <option>United States</option>
+                  <option>United Kingdom</option>
+                  <option>Germany</option>
+                  <option>China</option>
+                  <option>India</option>
+                  <option>Australia</option>
+                  <option>Canada</option>
+                  <option>Singapore</option>
+                  <option>UAE</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Industry</label>
+                <select class="form-control">
+                  <option>Electronics</option>
+                  <option>Textiles &amp; Apparel</option>
+                  <option>Machinery</option>
+                  <option>Food &amp; Agriculture</option>
+                  <option>Chemicals</option>
+                  <option>Medical &amp; Health</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Interests / Sourcing Needs</label>
+              <textarea class="form-control" placeholder="Describe what you're looking to source or achieve at this event…"></textarea>
+            </div>
+            <div class="form-group">
+              <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:.85rem;color:#374151">
+                <input type="checkbox" style="margin-top:2px;accent-color:#0052CC"/>
+                <span>I agree to the <a href="../terms.html" style="color:#0052CC">Terms &amp; Conditions</a> and <a href="../privacy.html" style="color:#0052CC">Privacy Policy</a>. I consent to receiving event communications from Globex Sky.</span>
+              </label>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-outline" style="width:auto;padding:12px 24px" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn btn-primary" onclick="goToStep(3)"><i class="fas fa-arrow-right"></i> Continue to Payment</button>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-receipt" style="color:#0052CC"></i> Order Summary</div>
+            <div class="summary-line"><span style="color:#64748b">Event</span><span id="sum2-event" style="font-weight:600;font-size:.82rem;text-align:right;max-width:160px">—</span></div>
+            <div class="summary-line"><span style="color:#64748b">Type</span><span id="sum2-type" style="font-weight:600">—</span></div>
+            <div class="summary-line"><span style="color:#64748b">Subtotal</span><span id="sum2-subtotal" style="font-weight:600">$0.00</span></div>
+            <div class="summary-total">
+              <div class="total-label">Total Due</div>
+              <div class="total-price" id="sum2-total">$0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Payment -->
+    <div id="form-step-3" style="display:none">
+      <div class="layout">
+        <div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-credit-card" style="color:#0052CC"></i> Payment Method</div>
+            <div class="payment-methods">
+              <button class="pay-method active" onclick="selectPayMethod(this)"><i class="fas fa-credit-card"></i> Credit / Debit Card</button>
+              <button class="pay-method" onclick="selectPayMethod(this)"><i class="fab fa-paypal"></i> PayPal</button>
+              <button class="pay-method" onclick="selectPayMethod(this)"><i class="fas fa-university"></i> Bank Transfer</button>
+              <button class="pay-method" onclick="selectPayMethod(this)"><i class="fas fa-file-invoice-dollar"></i> Invoice</button>
+            </div>
+
+            <!-- Card Form -->
+            <div id="card-form">
+              <div class="form-group">
+                <label class="form-label">Card Number *</label>
+                <div style="position:relative">
+                  <input type="text" class="form-control" id="card-num" placeholder="4242 4242 4242 4242" maxlength="19" oninput="formatCard(this)"/>
+                  <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:4px">
+                    <i class="fab fa-cc-visa" style="color:#1a1f71;font-size:1.2rem"></i>
+                    <i class="fab fa-cc-mastercard" style="color:#eb001b;font-size:1.2rem"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Expiry Date *</label>
+                  <input type="text" class="form-control" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CVV *</label>
+                  <input type="password" class="form-control" placeholder="•••" maxlength="4"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Name on Card *</label>
+                <input type="text" class="form-control" placeholder="John Smith"/>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:#94a3b8;margin-bottom:16px">
+                <i class="fas fa-lock" style="color:#059669"></i> Payments are secured with 256-bit SSL encryption
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-outline" style="width:auto;padding:12px 24px" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()"><i class="fas fa-lock"></i> Pay &amp; Register — <span id="pay-amount">$0.00</span></button>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-receipt" style="color:#0052CC"></i> Final Summary</div>
+            <div class="summary-line"><span style="color:#64748b">Event</span><span id="sum3-event" style="font-weight:600;font-size:.82rem;text-align:right;max-width:160px">—</span></div>
+            <div class="summary-line"><span style="color:#64748b">Registration</span><span id="sum3-type" style="font-weight:600">—</span></div>
+            <div class="summary-line" id="sum3-booth-row" style="display:none"><span style="color:#64748b">Booth Tier</span><span id="sum3-booth" style="font-weight:600">—</span></div>
+            <div class="summary-line"><span style="color:#64748b">Subtotal</span><span id="sum3-subtotal">$0.00</span></div>
+            <div class="summary-line"><span style="color:#64748b">Platform Fee (5%)</span><span id="sum3-platform">$0.00</span></div>
+            <div class="summary-total">
+              <div class="total-label">Total</div>
+              <div class="total-price" id="sum3-total">$0.00</div>
+            </div>
+          </div>
+          <div class="card" style="padding:16px">
+            <div style="font-size:.8rem;color:#64748b;line-height:1.6">
+              <i class="fas fa-info-circle" style="color:#0052CC"></i> Tickets will be sent to your registered email. You can manage your registration from the <a href="../account" style="color:#0052CC">Account Dashboard</a>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Confirmation -->
+    <div id="form-step-4" style="display:none">
+      <div class="success-screen" style="display:block">
+        <div class="success-icon"><i class="fas fa-check"></i></div>
+        <h2 style="font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27;margin-bottom:8px">Registration Confirmed!</h2>
+        <p style="color:#64748b;font-size:.95rem;margin-bottom:4px">Your registration reference is:</p>
+        <div id="confirm-ref" style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0052CC;margin:8px 0 24px">GSKY-######</div>
+        <p style="color:#374151;font-size:.9rem;max-width:480px;margin:0 auto 28px;line-height:1.6">A confirmation email has been sent to your registered address. Your QR code badge will be available in your dashboard 24 hours before the event.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="browse.html" class="btn btn-outline" style="width:auto"><i class="fas fa-search"></i> Browse More Events</a>
+          <a href="schedule-meeting.html" class="btn btn-primary" style="width:auto"><i class="fas fa-calendar-check"></i> Schedule Meetings</a>
+          <a href="virtual-show.html" class="btn btn-purple" style="width:auto"><i class="fas fa-store"></i> Explore Booths</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copyright">
+    © <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.
+  </div>
+</footer>
+
+<script>
+const EVENTS_DATA = {
+  spring26:   { name:'Globex Sky Spring Trade Show 2026', date:'Mar 20–23, 2026', location:'Shanghai + Virtual', exhibitors:452, type:'Hybrid', status:'Registration Open' },
+  electronics:{ name:'Asia Electronics Expo 2026',       date:'Apr 5–8, 2026',   location:'Virtual',            exhibitors:280, type:'Virtual', status:'Registration Open' },
+  textiles:   { name:'Global Textiles & Fashion Week',   date:'May 12–14, 2026', location:'Virtual',            exhibitors:190, type:'Virtual', status:'Registration Open' },
+  medtech:    { name:'MedTech World Expo 2026',          date:'Jun 1–4, 2026',   location:'Frankfurt, Germany', exhibitors:340, type:'In-Person', status:'Registration Open' },
+  agri:       { name:'AgriWorld Summit 2026',            date:'Jun 18–20, 2026', location:'Bangkok + Virtual',  exhibitors:220, type:'Hybrid', status:'Limited Spots' }
+};
+
+let state = { regType: 'visitor', boothTier: 'premium', boothPrice: 499, eventKey: '' };
+
+function updateEventPanel() {
+  const key = document.getElementById('event-select').value;
+  state.eventKey = key;
+  const panel = document.getElementById('event-panel');
+  if (!key) { panel.style.display = 'none'; updateSummary(); return; }
+  const ev = EVENTS_DATA[key];
+  document.getElementById('ep-name').textContent = ev.name;
+  document.getElementById('ep-date').textContent = ev.date;
+  document.getElementById('ep-location').textContent = ev.location;
+  document.getElementById('ep-exhibitors').textContent = ev.exhibitors;
+  document.getElementById('ep-type').textContent = ev.type;
+  document.getElementById('ep-status').textContent = ev.status;
+  panel.style.display = 'block';
+  updateSummary();
+}
+
+function selectRegType(el, type) {
+  document.querySelectorAll('.reg-type-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.regType = type;
+  document.getElementById('booth-type-card').style.display = type === 'exhibitor' ? 'block' : 'none';
+  updateSummary();
+}
+
+function selectTier(el, name, price) {
+  document.querySelectorAll('.booth-tier').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  state.boothTier = name;
+  state.boothPrice = price;
+  updateSummary();
+}
+
+function updateSummary() {
+  const ev = state.eventKey ? EVENTS_DATA[state.eventKey] : null;
+  const baseFee = state.regType === 'visitor' ? 0 : state.boothPrice;
+  const platform = state.regType === 'visitor' ? 0 : Math.round(baseFee * 0.05 * 100) / 100;
+  const total = baseFee + platform;
+
+  const evName = ev ? ev.name : 'Not selected';
+  // Step 1 summary
+  document.getElementById('sum-event-name').textContent = evName;
+  document.getElementById('sum-type').textContent = state.regType === 'visitor' ? 'Visitor' : 'Exhibitor';
+  document.getElementById('sum-fee').textContent = baseFee === 0 ? 'Free' : '$' + baseFee.toFixed(2);
+  document.getElementById('sum-fee').style.color = baseFee === 0 ? '#059669' : '#0052CC';
+  document.getElementById('sum-platform').textContent = '$' + platform.toFixed(2);
+  document.getElementById('sum-total').textContent = total === 0 ? 'Free' : '$' + total.toFixed(2);
+  document.getElementById('sum-booth-row').style.display = state.regType === 'exhibitor' ? 'flex' : 'none';
+  document.getElementById('sum-booth').textContent = state.boothTier.charAt(0).toUpperCase() + state.boothTier.slice(1);
+
+  // Sync all summary panels
+  ['sum2-event','sum3-event'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = evName; });
+  ['sum2-type','sum3-type'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = state.regType === 'visitor' ? 'Visitor' : 'Exhibitor'; });
+  ['sum2-subtotal','sum3-subtotal'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = baseFee === 0 ? 'Free' : '$' + baseFee.toFixed(2); });
+  const s3p = document.getElementById('sum3-platform');
+  if(s3p) s3p.textContent = '$' + platform.toFixed(2);
+  ['sum2-total','sum3-total'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = total === 0 ? 'Free' : '$' + total.toFixed(2); });
+  const payBtn = document.getElementById('pay-btn');
+  if(payBtn) document.getElementById('pay-amount').textContent = total === 0 ? 'Free' : '$' + total.toFixed(2);
+  const s3br = document.getElementById('sum3-booth-row');
+  if(s3br) { s3br.style.display = state.regType === 'exhibitor' ? 'flex' : 'none'; }
+  const s3b = document.getElementById('sum3-booth');
+  if(s3b) s3b.textContent = state.boothTier.charAt(0).toUpperCase() + state.boothTier.slice(1);
+}
+
+function goToStep(n) {
+  [1,2,3,4].forEach(i => {
+    document.getElementById('form-step-'+i).style.display = i === n ? 'block' : 'none';
+    const s = document.getElementById('step'+i);
+    s.classList.remove('active','completed');
+    if(i < n) s.classList.add('completed');
+    if(i === n) s.classList.add('active');
+    const circle = document.getElementById('s'+i);
+    const checkIcon = circle.querySelector('i');
+    const numSpan = circle.querySelector('span');
+    if(i < n){ if(checkIcon) checkIcon.style.display='inline'; if(numSpan) numSpan.style.display='none'; }
+    else { if(checkIcon) checkIcon.style.display='none'; if(numSpan) numSpan.style.display='inline'; }
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectPayMethod(el) {
+  document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if(v.length >= 3) v = v.substring(0,2) + ' / ' + v.substring(2);
+  el.value = v;
+}
+
+function submitPayment() {
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…';
+  setTimeout(() => {
+    const ref = 'GSKY-' + Math.random().toString(36).substring(2,8).toUpperCase();
+    document.getElementById('confirm-ref').textContent = ref;
+    goToStep(4);
+  }, 2000);
+}
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
