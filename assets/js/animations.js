@@ -123,7 +123,7 @@ function runDoorAnimation() {
       clearTimeout(window._doorSafetyTimer);
       window._doorSafetyTimer = null;
     }
-  }, 4000); // 800 ms delay + 3200 ms animation
+  }, 4200); // 800 ms delay + 3200 ms animation + 200 ms safety buffer
 }
 
 /* ─────────────────────────────────────────────
@@ -210,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─────────────────────────────────────────────
    EXPORTS
 ───────────────────────────────────────────── */
-window.Globex Sky = window.Globex Sky || {};
-Object.assign(window.Globex Sky, {
+window.GlobexSky = window.GlobexSky || {};
+Object.assign(window.GlobexSky, {
   skipToContent,
   runDoorAnimation,
 });
