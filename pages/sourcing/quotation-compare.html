@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Compare Quotations | Globex Sky Sourcing</title>
+  <meta name="description" content="Compare supplier quotations side by side on Globex Sky. Analyze price, lead time, terms, and certifications to make the best sourcing decision."/>
+  <meta property="og:title" content="Compare Quotations | Globex Sky Sourcing"/>
+  <meta property="og:description" content="Side-by-side comparison of supplier quotations."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://globexsky.com/pages/sourcing/quotation-compare.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../assets/css/main.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--border:#e2e8f0;--bg:#f4f6fa;--muted:#64748b;--best:#d1fae5;--best-text:#059669}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    h1,h2,h3,h4{font-family:'Poppins',sans-serif}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-links{display:flex;gap:4px;margin-left:24px;flex-wrap:wrap}
+    .nav-links a{padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .nav-links a:hover,.nav-links a.active{background:#eff6ff;color:var(--primary)}
+    .nav-controls{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1.5px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+    .btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-outline:hover{background:var(--primary);color:#fff}
+    .btn-teal{background:var(--accent);color:#fff}.btn-teal:hover{background:#00a98a}
+    .btn-orange{background:var(--secondary);color:#fff}.btn-orange:hover{background:#e55a25}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    /* Layout */
+    .page-wrap{max-width:1400px;margin:0 auto;padding:28px 24px;flex:1}
+    /* Breadcrumb */
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:18px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary);text-decoration:none}
+    .breadcrumb i{font-size:.65rem;color:#cbd5e1}
+    /* RFQ summary bar */
+    .rfq-summary{background:#fff;border-radius:16px;padding:18px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;border:1.5px solid var(--border)}
+    .rfq-summary-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--dark);flex:1;min-width:200px}
+    .rfq-summary-meta{display:flex;gap:20px;flex-wrap:wrap}
+    .rfq-summary-item{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+    .rfq-summary-item strong{color:#374151}
+    /* Recommendation banner */
+    .rec-banner{background:linear-gradient(135deg,#dcfce7,#d1fae5);border:1.5px solid #6ee7b7;border-radius:14px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .rec-banner-icon{width:40px;height:40px;background:#059669;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0}
+    .rec-banner-text h3{font-size:.95rem;font-weight:700;color:#065f46}
+    .rec-banner-text p{font-size:.8rem;color:#047857}
+    /* Page header */
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+    .page-title{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700;color:var(--dark)}
+    /* Compare table */
+    .compare-wrap{overflow-x:auto;margin-bottom:28px}
+    .compare-table{width:100%;border-collapse:collapse;min-width:700px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.07)}
+    /* Header row */
+    .compare-table .th-label{background:#0A0E27;color:#fff;padding:0;width:200px;min-width:160px;position:sticky;left:0;z-index:2}
+    .compare-table .th-label-inner{padding:20px 18px}
+    .compare-table .th-sup{background:#fff;padding:0;text-align:center;border-bottom:2px solid var(--border)}
+    .compare-table .th-sup-inner{padding:18px 16px 14px}
+    .compare-table .th-sup.best-col{background:#f0fdf4;border-top:3px solid #059669}
+    /* Supplier header */
+    .sup-header{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .sup-avatar{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:1rem;margin-bottom:2px}
+    .sup-name{font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.87rem;text-align:center}
+    .sup-location{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:3px}
+    .sup-rating{display:flex;align-items:center;gap:3px;font-size:.75rem;color:#d97706;font-weight:600}
+    .best-badge{background:#059669;color:#fff;padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:700;margin-top:3px;display:inline-block}
+    /* Data rows */
+    .compare-table tbody tr td:first-child{background:#f8faff;font-weight:600;font-size:.84rem;color:var(--dark);padding:13px 18px;position:sticky;left:0;z-index:1;border-right:1.5px solid var(--border);white-space:nowrap;vertical-align:middle}
+    .compare-table tbody tr td{padding:13px 16px;font-size:.85rem;color:#374151;text-align:center;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .compare-table tbody tr:last-child td{border-bottom:none}
+    .compare-table tbody tr:nth-child(even) td{background:#fafbff}
+    .compare-table tbody tr:nth-child(even) td:first-child{background:#f1f5f9}
+    .cell-best{background:var(--best)!important;color:var(--best-text);font-weight:700}
+    .cell-row-label{display:flex;align-items:center;gap:8px}
+    .cell-row-label i{color:var(--muted);font-size:.8rem;width:14px}
+    /* Action row */
+    .action-row td{padding:16px!important;background:#fff!important;border-top:2px solid var(--border)}
+    .sup-actions{display:flex;flex-direction:column;gap:6px;align-items:center}
+    /* Radar chart */
+    .radar-section{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .radar-section h2{font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+    .radar-section h2 i{color:var(--primary)}
+    .radar-grid{display:grid;grid-template-columns:1fr 280px;gap:28px;align-items:center}
+    .radar-chart-wrap{height:280px;display:flex;align-items:center;justify-content:center}
+    .radar-legend{display:flex;flex-direction:column;gap:10px}
+    .radar-legend-item{display:flex;align-items:center;gap:10px;font-size:.83rem}
+    .radar-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+    /* Score cards */
+    .scores-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .score-card{text-align:center;padding:14px;background:#f8faff;border-radius:12px;border:1.5px solid var(--border)}
+    .score-card.winner{border-color:#059669;background:#f0fdf4}
+    .score-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:800;color:var(--primary)}
+    .score-card.winner .score-value{color:#059669}
+    .score-label{font-size:.73rem;color:var(--muted);margin-top:2px}
+    /* Download bar */
+    .download-bar{background:#fff;border-radius:14px;padding:16px 22px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;border:1.5px solid var(--border)}
+    .download-bar p{font-size:.87rem;color:#374151;font-weight:500}
+    /* Site footer */
+    .site-footer{background:#0a0e27;margin-top:auto}
+    @media(max-width:1100px){.radar-grid{grid-template-columns:1fr}.scores-row{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.rfq-summary{flex-direction:column;align-items:flex-start}.page-header{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo">
+      <img src="../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain">
+    </a>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="index.html">Sourcing</a>
+      <a href="rfq-list.html">RFQ List</a>
+      <a href="quotation-compare.html" class="active">Compare</a>
+    </nav>
+    <div class="nav-controls">
+      <a href="../pages/auth/login.html" class="btn btn-primary" style="padding:8px 16px;font-size:.85rem">Login</a>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../index.html" data-i18n="nav.home">Home</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a href="index.html" data-i18n="nav.sourcing">Sourcing</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a href="rfq-list.html" data-i18n="nav.rfq">RFQ</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span data-i18n="nav.compareQuotations">Compare Quotations</span>
+  </nav>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-i18n="compare.title"><i class="fa-solid fa-code-compare" style="color:var(--primary);font-size:1.2rem;margin-right:8px"></i>Compare Quotations</h1>
+      <p style="font-size:.85rem;color:var(--muted);margin-top:4px" data-i18n="compare.subtitle">Side-by-side comparison of 4 supplier quotes for your RFQ.</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary btn-sm" onclick="window.print()" data-i18n="btn.download"><i class="fa-solid fa-download"></i> Download PDF</button>
+      <a href="rfq-list.html" class="btn btn-outline btn-sm" data-i18n="btn.backToRfq"><i class="fa-solid fa-arrow-left"></i> Back to RFQs</a>
+    </div>
+  </div>
+
+  <!-- RFQ summary bar -->
+  <div class="rfq-summary">
+    <div class="rfq-summary-title"><i class="fa-solid fa-file-invoice" style="color:var(--primary);margin-right:6px"></i>LED Panel Light 60×60 40W – Bulk Order</div>
+    <div class="rfq-summary-meta">
+      <span class="rfq-summary-item"><i class="fa-solid fa-boxes-stacked"></i> Qty: <strong>5,000 units</strong></span>
+      <span class="rfq-summary-item"><i class="fa-solid fa-tag"></i> Target: <strong>$7.50/unit</strong></span>
+      <span class="rfq-summary-item"><i class="fa-regular fa-calendar"></i> Deadline: <strong>Feb 28, 2025</strong></span>
+      <span class="rfq-summary-item"><i class="fa-solid fa-ship"></i> FOB Guangzhou</span>
+    </div>
+  </div>
+
+  <!-- Recommendation banner -->
+  <div class="rec-banner">
+    <div class="rec-banner-icon"><i class="fa-solid fa-trophy"></i></div>
+    <div class="rec-banner-text">
+      <h3 data-i18n="compare.rec.title">Best Value: Guangzhou ShineLite Co.</h3>
+      <p data-i18n="compare.rec.desc">Offers the lowest unit price ($6.80) with the best overall score (91/100). Has 4.8★ rating and CE/RoHS certifications. Lead time within your deadline.</p>
+    </div>
+    <div style="margin-left:auto">
+      <button class="btn btn-teal btn-sm" data-i18n="btn.startOrder"><i class="fa-solid fa-shopping-cart"></i> Start Order</button>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <colgroup>
+        <col style="width:200px"/>
+        <col/>
+        <col/>
+        <col/>
+        <col/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="th-label"><div class="th-label-inner"><span style="font-size:.8rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:rgba(255,255,255,.6)" data-i18n="compare.criteria">Criteria</span></div></th>
+          <!-- Supplier 1 - Best -->
+          <th class="th-sup best-col">
+            <div class="th-sup-inner">
+              <div class="sup-header">
+                <div class="sup-avatar">GL</div>
+                <div class="sup-name">Guangzhou ShineLite Co.</div>
+                <div class="sup-location"><i class="fa-solid fa-location-dot"></i> Guangdong, China</div>
+                <div class="sup-rating"><i class="fa-solid fa-star"></i> 4.8 <span style="color:var(--muted);font-weight:400">(312 reviews)</span></div>
+                <span class="best-badge"><i class="fa-solid fa-crown" style="margin-right:3px"></i>Best Value</span>
+              </div>
+            </div>
+          </th>
+          <!-- Supplier 2 -->
+          <th class="th-sup">
+            <div class="th-sup-inner">
+              <div class="sup-header">
+                <div class="sup-avatar" style="background:linear-gradient(135deg,#fef3c7,#fde68a);color:#d97706">SZ</div>
+                <div class="sup-name">Shenzhen LED World</div>
+                <div class="sup-location"><i class="fa-solid fa-location-dot"></i> Guangdong, China</div>
+                <div class="sup-rating"><i class="fa-solid fa-star"></i> 4.5 <span style="color:var(--muted);font-weight:400">(187 reviews)</span></div>
+              </div>
+            </div>
+          </th>
+          <!-- Supplier 3 -->
+          <th class="th-sup">
+            <div class="th-sup-inner">
+              <div class="sup-header">
+                <div class="sup-avatar" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#059669">FJ</div>
+                <div class="sup-name">Fujian Bright Lighting</div>
+                <div class="sup-location"><i class="fa-solid fa-location-dot"></i> Fujian, China</div>
+                <div class="sup-rating"><i class="fa-solid fa-star"></i> 4.6 <span style="color:var(--muted);font-weight:400">(94 reviews)</span></div>
+              </div>
+            </div>
+          </th>
+          <!-- Supplier 4 -->
+          <th class="th-sup">
+            <div class="th-sup-inner">
+              <div class="sup-header">
+                <div class="sup-avatar" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed">ZJ</div>
+                <div class="sup-name">Zhejiang LedTech</div>
+                <div class="sup-location"><i class="fa-solid fa-location-dot"></i> Zhejiang, China</div>
+                <div class="sup-rating"><i class="fa-solid fa-star"></i> 4.3 <span style="color:var(--muted);font-weight:400">(56 reviews)</span></div>
+              </div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Unit Price -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-tag"></i> Unit Price (USD)</div></td>
+          <td class="cell-best">$6.80</td>
+          <td>$7.20</td>
+          <td>$7.45</td>
+          <td>$7.80</td>
+        </tr>
+        <!-- MOQ -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-boxes-stacked"></i> MOQ</div></td>
+          <td class="cell-best">500 pcs</td>
+          <td>1,000 pcs</td>
+          <td>500 pcs</td>
+          <td>2,000 pcs</td>
+        </tr>
+        <!-- Lead Time -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-regular fa-calendar"></i> Lead Time</div></td>
+          <td>20 days</td>
+          <td class="cell-best">15 days</td>
+          <td>25 days</td>
+          <td>18 days</td>
+        </tr>
+        <!-- Shipping Terms -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-ship"></i> Shipping Terms</div></td>
+          <td>FOB / CIF</td>
+          <td class="cell-best">FOB / CIF / DDP</td>
+          <td>FOB</td>
+          <td>FOB</td>
+        </tr>
+        <!-- Payment Terms -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-credit-card"></i> Payment Terms</div></td>
+          <td class="cell-best">30% deposit, 70% B/L</td>
+          <td>50% deposit, 50% B/L</td>
+          <td>30% deposit, 70% B/L</td>
+          <td>50% deposit, 50% B/L</td>
+        </tr>
+        <!-- Warranty -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-shield-check"></i> Warranty</div></td>
+          <td class="cell-best">3 years</td>
+          <td>2 years</td>
+          <td>2 years</td>
+          <td>1 year</td>
+        </tr>
+        <!-- Certifications -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-certificate"></i> Certifications</div></td>
+          <td class="cell-best">
+            <span style="background:#dbeafe;color:var(--primary);padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600;margin-right:3px">CE</span>
+            <span style="background:#dcfce7;color:#059669;padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600;margin-right:3px">RoHS</span>
+            <span style="background:#fef3c7;color:#d97706;padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600">SAA</span>
+          </td>
+          <td>
+            <span style="background:#dbeafe;color:var(--primary);padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600;margin-right:3px">CE</span>
+            <span style="background:#dcfce7;color:#059669;padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600">RoHS</span>
+          </td>
+          <td>
+            <span style="background:#dbeafe;color:var(--primary);padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600;margin-right:3px">CE</span>
+            <span style="background:#dcfce7;color:#059669;padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600;margin-right:3px">RoHS</span>
+            <span style="background:#ede9fe;color:#7c3aed;padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600">UL</span>
+          </td>
+          <td>
+            <span style="background:#dbeafe;color:var(--primary);padding:2px 6px;border-radius:4px;font-size:.7rem;font-weight:600">CE</span>
+          </td>
+        </tr>
+        <!-- Rating -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-star"></i> Supplier Rating</div></td>
+          <td class="cell-best">4.8 ★★★★★</td>
+          <td>4.5 ★★★★½</td>
+          <td>4.6 ★★★★½</td>
+          <td>4.3 ★★★★</td>
+        </tr>
+        <!-- Reviews -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-regular fa-comment"></i> Total Reviews</div></td>
+          <td class="cell-best">312</td>
+          <td>187</td>
+          <td>94</td>
+          <td>56</td>
+        </tr>
+        <!-- Response Time -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-regular fa-clock"></i> Response Time</div></td>
+          <td class="cell-best">&lt; 4 hours</td>
+          <td>&lt; 12 hours</td>
+          <td>&lt; 8 hours</td>
+          <td>&lt; 24 hours</td>
+        </tr>
+        <!-- Sample Cost -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-flask"></i> Sample Cost</div></td>
+          <td class="cell-best">Free (1 unit)</td>
+          <td>$25</td>
+          <td>$20</td>
+          <td>$30</td>
+        </tr>
+        <!-- Sample Time -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-truck-fast"></i> Sample Lead Time</div></td>
+          <td class="cell-best">3–5 days</td>
+          <td>5–7 days</td>
+          <td>5–7 days</td>
+          <td>7–10 days</td>
+        </tr>
+        <!-- Overall Score -->
+        <tr>
+          <td><div class="cell-row-label"><i class="fa-solid fa-gauge-high"></i> Overall Score</div></td>
+          <td class="cell-best" style="font-family:'Poppins',sans-serif;font-size:1.1rem">91/100</td>
+          <td>78/100</td>
+          <td>82/100</td>
+          <td>64/100</td>
+        </tr>
+        <!-- Actions row -->
+        <tr class="action-row">
+          <td></td>
+          <td>
+            <div class="sup-actions">
+              <button class="btn btn-primary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.startOrder"><i class="fa-solid fa-shopping-cart"></i> Start Order</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.requestSample"><i class="fa-solid fa-flask"></i> Request Sample</button>
+              <button class="btn btn-outline btn-sm" style="width:160px;justify-content:center" data-i18n="btn.chat"><i class="fa-regular fa-comment"></i> Chat</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.shortlist"><i class="fa-regular fa-bookmark"></i> Add to Shortlist</button>
+            </div>
+          </td>
+          <td>
+            <div class="sup-actions">
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.startOrder"><i class="fa-solid fa-shopping-cart"></i> Start Order</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.requestSample"><i class="fa-solid fa-flask"></i> Request Sample</button>
+              <button class="btn btn-outline btn-sm" style="width:160px;justify-content:center" data-i18n="btn.chat"><i class="fa-regular fa-comment"></i> Chat</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.shortlist"><i class="fa-regular fa-bookmark"></i> Add to Shortlist</button>
+            </div>
+          </td>
+          <td>
+            <div class="sup-actions">
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.startOrder"><i class="fa-solid fa-shopping-cart"></i> Start Order</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.requestSample"><i class="fa-solid fa-flask"></i> Request Sample</button>
+              <button class="btn btn-outline btn-sm" style="width:160px;justify-content:center" data-i18n="btn.chat"><i class="fa-regular fa-comment"></i> Chat</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.shortlist"><i class="fa-regular fa-bookmark"></i> Add to Shortlist</button>
+            </div>
+          </td>
+          <td>
+            <div class="sup-actions">
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.startOrder"><i class="fa-solid fa-shopping-cart"></i> Start Order</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.requestSample"><i class="fa-solid fa-flask"></i> Request Sample</button>
+              <button class="btn btn-outline btn-sm" style="width:160px;justify-content:center" data-i18n="btn.chat"><i class="fa-regular fa-comment"></i> Chat</button>
+              <button class="btn btn-secondary btn-sm" style="width:160px;justify-content:center" data-i18n="btn.shortlist"><i class="fa-regular fa-bookmark"></i> Add to Shortlist</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Overall Scores -->
+  <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px">
+    <h2 style="font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-gauge-high" style="color:var(--primary)"></i> Overall Scores</h2>
+    <div class="scores-row">
+      <div class="score-card winner">
+        <div class="score-value">91</div>
+        <div style="font-size:.8rem;font-weight:700;color:#059669;margin:2px 0">ShineLite Co.</div>
+        <div class="score-label">Best Value</div>
+      </div>
+      <div class="score-card">
+        <div class="score-value">82</div>
+        <div style="font-size:.8rem;font-weight:600;color:#374151;margin:2px 0">Fujian Bright</div>
+        <div class="score-label">2nd Place</div>
+      </div>
+      <div class="score-card">
+        <div class="score-value">78</div>
+        <div style="font-size:.8rem;font-weight:600;color:#374151;margin:2px 0">LED World SZ</div>
+        <div class="score-label">3rd Place</div>
+      </div>
+      <div class="score-card">
+        <div class="score-value">64</div>
+        <div style="font-size:.8rem;font-weight:600;color:#374151;margin:2px 0">Zhejiang LedTech</div>
+        <div class="score-label">4th Place</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Radar chart -->
+  <div class="radar-section">
+    <h2><i class="fa-solid fa-chart-radar"></i> <span data-i18n="compare.radar.title">Performance Comparison</span></h2>
+    <div class="radar-grid">
+      <div class="radar-chart-wrap">
+        <canvas id="radarChart"></canvas>
+      </div>
+      <div>
+        <div class="radar-legend">
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#0052CC"></div> Guangzhou ShineLite Co. (Best)</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#FF6B35"></div> Shenzhen LED World</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#00C9A7"></div> Fujian Bright Lighting</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#7c3aed"></div> Zhejiang LedTech</div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:#f8faff;border-radius:12px;font-size:.8rem;color:var(--muted)">
+          <p style="font-weight:600;color:#374151;margin-bottom:6px">Scoring Methodology</p>
+          <p>Scores are calculated from price competitiveness, lead time, certifications, supplier rating, and terms flexibility.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download bar -->
+  <div class="download-bar">
+    <div>
+      <p data-i18n="compare.download.title"><i class="fa-solid fa-file-pdf" style="color:#ef4444;margin-right:6px"></i>Download this comparison as a PDF report</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary btn-sm" onclick="window.print()" data-i18n="btn.downloadPDF"><i class="fa-solid fa-download"></i> Download PDF</button>
+      <button class="btn btn-outline btn-sm" data-i18n="btn.shareComparison"><i class="fa-solid fa-share-nodes"></i> Share</button>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div style="max-width:1400px;margin:0 auto;padding:0 24px">
+      <p style="text-align:center;font-size:.85rem;color:#94a3b8">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+<script src="../assets/js/main.js"></script>
+<script>
+// Radar chart
+const ctx=document.getElementById('radarChart').getContext('2d');
+new Chart(ctx,{
+  type:'radar',
+  data:{
+    labels:['Price','Lead Time','Certifications','Rating','Terms','Response'],
+    datasets:[
+      {label:'ShineLite',data:[95,75,95,96,90,96],borderColor:'#0052CC',backgroundColor:'rgba(0,82,204,.1)',borderWidth:2,pointBackgroundColor:'#0052CC'},
+      {label:'LED World',data:[72,95,80,90,65,75],borderColor:'#FF6B35',backgroundColor:'rgba(255,107,53,.08)',borderWidth:2,pointBackgroundColor:'#FF6B35'},
+      {label:'Fujian Bright',data:[65,60,90,92,82,85],borderColor:'#00C9A7',backgroundColor:'rgba(0,201,167,.08)',borderWidth:2,pointBackgroundColor:'#00C9A7'},
+      {label:'LedTech ZJ',data:[50,80,60,86,60,50],borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.06)',borderWidth:2,pointBackgroundColor:'#7c3aed'}
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      r:{
+        beginAtZero:true,
+        max:100,
+        grid:{color:'rgba(0,0,0,.06)'},
+        ticks:{display:false},
+        pointLabels:{font:{size:11,family:'Inter'},color:'#374151'}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
