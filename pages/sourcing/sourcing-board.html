@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="Globex Sky Sourcing Board — buyers post sourcing requests, suppliers submit competitive bids."/>
+  <title>Sourcing Board – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--accent:#00C9A7;--dark:#0a0e27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    a{text-decoration:none;color:inherit}
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#0a0e27 0%,#0052CC 100%);padding:44px 24px;text-align:center;color:var(--white)}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px}
+    .page-hero p{color:rgba(255,255,255,.8);font-size:.95rem}
+    .container{max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary)}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+    .btn-primary{background:var(--primary);color:var(--white)}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:var(--white);color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-outline:hover{background:#eff6ff}
+    .btn-accent{background:var(--accent);color:var(--white)}
+    .btn-accent:hover{background:#00a88e}
+    .btn-sm{padding:6px 14px;font-size:.78rem}
+    /* VIEW TOGGLE */
+    .view-toggle{display:flex;background:#f0f4ff;border-radius:50px;padding:3px;gap:2px;margin-bottom:24px;width:fit-content}
+    .view-tab{padding:8px 22px;border-radius:50px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);transition:all .2s;font-family:'Poppins',sans-serif}
+    .view-tab.active{background:var(--primary);color:var(--white)}
+    /* FILTERS */
+    .filters-bar{background:var(--white);border-radius:12px;padding:16px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .filter-label{font-size:.82rem;font-weight:600;color:var(--dark)}
+    .filter-select{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Inter',sans-serif}
+    .filter-select:focus{outline:none;border-color:var(--primary)}
+    /* STATS BAR */
+    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+    .stat-card{background:var(--white);border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .stat-num{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.4rem;color:var(--primary)}
+    .stat-label{font-size:.75rem;color:var(--muted);margin-top:2px}
+    /* REQUEST CARDS */
+    .requests-grid{display:flex;flex-direction:column;gap:16px;margin-bottom:28px}
+    .request-card{background:var(--white);border-radius:14px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.05);border:1.5px solid var(--border);transition:all .2s}
+    .request-card:hover{border-color:#bfdbfe;box-shadow:0 6px 20px rgba(0,82,204,.1)}
+    .req-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+    .req-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.98rem;color:var(--dark);margin-bottom:4px}
+    .req-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .meta-tag{font-size:.75rem;padding:3px 10px;border-radius:50px;font-weight:600}
+    .tag-category{background:#eff6ff;color:var(--primary)}
+    .tag-open{background:#dcfce7;color:#16a34a}
+    .tag-progress{background:#fef3c7;color:#d97706}
+    .tag-closed{background:#f1f5f9;color:var(--muted)}
+    .req-desc{font-size:.88rem;color:#374151;line-height:1.6;margin-bottom:12px}
+    .req-details{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px;font-size:.82rem;color:var(--muted)}
+    .req-detail{display:flex;align-items:center;gap:5px}
+    .req-detail strong{color:var(--text)}
+    .req-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .bids-count{font-size:.82rem;color:var(--muted);margin-left:auto}
+    /* POST FORM */
+    .post-form-card{background:var(--white);border-radius:16px;padding:28px;box-shadow:0 2px 14px rgba(0,0,0,.07);margin-bottom:28px;border-left:4px solid var(--primary)}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;transition:border-color .2s;background:var(--white)}
+    .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .required{color:#ef4444;margin-left:2px}
+    /* BID MODAL OVERLAY */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .modal{background:var(--white);border-radius:16px;padding:28px;max-width:500px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+    .modal-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    /* FOOTER */
+    .site-footer{background:var(--dark);padding:24px 0;margin-top:auto}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.82rem;text-align:center}
+    @media(max-width:768px){.stats-bar{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}}
+    @media(max-width:480px){.stats-bar{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login" data-i18n="nav.login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register" data-i18n="nav.register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-bullhorn"></i> <span data-i18n="sourcing_board.title">Sourcing Board</span></h1>
+  <p data-i18n="sourcing_board.subtitle">Buyers post sourcing requests — suppliers submit competitive bids</p>
+</div>
+
+<div class="container">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html" data-i18n="nav.home">Home</a><span>/</span>
+    <a href="index.html" data-i18n="nav.sourcing">Sourcing</a><span>/</span>
+    <span data-i18n="sourcing_board.title">Sourcing Board</span>
+  </nav>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card"><div class="stat-num">248</div><div class="stat-label" data-i18n="sourcing_board.active_requests">Active Requests</div></div>
+    <div class="stat-card"><div class="stat-num">1,842</div><div class="stat-label" data-i18n="sourcing_board.total_bids">Total Bids</div></div>
+    <div class="stat-card"><div class="stat-num">96</div><div class="stat-label" data-i18n="sourcing_board.verified_suppliers">Verified Suppliers</div></div>
+    <div class="stat-card"><div class="stat-num">$4.2M</div><div class="stat-label" data-i18n="sourcing_board.volume_matched">Volume Matched</div></div>
+  </div>
+
+  <!-- View Toggle -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+    <div class="view-toggle">
+      <button class="view-tab active" onclick="switchView('buyer',this)" data-i18n="sourcing_board.buyer_view">🛒 Buyer View</button>
+      <button class="view-tab" onclick="switchView('supplier',this)" data-i18n="sourcing_board.supplier_view">🏭 Supplier View</button>
+    </div>
+    <button class="btn btn-primary" id="post-request-btn" onclick="togglePostForm()" data-i18n="sourcing_board.post_request"><i class="fas fa-plus"></i> Post New Request</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <span class="filter-label"><i class="fas fa-filter" style="color:var(--primary)"></i> Filter:</span>
+    <select class="filter-select" onchange="applyFilters()">
+      <option value="">All Categories</option>
+      <option>Electronics</option><option>Apparel &amp; Textiles</option>
+      <option>Home &amp; Garden</option><option>Industrial</option>
+      <option>Food &amp; Beverages</option><option>Machinery</option>
+    </select>
+    <select class="filter-select" onchange="applyFilters()">
+      <option value="">All Budgets</option>
+      <option>Under $5,000</option><option>$5,000–$50,000</option>
+      <option>$50,000–$200,000</option><option>$200,000+</option>
+    </select>
+    <select class="filter-select" onchange="applyFilters()">
+      <option value="">All Status</option>
+      <option>Open</option><option>In Progress</option><option>Closed</option>
+    </select>
+    <select class="filter-select" onchange="applyFilters()">
+      <option value="">Deadline: Any</option>
+      <option>This Week</option><option>This Month</option><option>Next 3 Months</option>
+    </select>
+  </div>
+
+  <!-- Post New Request Form (hidden by default) -->
+  <div class="post-form-card" id="post-form" style="display:none">
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:8px">
+      <i class="fas fa-plus-circle" style="color:var(--primary)"></i> <span data-i18n="sourcing_board.new_request_title">New Sourcing Request</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="req-title" data-i18n="sourcing_board.req_title">Request Title <span class="required">*</span></label>
+      <input type="text" class="form-control" id="req-title" placeholder="e.g. 5,000 units of custom printed tote bags"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="req-category" data-i18n="sourcing_board.req_category">Category <span class="required">*</span></label>
+        <select class="form-control" id="req-category">
+          <option value="">Select…</option>
+          <option>Electronics</option><option>Apparel &amp; Textiles</option>
+          <option>Home &amp; Garden</option><option>Industrial</option>
+          <option>Food &amp; Beverages</option><option>Machinery</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="req-quantity" data-i18n="sourcing_board.req_quantity">Quantity Needed <span class="required">*</span></label>
+        <input type="text" class="form-control" id="req-quantity" placeholder="e.g. 5,000 units"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="req-budget-min" data-i18n="sourcing_board.req_budget">Budget Range (USD) <span class="required">*</span></label>
+        <input type="number" class="form-control" id="req-budget-min" placeholder="Min $"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="req-budget-max" style="visibility:hidden">Max</label>
+        <input type="number" class="form-control" id="req-budget-max" placeholder="Max $" style="margin-top:0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="req-deadline" data-i18n="sourcing_board.req_deadline">Deadline <span class="required">*</span></label>
+      <input type="date" class="form-control" id="req-deadline"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="req-desc" data-i18n="sourcing_board.req_desc">Description <span class="required">*</span></label>
+      <textarea class="form-control" id="req-desc" rows="3" placeholder="Describe what you need — materials, specifications, certifications, delivery requirements…"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="submitRequest()" data-i18n="sourcing_board.post_request"><i class="fas fa-paper-plane"></i> Post Request</button>
+      <button class="btn btn-outline" onclick="togglePostForm()" data-i18n="buttons.cancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Requests List -->
+  <div class="requests-grid" id="requests-grid"></div>
+</div>
+
+<!-- Bid Modal -->
+<div class="modal-overlay" id="bid-modal" style="display:none" onclick="closeBidModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title"><i class="fas fa-gavel" style="color:var(--primary)"></i> <span data-i18n="sourcing_board.submit_bid">Submit a Bid</span></div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="sourcing_board.bid_price">Your Price (USD) *</label>
+      <input type="number" class="form-control" id="bid-price" placeholder="Total bid amount"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="sourcing_board.bid_lead_time">Lead Time *</label>
+      <input type="text" class="form-control" id="bid-lead" placeholder="e.g. 15–20 business days"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="sourcing_board.bid_notes">Notes / Value Proposition</label>
+      <textarea class="form-control" id="bid-notes" rows="3" placeholder="Briefly describe your capabilities, certifications, and why you're the best choice…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-accent" onclick="submitBid()" data-i18n="sourcing_board.submit_bid"><i class="fas fa-gavel"></i> Submit Bid</button>
+      <button class="btn btn-outline" onclick="document.getElementById('bid-modal').style.display='none'" data-i18n="buttons.cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
+</footer>
+
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/sourcing-board.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

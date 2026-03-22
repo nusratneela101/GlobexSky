@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="Product questions and answers — ask questions, get answers from suppliers on Globex Sky."/>
+  <title>Product Q&amp;A – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--accent:#00C9A7;--dark:#0a0e27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    a{text-decoration:none;color:inherit}
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#00C9A7 100%);padding:44px 24px;text-align:center;color:var(--white)}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px}
+    .page-hero p{color:rgba(255,255,255,.8);font-size:.95rem}
+    .container{max-width:900px;margin:0 auto;padding:32px 24px;flex:1}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary)}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+    .btn-primary{background:var(--primary);color:var(--white)}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:var(--white);color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-outline:hover{background:#eff6ff}
+    .btn-sm{padding:6px 14px;font-size:.78rem}
+    /* PRODUCT SUMMARY CARD */
+    .product-summary{background:var(--white);border-radius:14px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    .product-thumb{width:80px;height:80px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0}
+    .product-info h2{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:var(--dark);margin-bottom:4px}
+    .product-info .meta{font-size:.82rem;color:var(--muted)}
+    /* SORT + ASK */
+    .controls-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+    .sort-group{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted)}
+    .sort-select{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Inter',sans-serif;color:var(--text)}
+    /* ASK FORM */
+    .ask-form{background:var(--white);border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;border-left:4px solid var(--primary)}
+    .ask-form h3{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;resize:vertical;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    /* Q&A ITEMS */
+    .qa-list{display:flex;flex-direction:column;gap:16px;margin-bottom:28px}
+    .qa-item{background:var(--white);border-radius:14px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .question-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+    .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:var(--white);font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .q-meta{flex:1}
+    .q-user{font-weight:600;font-size:.88rem;color:var(--dark)}
+    .q-time{font-size:.75rem;color:var(--muted);margin-top:2px}
+    .q-badge{background:#f0f4ff;color:var(--primary);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:50px;margin-left:6px}
+    .q-text{font-size:.92rem;color:var(--text);margin-bottom:14px;line-height:1.6}
+    .answer-block{background:#f8faff;border-radius:10px;padding:14px 16px;margin-top:10px;border-left:3px solid var(--accent)}
+    .answer-block .supplier-badge{font-size:.72rem;font-weight:700;color:var(--accent);background:#e6faf7;padding:2px 10px;border-radius:50px;margin-bottom:6px;display:inline-block}
+    .answer-block .answer-text{font-size:.88rem;color:var(--text);line-height:1.6}
+    .qa-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .helpful-btn{background:none;border:1.5px solid var(--border);padding:5px 12px;border-radius:50px;font-size:.78rem;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:5px;transition:all .2s}
+    .helpful-btn:hover,.helpful-btn.active{border-color:var(--accent);color:var(--accent);background:#f0fdfb}
+    .helpful-count{font-weight:700}
+    /* PAGINATION */
+    .pagination{display:flex;gap:6px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+    .page-btn{width:36px;height:36px;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:all .2s;background:var(--white)}
+    .page-btn:hover,.page-btn.active{background:var(--primary);color:var(--white);border-color:var(--primary)}
+    /* AUTH NOTICE */
+    .auth-notice{background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:12px 16px;font-size:.85rem;color:#92400e;margin-bottom:16px}
+    .site-footer{background:var(--dark);padding:24px 0;margin-top:auto}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.82rem;text-align:center}
+    @media(max-width:600px){.controls-bar{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login" data-i18n="nav.login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register" data-i18n="nav.register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-comments"></i> <span data-i18n="qa.title">Product Q&amp;A</span></h1>
+  <p data-i18n="qa.subtitle">Ask questions, get answers from verified suppliers</p>
+</div>
+
+<div class="container">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html" data-i18n="nav.home">Home</a><span>/</span>
+    <a href="index.html" data-i18n="nav.sourcing">Sourcing</a><span>/</span>
+    <span data-i18n="qa.title">Product Q&amp;A</span>
+  </nav>
+
+  <!-- Product Summary -->
+  <div class="product-summary" id="product-summary">
+    <div class="product-thumb" id="product-thumb"><i class="fas fa-box"></i></div>
+    <div class="product-info">
+      <h2 id="product-name" data-i18n="qa.loading_product">Loading product…</h2>
+      <div class="meta" id="product-meta"></div>
+    </div>
+    <a href="product-detail.html" id="view-product-link" class="btn btn-outline btn-sm" style="margin-left:auto" data-i18n="qa.view_product">View Product</a>
+  </div>
+
+  <!-- Sort + Ask Button -->
+  <div class="controls-bar">
+    <div class="sort-group">
+      <label for="qa-sort" data-i18n="products.sort_by">Sort by:</label>
+      <select id="qa-sort" class="sort-select" onchange="sortQA(this.value)">
+        <option value="newest" data-i18n="qa.sort_newest">Newest First</option>
+        <option value="helpful" data-i18n="qa.sort_helpful">Most Helpful</option>
+        <option value="unanswered" data-i18n="qa.sort_unanswered">Unanswered</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="toggleAskForm()" id="ask-btn"><i class="fas fa-question-circle"></i> <span data-i18n="qa.ask_question">Ask a Question</span></button>
+  </div>
+
+  <!-- Auth Notice (shown when logged out) -->
+  <div class="auth-notice" id="auth-notice" style="display:none">
+    <i class="fas fa-lock"></i> <span data-i18n="qa.login_required">Please</span> <a href="../auth/login.html" style="color:var(--primary);font-weight:600" data-i18n="nav.login">Login</a> <span data-i18n="qa.to_ask">to ask a question.</span>
+  </div>
+
+  <!-- Ask a Question Form -->
+  <div class="ask-form" id="ask-form" style="display:none">
+    <h3><i class="fas fa-pen" style="color:var(--primary)"></i> <span data-i18n="qa.ask_question">Ask a Question</span></h3>
+    <div class="form-group">
+      <label class="form-label" for="question-text" data-i18n="qa.your_question">Your Question *</label>
+      <textarea class="form-control" id="question-text" rows="3" placeholder="Type your question about this product…" maxlength="500"></textarea>
+      <div style="text-align:right;font-size:.75rem;color:var(--muted);margin-top:4px"><span id="q-char-count">0</span>/500</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="submitQuestion()" data-i18n="qa.submit_question">Submit Question</button>
+      <button class="btn btn-outline" onclick="toggleAskForm()" data-i18n="buttons.cancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Q&A List -->
+  <div class="qa-list" id="qa-list">
+    <!-- Items injected by JS -->
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="qa-pagination"></div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
+</footer>
+
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('product_id') || '1';
+
+  const DEMO_QA = [
+    {id:1,user:'Ahmed K.',time:'2 days ago',question:'What is the minimum order quantity for custom branding?',answer:{supplier:'Guangzhou Supplier Co.',text:'The MOQ for custom branding (logo printing or embroidery) is 100 pieces per design. We offer flexible packaging options as well.'},helpful:12,voted:false},
+    {id:2,user:'Maria S.',time:'5 days ago',question:'Do you offer samples before placing a bulk order?',answer:{supplier:'Guangzhou Supplier Co.',text:'Yes, sample orders are available. Samples are charged at retail price plus shipping. Lead time for samples is 3–5 business days.'},helpful:8,voted:false},
+    {id:3,user:'John T.',time:'1 week ago',question:'What payment methods do you accept for international orders?',answer:null,helpful:3,voted:false},
+    {id:4,user:'Priya M.',time:'2 weeks ago',question:'Is this product certified for EU safety standards?',answer:{supplier:'Guangzhou Supplier Co.',text:'Yes, this product holds CE and RoHS certifications. We can provide full documentation upon request.'},helpful:15,voted:false},
+  ];
+
+  let qaData = [...DEMO_QA];
+  let currentPage = 1;
+  const perPage = 5;
+
+  function renderQA() {
+    const list = document.getElementById('qa-list');
+    const start = (currentPage - 1) * perPage;
+    const items = qaData.slice(start, start + perPage);
+    list.innerHTML = items.length ? items.map(q => `
+      <div class="qa-item" id="qa-${q.id}">
+        <div class="question-header">
+          <div class="avatar">${q.user.charAt(0)}</div>
+          <div class="q-meta">
+            <div class="q-user">${q.user} <span class="q-badge">Buyer</span></div>
+            <div class="q-time">${q.time}</div>
+          </div>
+        </div>
+        <div class="q-text"><i class="fas fa-question-circle" style="color:var(--primary);margin-right:6px"></i>${q.question}</div>
+        ${q.answer ? `<div class="answer-block">
+          <span class="supplier-badge"><i class="fas fa-store"></i> ${q.answer.supplier}</span>
+          <div class="answer-text">${q.answer.text}</div>
+        </div>` : `<div style="font-size:.82rem;color:var(--muted);font-style:italic;margin-top:8px">Awaiting supplier answer…</div>`}
+        <div class="qa-actions">
+          <button class="helpful-btn ${q.voted?'active':''}" onclick="markHelpful(${q.id},this)">
+            <i class="fas fa-thumbs-up"></i> <span data-i18n="qa.helpful">Helpful</span> (<span class="helpful-count">${q.helpful}</span>)
+          </button>
+        </div>
+      </div>`) .join('') : '<p style="text-align:center;color:var(--muted);padding:40px">No questions yet. Be the first to ask!</p>';
+
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const total = Math.ceil(qaData.length / perPage);
+    const pg = document.getElementById('qa-pagination');
+    if (total <= 1) { pg.innerHTML = ''; return; }
+    let html = '';
+    for (let i = 1; i <= total; i++) {
+      html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    }
+    pg.innerHTML = html;
+  }
+
+  function goPage(p) {
+    currentPage = p;
+    renderQA();
+    window.scrollTo({top: document.getElementById('qa-list').offsetTop - 80, behavior:'smooth'});
+  }
+
+  function sortQA(val) {
+    if (val === 'helpful') qaData.sort((a,b) => b.helpful - a.helpful);
+    else if (val === 'unanswered') qaData.sort((a,b) => (a.answer?1:0) - (b.answer?1:0));
+    else qaData = [...DEMO_QA];
+    currentPage = 1;
+    renderQA();
+  }
+
+  function markHelpful(id, btn) {
+    const q = qaData.find(x => x.id === id);
+    if (!q) return;
+    q.voted = !q.voted;
+    q.helpful += q.voted ? 1 : -1;
+    btn.classList.toggle('active', q.voted);
+    btn.querySelector('.helpful-count').textContent = q.helpful;
+  }
+
+  function toggleAskForm() {
+    const form = document.getElementById('ask-form');
+    const notice = document.getElementById('auth-notice');
+    const isLoggedIn = localStorage.getItem('globexsky_token');
+    if (!isLoggedIn) { notice.style.display = 'block'; form.style.display = 'none'; return; }
+    notice.style.display = 'none';
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function submitQuestion() {
+    const text = document.getElementById('question-text').value.trim();
+    if (!text) { alert('Please enter your question.'); return; }
+    const newQ = {id: Date.now(), user:'You', time:'Just now', question:text, answer:null, helpful:0, voted:false};
+    qaData.unshift(newQ);
+    document.getElementById('question-text').value = '';
+    document.getElementById('ask-form').style.display = 'none';
+    currentPage = 1;
+    renderQA();
+    alert('Your question has been submitted. The supplier will respond within 48 hours.');
+  }
+
+  document.getElementById('question-text').addEventListener('input', function() {
+    document.getElementById('q-char-count').textContent = this.value.length;
+  });
+
+  // Load product info from query param
+  document.getElementById('product-name').textContent = 'Product #' + productId;
+  document.getElementById('view-product-link').href = 'product-detail.html?id=' + productId;
+
+  renderQA();
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
