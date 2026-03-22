@@ -4,11 +4,14 @@
  */
 
 import 'dotenv/config';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
 import corsConfig from './config/cors.js';
+import websocketConfig from './config/websocket.js';
 import { globalRateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
@@ -61,9 +64,27 @@ import advancedSearchRoutes from './routes/advancedSearch.routes.js';
 import backupRoutes from './routes/backup.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
+import websocketRoutes from './routes/websocket.routes.js';
+import adminUsersRoutes from './routes/adminUsers.js';
+import adminProductsRoutes from './routes/adminProducts.js';
+import adminSettingsRoutes from './routes/settings.js';
+import adminRolesRoutes from './routes/adminRoles.js';
+import adminCmsRoutes from './routes/cms.js';
+import paymentsRoutes from './routes/payments.js';
+import adminPricingRoutes from './routes/pricing.js';
+import reportsRoutes from './routes/reports.js';
+import payoutsRoutes from './routes/payouts.js';
+import { initializeWebSocket } from './services/websocket.service.js';
+import { initializeWebRTC } from './services/webrtc.service.js';
 
 const app = express();
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
+
+// ─── Socket.io Setup ──────────────────────────────────────────────────────────
+const io = new SocketIOServer(httpServer, websocketConfig.options);
+initializeWebSocket(io);
+initializeWebRTC(io);
 
 // ─── Core Middleware ─────────────────────────────────────────────────────────
 app.use(helmet());
@@ -138,6 +159,7 @@ app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/backup`, backupRoutes);
 app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
+app.use(`${API}/ws`, websocketRoutes);
 app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
@@ -148,7 +170,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`🚀 Globex Sky API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
 
