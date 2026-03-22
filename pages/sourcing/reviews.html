@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Reviews – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;display:flex;flex-direction:column;min-height:100vh}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#00C9A7 100%);color:#fff;padding:40px 24px;text-align:center}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:6px}
+    .page-hero p{opacity:.85;font-size:.92rem}
+    .container{max-width:1000px;margin:0 auto;padding:0 20px}
+    .content-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;padding:28px 0}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .btn{padding:10px 20px;border-radius:9px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:#fff;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#f0f4ff}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.84rem;font-weight:600;color:#374151;margin-bottom:5px}
+    .form-input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:.87rem;color:#374151;outline:none;transition:border-color .2s;font-family:'Inter',sans-serif}
+    .form-input:focus{border-color:#0052CC}
+    /* Star input */
+    .stars-input{display:flex;gap:6px;margin:8px 0}
+    .stars-input i,.star-interactive{font-size:1.6rem;cursor:pointer;color:#d1d5db;transition:color .15s}
+    .stars-input i:hover,.stars-input i.active,.star-interactive:hover,.star-interactive.active{color:#f59e0b}
+    /* Rating summary */
+    .rating-summary{display:flex;align-items:center;gap:24px;padding:20px;background:#f8fafc;border-radius:12px;margin-bottom:20px}
+    .avg-number{font-family:'Poppins',sans-serif;font-size:3rem;font-weight:800;color:#0a0e27;line-height:1}
+    .avg-stars{display:flex;gap:3px;font-size:1.1rem;color:#f59e0b;margin:6px 0}
+    .avg-count{font-size:.82rem;color:#64748b}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tab{padding:6px 14px;border-radius:50px;font-size:.8rem;font-weight:500;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    @media(max-width:768px){.content-layout{grid-template-columns:1fr}.rating-summary{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────────────────────── -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="nav-container">
+        <a href="../../index.html" class="nav-logo" aria-label="Globex Sky Home">
+          <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"/>
+        </a>
+        <div style="flex:1;"></div>
+        <a href="products.html" class="btn btn-outline" style="font-size:.82rem;margin-right:8px;">
+          <i class="fas fa-arrow-left"></i> Products
+        </a>
+        <a href="../account/profile.html" class="btn btn-primary" style="font-size:.82rem;">
+          <i class="fas fa-user"></i> My Account
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <div class="page-hero">
+    <div class="container">
+      <h1><i class="fas fa-star" style="margin-right:8px;"></i>Product Reviews</h1>
+      <p>Read and share authentic reviews from verified buyers worldwide</p>
+    </div>
+  </div>
+
+  <!-- ── Content ────────────────────────────────────────────────────────── -->
+  <div class="container" style="flex:1;" id="reviewsSection" data-product-id="">
+    <div class="content-layout">
+
+      <!-- ── Left: Reviews list ──────────────────────────────────────── -->
+      <div>
+
+        <!-- Rating summary -->
+        <div class="card">
+          <div class="rating-summary">
+            <div style="text-align:center;">
+              <div class="avg-number" id="avgRating">–</div>
+              <div class="avg-stars" id="avgStars">
+                <i class="fas fa-star" style="opacity:.3;"></i>
+                <i class="fas fa-star" style="opacity:.3;"></i>
+                <i class="fas fa-star" style="opacity:.3;"></i>
+                <i class="fas fa-star" style="opacity:.3;"></i>
+                <i class="fas fa-star" style="opacity:.3;"></i>
+              </div>
+              <div class="avg-count" id="ratingCount">0 reviews</div>
+            </div>
+            <div style="flex:1;" id="ratingBars">
+              <!-- Rendered by reviews.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="filter-tabs" role="tablist" aria-label="Filter reviews">
+          <button class="filter-tab active" role="tab" data-rating="all" onclick="filterReviews('all',this)">All</button>
+          <button class="filter-tab" role="tab" data-rating="5" onclick="filterReviews('5',this)">⭐⭐⭐⭐⭐ 5 Stars</button>
+          <button class="filter-tab" role="tab" data-rating="4" onclick="filterReviews('4',this)">⭐⭐⭐⭐ 4 Stars</button>
+          <button class="filter-tab" role="tab" data-rating="3" onclick="filterReviews('3',this)">⭐⭐⭐ 3 Stars</button>
+          <button class="filter-tab" role="tab" data-rating="2" onclick="filterReviews('2',this)">⭐⭐ 2 Stars</button>
+          <button class="filter-tab" role="tab" data-rating="1" onclick="filterReviews('1',this)">⭐ 1 Star</button>
+          <button class="filter-tab" role="tab" data-rating="verified" onclick="filterReviews('verified',this)">✓ Verified</button>
+        </div>
+
+        <!-- Reviews list -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div id="reviewList">
+            <div style="text-align:center;padding:40px;color:#94a3b8;font-size:.85rem;">
+              <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:12px;display:block;"></i>
+              Loading reviews…
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: Write review form ────────────────────────────────── -->
+      <aside>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-pen" style="color:#0052CC;"></i> Write a Review</div>
+          <form id="reviewForm">
+            <div class="form-group">
+              <div class="form-label">Your Rating *</div>
+              <div class="stars-input" id="starsInput" role="group" aria-label="Star rating">
+                <i class="fas fa-star" data-star="1" tabindex="0" role="radio" aria-label="1 star" aria-checked="false"></i>
+                <i class="fas fa-star" data-star="2" tabindex="0" role="radio" aria-label="2 stars" aria-checked="false"></i>
+                <i class="fas fa-star" data-star="3" tabindex="0" role="radio" aria-label="3 stars" aria-checked="false"></i>
+                <i class="fas fa-star" data-star="4" tabindex="0" role="radio" aria-label="4 stars" aria-checked="false"></i>
+                <i class="fas fa-star" data-star="5" tabindex="0" role="radio" aria-label="5 stars" aria-checked="false"></i>
+              </div>
+              <input type="hidden" id="reviewRating" value=""/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reviewTitle">Review Title</label>
+              <input type="text" id="reviewTitle" class="form-input" placeholder="Summarize your experience…" maxlength="120"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reviewComment">Your Review *</label>
+              <textarea id="reviewComment" class="form-input" rows="5" placeholder="Share your experience with this product…" required style="resize:vertical;"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reviewPhotos">Photos (optional)</label>
+              <input type="file" id="reviewPhotos" class="form-input" accept="image/*" multiple style="padding:6px;"/>
+              <div style="font-size:.75rem;color:#94a3b8;margin-top:4px;">Up to 5 photos (JPG, PNG)</div>
+            </div>
+            <button type="submit" id="submitReviewBtn" class="btn btn-primary" style="width:100%;">
+              <i class="fas fa-paper-plane"></i> Submit Review
+            </button>
+            <div style="font-size:.75rem;color:#94a3b8;margin-top:10px;line-height:1.5;">
+              Reviews are moderated and may take up to 24h to appear.
+            </div>
+          </form>
+        </div>
+
+        <!-- Recent reviewers -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-users" style="color:#00C9A7;"></i> Recent Reviewers</div>
+          <div id="recentReviewers" style="font-size:.82rem;color:#64748b;">Loading…</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+  <footer style="background:#0a0e27;color:#9ca3af;text-align:center;padding:20px;font-size:.82rem;">
+    <p>&copy; 2025 Globex International Trade Co., Ltd. All rights reserved.</p>
+  </footer>
+
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/reviews.js"></script>
+  <script>
+    // Read product ID from URL and set on section
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var productId = params.get('product_id') || params.get('productId') || '';
+      var section = document.getElementById('reviewsSection');
+      if (section && productId) {
+        section.dataset.productId = productId;
+        if (window.GlobexReviews) window.GlobexReviews.load(productId);
+      }
+
+      // Star rating keyboard accessibility
+      var stars = document.querySelectorAll('#starsInput i');
+      stars.forEach(function(star) {
+        star.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); star.click(); }
+        });
+      });
+    }());
+
+    // Filter reviews by star rating
+    function filterReviews(rating, btn) {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      var list = document.getElementById('reviewList');
+      if (!list) return;
+      list.querySelectorAll('.review-item').forEach(function(item) {
+        if (rating === 'all') { item.style.display = ''; return; }
+        if (rating === 'verified') {
+          item.style.display = item.querySelector('[data-verified]') ? '' : 'none';
+          return;
+        }
+        var stars = item.querySelectorAll('.fa-star[style*="#f59e0b"]').length;
+        item.style.display = (stars === parseInt(rating, 10)) ? '' : 'none';
+      });
+    }
+
+    // Populate recent reviewers from loaded reviews (after reviews.js renders)
+    setTimeout(function() {
+      var reviewers = document.querySelectorAll('#reviewList .review-item');
+      var recentEl = document.getElementById('recentReviewers');
+      if (!reviewers.length) { if (recentEl) recentEl.textContent = 'No reviews yet.'; return; }
+      var names = [];
+      reviewers.forEach(function(r) {
+        var nameEl = r.querySelector('[style*="font-weight:600"]');
+        if (nameEl && names.length < 5) names.push(nameEl.textContent.trim());
+      });
+      if (recentEl && names.length) {
+        recentEl.innerHTML = names.map(n =>
+          `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700;flex-shrink:0;">${n.charAt(0)}</div>
+            <span>${n}</span>
+          </div>`
+        ).join('');
+      }
+    }, 1500);
+  </script>
+</body>
+</html>
