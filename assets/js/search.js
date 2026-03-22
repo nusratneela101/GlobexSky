@@ -84,11 +84,17 @@ const GlobexSearch = (() => {
   async function fetchSuggestions(q) {
     if (q.length < 2) return [];
     try {
-      const data = await window.API.get(`/search/autocomplete?q=${encodeURIComponent(q)}&limit=10`);
+      // Try AI-powered suggestions first, fall back to regular autocomplete
+      const data = await window.API.get(`/ai/search/suggestions?q=${encodeURIComponent(q)}`);
       return data.suggestions || [];
     } catch (_) {
-      // Fallback to trending/history matches
-      return TRENDING.filter(t => t.toLowerCase().includes(q.toLowerCase())).slice(0, 6);
+      try {
+        const data = await window.API.get(`/search/autocomplete?q=${encodeURIComponent(q)}&limit=10`);
+        return data.suggestions || [];
+      } catch (_2) {
+        // Fallback to trending/history matches
+        return TRENDING.filter(t => t.toLowerCase().includes(q.toLowerCase())).slice(0, 6);
+      }
     }
   }
 
@@ -180,13 +186,30 @@ const GlobexSearch = (() => {
     showSkeleton();
 
     try {
-      const params = new URLSearchParams({ q, page, limit: 20, ...filters });
-      const data = await window.API.get(`/search?${params}`);
-      totalResults = data.meta?.total || 0;
-      renderResults(data.data || [], q, data.suggestion);
+      let products, meta, suggestion, aiPowered = false;
+      // Try AI-powered semantic search first
+      try {
+        const aiPayload = { query: q, page, limit: 20, ...filters };
+        const aiData = await window.API.post('/ai/search', aiPayload);
+        products = aiData.products || aiData.data || [];
+        meta = aiData.meta || { total: products.length };
+        suggestion = aiData.spell_suggestion || aiData.suggestion;
+        aiPowered = true;
+      } catch (_aiErr) {
+        // Fall back to regular search
+        const params = new URLSearchParams({ q, page, limit: 20, ...filters });
+        const data = await window.API.get(`/search?${params}`);
+        products = data.data || [];
+        meta = data.meta || { total: products.length };
+        suggestion = data.suggestion;
+      }
+
+      totalResults = meta?.total || products.length;
+      renderResults(products, q, suggestion, aiPowered);
       renderPagination(totalResults, page);
       if (resultsCount) {
-        resultsCount.innerHTML = `<strong>${totalResults.toLocaleString()}</strong> results for "<strong>${escapeHtml(q)}</strong>"`;
+        const aiChip = aiPowered ? ' <span class="ai-search-chip"><i class="fas fa-robot"></i> AI</span>' : '';
+        resultsCount.innerHTML = `<strong>${totalResults.toLocaleString()}</strong> results for "<strong>${escapeHtml(q)}</strong>"${aiChip}`;
       }
     } catch (err) {
       showError(err);
@@ -194,7 +217,7 @@ const GlobexSearch = (() => {
   }
 
   /* ── Render Results ───────────────────────────────────────────────── */
-  function renderResults(products, q, suggestion) {
+  function renderResults(products, q, suggestion, aiPowered) {
     if (!resultsGrid) return;
 
     if (spellEl && suggestion) {
@@ -215,10 +238,10 @@ const GlobexSearch = (() => {
       return;
     }
 
-    resultsGrid.innerHTML = products.map(p => renderProductCard(p)).join('');
+    resultsGrid.innerHTML = products.map(p => renderProductCard(p, aiPowered)).join('');
   }
 
-  function renderProductCard(p) {
+  function renderProductCard(p, aiPowered) {
     const img = p.images?.[0] || '';
     const price = p.price ? `$${parseFloat(p.price).toFixed(2)}` : 'Contact for price';
     const rating = p.average_rating ? Math.round(p.average_rating) : 0;
@@ -226,6 +249,10 @@ const GlobexSearch = (() => {
     const supplier = p.supplier?.company_name || 'Supplier';
     const verified = p.supplier?.verified ? '<i class="fas fa-check-circle verified-icon"></i>' : '';
     const imgHtml = img ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(p.title || '')}" loading="lazy">` : `<span class="product-img-placeholder"><i class="fas fa-box"></i></span>`;
+    const score = p.relevance_score || p.score;
+    const aiRelevance = aiPowered && score != null
+      ? `<span class="ai-relevance" title="AI relevance score">${Math.round(score * 100)}%</span>`
+      : '';
 
     return `<div class="product-card" onclick="window.location.href='/pages/sourcing/product-detail.html?id=${escapeHtml(p.id || '')}'">
       <div class="product-img-wrap">${imgHtml}</div>
@@ -236,6 +263,7 @@ const GlobexSearch = (() => {
         <div class="product-footer">
           <div class="product-rating"><span class="stars">${stars}</span>(${rating})</div>
           ${p.moq ? `<div class="product-moq">MOQ: ${p.moq}</div>` : ''}
+          ${aiRelevance}
         </div>
       </div>
     </div>`;
@@ -533,8 +561,14 @@ const GlobexImageSearch = (() => {
     try {
       // Send base64 data if src is a data URL, otherwise send the URL directly
       const src = imgPreviewEl.src;
-      const payload = src.startsWith('data:') ? { imageBase64: src } : { imageUrl: src };
-      const data = await window.API.post('/search/image', payload);
+      const payload = src.startsWith('data:') ? { image: src } : { imageUrl: src };
+      // Try AI image search endpoint first, fall back to legacy
+      let data;
+      try {
+        data = await window.API.post('/ai/search/image', payload);
+      } catch (_) {
+        data = await window.API.post('/search/image', src.startsWith('data:') ? { imageBase64: src } : { imageUrl: src });
+      }
       close();
       const resultsGrid = document.getElementById('products-grid');
       if (resultsGrid) {
@@ -652,7 +686,13 @@ const GlobexBarcode = (() => {
     if (resultsGrid) resultsGrid.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Looking up barcode…</p></div>';
 
     try {
-      const data = await window.API.get(`/search/barcode/${encodeURIComponent(code)}`);
+      // Try AI barcode lookup first, fall back to legacy endpoint
+      let data;
+      try {
+        data = await window.API.get(`/ai/search/barcode/${encodeURIComponent(code)}`);
+      } catch (_) {
+        data = await window.API.get(`/search/barcode/${encodeURIComponent(code)}`);
+      }
       if (resultsGrid) resultsGrid.innerHTML = (data.data || []).map(p => GlobexSearch.renderProductCard(p)).join('');
       const resultsCount = document.getElementById('results-count');
       if (resultsCount) resultsCount.innerHTML = `Barcode <strong>${escapeHtml(code)}</strong>: ${(data.data || []).length} product(s)`;

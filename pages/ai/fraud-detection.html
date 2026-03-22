@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Fraud Detection – Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e;min-height:100vh}
+
+    /* ── Nav ── */
+    .topnav{background:#fff;box-shadow:0 2px 12px rgba(0,82,204,.08);padding:0 24px;position:sticky;top:0;z-index:200}
+    .topnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:16px;height:64px}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.25rem;color:#1a1a2e;text-decoration:none;flex-shrink:0}
+    .brand-logo span{color:#0052CC}
+    .nav-links{display:flex;gap:4px;margin-left:16px}
+    .nav-link{text-decoration:none;color:#475569;font-size:.875rem;font-weight:500;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-link:hover,.nav-link.active{color:#0052CC;background:#eff6ff}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#eff6ff}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-danger:hover{background:#dc2626}
+    .btn-success{background:#22c55e;color:#fff}
+    .btn-success:hover{background:#16a34a}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#7c3aed,#dc2626);padding:48px 24px 40px;text-align:center;color:#fff}
+    .hero-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:6px 18px;font-size:.78rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;line-height:1.2;margin-bottom:12px}
+    .hero p{opacity:.88;font-size:1rem;max-width:540px;margin:0 auto 24px;line-height:1.7}
+    .hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+    .hero-stat{text-align:center}
+    .hero-stat strong{display:block;font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800}
+    .hero-stat span{font-size:.8rem;opacity:.8}
+
+    /* ── Layout ── */
+    .page-body{max-width:1280px;margin:0 auto;padding:32px 24px}
+
+    /* ── Stats Row ── */
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px}
+    .stat-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:6px}
+    .stat-card-label{font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em}
+    .stat-card-value{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:800;line-height:1}
+    .stat-card-sub{font-size:.78rem;color:#94a3b8}
+    .stat-red .stat-card-value{color:#ef4444}
+    .stat-yellow .stat-card-value{color:#f59e0b}
+    .stat-green .stat-card-value{color:#22c55e}
+    .stat-blue .stat-card-value{color:#0052CC}
+
+    /* ── Tabs ── */
+    .tab-bar{display:flex;gap:4px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:8px 18px;border-radius:8px;border:none;background:transparent;font-size:.85rem;font-weight:600;color:#64748b;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+    .tab-btn.active{background:#0052CC;color:#fff}
+
+    /* ── Table Panel ── */
+    .panel{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:24px}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .panel-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .panel-title i{color:#0052CC}
+    .search-box{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:7px 12px;min-width:200px}
+    .search-box input{border:none;outline:none;background:transparent;font-size:.85rem;color:#374151;font-family:'Inter',sans-serif;width:100%}
+    .search-box i{color:#94a3b8;font-size:.85rem}
+
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;font-size:.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:2px solid #f1f5f9}
+    td{padding:12px;border-bottom:1px solid #f8fafc;font-size:.875rem;color:#374151;vertical-align:middle}
+    tr:hover td{background:#fafbff}
+    .risk-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:50px;font-size:.75rem;font-weight:700}
+    .risk-high{background:#fee2e2;color:#dc2626}
+    .risk-medium{background:#fef3c7;color:#d97706}
+    .risk-low{background:#dcfce7;color:#16a34a}
+    .status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:.73rem;font-weight:600}
+    .status-pending{background:#fef3c7;color:#d97706}
+    .status-approved{background:#dcfce7;color:#16a34a}
+    .status-rejected{background:#fee2e2;color:#dc2626}
+    .status-blocked{background:#f3e8ff;color:#7c3aed}
+    .action-btns{display:flex;gap:6px}
+    .action-btn{padding:5px 12px;border-radius:7px;border:none;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+    .action-approve{background:#dcfce7;color:#16a34a}
+    .action-approve:hover{background:#bbf7d0}
+    .action-reject{background:#fee2e2;color:#dc2626}
+    .action-reject:hover{background:#fecaca}
+    .flags-wrap{display:flex;flex-wrap:wrap;gap:4px}
+    .flag-chip{background:#f1f5f9;color:#475569;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:50px;white-space:nowrap}
+
+    /* ── Fraud Check Form ── */
+    .check-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-label{font-size:.8rem;font-weight:600;color:#374151}
+    .form-input{border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;color:#1e293b;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+    .form-input:focus{border-color:#0052CC}
+    .risk-result{margin-top:20px;padding:20px;border-radius:12px;display:none}
+    .risk-result.show{display:block}
+    .risk-result.allow{background:#dcfce7;border:1.5px solid #86efac}
+    .risk-result.review{background:#fef3c7;border:1.5px solid #fcd34d}
+    .risk-result.block{background:#fee2e2;border:1.5px solid #fca5a5}
+    .risk-score-bar-wrap{margin:12px 0;background:#e2e8f0;border-radius:50px;height:10px;overflow:hidden}
+    .risk-score-bar{height:100%;border-radius:50px;transition:width .5s}
+    .score-low{background:#22c55e}
+    .score-med{background:#f59e0b}
+    .score-high{background:#ef4444}
+
+    /* ── List Management ── */
+    .list-form{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px}
+    .list-type-btns{display:flex;gap:6px}
+    .list-type-btn{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;color:#64748b}
+    .list-type-btn.whitelist.active{background:#dcfce7;border-color:#86efac;color:#16a34a}
+    .list-type-btn.blacklist.active{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
+
+    /* ── Audit Log ── */
+    .audit-row{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #f1f5f9}
+    .audit-row:last-child{border-bottom:none}
+
+    /* ── Loading/Empty ── */
+    .loading-state{text-align:center;padding:40px;color:#94a3b8}
+    .loading-state i{font-size:2rem;margin-bottom:12px;display:block}
+    .empty-state{text-align:center;padding:40px;color:#94a3b8}
+    .empty-state i{font-size:2.5rem;margin-bottom:12px;display:block}
+    .empty-state p{font-size:.875rem}
+
+    /* ── Toast ── */
+    .toast{position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;font-weight:500;z-index:9999;opacity:0;transform:translateY(20px);transition:all .3s;pointer-events:none}
+    .toast.show{opacity:1;transform:none}
+    .toast.success{background:#16a34a}
+    .toast.error{background:#dc2626}
+
+    @media(max-width:768px){
+      .hero{padding:32px 16px 28px}
+      .hero-stats{gap:20px}
+      .page-body{padding:20px 16px}
+      table{display:block;overflow-x:auto}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+    <div class="nav-links">
+      <a href="../admin/dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="chatbot.html" class="nav-link">AI Chatbot</a>
+      <a href="recommendations.html" class="nav-link">Recommendations</a>
+      <a href="fraud-detection.html" class="nav-link active">Fraud Detection</a>
+    </div>
+    <div class="nav-right">
+      <a href="../admin/dashboard.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Admin</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-chip"><i class="fas fa-shield-alt"></i> AI-Powered</div>
+  <h1>Fraud Detection Dashboard</h1>
+  <p>Real-time transaction risk scoring, behavioral analysis, and automated flagging for suspicious activity.</p>
+  <div class="hero-stats" id="heroStats">
+    <div class="hero-stat"><strong id="statFlagged">—</strong><span>Flagged Today</span></div>
+    <div class="hero-stat"><strong id="statBlocked">—</strong><span>Auto-Blocked</span></div>
+    <div class="hero-stat"><strong id="statReviewed">—</strong><span>Pending Review</span></div>
+    <div class="hero-stat"><strong id="statRate">—%</strong><span>Flag Rate</span></div>
+  </div>
+</div>
+
+<div class="page-body">
+
+  <!-- Stats Row -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card stat-red">
+      <div class="stat-card-label">High Risk Transactions</div>
+      <div class="stat-card-value" id="statHighRisk">—</div>
+      <div class="stat-card-sub">Score ≥ 80 — auto-blocked</div>
+    </div>
+    <div class="stat-card stat-yellow">
+      <div class="stat-card-label">Under Review</div>
+      <div class="stat-card-value" id="statMedRisk">—</div>
+      <div class="stat-card-sub">Score 50–79 — needs review</div>
+    </div>
+    <div class="stat-card stat-green">
+      <div class="stat-card-label">Approved Today</div>
+      <div class="stat-card-value" id="statApproved">—</div>
+      <div class="stat-card-sub">Reviewed &amp; cleared</div>
+    </div>
+    <div class="stat-card stat-blue">
+      <div class="stat-card-label">Blacklisted Entries</div>
+      <div class="stat-card-value" id="statBlacklisted">—</div>
+      <div class="stat-card-sub">Users + IP addresses</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('flagged', this)"><i class="fas fa-flag"></i> Flagged Transactions</button>
+    <button class="tab-btn" onclick="switchTab('check', this)"><i class="fas fa-search-dollar"></i> Risk Check</button>
+    <button class="tab-btn" onclick="switchTab('lists', this)"><i class="fas fa-list"></i> Fraud Lists</button>
+    <button class="tab-btn" onclick="switchTab('audit', this)"><i class="fas fa-history"></i> Audit Log</button>
+  </div>
+
+  <!-- ── Tab: Flagged Transactions ── -->
+  <div id="tab-flagged" class="tab-content">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-exclamation-triangle"></i> Flagged Transactions</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <select id="statusFilter" class="form-input" style="width:auto" onchange="loadFlagged()">
+            <option value="pending">Pending Review</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <button class="btn btn-outline" onclick="loadFlagged()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="flaggedTableWrap">
+        <div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading flagged transactions…</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab: Risk Check ── -->
+  <div id="tab-check" class="tab-content" style="display:none">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-shield-virus"></i> Manual Risk Check</div>
+      </div>
+      <div class="check-form">
+        <div class="form-group">
+          <label class="form-label">User ID</label>
+          <input type="text" id="checkUserId" class="form-input" placeholder="e.g. user_abc123"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Order ID (optional)</label>
+          <input type="text" id="checkOrderId" class="form-input" placeholder="e.g. order_xyz456"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Transaction Amount ($)</label>
+          <input type="number" id="checkAmount" class="form-input" placeholder="e.g. 250.00" min="0" step="0.01"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">IP Address (optional)</label>
+          <input type="text" id="checkIp" class="form-input" placeholder="e.g. 192.168.1.1"/>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn btn-primary" onclick="runFraudCheck()"><i class="fas fa-search-dollar"></i> Run Fraud Check</button>
+      </div>
+      <div id="riskResult" class="risk-result">
+        <h3 id="riskResultTitle" style="font-family:'Poppins',sans-serif;font-weight:700;margin-bottom:8px"></h3>
+        <div class="risk-score-bar-wrap"><div id="riskScoreBar" class="risk-score-bar"></div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:.85rem;color:#64748b">Risk Score: <strong id="riskScoreText"></strong></span>
+          <span id="riskActionBadge" class="risk-badge"></span>
+        </div>
+        <div id="riskFlags" class="flags-wrap" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab: Fraud Lists ── -->
+  <div id="tab-lists" class="tab-content" style="display:none">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-list-alt"></i> Whitelist &amp; Blacklist Management</div>
+      </div>
+
+      <!-- Add to list form -->
+      <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:20px">
+        <h4 style="font-size:.9rem;font-weight:600;color:#374151;margin-bottom:14px">Add Entry</h4>
+        <div class="list-form">
+          <div class="form-group" style="flex:1;min-width:160px">
+            <label class="form-label">User ID (optional)</label>
+            <input type="text" id="listUserId" class="form-input" placeholder="user_abc123"/>
+          </div>
+          <div class="form-group" style="flex:1;min-width:160px">
+            <label class="form-label">IP Address (optional)</label>
+            <input type="text" id="listIpAddress" class="form-input" placeholder="192.168.1.1"/>
+          </div>
+          <div class="form-group" style="flex:1;min-width:160px">
+            <label class="form-label">Reason</label>
+            <input type="text" id="listReason" class="form-input" placeholder="e.g. Verified buyer"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <div class="list-type-btns">
+              <button class="list-type-btn whitelist active" id="btnWhitelist" onclick="selectListType('whitelist')">✅ Whitelist</button>
+              <button class="list-type-btn blacklist" id="btnBlacklist" onclick="selectListType('blacklist')">🚫 Blacklist</button>
+            </div>
+          </div>
+          <div class="form-group" style="justify-content:flex-end">
+            <button class="btn btn-primary" onclick="addToList()"><i class="fas fa-plus"></i> Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="action-btn action-approve" onclick="loadFraudList('whitelist')" style="font-size:.82rem">✅ View Whitelist</button>
+        <button class="action-btn action-reject" onclick="loadFraudList('blacklist')" style="font-size:.82rem">🚫 View Blacklist</button>
+        <button class="btn btn-outline" style="padding:5px 14px;font-size:.82rem" onclick="loadFraudList()">View All</button>
+      </div>
+
+      <div id="listTableWrap">
+        <div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading fraud lists…</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab: Audit Log ── -->
+  <div id="tab-audit" class="tab-content" style="display:none">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-history"></i> Fraud Audit Log</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="auditUserFilter" class="form-input" placeholder="Filter by User ID" style="width:180px"/>
+          <button class="btn btn-outline" onclick="loadAuditLog()"><i class="fas fa-search"></i> Filter</button>
+          <button class="btn btn-outline" onclick="loadAuditLog()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="auditTableWrap">
+        <div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading audit log…</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+  const API = '/api/v1';
+
+  function getToken() {
+    return localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+  }
+
+  function authHeaders(extra) {
+    return { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken(), ...extra };
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' ' + type : '');
+    setTimeout(() => { t.className = 'toast'; }, 3000);
+  }
+
+  /* ── Tab switching ── */
+  let currentListType = 'whitelist';
+
+  function switchTab(id, el) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).style.display = '';
+    el.classList.add('active');
+    if (id === 'flagged') loadFlagged();
+    if (id === 'lists') loadFraudList();
+    if (id === 'audit') loadAuditLog();
+  }
+
+  function selectListType(type) {
+    currentListType = type;
+    document.getElementById('btnWhitelist').classList.toggle('active', type === 'whitelist');
+    document.getElementById('btnBlacklist').classList.toggle('active', type === 'blacklist');
+  }
+
+  /* ── Load Stats ── */
+  async function loadStats() {
+    try {
+      const [pendingRes, auditRes, listRes] = await Promise.allSettled([
+        fetch(`${API}/ai/fraud/flagged?status=pending&limit=100`, { headers: authHeaders() }),
+        fetch(`${API}/ai/fraud/audit?limit=100`, { headers: authHeaders() }),
+        fetch(`${API}/ai/fraud/list`, { headers: authHeaders() }),
+      ]);
+
+      let pending = 0, blocked = 0, approved = 0, blacklisted = 0;
+
+      if (pendingRes.status === 'fulfilled' && pendingRes.value.ok) {
+        const j = await pendingRes.value.json();
+        pending = j.total || (j.data || []).length;
+      }
+      if (auditRes.status === 'fulfilled' && auditRes.value.ok) {
+        const j = await auditRes.value.json();
+        const data = j.data || [];
+        blocked = data.filter(d => d.action === 'block').length;
+        approved = data.filter(d => d.action === 'allow').length;
+        document.getElementById('statFlagged').textContent = data.filter(d => d.action !== 'allow').length;
+        document.getElementById('statBlocked').textContent = blocked;
+        document.getElementById('statReviewed').textContent = pending;
+        const total = data.length;
+        const flagged = data.filter(d => d.action !== 'allow').length;
+        document.getElementById('statRate').textContent = total > 0 ? (flagged / total * 100).toFixed(1) + '%' : '0%';
+        document.getElementById('statHighRisk').textContent = data.filter(d => d.risk_score >= 80).length;
+        document.getElementById('statMedRisk').textContent = data.filter(d => d.risk_score >= 50 && d.risk_score < 80).length;
+        document.getElementById('statApproved').textContent = approved;
+      }
+      if (listRes.status === 'fulfilled' && listRes.value.ok) {
+        const j = await listRes.value.json();
+        blacklisted = (j.data || []).filter(e => e.list_type === 'blacklist').length;
+        document.getElementById('statBlacklisted').textContent = blacklisted;
+      }
+    } catch (e) {
+      console.warn('Failed to load fraud stats', e);
+    }
+  }
+
+  /* ── Load Flagged Transactions ── */
+  async function loadFlagged() {
+    const status = document.getElementById('statusFilter').value;
+    const wrap = document.getElementById('flaggedTableWrap');
+    wrap.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></div>';
+
+    try {
+      const res = await fetch(`${API}/ai/fraud/flagged?status=${status}&limit=50`, { headers: authHeaders() });
+      if (res.status === 401 || res.status === 403) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Admin access required to view flagged transactions.</p></div>';
+        return;
+      }
+      const json = await res.json();
+      const data = json.data || [];
+
+      if (!data.length) {
+        wrap.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle" style="color:#22c55e"></i><p>No ${status} flagged transactions found.</p></div>`;
+        return;
+      }
+
+      wrap.innerHTML = `<table>
+        <thead><tr>
+          <th>Order ID</th>
+          <th>User</th>
+          <th>Risk Score</th>
+          <th>Flags</th>
+          <th>Action</th>
+          <th>Status</th>
+          <th>Date</th>
+          ${status === 'pending' ? '<th>Review</th>' : ''}
+        </tr></thead>
+        <tbody>${data.map(row => {
+          const score = row.risk_score || 0;
+          const riskClass = score >= 80 ? 'risk-high' : score >= 50 ? 'risk-medium' : 'risk-low';
+          const statusClass = `status-${row.status || 'pending'}`;
+          const flags = (row.flags || []).map(f => `<span class="flag-chip">${esc(f)}</span>`).join('');
+          const date = row.created_at ? new Date(row.created_at).toLocaleDateString() : '—';
+          const reviewBtns = status === 'pending' ? `<td><div class="action-btns">
+            <button class="action-btn action-approve" onclick="reviewFlag('${esc(row.id)}','approved')">✅ Approve</button>
+            <button class="action-btn action-reject" onclick="reviewFlag('${esc(row.id)}','rejected')">🚫 Reject</button>
+          </div></td>` : '';
+          return `<tr>
+            <td style="font-family:monospace;font-size:.8rem">${esc(row.order_id || '—')}</td>
+            <td style="font-size:.8rem">${esc(row.user_id || '—')}</td>
+            <td><span class="risk-badge ${riskClass}">${score}/100</span></td>
+            <td><div class="flags-wrap">${flags || '—'}</div></td>
+            <td><span class="status-badge status-${esc(row.action || 'allow')}" style="background:${row.action==='block'?'#fee2e2':row.action==='review'?'#fef3c7':'#dcfce7'};color:${row.action==='block'?'#dc2626':row.action==='review'?'#d97706':'#16a34a'}">${esc(row.action || 'allow')}</span></td>
+            <td><span class="status-badge ${statusClass}">${esc(row.status || 'pending')}</span></td>
+            <td style="font-size:.8rem;color:#94a3b8">${date}</td>
+            ${reviewBtns}
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`;
+    } catch (e) {
+      wrap.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Failed to load flagged transactions.</p></div>`;
+    }
+  }
+
+  async function reviewFlag(flagId, status) {
+    try {
+      const res = await fetch(`${API}/ai/fraud/flagged/${flagId}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error();
+      showToast(`Transaction ${status === 'approved' ? 'approved' : 'rejected'}.`, status === 'approved' ? 'success' : 'error');
+      loadFlagged();
+      loadStats();
+    } catch {
+      showToast('Failed to update transaction status.', 'error');
+    }
+  }
+
+  /* ── Fraud Check ── */
+  async function runFraudCheck() {
+    const userId = document.getElementById('checkUserId').value.trim();
+    const orderId = document.getElementById('checkOrderId').value.trim();
+    const amount = parseFloat(document.getElementById('checkAmount').value);
+    const ipAddress = document.getElementById('checkIp').value.trim();
+
+    if (!userId || isNaN(amount)) {
+      showToast('User ID and Amount are required.', 'error');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/ai/fraud-check`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ user_id: userId, order_id: orderId || undefined, amount, ip_address: ipAddress || undefined }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || 'Check failed');
+      const { score, flags, action } = json.data;
+      renderRiskResult(score, flags, action);
+    } catch (e) {
+      showToast('Fraud check failed: ' + (e.message || 'Unknown error'), 'error');
+    }
+  }
+
+  function renderRiskResult(score, flags, action) {
+    const el = document.getElementById('riskResult');
+    const bar = document.getElementById('riskScoreBar');
+    const barClass = score >= 80 ? 'score-high' : score >= 50 ? 'score-med' : 'score-low';
+    bar.className = 'risk-score-bar ' + barClass;
+    bar.style.width = score + '%';
+
+    document.getElementById('riskScoreText').textContent = score + ' / 100';
+
+    const badge = document.getElementById('riskActionBadge');
+    const badgeClass = action === 'block' ? 'risk-high' : action === 'review' ? 'risk-medium' : 'risk-low';
+    badge.className = 'risk-badge ' + badgeClass;
+    badge.innerHTML = action === 'block' ? '🚫 BLOCKED' : action === 'review' ? '⚠️ REVIEW' : '✅ ALLOWED';
+
+    const titleEl = document.getElementById('riskResultTitle');
+    titleEl.textContent = action === 'block' ? 'Transaction Blocked' : action === 'review' ? 'Transaction Under Review' : 'Transaction Allowed';
+
+    const flagsEl = document.getElementById('riskFlags');
+    flagsEl.innerHTML = flags.length > 0
+      ? flags.map(f => `<span class="flag-chip" style="background:#fee2e2;color:#dc2626">${esc(f.replace(/_/g,' '))}</span>`).join('')
+      : '<span style="font-size:.82rem;color:#64748b">No risk flags detected.</span>';
+
+    el.className = 'risk-result show ' + action;
+  }
+
+  /* ── Fraud Lists ── */
+  async function loadFraudList(type) {
+    const wrap = document.getElementById('listTableWrap');
+    wrap.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></div>';
+
+    try {
+      const url = type ? `${API}/ai/fraud/list?type=${type}` : `${API}/ai/fraud/list`;
+      const res = await fetch(url, { headers: authHeaders() });
+      if (res.status === 401 || res.status === 403) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Admin access required.</p></div>';
+        return;
+      }
+      const json = await res.json();
+      const data = json.data || [];
+
+      if (!data.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-list-alt"></i><p>No entries found.</p></div>';
+        return;
+      }
+
+      wrap.innerHTML = `<table>
+        <thead><tr><th>Type</th><th>User ID</th><th>IP Address</th><th>Reason</th><th>Added</th><th>Remove</th></tr></thead>
+        <tbody>${data.map(row => {
+          const typeClass = row.list_type === 'whitelist' ? 'risk-low' : 'risk-high';
+          const typeLabel = row.list_type === 'whitelist' ? '✅ Whitelist' : '🚫 Blacklist';
+          return `<tr>
+            <td><span class="risk-badge ${typeClass}">${typeLabel}</span></td>
+            <td style="font-family:monospace;font-size:.8rem">${esc(row.user_id || '—')}</td>
+            <td style="font-family:monospace;font-size:.8rem">${esc(row.ip_address || '—')}</td>
+            <td style="font-size:.82rem;color:#64748b">${esc(row.reason || '—')}</td>
+            <td style="font-size:.8rem;color:#94a3b8">${row.created_at ? new Date(row.created_at).toLocaleDateString() : '—'}</td>
+            <td><button class="action-btn action-reject" onclick="removeFromList('${esc(row.id)}')"><i class="fas fa-trash"></i></button></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`;
+    } catch {
+      wrap.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Failed to load fraud lists.</p></div>';
+    }
+  }
+
+  async function addToList() {
+    const userId = document.getElementById('listUserId').value.trim();
+    const ipAddress = document.getElementById('listIpAddress').value.trim();
+    const reason = document.getElementById('listReason').value.trim();
+
+    if (!userId && !ipAddress) { showToast('Enter a User ID or IP Address.', 'error'); return; }
+
+    try {
+      const res = await fetch(`${API}/ai/fraud/list`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ user_id: userId || undefined, ip_address: ipAddress || undefined, list_type: currentListType, reason: reason || undefined }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || 'Failed to add entry');
+      showToast('Entry added to ' + currentListType + '.', 'success');
+      document.getElementById('listUserId').value = '';
+      document.getElementById('listIpAddress').value = '';
+      document.getElementById('listReason').value = '';
+      loadFraudList();
+      loadStats();
+    } catch (e) {
+      showToast('Failed to add entry: ' + (e.message || 'Unknown error'), 'error');
+    }
+  }
+
+  async function removeFromList(entryId) {
+    if (!confirm('Remove this entry from the fraud list?')) return;
+    try {
+      const res = await fetch(`${API}/ai/fraud/list/${entryId}`, { method: 'DELETE', headers: authHeaders() });
+      if (!res.ok) throw new Error();
+      showToast('Entry removed.', 'success');
+      loadFraudList();
+      loadStats();
+    } catch {
+      showToast('Failed to remove entry.', 'error');
+    }
+  }
+
+  /* ── Audit Log ── */
+  async function loadAuditLog() {
+    const userId = document.getElementById('auditUserFilter').value.trim();
+    const wrap = document.getElementById('auditTableWrap');
+    wrap.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></div>';
+
+    try {
+      let url = `${API}/ai/fraud/audit?limit=50`;
+      if (userId) url += `&user_id=${encodeURIComponent(userId)}`;
+      const res = await fetch(url, { headers: authHeaders() });
+      if (res.status === 401 || res.status === 403) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Admin access required.</p></div>';
+        return;
+      }
+      const json = await res.json();
+      const data = json.data || [];
+
+      if (!data.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><p>No audit log entries found.</p></div>';
+        return;
+      }
+
+      wrap.innerHTML = `<table>
+        <thead><tr><th>Date</th><th>User</th><th>Order</th><th>IP</th><th>Risk Score</th><th>Flags</th><th>Action</th></tr></thead>
+        <tbody>${data.map(row => {
+          const score = row.risk_score || 0;
+          const riskClass = score >= 80 ? 'risk-high' : score >= 50 ? 'risk-medium' : 'risk-low';
+          const flags = (row.flags || []).map(f => `<span class="flag-chip">${esc(f)}</span>`).join('');
+          const actionColor = row.action === 'block' ? '#fee2e2' : row.action === 'review' ? '#fef3c7' : '#dcfce7';
+          const textColor = row.action === 'block' ? '#dc2626' : row.action === 'review' ? '#d97706' : '#16a34a';
+          return `<tr>
+            <td style="font-size:.8rem;color:#94a3b8">${row.created_at ? new Date(row.created_at).toLocaleString() : '—'}</td>
+            <td style="font-family:monospace;font-size:.8rem">${esc(row.user_id || '—')}</td>
+            <td style="font-family:monospace;font-size:.8rem">${esc(row.order_id || '—')}</td>
+            <td style="font-family:monospace;font-size:.8rem">${esc(row.ip_address || '—')}</td>
+            <td><span class="risk-badge ${riskClass}">${score}/100</span></td>
+            <td><div class="flags-wrap">${flags || '—'}</div></td>
+            <td><span class="status-badge" style="background:${actionColor};color:${textColor}">${esc(row.action || 'allow')}</span></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`;
+    } catch {
+      wrap.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Failed to load audit log.</p></div>';
+    }
+  }
+
+  /* ── Init ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    loadStats();
+    loadFlagged();
+  });
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

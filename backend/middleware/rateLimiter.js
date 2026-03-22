@@ -29,3 +29,21 @@ export const uploadRateLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, error: 'Upload rate limit exceeded.' },
 });
+
+/** Rate limiter for AI endpoints (chatbot, search, recommendations) */
+export const aiRateLimiter = rateLimit({
+  windowMs: 60 * 1000,          // 1 minute window
+  max: parseInt(process.env.AI_RATE_LIMIT_MAX, 10) || 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'AI request rate limit exceeded. Please wait before sending more requests.' },
+});
+
+/** Stricter limiter for AI chatbot to prevent abuse */
+export const chatbotRateLimiter = rateLimit({
+  windowMs: 60 * 1000,          // 1 minute window
+  max: parseInt(process.env.CHATBOT_RATE_LIMIT_MAX, 10) || 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'Chatbot rate limit exceeded. Please wait before sending more messages.' },
+});

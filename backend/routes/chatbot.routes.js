@@ -3,6 +3,7 @@ import { body, query } from 'express-validator';
 import { validate } from '../middleware/validator.js';
 import { authenticate } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/roleCheck.js';
+import { chatbotRateLimiter } from '../middleware/rateLimiter.js';
 import * as ctrl from '../controllers/chatbot.controller.js';
 
 const router = Router();
@@ -13,6 +14,7 @@ router.get('/faq', ctrl.getPopularQuestions);
 // ─── Authenticated Routes ────────────────────────────────────────────────────
 router.post(
   '/message',
+  chatbotRateLimiter,
   authenticate,
   [
     body('message').trim().notEmpty().withMessage('Message is required').isLength({ max: 1000 }),

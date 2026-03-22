@@ -8,9 +8,13 @@ import { body, query, param } from 'express-validator';
 import { validate } from '../middleware/validator.js';
 import { authenticate, optionalAuthenticate } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/roleCheck.js';
+import { aiRateLimiter, chatbotRateLimiter } from '../middleware/rateLimiter.js';
 import * as ctrl from '../controllers/ai.controller.js';
 
 const router = Router();
+
+// Apply general AI rate limiter to all AI routes
+router.use(aiRateLimiter);
 
 // ─── Recommendations ──────────────────────────────────────────────────────────
 
@@ -167,6 +171,7 @@ router.post(
 
 router.post(
   '/chatbot',
+  chatbotRateLimiter,
   authenticate,
   [
     body('message').trim().notEmpty().withMessage('message is required').isLength({ max: 1000 }),
