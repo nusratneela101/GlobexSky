@@ -601,6 +601,24 @@ const GlobexBarcode = (() => {
   }
 
   function startScanner() {
+    if (typeof Quagga !== 'undefined') {
+      _initQuagga();
+      return;
+    }
+
+    // Load QuaggaJS dynamically with Subresource Integrity
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js';
+    script.integrity = 'sha384-LMgrMGgOB4PK+LT2q9VqhGCGd8VEDIwxBVLAD07oKJHBIerBiIlg8aCcMEY3bPE';
+    script.crossOrigin = 'anonymous';
+    script.onload = _initQuagga;
+    script.onerror = () => {
+      if (statusEl) statusEl.textContent = 'Scanner library failed to load. Use manual entry below.';
+    };
+    document.head.appendChild(script);
+  }
+
+  function _initQuagga() {
     if (typeof Quagga === 'undefined') {
       if (statusEl) statusEl.textContent = 'Scanner library not loaded. Use manual entry below.';
       return;
