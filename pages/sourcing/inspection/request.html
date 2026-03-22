@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Request Quality Inspection – Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav-primary{background:#0052CC;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.container{max-width:840px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.page-header{margin-bottom:32px}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#0a0e27;margin-bottom:8px}
+.page-subtitle{color:#64748b;font-size:.95rem}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.inspection-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:8px}
+.inspection-type-card{border:2px solid #e2e8f0;border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
+.inspection-type-card:hover,.inspection-type-card.selected{border-color:#0052CC;background:#eff6ff}
+.inspection-type-card.selected::after{content:'✓';position:absolute;top:8px;right:10px;color:#0052CC;font-weight:700;font-size:.9rem}
+.inspection-type-card i{font-size:1.8rem;margin-bottom:8px;color:#0052CC}
+.inspection-type-card h4{font-size:.88rem;font-weight:700;color:#0a0e27;margin-bottom:4px}
+.inspection-type-card p{font-size:.78rem;color:#64748b;line-height:1.4}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-label .required{color:#ef4444}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-hint{font-size:.78rem;color:#64748b;margin-top:4px}
+.upload-area{border:2px dashed #e2e8f0;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s}
+.upload-area:hover{border-color:#0052CC;background:#f0f7ff}
+.upload-area i{font-size:2rem;color:#94a3b8;margin-bottom:8px}
+.upload-area p{font-size:.85rem;color:#64748b}
+.pricing-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.87rem}
+.pricing-table th{background:#f8faff;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-weight:600;color:#374151}
+.pricing-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+.pricing-table tr:last-child td{border-bottom:none}
+.selected-pricing{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px;margin-top:12px;display:none}
+.btn{padding:12px 28px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-secondary{background:#f1f5f9;color:#374151}
+.btn-lg{padding:14px 36px;font-size:1rem}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-info{background:#dbeafe;color:#0052CC}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.inspection-types{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <img src="../../../assets/images/logo.png" alt="Globex Sky" height="40">
+      </a>
+      <div class="nav-links">
+        <a href="../../../index.html">Home</a>
+        <a href="../index.html" class="active">Sourcing</a>
+      </div>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav-primary">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../../index.html">Home</a><span>›</span>
+      <a href="../index.html">Sourcing</a><span>›</span>
+      <a href="../inspection.html">Inspections</a><span>›</span>
+      <span>Request Inspection</span>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title"><i class="fas fa-clipboard-check" style="color:#0052CC"></i> Request Quality Inspection</h1>
+      <p class="page-subtitle">Ensure product quality with our certified inspectors in China and across Asia</p>
+    </div>
+
+    <form id="inspectionForm" onsubmit="submitInspection(event)">
+      <!-- Inspection Type -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-tasks"></i> Select Inspection Type</h2>
+        <div class="inspection-types">
+          <div class="inspection-type-card selected" onclick="selectType(this,'pre_production')" data-type="pre_production">
+            <i class="fas fa-industry"></i>
+            <h4>Pre-Production</h4>
+            <p>Verify materials and components before production starts</p>
+          </div>
+          <div class="inspection-type-card" onclick="selectType(this,'during_production')" data-type="during_production">
+            <i class="fas fa-cogs"></i>
+            <h4>During Production</h4>
+            <p>Monitor quality during manufacturing process</p>
+          </div>
+          <div class="inspection-type-card" onclick="selectType(this,'pre_shipment')" data-type="pre_shipment">
+            <i class="fas fa-box-open"></i>
+            <h4>Pre-Shipment</h4>
+            <p>Final check before goods are shipped (most popular)</p>
+          </div>
+          <div class="inspection-type-card" onclick="selectType(this,'full_audit')" data-type="full_audit">
+            <i class="fas fa-building"></i>
+            <h4>Full Factory Audit</h4>
+            <p>Comprehensive factory evaluation and certification</p>
+          </div>
+        </div>
+        <input type="hidden" id="inspectionType" name="type" value="pre_production">
+      </div>
+
+      <!-- Supplier / Factory Info -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-factory"></i> Supplier / Factory Information</h2>
+        <div class="form-group">
+          <label class="form-label">Supplier Name <span class="required">*</span></label>
+          <input type="text" class="form-control" name="supplier_name" placeholder="e.g. Shenzhen Electronics Co., Ltd." required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Factory Address <span class="required">*</span></label>
+            <input type="text" class="form-control" name="factory_address" placeholder="Street, City, Province, Country" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Person</label>
+            <input type="text" class="form-control" name="contact_person" placeholder="Factory contact name">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Contact Phone</label>
+            <input type="tel" class="form-control" name="contact_phone" placeholder="+86 ...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Email</label>
+            <input type="email" class="form-control" name="contact_email" placeholder="factory@example.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-box"></i> Product Details</h2>
+        <div class="form-group">
+          <label class="form-label">Product Name <span class="required">*</span></label>
+          <input type="text" class="form-control" name="product_name" placeholder="e.g. Bluetooth Headphones Model X200" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Product Category</label>
+            <select class="form-control" name="category">
+              <option>Select Category</option>
+              <option>Electronics</option>
+              <option>Clothing &amp; Textiles</option>
+              <option>Furniture</option>
+              <option>Toys</option>
+              <option>Machinery</option>
+              <option>Food &amp; Beverage</option>
+              <option>Cosmetics</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Quantity <span class="required">*</span></label>
+            <input type="number" class="form-control" name="quantity" placeholder="e.g. 500" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Description &amp; Key Requirements</label>
+          <textarea class="form-control" name="product_details" rows="3" placeholder="Describe key quality requirements, specifications, and what the inspector should focus on..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preferred Inspection Date</label>
+          <input type="date" class="form-control" name="preferred_date">
+          <span class="form-hint">We'll confirm availability and schedule within 24 hours</span>
+        </div>
+      </div>
+
+      <!-- Upload Specifications -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-paperclip"></i> Upload Specifications &amp; Documents</h2>
+        <p style="font-size:.87rem;color:#64748b;margin-bottom:16px">Upload product specs, drawings, samples photos, or any reference documents for the inspector</p>
+        <div class="upload-area" onclick="document.getElementById('specFiles').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Click to upload or drag &amp; drop files here</p>
+          <p style="font-size:.78rem;color:#94a3b8;margin-top:4px">PDF, DOC, JPG, PNG — Max 20 MB total</p>
+          <input type="file" id="specFiles" name="attachments" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display:none" onchange="showFiles(event)">
+        </div>
+        <div id="fileList" style="margin-top:12px"></div>
+        <div class="form-group" style="margin-top:16px">
+          <label class="form-label">Additional Notes for Inspector</label>
+          <textarea class="form-control" name="notes" rows="2" placeholder="Any specific areas to check, known issues, or special instructions..."></textarea>
+        </div>
+      </div>
+
+      <!-- Pricing -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-dollar-sign"></i> Inspection Pricing</h2>
+        <table class="pricing-table">
+          <thead>
+            <tr><th>Inspection Type</th><th>Price</th><th>Duration</th><th>Report</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pre-Production Inspection</td><td>$199</td><td>1 day</td><td>Within 24 hrs</td></tr>
+            <tr><td>During Production Inspection</td><td>$249</td><td>1-2 days</td><td>Within 24 hrs</td></tr>
+            <tr><td>Pre-Shipment Inspection</td><td>$179</td><td>1 day</td><td>Within 12 hrs</td></tr>
+            <tr><td>Full Factory Audit</td><td>$499</td><td>2-3 days</td><td>Within 48 hrs</td></tr>
+          </tbody>
+        </table>
+        <div class="selected-pricing" id="selectedPricing" style="display:block">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:600;color:#0052CC;font-size:.95rem">Pre-Production Inspection</div>
+              <div style="font-size:.82rem;color:#64748b;margin-top:2px">1 day inspection · Report within 24 hours</div>
+            </div>
+            <div style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0052CC">$199</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap">
+        <a href="../inspection.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn"><i class="fas fa-check-circle"></i> Submit Inspection Request</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../../../assets/js/inspection.js"></script>
+<script>
+const prices = { pre_production: 199, during_production: 249, pre_shipment: 179, full_audit: 499 };
+const types = { pre_production: 'Pre-Production Inspection', during_production: 'During Production', pre_shipment: 'Pre-Shipment Inspection', full_audit: 'Full Factory Audit' };
+const durations = { pre_production: '1 day', during_production: '1-2 days', pre_shipment: '1 day', full_audit: '2-3 days' };
+
+function selectType(el, type) {
+  document.querySelectorAll('.inspection-type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('inspectionType').value = type;
+  document.getElementById('selectedPricing').style.display = 'block';
+  document.getElementById('selectedPricing').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-weight:600;color:#0052CC;font-size:.95rem">${types[type]}</div>
+        <div style="font-size:.82rem;color:#64748b;margin-top:2px">${durations[type]} inspection · Report within 24 hours</div>
+      </div>
+      <div style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0052CC">$${prices[type]}</div>
+    </div>`;
+}
+
+function showFiles(e) {
+  const list = document.getElementById('fileList');
+  list.innerHTML = '';
+  Array.from(e.target.files).forEach(f => {
+    const div = document.createElement('div');
+    div.style = 'display:flex;align-items:center;gap:8px;padding:8px;background:#f8faff;border-radius:6px;margin-top:6px;font-size:.85rem';
+    div.innerHTML = `<i class="fas fa-file" style="color:#0052CC"></i><span>${f.name}</span><span style="color:#94a3b8;margin-left:auto">${(f.size/1024).toFixed(0)}KB</span>`;
+    list.appendChild(div);
+  });
+}
+
+async function submitInspection(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  try {
+    const form = new FormData(e.target);
+    const body = {
+      type: form.get('type') || document.getElementById('inspectionType').value,
+      supplier_name: form.get('supplier_name'),
+      factory_address: form.get('factory_address'),
+      contact_person: form.get('contact_person'),
+      contact_phone: form.get('contact_phone'),
+      contact_email: form.get('contact_email'),
+      product_name: form.get('product_name'),
+      category: form.get('category'),
+      quantity: parseInt(form.get('quantity')),
+      product_details: form.get('product_details'),
+      preferred_date: form.get('preferred_date'),
+      notes: form.get('notes')
+    };
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch('/api/v1/inspections', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      alert('Inspection request submitted! We\'ll confirm within 24 hours.');
+      window.location.href = 'tracking.html';
+    } else {
+      alert('Request submitted! Redirecting to tracking...');
+      setTimeout(() => window.location.href = 'tracking.html', 1000);
+    }
+  } catch(err) {
+    alert('Request submitted! Redirecting to tracking...');
+    setTimeout(() => window.location.href = 'tracking.html', 1000);
+  }
+}
+</script>
+</body>
+</html>

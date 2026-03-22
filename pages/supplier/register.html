@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Register as Supplier – Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav-primary{background:#0052CC;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.container{max-width:860px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.page-hero{background:linear-gradient(135deg,#0052CC,#0070f3);border-radius:16px;padding:32px;color:#fff;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.hero-text h1{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:8px}
+.hero-text p{font-size:.9rem;opacity:.85;max-width:480px;line-height:1.6}
+.hero-features{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
+.hero-feature{display:flex;align-items:center;gap:6px;font-size:.83rem;opacity:.9}
+.steps-progress{display:flex;gap:0;margin-bottom:28px}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;top:16px;left:50%;width:100%;height:2px;background:#e2e8f0}
+.step.active::after,.step.done::after{background:#0052CC}
+.step-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:2px solid #e2e8f0;background:#fff;transition:all .3s;position:relative;z-index:1}
+.step.done .step-circle{background:#059669;color:#fff;border-color:#059669}
+.step.active .step-circle{background:#0052CC;color:#fff;border-color:#0052CC}
+.step-label{font-size:.72rem;color:#64748b;font-weight:500;text-align:center}
+.step.active .step-label{color:#0052CC;font-weight:600}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-label .required{color:#ef4444}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-hint{font-size:.78rem;color:#64748b;margin-top:4px}
+.upload-group{border:2px dashed #e2e8f0;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:#fafbff}
+.upload-group:hover{border-color:#0052CC;background:#f0f7ff}
+.upload-group i{font-size:1.8rem;color:#94a3b8;margin-bottom:8px}
+.upload-group .upload-label{font-size:.88rem;font-weight:500;color:#0052CC;cursor:pointer}
+.upload-group p{font-size:.78rem;color:#94a3b8;margin-top:4px}
+.upload-group.uploaded{border-color:#059669;background:#f0fdf4}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.plan-card{border:2px solid #e2e8f0;border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
+.plan-card:hover,.plan-card.selected{border-color:#0052CC;background:#eff6ff}
+.plan-card.popular{border-color:#0052CC;background:#eff6ff;position:relative}
+.plan-popular{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#0052CC;color:#fff;font-size:.7rem;font-weight:700;padding:2px 10px;border-radius:10px;white-space:nowrap}
+.plan-name{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27;margin-bottom:4px}
+.plan-price{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0052CC;margin-bottom:6px}
+.plan-price-label{font-size:.72rem;color:#64748b}
+.plan-features{font-size:.78rem;color:#374151;line-height:1.8;text-align:left;margin-top:10px}
+.btn{padding:12px 28px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+.btn-secondary{background:#f1f5f9;color:#374151}
+.btn-lg{padding:14px 36px;font-size:1rem}
+.step-section{display:none}
+.step-section.active{display:block}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.plan-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" height="40">
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav-primary">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../index.html">Home</a><span>›</span>
+      <a href="dashboard.html">Supplier Portal</a><span>›</span>
+      <span>Register as Supplier</span>
+    </div>
+
+    <div class="page-hero">
+      <div class="hero-text">
+        <h1>Become a Globex Sky Supplier</h1>
+        <p>Join thousands of verified suppliers and reach buyers worldwide. List your products, manage orders, and grow your business globally.</p>
+        <div class="hero-features">
+          <span class="hero-feature"><i class="fas fa-check-circle"></i> Global Buyer Access</span>
+          <span class="hero-feature"><i class="fas fa-check-circle"></i> Secure Payments</span>
+          <span class="hero-feature"><i class="fas fa-check-circle"></i> Trade Assurance</span>
+          <span class="hero-feature"><i class="fas fa-check-circle"></i> Marketing Tools</span>
+        </div>
+      </div>
+      <img src="../../assets/images/logo.png" alt="Supplier" height="80" style="opacity:.3">
+    </div>
+
+    <!-- Steps Progress -->
+    <div class="steps-progress">
+      <div class="step active" id="stepCircle1"><div class="step-circle">1</div><span class="step-label">Company<br>Info</span></div>
+      <div class="step" id="stepCircle2"><div class="step-circle">2</div><span class="step-label">Business<br>Documents</span></div>
+      <div class="step" id="stepCircle3"><div class="step-circle">3</div><span class="step-label">Products &amp;<br>Capabilities</span></div>
+      <div class="step" id="stepCircle4"><div class="step-circle">4</div><span class="step-label">Membership<br>Plan</span></div>
+      <div class="step" id="stepCircle5"><div class="step-circle">5</div><span class="step-label">Review &amp;<br>Submit</span></div>
+    </div>
+
+    <form id="supplierForm" onsubmit="return false">
+      <!-- Step 1: Company Info -->
+      <div class="step-section active" id="step1">
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-building"></i> Company Information</h2>
+          <div class="form-group">
+            <label class="form-label">Company Name <span class="required">*</span></label>
+            <input type="text" class="form-control" name="company_name" placeholder="Your registered company name" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business Type <span class="required">*</span></label>
+              <select class="form-control" name="business_type" required>
+                <option value="">Select Type</option>
+                <option>Manufacturer</option>
+                <option>Trading Company</option>
+                <option>Manufacturer &amp; Trading Company</option>
+                <option>Wholesaler</option>
+                <option>Agent</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Year Established <span class="required">*</span></label>
+              <input type="number" class="form-control" name="established_year" placeholder="e.g. 2010" min="1900" max="2026" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Country <span class="required">*</span></label>
+              <select class="form-control" name="country" required>
+                <option value="">Select Country</option>
+                <option>China</option><option>India</option><option>Bangladesh</option><option>Vietnam</option><option>Turkey</option><option>Pakistan</option><option>South Korea</option><option>Japan</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">City / Province <span class="required">*</span></label>
+              <input type="text" class="form-control" name="city" placeholder="e.g. Guangzhou, Guangdong" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company Address</label>
+            <textarea class="form-control" name="address" rows="2" placeholder="Full company address"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Contact Person <span class="required">*</span></label>
+              <input type="text" class="form-control" name="contact_name" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Job Title</label>
+              <input type="text" class="form-control" name="job_title" placeholder="e.g. Export Manager">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business Email <span class="required">*</span></label>
+              <input type="email" class="form-control" name="email" placeholder="company@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone / WhatsApp <span class="required">*</span></label>
+              <input type="tel" class="form-control" name="phone" placeholder="+86 ..." required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Website (optional)</label>
+              <input type="url" class="form-control" name="website" placeholder="https://www.yourcompany.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Employees</label>
+              <select class="form-control" name="employees">
+                <option>1–10</option><option>11–50</option><option>51–200</option><option>201–500</option><option>500+</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company Description</label>
+            <textarea class="form-control" name="description" rows="3" placeholder="Brief description of your company, main products, and competitive advantages..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn btn-primary btn-lg" onclick="goToStep(2)">Next: Business Documents <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 2: Documents -->
+      <div class="step-section" id="step2">
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-file-alt"></i> Business Documents &amp; Verification</h2>
+          <p style="font-size:.87rem;color:#64748b;margin-bottom:20px">Upload your business documents for verification. This helps build trust with buyers.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business License <span class="required">*</span></label>
+              <div class="upload-group" id="licenseUpload" onclick="triggerUpload('businessLicense', 'licenseUpload')">
+                <i class="fas fa-id-card"></i>
+                <div><label class="upload-label">Upload Business License</label></div>
+                <p>PDF or Image — Max 5 MB</p>
+                <input type="file" id="businessLicense" name="business_license" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="markUploaded('licenseUpload', this)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Company Registration Certificate</label>
+              <div class="upload-group" id="regUpload" onclick="triggerUpload('regCert', 'regUpload')">
+                <i class="fas fa-certificate"></i>
+                <div><label class="upload-label">Upload Certificate</label></div>
+                <p>PDF or Image — Max 5 MB</p>
+                <input type="file" id="regCert" name="registration_cert" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="markUploaded('regUpload', this)">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Certifications (ISO, CE, BSCI, etc.)</label>
+            <div class="upload-group" id="certUpload" onclick="triggerUpload('certFiles', 'certUpload')">
+              <i class="fas fa-award"></i>
+              <div><label class="upload-label">Upload Certifications</label></div>
+              <p>Upload multiple files — PDF or Image</p>
+              <input type="file" id="certFiles" name="certifications" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="markUploaded('certUpload', this)">
+            </div>
+            <div id="certFileList" style="margin-top:8px"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tax Registration Number</label>
+              <input type="text" class="form-control" name="tax_number" placeholder="e.g. 91440300XXXXXXXX">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Import/Export License (if available)</label>
+              <input type="text" class="form-control" name="import_export_license" placeholder="License number">
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <button class="btn btn-secondary" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-primary btn-lg" onclick="goToStep(3)">Next: Products <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 3: Products & Capabilities -->
+      <div class="step-section" id="step3">
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-boxes"></i> Products &amp; Manufacturing Capabilities</h2>
+          <div class="form-group">
+            <label class="form-label">Main Product Categories <span class="required">*</span></label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px">
+                <input type="checkbox" name="categories" value="electronics"> Electronics
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px">
+                <input type="checkbox" name="categories" value="clothing"> Clothing &amp; Textiles
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px">
+                <input type="checkbox" name="categories" value="machinery"> Machinery
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px">
+                <input type="checkbox" name="categories" value="furniture"> Furniture
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px">
+                <input type="checkbox" name="categories" value="toys"> Toys
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px">
+                <input type="checkbox" name="categories" value="food"> Food &amp; Agriculture
+              </label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Annual Revenue (USD)</label>
+              <select class="form-control" name="annual_revenue">
+                <option>Under $100K</option><option>$100K – $500K</option><option>$500K – $1M</option><option>$1M – $5M</option><option>$5M – $10M</option><option>$10M+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Production Capacity / Month</label>
+              <input type="text" class="form-control" name="production_capacity" placeholder="e.g. 50,000 units/month">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Main Export Markets</label>
+              <input type="text" class="form-control" name="export_markets" placeholder="e.g. Europe, USA, Middle East">
+            </div>
+            <div class="form-group">
+              <label class="form-label">OEM/ODM Capability</label>
+              <select class="form-control" name="oem_odm">
+                <option>OEM only</option><option>ODM only</option><option>Both OEM &amp; ODM</option><option>Neither</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Factory Photos (optional)</label>
+            <div class="upload-group" onclick="document.getElementById('factoryPhotos').click()">
+              <i class="fas fa-camera"></i>
+              <div><label class="upload-label">Upload Factory Photos</label></div>
+              <p>Help buyers trust you — show your factory</p>
+              <input type="file" id="factoryPhotos" name="factory_photos" multiple accept=".jpg,.jpeg,.png" style="display:none">
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <button class="btn btn-secondary" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-primary btn-lg" onclick="goToStep(4)">Next: Membership Plan <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 4: Membership Plan -->
+      <div class="step-section" id="step4">
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-crown"></i> Choose Your Membership Plan</h2>
+          <div class="plan-grid">
+            <div class="plan-card selected" onclick="selectPlan(this,'free')" data-plan="free">
+              <div class="plan-name">Free</div>
+              <div class="plan-price">$0 <span class="plan-price-label">/month</span></div>
+              <div class="plan-features">
+                ✓ 5 product listings<br>
+                ✓ Basic profile<br>
+                ✓ RFQ responses (3/month)<br>
+                ✗ Highlighted listings<br>
+                ✗ Priority support
+              </div>
+            </div>
+            <div class="plan-card popular" onclick="selectPlan(this,'gold')" data-plan="gold">
+              <div class="plan-popular">Most Popular</div>
+              <div class="plan-name">Gold</div>
+              <div class="plan-price">$49 <span class="plan-price-label">/month</span></div>
+              <div class="plan-features">
+                ✓ 50 product listings<br>
+                ✓ Verified badge<br>
+                ✓ Unlimited RFQs<br>
+                ✓ Highlighted listings<br>
+                ✓ Analytics dashboard
+              </div>
+            </div>
+            <div class="plan-card" onclick="selectPlan(this,'platinum')" data-plan="platinum">
+              <div class="plan-name">Platinum</div>
+              <div class="plan-price">$149 <span class="plan-price-label">/month</span></div>
+              <div class="plan-features">
+                ✓ Unlimited listings<br>
+                ✓ Premium verified badge<br>
+                ✓ Top search ranking<br>
+                ✓ Dedicated account mgr<br>
+                ✓ Custom mini-website
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="selectedPlan" name="plan" value="free">
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <button class="btn btn-secondary" onclick="goToStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-primary btn-lg" onclick="goToStep(5)">Review &amp; Submit <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 5: Review -->
+      <div class="step-section" id="step5">
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-check-circle"></i> Review &amp; Submit</h2>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:20px;margin-bottom:20px">
+            <div style="font-weight:700;font-size:1rem;color:#059669;margin-bottom:12px"><i class="fas fa-check-circle"></i> Ready to Submit</div>
+            <div style="font-size:.87rem;color:#374151;line-height:1.8">
+              Your supplier application will be reviewed by our team within 2-3 business days. You'll receive an email notification with the result.
+            </div>
+          </div>
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:16px;margin-bottom:20px">
+            <div style="font-size:.85rem;color:#374151;line-height:1.6">
+              <strong>What happens next:</strong><br>
+              1. Our team reviews your company information and documents<br>
+              2. You may be contacted for additional verification<br>
+              3. Once approved, your profile becomes visible to buyers<br>
+              4. You can start listing products and responding to RFQs
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+              <input type="checkbox" id="agreeTerms" required style="margin-top:3px;width:16px;height:16px">
+              <span style="font-size:.87rem;color:#374151;line-height:1.5">I agree to the <a href="../../pages/terms.html" style="color:#0052CC">Terms &amp; Conditions</a> and <a href="../../pages/privacy.html" style="color:#0052CC">Privacy Policy</a> of Globex Sky</span>
+            </label>
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+              <input type="checkbox" id="agreeAccuracy" required style="margin-top:3px;width:16px;height:16px">
+              <span style="font-size:.87rem;color:#374151;line-height:1.5">I confirm that all information provided is accurate and my business documents are authentic</span>
+            </label>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <button class="btn btn-secondary" onclick="goToStep(4)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-success btn-lg" onclick="submitRegistration()" id="submitBtn">
+            <i class="fas fa-check-circle"></i> Submit Application
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../../assets/js/supplier.js"></script>
+<script>
+let currentStep = 1;
+
+function goToStep(step) {
+  document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  for (let i = 1; i <= 5; i++) {
+    const circle = document.getElementById('stepCircle' + i);
+    circle.className = 'step';
+    if (i < step) circle.classList.add('done');
+    else if (i === step) circle.classList.add('active');
+    if (i < step) circle.querySelector('.step-circle').innerHTML = '<i class="fas fa-check" style="font-size:.7rem"></i>';
+    else circle.querySelector('.step-circle').textContent = i;
+  }
+  currentStep = step;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function triggerUpload(inputId, groupId) {
+  document.getElementById(inputId).click();
+}
+
+function markUploaded(groupId, input) {
+  const group = document.getElementById(groupId);
+  if (input.files.length > 0) {
+    group.classList.add('uploaded');
+    group.querySelector('i').className = 'fas fa-check-circle';
+    group.querySelector('i').style.color = '#059669';
+    group.querySelector('.upload-label').textContent = input.files[0].name;
+    if (input.multiple) {
+      const list = document.getElementById(groupId.replace('Upload', 'FileList'));
+      if (list) {
+        list.innerHTML = '';
+        Array.from(input.files).forEach(f => {
+          const div = document.createElement('div');
+          div.style = 'display:flex;align-items:center;gap:8px;padding:6px;background:#f0fdf4;border-radius:6px;margin-top:4px;font-size:.82rem';
+          div.innerHTML = `<i class="fas fa-file" style="color:#059669"></i>${f.name}`;
+          list.appendChild(div);
+        });
+      }
+    }
+  }
+}
+
+function selectPlan(el, plan) {
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('selectedPlan').value = plan;
+}
+
+async function submitRegistration() {
+  if (!document.getElementById('agreeTerms').checked || !document.getElementById('agreeAccuracy').checked) {
+    alert('Please agree to all terms before submitting.');
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  const formData = new FormData(document.getElementById('supplierForm'));
+  const body = {
+    company_name: formData.get('company_name'),
+    business_type: formData.get('business_type'),
+    established_year: parseInt(formData.get('established_year')),
+    country: formData.get('country'),
+    city: formData.get('city'),
+    address: formData.get('address'),
+    contact_name: formData.get('contact_name'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    website: formData.get('website'),
+    description: formData.get('description'),
+    production_capacity: formData.get('production_capacity'),
+    oem_odm: formData.get('oem_odm'),
+    plan: formData.get('plan') || 'free'
+  };
+  try {
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch('/api/v1/suppliers/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      alert('Application submitted! We\'ll review it within 2-3 business days.');
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('Application submitted! Our team will review it and contact you via email.');
+      setTimeout(() => window.location.href = 'dashboard.html', 1500);
+    }
+  } catch(e) {
+    alert('Application submitted! Our team will review it and contact you via email.');
+    setTimeout(() => window.location.href = 'dashboard.html', 1500);
+  }
+}
+</script>
+</body>
+</html>

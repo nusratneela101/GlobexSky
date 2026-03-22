@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Track Inspection – Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav-primary{background:#0052CC;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#0a0e27;margin-bottom:8px}
+.page-subtitle{color:#64748b;font-size:.95rem;margin-bottom:28px}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.status-banner{border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.status-banner.pending{background:#fffbeb;border:1px solid #fde68a}
+.status-banner.in-progress{background:#eff6ff;border:1px solid #bfdbfe}
+.status-banner.completed{background:#f0fdf4;border:1px solid #bbf7d0}
+.status-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.status-icon.pending{background:#fef3c7;color:#f59e0b}
+.status-icon.in-progress{background:#dbeafe;color:#0052CC}
+.status-icon.completed{background:#d1fae5;color:#059669}
+.status-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700}
+.status-desc{font-size:.87rem;color:#64748b;margin-top:2px}
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:2px;background:#e2e8f0}
+.timeline-item{position:relative;padding-bottom:28px}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-dot{position:absolute;left:-25px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;border:2px solid #fff;z-index:1}
+.timeline-dot.done{background:#059669;color:#fff}
+.timeline-dot.active{background:#0052CC;color:#fff;animation:pulse 2s infinite}
+.timeline-dot.pending{background:#e2e8f0;color:#94a3b8}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,82,204,.4)}50%{box-shadow:0 0 0 8px rgba(0,82,204,0)}}
+.timeline-time{font-size:.78rem;color:#94a3b8;margin-bottom:2px}
+.timeline-title{font-weight:600;font-size:.9rem;color:#0a0e27}
+.timeline-desc{font-size:.83rem;color:#64748b;margin-top:2px;line-height:1.5}
+.timeline-photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.timeline-photo{width:70px;height:70px;border-radius:8px;background:#f1f5f9;object-fit:cover;cursor:pointer;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;color:#94a3b8}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.info-item{background:#f8faff;border-radius:10px;padding:14px}
+.info-label{font-size:.78rem;color:#64748b;margin-bottom:4px}
+.info-value{font-weight:600;font-size:.9rem;color:#0a0e27}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:600}
+.badge-warning{background:#fef3c7;color:#f59e0b}
+.badge-info{background:#dbeafe;color:#0052CC}
+.badge-success{background:#d1fae5;color:#059669}
+.btn{padding:10px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-secondary{background:#f1f5f9;color:#374151}
+.inspector-card{display:flex;align-items:center;gap:14px;background:#f8faff;border-radius:12px;padding:16px}
+.inspector-avatar{width:50px;height:50px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:#0052CC;flex-shrink:0}
+.inspector-name{font-weight:700;color:#0a0e27;font-size:.95rem}
+.inspector-rating{color:#f59e0b;font-size:.82rem}
+.inspector-info{font-size:.82rem;color:#64748b;margin-top:2px}
+@media(max-width:600px){.info-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <img src="../../../assets/images/logo.png" alt="Globex Sky" height="40">
+      </a>
+      <div class="nav-links">
+        <a href="../../../index.html">Home</a>
+        <a href="../index.html" class="active">Sourcing</a>
+      </div>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav-primary">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../../index.html">Home</a><span>›</span>
+      <a href="../index.html">Sourcing</a><span>›</span>
+      <a href="../inspection.html">Inspections</a><span>›</span>
+      <span>Track #INS-2026-042</span>
+    </div>
+
+    <h1 class="page-title"><i class="fas fa-map-marker-alt" style="color:#0052CC"></i> Track Inspection #INS-2026-042</h1>
+    <p class="page-subtitle">Real-time updates from your assigned inspector</p>
+
+    <!-- Status Banner -->
+    <div class="status-banner in-progress" id="statusBanner">
+      <div class="status-icon in-progress"><i class="fas fa-search"></i></div>
+      <div>
+        <div class="status-title" style="color:#0052CC" id="statusTitle">Inspection In Progress</div>
+        <div class="status-desc" id="statusDesc">Your inspector is currently conducting the inspection at the factory</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="badge badge-info">In Progress</div>
+        <div style="font-size:.78rem;color:#64748b;margin-top:4px">Updated 10 min ago</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start">
+      <div>
+        <!-- Timeline -->
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-history"></i> Inspection Timeline</h2>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot done"><i class="fas fa-check"></i></div>
+              <div class="timeline-time">Mar 18, 2026 · 09:00 AM</div>
+              <div class="timeline-title">Request Submitted &amp; Payment Confirmed</div>
+              <div class="timeline-desc">Inspection request received and payment of $179 confirmed. Inspector assignment in progress.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot done"><i class="fas fa-check"></i></div>
+              <div class="timeline-time">Mar 18, 2026 · 02:30 PM</div>
+              <div class="timeline-title">Inspector Assigned</div>
+              <div class="timeline-desc">Inspector Zhang Wei assigned. Factory visit scheduled for March 20.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot done"><i class="fas fa-check"></i></div>
+              <div class="timeline-time">Mar 20, 2026 · 08:45 AM</div>
+              <div class="timeline-title">Inspector Arrived at Factory</div>
+              <div class="timeline-desc">Inspector confirmed arrival at Shenzhen Electronics Co., Ltd. factory.</div>
+              <div class="timeline-photos">
+                <div class="timeline-photo"><i class="fas fa-image"></i></div>
+                <div class="timeline-photo"><i class="fas fa-image"></i></div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot active"><i class="fas fa-search"></i></div>
+              <div class="timeline-time">Mar 20, 2026 · 10:15 AM — NOW</div>
+              <div class="timeline-title">Product Sampling &amp; Testing</div>
+              <div class="timeline-desc">Inspector is checking 32 units from a batch of 500. Testing functionality, packaging, and labeling compliance.</div>
+              <div class="timeline-photos">
+                <div class="timeline-photo"><i class="fas fa-image"></i></div>
+                <div class="timeline-photo"><i class="fas fa-image"></i></div>
+                <div class="timeline-photo"><i class="fas fa-plus" style="font-size:.8rem"></i></div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot pending"><i class="fas fa-file-alt"></i></div>
+              <div class="timeline-time">Expected: Mar 20, 2026 · 5:00 PM</div>
+              <div class="timeline-title">Report Generation</div>
+              <div class="timeline-desc">Detailed inspection report with photos and recommendations will be ready.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot pending"><i class="fas fa-check-double"></i></div>
+              <div class="timeline-time">Expected: Mar 21, 2026</div>
+              <div class="timeline-title">Final Report Delivered</div>
+              <div class="timeline-desc">Final pass/fail report delivered with quality score and recommendations.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inspector Live Updates -->
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-camera"></i> Inspector Live Updates</h2>
+          <div style="background:#f8faff;border-radius:10px;padding:16px;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="width:28px;height:28px;border-radius:50%;background:#0052CC;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700">ZW</div>
+              <div>
+                <div style="font-size:.85rem;font-weight:600;color:#0a0e27">Zhang Wei</div>
+                <div style="font-size:.75rem;color:#94a3b8">10:15 AM — Just now</div>
+              </div>
+            </div>
+            <p style="font-size:.87rem;color:#374151;line-height:1.6">Started product sampling. Selected 32 units from the production line for testing. Initial visual inspection shows good packaging quality. Checking electronic components now.</p>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <div style="width:60px;height:60px;border-radius:6px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image"></i></div>
+              <div style="width:60px;height:60px;border-radius:6px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image"></i></div>
+            </div>
+          </div>
+          <div style="background:#f8faff;border-radius:10px;padding:16px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="width:28px;height:28px;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700">ZW</div>
+              <div>
+                <div style="font-size:.85rem;font-weight:600;color:#0a0e27">Zhang Wei</div>
+                <div style="font-size:.75rem;color:#94a3b8">09:30 AM — 45 min ago</div>
+              </div>
+            </div>
+            <p style="font-size:.87rem;color:#374151;line-height:1.6">Arrived at factory. Met with production manager Mr. Li. Factory is clean and well-organized. Workers following safety protocols.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div>
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-info-circle"></i> Inspection Details</h2>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="info-item">
+              <div class="info-label">Inspection Type</div>
+              <div class="info-value">Pre-Shipment Inspection</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Product</div>
+              <div class="info-value">Bluetooth Headphones X200</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Quantity Ordered</div>
+              <div class="info-value">500 units</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Factory</div>
+              <div class="info-value">Shenzhen Electronics Co.</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Inspection Fee</div>
+              <div class="info-value" style="color:#059669">$179 — Paid</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-user-tie"></i> Your Inspector</h2>
+          <div class="inspector-card">
+            <div class="inspector-avatar">ZW</div>
+            <div>
+              <div class="inspector-name">Zhang Wei</div>
+              <div class="inspector-rating">★★★★★ <span style="color:#64748b">4.9 (148 inspections)</span></div>
+              <div class="inspector-info">Shenzhen, China · Electronics Expert</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-file-alt"></i> Report</h2>
+          <p style="font-size:.87rem;color:#64748b;margin-bottom:16px">Your inspection report will be available here once the inspection is complete</p>
+          <a href="report.html" class="btn btn-primary" style="width:100%;justify-content:center;opacity:.5;pointer-events:none">
+            <i class="fas fa-file-download"></i> Download Report
+          </a>
+          <p style="font-size:.78rem;color:#94a3b8;text-align:center;margin-top:8px">Expected: Mar 20, 2026</p>
+        </div>
+
+        <div style="display:flex;gap:8px;flex-direction:column">
+          <a href="request.html" class="btn btn-secondary" style="justify-content:center"><i class="fas fa-plus"></i> New Inspection</a>
+          <a href="../inspection.html" class="btn btn-secondary" style="justify-content:center"><i class="fas fa-list"></i> My Inspections</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../../assets/js/inspection.js"></script>
+<script>
+async function loadInspection() {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) return;
+  try {
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch(`/api/v1/inspections/${id}`, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (res.ok) {
+      const { data } = await res.json();
+      if (data) {
+        document.querySelector('.page-title').innerHTML = `<i class="fas fa-map-marker-alt" style="color:#0052CC"></i> Track Inspection #${data.id?.slice(0,8).toUpperCase() || id}`;
+      }
+    }
+  } catch(e) { /* use demo data */ }
+}
+loadInspection();
+
+// Simulate real-time refresh
+setInterval(() => {
+  const now = new Date();
+  document.querySelector('.timeline-item:nth-child(4) .timeline-time').textContent = 
+    `Mar 20, 2026 · ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')} AM — NOW`;
+}, 60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Parcel Service Management | Globex Sky Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+.admin-wrapper{display:flex;min-height:100vh}
+.admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+.admin-sidebar.collapsed{width:64px}
+.admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+.sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+.sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+.sidebar-nav ul{list-style:none}
+.sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+.sidebar-nav li a:hover{background:rgba(255,255,255,.07);color:#fff}
+.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+.sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+.admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+.sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+.admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+.admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+.topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.admin-content{padding:24px;overflow-y:auto}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:24px}
+.metric-card{background:#fff;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.metric-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.metric-icon.blue{background:#dbeafe;color:#0052CC}
+.metric-icon.green{background:#d1fae5;color:#059669}
+.metric-icon.orange{background:#ffedd5;color:#f97316}
+.metric-icon.purple{background:#ede9fe;color:#7c3aed}
+.metric-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+.metric-label{color:#64748b;font-size:.82rem;margin-top:2px}
+.admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:24px}
+.admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+.tab-bar{display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:4px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{padding:8px 16px;border-radius:8px;border:none;background:transparent;font-size:.85rem;font-weight:500;color:#64748b;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.data-table{width:100%;border-collapse:collapse;font-size:.855rem}
+.data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#fafbff}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-warning{background:#fff7ed;color:#f97316}
+.badge-danger{background:#fee2e2;color:#ef4444}
+.badge-info{background:#dbeafe;color:#0052CC}
+.badge-secondary{background:#f1f5f9;color:#64748b}
+.btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-secondary{background:#f1f5f9;color:#374151}.btn-secondary:hover{background:#e2e8f0}
+.btn-sm{padding:5px 12px;font-size:.8rem}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:#64748b;padding:4px}
+.search-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.search-input{flex:1;min-width:200px;padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif}
+.search-input:focus{outline:none;border-color:#0052CC}
+.table-wrap{overflow-x:auto}
+.actions-cell{display:flex;gap:6px;flex-wrap:wrap}
+.step-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:.78rem;font-weight:600}
+.timeline-step{display:flex;align-items:flex-start;gap:12px;padding-bottom:20px;position:relative}
+.timeline-step:not(:last-child)::after{content:'';position:absolute;left:15px;top:32px;width:2px;height:calc(100% - 12px);background:#e2e8f0}
+.timeline-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+.timeline-dot.done{background:#d1fae5;color:#059669}
+.timeline-dot.active{background:#dbeafe;color:#0052CC}
+.timeline-dot.pending{background:#f1f5f9;color:#94a3b8}
+@media(max-width:768px){.admin-sidebar{display:none}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="32" height="32">
+        <span>Globex Sky</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-cart"></i><span>Orders</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="carry-service.html"><i class="fas fa-plane"></i><span>Carry Service</span></a></li>
+        <li><a href="parcel-service.html" class="active"><i class="fas fa-shipping-fast"></i><span>Parcel Service</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-truck"></i><span>Shipments</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="inspections.html"><i class="fas fa-clipboard-check"></i><span>Inspections</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i><span>Payments</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title">Parcel Service Management</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">5</span></button>
+        <div class="admin-avatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-boxes"></i></div>
+          <div><div class="metric-value" id="totalShipments">1,284</div><div class="metric-label">Total Shipments</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange"><i class="fas fa-clock"></i></div>
+          <div><div class="metric-value" id="inTransit">89</div><div class="metric-label">In Transit</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+          <div><div class="metric-value" id="delivered">1,120</div><div class="metric-label">Delivered</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple"><i class="fas fa-dollar-sign"></i></div>
+          <div><div class="metric-value" id="monthlyRevenue">$48,900</div><div class="metric-label">Monthly Revenue</div></div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('shipments')"><i class="fas fa-boxes"></i> All Shipments</button>
+        <button class="tab-btn" onclick="switchTab('receipt')"><i class="fas fa-camera"></i> Package Receipt</button>
+        <button class="tab-btn" onclick="switchTab('payment')"><i class="fas fa-credit-card"></i> Payment Processing</button>
+        <button class="tab-btn" onclick="switchTab('international')"><i class="fas fa-globe"></i> International Shipment</button>
+        <button class="tab-btn" onclick="switchTab('tracking')"><i class="fas fa-map-marker-alt"></i> Tracking</button>
+        <button class="tab-btn" onclick="switchTab('pricing')"><i class="fas fa-tags"></i> Pricing Management</button>
+        <button class="tab-btn" onclick="switchTab('issues')"><i class="fas fa-exclamation-triangle"></i> Issues</button>
+      </div>
+
+      <!-- Tab: All Shipments -->
+      <div class="tab-content active" id="tab-shipments">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-boxes"></i> All Shipments</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <select class="form-control" style="width:auto;padding:7px 12px">
+                <option>All Status</option><option>Pending</option><option>Received</option><option>Processing</option><option>In Transit</option><option>Delivered</option>
+              </select>
+              <button class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Export</button>
+            </div>
+          </div>
+          <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search by reference number, receiver name...">
+            <button class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Search</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Reference</th><th>Sender</th><th>Receiver</th><th>Destination</th><th>Weight</th><th>Method</th><th>Cost</th><th>Status</th><th>Created</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>GS-2026-001</strong></td><td>Alice Chen</td><td>Bob Smith</td><td>UK, London</td><td>2.5 kg</td><td>Express</td><td>$45.00</td>
+                  <td><span class="badge badge-info">In Transit</span></td><td>2026-03-15</td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm" onclick="viewShipment('GS-2026-001')"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>GS-2026-002</strong></td><td>John Doe</td><td>Maria Garcia</td><td>USA, New York</td><td>1.2 kg</td><td>Standard</td><td>$28.00</td>
+                  <td><span class="badge badge-warning">Processing</span></td><td>2026-03-16</td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>GS-2026-003</strong></td><td>Farhan H.</td><td>Tanaka Y.</td><td>Japan, Tokyo</td><td>3.8 kg</td><td>Economy</td><td>$32.00</td>
+                  <td><span class="badge badge-success">Delivered</span></td><td>2026-03-10</td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-success btn-sm"><i class="fas fa-check"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Package Receipt -->
+      <div class="tab-content" id="tab-receipt">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-camera"></i> Package Receipt — Scan &amp; Verify</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+            <div>
+              <h3 style="font-size:.95rem;font-weight:600;margin-bottom:16px">Step 1: Scan Reference</h3>
+              <div class="form-group">
+                <label class="form-label">Reference Number</label>
+                <div style="display:flex;gap:8px">
+                  <input type="text" class="form-control" id="receiptRef" placeholder="e.g. GS-2026-001">
+                  <button class="btn btn-primary" onclick="lookupShipment()"><i class="fas fa-search"></i> Lookup</button>
+                </div>
+              </div>
+              <div id="shipmentDetails" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px;display:none">
+                <div style="font-weight:600;color:#059669;margin-bottom:8px"><i class="fas fa-check-circle"></i> Shipment Found</div>
+                <div style="font-size:.85rem;line-height:1.8;color:#374151">
+                  <div><strong>Reference:</strong> GS-2026-002</div>
+                  <div><strong>Sender:</strong> John Doe</div>
+                  <div><strong>Declared Weight:</strong> 1.2 kg</div>
+                  <div><strong>Destination:</strong> USA, New York</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 style="font-size:.95rem;font-weight:600;margin-bottom:16px">Step 2: Weight Check &amp; Photos</h3>
+              <div class="form-group">
+                <label class="form-label">Actual Weight (kg)</label>
+                <input type="number" class="form-control" placeholder="e.g. 1.25" step="0.01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Package Photos</label>
+                <div style="border:2px dashed #e2e8f0;border-radius:8px;padding:20px;text-align:center;cursor:pointer">
+                  <i class="fas fa-camera" style="font-size:1.8rem;color:#94a3b8;margin-bottom:8px"></i>
+                  <p style="font-size:.85rem;color:#64748b">Click to upload or drag &amp; drop</p>
+                </div>
+              </div>
+              <button class="btn btn-success" style="width:100%"><i class="fas fa-check-circle"></i> Confirm Receipt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Payment Processing -->
+      <div class="tab-content" id="tab-payment">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-credit-card"></i> Payment Processing</div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Reference</th><th>Customer</th><th>Amount</th><th>Method</th><th>Payment Date</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>GS-2026-001</td><td>Alice Chen</td><td>$45.00</td><td>Credit Card</td><td>2026-03-15</td>
+                  <td><span class="badge badge-success">Paid</span></td>
+                  <td><button class="btn btn-secondary btn-sm"><i class="fas fa-receipt"></i> Receipt</button></td>
+                </tr>
+                <tr>
+                  <td>GS-2026-004</td><td>Mike Johnson</td><td>$38.50</td><td>Bank Transfer</td><td>—</td>
+                  <td><span class="badge badge-warning">Pending</span></td>
+                  <td class="actions-cell">
+                    <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Confirm</button>
+                    <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: International Shipment -->
+      <div class="tab-content" id="tab-international">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-globe"></i> International Shipment Preparation</div>
+          </div>
+          <div style="max-width:700px">
+            <div class="timeline-step">
+              <div class="timeline-dot done"><i class="fas fa-box"></i></div>
+              <div><div style="font-weight:600;font-size:.9rem;color:#0a0e27">Package Received &amp; Verified</div><div style="font-size:.82rem;color:#64748b">GS-2026-001 — 2.5 kg verified</div></div>
+            </div>
+            <div class="timeline-step">
+              <div class="timeline-dot done"><i class="fas fa-file-alt"></i></div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;color:#0a0e27">Customs Documents</div>
+                <div style="font-size:.82rem;color:#64748b;margin-bottom:8px">Prepare commercial invoice &amp; packing list</div>
+                <button class="btn btn-primary btn-sm"><i class="fas fa-file-download"></i> Generate Customs Docs</button>
+              </div>
+            </div>
+            <div class="timeline-step">
+              <div class="timeline-dot active"><i class="fas fa-truck"></i></div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;color:#0052CC">Select International Carrier</div>
+                <div style="font-size:.82rem;color:#64748b;margin-bottom:8px">Choose shipping provider</div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn btn-secondary btn-sm" style="border:2px solid #0052CC;color:#0052CC"><img src="https://img.shields.io/badge/DHL-FFCC00?style=flat&logo=dhl&logoColor=red" alt="DHL" height="20"> DHL Express</button>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-plane"></i> FedEx International</button>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-ship"></i> Sea Freight</button>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-step">
+              <div class="timeline-dot pending"><i class="fas fa-barcode"></i></div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;color:#94a3b8">Create Shipment &amp; Print Label</div>
+                <div style="font-size:.82rem;color:#94a3b8">Create shipment in carrier system and print shipping label</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-primary"><i class="fas fa-plus-circle"></i> Create Shipment</button>
+            <button class="btn btn-secondary"><i class="fas fa-print"></i> Print Label</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Tracking -->
+      <div class="tab-content" id="tab-tracking">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-map-marker-alt"></i> Tracking Management</div>
+          </div>
+          <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search by reference or tracking number...">
+            <button class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Track</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Reference</th><th>Tracking No.</th><th>Carrier</th><th>Current Location</th><th>Status</th><th>Est. Delivery</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>GS-2026-001</td><td>DHL1234567890</td><td>DHL Express</td><td>Dubai Hub</td>
+                  <td><span class="badge badge-info">In Transit</span></td><td>2026-03-22</td>
+                  <td class="actions-cell">
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-map"></i> Map</button>
+                    <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Update</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Pricing Management -->
+      <div class="tab-content" id="tab-pricing">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-tags"></i> Pricing Management — Destinations</div>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('addDestModal').classList.add('open')"><i class="fas fa-plus"></i> Add Destination</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Country</th><th>Base Fee</th><th>Rate/kg</th><th>Express Fee</th><th>Economy Disc.</th><th>Std. Days</th><th>Exp. Days</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>🇬🇧 United Kingdom</td><td>$10</td><td>$12/kg</td><td>+$15</td><td>-10%</td><td>7-10d</td><td>3-5d</td><td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+                <tr><td>🇺🇸 United States</td><td>$12</td><td>$14/kg</td><td>+$20</td><td>-8%</td><td>8-12d</td><td>4-6d</td><td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+                <tr><td>🇦🇺 Australia</td><td>$15</td><td>$16/kg</td><td>+$25</td><td>-12%</td><td>10-14d</td><td>5-7d</td><td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+                <tr><td>🇦🇪 UAE</td><td>$8</td><td>$10/kg</td><td>+$12</td><td>-5%</td><td>5-7d</td><td>2-3d</td><td><span class="badge badge-success">Active</span></td>
+                  <td class="actions-cell"><button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Issues -->
+      <div class="tab-content" id="tab-issues">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-exclamation-triangle"></i> Issue Resolution</div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Ticket</th><th>Reference</th><th>Customer</th><th>Issue Type</th><th>Description</th><th>Priority</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#ISS001</td><td>GS-2026-003</td><td>Farhan H.</td><td>Delayed</td>
+                  <td>Package delayed by 3 days</td>
+                  <td><span class="badge badge-warning">Medium</span></td>
+                  <td><span class="badge badge-warning">Open</span></td>
+                  <td class="actions-cell">
+                    <button class="btn btn-primary btn-sm"><i class="fas fa-reply"></i> Respond</button>
+                    <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Resolve</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Destination Modal -->
+<div class="modal-overlay" id="addDestModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add Shipping Destination</span>
+      <button class="modal-close" onclick="document.getElementById('addDestModal').classList.remove('open')">&times;</button>
+    </div>
+    <form onsubmit="return false">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Country Name</label><input type="text" class="form-control" placeholder="e.g. Germany"></div>
+        <div class="form-group"><label class="form-label">Country Code</label><input type="text" class="form-control" placeholder="e.g. DE" maxlength="2"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Base Fee ($)</label><input type="number" class="form-control" step="0.01"></div>
+        <div class="form-group"><label class="form-label">Rate per kg ($)</label><input type="number" class="form-control" step="0.01"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Express Surcharge ($)</label><input type="number" class="form-control" step="0.01"></div>
+        <div class="form-group"><label class="form-label">Economy Discount (%)</label><input type="number" class="form-control" step="1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Standard Days</label><input type="text" class="form-control" placeholder="e.g. 7-10"></div>
+        <div class="form-group"><label class="form-label">Express Days</label><input type="text" class="form-control" placeholder="e.g. 3-5"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('addDestModal').classList.remove('open')">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Destination</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  event.target.classList.add('active');
+}
+function lookupShipment() {
+  const ref = document.getElementById('receiptRef').value.trim();
+  if (ref) {
+    document.getElementById('shipmentDetails').style.display = 'block';
+  }
+}
+function viewShipment(ref) { alert('Viewing shipment: ' + ref); }
+
+async function loadStats() {
+  try {
+    const res = await fetch('/api/v1/admin/parcels/stats');
+    if (res.ok) {
+      const { data } = await res.json();
+      if (data) {
+        document.getElementById('totalShipments').textContent = (data.total ?? 1284).toLocaleString();
+        document.getElementById('inTransit').textContent = data.in_transit ?? 89;
+        document.getElementById('delivered').textContent = (data.delivered ?? 1120).toLocaleString();
+        document.getElementById('monthlyRevenue').textContent = '$' + (data.monthly_revenue ?? 48900).toLocaleString();
+      }
+    }
+  } catch(e) { /* use defaults */ }
+}
+loadStats();
+</script>
+</body>
+</html>

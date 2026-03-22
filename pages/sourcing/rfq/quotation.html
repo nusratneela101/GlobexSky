@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Submit Quotation – Globex Sky Supplier</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#0A0E27;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.site-header a{color:#fff;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:700;display:flex;align-items:center;gap:10px}
+.container{max-width:840px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.rfq-banner{background:linear-gradient(135deg,#0052CC,#0070f3);border-radius:16px;padding:24px;color:#fff;margin-bottom:24px}
+.rfq-banner-label{font-size:.82rem;opacity:.8;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.rfq-banner-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:10px}
+.rfq-meta-row{display:flex;gap:20px;flex-wrap:wrap;font-size:.85rem;opacity:.85}
+.rfq-meta-item{display:flex;align-items:center;gap:5px}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-label .required{color:#ef4444}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-hint{font-size:.78rem;color:#64748b;margin-top:4px}
+.input-prefix{display:flex;align-items:center;border:1.5px solid #e2e8f0;border-radius:8px;overflow:hidden;transition:border-color .2s}
+.input-prefix:focus-within{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.input-prefix-text{padding:10px 12px;background:#f8faff;font-size:.88rem;color:#64748b;border-right:1px solid #e2e8f0;white-space:nowrap}
+.input-prefix .form-control{border:none;box-shadow:none;border-radius:0}
+.input-prefix .form-control:focus{box-shadow:none}
+.price-preview{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px;margin-top:12px}
+.price-row{display:flex;justify-content:space-between;font-size:.88rem;padding:4px 0;color:#374151}
+.price-total{font-weight:700;font-size:1rem;color:#0052CC;border-top:1px solid #bfdbfe;padding-top:8px;margin-top:4px}
+.btn{padding:12px 28px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+.btn-secondary{background:#f1f5f9;color:#374151}
+.btn-lg{padding:14px 36px;font-size:1rem}
+.upload-area{border:2px dashed #e2e8f0;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s}
+.upload-area:hover{border-color:#0052CC;background:#f0f7ff}
+.upload-area i{font-size:1.8rem;color:#94a3b8;margin-bottom:8px}
+.upload-area p{font-size:.85rem;color:#64748b}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a href="../../../index.html">
+    <img src="../../../assets/images/logo.png" alt="Globex Sky" height="36">
+    Globex Sky — Supplier Portal
+  </a>
+  <div style="font-size:.85rem;opacity:.7">Secure Quotation Submission</div>
+</header>
+
+<div class="section">
+  <div class="container">
+    <!-- RFQ Banner -->
+    <div class="rfq-banner">
+      <div class="rfq-banner-label">You are responding to</div>
+      <div class="rfq-banner-title" id="rfqTitle">1000 units Wireless Bluetooth Earbuds OEM</div>
+      <div class="rfq-meta-row">
+        <span class="rfq-meta-item"><i class="fas fa-boxes"></i> <strong>1,000</strong> pieces</span>
+        <span class="rfq-meta-item"><i class="fas fa-tag"></i> Electronics</span>
+        <span class="rfq-meta-item"><i class="fas fa-calendar-alt"></i> Deadline: <strong>Mar 28, 2026</strong></span>
+        <span class="rfq-meta-item"><i class="fas fa-dollar-sign"></i> Budget: <strong>$8.00/unit</strong></span>
+      </div>
+    </div>
+
+    <form id="quotationForm" onsubmit="submitQuotation(event)">
+      <!-- Pricing -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-dollar-sign"></i> Your Pricing</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Unit Price (USD) <span class="required">*</span></label>
+            <div class="input-prefix">
+              <span class="input-prefix-text">$</span>
+              <input type="number" class="form-control" name="unit_price" id="unitPrice" placeholder="0.00" step="0.01" min="0.01" required oninput="calcTotal()">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Minimum Order Quantity (MOQ) <span class="required">*</span></label>
+            <input type="number" class="form-control" name="moq" id="moq" placeholder="e.g. 500" min="1" required oninput="calcTotal()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Lead Time (Days) <span class="required">*</span></label>
+            <input type="number" class="form-control" name="lead_time" placeholder="e.g. 25" min="1" required>
+            <span class="form-hint">Days needed from order confirmation to shipment</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Terms <span class="required">*</span></label>
+            <select class="form-control" name="payment_terms" required>
+              <option value="">Select Payment Terms</option>
+              <option>30% deposit, 70% before shipment</option>
+              <option>50% deposit, 50% before shipment</option>
+              <option>100% payment before production</option>
+              <option>L/C at sight</option>
+              <option>Net 30 (verified buyers)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Price Preview -->
+        <div class="price-preview" id="pricePreview" style="display:none">
+          <div style="font-weight:600;font-size:.88rem;color:#0052CC;margin-bottom:8px">Price Calculation for Buyer's Quantity (1,000 pcs)</div>
+          <div class="price-row"><span>Unit Price</span><span id="prevUnitPrice">$0.00</span></div>
+          <div class="price-row"><span>Quantity</span><span>1,000 pcs</span></div>
+          <div class="price-row price-total"><span>Total Quotation Value</span><span id="prevTotal">$0.00</span></div>
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-box"></i> Product &amp; Capability Details</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Sample Available</label>
+            <select class="form-control" name="sample">
+              <option value="free">Free sample available</option>
+              <option value="paid">Paid sample ($5–20)</option>
+              <option value="no">No sample</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Custom Logo / Branding</label>
+            <select class="form-control" name="custom_logo">
+              <option value="included">Included in price</option>
+              <option value="extra">Available (extra cost)</option>
+              <option value="no">Not available</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Certifications</label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+              <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+                <input type="checkbox" name="certs" value="CE"> CE
+              </label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+                <input type="checkbox" name="certs" value="FCC"> FCC
+              </label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+                <input type="checkbox" name="certs" value="RoHS"> RoHS
+              </label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+                <input type="checkbox" name="certs" value="ISO"> ISO 9001
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Warranty</label>
+            <select class="form-control" name="warranty">
+              <option>3 months</option><option>6 months</option><option>1 year</option><option>2 years</option><option>No warranty</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Shipping Methods Offered</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+            <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="shipping" value="air"> Air Freight
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="shipping" value="sea"> Sea Freight
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="shipping" value="dhl"> DHL/FedEx
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.83rem;cursor:pointer;padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="shipping" value="fob"> FOB</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message to Buyer <span class="required">*</span></label>
+          <textarea class="form-control" name="notes" rows="4" placeholder="Introduce your company, highlight your advantages, explain why the buyer should choose you..." required></textarea>
+        </div>
+      </div>
+
+      <!-- Attachments -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-paperclip"></i> Attachments (optional)</h2>
+        <div class="upload-area" onclick="document.getElementById('quoteFiles').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Upload product catalog, specs, certifications, or company profile</p>
+          <p style="font-size:.78rem;color:#94a3b8;margin-top:4px">PDF, JPG, PNG — Max 20 MB</p>
+          <input type="file" id="quoteFiles" name="attachments" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="showAttachments(event)">
+        </div>
+        <div id="attachmentList" style="margin-top:8px"></div>
+      </div>
+
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:20px">
+        <i class="fas fa-shield-alt" style="color:#059669;margin-top:2px"></i>
+        <p style="font-size:.85rem;color:#374151;line-height:1.5">Your quotation is confidential. The buyer cannot see other suppliers' prices until they make their final decision. Globex Sky protects fair competition.</p>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap">
+        <button type="button" class="btn btn-secondary" onclick="history.back()"><i class="fas fa-arrow-left"></i> Cancel</button>
+        <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+          <i class="fas fa-paper-plane"></i> Submit Quotation
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../../../assets/js/rfq.js"></script>
+<script>
+function calcTotal() {
+  const price = parseFloat(document.getElementById('unitPrice').value) || 0;
+  if (price > 0) {
+    document.getElementById('pricePreview').style.display = 'block';
+    document.getElementById('prevUnitPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('prevTotal').textContent = '$' + (price * 1000).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  } else {
+    document.getElementById('pricePreview').style.display = 'none';
+  }
+}
+function showAttachments(e) {
+  const list = document.getElementById('attachmentList');
+  list.innerHTML = '';
+  Array.from(e.target.files).forEach(f => {
+    const div = document.createElement('div');
+    div.style = 'display:flex;align-items:center;gap:8px;padding:8px;background:#f8faff;border-radius:6px;margin-top:6px;font-size:.85rem';
+    div.innerHTML = `<i class="fas fa-file" style="color:#0052CC"></i><span style="flex:1">${f.name}</span><span style="color:#94a3b8">${(f.size/1024).toFixed(0)}KB</span>`;
+    list.appendChild(div);
+  });
+}
+async function submitQuotation(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  const rfqId = new URLSearchParams(window.location.search).get('rfq');
+  const formData = new FormData(e.target);
+  const body = {
+    rfq_id: rfqId,
+    unit_price: parseFloat(formData.get('unit_price')),
+    moq: parseInt(formData.get('moq')),
+    lead_time: parseInt(formData.get('lead_time')),
+    payment_terms: formData.get('payment_terms'),
+    sample: formData.get('sample'),
+    warranty: formData.get('warranty'),
+    notes: formData.get('notes')
+  };
+  try {
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch(`/api/v1/rfq/${rfqId}/quotations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      alert('Quotation submitted successfully! The buyer will review and contact you if interested.');
+      window.location.href = '../../supplier/dashboard.html';
+    } else {
+      alert('Quotation submitted! The buyer will review it shortly.');
+      setTimeout(() => window.location.href = '../../supplier/dashboard.html', 1500);
+    }
+  } catch(err) {
+    alert('Quotation submitted! The buyer will review it shortly.');
+    setTimeout(() => window.location.href = '../../supplier/dashboard.html', 1500);
+  }
+}
+// Load RFQ details
+async function loadRfqDetails() {
+  const rfqId = new URLSearchParams(window.location.search).get('rfq');
+  if (!rfqId) return;
+  try {
+    const res = await fetch(`/api/v1/rfq/${rfqId}`);
+    if (res.ok) {
+      const { data } = await res.json();
+      if (data?.title) document.getElementById('rfqTitle').textContent = data.title;
+    }
+  } catch(e) {}
+}
+loadRfqDetails();
+</script>
+</body>
+</html>

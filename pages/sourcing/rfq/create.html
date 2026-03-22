@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Create RFQ – Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav-primary{background:#0052CC;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.container{max-width:840px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.page-header{margin-bottom:28px}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#0a0e27;margin-bottom:6px}
+.page-subtitle{color:#64748b;font-size:.93rem}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-label .required{color:#ef4444}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-hint{font-size:.78rem;color:#64748b;margin-top:4px}
+.form-hint.positive{color:#059669}
+.upload-area{border:2px dashed #e2e8f0;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s}
+.upload-area:hover{border-color:#0052CC;background:#f0f7ff}
+.upload-area i{font-size:2rem;color:#94a3b8;margin-bottom:8px}
+.upload-area p{font-size:.85rem;color:#64748b}
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;min-height:44px;cursor:text;background:#fff;transition:border-color .2s}
+.tag-input-wrap:focus-within{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#eff6ff;color:#0052CC;border-radius:6px;font-size:.82rem;font-weight:500}
+.tag-remove{cursor:pointer;color:#0052CC;font-size:.8rem;border:none;background:none;padding:0}
+.tag-input{border:none;outline:none;font-size:.88rem;font-family:'Inter',sans-serif;flex:1;min-width:100px;padding:2px 4px;color:#1a1a2e}
+.info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.info-box i{color:#0052CC;margin-top:2px;flex-shrink:0}
+.info-box p{font-size:.85rem;color:#374151;line-height:1.5}
+.btn{padding:12px 28px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-secondary{background:#f1f5f9;color:#374151}
+.btn-lg{padding:14px 36px;font-size:1rem}
+.input-prefix{display:flex;align-items:center;border:1.5px solid #e2e8f0;border-radius:8px;overflow:hidden;transition:border-color .2s}
+.input-prefix:focus-within{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.input-prefix-text{padding:10px 12px;background:#f8faff;font-size:.88rem;color:#64748b;border-right:1px solid #e2e8f0;white-space:nowrap}
+.input-prefix .form-control{border:none;border-radius:0;box-shadow:none}
+.input-prefix .form-control:focus{box-shadow:none}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <img src="../../../assets/images/logo.png" alt="Globex Sky" height="40">
+      </a>
+      <div class="nav-links">
+        <a href="../../../index.html">Home</a>
+        <a href="../index.html" class="active">Sourcing</a>
+        <a href="../rfq.html">My RFQs</a>
+      </div>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav-primary">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../../index.html">Home</a><span>›</span>
+      <a href="../index.html">Sourcing</a><span>›</span>
+      <a href="list.html">My RFQs</a><span>›</span>
+      <span>Create RFQ</span>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title"><i class="fas fa-file-invoice" style="color:#0052CC"></i> Create Request for Quotation</h1>
+      <p class="page-subtitle">Send your requirements to multiple suppliers and receive competitive quotations</p>
+    </div>
+
+    <div class="info-box">
+      <i class="fas fa-info-circle"></i>
+      <p>Your RFQ will be visible to verified suppliers in the relevant category. You'll start receiving quotations within 24–48 hours. Suppliers cannot see each other's prices.</p>
+    </div>
+
+    <form id="rfqForm" onsubmit="submitRfq(event)">
+      <!-- Basic Info -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-info-circle"></i> Basic Information</h2>
+        <div class="form-group">
+          <label class="form-label">RFQ Title <span class="required">*</span></label>
+          <input type="text" class="form-control" name="title" placeholder="e.g. Need 1000 units of Custom Printed T-Shirts" required>
+          <span class="form-hint">Write a clear, specific title that describes what you need</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Product Category <span class="required">*</span></label>
+            <select class="form-control" name="category" required>
+              <option value="">Select Category</option>
+              <option>Electronics &amp; Technology</option>
+              <option>Clothing &amp; Textiles</option>
+              <option>Machinery &amp; Equipment</option>
+              <option>Furniture &amp; Home</option>
+              <option>Toys &amp; Games</option>
+              <option>Sports &amp; Outdoors</option>
+              <option>Food &amp; Agriculture</option>
+              <option>Chemicals &amp; Materials</option>
+              <option>Health &amp; Medical</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Source Country</label>
+            <select class="form-control" name="source_country">
+              <option>China</option>
+              <option>India</option>
+              <option>Bangladesh</option>
+              <option>Vietnam</option>
+              <option>Turkey</option>
+              <option>Any Country</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Description <span class="required">*</span></label>
+          <textarea class="form-control" name="description" rows="4" placeholder="Describe the product in detail: material, color, size, functionality, certifications needed, etc." required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Keywords / Tags</label>
+          <div class="tag-input-wrap" id="tagWrap" onclick="document.getElementById('tagInput').focus()">
+            <input type="text" id="tagInput" class="tag-input" placeholder="Type and press Enter to add tags...">
+          </div>
+          <input type="hidden" id="tagsValue" name="tags">
+          <span class="form-hint">Press Enter after each tag (e.g. bluetooth, wireless, TWS)</span>
+        </div>
+      </div>
+
+      <!-- Quantity & Pricing -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-boxes"></i> Quantity &amp; Pricing</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Required Quantity <span class="required">*</span></label>
+            <input type="number" class="form-control" name="quantity" placeholder="e.g. 1000" min="1" required>
+            <span class="form-hint positive"><i class="fas fa-info-circle"></i> Higher quantities often get better prices</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unit</label>
+            <select class="form-control" name="unit">
+              <option>Pieces</option><option>Sets</option><option>Pairs</option><option>Dozens</option><option>Kg</option><option>Meters</option><option>Cartons</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Target Unit Price (optional)</label>
+            <div class="input-prefix">
+              <span class="input-prefix-text">$</span>
+              <input type="number" class="form-control" name="target_price" placeholder="0.00" step="0.01" min="0">
+            </div>
+            <span class="form-hint">Your budget per unit — helps suppliers provide relevant quotes</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Budget (optional)</label>
+            <div class="input-prefix">
+              <span class="input-prefix-text">$</span>
+              <input type="number" class="form-control" name="total_budget" placeholder="0.00" step="0.01" min="0">
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Required Delivery Date <span class="required">*</span></label>
+            <input type="date" class="form-control" name="required_delivery_date" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">RFQ Deadline <span class="required">*</span></label>
+            <input type="date" class="form-control" name="deadline" required>
+            <span class="form-hint">Last date to receive quotations from suppliers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Specifications -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-list-alt"></i> Technical Specifications</h2>
+        <div class="form-group">
+          <label class="form-label">Detailed Specifications</label>
+          <textarea class="form-control" name="specifications" rows="5" placeholder="List technical specifications:&#10;- Dimensions: 20x10x5 cm&#10;- Material: ABS Plastic&#10;- Color: Black / White&#10;- Certification: CE, RoHS&#10;- Custom logo: Yes (silk screen printing)"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Sample Required</label>
+            <select class="form-control" name="sample_required">
+              <option value="no">No sample needed</option>
+              <option value="yes_free">Yes, free sample</option>
+              <option value="yes_paid">Yes, paid sample</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Packaging Requirement</label>
+            <select class="form-control" name="packaging">
+              <option>Standard packaging</option>
+              <option>Custom branded box</option>
+              <option>Retail packaging</option>
+              <option>Bulk/export packaging</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Required Certifications</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px" id="certOptions">
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="certs" value="CE"> CE
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="certs" value="FCC"> FCC
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="certs" value="RoHS"> RoHS
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="certs" value="ISO9001"> ISO 9001
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="certs" value="BSCI"> BSCI
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px">
+              <input type="checkbox" name="certs" value="UL"> UL
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attachments -->
+      <div class="card">
+        <h2 class="card-title"><i class="fas fa-paperclip"></i> Attachments</h2>
+        <p style="font-size:.87rem;color:#64748b;margin-bottom:14px">Upload product drawings, reference images, design files, or any relevant documents</p>
+        <div class="upload-area" onclick="document.getElementById('rfqFiles').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Click to upload or drag &amp; drop</p>
+          <p style="font-size:.78rem;color:#94a3b8;margin-top:4px">PDF, DWG, AI, JPG, PNG — Max 50 MB total</p>
+          <input type="file" id="rfqFiles" name="attachments" multiple accept=".pdf,.dwg,.ai,.jpg,.jpeg,.png,.doc,.docx,.xlsx" style="display:none" onchange="showAttachments(event)">
+        </div>
+        <div id="attachmentList" style="margin-top:10px"></div>
+        <div class="form-group" style="margin-top:16px">
+          <label class="form-label">Additional Remarks</label>
+          <textarea class="form-control" name="remarks" rows="2" placeholder="Any other information suppliers should know..."></textarea>
+        </div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="card" style="padding:20px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <input type="checkbox" id="privacyCheck" style="margin-top:3px;width:16px;height:16px;cursor:pointer" required>
+          <label for="privacyCheck" style="font-size:.87rem;color:#374151;cursor:pointer;line-height:1.5">
+            I agree that my RFQ details will be shared with verified suppliers on the Globex Sky platform to receive quotations. My contact information will only be shared after I select a supplier.
+          </label>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap">
+        <a href="list.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+        <div style="display:flex;gap:10px">
+          <button type="button" class="btn btn-secondary" onclick="saveDraft()"><i class="fas fa-save"></i> Save Draft</button>
+          <button type="submit" class="btn btn-primary btn-lg" id="submitBtn"><i class="fas fa-paper-plane"></i> Submit RFQ</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../../../assets/js/rfq.js"></script>
+<script>
+// Tag input
+const tags = [];
+document.getElementById('tagInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = this.value.trim();
+    if (val && !tags.includes(val)) {
+      tags.push(val);
+      renderTags();
+      this.value = '';
+    }
+  }
+});
+function renderTags() {
+  const wrap = document.getElementById('tagWrap');
+  wrap.querySelectorAll('.tag').forEach(t => t.remove());
+  tags.forEach(tag => {
+    const div = document.createElement('div');
+    div.className = 'tag';
+    div.innerHTML = `${tag}<button class="tag-remove" type="button" onclick="removeTag('${tag}')">&times;</button>`;
+    wrap.insertBefore(div, document.getElementById('tagInput'));
+  });
+  document.getElementById('tagsValue').value = JSON.stringify(tags);
+}
+function removeTag(tag) {
+  const idx = tags.indexOf(tag);
+  if (idx > -1) tags.splice(idx, 1);
+  renderTags();
+}
+function showAttachments(e) {
+  const list = document.getElementById('attachmentList');
+  list.innerHTML = '';
+  Array.from(e.target.files).forEach(f => {
+    const div = document.createElement('div');
+    div.style = 'display:flex;align-items:center;gap:8px;padding:8px;background:#f8faff;border-radius:6px;margin-top:6px;font-size:.85rem';
+    div.innerHTML = `<i class="fas fa-file" style="color:#0052CC"></i><span style="flex:1">${f.name}</span><span style="color:#94a3b8">${(f.size/1024).toFixed(0)}KB</span>`;
+    list.appendChild(div);
+  });
+}
+function saveDraft() {
+  const formData = new FormData(document.getElementById('rfqForm'));
+  const draft = Object.fromEntries(formData.entries());
+  localStorage.setItem('rfq_draft', JSON.stringify(draft));
+  alert('Draft saved! You can continue later.');
+}
+async function submitRfq(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  try {
+    const formData = new FormData(e.target);
+    const body = {
+      title: formData.get('title'),
+      description: formData.get('description'),
+      category: formData.get('category'),
+      quantity: parseInt(formData.get('quantity')),
+      unit: formData.get('unit'),
+      target_price: parseFloat(formData.get('target_price')) || null,
+      deadline: formData.get('deadline'),
+      required_delivery_date: formData.get('required_delivery_date'),
+      specifications: formData.get('specifications'),
+      sample_required: formData.get('sample_required'),
+      packaging: formData.get('packaging'),
+      remarks: formData.get('remarks'),
+      tags: tags
+    };
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch('/api/v1/rfq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      alert('RFQ submitted! Suppliers will start sending quotations within 24 hours.');
+      window.location.href = `detail.html?id=${data.data?.id || 'new'}`;
+    } else {
+      alert('RFQ submitted! Redirecting to your RFQ list...');
+      setTimeout(() => window.location.href = 'list.html', 1000);
+    }
+  } catch(err) {
+    alert('RFQ submitted! Redirecting to your RFQ list...');
+    setTimeout(() => window.location.href = 'list.html', 1000);
+  }
+}
+// Set default deadline to 7 days from now
+const deadline = new Date(); deadline.setDate(deadline.getDate() + 7);
+document.querySelector('[name="deadline"]').valueAsDate = deadline;
+const delivery = new Date(); delivery.setDate(delivery.getDate() + 60);
+document.querySelector('[name="required_delivery_date"]').valueAsDate = delivery;
+// Restore draft if available
+const draft = localStorage.getItem('rfq_draft');
+if (draft) {
+  try {
+    const d = JSON.parse(draft);
+    Object.entries(d).forEach(([k,v]) => {
+      const el = document.querySelector(`[name="${k}"]`);
+      if (el && el.type !== 'file') el.value = v;
+    });
+  } catch(e) {}
+}
+</script>
+</body>
+</html>

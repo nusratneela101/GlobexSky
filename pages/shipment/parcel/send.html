@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Send Parcel – Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-links{display:flex;gap:4px;align-items:center;margin-left:32px}
+.nav-links a{padding:6px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:500;color:#374151;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:#eff6ff;color:#0052CC}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+.btn-primary-nav{background:#0052CC;color:#fff}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.page-header{margin-bottom:32px}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#0a0e27;margin-bottom:8px}
+.page-subtitle{color:#64748b;font-size:.95rem}
+.steps-bar{display:flex;gap:0;margin-bottom:36px;position:relative}
+.steps-bar::before{content:'';position:absolute;top:20px;left:40px;right:40px;height:2px;background:#e2e8f0;z-index:0}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1}
+.step-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;border:2px solid #e2e8f0;background:#fff;transition:all .3s}
+.step.done .step-circle{background:#059669;color:#fff;border-color:#059669}
+.step.active .step-circle{background:#0052CC;color:#fff;border-color:#0052CC}
+.step.pending .step-circle{background:#fff;color:#94a3b8}
+.step-label{font-size:.75rem;font-weight:500;color:#64748b;text-align:center;line-height:1.3}
+.step.active .step-label{color:#0052CC;font-weight:600}
+.step.done .step-label{color:#059669}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.reference-box{background:linear-gradient(135deg,#0052CC,#0070f3);border-radius:16px;padding:32px;text-align:center;margin-bottom:24px;color:#fff}
+.ref-label{font-size:.9rem;opacity:.8;margin-bottom:8px}
+.ref-number{font-family:'Poppins',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:3px;margin-bottom:12px}
+.ref-copy-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s}
+.ref-copy-btn:hover{background:rgba(255,255,255,.3)}
+.address-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:20px;margin-bottom:24px}
+.address-title{font-size:.88rem;font-weight:600;color:#0369a1;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.address-detail{font-size:.9rem;line-height:1.8;color:#374151}
+.address-detail strong{color:#0a0e27}
+.info-alert{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:24px}
+.info-alert i{color:#f59e0b;margin-top:2px;flex-shrink:0}
+.info-alert p{font-size:.87rem;color:#374151;line-height:1.6}
+.info-alert strong{color:#0a0e27}
+.upload-area{border:2px dashed #e2e8f0;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
+.upload-area:hover{border-color:#0052CC;background:#f0f7ff}
+.upload-area i{font-size:2.5rem;color:#94a3b8;margin-bottom:12px}
+.upload-area p{color:#64748b;font-size:.9rem}
+.upload-area .upload-cta{color:#0052CC;font-weight:600}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.btn{padding:12px 28px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-secondary{background:#f1f5f9;color:#374151}.btn-secondary:hover{background:#e2e8f0}
+.btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+.btn-lg{padding:14px 36px;font-size:1rem}
+.btn-block{width:100%;justify-content:center}
+.courier-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.courier-card{border:2px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s}
+.courier-card:hover,.courier-card.selected{border-color:#0052CC;background:#eff6ff}
+.courier-card img,.courier-card i{font-size:1.8rem;color:#374151;margin-bottom:8px}
+.courier-card .courier-name{font-weight:600;font-size:.88rem;color:#0a0e27}
+.courier-card .courier-fee{font-size:.8rem;color:#64748b;margin-top:4px}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:.9rem}
+.summary-row:last-child{border-bottom:none;font-weight:700;font-size:1rem;padding-top:14px}
+.summary-label{color:#64748b}
+.summary-value{font-weight:600;color:#0a0e27}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:.83rem;font-weight:600}
+.status-success{background:#d1fae5;color:#059669}
+.status-pending{background:#fef3c7;color:#f59e0b}
+@media(max-width:600px){.btn{padding:10px 20px}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <img src="../../../assets/images/logo.png" alt="Globex Sky" height="40">
+      </a>
+      <div class="nav-links">
+        <a href="../../../index.html">Home</a>
+        <a href="../../sourcing/index.html">Sourcing</a>
+        <a href="../index.html" class="active">Shipment</a>
+      </div>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav btn-primary-nav">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../../index.html">Home</a><span>›</span>
+      <a href="../index.html">Shipment</a><span>›</span>
+      <a href="dashboard.html">Parcel</a><span>›</span>
+      <span>Send</span>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title"><i class="fas fa-paper-plane" style="color:#0052CC"></i> Send Your Parcel</h1>
+      <p class="page-subtitle">Follow the steps below to ship your package internationally</p>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="steps-bar">
+      <div class="step done">
+        <div class="step-circle"><i class="fas fa-check"></i></div>
+        <span class="step-label">Create<br>Shipment</span>
+      </div>
+      <div class="step done">
+        <div class="step-circle"><i class="fas fa-check"></i></div>
+        <span class="step-label">Pricing<br>Confirmed</span>
+      </div>
+      <div class="step active">
+        <div class="step-circle">3</div>
+        <span class="step-label">Send<br>Package</span>
+      </div>
+      <div class="step pending">
+        <div class="step-circle">4</div>
+        <span class="step-label">In<br>Transit</span>
+      </div>
+      <div class="step pending">
+        <div class="step-circle">5</div>
+        <span class="step-label">Delivered</span>
+      </div>
+    </div>
+
+    <!-- Reference Number -->
+    <div class="reference-box">
+      <div class="ref-label">Your Shipment Reference Number</div>
+      <div class="ref-number" id="refNumber">GS-2026-00142</div>
+      <button class="ref-copy-btn" onclick="copyRef()"><i class="fas fa-copy"></i> Copy Reference</button>
+      <p style="font-size:.82rem;opacity:.75;margin-top:10px">Keep this reference for tracking your parcel</p>
+    </div>
+
+    <!-- Globex Sky Address -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-warehouse" style="color:#0052CC"></i> Step 1: Send Package to Our Address</h2>
+      <div class="address-box">
+        <div class="address-title"><i class="fas fa-map-marker-alt"></i> Globex Sky Receiving Warehouse</div>
+        <div class="address-detail">
+          <strong>Globex International Trade Co., Ltd.</strong><br>
+          Warehouse Unit 4A, Tejgaon Industrial Area<br>
+          Dhaka-1208, Bangladesh<br>
+          <strong>Contact:</strong> +880 1700-000000<br>
+          <strong>Email:</strong> receiving@globexsky.com<br>
+          <strong>Hours:</strong> Sun–Thu, 9:00 AM – 6:00 PM
+        </div>
+      </div>
+      <div class="info-alert">
+        <i class="fas fa-exclamation-circle"></i>
+        <p><strong>Important:</strong> Write your reference number <strong id="refInAddress">GS-2026-00142</strong> clearly on the outside of your package. This helps us identify and process your shipment quickly.</p>
+      </div>
+    </div>
+
+    <!-- Select Courier -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-truck" style="color:#0052CC"></i> Step 2: Choose How to Send to Our Warehouse</h2>
+      <p style="font-size:.88rem;color:#64748b;margin-bottom:16px">Select a local courier service to send your package to our warehouse</p>
+      <div class="courier-options">
+        <div class="courier-card selected" onclick="selectCourier(this, 'Pathao Courier')">
+          <i class="fas fa-motorcycle"></i>
+          <div class="courier-name">Pathao Courier</div>
+          <div class="courier-fee">~৳80–150</div>
+        </div>
+        <div class="courier-card" onclick="selectCourier(this, 'Sundarban Courier')">
+          <i class="fas fa-truck"></i>
+          <div class="courier-name">Sundarban Courier</div>
+          <div class="courier-fee">~৳100–200</div>
+        </div>
+        <div class="courier-card" onclick="selectCourier(this, 'SA Paribahan')">
+          <i class="fas fa-bus"></i>
+          <div class="courier-name">SA Paribahan</div>
+          <div class="courier-fee">~৳80–160</div>
+        </div>
+        <div class="courier-card" onclick="selectCourier(this, 'Drop Off')">
+          <i class="fas fa-walking"></i>
+          <div class="courier-name">Drop Off Myself</div>
+          <div class="courier-fee">Free</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Receipt -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-receipt" style="color:#0052CC"></i> Step 3: Upload Courier Receipt</h2>
+      <p style="font-size:.88rem;color:#64748b;margin-bottom:16px">After sending your package, upload the courier receipt to confirm dispatch</p>
+
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('receiptInput').click()">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Drag &amp; drop your receipt here or <span class="upload-cta">browse files</span></p>
+        <p style="font-size:.78rem;color:#94a3b8;margin-top:6px">Accepted: JPG, PNG, PDF — Max 5 MB</p>
+        <input type="file" id="receiptInput" accept="image/*,.pdf" style="display:none" onchange="handleReceiptUpload(event)">
+      </div>
+
+      <div id="uploadPreview" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;display:none;align-items:center;gap:12px">
+        <i class="fas fa-check-circle" style="color:#059669;font-size:1.3rem"></i>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:.88rem;color:#059669">Receipt uploaded successfully</div>
+          <div style="font-size:.8rem;color:#64748b" id="uploadFileName">receipt.jpg</div>
+        </div>
+        <button onclick="removeUpload()" style="background:none;border:none;color:#64748b;cursor:pointer"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="form-group" style="margin-top:16px">
+        <label class="form-label">Tracking Number from Courier (optional)</label>
+        <input type="text" class="form-control" id="localTrackingNo" placeholder="e.g. Pathao tracking number">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dispatch Date</label>
+        <input type="date" class="form-control" id="dispatchDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes (optional)</label>
+        <textarea class="form-control" rows="2" placeholder="Any special notes about the package..."></textarea>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-file-invoice" style="color:#0052CC"></i> Shipment Summary</h2>
+      <div class="summary-row"><span class="summary-label">Reference Number</span><span class="summary-value">GS-2026-00142</span></div>
+      <div class="summary-row"><span class="summary-label">Destination</span><span class="summary-value">London, United Kingdom</span></div>
+      <div class="summary-row"><span class="summary-label">Package Weight</span><span class="summary-value">2.5 kg</span></div>
+      <div class="summary-row"><span class="summary-label">Shipping Method</span><span class="summary-value">DHL Express</span></div>
+      <div class="summary-row"><span class="summary-label">Estimated Delivery</span><span class="summary-value">3-5 business days</span></div>
+      <div class="summary-row"><span class="summary-label">Shipping Cost</span><span class="summary-value">$45.00</span></div>
+      <div class="summary-row"><span class="summary-label">Total Paid</span><span class="summary-value" style="color:#059669">$45.00</span></div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap">
+      <a href="create.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+      <button class="btn btn-success btn-lg" onclick="submitSend()"><i class="fas fa-paper-plane"></i> Confirm &amp; Submit</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../../assets/js/parcel.js"></script>
+<script>
+function copyRef() {
+  const ref = document.getElementById('refNumber').textContent;
+  navigator.clipboard.writeText(ref).then(() => {
+    alert('Reference number copied: ' + ref);
+  });
+}
+function selectCourier(el, name) {
+  document.querySelectorAll('.courier-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function handleReceiptUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('uploadArea').style.display = 'none';
+  const preview = document.getElementById('uploadPreview');
+  preview.style.display = 'flex';
+  document.getElementById('uploadFileName').textContent = file.name;
+}
+function removeUpload() {
+  document.getElementById('uploadArea').style.display = 'block';
+  document.getElementById('uploadPreview').style.display = 'none';
+  document.getElementById('receiptInput').value = '';
+}
+async function submitSend() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  try {
+    const token = localStorage.getItem('auth_token');
+    const shipmentId = new URLSearchParams(window.location.search).get('id');
+    const formData = new FormData();
+    formData.append('local_tracking_no', document.getElementById('localTrackingNo').value);
+    formData.append('dispatch_date', document.getElementById('dispatchDate').value);
+    const file = document.getElementById('receiptInput').files[0];
+    if (file) formData.append('courier_receipt', file);
+    const res = await fetch(`/api/v1/parcels/${shipmentId || 'demo'}/send`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData
+    });
+    if (res.ok) {
+      alert('Shipment confirmed! You will receive email updates.');
+      window.location.href = 'tracking.html';
+    } else {
+      alert('Shipment submitted (demo mode). Redirecting to tracking...');
+      setTimeout(() => window.location.href = 'tracking.html', 1000);
+    }
+  } catch(e) {
+    alert('Shipment submitted (demo mode). Redirecting to tracking...');
+    setTimeout(() => window.location.href = 'tracking.html', 1000);
+  }
+}
+// Set today as default dispatch date
+document.getElementById('dispatchDate').valueAsDate = new Date();
+</script>
+</body>
+</html>

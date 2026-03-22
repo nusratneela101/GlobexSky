@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RFQ Detail – Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav-primary{background:#0052CC;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.section{padding:32px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:20px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.2rem,2.5vw,1.6rem);font-weight:700;color:#0a0e27;margin-bottom:6px}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px}
+.card-title{font-family:'Poppins',sans-serif;font-size:.97rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.btn{padding:9px 20px;border-radius:9px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+.btn-secondary{background:#f1f5f9;color:#374151}.btn-secondary:hover{background:#e2e8f0}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-sm{padding:5px 14px;font-size:.8rem}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:.77rem;font-weight:600}
+.badge-info{background:#dbeafe;color:#0052CC}
+.badge-success{background:#d1fae5;color:#059669}
+.badge-warning{background:#fef3c7;color:#f59e0b}
+.badge-secondary{background:#f1f5f9;color:#64748b}
+.badge-danger{background:#fee2e2;color:#ef4444}
+.layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info-item{background:#f8faff;border-radius:8px;padding:12px}
+.info-label{font-size:.75rem;color:#64748b;margin-bottom:3px}
+.info-value{font-weight:600;font-size:.88rem;color:#0a0e27}
+.quote-card{border:2px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:14px;transition:all .2s;position:relative}
+.quote-card:hover{border-color:#0052CC;box-shadow:0 4px 14px rgba(0,82,204,.1)}
+.quote-card.best-value{border-color:#059669;background:#f0fdf4}
+.best-value-badge{position:absolute;top:-10px;right:16px;background:#059669;color:#fff;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:10px}
+.quote-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.supplier-info{display:flex;align-items:center;gap:10px}
+.supplier-avatar{width:38px;height:38px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#0052CC;flex-shrink:0}
+.supplier-name{font-weight:700;font-size:.9rem;color:#0a0e27}
+.supplier-rating{font-size:.78rem;color:#64748b}
+.quote-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:12px}
+.quote-meta-item{text-align:center;background:#f8faff;border-radius:8px;padding:8px}
+.quote-meta-label{font-size:.72rem;color:#64748b;margin-bottom:2px}
+.quote-meta-value{font-weight:700;font-size:.95rem;color:#0a0e27}
+.quote-note{font-size:.83rem;color:#374151;line-height:1.5;background:#f8faff;border-radius:8px;padding:10px;margin-bottom:10px}
+.quote-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.negotiation-form{display:none}
+.negotiation-form.open{display:block}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC}
+.compare-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.compare-table th{background:#f8faff;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-weight:600;color:#374151;white-space:nowrap}
+.compare-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:#fafbff}
+.compare-best{font-weight:700;color:#059669}
+.tab-bar{display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:4px;margin-bottom:18px;flex-wrap:wrap}
+.tab-btn{padding:7px 14px;border-radius:8px;border:none;background:transparent;font-size:.85rem;font-weight:500;color:#64748b;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+@media(max-width:768px){.layout{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <img src="../../../assets/images/logo.png" alt="Globex Sky" height="40">
+      </a>
+      <div class="nav-controls">
+        <a href="../../auth/login.html" class="btn-nav-primary">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../../index.html">Home</a><span>›</span>
+      <a href="../index.html">Sourcing</a><span>›</span>
+      <a href="list.html">My RFQs</a><span>›</span>
+      <span id="rfqBreadcrumb">RFQ Detail</span>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" id="rfqTitle">1000 units Wireless Bluetooth Earbuds OEM</h1>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="badge badge-info" id="rfqStatus">Open</span>
+          <span style="font-size:.82rem;color:#64748b" id="rfqId">RFQ-2026-001 · Posted Mar 15, 2026</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="closeRfq()"><i class="fas fa-times-circle"></i> Close RFQ</button>
+        <a href="create.html" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New RFQ</a>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- Main Content -->
+      <div>
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('quotations')"><i class="fas fa-file-invoice"></i> Quotations <span style="background:#0052CC;color:#fff;border-radius:10px;padding:1px 7px;font-size:.75rem">8</span></button>
+          <button class="tab-btn" onclick="switchTab('compare')"><i class="fas fa-balance-scale"></i> Compare</button>
+          <button class="tab-btn" onclick="switchTab('details')"><i class="fas fa-info-circle"></i> RFQ Details</button>
+          <button class="tab-btn" onclick="switchTab('messages')"><i class="fas fa-comments"></i> Messages</button>
+        </div>
+
+        <!-- Quotations Tab -->
+        <div class="tab-content active" id="tab-quotations">
+          <div id="quotationsList">
+            <!-- Quote 1 — Best Value -->
+            <div class="quote-card best-value">
+              <div class="best-value-badge">⭐ Best Value</div>
+              <div class="quote-header">
+                <div class="supplier-info">
+                  <div class="supplier-avatar">SZ</div>
+                  <div>
+                    <div class="supplier-name">Shenzhen AudioTech Co.</div>
+                    <div class="supplier-rating">★★★★★ 4.8 · 156 orders · Verified ✓</div>
+                  </div>
+                </div>
+                <span class="badge badge-success">Recommended</span>
+              </div>
+              <div class="quote-meta">
+                <div class="quote-meta-item">
+                  <div class="quote-meta-label">Unit Price</div>
+                  <div class="quote-meta-value compare-best">$7.20</div>
+                </div>
+                <div class="quote-meta-item">
+                  <div class="quote-meta-label">Total (1000 pcs)</div>
+                  <div class="quote-meta-value">$7,200</div>
+                </div>
+                <div class="quote-meta-item">
+                  <div class="quote-meta-label">MOQ</div>
+                  <div class="quote-meta-value">500 pcs</div>
+                </div>
+                <div class="quote-meta-item">
+                  <div class="quote-meta-label">Lead Time</div>
+                  <div class="quote-meta-value">25 days</div>
+                </div>
+              </div>
+              <div class="quote-note">
+                <i class="fas fa-quote-left" style="color:#0052CC;margin-right:4px"></i>
+                We can provide free sample for approval before mass production. CE/FCC certified. Custom logo printing included. Delivery via DHL or sea freight.
+              </div>
+              <div class="quote-actions">
+                <button class="btn btn-secondary btn-sm" onclick="toggleNegotiate(this)"><i class="fas fa-comments"></i> Negotiate</button>
+                <button class="btn btn-secondary btn-sm"><i class="fas fa-file-download"></i> View Quote</button>
+                <button class="btn btn-success btn-sm" onclick="selectQuote('SZ', 7200)"><i class="fas fa-check-circle"></i> Select &amp; Order</button>
+              </div>
+              <div class="negotiation-form" style="margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0">
+                <div style="margin-bottom:8px"><label style="font-size:.83rem;font-weight:500;color:#374151;display:block;margin-bottom:4px">Counter Offer ($/unit)</label>
+                  <input type="number" class="form-control" style="max-width:200px" placeholder="e.g. 6.50" step="0.01"></div>
+                <div style="margin-bottom:8px"><label style="font-size:.83rem;font-weight:500;color:#374151;display:block;margin-bottom:4px">Your Message</label>
+                  <textarea class="form-control" rows="2" placeholder="Explain your counter offer..."></textarea></div>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-primary btn-sm"><i class="fas fa-paper-plane"></i> Send Counter</button>
+                  <button class="btn btn-secondary btn-sm" onclick="toggleNegotiate(this)">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quote 2 -->
+            <div class="quote-card">
+              <div class="quote-header">
+                <div class="supplier-info">
+                  <div class="supplier-avatar" style="background:#ede9fe;color:#7c3aed">GT</div>
+                  <div>
+                    <div class="supplier-name">Guangdong TechSound Ltd.</div>
+                    <div class="supplier-rating">★★★★☆ 4.5 · 89 orders</div>
+                  </div>
+                </div>
+                <span class="badge badge-info">New Quote</span>
+              </div>
+              <div class="quote-meta">
+                <div class="quote-meta-item"><div class="quote-meta-label">Unit Price</div><div class="quote-meta-value">$7.80</div></div>
+                <div class="quote-meta-item"><div class="quote-meta-label">Total</div><div class="quote-meta-value">$7,800</div></div>
+                <div class="quote-meta-item"><div class="quote-meta-label">MOQ</div><div class="quote-meta-value">300 pcs</div></div>
+                <div class="quote-meta-item"><div class="quote-meta-label">Lead Time</div><div class="quote-meta-value">30 days</div></div>
+              </div>
+              <div class="quote-note">Free sample available. We use premium 13mm drivers. 1-year warranty included.</div>
+              <div class="quote-actions">
+                <button class="btn btn-secondary btn-sm" onclick="toggleNegotiate(this)"><i class="fas fa-comments"></i> Negotiate</button>
+                <button class="btn btn-secondary btn-sm"><i class="fas fa-file-download"></i> View Quote</button>
+                <button class="btn btn-primary btn-sm" onclick="selectQuote('GT', 7800)"><i class="fas fa-check-circle"></i> Select</button>
+              </div>
+              <div class="negotiation-form" style="margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0">
+                <div style="margin-bottom:8px"><label style="font-size:.83rem;font-weight:500;color:#374151;display:block;margin-bottom:4px">Counter Offer</label>
+                  <input type="number" class="form-control" style="max-width:200px" placeholder="e.g. 7.20"></div>
+                <textarea class="form-control" rows="2" placeholder="Your message..." style="margin-bottom:8px"></textarea>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-primary btn-sm"><i class="fas fa-paper-plane"></i> Send</button>
+                  <button class="btn btn-secondary btn-sm" onclick="toggleNegotiate(this)">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quote 3 -->
+            <div class="quote-card">
+              <div class="quote-header">
+                <div class="supplier-info">
+                  <div class="supplier-avatar" style="background:#fff7ed;color:#f97316">YE</div>
+                  <div>
+                    <div class="supplier-name">Yiwu Electronics Factory</div>
+                    <div class="supplier-rating">★★★★☆ 4.2 · 44 orders</div>
+                  </div>
+                </div>
+                <span class="badge badge-secondary">Reviewed</span>
+              </div>
+              <div class="quote-meta">
+                <div class="quote-meta-item"><div class="quote-meta-label">Unit Price</div><div class="quote-meta-value">$6.90</div></div>
+                <div class="quote-meta-item"><div class="quote-meta-label">Total</div><div class="quote-meta-value">$6,900</div></div>
+                <div class="quote-meta-item"><div class="quote-meta-label">MOQ</div><div class="quote-meta-value">1000 pcs</div></div>
+                <div class="quote-meta-item"><div class="quote-meta-label">Lead Time</div><div class="quote-meta-value">35 days</div></div>
+              </div>
+              <div class="quote-note">Lowest price option. Standard quality. No custom packaging.</div>
+              <div class="quote-actions">
+                <button class="btn btn-secondary btn-sm" onclick="toggleNegotiate(this)"><i class="fas fa-comments"></i> Negotiate</button>
+                <button class="btn btn-primary btn-sm" onclick="selectQuote('YE', 6900)"><i class="fas fa-check-circle"></i> Select</button>
+              </div>
+              <div class="negotiation-form" style="margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0">
+                <input type="number" class="form-control" style="max-width:200px;margin-bottom:8px" placeholder="Counter offer">
+                <textarea class="form-control" rows="2" placeholder="Message..." style="margin-bottom:8px"></textarea>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-primary btn-sm">Send</button>
+                  <button class="btn btn-secondary btn-sm" onclick="toggleNegotiate(this)">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compare Tab -->
+        <div class="tab-content" id="tab-compare">
+          <div class="card" style="overflow-x:auto">
+            <h2 class="card-title"><i class="fas fa-balance-scale"></i> Quotation Comparison</h2>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Criteria</th>
+                  <th>Shenzhen AudioTech</th>
+                  <th>Guangdong TechSound</th>
+                  <th>Yiwu Electronics</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Unit Price</strong></td><td class="compare-best">$7.20 ✓</td><td>$7.80</td><td>$6.90</td></tr>
+                <tr><td><strong>Total (1000 pcs)</strong></td><td class="compare-best">$7,200 ✓</td><td>$7,800</td><td>$6,900</td></tr>
+                <tr><td><strong>MOQ</strong></td><td class="compare-best">500 pcs ✓</td><td>300 pcs</td><td>1000 pcs</td></tr>
+                <tr><td><strong>Lead Time</strong></td><td class="compare-best">25 days ✓</td><td>30 days</td><td>35 days</td></tr>
+                <tr><td><strong>Supplier Rating</strong></td><td class="compare-best">★4.8 ✓</td><td>★4.5</td><td>★4.2</td></tr>
+                <tr><td><strong>Free Sample</strong></td><td class="compare-best">✓ Yes</td><td>✓ Yes</td><td>✗ No</td></tr>
+                <tr><td><strong>Custom Logo</strong></td><td class="compare-best">✓ Included</td><td>✓ Included</td><td>✗ Extra cost</td></tr>
+                <tr><td><strong>Certification</strong></td><td class="compare-best">CE, FCC ✓</td><td>CE</td><td>None</td></tr>
+                <tr><td><strong>Warranty</strong></td><td>6 months</td><td class="compare-best">1 year ✓</td><td>3 months</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Details Tab -->
+        <div class="tab-content" id="tab-details">
+          <div class="card">
+            <h2 class="card-title"><i class="fas fa-info-circle"></i> RFQ Details</h2>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">Category</div><div class="info-value">Electronics &amp; Technology</div></div>
+              <div class="info-item"><div class="info-label">Quantity</div><div class="info-value">1,000 pieces</div></div>
+              <div class="info-item"><div class="info-label">Target Price</div><div class="info-value">$8.00/unit</div></div>
+              <div class="info-item"><div class="info-label">Deadline</div><div class="info-value">March 28, 2026</div></div>
+              <div class="info-item"><div class="info-label">Required Delivery</div><div class="info-value">May 15, 2026</div></div>
+              <div class="info-item"><div class="info-label">Source Country</div><div class="info-value">China</div></div>
+            </div>
+            <div style="margin-top:16px">
+              <div style="font-size:.85rem;font-weight:600;color:#374151;margin-bottom:8px">Description</div>
+              <p style="font-size:.87rem;color:#374151;line-height:1.7">Need 1000 units of OEM Wireless Bluetooth Earbuds. TWS design with charging case, Bluetooth 5.0, 20+ hours battery life, IPX4 waterproof. Custom logo and packaging required. CE/FCC certification mandatory.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div class="tab-content" id="tab-messages">
+          <div class="card">
+            <h2 class="card-title"><i class="fas fa-comments"></i> Messages</h2>
+            <p style="font-size:.87rem;color:#64748b">Direct messages with suppliers after initiating negotiation will appear here.</p>
+            <div style="text-align:center;padding:30px">
+              <i class="fas fa-comments" style="font-size:2rem;color:#e2e8f0;margin-bottom:10px"></i>
+              <p style="font-size:.87rem;color:#94a3b8">No messages yet. Start a negotiation to chat with a supplier.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-chart-pie"></i> Quick Stats</h2>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="info-item"><div class="info-label">Total Quotations</div><div class="info-value" style="color:#0052CC;font-size:1.3rem">8</div></div>
+            <div class="info-item"><div class="info-label">Best Price</div><div class="info-value" style="color:#059669">$6.90/unit</div></div>
+            <div class="info-item"><div class="info-label">Avg Price</div><div class="info-value">$7.50/unit</div></div>
+            <div class="info-item"><div class="info-label">Deadline</div><div class="info-value" style="color:#f97316">7 days left</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-shopping-cart"></i> Convert to Order</h2>
+          <p style="font-size:.83rem;color:#64748b;margin-bottom:14px">Select your preferred quotation and place an order directly</p>
+          <button class="btn btn-success" style="width:100%;justify-content:center" onclick="convertToOrder()">
+            <i class="fas fa-check-circle"></i> Place Order
+          </button>
+          <p style="font-size:.75rem;color:#94a3b8;text-align:center;margin-top:8px">Select a quotation first</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><i class="fas fa-cog"></i> Actions</h2>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i class="fas fa-edit"></i> Edit RFQ</button>
+            <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i class="fas fa-share-alt"></i> Share RFQ</button>
+            <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i class="fas fa-copy"></i> Duplicate RFQ</button>
+            <button class="btn btn-danger btn-sm" style="justify-content:flex-start" onclick="closeRfq()"><i class="fas fa-times-circle"></i> Close RFQ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../../assets/js/rfq.js"></script>
+<script>
+function switchTab(t) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleNegotiate(btn) {
+  const form = btn.closest('.quote-card').querySelector('.negotiation-form');
+  form.classList.toggle('open');
+  btn.innerHTML = form.classList.contains('open') ? '<i class="fas fa-times"></i> Cancel' : '<i class="fas fa-comments"></i> Negotiate';
+}
+function selectQuote(supplierId, total) {
+  if (confirm(`Select this quotation for $${total.toLocaleString()}? You'll be redirected to place an order.`)) {
+    alert(`Quote from supplier ${supplierId} selected! Converting to order...`);
+    convertToOrder();
+  }
+}
+function convertToOrder() {
+  const rfqId = new URLSearchParams(window.location.search).get('id') || 'rfq001';
+  alert(`Redirecting to checkout for RFQ ${rfqId}...`);
+}
+function closeRfq() {
+  if (confirm('Close this RFQ? Suppliers will no longer be able to submit quotations.')) {
+    document.getElementById('rfqStatus').textContent = 'Closed';
+    document.getElementById('rfqStatus').className = 'badge badge-secondary';
+  }
+}
+async function loadRfq() {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) return;
+  try {
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch(`/api/v1/rfq/${id}`, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (res.ok) {
+      const { data } = await res.json();
+      if (data) {
+        document.getElementById('rfqTitle').textContent = data.title || document.getElementById('rfqTitle').textContent;
+        document.getElementById('rfqBreadcrumb').textContent = data.title?.substring(0, 30) + '...' || 'RFQ Detail';
+      }
+    }
+  } catch(e) { /* use demo data */ }
+}
+loadRfq();
+</script>
+</body>
+</html>

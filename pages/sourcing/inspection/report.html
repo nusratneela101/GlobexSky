@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Inspection Report – Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav-primary{background:#0052CC;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+.section{padding:40px 24px}
+.breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb a{color:#0052CC;text-decoration:none}
+.report-header{background:linear-gradient(135deg,#0052CC,#0070f3);border-radius:16px;padding:32px;color:#fff;margin-bottom:24px}
+.report-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:.85rem;font-weight:700;margin-bottom:16px}
+.report-badge.pass{background:rgba(5,150,105,.3);color:#6ee7b7}
+.report-badge.fail{background:rgba(239,68,68,.3);color:#fca5a5}
+.report-title{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:6px}
+.report-subtitle{opacity:.8;font-size:.9rem}
+.score-circle{width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.15);border:4px solid rgba(255,255,255,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-left:auto;flex-shrink:0}
+.score-number{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+.score-label{font-size:.72rem;opacity:.8}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.result-card{border-radius:12px;padding:16px;text-align:center}
+.result-card.pass{background:#f0fdf4;border:1px solid #bbf7d0}
+.result-card.fail{background:#fff1f2;border:1px solid #fecdd3}
+.result-card.warning{background:#fffbeb;border:1px solid #fde68a}
+.result-icon{font-size:1.8rem;margin-bottom:6px}
+.result-label{font-size:.78rem;color:#64748b;margin-bottom:2px}
+.result-value{font-weight:700;font-size:.95rem}
+.findings-table{width:100%;border-collapse:collapse;font-size:.87rem}
+.findings-table th{background:#f8faff;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;font-weight:600;color:#374151}
+.findings-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:top}
+.findings-table tr:last-child td{border-bottom:none}
+.severity{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:.75rem;font-weight:600}
+.severity-critical{background:#fee2e2;color:#ef4444}
+.severity-major{background:#ffedd5;color:#f97316}
+.severity-minor{background:#fef3c7;color:#f59e0b}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.photo-card{aspect-ratio:1;border-radius:10px;background:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative}
+.photo-card img{width:100%;height:100%;object-fit:cover}
+.photo-card .photo-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);color:#fff;font-size:.72rem;padding:4px 6px;text-align:center}
+.recommendation-item{display:flex;gap:12px;align-items:flex-start;padding:12px;background:#f8faff;border-radius:8px;margin-bottom:8px}
+.recommendation-item i{margin-top:2px;flex-shrink:0}
+.recommendation-item p{font-size:.87rem;color:#374151;line-height:1.5}
+.btn{padding:10px 24px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+.btn-success{background:#059669;color:#fff}
+.btn-secondary{background:#f1f5f9;color:#374151}
+.verdict-box{border-radius:14px;padding:20px;text-align:center;margin-bottom:0}
+.verdict-box.pass{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac}
+.verdict-box.fail{background:linear-gradient(135deg,#fff1f2,#fee2e2);border:2px solid #fca5a5}
+.verdict-icon{font-size:3rem;margin-bottom:10px}
+.verdict-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:6px}
+.verdict-desc{font-size:.87rem;color:#64748b}
+@media(max-width:600px){.report-header{flex-direction:column}.score-circle{margin-left:0;margin-top:16px}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../../index.html" class="nav-logo">
+        <img src="../../../assets/images/logo.png" alt="Globex Sky" height="40">
+      </a>
+      <div class="nav-controls">
+        <button class="btn btn-secondary btn-sm" onclick="window.print()" style="padding:8px 14px;font-size:.85rem"><i class="fas fa-print"></i> Print</button>
+        <button class="btn btn-primary" onclick="downloadReport()" style="padding:8px 14px;font-size:.85rem"><i class="fas fa-download"></i> Download PDF</button>
+        <a href="../../auth/login.html" class="btn-nav-primary" style="margin-left:4px">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../../index.html">Home</a><span>›</span>
+      <a href="../index.html">Sourcing</a><span>›</span>
+      <a href="../inspection.html">Inspections</a><span>›</span>
+      <a href="tracking.html">Track #INS-2026-042</a><span>›</span>
+      <span>Report</span>
+    </div>
+
+    <!-- Report Header -->
+    <div class="report-header" style="display:flex;align-items:flex-start">
+      <div style="flex:1">
+        <div class="report-badge pass"><i class="fas fa-check-circle"></i> PASSED</div>
+        <div class="report-title">Quality Inspection Report</div>
+        <div class="report-subtitle">INS-2026-042 · Pre-Shipment Inspection · March 20, 2026</div>
+        <div style="margin-top:14px;font-size:.87rem;opacity:.85;line-height:1.7">
+          <div><strong>Product:</strong> Bluetooth Headphones Model X200</div>
+          <div><strong>Factory:</strong> Shenzhen Electronics Co., Ltd.</div>
+          <div><strong>Inspector:</strong> Zhang Wei (Certified QC Inspector)</div>
+        </div>
+      </div>
+      <div class="score-circle">
+        <div class="score-number">87</div>
+        <div class="score-label">Quality Score</div>
+      </div>
+    </div>
+
+    <!-- Verdict -->
+    <div class="card">
+      <div class="verdict-box pass">
+        <div class="verdict-icon">✅</div>
+        <div class="verdict-title" style="color:#059669">INSPECTION PASSED</div>
+        <div class="verdict-desc">Products meet quality standards with minor issues noted below. Shipment is approved to proceed with corrections.</div>
+      </div>
+    </div>
+
+    <!-- Summary Results -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-chart-bar"></i> Quality Assessment Summary</h2>
+      <div class="result-grid">
+        <div class="result-card pass">
+          <div class="result-icon">📦</div>
+          <div class="result-label">Units Sampled</div>
+          <div class="result-value" style="color:#0a0e27">32 / 500</div>
+        </div>
+        <div class="result-card pass">
+          <div class="result-icon">✅</div>
+          <div class="result-label">Units Passed</div>
+          <div class="result-value" style="color:#059669">29</div>
+        </div>
+        <div class="result-card warning">
+          <div class="result-icon">⚠️</div>
+          <div class="result-label">Minor Issues</div>
+          <div class="result-value" style="color:#f59e0b">3</div>
+        </div>
+        <div class="result-card fail">
+          <div class="result-icon">❌</div>
+          <div class="result-label">Critical Issues</div>
+          <div class="result-value" style="color:#ef4444">0</div>
+        </div>
+        <div class="result-card pass">
+          <div class="result-icon">🎯</div>
+          <div class="result-label">Defect Rate</div>
+          <div class="result-value" style="color:#059669">0.6%</div>
+        </div>
+        <div class="result-card pass">
+          <div class="result-icon">⏱️</div>
+          <div class="result-label">Inspection Duration</div>
+          <div class="result-value" style="color:#0a0e27">6.5 hrs</div>
+        </div>
+      </div>
+
+      <!-- Score Breakdown -->
+      <h3 style="font-size:.95rem;font-weight:700;color:#0a0e27;margin-bottom:16px">Score Breakdown</h3>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:.85rem;width:160px;flex-shrink:0">Product Functionality</span>
+          <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:92%;height:100%;background:#059669;border-radius:4px"></div></div>
+          <span style="font-size:.85rem;font-weight:600;width:40px;text-align:right">92%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:.85rem;width:160px;flex-shrink:0">Packaging Quality</span>
+          <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:85%;height:100%;background:#0052CC;border-radius:4px"></div></div>
+          <span style="font-size:.85rem;font-weight:600;width:40px;text-align:right">85%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:.85rem;width:160px;flex-shrink:0">Labeling &amp; Compliance</span>
+          <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:88%;height:100%;background:#7c3aed;border-radius:4px"></div></div>
+          <span style="font-size:.85rem;font-weight:600;width:40px;text-align:right">88%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:.85rem;width:160px;flex-shrink:0">Physical Appearance</span>
+          <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:90%;height:100%;background:#059669;border-radius:4px"></div></div>
+          <span style="font-size:.85rem;font-weight:600;width:40px;text-align:right">90%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:.85rem;width:160px;flex-shrink:0">Safety Standards</span>
+          <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:80%;height:100%;background:#f59e0b;border-radius:4px"></div></div>
+          <span style="font-size:.85rem;font-weight:600;width:40px;text-align:right">80%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Findings -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-exclamation-triangle"></i> Findings &amp; Defects</h2>
+      <table class="findings-table">
+        <thead>
+          <tr><th>#</th><th>Finding</th><th>Description</th><th>Severity</th><th>Units Affected</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td><td>Packaging Scuff</td>
+            <td>Minor scratches on outer box corners of 3 units</td>
+            <td><span class="severity severity-minor">Minor</span></td>
+            <td>3 / 32</td>
+            <td>Re-package affected units</td>
+          </tr>
+          <tr>
+            <td>2</td><td>User Manual Language</td>
+            <td>English manual missing, only Chinese version present</td>
+            <td><span class="severity severity-major">Major</span></td>
+            <td>All units</td>
+            <td>Add English manual before shipment</td>
+          </tr>
+          <tr>
+            <td>3</td><td>Charging Cable Length</td>
+            <td>Cable is 0.8m instead of specified 1.2m</td>
+            <td><span class="severity severity-major">Major</span></td>
+            <td>All units</td>
+            <td>Replace cables per specification</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Photos -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-images"></i> Inspection Photos &amp; Videos</h2>
+      <div class="photo-grid">
+        <div class="photo-card">
+          <div style="background:#e2e8f0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image" style="font-size:2rem"></i></div>
+          <div class="photo-label">Factory Entrance</div>
+        </div>
+        <div class="photo-card">
+          <div style="background:#e2e8f0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image" style="font-size:2rem"></i></div>
+          <div class="photo-label">Production Line</div>
+        </div>
+        <div class="photo-card">
+          <div style="background:#e2e8f0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image" style="font-size:2rem"></i></div>
+          <div class="photo-label">Product Sampling</div>
+        </div>
+        <div class="photo-card">
+          <div style="background:#e2e8f0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image" style="font-size:2rem"></i></div>
+          <div class="photo-label">Defect Found</div>
+        </div>
+        <div class="photo-card">
+          <div style="background:#e2e8f0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image" style="font-size:2rem"></i></div>
+          <div class="photo-label">Packaging Check</div>
+        </div>
+        <div class="photo-card">
+          <div style="background:#e2e8f0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i class="fas fa-image" style="font-size:2rem"></i></div>
+          <div class="photo-label">Label Verification</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-lightbulb"></i> Inspector Recommendations</h2>
+      <div class="recommendation-item">
+        <i class="fas fa-exclamation-circle" style="color:#f97316"></i>
+        <p><strong>Add English User Manual:</strong> Ensure all units include an English language user manual before shipment. This is a critical compliance requirement for UK/US markets.</p>
+      </div>
+      <div class="recommendation-item">
+        <i class="fas fa-exclamation-circle" style="color:#f97316"></i>
+        <p><strong>Replace Charging Cables:</strong> The 0.8m cables do not meet the 1.2m specification in the purchase order. Supplier must replace all cables at no additional cost to the buyer.</p>
+      </div>
+      <div class="recommendation-item">
+        <i class="fas fa-check-circle" style="color:#059669"></i>
+        <p><strong>Overall Assessment:</strong> Product quality is acceptable once the above issues are resolved. Recommend re-inspection of corrected items or video confirmation from supplier before shipment.</p>
+      </div>
+    </div>
+
+    <!-- Inspector Signature -->
+    <div class="card" style="background:linear-gradient(135deg,#f8faff,#fff)">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:60px;height:60px;border-radius:50%;background:#0052CC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;color:#fff">ZW</div>
+          <div>
+            <div style="font-weight:700;font-size:1rem;color:#0a0e27">Zhang Wei</div>
+            <div style="font-size:.83rem;color:#64748b">Certified QC Inspector · Globex Sky Network</div>
+            <div style="font-size:.82rem;color:#64748b">Shenzhen, China · March 20, 2026</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:.78rem;color:#94a3b8;margin-bottom:4px">Report ID</div>
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC">RPT-2026-INS042</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between">
+      <a href="tracking.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Tracking</a>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> Print Report</button>
+        <button class="btn btn-primary" onclick="downloadReport()"><i class="fas fa-file-pdf"></i> Download PDF</button>
+        <a href="request.html" class="btn btn-success"><i class="fas fa-plus"></i> New Inspection</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../../assets/js/inspection.js"></script>
+<script>
+function downloadReport() {
+  alert('PDF generation requires backend integration. Report ID: RPT-2026-INS042');
+}
+async function loadReport() {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) return;
+  try {
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch(`/api/v1/inspections/${id}/report`, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (res.ok) {
+      const { data } = await res.json();
+      console.log('Report loaded:', data);
+    }
+  } catch(e) { /* use demo data */ }
+}
+loadReport();
+</script>
+</body>
+</html>
