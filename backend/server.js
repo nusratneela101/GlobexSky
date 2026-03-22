@@ -64,6 +64,7 @@ import advancedSearchRoutes from './routes/advancedSearch.routes.js';
 import backupRoutes from './routes/backup.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
+import integrationRoutes from './routes/integration.routes.js';
 
 
 const app = express();

@@ -22,6 +22,22 @@ export async function deleteCloudinaryFile(publicId) {
 }
 
 /**
+ * Upload a file from a remote URL to Cloudinary.
+ * Useful for importing product images from external sources.
+ * @param {string} url    - Remote image URL
+ * @param {string} publicId - Desired public_id (without folder prefix)
+ * @param {string} folder
+ */
+export async function uploadFromUrl(url, publicId, folder = 'globexsky/products') {
+  return cloudinary.uploader.upload(url, {
+    folder,
+    public_id: publicId,
+    transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+    overwrite: false,
+  });
+}
+
+/**
  * Generate a signed URL for secure uploads (e.g., direct browser uploads).
  */
 export function generateSignedUploadUrl(folder = 'globexsky/general') {
