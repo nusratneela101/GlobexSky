@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Factory Virtual Tour – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/vr.css"/>
+  <style>
+    /* ── Panoramic canvas fill ── */
+    .tour-canvas-wrap{height:420px}
+    /* ── Feature list ── */
+    .cert-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f0fdf4;border:1px solid #86efac;border-radius:50px;font-size:.75rem;font-weight:600;color:#166534;margin:3px}
+    /* ── Schedule form ── */
+    .tour-req-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:600px){.tour-req-row{grid-template-columns:1fr}}
+    /* ── Supplier selector ── */
+    .supplier-tile{padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .supplier-tile:hover,.supplier-tile.active{border-color:#0052CC;background:#f0f5ff}
+    .supplier-avatar{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .supplier-name{font-weight:600;font-size:.85rem;color:#0a0e27}
+    .supplier-loc{font-size:.72rem;color:#64748b}
+  </style>
+</head>
+<body class="vr-page">
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="showroom.html"      class="btn-nav btn-login"><i class="fas fa-vr-cardboard"></i> VR Showroom</a>
+        <a href="product-viewer.html" class="btn-nav btn-login"><i class="fas fa-cube"></i> 3D Viewer</a>
+        <a href="../auth/login.html"      class="btn-nav btn-register">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── Hero ── -->
+<div class="vr-hero">
+  <h1><i class="fas fa-industry"></i> Factory Virtual Tours</h1>
+  <p>Walk through certified supplier factories from anywhere — inspect production lines, quality labs, and packaging with 360° panoramic views</p>
+  <div class="vr-hero-actions">
+    <button class="btn-vr btn-vr-white" data-tour-action="start-narration">
+      <i class="fas fa-volume-up"></i> Start Guided Tour
+    </button>
+    <button class="btn-vr btn-vr-accent" data-tour-action="schedule-tour">
+      <i class="fas fa-calendar-plus"></i> Request Live Tour
+    </button>
+  </div>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="vr-section">
+  <div class="vr-container">
+    <nav class="vr-breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+      <span>VR / AR</span>
+      <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+      <span>Factory Tour</span>
+    </nav>
+
+    <div class="vr-layout">
+      <!-- ── Left: tour canvas ── -->
+      <div>
+        <!-- Progress bar -->
+        <div class="tour-progress-bar">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27">
+              <i class="fas fa-map-marker-alt" style="color:#0052CC"></i>
+              <span id="tour-stop-name">Reception</span>
+            </div>
+            <span id="tour-stop-counter" style="font-size:.78rem;color:#64748b;font-weight:600">1 / 5</span>
+          </div>
+          <div class="tour-stops" id="tour-progress-stops" style="position:relative">
+            <!-- Built by JS -->
+            <div id="tour-stops-progress" class="tour-stops-progress" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- 360° Panorama canvas -->
+        <div class="vr-card" style="padding:0;overflow:hidden">
+          <div class="tour-canvas-wrap" id="tour-canvas">
+            <!-- Panorama background -->
+            <div id="tour-pano" style="position:absolute;inset:0;transition:background .6s ease"></div>
+
+            <!-- Hotspots layer -->
+            <div id="tour-hotspots" style="position:absolute;inset:0;transition:transform .1s"></div>
+
+            <!-- Info bar -->
+            <div class="tour-info-panel">
+              <div class="tour-location-pill" id="tour-location-pill">📍 Reception</div>
+              <div class="tour-info-text" id="tour-stop-desc">
+                Welcome to our state-of-the-art manufacturing facility.
+              </div>
+              <div class="tour-stop-counter" id="tour-stop-counter2">1/5</div>
+            </div>
+
+            <!-- Controls -->
+            <div class="tour-controls">
+              <button class="viewer-btn" id="btn-prev-stop" data-tour-action="prev" title="Previous" disabled>
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="viewer-btn" id="btn-auto-play" data-tour-action="toggle-autoplay" title="Auto Play">
+                <i class="fas fa-play"></i>
+              </button>
+              <button class="viewer-btn" data-tour-action="start-narration" title="Narration">
+                <i class="fas fa-volume-up"></i>
+              </button>
+              <button class="viewer-btn" data-tour-action="stop-narration" title="Stop Narration">
+                <i class="fas fa-volume-mute"></i>
+              </button>
+              <button class="viewer-btn" id="btn-next-stop" data-tour-action="next" title="Next">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keyboard hint -->
+        <div style="text-align:center;font-size:.75rem;color:#94a3b8;margin:8px 0 16px">
+          <i class="fas fa-keyboard"></i> Drag to pan · Arrow keys to navigate · N = next, P = previous
+        </div>
+
+        <!-- Factory certifications -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-certificate" style="color:#f59e0b"></i> Factory Certifications</div>
+          <div>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> ISO 9001:2015</span>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> ISO 14001:2015</span>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> CE Mark</span>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> RoHS Compliant</span>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> UL Listed</span>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> SGS Audited</span>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> BSCI</span>
+            <span class="cert-badge"><i class="fas fa-check-circle"></i> SA8000</span>
+          </div>
+        </div>
+
+        <!-- Tour steps detail -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-list-ol" style="color:#7c3aed"></i> Tour Highlights</div>
+          <div class="vr-feature-grid">
+            <div class="vr-feature-card" onclick="FactoryTour.goToStop(0)">
+              <div class="vr-feature-icon" style="background:#eff6ff"><i class="fas fa-door-open" style="color:#0052CC"></i></div>
+              <h3>Reception</h3>
+              <p>Meet the team, browse certifications, and get a factory overview map.</p>
+            </div>
+            <div class="vr-feature-card" onclick="FactoryTour.goToStop(1)">
+              <div class="vr-feature-icon" style="background:#f5f3ff"><i class="fas fa-boxes" style="color:#7c3aed"></i></div>
+              <h3>Raw Materials</h3>
+              <p>Inspect our 90-day material buffer and incoming quality testing lab.</p>
+            </div>
+            <div class="vr-feature-card" onclick="FactoryTour.goToStop(2)">
+              <div class="vr-feature-icon" style="background:#ecfdf5"><i class="fas fa-cogs" style="color:#10b981"></i></div>
+              <h3>Production Floor</h3>
+              <p>48 CNC machining centres and robotic welding bays running 24/7.</p>
+            </div>
+            <div class="vr-feature-card" onclick="FactoryTour.goToStop(3)">
+              <div class="vr-feature-icon" style="background:#faf5ff"><i class="fas fa-ruler-combined" style="color:#8b5cf6"></i></div>
+              <h3>Quality Control</h3>
+              <p>Zeiss CMM inspection, fatigue testing, and 47-point sign-off checklist.</p>
+            </div>
+            <div class="vr-feature-card" onclick="FactoryTour.goToStop(4)">
+              <div class="vr-feature-icon" style="background:#fff1f2"><i class="fas fa-truck" style="color:#ef4444"></i></div>
+              <h3>Packaging &amp; Dispatch</h3>
+              <p>Robotic palletising, export labelling, and live carrier tracking.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: sidebar ── -->
+      <div class="vr-sidebar">
+        <!-- Supplier selector -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-building" style="color:#0052CC"></i> Select Factory</div>
+          <div id="supplier-list">
+            <div class="supplier-tile active" onclick="setSupplier(this,'Shenzhen TechCo Ltd.')">
+              <div class="supplier-avatar" style="background:#eff6ff">🏭</div>
+              <div><div class="supplier-name">Shenzhen TechCo Ltd.</div><div class="supplier-loc"><i class="fas fa-map-pin"></i> Shenzhen, China</div></div>
+            </div>
+            <div class="supplier-tile" onclick="setSupplier(this,'Guangzhou PrimeMfg')">
+              <div class="supplier-avatar" style="background:#f0fdf4">⚙️</div>
+              <div><div class="supplier-name">Guangzhou PrimeMfg</div><div class="supplier-loc"><i class="fas fa-map-pin"></i> Guangzhou, China</div></div>
+            </div>
+            <div class="supplier-tile" onclick="setSupplier(this,'HK Precision Parts')">
+              <div class="supplier-avatar" style="background:#faf5ff">🔧</div>
+              <div><div class="supplier-name">HK Precision Parts</div><div class="supplier-loc"><i class="fas fa-map-pin"></i> Hong Kong</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Factory stats -->
+        <div class="vr-card">
+          <div class="vr-sidebar-label">Factory Stats</div>
+          <div class="vr-info-row"><i class="fas fa-building"></i><span>Floor Area</span>  <strong>120,000 m²</strong></div>
+          <div class="vr-info-row"><i class="fas fa-users"></i><span>Employees</span>      <strong>2,400</strong></div>
+          <div class="vr-info-row"><i class="fas fa-clock"></i><span>Lead Time</span>       <strong>15–25 days</strong></div>
+          <div class="vr-info-row"><i class="fas fa-star"></i><span>Quality Rate</span>     <strong>99.97%</strong></div>
+          <div class="vr-info-row"><i class="fas fa-globe"></i><span>Export Markets</span> <strong>62 countries</strong></div>
+        </div>
+
+        <!-- Request form CTA -->
+        <div class="vr-card" style="background:linear-gradient(135deg,#0052CC,#7c3aed);color:#fff">
+          <div style="font-size:2rem;margin-bottom:8px">📅</div>
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;margin-bottom:6px">Book a Live Tour</div>
+          <p style="font-size:.82rem;opacity:.85;margin-bottom:14px">
+            Connect with factory engineers in real-time. Available Mon–Sat, 9am–6pm CST.
+          </p>
+          <button class="btn-vr btn-vr-white" style="width:100%;justify-content:center"
+                  data-tour-action="schedule-tour">
+            <i class="fas fa-calendar-plus"></i> Request Tour
+          </button>
+        </div>
+
+        <!-- VR links -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-link" style="color:#0052CC"></i> Explore More</div>
+          <a href="showroom.html"      class="btn-vr btn-vr-outline" style="width:100%;justify-content:center;margin-bottom:8px">
+            <i class="fas fa-vr-cardboard"></i> VR Showroom
+          </a>
+          <a href="product-viewer.html" class="btn-vr btn-vr-outline" style="width:100%;justify-content:center">
+            <i class="fas fa-cube"></i> 3D Product Viewer
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Tour schedule modal ── -->
+<div class="vr-modal-overlay" id="tour-schedule-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="vr-modal">
+    <span class="vr-modal-close" data-tour-action="close-modal" data-target="#tour-schedule-modal">
+      <i class="fas fa-times"></i>
+    </span>
+    <h3><i class="fas fa-industry" style="color:#0052CC"></i> Request Factory Tour</h3>
+    <form onsubmit="FactoryTour.openScheduleModal ? event.preventDefault() : null">
+      <div class="tour-req-row">
+        <div class="vr-form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="Full name" required/>
+        </div>
+        <div class="vr-form-group">
+          <label>Company</label>
+          <input type="text" placeholder="Company name" required/>
+        </div>
+      </div>
+      <div class="tour-req-row">
+        <div class="vr-form-group">
+          <label>Email</label>
+          <input type="email" placeholder="your@email.com" required/>
+        </div>
+        <div class="vr-form-group">
+          <label>Phone / WhatsApp</label>
+          <input type="tel" placeholder="+1 234 567 890"/>
+        </div>
+      </div>
+      <div class="tour-req-row">
+        <div class="vr-form-group">
+          <label>Preferred Date</label>
+          <input type="date" required/>
+        </div>
+        <div class="vr-form-group">
+          <label>Preferred Time (CST)</label>
+          <select>
+            <option>09:00 – 10:00</option>
+            <option>10:00 – 11:00</option>
+            <option>14:00 – 15:00</option>
+            <option>15:00 – 16:00</option>
+            <option>16:00 – 17:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="vr-form-group">
+        <label>Tour Purpose</label>
+        <select>
+          <option>Initial Supplier Verification</option>
+          <option>Quality Audit Preparation</option>
+          <option>Capacity Assessment</option>
+          <option>New Product Development</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="vr-form-group">
+        <label>Special Requests / Focus Areas</label>
+        <textarea placeholder="e.g. Focus on quality control lab and packaging line…"></textarea>
+      </div>
+      <button type="submit" class="btn-vr btn-vr-primary" style="width:100%;justify-content:center"
+              onclick="submitTourRequest(event)">
+        <i class="fas fa-paper-plane"></i> Submit Tour Request
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Hotspot modal ── -->
+<div class="vr-modal-overlay" id="tour-hotspot-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="vr-modal">
+    <span class="vr-modal-close" data-tour-action="close-modal" data-target="#tour-hotspot-modal">
+      <i class="fas fa-times"></i>
+    </span>
+    <h3 id="hotspot-modal-title">Feature Detail</h3>
+    <p id="hotspot-modal-body" style="font-size:.88rem;color:#374151;line-height:1.7"></p>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-vr btn-vr-outline" data-tour-action="close-modal" data-target="#tour-hotspot-modal">
+        <i class="fas fa-times"></i> Close
+      </button>
+      <button class="btn-vr btn-vr-primary" data-tour-action="schedule-tour">
+        <i class="fas fa-calendar-plus"></i> Request Verification
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="vr-toast" id="tour-toast">
+  <i class="fas fa-info-circle" id="tour-toast-icon"></i>
+  <span id="tour-toast-text"></span>
+</div>
+
+<script>
+function setSupplier(el, name) {
+  document.querySelectorAll('.supplier-tile').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const toast = document.getElementById('tour-toast');
+  document.getElementById('tour-toast-text').textContent = `Loaded tour for: ${name}`;
+  document.getElementById('tour-toast-icon').className = 'fas fa-industry';
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('show'), 3000);
+  // Reset to stop 0
+  if (window.FactoryTour) FactoryTour.goToStop(0);
+}
+
+function submitTourRequest(e) {
+  e.preventDefault();
+  document.getElementById('tour-schedule-modal')?.classList.remove('open');
+  const toast = document.getElementById('tour-toast');
+  document.getElementById('tour-toast-text').textContent = 'Tour request submitted! You\'ll receive a confirmation within 2 hours.';
+  document.getElementById('tour-toast-icon').className = 'fas fa-check-circle';
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('show'), 5000);
+}
+</script>
+<script src="../../assets/js/factory-tour.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

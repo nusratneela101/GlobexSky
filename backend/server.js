@@ -71,6 +71,7 @@ import adminProductsRoutes from './routes/adminProducts.js';
 import adminSettingsRoutes from './routes/settings.js';
 import adminRolesRoutes from './routes/adminRoles.js';
 import adminCmsRoutes from './routes/cms.js';
+import vrRoutes from './routes/vr.routes.js';
 import paymentsRoutes from './routes/payments.js';
 import adminPricingRoutes from './routes/pricing.js';
 import reportsRoutes from './routes/reports.js';
@@ -162,6 +163,7 @@ app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
 app.use(`${API}/integrations`, integrationRoutes);
 app.use(`${API}/ai`, aiRoutes);
+app.use(`${API}/vr`, vrRoutes);
 
 app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
