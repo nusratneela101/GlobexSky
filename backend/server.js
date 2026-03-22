@@ -65,7 +65,18 @@ import backupRoutes from './routes/backup.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
 import integrationRoutes from './routes/integration.routes.js';
-
+import aiRoutes from './routes/ai.routes.js';
+import adminUsersRoutes from './routes/adminUsers.js';
+import adminProductsRoutes from './routes/adminProducts.js';
+import adminSettingsRoutes from './routes/settings.js';
+import adminRolesRoutes from './routes/adminRoles.js';
+import adminCmsRoutes from './routes/cms.js';
+import paymentsRoutes from './routes/payments.js';
+import adminPricingRoutes from './routes/pricing.js';
+import reportsRoutes from './routes/reports.js';
+import payoutsRoutes from './routes/payouts.js';
+import { initializeWebSocket } from './services/websocket.service.js';
+import { initializeWebRTC } from './services/webrtc.service.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -149,6 +160,8 @@ app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/backup`, backupRoutes);
 app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
+app.use(`${API}/integrations`, integrationRoutes);
+app.use(`${API}/ai`, aiRoutes);
 
 app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);

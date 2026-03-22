@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title data-i18n="search.pageTitle">Search Products | Globex Sky</title>
+  <meta name="description" content="Search millions of B2B products with text, voice, image or barcode search. Advanced filters, AI recommendations and chatbot assistant."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/search.css"/>
+</head>
+<body class="search-page">
+
+<!-- ══════════════════════════════════════════
+     STICKY SEARCH HERO
+══════════════════════════════════════════ -->
+<div class="search-hero">
+  <h1><i class="fas fa-search" style="color:#00C9A7;margin-right:8px"></i> <span data-i18n="search.title">Find Products</span></h1>
+  <p data-i18n="search.subtitle">Search by text, voice, image or barcode — millions of B2B products</p>
+
+  <div class="search-bar-container">
+    <div class="search-bar-wrap" role="combobox" aria-expanded="false" aria-haspopup="listbox">
+      <input
+        type="search"
+        id="main-search-input"
+        placeholder="Search products, suppliers, categories…"
+        data-i18n-placeholder="search.placeholder"
+        autocomplete="off"
+        aria-label="Search"
+        aria-autocomplete="list"
+        aria-controls="search-suggestions"
+      />
+
+      <!-- Clear -->
+      <button class="search-icon-btn btn-clear-search" id="btn-clear-search" title="Clear" aria-label="Clear search">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="search-divider"></div>
+
+      <!-- Voice Search -->
+      <button class="search-icon-btn btn-mic" id="btn-mic" title="Voice search" aria-label="Voice search">
+        <i class="fas fa-microphone"></i>
+      </button>
+
+      <!-- Image Search -->
+      <button class="search-icon-btn btn-img" id="btn-img" title="Image search" aria-label="Image search">
+        <i class="fas fa-camera"></i>
+      </button>
+
+      <!-- Barcode Scanner -->
+      <button class="search-icon-btn btn-barcode" id="btn-barcode" title="Barcode scanner" aria-label="Scan barcode">
+        <i class="fas fa-barcode"></i>
+      </button>
+
+      <div class="search-divider"></div>
+
+      <!-- Search Button -->
+      <button class="search-icon-btn btn-search-go" id="btn-search-go" aria-label="Search">
+        <i class="fas fa-search"></i> <span data-i18n="search.searchBtn">Search</span>
+      </button>
+    </div>
+
+    <!-- Autocomplete Dropdown -->
+    <div id="search-suggestions" class="suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
+  </div>
+
+  <!-- Search Mode Tabs -->
+  <div class="search-tabs" role="tablist" aria-label="Search modes">
+    <button class="search-tab active" data-i18n="search.tabAll">All Products</button>
+    <button class="search-tab" onclick="window.location.href='/pages/sourcing/index.html'" data-i18n="search.tabSuppliers">Suppliers</button>
+    <button class="search-tab" onclick="window.location.href='/pages/sourcing/categories.html'" data-i18n="search.tabCategories">Categories</button>
+    <button class="search-tab" onclick="GlobexImageSearch.open()" data-i18n="search.tabImage">Image Search</button>
+    <button class="search-tab" onclick="GlobexBarcode.open()" data-i18n="search.tabBarcode">Barcode</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN LAYOUT
+══════════════════════════════════════════ -->
+<div class="search-layout">
+
+  <!-- ── Filter Sidebar ── -->
+  <aside>
+    <!-- Mobile filter toggle -->
+    <button class="btn-mobile-filters" id="btn-mobile-filters" aria-label="Open filters">
+      <i class="fas fa-sliders-h"></i> Filters
+      <span class="filter-count-badge" id="mobile-filter-badge" style="display:none">0</span>
+    </button>
+
+    <div id="filter-panel" class="filter-panel" role="form" aria-label="Search filters">
+      <!-- Built dynamically by search-filters.js -->
+    </div>
+  </aside>
+
+  <!-- ── Results Area ── -->
+  <main>
+    <!-- Active Filter Chips -->
+    <div id="active-filters-bar" class="active-filters-bar" aria-label="Active filters" aria-live="polite"></div>
+
+    <!-- Spell suggestion -->
+    <div id="spell-suggest" class="spell-suggest" role="status"></div>
+
+    <!-- ── AI Recommendations: Recommended for You ── -->
+    <div class="recommendations-section" id="section-recs-for-you">
+      <div class="section-header">
+        <div>
+          <div class="section-title"><i class="fas fa-sparkles"></i> <span data-i18n="search.recommendedForYou">Recommended for You</span></div>
+          <div class="section-subtitle" id="rec-subtitle" data-i18n="search.basedOnSearch">Based on your recent searches</div>
+        </div>
+        <button class="btn-see-all" data-i18n="search.seeAll">See all</button>
+      </div>
+      <div id="recs-for-you"></div>
+    </div>
+
+    <!-- ── Results Header ── -->
+    <div class="results-header">
+      <div class="results-meta">
+        <div id="results-count" class="results-count" aria-live="polite"></div>
+      </div>
+      <div class="results-controls">
+        <select class="sort-select" id="sort-select" aria-label="Sort by">
+          <option value="newest" data-i18n="search.sortNewest">Newest First</option>
+          <option value="relevance" data-i18n="search.sortRelevance">Most Relevant</option>
+          <option value="price_asc" data-i18n="search.sortPriceAsc">Price: Low to High</option>
+          <option value="price_desc" data-i18n="search.sortPriceDesc">Price: High to Low</option>
+          <option value="rating" data-i18n="search.sortRating">Highest Rated</option>
+        </select>
+        <div class="view-toggle" role="group" aria-label="View mode">
+          <button class="view-btn active" data-view="grid" title="Grid view" aria-label="Grid view"><i class="fas fa-th-large"></i></button>
+          <button class="view-btn" data-view="list" title="List view" aria-label="List view"><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="products-grid" class="products-grid" role="list">
+      <div class="empty-state">
+        <i class="fas fa-search"></i>
+        <h3 data-i18n="search.emptyTitle">Start your search</h3>
+        <p data-i18n="search.emptyDesc">Type a product name, scan a barcode, or upload an image to find suppliers.</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav id="pagination" class="pagination" aria-label="Results pagination"></nav>
+
+    <!-- ── Customers Also Viewed ── -->
+    <div class="recommendations-section" style="margin-top:32px">
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-eye"></i> <span data-i18n="search.customersViewed">Customers Also Viewed</span></div>
+        <button class="btn-see-all">See all</button>
+      </div>
+      <div id="recs-similar"></div>
+    </div>
+
+    <!-- ── Trending ── -->
+    <div class="recommendations-section" style="margin-top:24px">
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-fire"></i> <span data-i18n="search.trending">Trending in Your Industry</span></div>
+        <button class="btn-see-all">See all</button>
+      </div>
+      <div id="recs-trending"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FILTER OVERLAY (MOBILE)
+══════════════════════════════════════════ -->
+<div id="filter-overlay" class="filter-panel-overlay" aria-hidden="true"></div>
+
+<!-- ══════════════════════════════════════════
+     VOICE SEARCH OVERLAY
+══════════════════════════════════════════ -->
+<div id="voice-overlay" class="voice-overlay" role="dialog" aria-modal="true" aria-label="Voice search">
+  <div class="voice-circle"><i class="fas fa-microphone"></i></div>
+  <div class="voice-status" id="voice-status">Listening…</div>
+  <div class="voice-interim" id="voice-interim"></div>
+  <button class="voice-cancel" id="voice-cancel" data-i18n="search.voiceCancel">Cancel</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     IMAGE SEARCH MODAL
+══════════════════════════════════════════ -->
+<div id="image-search-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Image search">
+  <div class="modal-box">
+    <button class="modal-close" id="close-image-modal" aria-label="Close"><i class="fas fa-times"></i></button>
+    <div class="modal-title" data-i18n="search.imageSearchTitle">Search by Image</div>
+    <div class="modal-subtitle" data-i18n="search.imageSearchSubtitle">Upload a product image to find visually similar items</div>
+
+    <div class="drop-zone" id="drop-zone">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <p data-i18n="search.dropImage">Drag & drop an image here</p>
+      <p style="font-size:0.72rem;color:#94a3b8;margin-bottom:12px">or</p>
+      <button class="btn-browse" id="btn-browse-image" data-i18n="search.browseImage">Browse Image</button>
+      <input type="file" id="image-file-input" accept="image/*" style="display:none" capture="environment"/>
+    </div>
+
+    <img id="img-preview" class="img-preview" alt="Preview"/>
+    <button id="btn-image-search" class="btn-image-search" data-i18n="search.searchByImage">Search by Image</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BARCODE SCANNER MODAL
+══════════════════════════════════════════ -->
+<div id="barcode-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Barcode scanner">
+  <div class="modal-box">
+    <button class="modal-close" id="close-barcode-modal" aria-label="Close"><i class="fas fa-times"></i></button>
+    <div class="modal-title" data-i18n="search.barcodeTitle">Barcode Scanner</div>
+    <div class="modal-subtitle" data-i18n="search.barcodeSubtitle">Point camera at a barcode to search</div>
+
+    <div class="barcode-preview-wrap">
+      <div id="barcode-video"></div>
+      <div class="barcode-overlay">
+        <div class="scan-guide">
+          <div class="scan-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="barcode-status" id="barcode-status" data-i18n="search.barcodeStatus">Point camera at barcode…</div>
+
+    <div class="barcode-manual">
+      <input type="text" id="barcode-manual-input" placeholder="Or enter barcode manually…" data-i18n-placeholder="search.barcodeManual"/>
+      <button id="btn-barcode-manual" data-i18n="search.barcodeLookup">Look Up</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHATBOT
+══════════════════════════════════════════ -->
+<!-- Bubble Button -->
+<button class="chat-bubble-btn" id="chat-bubble-btn" aria-label="Open AI assistant">
+  <i class="fas fa-robot"></i>
+</button>
+
+<!-- Chat Window -->
+<div id="chat-window" class="chat-window" role="dialog" aria-modal="false" aria-label="AI sourcing assistant">
+  <div class="chat-header">
+    <div class="chat-avatar"><i class="fas fa-robot"></i></div>
+    <div class="chat-header-info">
+      <div class="chat-bot-name" data-i18n="search.chatBotName">AI Sourcing Assistant</div>
+      <div class="chat-bot-status" data-i18n="search.chatBotStatus">Online</div>
+    </div>
+    <div class="chat-header-controls">
+      <button class="chat-ctrl-btn" id="chat-clear" title="Clear history" aria-label="Clear chat history"><i class="fas fa-trash-alt"></i></button>
+      <button class="chat-ctrl-btn" id="chat-minimize" title="Minimize" aria-label="Minimize chat"><i class="fas fa-minus"></i></button>
+      <button class="chat-ctrl-btn" id="chat-close" title="Close" aria-label="Close chat"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+
+  <div class="chat-input-area">
+    <textarea
+      id="chat-input"
+      class="chat-input"
+      rows="1"
+      placeholder="Ask me anything about products…"
+      data-i18n-placeholder="search.chatPlaceholder"
+      aria-label="Type your message"
+    ></textarea>
+    <button id="btn-chat-send" class="btn-chat-send" aria-label="Send message">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
+<!-- QuaggaJS for barcode scanning (CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
+<!-- Core modules -->
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/search.js"></script>
+<script src="../../assets/js/search-filters.js"></script>
+<script src="../../assets/js/search-ai.js"></script>
+
+</body>
+</html>
