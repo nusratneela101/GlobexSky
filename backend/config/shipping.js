@@ -1,11 +1,12 @@
 /**
- * Globex Sky — Freight Carrier Configuration
- * API keys, endpoints, sandbox/production modes for DHL, FedEx, Aramex.
+ * Globex Sky — Shipping Carrier Configuration
+ * API keys, endpoints, and settings for DHL, FedEx, and UPS.
+ * Wraps freight.config.js and adds UPS support.
  */
 
 const SANDBOX = process.env.FREIGHT_SANDBOX !== 'false';
 
-export const freightConfig = {
+export const shippingConfig = {
   dhl: {
     apiKey: process.env.DHL_API_KEY || '',
     apiSecret: process.env.DHL_API_SECRET || '',
@@ -34,19 +35,6 @@ export const freightConfig = {
     sandbox: SANDBOX,
     timeout: 15000,
   },
-  aramex: {
-    username: process.env.ARAMEX_USERNAME || '',
-    password: process.env.ARAMEX_PASSWORD || '',
-    accountNumber: process.env.ARAMEX_ACCOUNT_NUMBER || '',
-    accountPin: process.env.ARAMEX_ACCOUNT_PIN || '',
-    accountEntity: process.env.ARAMEX_ACCOUNT_ENTITY || '',
-    accountCountryCode: process.env.ARAMEX_ACCOUNT_COUNTRY_CODE || 'US',
-    baseUrl: SANDBOX
-      ? 'https://ws.dev.aramex.net/ShippingAPI.V2'
-      : 'https://ws.aramex.net/ShippingAPI.V2',
-    sandbox: SANDBOX,
-    timeout: 15000,
-  },
   defaults: {
     currency: 'USD',
     weightUnit: 'KG',
@@ -55,4 +43,4 @@ export const freightConfig = {
   },
 };
 
-export default freightConfig;
+export default shippingConfig;

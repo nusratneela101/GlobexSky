@@ -629,6 +629,113 @@ function initFlashSaleCountdown() {
 /* ─────────────────────────────────────────────
    INIT ALL
 ───────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   GLOBAL EVENT BUS
+───────────────────────────────────────────── */
+const _eventBusListeners = {};
+
+function eventBusOn(event, cb) {
+  if (!_eventBusListeners[event]) _eventBusListeners[event] = [];
+  _eventBusListeners[event].push(cb);
+}
+
+function eventBusOff(event, cb) {
+  if (_eventBusListeners[event]) {
+    _eventBusListeners[event] = _eventBusListeners[event].filter((fn) => fn !== cb);
+  }
+}
+
+function eventBusEmit(event, ...args) {
+  (_eventBusListeners[event] || []).forEach((cb) => { try { cb(...args); } catch (_) {} });
+}
+
+/* ─────────────────────────────────────────────
+   THEME MANAGEMENT (dark / light mode)
+───────────────────────────────────────────── */
+function initTheme() {
+  const THEME_KEY = 'globexTheme';
+  const stored    = localStorage.getItem(THEME_KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme     = stored || (prefersDark ? 'dark' : 'light');
+
+  document.documentElement.setAttribute('data-theme', theme);
+
+  document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next    = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(THEME_KEY, next);
+      btn.setAttribute('aria-pressed', String(next === 'dark'));
+      eventBusEmit('theme:changed', next);
+    });
+    btn.setAttribute('aria-pressed', String(theme === 'dark'));
+  });
+}
+
+/* ─────────────────────────────────────────────
+   SCROLL-TO-TOP BUTTON
+───────────────────────────────────────────── */
+function initScrollToTop() {
+  const btn = document.querySelector('[data-scroll-top], .scroll-to-top');
+  if (!btn) return;
+
+  const onScroll = () => {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   SERVICE WORKER REGISTRATION
+───────────────────────────────────────────── */
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((reg) => {
+        reg.addEventListener('updatefound', () => {
+          const worker = reg.installing;
+          if (!worker) return;
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              showToast('Update available — refresh to get the latest version.', 'info');
+            }
+          });
+        });
+      })
+      .catch((err) => console.warn('[SW] Registration failed:', err));
+  }
+}
+
+/* ─────────────────────────────────────────────
+   INIT OPTIONAL MODULES
+───────────────────────────────────────────── */
+function initOptionalModules() {
+  // Currency module
+  if (window.Currency && typeof window.Currency.init === 'function') {
+    window.Currency.init();
+  }
+
+  // i18n module
+  if (window.GlobexI18n && typeof window.GlobexI18n.init === 'function') {
+    window.GlobexI18n.init();
+  }
+
+  // Real-time module — connect when user is logged in
+  if (window.Realtime && typeof window.Realtime.connect === 'function') {
+    try {
+      const session = JSON.parse(localStorage.getItem('globexSession') || 'null');
+      if (session && session.token) window.Realtime.connect();
+    } catch (_) {}
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initStickyNavbar();
   initMobileMenu();
@@ -645,17 +752,25 @@ document.addEventListener('DOMContentLoaded', () => {
   initTooltips();
   initActiveNavLink();
   initFlashSaleCountdown();
+  initTheme();
+  initScrollToTop();
+  initOptionalModules();
+  registerServiceWorker();
 });
 
 /* ─────────────────────────────────────────────
    EXPORTS (for use by other modules)
 ───────────────────────────────────────────── */
-window.Globex Sky = window.Globex Sky || {};
-Object.assign(window.Globex Sky, {
+window.GlobexSky = window.GlobexSky || {};
+Object.assign(window.GlobexSky, {
   openModal,
   closeModal,
   showToast,
   animateCounter,
   startCountdown,
   CURRENCY_SYMBOLS,
+  // Event bus
+  on:   eventBusOn,
+  off:  eventBusOff,
+  emit: eventBusEmit,
 });

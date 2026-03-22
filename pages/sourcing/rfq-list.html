@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RFQ List | Globex Sky Sourcing</title>
+  <meta name="description" content="View and compare all your Request for Quotations on Globex Sky. Track quotes, compare suppliers, and manage your sourcing pipeline."/>
+  <meta property="og:title" content="RFQ List | Globex Sky Sourcing"/>
+  <meta property="og:description" content="Manage your RFQs and compare supplier quotations."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://globexsky.com/pages/sourcing/rfq-list.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--border:#e2e8f0;--bg:#f4f6fa;--muted:#64748b}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    h1,h2,h3,h4{font-family:'Poppins',sans-serif}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-links{display:flex;gap:4px;margin-left:24px;flex-wrap:wrap}
+    .nav-links a{padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .nav-links a:hover,.nav-links a.active{background:#eff6ff;color:var(--primary)}
+    .nav-controls{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{padding:9px 20px;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1.5px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+    .btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-outline:hover{background:var(--primary);color:#fff}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}
+    .btn-sm{padding:6px 14px;font-size:.82rem}
+    /* Layout */
+    .page-wrap{max-width:1100px;margin:0 auto;padding:36px 24px;flex:1}
+    /* Breadcrumb */
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary);text-decoration:none}
+    .breadcrumb i{font-size:.65rem;color:#cbd5e1}
+    /* Stats */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);text-align:center;border-top:3px solid var(--border)}
+    .stat-card.blue{border-top-color:var(--primary)}
+    .stat-card.yellow{border-top-color:#f59e0b}
+    .stat-card.green{border-top-color:#22c55e}
+    .stat-card.red{border-top-color:#ef4444}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:700;color:var(--dark)}
+    .stat-label{font-size:.78rem;color:var(--muted);margin-top:2px}
+    /* Filters bar */
+    .filters-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+    .filter-tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px}
+    .filter-tab{padding:7px 14px;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);transition:all .2s;white-space:nowrap}
+    .filter-tab.active{background:#fff;color:var(--primary);font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .search-wrap{position:relative;flex:1;max-width:320px}
+    .search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.82rem}
+    .search-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px 8px 32px;font-size:.85rem;font-family:'Inter',sans-serif}
+    .search-input:focus{outline:none;border-color:var(--primary)}
+    .filter-select{border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.83rem;font-family:'Inter',sans-serif;color:#374151;background:#fff}
+    /* RFQ cards */
+    .rfq-list{display:flex;flex-direction:column;gap:16px}
+    .rfq-card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.05);border:1.5px solid var(--border);border-left:4px solid transparent;transition:all .2s;position:relative}
+    .rfq-card:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.09);border-color:#bfdbfe}
+    .rfq-card.open{border-left-color:var(--primary)}
+    .rfq-card.quoted{border-left-color:#f59e0b}
+    .rfq-card.awarded{border-left-color:#059669}
+    .rfq-card.closed{border-left-color:#94a3b8}
+    .rfq-card.expired{border-left-color:#ef4444}
+    .rfq-select{position:absolute;top:20px;left:-14px}
+    .rfq-select input{width:18px;height:18px;cursor:pointer;accent-color:var(--primary)}
+    .rfq-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+    .rfq-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:3px}
+    .rfq-category{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.74rem;font-weight:600}
+    .badge-open{background:#dbeafe;color:var(--primary)}
+    .badge-quoted{background:#fef3c7;color:#d97706}
+    .badge-awarded{background:#d1fae5;color:#059669}
+    .badge-closed{background:#f1f5f9;color:#64748b}
+    .badge-expired{background:#fee2e2;color:#dc2626}
+    .rfq-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+    .rfq-meta-item{display:flex;align-items:center;gap:4px}
+    .rfq-meta-item strong{color:#374151}
+    .rfq-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .quotes-count{display:flex;align-items:center;gap:6px;background:#eff6ff;color:var(--primary);padding:5px 12px;border-radius:20px;font-size:.82rem;font-weight:600}
+    .rfq-actions{display:flex;gap:6px;flex-wrap:wrap}
+    /* Page header */
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:var(--dark)}
+    /* Floating compare button */
+    .compare-fab{position:fixed;bottom:28px;right:28px;z-index:500;display:none}
+    .compare-fab.visible{display:flex}
+    .compare-fab-btn{background:var(--secondary);color:#fff;padding:14px 22px;border-radius:50px;border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(255,107,53,.4);transition:all .2s}
+    .compare-fab-btn:hover{background:#e55a25;transform:translateY(-2px)}
+    .compare-count{background:rgba(255,255,255,.25);padding:2px 8px;border-radius:20px;font-size:.8rem}
+    /* Empty state */
+    .empty-state{text-align:center;padding:60px 24px;background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .empty-state i{font-size:3rem;color:#e2e8f0;margin-bottom:16px}
+    .empty-state h3{font-weight:700;color:var(--dark);margin-bottom:8px}
+    .empty-state p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+    /* Site footer */
+    .site-footer{background:#0a0e27;margin-top:auto}
+    @media(max-width:768px){.stats-row{grid-template-columns:1fr 1fr}.filter-tabs{flex-wrap:wrap}.rfq-top{flex-direction:column}.rfq-actions{width:100%;justify-content:flex-end}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo">
+      <img src="../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain">
+    </a>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="index.html">Sourcing</a>
+      <a href="rfq/create.html">Create RFQ</a>
+      <a href="rfq-list.html" class="active">RFQ List</a>
+    </nav>
+    <div class="nav-controls">
+      <a href="../pages/auth/login.html" class="btn btn-primary" style="padding:8px 16px;font-size:.85rem">Login</a>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../index.html" data-i18n="nav.home">Home</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a href="index.html" data-i18n="nav.sourcing">Sourcing</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span data-i18n="nav.rfqList">RFQ List</span>
+  </nav>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h1 class="page-title" data-i18n="rfqList.title"><i class="fa-solid fa-file-invoice" style="color:var(--primary);font-size:1.2rem;margin-right:8px"></i>My RFQs</h1>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a href="quotation-compare.html" class="btn btn-outline btn-sm" data-i18n="btn.compareQuotes"><i class="fa-solid fa-code-compare"></i> Compare Quotes</a>
+      <a href="rfq/create.html" class="btn btn-primary btn-sm" data-i18n="btn.newRfq"><i class="fa-solid fa-plus"></i> New RFQ</a>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+    <div class="stat-card blue">
+      <div class="stat-value">24</div>
+      <div class="stat-label" data-i18n="rfq.stat.total">Total RFQs</div>
+    </div>
+    <div class="stat-card yellow">
+      <div class="stat-value">8</div>
+      <div class="stat-label" data-i18n="rfq.stat.pending">Pending Quotes</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-value">12</div>
+      <div class="stat-label" data-i18n="rfq.stat.awarded">Awarded</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-value">4</div>
+      <div class="stat-label" data-i18n="rfq.stat.expired">Expired</div>
+    </div>
+  </div>
+
+  <!-- Filters bar -->
+  <div class="filters-bar">
+    <div class="filter-tabs" role="tablist">
+      <button class="filter-tab active" onclick="filterRfqs('all',this)" data-i18n="filter.all">All (24)</button>
+      <button class="filter-tab" onclick="filterRfqs('open',this)" data-i18n="filter.open">Open (6)</button>
+      <button class="filter-tab" onclick="filterRfqs('awaiting',this)" data-i18n="filter.awaiting">Awaiting Quotes (8)</button>
+      <button class="filter-tab" onclick="filterRfqs('quoted',this)" data-i18n="filter.quoted">Quoted (4)</button>
+      <button class="filter-tab" onclick="filterRfqs('awarded',this)" data-i18n="filter.awarded">Awarded (12)</button>
+      <button class="filter-tab" onclick="filterRfqs('closed',this)" data-i18n="filter.closed">Closed (2)</button>
+    </div>
+    <div class="search-wrap">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" class="search-input" placeholder="Search RFQs…" data-i18n-ph="search.rfqPh"/>
+    </div>
+    <select class="filter-select">
+      <option>Sort: Latest</option>
+      <option>Sort: Deadline</option>
+      <option>Sort: Most Quotes</option>
+    </select>
+  </div>
+
+  <!-- RFQ cards -->
+  <div class="rfq-list" id="rfqList">
+
+    <!-- RFQ 1 -->
+    <div class="rfq-card open" data-status="open">
+      <div class="rfq-select"><input type="checkbox" onchange="updateCompareBtn()"/></div>
+      <div class="rfq-top">
+        <div>
+          <div class="rfq-title" data-i18n="rfq.1.title">LED Panel Light 60×60 40W – Bulk Order</div>
+          <div class="rfq-category"><i class="fa-solid fa-tag"></i> Lighting &amp; Electrical</div>
+        </div>
+        <span class="badge badge-open"><i class="fa-solid fa-circle" style="font-size:.5rem"></i> Open</span>
+      </div>
+      <div class="rfq-meta">
+        <span class="rfq-meta-item"><i class="fa-solid fa-boxes-stacked"></i> Qty: <strong>5,000 units</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-tag"></i> Target: <strong>$7.50/unit</strong></span>
+        <span class="rfq-meta-item"><i class="fa-regular fa-calendar"></i> Deadline: <strong>Feb 28, 2025</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-ship"></i> FOB Guangzhou</span>
+      </div>
+      <div class="rfq-footer">
+        <div class="quotes-count"><i class="fa-solid fa-comment-dots"></i> 7 quotes received</div>
+        <div class="rfq-actions">
+          <a href="rfq/detail.html" class="btn btn-sm btn-secondary" data-i18n="btn.viewQuotes"><i class="fa-solid fa-eye"></i> View Quotes</a>
+          <a href="quotation-compare.html" class="btn btn-sm btn-outline" data-i18n="btn.compare"><i class="fa-solid fa-code-compare"></i> Compare</a>
+          <button class="btn btn-sm btn-secondary" data-i18n="btn.edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-danger" data-i18n="btn.close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RFQ 2 -->
+    <div class="rfq-card quoted" data-status="quoted">
+      <div class="rfq-select"><input type="checkbox" onchange="updateCompareBtn()"/></div>
+      <div class="rfq-top">
+        <div>
+          <div class="rfq-title">Cotton Plain T-Shirts Unisex</div>
+          <div class="rfq-category"><i class="fa-solid fa-tag"></i> Apparel &amp; Textiles</div>
+        </div>
+        <span class="badge badge-quoted"><i class="fa-solid fa-clock" style="font-size:.5rem"></i> Quoted</span>
+      </div>
+      <div class="rfq-meta">
+        <span class="rfq-meta-item"><i class="fa-solid fa-boxes-stacked"></i> Qty: <strong>2,000 pcs</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-tag"></i> Target: <strong>$3.20/pc</strong></span>
+        <span class="rfq-meta-item"><i class="fa-regular fa-calendar"></i> Deadline: <strong>Mar 10, 2025</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-map-pin"></i> Origin: Bangladesh, India</span>
+      </div>
+      <div class="rfq-footer">
+        <div class="quotes-count"><i class="fa-solid fa-comment-dots"></i> 4 quotes received</div>
+        <div class="rfq-actions">
+          <a href="rfq/detail.html" class="btn btn-sm btn-secondary"><i class="fa-solid fa-eye"></i> View Quotes</a>
+          <a href="quotation-compare.html" class="btn btn-sm btn-outline"><i class="fa-solid fa-code-compare"></i> Compare</a>
+          <button class="btn btn-sm btn-secondary"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-danger"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RFQ 3 -->
+    <div class="rfq-card open" data-status="awaiting">
+      <div class="rfq-select"><input type="checkbox" onchange="updateCompareBtn()"/></div>
+      <div class="rfq-top">
+        <div>
+          <div class="rfq-title">PCB Assembly for Smart Home Controller</div>
+          <div class="rfq-category"><i class="fa-solid fa-tag"></i> Electronics &amp; Components</div>
+        </div>
+        <span class="badge" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-hourglass-half" style="font-size:.5rem"></i> Awaiting Quotes</span>
+      </div>
+      <div class="rfq-meta">
+        <span class="rfq-meta-item"><i class="fa-solid fa-boxes-stacked"></i> Qty: <strong>1,000 pcs</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-tag"></i> Target: <strong>$18.00/pc</strong></span>
+        <span class="rfq-meta-item"><i class="fa-regular fa-calendar"></i> Deadline: <strong>Mar 5, 2025</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-certificate"></i> RoHS required</span>
+      </div>
+      <div class="rfq-footer">
+        <div class="quotes-count" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-comment-dots"></i> 1 quote received</div>
+        <div class="rfq-actions">
+          <a href="rfq/detail.html" class="btn btn-sm btn-secondary"><i class="fa-solid fa-eye"></i> View Quotes</a>
+          <button class="btn btn-sm btn-secondary"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-danger"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RFQ 4 -->
+    <div class="rfq-card awarded" data-status="awarded">
+      <div class="rfq-select"><input type="checkbox" onchange="updateCompareBtn()"/></div>
+      <div class="rfq-top">
+        <div>
+          <div class="rfq-title">Eco-Friendly Paper Bags 200gsm</div>
+          <div class="rfq-category"><i class="fa-solid fa-tag"></i> Packaging Materials</div>
+        </div>
+        <span class="badge badge-awarded"><i class="fa-solid fa-check" style="font-size:.5rem"></i> Awarded</span>
+      </div>
+      <div class="rfq-meta">
+        <span class="rfq-meta-item"><i class="fa-solid fa-boxes-stacked"></i> Qty: <strong>10,000 bags</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-tag"></i> Awarded: <strong>$0.42/bag</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-building"></i> Supplier: <strong>ShenPack Co.</strong></span>
+        <span class="rfq-meta-item"><i class="fa-regular fa-calendar-check"></i> Awarded: Jan 22, 2025</span>
+      </div>
+      <div class="rfq-footer">
+        <div class="quotes-count" style="background:#d1fae5;color:#059669"><i class="fa-solid fa-trophy"></i> Order placed</div>
+        <div class="rfq-actions">
+          <a href="rfq/detail.html" class="btn btn-sm btn-secondary"><i class="fa-solid fa-eye"></i> View Order</a>
+          <a href="quotation-compare.html" class="btn btn-sm btn-outline"><i class="fa-solid fa-code-compare"></i> Compare</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RFQ 5 -->
+    <div class="rfq-card closed" data-status="closed">
+      <div class="rfq-select"><input type="checkbox" onchange="updateCompareBtn()"/></div>
+      <div class="rfq-top">
+        <div>
+          <div class="rfq-title">RGB LED Strip 5M IP65</div>
+          <div class="rfq-category"><i class="fa-solid fa-tag"></i> Lighting &amp; Electrical</div>
+        </div>
+        <span class="badge badge-closed">Closed</span>
+      </div>
+      <div class="rfq-meta">
+        <span class="rfq-meta-item"><i class="fa-solid fa-boxes-stacked"></i> Qty: <strong>3,000 rolls</strong></span>
+        <span class="rfq-meta-item"><i class="fa-solid fa-tag"></i> Target: <strong>$4.50/roll</strong></span>
+        <span class="rfq-meta-item"><i class="fa-regular fa-calendar"></i> Closed: Dec 31, 2024</span>
+      </div>
+      <div class="rfq-footer">
+        <div class="quotes-count" style="background:#f1f5f9;color:#64748b"><i class="fa-solid fa-comment-dots"></i> 9 quotes received</div>
+        <div class="rfq-actions">
+          <a href="rfq/detail.html" class="btn btn-sm btn-secondary"><i class="fa-solid fa-eye"></i> View</a>
+          <a href="rfq/create.html" class="btn btn-sm btn-outline"><i class="fa-solid fa-copy"></i> Duplicate</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pagination -->
+  <div style="display:flex;justify-content:center;gap:6px;margin-top:28px;align-items:center">
+    <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="btn btn-primary btn-sm">1</button>
+    <button class="btn btn-secondary btn-sm">2</button>
+    <button class="btn btn-secondary btn-sm">3</button>
+    <span style="font-size:.82rem;color:var(--muted);padding:0 6px">…</button>
+    <button class="btn btn-secondary btn-sm">8</button>
+    <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+</main>
+
+<!-- Floating compare button -->
+<div class="compare-fab" id="compareFab">
+  <button class="compare-fab-btn" onclick="window.location='quotation-compare.html'">
+    <i class="fa-solid fa-code-compare"></i>
+    Compare Selected
+    <span class="compare-count" id="compareCount">0</span>
+  </button>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div style="max-width:1400px;margin:0 auto;padding:0 24px">
+      <p style="text-align:center;font-size:.85rem;color:#94a3b8">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+<script src="../assets/js/main.js"></script>
+<script>
+function filterRfqs(status, btn){
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const cards=document.querySelectorAll('.rfq-card');
+  cards.forEach(c=>{
+    if(status==='all') c.style.display='';
+    else if(status==='awaiting') c.style.display=c.dataset.status==='awaiting'?'':'none';
+    else c.style.display=c.dataset.status===status?'':'none';
+  });
+}
+function updateCompareBtn(){
+  const checked=document.querySelectorAll('.rfq-card input[type=checkbox]:checked').length;
+  const fab=document.getElementById('compareFab');
+  document.getElementById('compareCount').textContent=checked;
+  fab.classList.toggle('visible', checked>=2);
+}
+</script>
+</body>
+</html>

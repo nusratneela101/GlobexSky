@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saved Searches | Globex Sky</title>
+  <meta name="description" content="Manage your saved search queries and alert preferences on Globex Sky. Get notified when new products match your searches."/>
+  <meta property="og:title" content="Saved Searches | Globex Sky"/>
+  <meta property="og:description" content="Manage saved searches and product alert preferences."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://globexsky.com/pages/search/saved.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--border:#e2e8f0;--bg:#f4f6fa;--muted:#64748b}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    h1,h2,h3,h4{font-family:'Poppins',sans-serif}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-links{display:flex;gap:4px;margin-left:24px;flex-wrap:wrap}
+    .nav-links a{padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .nav-links a:hover,.nav-links a.active{background:#eff6ff;color:var(--primary)}
+    .nav-controls{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1.5px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-outline:hover{background:var(--primary);color:#fff}
+    /* Layout */
+    .page-wrap{max-width:1100px;margin:0 auto;padding:36px 24px;flex:1}
+    /* Breadcrumb */
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary);text-decoration:none}.breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb i{font-size:.65rem;color:#cbd5e1}
+    /* Page header */
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;color:var(--dark)}
+    /* Stats row */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+    .stat-card{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05);border-top:3px solid var(--border)}
+    .stat-card.blue{border-top-color:var(--primary)}
+    .stat-card.green{border-top-color:#22c55e}
+    .stat-card.orange{border-top-color:var(--secondary)}
+    .stat-card.purple{border-top-color:#7c3aed}
+    .stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:10px}
+    .stat-icon.blue{background:#dbeafe;color:var(--primary)}
+    .stat-icon.green{background:#dcfce7;color:#16a34a}
+    .stat-icon.orange{background:#ffedd5;color:#f97316}
+    .stat-icon.purple{background:#ede9fe;color:#7c3aed}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:700;color:var(--dark)}
+    .stat-label{font-size:.78rem;color:var(--muted);margin-top:2px}
+    /* New search form */
+    .new-search-form{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px;border:1.5px solid #dbeafe;display:none}
+    .new-search-form.open{display:block}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-label{font-size:.82rem;font-weight:600;color:#374151}
+    .form-input,.form-select{width:100%;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.87rem;font-family:'Inter',sans-serif;color:#1a1a2e}
+    .form-input:focus,.form-select:focus{outline:none;border-color:var(--primary)}
+    /* Saved search cards */
+    .searches-list{display:flex;flex-direction:column;gap:14px;margin-bottom:32px}
+    .search-card{background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.05);border:1.5px solid var(--border);transition:all .2s}
+    .search-card:hover{border-color:#bfdbfe;box-shadow:0 4px 18px rgba(0,82,204,.08)}
+    .search-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .search-title{font-family:'Poppins',sans-serif;font-size:.97rem;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:8px}
+    .search-title a{text-decoration:none;color:inherit}
+    .search-title a:hover{color:var(--primary)}
+    .new-results-badge{background:#FF6B35;color:#fff;padding:2px 8px;border-radius:50px;font-size:.7rem;font-weight:700;white-space:nowrap}
+    .search-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+    .filter-tag{background:#f1f5f9;color:#374151;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:500;display:flex;align-items:center;gap:4px}
+    .filter-tag i{font-size:.65rem;color:var(--muted)}
+    .search-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
+    .search-meta-item{display:flex;align-items:center;gap:4px}
+    .search-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    /* Alert frequency toggle */
+    .freq-toggle{display:flex;gap:2px;background:#f1f5f9;padding:3px;border-radius:8px}
+    .freq-btn{padding:4px 10px;border:none;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;background:none;color:var(--muted);transition:all .2s}
+    .freq-btn.active{background:#fff;color:var(--primary);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+    /* Alert preferences */
+    .prefs-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px;border:1.5px solid var(--border)}
+    .prefs-card h2{font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+    .pref-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1f5f9}
+    .pref-item:last-child{border-bottom:none}
+    .pref-left h4{font-size:.87rem;font-weight:600;color:#374151;margin-bottom:2px}
+    .pref-left p{font-size:.75rem;color:var(--muted)}
+    /* Toggle switch */
+    .toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-slider{position:absolute;inset:0;background:#cbd5e1;border-radius:50px;cursor:pointer;transition:.3s}
+    .toggle input:checked+.toggle-slider{background:var(--primary)}
+    .toggle-slider::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:4px;left:4px;transition:.3s}
+    .toggle input:checked+.toggle-slider::after{left:24px}
+    /* Empty state */
+    .empty-state{text-align:center;padding:60px 24px;background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .empty-state i{font-size:3rem;color:#e2e8f0;margin-bottom:16px}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);margin-bottom:8px}
+    .empty-state p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+    /* Site footer */
+    .site-footer{background:#0a0e27;margin-top:auto}
+    @media(max-width:768px){.stats-row{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.search-card-top{flex-direction:column}.search-actions{width:100%;justify-content:flex-end}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo">
+      <img src="../../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain">
+    </a>
+    <nav class="nav-links">
+      <a href="../../index.html">Home</a>
+      <a href="advanced.html">Advanced Search</a>
+      <a href="saved.html" class="active">Saved Searches</a>
+      <a href="../sourcing/index.html">Sourcing</a>
+    </nav>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn btn-primary">Login</a>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html" data-i18n="nav.home">Home</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a href="advanced.html" data-i18n="nav.search">Search</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span data-i18n="nav.savedSearches">Saved Searches</span>
+  </nav>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-i18n="saved.title"><i class="fa-solid fa-bookmark" style="color:var(--primary);font-size:1.4rem;margin-right:8px"></i>Saved Searches</h1>
+      <p style="font-size:.88rem;color:var(--muted);margin-top:4px" data-i18n="saved.subtitle">Manage your search queries and receive alerts when new products match.</p>
+    </div>
+    <button class="btn btn-primary" onclick="toggleNewForm()" id="newSearchBtn" data-i18n="saved.createNew"><i class="fa-solid fa-plus"></i> New Saved Search</button>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+    <div class="stat-card blue">
+      <div class="stat-icon blue"><i class="fa-solid fa-bookmark"></i></div>
+      <div class="stat-value">12</div>
+      <div class="stat-label" data-i18n="stat.totalSaved">Total Saved</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon green"><i class="fa-solid fa-bell"></i></div>
+      <div class="stat-value">5</div>
+      <div class="stat-label" data-i18n="stat.activeAlerts">Active Alerts</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-icon orange"><i class="fa-solid fa-sparkles"></i></div>
+      <div class="stat-value">34</div>
+      <div class="stat-label" data-i18n="stat.newToday">New Results Today</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-icon purple"><i class="fa-solid fa-magnifying-glass"></i></div>
+      <div class="stat-value">8</div>
+      <div class="stat-label" data-i18n="stat.thisWeek">Searches This Week</div>
+    </div>
+  </div>
+
+  <!-- Create new saved search form -->
+  <div class="new-search-form" id="newSearchForm">
+    <h3 style="font-size:.97rem;font-weight:700;color:var(--dark);margin-bottom:18px;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-plus" style="color:var(--primary)"></i> <span data-i18n="saved.newForm.title">Create New Saved Search</span></h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" data-i18n="saved.field.searchQuery">Search Query <span style="color:var(--secondary)">*</span></label>
+        <input type="text" class="form-input" placeholder="e.g. LED lights supplier China"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="saved.field.category">Category</label>
+        <select class="form-select">
+          <option value="">All Categories</option>
+          <option>Electronics</option>
+          <option>Lighting</option>
+          <option>Apparel</option>
+          <option>Packaging</option>
+          <option>Machinery</option>
+          <option>Textiles</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="saved.field.maxPrice">Max Price (USD)</label>
+        <input type="number" class="form-input" placeholder="e.g. 10"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="saved.field.alertFrequency">Alert Frequency</label>
+        <select class="form-select">
+          <option>Daily</option>
+          <option>Weekly</option>
+          <option>Off</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="toggleNewForm()" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn btn-primary" data-i18n="btn.saveSearch"><i class="fa-solid fa-bookmark"></i> Save Search</button>
+    </div>
+  </div>
+
+  <!-- Saved searches list -->
+  <div class="searches-list">
+
+    <!-- Card 1 -->
+    <div class="search-card">
+      <div class="search-card-top">
+        <div>
+          <div class="search-title">
+            <a href="advanced.html?q=electronic+components+china">Electronic Components in China</a>
+            <span class="new-results-badge">+12 new</span>
+          </div>
+        </div>
+        <div class="search-actions">
+          <div class="freq-toggle" title="Alert frequency">
+            <button class="freq-btn active" data-i18n="freq.daily">Daily</button>
+            <button class="freq-btn" data-i18n="freq.weekly">Weekly</button>
+            <button class="freq-btn" data-i18n="freq.off">Off</button>
+          </div>
+          <button class="btn btn-sm btn-secondary" title="Edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-primary" title="Run now" data-i18n="btn.runNow"><i class="fa-solid fa-play"></i> Run</button>
+          <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="search-filters">
+        <span class="filter-tag"><i class="fa-solid fa-folder"></i> Electronics</span>
+        <span class="filter-tag"><i class="fa-solid fa-map-pin"></i> China</span>
+        <span class="filter-tag"><i class="fa-solid fa-shield-check"></i> Verified Only</span>
+        <span class="filter-tag"><i class="fa-solid fa-box"></i> MOQ ≤ 500</span>
+      </div>
+      <div class="search-meta">
+        <span class="search-meta-item"><i class="fa-regular fa-clock"></i> Last run 2 hours ago</span>
+        <span class="search-meta-item"><i class="fa-solid fa-list"></i> 847 matching products</span>
+        <span class="search-meta-item"><i class="fa-solid fa-bell"></i> <span style="color:var(--primary);font-weight:600">Daily alerts on</span></span>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="search-card">
+      <div class="search-card-top">
+        <div>
+          <div class="search-title">
+            <a href="advanced.html?q=led+lights+price">LED Lights under $5</a>
+            <span class="new-results-badge">+7 new</span>
+          </div>
+        </div>
+        <div class="search-actions">
+          <div class="freq-toggle">
+            <button class="freq-btn" data-i18n="freq.daily">Daily</button>
+            <button class="freq-btn active" data-i18n="freq.weekly">Weekly</button>
+            <button class="freq-btn" data-i18n="freq.off">Off</button>
+          </div>
+          <button class="btn btn-sm btn-secondary" title="Edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-primary" title="Run now" data-i18n="btn.runNow"><i class="fa-solid fa-play"></i> Run</button>
+          <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="search-filters">
+        <span class="filter-tag"><i class="fa-solid fa-folder"></i> Lighting</span>
+        <span class="filter-tag"><i class="fa-solid fa-tag"></i> Max $5/unit</span>
+        <span class="filter-tag"><i class="fa-solid fa-star"></i> Rating ≥ 4.0</span>
+      </div>
+      <div class="search-meta">
+        <span class="search-meta-item"><i class="fa-regular fa-clock"></i> Last run 1 day ago</span>
+        <span class="search-meta-item"><i class="fa-solid fa-list"></i> 2,134 matching products</span>
+        <span class="search-meta-item"><i class="fa-solid fa-bell"></i> <span style="color:var(--primary);font-weight:600">Weekly alerts on</span></span>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="search-card">
+      <div class="search-card-top">
+        <div>
+          <div class="search-title">
+            <a href="advanced.html?q=verified+suppliers+electronics">Verified Suppliers Electronics</a>
+            <span class="new-results-badge">+3 new</span>
+          </div>
+        </div>
+        <div class="search-actions">
+          <div class="freq-toggle">
+            <button class="freq-btn active" data-i18n="freq.daily">Daily</button>
+            <button class="freq-btn" data-i18n="freq.weekly">Weekly</button>
+            <button class="freq-btn" data-i18n="freq.off">Off</button>
+          </div>
+          <button class="btn btn-sm btn-secondary" title="Edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-primary" title="Run now"><i class="fa-solid fa-play"></i> Run</button>
+          <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="search-filters">
+        <span class="filter-tag"><i class="fa-solid fa-folder"></i> Electronics</span>
+        <span class="filter-tag"><i class="fa-solid fa-shield-check"></i> Verified Only</span>
+        <span class="filter-tag"><i class="fa-solid fa-building"></i> Manufacturer</span>
+      </div>
+      <div class="search-meta">
+        <span class="search-meta-item"><i class="fa-regular fa-clock"></i> Last run 4 hours ago</span>
+        <span class="search-meta-item"><i class="fa-solid fa-list"></i> 512 verified suppliers</span>
+        <span class="search-meta-item"><i class="fa-solid fa-bell"></i> <span style="color:var(--primary);font-weight:600">Daily alerts on</span></span>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="search-card">
+      <div class="search-card-top">
+        <div>
+          <div class="search-title">
+            <a href="advanced.html?q=cotton+tshirts+moq">Cotton T-Shirts MOQ 100</a>
+          </div>
+        </div>
+        <div class="search-actions">
+          <div class="freq-toggle">
+            <button class="freq-btn" data-i18n="freq.daily">Daily</button>
+            <button class="freq-btn" data-i18n="freq.weekly">Weekly</button>
+            <button class="freq-btn active" data-i18n="freq.off">Off</button>
+          </div>
+          <button class="btn btn-sm btn-secondary" title="Edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-primary" title="Run now"><i class="fa-solid fa-play"></i> Run</button>
+          <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="search-filters">
+        <span class="filter-tag"><i class="fa-solid fa-folder"></i> Apparel</span>
+        <span class="filter-tag"><i class="fa-solid fa-box"></i> MOQ ≤ 100</span>
+        <span class="filter-tag"><i class="fa-solid fa-leaf"></i> 100% Cotton</span>
+        <span class="filter-tag"><i class="fa-solid fa-map-pin"></i> Bangladesh, India</span>
+      </div>
+      <div class="search-meta">
+        <span class="search-meta-item"><i class="fa-regular fa-clock"></i> Last run 3 days ago</span>
+        <span class="search-meta-item"><i class="fa-solid fa-list"></i> 321 matching products</span>
+        <span class="search-meta-item"><i class="fa-solid fa-bell-slash" style="color:var(--muted)"></i> <span style="color:var(--muted)">Alerts off</span></span>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="search-card">
+      <div class="search-card-top">
+        <div>
+          <div class="search-title">
+            <a href="advanced.html?q=packaging+materials">Packaging Materials</a>
+            <span class="new-results-badge">+8 new</span>
+          </div>
+        </div>
+        <div class="search-actions">
+          <div class="freq-toggle">
+            <button class="freq-btn" data-i18n="freq.daily">Daily</button>
+            <button class="freq-btn active" data-i18n="freq.weekly">Weekly</button>
+            <button class="freq-btn" data-i18n="freq.off">Off</button>
+          </div>
+          <button class="btn btn-sm btn-secondary" title="Edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-sm btn-primary" title="Run now"><i class="fa-solid fa-play"></i> Run</button>
+          <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="search-filters">
+        <span class="filter-tag"><i class="fa-solid fa-folder"></i> Packaging</span>
+        <span class="filter-tag"><i class="fa-solid fa-recycle"></i> Eco-friendly</span>
+        <span class="filter-tag"><i class="fa-solid fa-tag"></i> Max $2/unit</span>
+      </div>
+      <div class="search-meta">
+        <span class="search-meta-item"><i class="fa-regular fa-clock"></i> Last run 6 hours ago</span>
+        <span class="search-meta-item"><i class="fa-solid fa-list"></i> 1,087 matching products</span>
+        <span class="search-meta-item"><i class="fa-solid fa-bell"></i> <span style="color:var(--primary);font-weight:600">Weekly alerts on</span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Alert Preferences -->
+  <div class="prefs-card">
+    <h2><i class="fa-solid fa-bell" style="color:var(--primary)"></i> <span data-i18n="prefs.title">Alert Preferences</span></h2>
+    <div class="pref-item">
+      <div class="pref-left">
+        <h4 data-i18n="prefs.emailAlerts">Email Alerts</h4>
+        <p data-i18n="prefs.emailAlertsDesc">Receive search result notifications via email</p>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" checked/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="pref-item">
+      <div class="pref-left">
+        <h4 data-i18n="prefs.pushNotifications">Push Notifications</h4>
+        <p data-i18n="prefs.pushDesc">Browser push notifications for instant alerts</p>
+      </div>
+      <label class="toggle">
+        <input type="checkbox"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="pref-item">
+      <div class="pref-left">
+        <h4 data-i18n="prefs.weeklySummary">Weekly Summary Email</h4>
+        <p data-i18n="prefs.weeklySummaryDesc">Get a digest of all new results every Monday morning</p>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" checked/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="pref-item">
+      <div class="pref-left">
+        <h4 data-i18n="prefs.priceDrops">Price Drop Alerts</h4>
+        <p data-i18n="prefs.priceDropsDesc">Get notified when saved products drop in price</p>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" checked/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-primary btn-sm" data-i18n="btn.savePrefs"><i class="fa-solid fa-floppy-disk"></i> Save Preferences</button>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div style="max-width:1400px;margin:0 auto;padding:0 24px">
+      <p style="text-align:center;font-size:.85rem;color:#94a3b8">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+<script src="../../assets/js/main.js"></script>
+<script>
+function toggleNewForm(){
+  const form=document.getElementById('newSearchForm');
+  const btn=document.getElementById('newSearchBtn');
+  const open=form.classList.toggle('open');
+  btn.innerHTML=open?'<i class="fa-solid fa-xmark"></i> Cancel':'<i class="fa-solid fa-plus"></i> New Saved Search';
+  if(open) form.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+// Frequency toggle buttons
+document.querySelectorAll('.freq-toggle').forEach(wrap=>{
+  wrap.querySelectorAll('.freq-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      wrap.querySelectorAll('.freq-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+});
+</script>
+</body>
+</html>

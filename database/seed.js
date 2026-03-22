@@ -46,7 +46,7 @@ const SEEDS_DIR = join(__dirname, 'seeds');
 async function getSeedFiles() {
   const files = await readdir(SEEDS_DIR);
   return files
-    .filter((f) => /^\d{3}_seed_.*\.js$/.test(f))
+    .filter((f) => /^\d{3}_(.*_)?seed(_.*)?\.js$/.test(f))
     .sort();
 }
 

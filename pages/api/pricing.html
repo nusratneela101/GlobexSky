@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Pricing | Globex Sky Developer</title>
+  <meta name="description" content="Simple, transparent API pricing for Globex Sky. Free tier, Growth, and Enterprise plans with usage calculator."/>
+  <meta property="og:title" content="API Pricing | Globex Sky Developer"/>
+  <meta property="og:description" content="Choose an API plan that fits your integration needs."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://globexsky.com/pages/api/pricing.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--border:#e2e8f0;--bg:#f4f6fa;--muted:#64748b}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    h1,h2,h3,h4{font-family:'Poppins',sans-serif}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-links{display:flex;gap:4px;margin-left:24px;flex-wrap:wrap}
+    .nav-links a{padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .nav-links a:hover,.nav-links a.active{background:#eff6ff;color:var(--primary)}
+    .nav-controls{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1.5px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+    .btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-outline:hover{background:var(--primary);color:#fff}
+    .btn-white{background:#fff;color:var(--primary);font-weight:700}.btn-white:hover{background:#e8f0fe}
+    .btn-lg{padding:14px 32px;font-size:1rem}
+    .btn-full{width:100%;justify-content:center;margin-top:14px}
+    /* Hero */
+    .hero{background:linear-gradient(135deg,#0A0E27 0%,#0052CC 100%);padding:72px 24px;text-align:center;color:#fff}
+    .hero h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;margin-bottom:12px}
+    .hero p{color:rgba(255,255,255,.8);font-size:1rem;max-width:540px;margin:0 auto 0}
+    /* Breadcrumb */
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+    .breadcrumb a{color:rgba(255,255,255,.7);text-decoration:none}
+    .breadcrumb i{font-size:.65rem;color:rgba(255,255,255,.4)}
+    .breadcrumb span{color:#fff}
+    /* Main */
+    .page-main{max-width:1200px;margin:0 auto;padding:56px 24px;width:100%}
+    /* Pricing grid */
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:72px}
+    .pricing-card{background:#fff;border-radius:20px;padding:36px 28px;box-shadow:0 2px 16px rgba(0,0,0,.06);border:2px solid var(--border);position:relative;transition:all .3s;display:flex;flex-direction:column}
+    .pricing-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.1);transform:translateY(-4px)}
+    .pricing-card.featured{border-color:var(--primary);box-shadow:0 8px 40px rgba(0,82,204,.2)}
+    .popular-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--secondary),#e55a25);color:#fff;padding:5px 20px;border-radius:50px;font-size:.75rem;font-weight:700;white-space:nowrap}
+    .plan-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:16px}
+    .plan-icon.gray{background:#f1f5f9;color:#64748b}
+    .plan-icon.blue{background:#dbeafe;color:var(--primary)}
+    .plan-icon.dark{background:var(--dark);color:#fbbf24}
+    .plan-name{font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:4px}
+    .plan-desc{font-size:.82rem;color:var(--muted);margin-bottom:18px;line-height:1.5}
+    .plan-price{font-size:2.6rem;font-weight:800;color:var(--primary);line-height:1;margin-bottom:4px}
+    .plan-price span{font-size:1rem;font-weight:400;color:var(--muted)}
+    .plan-price-sub{font-size:.78rem;color:var(--muted);margin-bottom:22px}
+    .plan-features{list-style:none;flex:1;margin-bottom:22px}
+    .plan-features li{padding:7px 0;font-size:.86rem;color:#374151;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid #f8faff}
+    .plan-features li:last-child{border-bottom:none}
+    .plan-features li i.yes{color:var(--accent);flex-shrink:0;margin-top:2px}
+    .plan-features li i.no{color:#cbd5e1;flex-shrink:0;margin-top:2px}
+    /* Usage calculator */
+    .calc-section{background:#fff;border-radius:20px;padding:36px;box-shadow:0 2px 16px rgba(0,0,0,.06);margin-bottom:72px;border:1.5px solid var(--border)}
+    .calc-section h2{font-size:1.4rem;font-weight:700;color:var(--dark);margin-bottom:8px}
+    .calc-section p{font-size:.88rem;color:var(--muted);margin-bottom:28px}
+    .calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+    .slider-wrap{margin-bottom:20px}
+    .slider-labels{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:6px}
+    .slider-value{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:var(--dark);margin-bottom:14px}
+    input[type=range]{width:100%;-webkit-appearance:none;height:6px;border-radius:50px;background:linear-gradient(90deg,var(--primary) var(--fill,50%),#e2e8f0 var(--fill,50%));outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--primary);border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,82,204,.4);cursor:pointer}
+    .calc-result{background:linear-gradient(135deg,#f0f6ff,#e8f4ff);border-radius:16px;padding:28px;border:1.5px solid #dbeafe}
+    .calc-plan-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #dbeafe}
+    .calc-plan-row:last-child{border-bottom:none}
+    .calc-plan-name{font-weight:600;color:var(--dark);font-size:.9rem}
+    .calc-plan-cost{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem}
+    .calc-plan-cost.best{color:var(--accent)}
+    .calc-plan-cost.normal{color:var(--primary)}
+    .calc-plan-cost.over{color:#ef4444}
+    .best-plan-badge{background:#dcfce7;color:#059669;padding:2px 8px;border-radius:20px;font-size:.72rem;font-weight:700;margin-left:8px}
+    /* Comparison table */
+    .compare-section{margin-bottom:72px}
+    .compare-section h2{font-size:1.5rem;font-weight:700;color:var(--dark);text-align:center;margin-bottom:8px}
+    .compare-section p{color:var(--muted);text-align:center;margin-bottom:32px}
+    .compare-table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .compare-table th{padding:14px 20px;text-align:center;font-size:.85rem;font-weight:700;color:#fff;background:var(--dark)}
+    .compare-table th:first-child{text-align:left}
+    .compare-table th.hl{background:var(--primary)}
+    .compare-table td{padding:13px 20px;font-size:.85rem;color:#374151;border-bottom:1px solid #f1f5f9;text-align:center}
+    .compare-table td:first-child{text-align:left;font-weight:600;color:var(--dark)}
+    .compare-table tr:nth-child(even) td{background:#fafbff}
+    .compare-table tr:last-child td{border-bottom:none}
+    .compare-table .check{color:var(--accent)}.compare-table .cross{color:#cbd5e1}
+    .compare-table .hl-col{background:#f0f6ff!important;font-weight:600;color:var(--primary)}
+    /* FAQ */
+    .faq-section{margin-bottom:64px}
+    .faq-section h2{font-size:1.5rem;font-weight:700;color:var(--dark);text-align:center;margin-bottom:8px}
+    .faq-section p{color:var(--muted);text-align:center;margin-bottom:32px}
+    .faq-list{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+    .faq-item{background:#fff;border-radius:12px;overflow:hidden;border:1.5px solid var(--border)}
+    .faq-q{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:600;color:var(--dark);font-size:.9rem;user-select:none}
+    .faq-q i{color:var(--muted);transition:transform .3s;flex-shrink:0}
+    .faq-item.open .faq-q{color:var(--primary)}.faq-item.open .faq-q i{transform:rotate(180deg);color:var(--primary)}
+    .faq-a{display:none;padding:0 20px 18px;font-size:.87rem;color:var(--muted);line-height:1.7}
+    .faq-item.open .faq-a{display:block}
+    /* Footer CTA */
+    .footer-cta{background:linear-gradient(135deg,#0052CC,#0A0E27);padding:60px 24px;text-align:center;color:#fff}
+    .footer-cta h2{font-size:clamp(1.4rem,3vw,1.8rem);font-weight:800;margin-bottom:12px}
+    .footer-cta p{color:rgba(255,255,255,.75);margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}
+    .footer-cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .site-footer{background:#0a0e27;margin-top:auto}
+    @media(max-width:1100px){.pricing-grid{grid-template-columns:1fr 1fr}.calc-layout{grid-template-columns:1fr}}
+    @media(max-width:768px){.pricing-grid{grid-template-columns:1fr}.compare-table{font-size:.75rem}.compare-table td,.compare-table th{padding:10px 10px}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo">
+      <img src="../../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain">
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Developer Portal</a>
+      <a href="documentation.html">Docs</a>
+      <a href="keys.html">API Keys</a>
+      <a href="pricing.html" class="active">Pricing</a>
+      <a href="webhooks.html">Webhooks</a>
+    </nav>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn btn-primary">Get API Key</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html">Home</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a href="index.html">Developer</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span>API Pricing</span>
+  </nav>
+  <h1 data-i18n="apiPricing.title">Simple, Transparent API Pricing</h1>
+  <p data-i18n="apiPricing.subtitle">Only pay for what you use. Start free, scale as you grow. No hidden fees, no surprises.</p>
+</section>
+
+<div class="page-main">
+  <!-- Pricing Cards -->
+  <div class="pricing-grid" style="margin-top:48px">
+
+    <!-- Free -->
+    <div class="pricing-card">
+      <div class="plan-icon gray"><i class="fa-solid fa-code"></i></div>
+      <div class="plan-name" data-i18n="apiPlan.free.name">Free Tier</div>
+      <div class="plan-desc" data-i18n="apiPlan.free.desc">Perfect for prototyping and testing integrations.</div>
+      <div class="plan-price">Free<span></span></div>
+      <div class="plan-price-sub" data-i18n="apiPlan.free.priceSub">No credit card required</div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.free.f1">1,000 API calls/month</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.free.f2">Basic endpoints only</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.free.f3">Rate limit: 10 req/sec</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.free.f4">Community support</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.free.f5">API documentation access</span></li>
+        <li><i class="fa-solid fa-xmark no"></i> <span style="color:#94a3b8" data-i18n="apiPlan.free.f6">Webhooks</span></li>
+        <li><i class="fa-solid fa-xmark no"></i> <span style="color:#94a3b8" data-i18n="apiPlan.free.f7">Advanced endpoints</span></li>
+        <li><i class="fa-solid fa-xmark no"></i> <span style="color:#94a3b8" data-i18n="apiPlan.free.f8">SLA guarantee</span></li>
+      </ul>
+      <a href="keys.html" class="btn btn-outline btn-full" data-i18n="apiPlan.free.cta">Get Free API Key</a>
+    </div>
+
+    <!-- Growth -->
+    <div class="pricing-card featured">
+      <span class="popular-badge"><i class="fa-solid fa-bolt"></i> <span data-i18n="apiPlan.growth.popular">Most Popular</span></span>
+      <div class="plan-icon blue"><i class="fa-solid fa-chart-line"></i></div>
+      <div class="plan-name" data-i18n="apiPlan.growth.name">Growth</div>
+      <div class="plan-desc" data-i18n="apiPlan.growth.desc">For production apps and growing platforms.</div>
+      <div class="plan-price">$49<span data-i18n="apiPlan.growth.per">/mo</span></div>
+      <div class="plan-price-sub" data-i18n="apiPlan.growth.priceSub">Or $39/mo billed annually</div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.growth.f1">100,000 API calls/month</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.growth.f2">All endpoints included</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.growth.f3">Rate limit: 100 req/sec</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.growth.f4">Email support (48hr SLA)</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.growth.f5">Webhooks included</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.growth.f6">Usage analytics dashboard</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.growth.f7">Sandbox environment</span></li>
+        <li><i class="fa-solid fa-xmark no"></i> <span style="color:#94a3b8" data-i18n="apiPlan.growth.f8">Dedicated infrastructure</span></li>
+      </ul>
+      <a href="keys.html" class="btn btn-primary btn-full" data-i18n="apiPlan.growth.cta"><i class="fa-solid fa-play"></i> Start Free Trial</a>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="pricing-card" style="border-color:#0A0E27">
+      <div class="plan-icon dark"><i class="fa-solid fa-server"></i></div>
+      <div class="plan-name" style="color:var(--dark)" data-i18n="apiPlan.ent.name">Enterprise</div>
+      <div class="plan-desc" data-i18n="apiPlan.ent.desc">Custom infrastructure for high-volume platforms.</div>
+      <div class="plan-price" style="color:var(--dark)" data-i18n="apiPlan.ent.price">Custom</div>
+      <div class="plan-price-sub" data-i18n="apiPlan.ent.priceSub">Tailored to your usage</div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f1">Unlimited API calls</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f2">Dedicated infrastructure</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f3">Custom rate limits</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f4">24/7 priority support</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f5">99.99% SLA guarantee</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f6">Custom integrations</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f7">IP whitelisting</span></li>
+        <li><i class="fa-solid fa-check yes"></i> <span data-i18n="apiPlan.ent.f8">Dedicated sandbox</span></li>
+      </ul>
+      <a href="../support/index.html" class="btn btn-secondary btn-full" style="border-color:#0A0E27;color:#0A0E27" data-i18n="apiPlan.ent.cta">Contact Sales</a>
+    </div>
+
+  </div>
+
+  <!-- Usage Calculator -->
+  <div class="calc-section">
+    <h2 data-i18n="calc.title">Usage Calculator</h2>
+    <p data-i18n="calc.desc">Estimate your monthly cost based on expected API usage.</p>
+    <div class="calc-layout">
+      <div>
+        <div class="slider-wrap">
+          <div class="slider-value" id="callsDisplay">50,000 <span style="font-size:1rem;font-weight:500;color:var(--muted)">calls/month</span></div>
+          <div class="slider-labels"><span>1K</span><span>500K</span><span>1M+</span></div>
+          <input type="range" id="apiCallsSlider" min="1000" max="1000000" step="1000" value="50000" oninput="updateCalc(this)"/>
+        </div>
+        <p style="font-size:.8rem;color:var(--muted)" data-i18n="calc.hint">Drag the slider to adjust your estimated monthly API calls.</p>
+      </div>
+      <div class="calc-result">
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:16px" data-i18n="calc.estimatedCost">Estimated Cost</p>
+        <div class="calc-plan-row">
+          <div>
+            <span class="calc-plan-name">Free Tier</span>
+          </div>
+          <span class="calc-plan-cost normal" id="freeCalc">—</span>
+        </div>
+        <div class="calc-plan-row">
+          <div>
+            <span class="calc-plan-name">Growth</span>
+            <span class="best-plan-badge" id="growthBestBadge" style="display:none">Best Value</span>
+          </div>
+          <span class="calc-plan-cost best" id="growthCalc">$49/mo</span>
+        </div>
+        <div class="calc-plan-row">
+          <div>
+            <span class="calc-plan-name">Enterprise</span>
+            <span class="best-plan-badge" id="entBestBadge" style="display:none">Best Value</span>
+          </div>
+          <span class="calc-plan-cost normal" id="entCalc">Custom</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="compare-section">
+    <h2 data-i18n="apiPricing.compare.title">Feature Comparison</h2>
+    <p data-i18n="apiPricing.compare.desc">Everything included in each API plan.</p>
+    <div style="overflow-x:auto">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th data-i18n="compare.feature">Feature</th>
+            <th>Free</th>
+            <th class="hl">Growth</th>
+            <th>Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Monthly API Calls</td><td>1,000</td><td class="hl-col">100,000</td><td>Unlimited</td></tr>
+          <tr><td>Rate Limit</td><td>10/sec</td><td class="hl-col">100/sec</td><td>Custom</td></tr>
+          <tr><td>Products API</td><td>Read only</td><td class="hl-col">Full access</td><td>Full access</td></tr>
+          <tr><td>Orders API</td><td><i class="fa-solid fa-xmark cross"></i></td><td class="hl-col"><i class="fa-solid fa-check check"></i></td><td><i class="fa-solid fa-check check"></i></td></tr>
+          <tr><td>Shipment API</td><td><i class="fa-solid fa-xmark cross"></i></td><td class="hl-col"><i class="fa-solid fa-check check"></i></td><td><i class="fa-solid fa-check check"></i></td></tr>
+          <tr><td>Webhooks</td><td><i class="fa-solid fa-xmark cross"></i></td><td class="hl-col"><i class="fa-solid fa-check check"></i></td><td><i class="fa-solid fa-check check"></i></td></tr>
+          <tr><td>Sandbox Environment</td><td><i class="fa-solid fa-xmark cross"></i></td><td class="hl-col"><i class="fa-solid fa-check check"></i></td><td>Dedicated</td></tr>
+          <tr><td>Dedicated Infrastructure</td><td><i class="fa-solid fa-xmark cross"></i></td><td class="hl-col"><i class="fa-solid fa-xmark cross"></i></td><td><i class="fa-solid fa-check check"></i></td></tr>
+          <tr><td>SLA Guarantee</td><td><i class="fa-solid fa-xmark cross"></i></td><td class="hl-col">99.9%</td><td>99.99%</td></tr>
+          <tr><td>Support</td><td>Community</td><td class="hl-col">Email (48hr)</td><td>24/7 Priority</td></tr>
+          <tr>
+            <td></td>
+            <td><a href="keys.html" class="btn btn-outline btn-sm" style="margin:4px 0">Get Free Key</a></td>
+            <td class="hl-col"><a href="keys.html" class="btn btn-primary btn-sm" style="margin:4px 0">Start Trial</a></td>
+            <td><a href="../support/index.html" class="btn btn-secondary btn-sm" style="margin:4px 0">Contact Sales</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2 data-i18n="faq.title">Frequently Asked Questions</h2>
+    <p data-i18n="faq.apiDesc">Common questions about our API pricing.</p>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What counts as an API call?<i class="fa-solid fa-chevron-down"></i></div>
+        <div class="faq-a">Each HTTP request to the API counts as one API call, regardless of the response size. Batched endpoints count as one call per batch request.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What happens when I exceed my monthly limit?<i class="fa-solid fa-chevron-down"></i></div>
+        <div class="faq-a">On the Free tier, requests are rejected with a 429 status once the monthly quota is reached. On Growth, you'll receive an email alert at 80% usage and can purchase additional call packs at $0.001 per call.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is there a free trial for the Growth plan?<i class="fa-solid fa-chevron-down"></i></div>
+        <div class="faq-a">Yes — the Growth plan includes a 14-day free trial with full access to all features. No credit card required to start the trial.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I use the API for commercial projects?<i class="fa-solid fa-chevron-down"></i></div>
+        <div class="faq-a">Yes, all plans including Free allow commercial use subject to our Terms of Service. Enterprise plans can include custom licensing agreements for white-label or reseller use cases.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do calls roll over to the next month?<i class="fa-solid fa-chevron-down"></i></div>
+        <div class="faq-a">No, unused API calls do not roll over. Quotas reset on the first day of each billing month.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer CTA -->
+<div class="footer-cta">
+  <h2>Start Building Today</h2>
+  <p>Get your API key in minutes and start integrating the Globex Sky platform into your applications.</p>
+  <div class="footer-cta-btns">
+    <a href="keys.html" class="btn btn-white btn-lg">Get Free API Key</a>
+    <a href="documentation.html" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3)">View Documentation</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div style="max-width:1400px;margin:0 auto;padding:0 24px">
+      <p style="text-align:center;font-size:.85rem;color:#94a3b8">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+<script src="../../assets/js/main.js"></script>
+<script>
+function updateCalc(slider){
+  const val=parseInt(slider.value);
+  const fmt=val>=1000000?'1M+':val>=1000?(val/1000).toFixed(0)+'K':val;
+  document.getElementById('callsDisplay').innerHTML=fmt+' <span style="font-size:1rem;font-weight:500;color:var(--muted)">calls/month</span>';
+  // Update slider fill
+  const pct=((val-1000)/(1000000-1000))*100;
+  slider.style.setProperty('--fill',pct+'%');
+  // Determine costs
+  const freeEl=document.getElementById('freeCalc');
+  const growthEl=document.getElementById('growthCalc');
+  const entEl=document.getElementById('entCalc');
+  const growthBadge=document.getElementById('growthBestBadge');
+  const entBadge=document.getElementById('entBestBadge');
+  if(val<=1000){freeEl.textContent='$0/mo';freeEl.className='calc-plan-cost best';}
+  else{freeEl.textContent='Limit exceeded';freeEl.className='calc-plan-cost over';}
+  if(val<=100000){growthEl.textContent='$49/mo';growthEl.className='calc-plan-cost best';growthBadge.style.display='inline';}
+  else{growthEl.textContent='Contact us';growthEl.className='calc-plan-cost normal';growthBadge.style.display='none';}
+  if(val>100000){entEl.textContent='Recommended';entEl.className='calc-plan-cost best';entBadge.style.display='inline';}
+  else{entEl.textContent='Custom';entEl.className='calc-plan-cost normal';entBadge.style.display='none';}
+}
+// Initialize
+updateCalc(document.getElementById('apiCallsSlider'));
+</script>
+</body>
+</html>

@@ -1327,3 +1327,84 @@ body.page-revealed .door-entry,
 body.page-revealed #door-entry {
   display: none !important;
 }
+
+/* ==========================================================================
+   Parallax Effects
+   ========================================================================== */
+
+/* Base parallax layer — use JS to set --parallax-offset via transform */
+.parallax-layer {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+.parallax-slow   { transform: translateY(calc(var(--parallax-offset, 0px) * 0.3)); }
+.parallax-medium { transform: translateY(calc(var(--parallax-offset, 0px) * 0.6)); }
+.parallax-fast   { transform: translateY(calc(var(--parallax-offset, 0px) * 1.2)); }
+
+/* Reduced-motion: disable parallax for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .parallax-slow,
+  .parallax-medium,
+  .parallax-fast {
+    transform: none !important;
+    transition: none;
+  }
+}
+
+/* Hero parallax background */
+.parallax-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-hero .parallax-bg {
+  position: absolute;
+  inset: -20%;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Floating orb parallax decorations */
+@keyframes parallaxFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33%       { transform: translateY(-18px) rotate(3deg); }
+  66%       { transform: translateY(10px) rotate(-3deg); }
+}
+
+.parallax-orb {
+  position: absolute;
+  border-radius: var(--radius-full, 50%);
+  pointer-events: none;
+  animation: parallaxFloat 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.parallax-orb:nth-child(2) { animation-delay: -2.5s; animation-duration: 10s; }
+.parallax-orb:nth-child(3) { animation-delay: -5s;   animation-duration: 12s; }
+
+/* Scroll-reveal — elements start hidden; JS adds .revealed class */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-on-scroll.from-left  { transform: translateX(-32px); }
+.reveal-on-scroll.from-right { transform: translateX(32px); }
+.reveal-on-scroll.scale-up   { transform: scale(0.9); }
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translate(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

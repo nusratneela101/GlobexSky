@@ -4,11 +4,14 @@
  */
 
 import 'dotenv/config';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
 import corsConfig from './config/cors.js';
+import websocketConfig from './config/websocket.js';
 import { globalRateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
@@ -63,8 +66,15 @@ import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
 import integrationRoutes from './routes/integration.routes.js';
 
+
 const app = express();
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
+
+// ─── Socket.io Setup ──────────────────────────────────────────────────────────
+const io = new SocketIOServer(httpServer, websocketConfig.options);
+initializeWebSocket(io);
+initializeWebRTC(io);
 
 // ─── Core Middleware ─────────────────────────────────────────────────────────
 app.use(helmet());
@@ -139,7 +149,7 @@ app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/backup`, backupRoutes);
 app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
-app.use(`${API}/integrations`, integrationRoutes);
+
 app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
@@ -150,7 +160,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`🚀 Globex Sky API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
 
