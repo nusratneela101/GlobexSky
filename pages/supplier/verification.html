@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supplier Verification | Globex Sky</title>
+  <meta name="description" content="Apply for verified supplier status on Globex Sky. Complete the verification process to unlock premium features and build buyer trust."/>
+  <meta property="og:title" content="Supplier Verification | Globex Sky"/>
+  <meta property="og:description" content="Get verified supplier status on Globex Sky."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://globexsky.com/pages/supplier/verification.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--secondary:#FF6B35;--accent:#00C9A7;--dark:#0A0E27;--border:#e2e8f0;--bg:#f4f6fa;--muted:#64748b}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    h1,h2,h3,h4,h5{font-family:'Poppins',sans-serif}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-links{display:flex;gap:4px;margin-left:24px;flex-wrap:wrap}
+    .nav-links a{padding:7px 14px;color:#64748b;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .nav-links a:hover,.nav-links a.active{background:#eff6ff;color:var(--primary)}
+    .nav-controls{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1.5px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+    .btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-outline:hover{background:var(--primary);color:#fff}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-lg{padding:12px 28px;font-size:.95rem}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .container{max-width:1400px;margin:0 auto;padding:0 24px}
+    .page-wrap{max-width:1200px;margin:0 auto;padding:32px 24px;flex:1}
+    /* Breadcrumb */
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary);text-decoration:none}.breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb i{font-size:.65rem;color:#cbd5e1}
+    /* Page header */
+    .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+    .page-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:var(--dark);display:flex;align-items:center;gap:12px}
+    .page-title .verified-icon{width:36px;height:36px;background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem}
+    .page-subtitle{font-size:.9rem;color:var(--muted);margin-top:6px}
+    /* Status banner */
+    .status-banner{background:#fff;border-radius:16px;padding:20px 28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;border:1.5px solid var(--border)}
+    .status-stages{display:flex;gap:0;align-items:center;justify-content:space-between;position:relative}
+    .status-stages::before{content:'';position:absolute;top:20px;left:60px;right:60px;height:2px;background:var(--border);z-index:0}
+    .stage{display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1;flex:1}
+    .stage-dot{width:40px;height:40px;border-radius:50%;border:3px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--muted);transition:all .3s}
+    .stage.done .stage-dot{background:#059669;border-color:#059669;color:#fff}
+    .stage.active .stage-dot{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 0 0 4px rgba(0,82,204,.15)}
+    .stage.pending .stage-dot{background:#fff;border-color:var(--border);color:#cbd5e1}
+    .stage-label{font-size:.75rem;font-weight:600;color:var(--muted);text-align:center}
+    .stage.active .stage-label{color:var(--primary)}
+    .stage.done .stage-label{color:#059669}
+    /* Step progress */
+    .step-nav{display:flex;gap:0;margin-bottom:28px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .step-btn{flex:1;padding:12px 10px;border:none;background:none;border-radius:12px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.83rem;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+    .step-btn.active{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(0,82,204,.25)}
+    .step-btn.completed{color:#059669;background:#f0fdf4}
+    .step-num{width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0}
+    .step-btn.active .step-num{background:rgba(255,255,255,.3)}
+    .step-btn.completed .step-num{background:#059669;color:#fff}
+    /* Layout */
+    .content-grid{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+    /* Cards */
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px;border:1.5px solid #f1f5f9}
+    .card-title{font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:var(--primary)}
+    /* Form */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:1/-1}
+    .form-label{font-size:.82rem;font-weight:600;color:#374151}
+    .form-label .req{color:var(--secondary)}
+    .form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.87rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,82,204,.08)}
+    .form-textarea{resize:vertical;min-height:90px}
+    .form-hint{font-size:.75rem;color:var(--muted)}
+    /* Upload area */
+    .upload-area{border:2px dashed #c7d9f5;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:#f8fbff}
+    .upload-area:hover{border-color:var(--primary);background:#f0f6ff}
+    .upload-area i{font-size:2rem;color:#93c5fd;margin-bottom:10px}
+    .upload-area h4{font-size:.9rem;font-weight:600;color:#374151;margin-bottom:4px}
+    .upload-area p{font-size:.78rem;color:var(--muted)}
+    .upload-tag{display:inline-block;padding:2px 8px;background:#dbeafe;color:var(--primary);border-radius:4px;font-size:.7rem;font-weight:600;margin-top:4px;margin-right:4px}
+    /* Upload list */
+    .upload-list{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+    .upload-item{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+    .upload-item-header{display:flex;align-items:center;gap:10px}
+    .upload-item-icon{width:38px;height:38px;border-radius:8px;background:#dbeafe;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+    .upload-item-title{font-size:.87rem;font-weight:600;color:#374151}
+    .upload-item-sub{font-size:.73rem;color:var(--muted)}
+    /* Product sample */
+    .sample-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .sample-card{border:1.5px dashed #c7d9f5;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s}
+    .sample-card:hover{border-color:var(--primary);background:#f0f6ff}
+    .sample-card i{font-size:1.5rem;color:#93c5fd;margin-bottom:8px}
+    .sample-card p{font-size:.8rem;color:var(--muted)}
+    /* Checklist */
+    .checklist{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .checklist li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:#f8faff;font-size:.87rem;border:1.5px solid var(--border)}
+    .checklist li i.done{color:#059669}.checklist li i.pending{color:#f97316}.checklist li i.miss{color:#ef4444}
+    .checklist-label{flex:1;font-weight:500;color:#374151}
+    .checklist-badge{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:20px}
+    .checklist-badge.done{background:#d1fae5;color:#059669}
+    .checklist-badge.pend{background:#ffedd5;color:#f97316}
+    /* Sidebar */
+    .benefits-card{background:linear-gradient(135deg,#0052CC,#0A0E27);border-radius:16px;padding:24px;color:#fff;margin-bottom:20px}
+    .benefits-card h3{font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .benefit-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+    .benefit-icon{width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem}
+    .benefit-text h4{font-size:.82rem;font-weight:600;margin-bottom:2px}
+    .benefit-text p{font-size:.73rem;color:rgba(255,255,255,.7)}
+    .timeline-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .timeline-card h3{font-size:.95rem;font-weight:700;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .timeline-card h3 i{color:var(--primary)}
+    .tl-item{display:flex;gap:12px;margin-bottom:14px;position:relative}
+    .tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+    .tl-dot.blue{background:#dbeafe;color:var(--primary)}
+    .tl-dot.teal{background:#ccfbf1;color:#0d9488}
+    .tl-dot.orange{background:#ffedd5;color:#f97316}
+    .tl-dot.green{background:#dcfce7;color:#16a34a}
+    .tl-text h4{font-size:.83rem;font-weight:600;color:#374151;margin-bottom:2px}
+    .tl-text p{font-size:.75rem;color:var(--muted)}
+    /* Badge preview */
+    .badge-preview{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;border:2px solid #fbbf24}
+    .verified-badge-large{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:10px 20px;border-radius:50px;font-size:.9rem;font-weight:700;margin-bottom:12px}
+    .badge-preview p{font-size:.78rem;color:var(--muted)}
+    /* Step panels */
+    .step-panel{display:none}.step-panel.active{display:block}
+    /* Form actions */
+    .form-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;padding-top:20px;border-top:1.5px solid var(--border)}
+    /* Tags input */
+    .tags-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;min-height:42px;align-items:center;background:#fff}
+    .tag{background:#dbeafe;color:var(--primary);padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;display:flex;align-items:center;gap:4px}
+    .tag button{background:none;border:none;color:var(--primary);cursor:pointer;font-size:.7rem;padding:0;line-height:1}
+    /* Footer */
+    .site-footer{background:#0a0e27;margin-top:auto}
+    @media(max-width:1100px){.content-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){.form-grid{grid-template-columns:1fr}.step-nav{flex-wrap:wrap}.upload-list{grid-template-columns:1fr}.sample-grid{grid-template-columns:1fr 1fr}.status-stages{gap:4px}.status-stages::before{display:none}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo">
+      <img src="../../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain">
+    </a>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="products.html">Products</a>
+      <a href="orders.html">Orders</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="verification.html" class="active">Verification</a>
+    </nav>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn btn-primary">Login</a>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html" data-i18n="nav.home">Home</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a href="dashboard.html" data-i18n="nav.supplierPortal">Supplier Portal</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span data-i18n="nav.verification">Verification</span>
+  </nav>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-i18n="verification.title">
+        <span class="verified-icon"><i class="fa-solid fa-check"></i></span>
+        Supplier Verification
+      </h1>
+      <p class="page-subtitle" data-i18n="verification.subtitle">Complete the verification process to unlock verified supplier benefits and increase buyer trust.</p>
+    </div>
+    <a href="plans.html" class="btn btn-outline"><i class="fa-solid fa-crown"></i> <span data-i18n="verification.viewPlans">View Plans</span></a>
+  </div>
+
+  <!-- Status Banner -->
+  <div class="status-banner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <div>
+        <h3 style="font-size:.95rem;font-weight:700;color:var(--dark)" data-i18n="verification.status.title">Verification Status</h3>
+        <p style="font-size:.78rem;color:var(--muted)" data-i18n="verification.status.sub">Application submitted on Jan 15, 2025 · Case #VRF-2025-001847</p>
+      </div>
+      <span style="background:#dbeafe;color:var(--primary);padding:6px 16px;border-radius:50px;font-size:.8rem;font-weight:700"><i class="fa-solid fa-circle-dot" style="margin-right:4px"></i><span data-i18n="verification.status.inReview">In Review</span></span>
+    </div>
+    <div class="status-stages">
+      <div class="stage done">
+        <div class="stage-dot"><i class="fa-solid fa-check"></i></div>
+        <span class="stage-label" data-i18n="verification.stage.submitted">Submitted</span>
+      </div>
+      <div class="stage active">
+        <div class="stage-dot"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <span class="stage-label" data-i18n="verification.stage.inReview">In Review</span>
+      </div>
+      <div class="stage pending">
+        <div class="stage-dot">3</div>
+        <span class="stage-label" data-i18n="verification.stage.approved">Approved</span>
+      </div>
+      <div class="stage pending">
+        <div class="stage-dot">4</div>
+        <span class="stage-label" data-i18n="verification.stage.verified">Verified</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step Progress -->
+  <div class="step-nav" role="tablist">
+    <button class="step-btn completed" data-step="1" onclick="showStep(1)" role="tab">
+      <span class="step-num"><i class="fa-solid fa-check" style="font-size:.6rem"></i></span>
+      <span data-i18n="verification.step1">Business Info</span>
+    </button>
+    <button class="step-btn active" data-step="2" onclick="showStep(2)" role="tab">
+      <span class="step-num">2</span>
+      <span data-i18n="verification.step2">Documents</span>
+    </button>
+    <button class="step-btn" data-step="3" onclick="showStep(3)" role="tab">
+      <span class="step-num">3</span>
+      <span data-i18n="verification.step3">Products</span>
+    </button>
+    <button class="step-btn" data-step="4" onclick="showStep(4)" role="tab">
+      <span class="step-num">4</span>
+      <span data-i18n="verification.step4">Review</span>
+    </button>
+  </div>
+
+  <div class="content-grid">
+    <!-- Main content -->
+    <div>
+
+      <!-- Step 1: Business Information -->
+      <div class="step-panel" id="step-1">
+        <div class="card">
+          <h2 class="card-title"><i class="fa-solid fa-building"></i> <span data-i18n="verification.businessInfo.title">Business Information</span></h2>
+          <form>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" data-i18n="verification.field.regNumber">Company Registration No. <span class="req">*</span></label>
+                <input type="text" class="form-input" placeholder="e.g. 91440101MA5XXXXXX" data-i18n-ph="verification.field.regNumberPh"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-i18n="verification.field.businessType">Business Type <span class="req">*</span></label>
+                <select class="form-select">
+                  <option value="">Select type...</option>
+                  <option>Manufacturer</option>
+                  <option>Trading Company</option>
+                  <option>Manufacturer &amp; Trading</option>
+                  <option>Agent / Distributor</option>
+                  <option>Retailer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-i18n="verification.field.estYear">Established Year <span class="req">*</span></label>
+                <input type="number" class="form-input" placeholder="e.g. 2010" min="1900" max="2025"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-i18n="verification.field.employees">Number of Employees <span class="req">*</span></label>
+                <select class="form-select">
+                  <option value="">Select range...</option>
+                  <option>1–10</option>
+                  <option>11–50</option>
+                  <option>51–200</option>
+                  <option>201–500</option>
+                  <option>500+</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-i18n="verification.field.revenue">Annual Revenue Range</label>
+                <select class="form-select">
+                  <option value="">Select range...</option>
+                  <option>Under $100K</option>
+                  <option>$100K – $500K</option>
+                  <option>$500K – $1M</option>
+                  <option>$1M – $5M</option>
+                  <option>$5M – $20M</option>
+                  <option>$20M+</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-i18n="verification.field.mainMarkets">Main Export Markets</label>
+                <div class="tags-wrap" id="marketsWrap">
+                  <span class="tag">USA <button onclick="removeTag(this,event)">×</button></span>
+                  <span class="tag">EU <button onclick="removeTag(this,event)">×</button></span>
+                  <input type="text" style="border:none;outline:none;font-size:.8rem;flex:1;min-width:80px" placeholder="Add market…" onkeydown="addTag(event,'marketsWrap')"/>
+                </div>
+              </div>
+              <div class="form-group full">
+                <label class="form-label" data-i18n="verification.field.businessLicense">Business License Upload <span class="req">*</span></label>
+                <div class="upload-area" onclick="document.getElementById('bizFile').click()">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <h4 data-i18n="upload.dragDrop">Drag &amp; Drop or Click to Upload</h4>
+                  <p data-i18n="upload.bizLicenseHint">Upload your current Business License (营业执照)</p>
+                  <span class="upload-tag">PDF</span><span class="upload-tag">JPG</span><span class="upload-tag">PNG</span>
+                  <p style="margin-top:6px;font-size:.72rem;color:#94a3b8" data-i18n="upload.maxSize">Max file size: 10MB</p>
+                  <input type="file" id="bizFile" accept=".pdf,.jpg,.jpeg,.png" style="display:none"/>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" onclick="showStep(2)" data-i18n="btn.saveNext">Save &amp; Continue <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Step 2: Documents -->
+      <div class="step-panel active" id="step-2">
+        <div class="card">
+          <h2 class="card-title"><i class="fa-solid fa-file-shield"></i> <span data-i18n="verification.documents.title">Required Documents</span></h2>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px" data-i18n="verification.documents.desc">Please upload clear, legible copies of the following documents. All documents must be current and valid.</p>
+          <div class="upload-list">
+            <div class="upload-item">
+              <div class="upload-item-header">
+                <div class="upload-item-icon"><i class="fa-solid fa-file-certificate"></i></div>
+                <div>
+                  <div class="upload-item-title" data-i18n="doc.businessLicense">Business License</div>
+                  <div class="upload-item-sub" data-i18n="doc.businessLicenseSub">营业执照 (Required)</div>
+                </div>
+              </div>
+              <div class="upload-area" style="padding:16px">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.2rem;margin-bottom:4px"></i>
+                <p style="font-size:.75rem" data-i18n="upload.clickUpload">Click or drag to upload</p>
+                <span class="upload-tag">PDF</span><span class="upload-tag">JPG</span>
+              </div>
+              <span style="background:#d1fae5;color:#059669;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;align-self:flex-start"><i class="fa-solid fa-check" style="margin-right:4px"></i><span data-i18n="doc.uploaded">Uploaded</span></span>
+            </div>
+            <div class="upload-item">
+              <div class="upload-item-header">
+                <div class="upload-item-icon" style="background:#fef3c7;color:#d97706"><i class="fa-solid fa-receipt"></i></div>
+                <div>
+                  <div class="upload-item-title" data-i18n="doc.taxCert">Tax Certificate</div>
+                  <div class="upload-item-sub" data-i18n="doc.taxCertSub">税务登记证 (Required)</div>
+                </div>
+              </div>
+              <div class="upload-area" style="padding:16px">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.2rem;margin-bottom:4px"></i>
+                <p style="font-size:.75rem" data-i18n="upload.clickUpload">Click or drag to upload</p>
+                <span class="upload-tag">PDF</span><span class="upload-tag">JPG</span>
+              </div>
+              <span style="background:#ffedd5;color:#f97316;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;align-self:flex-start"><i class="fa-solid fa-clock" style="margin-right:4px"></i><span data-i18n="doc.pending">Pending</span></span>
+            </div>
+            <div class="upload-item">
+              <div class="upload-item-header">
+                <div class="upload-item-icon" style="background:#dcfce7;color:#16a34a"><i class="fa-solid fa-building-columns"></i></div>
+                <div>
+                  <div class="upload-item-title" data-i18n="doc.bankStatement">Bank Statement</div>
+                  <div class="upload-item-sub" data-i18n="doc.bankStatementSub">Last 3 months (Recommended)</div>
+                </div>
+              </div>
+              <div class="upload-area" style="padding:16px">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.2rem;margin-bottom:4px"></i>
+                <p style="font-size:.75rem" data-i18n="upload.clickUpload">Click or drag to upload</p>
+                <span class="upload-tag">PDF</span><span class="upload-tag">JPG</span>
+              </div>
+              <span style="background:#f1f5f9;color:#64748b;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;align-self:flex-start"><i class="fa-solid fa-minus" style="margin-right:4px"></i><span data-i18n="doc.optional">Optional</span></span>
+            </div>
+            <div class="upload-item">
+              <div class="upload-item-header">
+                <div class="upload-item-icon" style="background:#ede9fe;color:#7c3aed"><i class="fa-solid fa-images"></i></div>
+                <div>
+                  <div class="upload-item-title" data-i18n="doc.companyPhotos">Company Photos</div>
+                  <div class="upload-item-sub" data-i18n="doc.companyPhotosSub">Factory / Office (Recommended)</div>
+                </div>
+              </div>
+              <div class="upload-area" style="padding:16px">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.2rem;margin-bottom:4px"></i>
+                <p style="font-size:.75rem" data-i18n="upload.clickUpload">Click or drag to upload</p>
+                <span class="upload-tag">JPG</span><span class="upload-tag">PNG</span>
+              </div>
+              <span style="background:#f1f5f9;color:#64748b;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;align-self:flex-start"><i class="fa-solid fa-minus" style="margin-right:4px"></i><span data-i18n="doc.optional">Optional</span></span>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="showStep(1)"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn.back">Back</span></button>
+            <button type="button" class="btn btn-primary" onclick="showStep(3)" data-i18n="btn.saveNext">Save &amp; Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Product Samples -->
+      <div class="step-panel" id="step-3">
+        <div class="card">
+          <h2 class="card-title"><i class="fa-solid fa-box-open"></i> <span data-i18n="verification.products.title">Product Samples</span></h2>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px" data-i18n="verification.products.desc">Add at least 3 representative products to showcase your offerings. Include photos, descriptions, and any relevant certifications.</p>
+          <div class="sample-grid" id="sampleGrid">
+            <div class="sample-card" onclick="addSample()">
+              <i class="fa-solid fa-plus"></i>
+              <p data-i18n="verification.addSample">Add Product Sample</p>
+            </div>
+            <div style="background:#f8faff;border:1.5px solid var(--border);border-radius:12px;padding:16px">
+              <div style="height:80px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:.65rem;color:var(--primary);font-weight:600">LED Panel Light</div>
+              <div style="font-size:.83rem;font-weight:600;color:#374151;margin-bottom:4px">LED Panel Light 60x60</div>
+              <div style="font-size:.73rem;color:var(--muted);margin-bottom:8px">40W, 4000K, 4200lm</div>
+              <span style="background:#d1fae5;color:#059669;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600">CE Certified</span>
+            </div>
+            <div style="background:#f8faff;border:1.5px solid var(--border);border-radius:12px;padding:16px">
+              <div style="height:80px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:.65rem;color:#d97706;font-weight:600">LED Strip</div>
+              <div style="font-size:.83rem;font-weight:600;color:#374151;margin-bottom:4px">RGB LED Strip 5M</div>
+              <div style="font-size:.73rem;color:var(--muted);margin-bottom:8px">12V, IP65, SMD5050</div>
+              <span style="background:#dbeafe;color:var(--primary);padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600">RoHS</span>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="showStep(2)"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn.back">Back</span></button>
+            <button type="button" class="btn btn-primary" onclick="showStep(4)" data-i18n="btn.saveNext">Save &amp; Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div class="step-panel" id="step-4">
+        <div class="card">
+          <h2 class="card-title"><i class="fa-solid fa-clipboard-check"></i> <span data-i18n="verification.review.title">Review &amp; Submit</span></h2>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px" data-i18n="verification.review.desc">Please review all submitted information before sending your verification application.</p>
+          <ul class="checklist">
+            <li>
+              <i class="fa-solid fa-circle-check done fa-lg"></i>
+              <span class="checklist-label" data-i18n="checklist.businessInfo">Business Information</span>
+              <span class="checklist-badge done" data-i18n="checklist.complete">Complete</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-check done fa-lg"></i>
+              <span class="checklist-label" data-i18n="checklist.bizLicense">Business License</span>
+              <span class="checklist-badge done" data-i18n="checklist.uploaded">Uploaded</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-exclamation pending fa-lg" style="color:#f97316"></i>
+              <span class="checklist-label" data-i18n="checklist.taxCert">Tax Certificate</span>
+              <span class="checklist-badge pend" data-i18n="checklist.missing">Missing</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-check done fa-lg"></i>
+              <span class="checklist-label" data-i18n="checklist.productSamples">Product Samples (2/3)</span>
+              <span class="checklist-badge pend" data-i18n="checklist.partial">Partial</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-check done fa-lg"></i>
+              <span class="checklist-label" data-i18n="checklist.contactInfo">Contact Information</span>
+              <span class="checklist-badge done" data-i18n="checklist.complete">Complete</span>
+            </li>
+          </ul>
+          <div style="background:#fff8ed;border:1.5px solid #fed7aa;border-radius:12px;padding:16px;margin-top:20px;display:flex;gap:12px;align-items:flex-start">
+            <i class="fa-solid fa-triangle-exclamation" style="color:#f97316;margin-top:2px"></i>
+            <p style="font-size:.82rem;color:#374151" data-i18n="verification.review.warning">Your tax certificate is missing. You can still submit but approval may be delayed. Please upload it within 5 business days.</p>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="showStep(3)"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn.back">Back</span></button>
+            <button type="button" class="btn btn-success btn-lg" data-i18n="btn.submitVerification"><i class="fa-solid fa-paper-plane"></i> Submit for Verification</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <aside>
+      <!-- Verified badge preview -->
+      <div class="badge-preview">
+        <div class="verified-badge-large"><i class="fa-solid fa-shield-check"></i> <span data-i18n="badge.verified">Verified Supplier</span></div>
+        <p data-i18n="badge.previewDesc">This badge will appear on your profile and product listings</p>
+      </div>
+
+      <!-- Benefits -->
+      <div class="benefits-card">
+        <h3><i class="fa-solid fa-star"></i> <span data-i18n="benefits.title">Verified Benefits</span></h3>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa-solid fa-medal"></i></div>
+          <div class="benefit-text">
+            <h4 data-i18n="benefits.goldBadge">Gold Verified Badge</h4>
+            <p data-i18n="benefits.goldBadgeDesc">Displayed on all listings and profile</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="benefit-text">
+            <h4 data-i18n="benefits.searchRanking">Higher Search Ranking</h4>
+            <p data-i18n="benefits.searchRankingDesc">Up to 3× more visibility in results</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="benefit-text">
+            <h4 data-i18n="benefits.tradeAssurance">Trade Assurance</h4>
+            <p data-i18n="benefits.tradeAssuranceDesc">Access to buyer protection programs</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="benefit-text">
+            <h4 data-i18n="benefits.advAnalytics">Advanced Analytics</h4>
+            <p data-i18n="benefits.advAnalyticsDesc">Detailed buyer behavior insights</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-card">
+        <h3><i class="fa-regular fa-calendar"></i> <span data-i18n="timeline.title">Verification Timeline</span></h3>
+        <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px" data-i18n="timeline.duration">Typically 3–5 business days</p>
+        <div class="tl-item">
+          <div class="tl-dot blue">1</div>
+          <div class="tl-text">
+            <h4 data-i18n="timeline.step1">Application Received</h4>
+            <p data-i18n="timeline.step1Desc">Instant confirmation via email</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot orange">2</div>
+          <div class="tl-text">
+            <h4 data-i18n="timeline.step2">Document Review</h4>
+            <p data-i18n="timeline.step2Desc">1–2 business days</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot teal">3</div>
+          <div class="tl-text">
+            <h4 data-i18n="timeline.step3">Business Verification</h4>
+            <p data-i18n="timeline.step3Desc">2–3 business days</p>
+          </div>
+        </div>
+        <div class="tl-item" style="margin-bottom:0">
+          <div class="tl-dot green">4</div>
+          <div class="tl-text">
+            <h4 data-i18n="timeline.step4">Badge Awarded</h4>
+            <p data-i18n="timeline.step4Desc">Immediate activation</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help -->
+      <div style="background:#f0f6ff;border-radius:16px;padding:20px;border:1.5px solid #dbeafe">
+        <h3 style="font-size:.9rem;font-weight:700;color:var(--dark);margin-bottom:8px"><i class="fa-solid fa-circle-question" style="color:var(--primary)"></i> <span data-i18n="help.title">Need Help?</span></h3>
+        <p style="font-size:.78rem;color:var(--muted);margin-bottom:12px" data-i18n="help.desc">Our supplier support team is available Mon–Fri 9:00–18:00 CST.</p>
+        <a href="../support/index.html" class="btn btn-outline btn-sm" style="width:100%;justify-content:center" data-i18n="help.contact">Contact Support</a>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div style="max-width:1400px;margin:0 auto;padding:0 24px">
+      <p style="text-align:center;font-size:.85rem;color:#94a3b8">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+<script src="../../assets/js/main.js"></script>
+<script>
+function showStep(n){
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  document.querySelectorAll('.step-btn').forEach((b,i)=>{
+    b.classList.remove('active','completed');
+    if(i+1<n) b.classList.add('completed');
+    else if(i+1===n) b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function removeTag(btn,e){
+  e.stopPropagation();
+  btn.parentElement.remove();
+}
+function addTag(e,wrapId){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    const input=e.target;
+    const val=input.value.trim().replace(',','');
+    if(!val) return;
+    const span=document.createElement('span');
+    span.className='tag';
+    span.innerHTML=val+' <button onclick="removeTag(this,event)">×</button>';
+    input.parentElement.insertBefore(span,input);
+    input.value='';
+  }
+}
+</script>
+</body>
+</html>
