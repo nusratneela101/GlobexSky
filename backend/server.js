@@ -61,6 +61,7 @@ import advancedSearchRoutes from './routes/advancedSearch.routes.js';
 import backupRoutes from './routes/backup.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
+import integrationRoutes from './routes/integration.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -138,6 +139,7 @@ app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/backup`, backupRoutes);
 app.use(`${API}/seo`, seoRoutes);
 app.use(`${API}/feature-toggles`, featureToggleRoutes);
+app.use(`${API}/integrations`, integrationRoutes);
 app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
