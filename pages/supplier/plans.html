@@ -284,7 +284,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)" data-i18n="faq.q4">How does the annual billing discount work?<i class="fa-solid fa-chevron-down"></i></div>
-        <div class="faq-a" data-i18n="faq.a4">When you choose annual billing, you save 20% compared to monthly pricing. The full annual amount is billed upfront. For Professional, that's $159/mo ($1,908/year) instead of $199/mo ($2,388/year).</div>
+        <div class="faq-a" data-i18n="faq.a4">When you choose annual billing, you save 20% compared to monthly pricing. The full annual amount is billed upfront. For Professional, that's <span id="faqAnnualPrice">$159/mo ($1,908/year)</span> instead of $199/mo ($2,388/year).</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)" data-i18n="faq.q5">What happens to my products if I downgrade?<i class="fa-solid fa-chevron-down"></i></div>
@@ -327,6 +327,9 @@ function toggleBilling(){
   document.getElementById('proPriceSub').textContent=prices.pro.sub;
   document.getElementById('entPrice').innerHTML=prices.ent.price+'<span>/mo</span>';
   document.getElementById('entPriceSub').textContent=prices.ent.sub;
+  // Keep FAQ annual savings text in sync with displayed prices
+  const faqEl=document.getElementById('faqAnnualPrice');
+  if(faqEl) faqEl.textContent=annual?'$159/mo ($1,908/year)':'$199/mo ($2,388/year)';
 }
 function toggleFaq(el){
   const item=el.parentElement;
