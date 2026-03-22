@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Supplier Membership – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;left:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .page-hero::after{content:'';position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:rgba(124,58,237,.15)}
+    .hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:8px}
+    .page-hero p{font-size:1rem;opacity:.88;max-width:560px;margin:0 auto}
+    .section{padding:44px 24px}
+    .container{max-width:1300px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .sec-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .sec-sub{font-size:.85rem;color:#64748b;margin-bottom:24px}
+    /* Pricing Cards */
+    .pricing-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-bottom:48px}
+    @media(max-width:1100px){.pricing-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:700px){.pricing-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:450px){.pricing-grid{grid-template-columns:1fr}}
+    .plan-card{background:#fff;border-radius:20px;padding:28px 20px;box-shadow:0 4px 16px rgba(0,0,0,.06);text-align:center;border:2px solid transparent;transition:all .25s;position:relative}
+    .plan-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.12)}
+    .plan-card.current{border-color:#0052CC;box-shadow:0 8px 32px rgba(0,82,204,.18)}
+    .plan-card.popular{border-color:#f59e0b}
+    .popular-ribbon{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:50px;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase}
+    .current-ribbon{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#0052CC;color:#fff;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:50px;white-space:nowrap}
+    .plan-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 14px}
+    .plan-name{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px}
+    .plan-price{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800;line-height:1;margin-bottom:2px}
+    .plan-period{font-size:.75rem;color:#94a3b8;margin-bottom:16px}
+    .plan-features{list-style:none;text-align:left;font-size:.8rem;color:#374151;margin-bottom:20px}
+    .plan-features li{padding:5px 0;display:flex;align-items:flex-start;gap:7px;border-bottom:1px solid #f8fafc}
+    .plan-features li:last-child{border-bottom:none}
+    .feat-yes{color:#059669;font-size:.85rem;margin-top:1px;flex-shrink:0}
+    .feat-no{color:#d1d5db;font-size:.85rem;margin-top:1px;flex-shrink:0}
+    .btn-upgrade{width:100%;padding:10px;border-radius:10px;border:none;font-size:.85rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all .2s}
+    .btn-primary-plan{background:#0052CC;color:#fff}
+    .btn-primary-plan:hover{background:#003d99}
+    .btn-popular-plan{background:#f59e0b;color:#fff}
+    .btn-popular-plan:hover{background:#d97706}
+    .btn-current-plan{background:#f0f5ff;color:#0052CC;cursor:default}
+    .btn-diamond-plan{background:linear-gradient(135deg,#0052CC,#7c3aed);color:#fff}
+    .btn-diamond-plan:hover{opacity:.9}
+    .btn-outline-plan{background:#fff;color:#374151;border:1.5px solid #e2e8f0}
+    .btn-outline-plan:hover{border-color:#0052CC;color:#0052CC}
+    /* Comparison Table */
+    .compare-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:40px;overflow-x:auto}
+    table.compare-table{width:100%;border-collapse:collapse;min-width:700px}
+    .compare-table th{background:#f8fafc;padding:12px 14px;text-align:center;font-size:.78rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #e2e8f0}
+    .compare-table th:first-child{text-align:left}
+    .compare-table td{padding:12px 14px;font-size:.83rem;color:#374151;border-bottom:1px solid #f1f5f9;text-align:center;vertical-align:middle}
+    .compare-table td:first-child{text-align:left;font-weight:500;color:#0a0e27}
+    .compare-table tr:last-child td{border-bottom:none}
+    .compare-table tr:hover td{background:#fafbfc}
+    .compare-table thead th.highlight{background:#eff6ff;color:#0052CC}
+    .compare-table td.highlight{background:#f8fbff}
+    .check-yes{color:#059669;font-size:1rem}
+    .check-no{color:#d1d5db;font-size:1rem}
+    .cat-row td{background:#f8fafc;font-weight:700;color:#64748b;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+    /* FAQ / Benefits */
+    .benefits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;margin-bottom:40px}
+    .benefit-card{background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .benefit-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:14px}
+    .benefit-title{font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:700;color:#0a0e27;margin-bottom:6px}
+    .benefit-desc{font-size:.8rem;color:#64748b;line-height:1.6}
+    /* Footer */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    .toast{position:fixed;bottom:28px;right:24px;background:#059669;color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(120px);transition:transform .3s}
+    .toast.show{transform:translateY(0)}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-building" style="color:#fbbf24"></i> Supplier Membership</h1>
+    <p>Choose the plan that fits your export ambition. Unlock premium exposure, leads, and trade tools.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="#">Loyalty</a><span>/</span>
+      <span>Supplier Membership</span>
+    </nav>
+
+    <!-- Pricing Cards -->
+    <div class="sec-title"><i class="fas fa-tags" style="color:#0052CC"></i> Choose Your Plan</div>
+    <p class="sec-sub">All plans include access to Globex Sky's global B2B buyer network. Upgrade anytime.</p>
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="plan-card">
+        <div class="plan-icon" style="background:#f8fafc;color:#64748b"><i class="fas fa-seedling"></i></div>
+        <div class="plan-name" style="color:#64748b">Free</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-period">forever</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check feat-yes"></i> 5 product listings</li>
+          <li><i class="fas fa-check feat-yes"></i> Basic storefront</li>
+          <li><i class="fas fa-check feat-yes"></i> Community support</li>
+          <li><i class="fas fa-times feat-no"></i> Analytics dashboard</li>
+          <li><i class="fas fa-times feat-no"></i> Verified badge</li>
+          <li><i class="fas fa-times feat-no"></i> Priority placement</li>
+        </ul>
+        <button class="btn-upgrade btn-outline-plan">Get Started</button>
+      </div>
+      <!-- Basic -->
+      <div class="plan-card">
+        <div class="plan-icon" style="background:#eff6ff;color:#0052CC"><i class="fas fa-store"></i></div>
+        <div class="plan-name" style="color:#0052CC">Basic</div>
+        <div class="plan-price">$99</div>
+        <div class="plan-period">per year</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check feat-yes"></i> 50 product listings</li>
+          <li><i class="fas fa-check feat-yes"></i> Custom storefront</li>
+          <li><i class="fas fa-check feat-yes"></i> Email support</li>
+          <li><i class="fas fa-check feat-yes"></i> Basic analytics</li>
+          <li><i class="fas fa-times feat-no"></i> Verified badge</li>
+          <li><i class="fas fa-times feat-no"></i> Priority placement</li>
+        </ul>
+        <button class="btn-upgrade btn-primary-plan" onclick="upgrade('Basic',$99)">Upgrade to Basic</button>
+      </div>
+      <!-- Gold – Current Plan -->
+      <div class="plan-card current">
+        <div class="current-ribbon"><i class="fas fa-check"></i> Current Plan</div>
+        <div class="plan-icon" style="background:#fffbeb;color:#f59e0b"><i class="fas fa-star"></i></div>
+        <div class="plan-name" style="color:#f59e0b">Gold</div>
+        <div class="plan-price">$299</div>
+        <div class="plan-period">per year</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check feat-yes"></i> 200 product listings</li>
+          <li><i class="fas fa-check feat-yes"></i> Premium storefront</li>
+          <li><i class="fas fa-check feat-yes"></i> Priority support</li>
+          <li><i class="fas fa-check feat-yes"></i> Full analytics</li>
+          <li><i class="fas fa-check feat-yes"></i> Verified badge</li>
+          <li><i class="fas fa-times feat-no"></i> Featured placement</li>
+        </ul>
+        <button class="btn-upgrade btn-current-plan"><i class="fas fa-check"></i> Active Plan</button>
+      </div>
+      <!-- Platinum -->
+      <div class="plan-card popular">
+        <div class="popular-ribbon"><i class="fas fa-fire"></i> Most Popular</div>
+        <div class="plan-icon" style="background:#fdf4ff;color:#7c3aed"><i class="fas fa-gem"></i></div>
+        <div class="plan-name" style="color:#7c3aed">Platinum</div>
+        <div class="plan-price">$599</div>
+        <div class="plan-period">per year</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check feat-yes"></i> Unlimited listings</li>
+          <li><i class="fas fa-check feat-yes"></i> Elite storefront</li>
+          <li><i class="fas fa-check feat-yes"></i> Dedicated manager</li>
+          <li><i class="fas fa-check feat-yes"></i> Advanced analytics</li>
+          <li><i class="fas fa-check feat-yes"></i> Verified + featured badge</li>
+          <li><i class="fas fa-check feat-yes"></i> Homepage placement</li>
+        </ul>
+        <button class="btn-upgrade btn-popular-plan" onclick="upgrade('Platinum',599)"><i class="fas fa-arrow-up"></i> Upgrade Now</button>
+      </div>
+      <!-- Diamond -->
+      <div class="plan-card">
+        <div class="plan-icon" style="background:linear-gradient(135deg,#eff6ff,#fdf4ff);color:#0052CC"><i class="fas fa-crown"></i></div>
+        <div class="plan-name" style="background:linear-gradient(135deg,#0052CC,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Diamond</div>
+        <div class="plan-price" style="background:linear-gradient(135deg,#0052CC,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Custom</div>
+        <div class="plan-period">contact sales</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check feat-yes"></i> Unlimited everything</li>
+          <li><i class="fas fa-check feat-yes"></i> White-label storefront</li>
+          <li><i class="fas fa-check feat-yes"></i> VIP sourcing desk</li>
+          <li><i class="fas fa-check feat-yes"></i> Custom integrations</li>
+          <li><i class="fas fa-check feat-yes"></i> Exclusive category ads</li>
+          <li><i class="fas fa-check feat-yes"></i> Quarterly review calls</li>
+        </ul>
+        <button class="btn-upgrade btn-diamond-plan" onclick="showToast('Our sales team will contact you within 24 hours.')"><i class="fas fa-phone"></i> Contact Sales</button>
+      </div>
+    </div>
+
+    <!-- Feature Comparison Table -->
+    <div class="sec-title"><i class="fas fa-table" style="color:#7c3aed"></i> Feature Comparison</div>
+    <p class="sec-sub">See exactly what each tier includes before you upgrade.</p>
+    <div class="compare-card">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Basic</th>
+            <th class="highlight">Gold ✓</th>
+            <th>Platinum</th>
+            <th>Diamond</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cat-row"><td colspan="6">Listings &amp; Storefront</td></tr>
+          <tr><td>Product Listings</td><td>5</td><td>50</td><td class="highlight">200</td><td>Unlimited</td><td>Unlimited</td></tr>
+          <tr><td>Custom Domain</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td></tr>
+          <tr><td>Custom Branding</td><td><i class="fas fa-times check-no"></i></td><td>Basic</td><td class="highlight">Full</td><td>Elite</td><td>White-label</td></tr>
+          <tr><td>Video Showcase</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight">3 videos</td><td>20 videos</td><td>Unlimited</td></tr>
+          <tr class="cat-row"><td colspan="6">Visibility &amp; Marketing</td></tr>
+          <tr><td>Search Priority</td><td>Standard</td><td>+10%</td><td class="highlight">+30%</td><td>+60%</td><td>Top Position</td></tr>
+          <tr><td>Featured on Homepage</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-times check-no"></i></td><td><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td></tr>
+          <tr><td>Category Banner Ads</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-times check-no"></i></td><td>2/month</td><td>Unlimited</td></tr>
+          <tr><td>Email Marketing Blasts</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-times check-no"></i></td><td>1/quarter</td><td>1/month</td></tr>
+          <tr class="cat-row"><td colspan="6">Trust &amp; Verification</td></tr>
+          <tr><td>Verified Supplier Badge</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td></tr>
+          <tr><td>Trade Assurance Coverage</td><td><i class="fas fa-times check-no"></i></td><td>Basic</td><td class="highlight">Standard</td><td>Enhanced</td><td>Full Coverage</td></tr>
+          <tr><td>Audit Report Access</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td></tr>
+          <tr class="cat-row"><td colspan="6">Analytics &amp; Support</td></tr>
+          <tr><td>Analytics Dashboard</td><td><i class="fas fa-times check-no"></i></td><td>Basic</td><td class="highlight">Advanced</td><td>Full Suite</td><td>Custom BI</td></tr>
+          <tr><td>Inquiry Insights</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td></tr>
+          <tr><td>Support Channel</td><td>Community</td><td>Email</td><td class="highlight">Priority Email</td><td>Dedicated Manager</td><td>VIP Hotline</td></tr>
+          <tr><td>API Access</td><td><i class="fas fa-times check-no"></i></td><td><i class="fas fa-times check-no"></i></td><td class="highlight"><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td><td><i class="fas fa-check check-yes"></i></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Why Upgrade -->
+    <div class="sec-title"><i class="fas fa-rocket" style="color:#f97316"></i> Why Upgrade?</div>
+    <p class="sec-sub">Suppliers on paid plans see dramatically higher conversion and reach.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#eff6ff;color:#0052CC"><i class="fas fa-chart-line"></i></div>
+        <div class="benefit-title">3× More Buyer Inquiries</div>
+        <div class="benefit-desc">Verified Gold+ suppliers receive on average 3× more qualified buyer inquiries per month.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#ecfdf5;color:#059669"><i class="fas fa-globe"></i></div>
+        <div class="benefit-title">Global Market Reach</div>
+        <div class="benefit-desc">Platinum and Diamond members appear in international trade fair directories and partner platform feeds.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#fffbeb;color:#f59e0b"><i class="fas fa-shield-alt"></i></div>
+        <div class="benefit-title">Trade Assurance Protection</div>
+        <div class="benefit-desc">Enhanced trade assurance gives buyers more confidence, resulting in faster deal closure rates.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#fdf4ff;color:#7c3aed"><i class="fas fa-users"></i></div>
+        <div class="benefit-title">Dedicated Account Support</div>
+        <div class="benefit-desc">Platinum+ members get a named account manager who helps optimise listings and secure top buyers.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Done!</span></div>
+
+<script>
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    document.getElementById('toast-msg').textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3200);
+  }
+  function upgrade(plan,price){
+    showToast('Upgrading to '+plan+' ($'+price+'/yr)… Redirecting to checkout.');
+  }
+</script>
+</body>
+</html>

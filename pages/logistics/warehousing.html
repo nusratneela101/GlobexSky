@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Warehousing Services – GlobexSky</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="../../assets/css/main.css"/>
+<style>
+:root{--primary:#0052CC;--secondary:#7c3aed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+a{text-decoration:none;color:inherit}
+.site-header{position:sticky;top:0;z-index:100;background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px}
+.btn-login{background:transparent;border:1.5px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+.btn-register{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+.nav-actions{display:flex;gap:12px}
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);color:#fff;padding:48px 24px;text-align:center}
+.breadcrumb{font-size:.85rem;opacity:.8;margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.85)}
+.breadcrumb span{margin:0 6px}
+.page-hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+.page-hero p{font-size:1rem;opacity:.9;max-width:600px;margin:0 auto}
+.main-content{max-width:1200px;margin:0 auto;padding:32px 24px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
+.kpi-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+.kpi-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem}
+.kpi-icon.blue{background:#dbeafe;color:#0052CC}
+.kpi-icon.green{background:#d1fae5;color:#059669}
+.kpi-icon.orange{background:#ffedd5;color:#f97316}
+.kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+.kpi-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;line-height:1}
+.kpi-label{font-size:.8rem;color:#64748b;margin-top:4px}
+.section-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:20px;color:#1a1a2e;display:flex;align-items:center;gap:8px}
+.section-title i{color:var(--primary)}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+/* World Map */
+.world-map{background:linear-gradient(180deg,#dbeafe 0%,#bfdbfe 100%);border-radius:14px;height:280px;position:relative;overflow:hidden;margin-bottom:32px}
+.map-grid{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(0,82,204,.05) 0,rgba(0,82,204,.05) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,rgba(0,82,204,.05) 0,rgba(0,82,204,.05) 1px,transparent 1px,transparent 40px)}
+.map-dot{position:absolute;width:14px;height:14px;background:#0052CC;border-radius:50%;border:2px solid #fff;cursor:pointer;transform:translate(-50%,-50%)}
+.map-dot::after{content:attr(data-city);position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;font-size:.7rem;padding:3px 8px;border-radius:4px;white-space:nowrap;font-family:'Inter',sans-serif;pointer-events:none}
+.map-dot:hover{background:#7c3aed;transform:translate(-50%,-50%) scale(1.3)}
+.map-label{position:absolute;font-size:.65rem;font-weight:700;color:#1a1a2e;background:rgba(255,255,255,.9);padding:2px 8px;border-radius:10px;transform:translate(-50%,-100%);margin-top:-20px}
+/* Plans */
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px}
+.plan-card{background:#fff;border-radius:14px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;position:relative}
+.plan-card.featured{border:2px solid var(--primary);background:linear-gradient(180deg,#f0f7ff,#fff)}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:20px}
+.plan-name{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;margin-bottom:6px}
+.plan-price{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:var(--primary);margin-bottom:4px}
+.plan-unit{font-size:.78rem;color:#64748b;margin-bottom:16px}
+.plan-features{list-style:none;text-align:left;margin-bottom:20px}
+.plan-features li{padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:.85rem;display:flex;align-items:center;gap:8px}
+.plan-features li i{color:#059669;font-size:.75rem}
+.btn-primary{background:var(--primary);color:#fff;border-radius:8px;padding:10px 22px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;width:100%}
+.btn-primary:hover{background:#003fa3}
+.btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary);border-radius:8px;padding:10px 22px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;width:100%}
+/* Features Grid */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.feat-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;gap:14px;align-items:flex-start}
+.feat-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.feat-title{font-weight:600;font-size:.9rem;margin-bottom:4px}
+.feat-desc{font-size:.8rem;color:#64748b}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:.85rem;font-weight:600;color:#374151}
+input,select{border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;width:100%;outline:none;font-family:'Inter',sans-serif;font-size:.9rem;background:#fff;color:#1a1a2e}
+input:focus,select:focus{border-color:#0052CC}
+table{width:100%;border-collapse:collapse}
+thead{background:#f8faff}
+th{padding:12px 16px;text-align:left;font-size:.82rem;font-weight:600;color:#64748b;border-bottom:2px solid #e2e8f0}
+td{padding:12px 16px;font-size:.88rem;border-bottom:1px solid #f1f5f9}
+tr:hover td{background:#f8faff}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600}
+.badge.green{background:#d1fae5;color:#059669}
+.badge.orange{background:#ffedd5;color:#f97316}
+.badge.blue{background:#dbeafe;color:#0052CC}
+footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem;margin-top:40px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.plans-grid{grid-template-columns:1fr}.features-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.kpi-grid{grid-template-columns:1fr}.features-grid{grid-template-columns:1fr}.page-hero h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" width="180" height="56" alt="GlobexSky"/></a>
+    <div class="nav-actions">
+      <button class="btn-login">Log In</button>
+      <button class="btn-register">Register</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="breadcrumb"><a href="../../index.html">Home</a><span>›</span>Logistics<span>›</span>Warehousing</div>
+  <h1><i class="fa-solid fa-warehouse"></i> Warehousing Services</h1>
+  <p>Strategically located warehouses across 6 continents — secure, temperature-controlled, and WMS-integrated storage solutions.</p>
+</div>
+
+<main class="main-content">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon blue"><i class="fa-solid fa-warehouse"></i></div>
+      <div><div class="kpi-value">12</div><div class="kpi-label">Partner Warehouses</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon green"><i class="fa-solid fa-ruler-combined"></i></div>
+      <div><div class="kpi-value">2.4M</div><div class="kpi-label">Sq Ft Capacity</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon orange"><i class="fa-solid fa-bullseye"></i></div>
+      <div><div class="kpi-value">99.8%</div><div class="kpi-label">Inventory Accuracy</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon purple"><i class="fa-solid fa-bolt"></i></div>
+      <div><div class="kpi-value">3-Day</div><div class="kpi-label">Setup Time</div></div>
+    </div>
+  </div>
+
+  <!-- World Map -->
+  <div class="section-title"><i class="fa-solid fa-map-location-dot"></i> Global Warehouse Locations</div>
+  <div class="world-map">
+    <div class="map-grid"></div>
+    <!-- Approximate relative positions on a stylized map -->
+    <div class="map-dot" style="left:62%;top:28%" data-city="Shanghai"></div>
+    <div class="map-dot" style="left:52%;top:38%" data-city="Mumbai"></div>
+    <div class="map-dot" style="left:56%;top:25%" data-city="Istanbul"></div>
+    <div class="map-dot" style="left:58%;top:34%" data-city="Dubai"></div>
+    <div class="map-dot" style="left:48%;top:22%" data-city="Rotterdam"></div>
+    <div class="map-dot" style="left:22%;top:32%" data-city="Los Angeles"></div>
+    <div class="map-dot" style="left:68%;top:58%" data-city="Melbourne"></div>
+    <div class="map-dot" style="left:30%;top:56%" data-city="São Paulo"></div>
+    <div style="position:absolute;bottom:12px;left:16px;font-size:.75rem;color:#1a1a2e;background:rgba(255,255,255,.8);padding:4px 12px;border-radius:8px">● Hover dots to view city names</div>
+  </div>
+
+  <!-- Storage Plans -->
+  <div class="section-title"><i class="fa-solid fa-boxes-stacked"></i> Storage Plans</div>
+  <div class="plans-grid">
+    <div class="plan-card">
+      <div class="plan-name">Standard</div>
+      <div class="plan-price">$0.45</div>
+      <div class="plan-unit">per CBM / day</div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check"></i> Ambient temperature storage</li>
+        <li><i class="fa-solid fa-check"></i> Basic WMS access</li>
+        <li><i class="fa-solid fa-check"></i> Monthly inventory report</li>
+        <li><i class="fa-solid fa-check"></i> Standard pick & pack</li>
+        <li><i class="fa-solid fa-check"></i> Email support</li>
+      </ul>
+      <button class="btn-outline">Get Started</button>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Premium</div>
+      <div class="plan-price">$0.89</div>
+      <div class="plan-unit">per CBM / day</div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check"></i> Climate-controlled zones</li>
+        <li><i class="fa-solid fa-check"></i> Advanced WMS + API</li>
+        <li><i class="fa-solid fa-check"></i> Real-time inventory alerts</li>
+        <li><i class="fa-solid fa-check"></i> Priority pick & pack</li>
+        <li><i class="fa-solid fa-check"></i> 24/7 phone support</li>
+        <li><i class="fa-solid fa-check"></i> Hazmat certified zones</li>
+      </ul>
+      <button class="btn-primary">Get Started</button>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Enterprise</div>
+      <div class="plan-price">Custom</div>
+      <div class="plan-unit">volume-based pricing</div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check"></i> Dedicated warehouse section</li>
+        <li><i class="fa-solid fa-check"></i> Full WMS integration</li>
+        <li><i class="fa-solid fa-check"></i> SLA guarantee</li>
+        <li><i class="fa-solid fa-check"></i> Dedicated account manager</li>
+        <li><i class="fa-solid fa-check"></i> Custom reporting</li>
+        <li><i class="fa-solid fa-check"></i> On-site staff option</li>
+      </ul>
+      <button class="btn-outline">Contact Sales</button>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="section-title"><i class="fa-solid fa-gears"></i> Inventory Management Features</div>
+  <div class="features-grid">
+    <div class="feat-card"><div class="feat-icon" style="background:#dbeafe;color:#0052CC"><i class="fa-solid fa-barcode"></i></div><div><div class="feat-title">Barcode & RFID Scanning</div><div class="feat-desc">Real-time item tracking with barcode and RFID technology across all warehouse zones.</div></div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:#d1fae5;color:#059669"><i class="fa-solid fa-chart-line"></i></div><div><div class="feat-title">Real-Time Analytics</div><div class="feat-desc">Live dashboards showing stock levels, movement velocity, and reorder recommendations.</div></div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:#ffedd5;color:#f97316"><i class="fa-solid fa-bell"></i></div><div><div class="feat-title">Low Stock Alerts</div><div class="feat-desc">Automated email and SMS alerts when inventory falls below configured threshold levels.</div></div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:#ede9fe;color:#7c3aed"><i class="fa-solid fa-plug"></i></div><div><div class="feat-title">ERP/Shopify Integration</div><div class="feat-desc">Connect seamlessly with SAP, Oracle, Shopify, WooCommerce and 50+ platforms via API.</div></div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:#fef3c7;color:#d97706"><i class="fa-solid fa-shield-halved"></i></div><div><div class="feat-title">Secure Access Control</div><div class="feat-desc">24/7 CCTV, biometric entry, and digital audit trails for all inventory movements.</div></div></div>
+    <div class="feat-card"><div class="feat-icon" style="background:#fce7f3;color:#db2777"><i class="fa-solid fa-rotate"></i></div><div><div class="feat-title">Cross-Docking Support</div><div class="feat-desc">Direct transfer from inbound to outbound without storage — reduce handling and costs.</div></div></div>
+  </div>
+
+  <!-- Request Form -->
+  <div class="card">
+    <div class="section-title"><i class="fa-solid fa-file-pen"></i> Request Storage Space</div>
+    <form onsubmit="submitStorage(event)">
+      <div class="form-grid">
+        <div class="form-group"><label>Company Name</label><input type="text" placeholder="Your company name"/></div>
+        <div class="form-group"><label>Location Preference</label>
+          <select>
+            <option value="">Select preferred location</option>
+            <option>Dubai, UAE</option>
+            <option>Shanghai, China</option>
+            <option>Rotterdam, Netherlands</option>
+            <option>Los Angeles, USA</option>
+            <option>Mumbai, India</option>
+            <option>Istanbul, Turkey</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Required Space (sqm)</label><input type="number" placeholder="e.g. 500" min="1"/></div>
+        <div class="form-group"><label>Start Date</label><input type="date"/></div>
+        <div class="form-group"><label>Duration</label>
+          <select>
+            <option value="">Select duration</option>
+            <option>1 Month</option>
+            <option>3 Months</option>
+            <option>6 Months</option>
+            <option>12 Months</option>
+            <option>Open-ended</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Contact Email</label><input type="email" placeholder="your@company.com"/></div>
+      </div>
+      <button type="submit" class="btn-primary" style="margin-top:20px;width:auto;padding:10px 28px"><i class="fa-solid fa-paper-plane"></i> Submit Request</button>
+    </form>
+  </div>
+
+  <!-- Inventory Overview -->
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="padding:20px 24px 0">
+      <div class="section-title"><i class="fa-solid fa-table-list"></i> Sample Inventory Overview</div>
+    </div>
+    <table>
+      <thead><tr><th>SKU</th><th>Product</th><th>Location</th><th>Qty</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><code>SKU-40192</code></td><td>LED Smart Panel 40W</td><td>Dubai — Zone A</td><td>4,200</td><td><span class="badge green">In Stock</span></td></tr>
+        <tr><td><code>SKU-28741</code></td><td>Bamboo Tote Bags (50-pack)</td><td>Shanghai — Zone C</td><td>840</td><td><span class="badge blue">Reserved</span></td></tr>
+        <tr><td><code>SKU-93310</code></td><td>Stainless Steel Bolts M8</td><td>Rotterdam — Zone B</td><td>120,000</td><td><span class="badge green">In Stock</span></td></tr>
+        <tr><td><code>SKU-77402</code></td><td>USB-C Hub 7-in-1</td><td>Los Angeles — Zone A</td><td>310</td><td><span class="badge orange">Low Stock</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>© 2025 Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</footer>
+
+<script>
+function submitStorage(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('button[type=submit]');
+  btn.textContent='✓ Request Submitted!';
+  btn.style.background='#059669';
+  setTimeout(()=>{btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit Request';btn.style.background=''},3000);
+}
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

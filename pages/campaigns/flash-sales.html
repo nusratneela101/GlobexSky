@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Flash Sales – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    /* ── Header ── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    /* ── Hero ── */
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;left:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .page-hero::after{content:'';position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:rgba(124,58,237,.15)}
+    .hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:12px}
+    .page-hero p{font-size:1rem;opacity:.88;max-width:540px;margin:0 auto 28px}
+    /* Master Countdown */
+    .master-countdown{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .cd-unit{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:14px 20px;text-align:center;min-width:72px;backdrop-filter:blur(6px)}
+    .cd-num{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;line-height:1;letter-spacing:.02em}
+    .cd-lbl{font-size:.68rem;opacity:.8;margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+    .cd-sep{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;opacity:.5;align-self:flex-end;padding-bottom:18px}
+    /* ── Section ── */
+    .section{padding:44px 24px}
+    .container{max-width:1240px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .sec-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+    .sec-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px}
+    .sec-sub{font-size:.85rem;color:#64748b;margin-bottom:24px}
+    /* ── Active Sale Banner ── */
+    .active-sale{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.08);overflow:hidden;margin-bottom:28px}
+    .active-sale-header{background:linear-gradient(135deg,#dc2626,#f97316);padding:20px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:relative;overflow:hidden}
+    .active-sale-header::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.08)}
+    .flash-badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:50px;display:flex;align-items:center;gap:5px}
+    .flash-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:flashPulse 1s infinite}
+    @keyframes flashPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+    .active-sale-name{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;flex:1}
+    .sale-countdown-mini{display:flex;gap:8px}
+    .scd-unit{background:rgba(0,0,0,.25);border-radius:8px;padding:8px 12px;text-align:center;min-width:52px}
+    .scd-num{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;line-height:1}
+    .scd-lbl{font-size:.6rem;color:rgba(255,255,255,.75);margin-top:2px;text-transform:uppercase}
+    .active-sale-body{padding:24px 28px}
+    /* ── Category Filter Tabs ── */
+    .cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+    .cat-tab{padding:8px 16px;border-radius:50px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s;white-space:nowrap}
+    .cat-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .cat-tab:hover:not(.active){border-color:#0052CC;color:#0052CC}
+    /* ── Products Grid ── */
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:32px}
+    /* ── Product Card ── */
+    .product-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:all .2s;position:relative;display:flex;flex-direction:column}
+    .product-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.12)}
+    .product-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:3.2rem;position:relative;overflow:hidden}
+    .discount-badge{position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:6px;z-index:1;line-height:1}
+    .new-badge{position:absolute;top:10px;right:10px;background:#0052CC;color:#fff;font-size:.68rem;font-weight:700;padding:3px 7px;border-radius:50px;z-index:1}
+    .hot-badge{position:absolute;top:10px;right:10px;background:#f97316;color:#fff;font-size:.68rem;font-weight:700;padding:3px 7px;border-radius:50px;z-index:1;display:flex;align-items:center;gap:3px}
+    .timer-badge{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:#fff;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:50px;white-space:nowrap;backdrop-filter:blur(4px)}
+    .product-body{padding:16px;flex:1;display:flex;flex-direction:column}
+    .product-supplier{font-size:.72rem;color:#94a3b8;margin-bottom:3px;display:flex;align-items:center;gap:4px}
+    .product-name{font-weight:600;font-size:.9rem;color:#0a0e27;margin-bottom:3px;line-height:1.3}
+    .product-cat{font-size:.75rem;color:#64748b;margin-bottom:10px}
+    .price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+    .sale-price{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#ef4444}
+    .orig-price{font-size:.82rem;color:#94a3b8;text-decoration:line-through}
+    .save-label{font-size:.75rem;color:#059669;font-weight:600}
+    /* Stock Bar */
+    .stock-wrap{margin-bottom:12px}
+    .stock-info{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:4px}
+    .stock-sold{color:#ef4444;font-weight:600}
+    .stock-left{color:#64748b}
+    .stock-bar{background:#f1f5f9;border-radius:50px;height:6px;overflow:hidden}
+    .stock-fill{height:100%;border-radius:50px;transition:width .8s ease}
+    .fill-red{background:linear-gradient(90deg,#ef4444,#f97316)}
+    .fill-orange{background:linear-gradient(90deg,#f97316,#fbbf24)}
+    .fill-green{background:linear-gradient(90deg,#059669,#10b981)}
+    /* Buttons */
+    .card-actions{display:flex;gap:8px;margin-top:auto}
+    .btn-cart{flex:1;background:#0052CC;color:#fff;border:none;border-radius:10px;padding:10px 8px;font-size:.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-cart:hover{background:#003d99}
+    .btn-cart.added{background:#059669}
+    .btn-wish{width:38px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .2s}
+    .btn-wish:hover,.btn-wish.active{border-color:#ef4444;color:#ef4444;background:#fff5f5}
+    /* ── Cart Toast ── */
+    .cart-toast{position:fixed;bottom:28px;right:24px;background:#059669;color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(120px);transition:transform .3s;pointer-events:none}
+    .cart-toast.show{transform:translateY(0)}
+    /* ── Upcoming Flash Sales ── */
+    .upcoming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:32px}
+    .upcoming-card{background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(0,0,0,.06);border-top:4px solid transparent;transition:all .2s}
+    .upcoming-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.1)}
+    .upcoming-card-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+    .up-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+    .up-name{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;color:#0a0e27;margin-bottom:2px}
+    .up-time{font-size:.78rem;color:#64748b;display:flex;align-items:center;gap:4px}
+    .up-products{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+    .up-product-thumb{width:52px;height:52px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid #e2e8f0}
+    .up-discount{font-size:.82rem;color:#ef4444;font-weight:700;margin-bottom:12px}
+    .btn-notify{width:100%;padding:9px;border:1.5px solid #0052CC;border-radius:8px;background:#f0f5ff;color:#0052CC;font-size:.83rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+    .btn-notify:hover{background:#0052CC;color:#fff}
+    .btn-notify.notified{background:#d1fae5;color:#059669;border-color:#a7f3d0}
+    /* ── Deal of the Day ── */
+    .dotd-card{background:linear-gradient(135deg,#1e1b4b,#0052CC);border-radius:20px;padding:28px;color:#fff;margin-bottom:32px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;position:relative;overflow:hidden}
+    .dotd-card::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05)}
+    .dotd-badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:50px;display:inline-flex;align-items:center;gap:5px;margin-bottom:8px}
+    .dotd-product{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:6px}
+    .dotd-desc{font-size:.88rem;opacity:.8;margin-bottom:16px;max-width:400px}
+    .dotd-price-old{font-size:.88rem;opacity:.65;text-decoration:line-through;margin-bottom:2px}
+    .dotd-price{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700}
+    .dotd-price sup{font-size:1rem;vertical-align:top;margin-top:6px}
+    .dotd-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn-white-solid{background:#fff;color:#0052CC;border:none;border-radius:10px;padding:11px 22px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .btn-white-solid:hover{background:#f0f5ff}
+    .btn-white-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6);border-radius:10px;padding:11px 22px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .btn-white-outline:hover{background:rgba(255,255,255,.1)}
+    .dotd-right{margin-left:auto;text-align:center;position:relative;z-index:1}
+    .dotd-icon{font-size:5rem;opacity:.25}
+    /* ── Cart Count ── */
+    .cart-bubble{position:fixed;bottom:28px;left:24px;background:#0052CC;color:#fff;border-radius:50px;padding:12px 20px;font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,82,204,.3);cursor:pointer;transition:all .2s;z-index:9998}
+    .cart-bubble:hover{background:#003d99;transform:scale(1.05)}
+    .cart-count{background:#ef4444;color:#fff;border-radius:50%;width:20px;height:20px;font-size:.72rem;display:flex;align-items:center;justify-content:center;font-weight:700}
+    /* ── Footer ── */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    /* ── Responsive ── */
+    @media(max-width:600px){
+      .active-sale-header{flex-direction:column;align-items:flex-start}
+      .dotd-right{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-bolt" style="color:#fbbf24"></i> Flash Sales</h1>
+    <p>Limited-time B2B deals with massive discounts. New sales start every few hours — don't miss out!</p>
+    <div class="master-countdown">
+      <div class="cd-unit"><div class="cd-num" id="m-h">00</div><div class="cd-lbl">Hours</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="m-m">00</div><div class="cd-lbl">Min</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="m-s">00</div><div class="cd-lbl">Sec</div></div>
+    </div>
+    <div style="margin-top:14px;font-size:.8rem;opacity:.7;position:relative;z-index:1">Time until next flash sale cycle</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <span>Flash Sales</span>
+    </nav>
+
+    <!-- Deal of the Day -->
+    <div class="dotd-card">
+      <div style="position:relative;z-index:1">
+        <div class="dotd-badge"><i class="fas fa-crown"></i> DEAL OF THE DAY</div>
+        <div class="dotd-product">Industrial Smart Sensor Pro X4 Bundle</div>
+        <div class="dotd-desc">50-piece bundle — CE certified IoT sensors from Shenzhen TechCo. Ideal for factory automation &amp; smart building projects.</div>
+        <div class="dotd-price-old">Regular: $6.50/pc × 50 = $325.00</div>
+        <div class="dotd-price"><sup>$</sup><span id="dotd-price">148</span><sup>.50</sup></div>
+        <div style="font-size:.82rem;opacity:.8;margin-top:2px">54% OFF · Only 12 bundles left</div>
+        <div class="dotd-actions">
+          <button class="btn-white-solid" onclick="addToCart('Deal of the Day')"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+          <button class="btn-white-outline"><i class="fas fa-eye"></i> View Details</button>
+        </div>
+      </div>
+      <div class="dotd-right">
+        <div class="dotd-icon"><i class="fas fa-satellite-dish"></i></div>
+      </div>
+    </div>
+
+    <!-- Active Flash Sales Header -->
+    <div class="sec-header">
+      <div>
+        <div class="sec-title"><i class="fas fa-fire" style="color:#ef4444"></i> Active Flash Sales</div>
+        <div class="sec-sub">These deals expire soon — grab them while stock lasts!</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select id="sort-deals" style="padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.82rem;font-family:'Inter',sans-serif" onchange="sortDeals()">
+          <option>Sort: Best Discount</option>
+          <option>Sort: Price Low–High</option>
+          <option>Sort: Nearly Sold Out</option>
+          <option>Sort: Newest</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="cat-tabs" id="cat-tabs">
+      <button class="cat-tab active" onclick="filterCat(this,'all')">All Deals</button>
+      <button class="cat-tab" onclick="filterCat(this,'Electronics')"><i class="fas fa-microchip"></i> Electronics</button>
+      <button class="cat-tab" onclick="filterCat(this,'Machinery')"><i class="fas fa-cogs"></i> Machinery</button>
+      <button class="cat-tab" onclick="filterCat(this,'Textiles')"><i class="fas fa-tshirt"></i> Textiles</button>
+      <button class="cat-tab" onclick="filterCat(this,'Chemicals')"><i class="fas fa-flask"></i> Chemicals</button>
+      <button class="cat-tab" onclick="filterCat(this,'Food')"><i class="fas fa-seedling"></i> Food &amp; Agri</button>
+    </div>
+
+    <!-- Active Sales Section -->
+    <div id="active-sales-container"></div>
+
+    <!-- Upcoming Flash Sales -->
+    <div class="sec-header" style="margin-top:12px">
+      <div>
+        <div class="sec-title"><i class="fas fa-calendar-alt" style="color:#0052CC"></i> Upcoming Flash Sales</div>
+        <div class="sec-sub">Set a reminder so you don't miss these deals when they go live.</div>
+      </div>
+    </div>
+    <div class="upcoming-grid" id="upcoming-grid"></div>
+
+  </div>
+</section>
+
+<!-- Cart Toast Notification -->
+<div class="cart-toast" id="cart-toast"><i class="fas fa-check-circle"></i> <span id="cart-toast-msg">Added to cart!</span></div>
+
+<!-- Cart Bubble -->
+<div class="cart-bubble" id="cart-bubble" style="display:none" onclick="viewCart()">
+  <i class="fas fa-shopping-cart"></i>
+  Cart <span class="cart-count" id="cart-count">0</span>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-copyright">
+    © <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.
+  </div>
+</footer>
+
+<script>
+// ─── Data ───
+const ACTIVE_SALES = [
+  {
+    id:'sale1', name:'Electronics Mega Clearance', endOffset: 2*3600+14*60+33,
+    color:'linear-gradient(135deg,#dc2626,#f97316)',
+    products:[
+      { id:'p1', name:'ESP32 Dev Board Pro', supplier:'Shenzhen TechCo', cat:'Electronics', icon:'fa-microchip', bg:'linear-gradient(135deg,#dbeafe,#ede9fe)', salePrice:3.20, origPrice:5.20, discount:38, soldPct:72, totalStock:500, isNew:false, isHot:true  },
+      { id:'p2', name:'Smart PIR Motion Sensor', supplier:'SenzTech Ltd.', cat:'Electronics', icon:'fa-satellite-dish', bg:'linear-gradient(135deg,#f0f9ff,#dbeafe)', salePrice:1.80, origPrice:3.40, discount:47, soldPct:55, totalStock:1000, isNew:true, isHot:false },
+      { id:'p3', name:'Li-Po Battery Pack 3.7V 2Ah', supplier:'PowerCell Co.', cat:'Electronics', icon:'fa-battery-three-quarters', bg:'linear-gradient(135deg,#d1fae5,#f0f9ff)', salePrice:2.60, origPrice:4.80, discount:46, soldPct:91, totalStock:800, isNew:false, isHot:true },
+      { id:'p4', name:'OLED Display Module 0.96"', supplier:'Shenzhen TechCo', cat:'Electronics', icon:'fa-desktop', bg:'linear-gradient(135deg,#fef3c7,#ffedd5)', salePrice:1.40, origPrice:2.80, discount:50, soldPct:44, totalStock:2000, isNew:false, isHot:false },
+    ]
+  },
+  {
+    id:'sale2', name:'Industrial Machinery Flash Deal', endOffset: 5*3600+22*60+17,
+    color:'linear-gradient(135deg,#475569,#0052CC)',
+    products:[
+      { id:'p5', name:'CNC Router Bit Set (10pc)', supplier:'Precision Machinery India', cat:'Machinery', icon:'fa-tools', bg:'linear-gradient(135deg,#f1f5f9,#dbeafe)', salePrice:28.00, origPrice:52.00, discount:46, soldPct:38, totalStock:300, isNew:false, isHot:false },
+      { id:'p6', name:'Industrial Hex Bolt Pack M8', supplier:'FastenersPlus GmbH', cat:'Machinery', icon:'fa-cog', bg:'linear-gradient(135deg,#f0f9ff,#e0f2fe)', salePrice:9.50, origPrice:18.00, discount:47, soldPct:62, totalStock:600, isNew:false, isHot:true },
+      { id:'p7', name:'Bearing Deep Groove 6205', supplier:'BearingWorld', cat:'Machinery', icon:'fa-circle', bg:'linear-gradient(135deg,#fafafa,#f1f5f9)', salePrice:1.20, origPrice:2.80, discount:57, soldPct:80, totalStock:5000, isNew:false, isHot:true },
+    ]
+  },
+  {
+    id:'sale3', name:'Sustainable Textiles Sale', endOffset: 8*3600+44*60+05,
+    color:'linear-gradient(135deg,#059669,#0052CC)',
+    products:[
+      { id:'p8', name:'Organic Cotton Fabric 200gsm', supplier:'Apex Textiles BD', cat:'Textiles', icon:'fa-tshirt', bg:'linear-gradient(135deg,#d1fae5,#dcfce7)', salePrice:1.80, origPrice:3.50, discount:49, soldPct:66, totalStock:10000, isNew:false, isHot:false },
+      { id:'p9', name:'Recycled Polyester Yarn Cone', supplier:'EcoFibre Vietnam', cat:'Textiles', icon:'fa-scroll', bg:'linear-gradient(135deg,#ecfdf5,#d1fae5)', salePrice:4.20, origPrice:7.80, discount:46, soldPct:29, totalStock:800, isNew:true, isHot:false },
+      { id:'p10', name:'Denim Fabric Roll (50m)', supplier:'IndiaWeave Co.', cat:'Textiles', icon:'fa-layer-group', bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)', salePrice:38.00, origPrice:65.00, discount:42, soldPct:53, totalStock:200, isNew:false, isHot:false },
+      { id:'p11', name:'GOTS Certified Hemp Canvas', supplier:'Apex Textiles BD', cat:'Textiles', icon:'fa-leaf', bg:'linear-gradient(135deg,#f0fdf4,#dcfce7)', salePrice:2.90, origPrice:5.40, discount:46, soldPct:18, totalStock:3000, isNew:true, isHot:false },
+    ]
+  },
+  {
+    id:'sale4', name:'Agri & Food Supply Deals', endOffset: 1*3600+8*60+50,
+    color:'linear-gradient(135deg,#0d9488,#059669)',
+    products:[
+      { id:'p12', name:'Organic Jasmine Rice (25kg)', supplier:'Vietnam Agro Exports', cat:'Food', icon:'fa-seedling', bg:'linear-gradient(135deg,#ecfdf5,#f0fdf4)', salePrice:22.00, origPrice:38.00, discount:42, soldPct:85, totalStock:400, isNew:false, isHot:true },
+      { id:'p13', name:'Dried Ginger Powder 1kg', supplier:'SpiceRoute India', cat:'Food', icon:'fa-pepper-hot', bg:'linear-gradient(135deg,#fff7ed,#ffedd5)', salePrice:8.50, origPrice:15.00, discount:43, soldPct:61, totalStock:1500, isNew:false, isHot:false },
+    ]
+  }
+];
+
+const UPCOMING_SALES = [
+  {
+    name:'Chemical Raw Materials Blowout', startsIn:'Starts in 2h 14m',
+    discount:'Up to 55% OFF', color:'#ef4444',
+    icons:['fa-flask','fa-vial','fa-atom'],
+    bgs:['#fee2e2','#ffedd5','#fef3c7']
+  },
+  {
+    name:'LED & Lighting Solutions', startsIn:'Starts in 5h 30m',
+    discount:'Up to 48% OFF', color:'#f97316',
+    icons:['fa-lightbulb','fa-sun','fa-bolt'],
+    bgs:['#fef3c7','#ffedd5','#fff7ed']
+  },
+  {
+    name:'Medical Supplies Flash Sale', startsIn:'Starts Tomorrow 09:00',
+    discount:'Up to 40% OFF', color:'#0052CC',
+    icons:['fa-heartbeat','fa-syringe','fa-pills'],
+    bgs:['#dbeafe','#ede9fe','#f0f9ff']
+  },
+  {
+    name:'Automotive Parts Mega Deal', startsIn:'Starts Tomorrow 14:00',
+    discount:'Up to 45% OFF', color:'#7c3aed',
+    icons:['fa-car','fa-cogs','fa-bolt'],
+    bgs:['#ede9fe','#f5f3ff','#faf5ff']
+  },
+  {
+    name:'Packaging Materials Sale', startsIn:'In 2 days',
+    discount:'Up to 35% OFF', color:'#059669',
+    icons:['fa-box','fa-boxes','fa-tape'],
+    bgs:['#d1fae5','#dcfce7','#ecfdf5']
+  },
+  {
+    name:'Construction Materials Drop', startsIn:'In 3 days',
+    discount:'Up to 50% OFF', color:'#d97706',
+    icons:['fa-hard-hat','fa-hammer','fa-ruler'],
+    bgs:['#fef3c7','#ffedd5','#fff7ed']
+  }
+];
+
+// ─── State ───
+let cart = [];
+let activeCat = 'all';
+const saleTimers = {};
+
+// ─── Master Countdown ───
+function updateMasterCd() {
+  const now = new Date();
+  const nextHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours()+1, 0, 0, 0);
+  let rem = Math.floor((nextHour - now) / 1000);
+  if(rem < 0) rem = 0;
+  document.getElementById('m-h').textContent = String(Math.floor(rem/3600)).padStart(2,'0');
+  document.getElementById('m-m').textContent = String(Math.floor((rem%3600)/60)).padStart(2,'0');
+  document.getElementById('m-s').textContent = String(rem%60).padStart(2,'0');
+}
+setInterval(updateMasterCd, 1000);
+updateMasterCd();
+
+// ─── Sale Countdowns ───
+function startSaleCountdown(saleId, offset) {
+  let remaining = offset;
+  const tick = () => {
+    if(remaining <= 0) { clearInterval(saleTimers[saleId]); return; }
+    const h = Math.floor(remaining/3600);
+    const m = Math.floor((remaining%3600)/60);
+    const s = remaining%60;
+    const el = document.getElementById('cd-'+saleId);
+    if(el) {
+      el.querySelector('.h').textContent = String(h).padStart(2,'0');
+      el.querySelector('.m').textContent = String(m).padStart(2,'0');
+      el.querySelector('.s').textContent = String(s).padStart(2,'0');
+    }
+    remaining--;
+  };
+  tick();
+  saleTimers[saleId] = setInterval(tick, 1000);
+}
+
+// ─── Render ───
+function getStockFillClass(pct) {
+  if(pct >= 80) return 'fill-red';
+  if(pct >= 50) return 'fill-orange';
+  return 'fill-green';
+}
+
+function renderActiveProduct(p) {
+  const inCart = cart.some(c => c.id === p.id);
+  return `
+    <div class="product-card" id="pcard-${p.id}">
+      <div class="product-img" style="background:${p.bg}">
+        <span class="discount-badge">-${p.discount}%</span>
+        ${p.isNew ? '<span class="new-badge">NEW</span>' : ''}
+        ${p.isHot ? '<span class="hot-badge"><i class="fas fa-fire"></i> HOT</span>' : ''}
+        <i class="fas ${p.icon}" style="font-size:3rem;opacity:.65;color:#1e3a5f"></i>
+        ${p.soldPct >= 80 ? '<span class="timer-badge"><i class="fas fa-exclamation-triangle"></i> Almost Gone!</span>' : ''}
+      </div>
+      <div class="product-body">
+        <div class="product-supplier"><i class="fas fa-store"></i> ${p.supplier}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-cat">${p.cat} · MOQ: 50 pcs</div>
+        <div class="price-row">
+          <span class="sale-price">$${p.salePrice.toFixed(2)}</span>
+          <span class="orig-price">$${p.origPrice.toFixed(2)}</span>
+          <span class="save-label">Save ${p.discount}%</span>
+        </div>
+        <div class="stock-wrap">
+          <div class="stock-info">
+            <span class="stock-sold"><i class="fas fa-fire"></i> ${p.soldPct}% sold</span>
+            <span class="stock-left">${Math.round(p.totalStock*(1-p.soldPct/100))} left</span>
+          </div>
+          <div class="stock-bar">
+            <div class="stock-fill ${getStockFillClass(p.soldPct)}" style="width:${p.soldPct}%"></div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-cart ${inCart?'added':''}" id="cart-btn-${p.id}" onclick="addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.salePrice})">
+            <i class="fas ${inCart?'fa-check':'fa-cart-plus'}"></i> ${inCart?'In Cart':'Add to Cart'}
+          </button>
+          <button class="btn-wish ${isWished(p.id)?'active':''}" id="wish-btn-${p.id}" onclick="toggleWish('${p.id}')" title="Wishlist">
+            <i class="fas fa-heart"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let wished = new Set();
+function isWished(id) { return wished.has(id); }
+function toggleWish(id) {
+  if(wished.has(id)) wished.delete(id); else wished.add(id);
+  const btn = document.getElementById('wish-btn-'+id);
+  if(btn) btn.classList.toggle('active', wished.has(id));
+}
+
+function renderActiveSales(filtered) {
+  const container = document.getElementById('active-sales-container');
+  const visibleSales = ACTIVE_SALES.map(sale => {
+    const prods = filtered==='all' ? sale.products : sale.products.filter(p=>p.cat.toLowerCase().includes(filtered.toLowerCase()));
+    return { ...sale, filteredProducts: prods };
+  }).filter(s => s.filteredProducts.length > 0);
+
+  if(!visibleSales.length) {
+    container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:#94a3b8"><i class="fas fa-bolt" style="font-size:3rem;display:block;margin-bottom:12px"></i><p>No active deals in this category right now.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = visibleSales.map(sale => `
+    <div class="active-sale" id="${sale.id}">
+      <div class="active-sale-header" style="background:${sale.color}">
+        <div class="flash-badge"><span class="flash-dot"></span> FLASH SALE</div>
+        <div class="active-sale-name">${sale.name}</div>
+        <div class="sale-countdown-mini" id="cd-${sale.id}">
+          <div class="scd-unit"><div class="scd-num h">--</div><div class="scd-lbl">HRS</div></div>
+          <div class="scd-unit"><div class="scd-num m">--</div><div class="scd-lbl">MIN</div></div>
+          <div class="scd-unit"><div class="scd-num s">--</div><div class="scd-lbl">SEC</div></div>
+        </div>
+      </div>
+      <div class="active-sale-body">
+        <div class="products-grid">
+          ${sale.filteredProducts.map(p => renderActiveProduct(p)).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  visibleSales.forEach(sale => startSaleCountdown(sale.id, sale.endOffset));
+}
+
+function renderUpcomingSales() {
+  const grid = document.getElementById('upcoming-grid');
+  grid.innerHTML = UPCOMING_SALES.map((s,i) => `
+    <div class="upcoming-card" style="border-top-color:${s.color}">
+      <div class="upcoming-card-header">
+        <div class="up-icon" style="background:${s.bgs[0]};color:${s.color}"><i class="fas ${s.icons[0]}"></i></div>
+        <div>
+          <div class="up-name">${s.name}</div>
+          <div class="up-time"><i class="fas fa-clock"></i> ${s.startsIn}</div>
+        </div>
+      </div>
+      <div class="up-products">
+        ${s.icons.map((ic,j)=>`<div class="up-product-thumb" style="background:${s.bgs[j%s.bgs.length]}"><i class="fas ${ic}" style="color:${s.color};font-size:.95rem"></i></div>`).join('')}
+        <div class="up-product-thumb" style="background:#f8faff;font-size:.72rem;color:#94a3b8;display:flex;align-items:center;justify-content:center">+more</div>
+      </div>
+      <div class="up-discount"><i class="fas fa-tag"></i> ${s.discount}</div>
+      <button class="btn-notify" id="notify-${i}" onclick="toggleNotify(this,${i},'${s.name.replace(/'/g,"\\'")}')">
+        <i class="fas fa-bell"></i> Notify Me
+      </button>
+    </div>
+  `).join('');
+}
+
+// ─── Interactions ───
+function filterCat(el, cat) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  activeCat = cat;
+  Object.values(saleTimers).forEach(t => clearInterval(t));
+  renderActiveSales(cat);
+}
+
+function sortDeals() { /* Re-render with same filter – simple UX demo */ renderActiveSales(activeCat); }
+
+function addToCart(idOrName, name, price) {
+  if(typeof idOrName === 'string' && !name) {
+    // Deal of the Day path
+    showToast('Deal of the Day added to cart! 🛒');
+    updateCartBubble(1);
+    return;
+  }
+  const id = idOrName;
+  const existing = cart.find(c => c.id === id);
+  if(existing) {
+    showToast(`${name} is already in your cart.`);
+    return;
+  }
+  cart.push({ id, name, price });
+  const btn = document.getElementById('cart-btn-'+id);
+  if(btn) {
+    btn.innerHTML = '<i class="fas fa-check"></i> In Cart';
+    btn.classList.add('added');
+  }
+  updateCartBubble(cart.length);
+  showToast(`${name} added to cart!`);
+}
+
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  const toast = document.getElementById('cart-toast');
+  document.getElementById('cart-toast-msg').textContent = msg;
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function updateCartBubble(count) {
+  const bubble = document.getElementById('cart-bubble');
+  const countEl = document.getElementById('cart-count');
+  bubble.style.display = count > 0 ? 'flex' : 'none';
+  countEl.textContent = count;
+}
+
+function viewCart() {
+  alert(`You have ${cart.length} item(s) in your cart:\n\n${cart.map(c=>`• ${c.name} – $${c.price.toFixed(2)}`).join('\n')}\n\nProceed to checkout in your sourcing cart.`);
+}
+
+function toggleNotify(btn, idx, name) {
+  const isNotified = btn.classList.contains('notified');
+  btn.classList.toggle('notified', !isNotified);
+  btn.innerHTML = isNotified
+    ? '<i class="fas fa-bell"></i> Notify Me'
+    : '<i class="fas fa-bell-slash"></i> Reminder Set ✓';
+  if(!isNotified) showToast(`Reminder set for: ${name}`);
+}
+
+// ─── Init ───
+renderActiveSales('all');
+renderUpcomingSales();
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

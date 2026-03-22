@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Browse Live Streams – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh}
+
+    /* ── Nav ── */
+    .topnav{background:#161b22;border-bottom:1px solid #30363d;padding:0 24px;position:sticky;top:0;z-index:200}
+    .topnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:16px;height:62px}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#e6edf3;text-decoration:none;flex-shrink:0}
+    .brand-logo span{color:#0052CC}
+    .nav-links{display:flex;gap:4px;margin-left:16px}
+    .nav-link{text-decoration:none;color:#8b949e;font-size:.875rem;font-weight:500;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-link:hover,.nav-link.active{color:#e6edf3;background:#21262d}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:9px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-ghost{background:transparent;color:#8b949e;border:1px solid #30363d}
+    .btn-ghost:hover{color:#e6edf3;border-color:#8b949e}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#0d1117 0%,#0A0E27 40%,#1a0533 100%);padding:56px 24px 48px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid #30363d}
+    .hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,82,204,.25) 0%,transparent 65%)}
+    .hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+    .live-badge-big{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);border-radius:50px;padding:6px 18px;font-size:.8rem;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.5px;margin-bottom:18px;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.2;margin-bottom:14px;color:#fff}
+    .hero h1 span{color:#0052CC}
+    .hero p{color:#8b949e;font-size:1rem;max-width:520px;margin:0 auto 28px;line-height:1.7}
+    .hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+    .hero-stat strong{display:block;font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:800;color:#e6edf3}
+    .hero-stat span{font-size:.78rem;color:#8b949e}
+
+    /* ── Filter Bar ── */
+    .filter-bar{background:#161b22;border-bottom:1px solid #30363d;padding:14px 24px;position:sticky;top:62px;z-index:190}
+    .filter-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .tab-pills{display:flex;gap:4px;background:#0d1117;border-radius:10px;padding:3px;border:1px solid #30363d}
+    .tab-pill{padding:8px 18px;border:none;border-radius:8px;background:transparent;color:#8b949e;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px}
+    .tab-pill.active{background:#0052CC;color:#fff}
+    .tab-pill .count{background:rgba(255,255,255,.2);border-radius:10px;padding:1px 7px;font-size:.72rem}
+    .filter-sep{width:1px;height:28px;background:#30363d}
+    .filter-select{background:#0d1117;border:1px solid #30363d;color:#c9d1d9;border-radius:8px;padding:8px 12px;font-size:.83rem;font-family:'Inter',sans-serif;cursor:pointer;outline:none}
+    .filter-select:focus{border-color:#0052CC}
+    .search-box{display:flex;align-items:center;gap:8px;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:8px 14px;flex:1;max-width:280px}
+    .search-box i{color:#8b949e;font-size:.85rem}
+    .search-box input{background:none;border:none;color:#e6edf3;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;width:100%}
+    .search-box input::placeholder{color:#8b949e}
+    .live-indicator{display:flex;align-items:center;gap:6px;font-size:.82rem;color:#8b949e;margin-left:auto}
+    .live-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;animation:pulse 1.2s infinite}
+
+    /* ── Layout ── */
+    .page-wrap{max-width:1280px;margin:0 auto;padding:28px 24px}
+    .streams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    /* ── Stream Card ── */
+    .stream-card{background:#161b22;border:1px solid #30363d;border-radius:16px;overflow:hidden;transition:all .25s;cursor:pointer}
+    .stream-card:hover{border-color:#0052CC;box-shadow:0 8px 28px rgba(0,82,204,.2);transform:translateY(-3px)}
+    .stream-thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#1c2128,#21262d);overflow:hidden}
+    .stream-thumb-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;filter:blur(1px);transform:scale(1.05)}
+    .stream-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.1) 0%,rgba(0,0,0,.7) 100%)}
+    .thumb-badges{position:absolute;top:10px;left:10px;display:flex;gap:6px;align-items:center}
+    .live-badge{background:#ef4444;color:#fff;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:5px;animation:pulse 1.5s infinite}
+    .upcoming-badge{background:#f59e0b;color:#1a1a2e;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:5px}
+    .replay-badge{background:#374151;color:#9ca3af;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:5px}
+    .cat-badge{background:rgba(0,82,204,.8);color:#fff;font-size:.68rem;font-weight:600;padding:3px 9px;border-radius:5px}
+    .viewer-badge{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.6);color:#e6edf3;font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:5px}
+    .viewer-badge i{color:#ef4444;font-size:.65rem}
+    .thumb-right-badges{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+    .play-btn{position:absolute;bottom:12px;right:12px;width:42px;height:42px;background:#0052CC;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;box-shadow:0 4px 14px rgba(0,82,204,.5);transition:all .2s;opacity:0;transform:scale(.9)}
+    .stream-card:hover .play-btn{opacity:1;transform:scale(1)}
+    .stream-duration{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,.75);color:#e6edf3;font-size:.72rem;padding:3px 8px;border-radius:5px}
+    .stream-body{padding:16px}
+    .stream-host-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .host-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
+    .host-info{flex:1;overflow:hidden}
+    .host-name{font-size:.82rem;font-weight:600;color:#e6edf3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .host-verified{color:#3b82f6;font-size:.72rem}
+    .host-followers{font-size:.73rem;color:#8b949e}
+    .stream-title{font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:600;color:#e6edf3;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4}
+    .stream-meta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    .stream-time{font-size:.75rem;color:#8b949e;display:flex;align-items:center;gap:4px}
+    .stream-time i{font-size:.7rem}
+    .stream-products{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+    .product-chip{background:#21262d;border:1px solid #30363d;border-radius:20px;padding:4px 10px;font-size:.72rem;color:#8b949e;display:flex;align-items:center;gap:4px}
+    .product-chip i{font-size:.65rem;color:#0052CC}
+    .stream-actions{display:flex;gap:8px}
+    .btn-watch{flex:1;background:#0052CC;color:#fff;border:none;border-radius:9px;padding:9px;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
+    .btn-watch:hover{background:#003d99}
+    .btn-remind{background:#21262d;border:1px solid #30363d;color:#8b949e;border-radius:9px;padding:9px 12px;font-size:.85rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:.8rem}
+    .btn-remind:hover{border-color:#0052CC;color:#0052CC}
+
+    /* ── Upcoming section ── */
+    .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;margin-top:4px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#e6edf3;display:flex;align-items:center;gap:8px}
+    .section-title i{color:#0052CC}
+    .see-all{font-size:.82rem;color:#0052CC;text-decoration:none;font-weight:600}
+
+    /* ── Schedule List ── */
+    .schedule-list{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+    .schedule-item{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:border-color .2s}
+    .schedule-item:hover{border-color:#0052CC}
+    .schedule-time-box{background:#0d1117;border-radius:10px;padding:10px 14px;text-align:center;flex-shrink:0;min-width:64px}
+    .schedule-time-box .s-hour{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#e6edf3;display:block}
+    .schedule-time-box .s-tz{font-size:.68rem;color:#8b949e}
+    .schedule-emoji{font-size:2rem;flex-shrink:0}
+    .schedule-info{flex:1}
+    .schedule-info h4{font-size:.9rem;font-weight:600;color:#e6edf3;margin-bottom:4px}
+    .schedule-info p{font-size:.78rem;color:#8b949e}
+    .schedule-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+    .notify-btn{background:transparent;border:1px solid #30363d;color:#8b949e;border-radius:8px;padding:6px 14px;font-size:.78rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif}
+    .notify-btn:hover,.notify-btn.notified{border-color:#f59e0b;color:#f59e0b}
+    .notify-btn.notified{background:rgba(245,158,11,.1)}
+
+    @media(max-width:768px){.streams-grid{grid-template-columns:1fr}.filter-inner{gap:8px}.tab-pills{width:100%}.tab-pill{flex:1;justify-content:center}.hero-stats{gap:20px}}
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="#" class="nav-link active"><i class="fas fa-broadcast-tower" style="margin-right:4px;color:#ef4444"></i>Live</a>
+      <a href="create.html" class="nav-link">Go Live</a>
+      <a href="factory-tour.html" class="nav-link">Factory Tours</a>
+    </div>
+    <div class="nav-right">
+      <a href="create.html" class="btn btn-primary"><i class="fas fa-video"></i> Start Streaming</a>
+      <a href="../auth/login.html" class="btn btn-ghost"><i class="fas fa-sign-in-alt"></i> Login</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="live-badge-big"><i class="fas fa-circle"></i> Live Trade Shows</div>
+    <h1>Global B2B <span>Live Commerce</span></h1>
+    <p>Watch live factory tours, product launches, and trade shows from verified manufacturers worldwide — in real time.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong id="liveCount">48</strong><span>Live Now</span></div>
+      <div class="hero-stat"><strong>12,400</strong><span>Watching</span></div>
+      <div class="hero-stat"><strong>3,200+</strong><span>Past Replays</span></div>
+      <div class="hero-stat"><strong>86</strong><span>Upcoming Today</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <div class="tab-pills">
+      <button class="tab-pill active" onclick="switchTab('live',this)"><i class="fas fa-circle" style="color:#ef4444;font-size:.55rem"></i> Live <span class="count" id="liveTabCount">48</span></button>
+      <button class="tab-pill" onclick="switchTab('upcoming',this)"><i class="fas fa-calendar-alt"></i> Upcoming <span class="count">86</span></button>
+      <button class="tab-pill" onclick="switchTab('replay',this)"><i class="fas fa-play"></i> Replays <span class="count">3.2K</span></button>
+    </div>
+    <div class="filter-sep"></div>
+    <select class="filter-select" onchange="filterStreams(this.value)">
+      <option value="">All Categories</option>
+      <option>Solar Energy</option>
+      <option>Electronics</option>
+      <option>Industrial Machinery</option>
+      <option>Auto Parts</option>
+      <option>Packaging</option>
+      <option>Textiles &amp; Apparel</option>
+      <option>Consumer Goods</option>
+      <option>Medical Devices</option>
+    </select>
+    <select class="filter-select">
+      <option>All Countries</option>
+      <option>China</option>
+      <option>India</option>
+      <option>Vietnam</option>
+      <option>Turkey</option>
+      <option>Taiwan</option>
+      <option>South Korea</option>
+    </select>
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search streams…" id="streamSearch" oninput="liveSearch()"/>
+    </div>
+    <div class="live-indicator">
+      <div class="live-dot"></div>
+      <span id="watcherCount">12,400 watching now</span>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- LIVE TAB -->
+  <div class="tab-content active" id="tab-live">
+    <div class="section-head">
+      <div class="section-title"><i class="fas fa-fire"></i> Featured Live Streams</div>
+      <a href="#" class="see-all">View all</a>
+    </div>
+    <div class="streams-grid" id="liveGrid"></div>
+  </div>
+
+  <!-- UPCOMING TAB -->
+  <div class="tab-content" id="tab-upcoming">
+    <div class="section-head">
+      <div class="section-title"><i class="fas fa-calendar-check"></i> Scheduled Today</div>
+      <a href="#" class="see-all">Full schedule</a>
+    </div>
+    <div class="schedule-list" id="scheduleList"></div>
+
+    <div class="section-head">
+      <div class="section-title"><i class="fas fa-calendar-week"></i> This Week</div>
+    </div>
+    <div class="streams-grid" id="upcomingGrid"></div>
+  </div>
+
+  <!-- REPLAY TAB -->
+  <div class="tab-content" id="tab-replay">
+    <div class="section-head">
+      <div class="section-title"><i class="fas fa-play-circle"></i> Most Watched Replays</div>
+      <a href="#" class="see-all">View all replays</a>
+    </div>
+    <div class="streams-grid" id="replayGrid"></div>
+  </div>
+
+</div>
+
+<script>
+  const streams = [
+    {id:1,emoji:'☀️',bg:'linear-gradient(135deg,#1a1a00,#3a3000)',title:'Solar Panel 2024 New Models — Factory Floor Tour & Live Q&A',host:'SunPower Industrial',avatar:'#f59e0b',initials:'SP',verified:true,followers:'12.4K',viewers:2840,category:'Solar Energy',time:'Live · 42 min',products:['Mono 400W','Bifacial 500W','PERC Panel'],type:'live',duration:null},
+    {id:2,emoji:'🔋',bg:'linear-gradient(135deg,#001a3a,#003366)',title:'Battery Storage Solutions: LiFePO4 vs NMC — Which Is Better?',host:'EnergyStore Tech',avatar:'#0052CC',initials:'ET',verified:true,followers:'8.2K',viewers:1520,category:'Electronics',time:'Live · 18 min',products:['200Ah Pack','48V System'],type:'live',duration:null},
+    {id:3,emoji:'⚙️',bg:'linear-gradient(135deg,#1a0d00,#331a00)',title:'CNC Machining Live Demo: Aluminum Aerospace Parts',host:'PrecisionMach',avatar:'#ea580c',initials:'PM',verified:false,followers:'5.1K',viewers:980,category:'Industrial Machinery',time:'Live · 1h 05m',products:['CNC Parts','Tolerance .001mm'],type:'live',duration:null},
+    {id:4,emoji:'💡',bg:'linear-gradient(135deg,#0d0d1a,#1a1a40)',title:'Smart LED Street Light Factory: From Chip to Finished Product',host:'BrightTech Lighting',avatar:'#7c3aed',initials:'BT',verified:true,followers:'9.7K',viewers:3200,category:'LED Lighting',time:'Live · 2h 10m',products:['LED 150W','Smart Control'],type:'live',duration:null},
+    {id:5,emoji:'🏗️',bg:'linear-gradient(135deg,#1a1a1a,#2d2d2d)',title:'Steel Fabrication Grand Show — H-Beams & Structural Profiles',host:'SteelCore Industrial',avatar:'#6b7280',initials:'SC',verified:true,followers:'4.3K',viewers:650,category:'Industrial Machinery',time:'Live · 35 min',products:['H-Beam 100x100','I-Profile'],type:'live',duration:null},
+    {id:6,emoji:'🌿',bg:'linear-gradient(135deg,#001a00,#003300)',title:'Eco Packaging Innovation: Biodegradable Materials Launch 2024',host:'EcoPackaging Ltd.',avatar:'#16a34a',initials:'EP',verified:false,followers:'3.8K',viewers:420,category:'Packaging',time:'Live · 52 min',products:['Bamboo Box','PLA Bag'],type:'live',duration:null},
+    {id:7,emoji:'🚗',bg:'linear-gradient(135deg,#1a0000,#330000)',title:'Auto Parts Wholesale: OEM vs Aftermarket Deep Dive',host:'AutoParts Global',avatar:'#dc2626',initials:'AP',verified:true,followers:'15.6K',viewers:4100,category:'Auto Parts',time:'Live · 1h 28m',products:['Brake Pads','Engine Filter'],type:'live',duration:null},
+    {id:8,emoji:'🎛️',bg:'linear-gradient(135deg,#000d1a,#001a33)',title:'Industrial Automation Showcase: PLCs, Sensors & Robotics',host:'AutomationPro Tech',avatar:'#0891b2',initials:'AT',verified:true,followers:'6.9K',viewers:1880,category:'Electronics',time:'Live · 22 min',products:['PLC S7-200','SCADA Kit'],type:'live',duration:null},
+  ];
+
+  const upcoming = [
+    {emoji:'🔌',title:'PCB & PCBA Manufacturing: End-to-End Factory Tour',host:'CircuitPro Electronics',avatar:'#7c3aed',initials:'CP',time:'14:00 GMT+8',viewers:null,category:'Electronics',type:'upcoming'},
+    {emoji:'🧵',title:'Premium Fabric Wholesale: Winter Collection Preview',host:'TextilePro Mills',avatar:'#ec4899',initials:'TP',time:'15:30 GMT+8',viewers:null,category:'Textiles',type:'upcoming'},
+    {emoji:'🏥',title:'Medical Device Certification: ISO 13485 Explained Live',host:'MedTech Supply Co.',avatar:'#16a34a',initials:'MT',time:'16:00 GMT+8',viewers:null,category:'Medical',type:'upcoming'},
+    {emoji:'📦',title:'Packaging Machinery Demo: Automatic Sealing Lines',host:'PackMach Industry',avatar:'#f59e0b',initials:'PI',time:'17:30 GMT+8',viewers:null,category:'Packaging',type:'upcoming'},
+  ];
+
+  const replays = [
+    {emoji:'☀️',bg:'linear-gradient(135deg,#1a1a00,#3a3000)',title:'Solar Industry Mega Show 2024 — Full 3-Hour Replay',host:'GlobexSky Events',avatar:'#f59e0b',initials:'GS',verified:true,followers:'50K',viewers:48200,category:'Solar Energy',time:'3 days ago',products:['400+ products shown'],type:'replay',duration:'3:12:40'},
+    {emoji:'🤖',bg:'linear-gradient(135deg,#001a1a,#003333)',title:'AI in Manufacturing: Smart Factory Deep Dive',host:'TechForum China',avatar:'#0891b2',initials:'TC',verified:true,followers:'22.1K',viewers:31500,category:'Electronics',time:'1 week ago',products:['Cobots','Vision AI'],type:'replay',duration:'1:45:22'},
+    {emoji:'🌍',bg:'linear-gradient(135deg,#001a00,#003300)',title:'Green Supply Chain: Sustainability Best Practices',host:'GreenTrade Summit',avatar:'#16a34a',initials:'GT',verified:false,followers:'8.4K',viewers:14800,category:'Sustainability',time:'2 weeks ago',products:['100+ brands'],type:'replay',duration:'2:08:05'},
+    {emoji:'🔩',bg:'linear-gradient(135deg,#1a1a1a,#2d2d2d)',title:'Fasteners & Hardware: Factory Tour + Price Negotiation',host:'MetalFast Hardware',avatar:'#6b7280',initials:'MF',verified:true,followers:'6.2K',viewers:9600,category:'Industrial',time:'3 weeks ago',products:['Bolts','Screws','Anchors'],type:'replay',duration:'58:14'},
+  ];
+
+  function renderCard(s) {
+    const isLive = s.type === 'live';
+    const isReplay = s.type === 'replay';
+    const badge = isLive
+      ? `<span class="live-badge">● LIVE</span>`
+      : isReplay ? `<span class="replay-badge">▶ REPLAY</span>` : `<span class="upcoming-badge">⏰ UPCOMING</span>`;
+    const viewersHtml = s.viewers
+      ? `<span class="viewer-badge"><i class="fas fa-eye"></i> ${s.viewers >= 1000 ? (s.viewers/1000).toFixed(1)+'K' : s.viewers}</span>`
+      : '';
+    const durationHtml = s.duration ? `<div class="stream-duration">${s.duration}</div>` : '';
+    const products = (s.products || []).slice(0,2).map(p => `<span class="product-chip"><i class="fas fa-box"></i>${p}</span>`).join('');
+    const watchLabel = isLive ? '● Watch Live' : isReplay ? '▶ Watch Replay' : '🔔 Set Reminder';
+    const watchAction = isLive || isReplay ? `window.location.href='watch.html'` : `setReminder(this)`;
+    return `
+      <div class="stream-card" onclick="window.location.href='watch.html'">
+        <div class="stream-thumb">
+          <div class="stream-thumb-bg" style="background:${s.bg || '#161b22'}">${s.emoji}</div>
+          <div class="stream-thumb-overlay"></div>
+          <div class="thumb-badges">${badge}<span class="cat-badge">${s.category}</span></div>
+          <div class="thumb-right-badges">${viewersHtml}</div>
+          <div class="play-btn"><i class="fas fa-play"></i></div>
+          ${durationHtml}
+        </div>
+        <div class="stream-body">
+          <div class="stream-host-row">
+            <div class="host-avatar" style="background:${s.avatar}">${s.initials}</div>
+            <div class="host-info">
+              <div class="host-name">${s.host} ${s.verified ? '<span class="host-verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}</div>
+              <div class="host-followers">${s.followers ? s.followers + ' followers' : 'New Host'}</div>
+            </div>
+          </div>
+          <div class="stream-title">${s.title}</div>
+          <div class="stream-meta-row">
+            <span class="stream-time"><i class="fas fa-clock"></i>${s.time}</span>
+          </div>
+          ${products ? `<div class="stream-products">${products}</div>` : ''}
+          <div class="stream-actions">
+            <button class="btn-watch" onclick="event.stopPropagation();${watchAction}">${watchLabel}</button>
+            <button class="btn-remind" onclick="event.stopPropagation();toggleSave(this)" title="Save"><i class="far fa-bookmark"></i></button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderScheduleItem(s) {
+    const [hour] = s.time.split(':');
+    return `
+      <div class="schedule-item">
+        <div class="schedule-time-box">
+          <span class="s-hour">${s.time}</span>
+          <span class="s-tz">GMT+8</span>
+        </div>
+        <div class="schedule-emoji">${s.emoji}</div>
+        <div class="schedule-info">
+          <h4>${s.title}</h4>
+          <p>${s.host} · ${s.category}</p>
+        </div>
+        <div class="schedule-right">
+          <button class="notify-btn" onclick="toggleNotify(this)"><i class="fas fa-bell"></i> Remind Me</button>
+        </div>
+      </div>`;
+  }
+
+  function init() {
+    document.getElementById('liveGrid').innerHTML = streams.map(renderCard).join('');
+    document.getElementById('scheduleList').innerHTML = upcoming.map(renderScheduleItem).join('');
+    document.getElementById('upcomingGrid').innerHTML = upcoming.map(s => renderCard({...s, viewers: null})).join('');
+    document.getElementById('replayGrid').innerHTML = replays.map(renderCard).join('');
+  }
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function filterStreams(cat) {
+    if (!cat) { document.getElementById('liveGrid').innerHTML = streams.map(renderCard).join(''); return; }
+    const filtered = streams.filter(s => s.category === cat);
+    document.getElementById('liveGrid').innerHTML = filtered.length ? filtered.map(renderCard).join('') : '<p style="color:#8b949e;padding:20px">No streams in this category right now.</p>';
+  }
+
+  function liveSearch() {
+    const q = document.getElementById('streamSearch').value.toLowerCase();
+    const filtered = streams.filter(s => s.title.toLowerCase().includes(q) || s.host.toLowerCase().includes(q));
+    document.getElementById('liveGrid').innerHTML = filtered.map(renderCard).join('');
+  }
+
+  function toggleSave(btn) {
+    const icon = btn.querySelector('i');
+    icon.className = icon.className.includes('far') ? 'fas fa-bookmark' : 'far fa-bookmark';
+    btn.style.color = icon.className.includes('fas') ? '#0052CC' : '';
+  }
+
+  function toggleNotify(btn) {
+    btn.classList.toggle('notified');
+    btn.innerHTML = btn.classList.contains('notified') ? '<i class="fas fa-bell-slash"></i> Reminder Set' : '<i class="fas fa-bell"></i> Remind Me';
+  }
+
+  function setReminder(btn) {
+    btn.innerHTML = '✓ Reminder Set';
+    btn.style.background = '#16a34a';
+  }
+
+  // Live counter animation
+  setInterval(() => {
+    const el = document.getElementById('watcherCount');
+    const count = 12400 + Math.floor(Math.random() * 200 - 100);
+    el.textContent = count.toLocaleString() + ' watching now';
+  }, 5000);
+
+  init();
+</script>
+</body>
+</html>

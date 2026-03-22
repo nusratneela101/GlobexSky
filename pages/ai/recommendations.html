@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Product Recommendations – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e;min-height:100vh}
+
+    /* ── Nav ── */
+    .topnav{background:#fff;box-shadow:0 2px 12px rgba(0,82,204,.08);padding:0 24px;position:sticky;top:0;z-index:200}
+    .topnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:16px;height:64px}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.25rem;color:#1a1a2e;text-decoration:none;flex-shrink:0}
+    .brand-logo span{color:#0052CC}
+    .nav-links{display:flex;gap:4px;margin-left:16px}
+    .nav-link{text-decoration:none;color:#475569;font-size:.875rem;font-weight:500;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-link:hover,.nav-link.active{color:#0052CC;background:#eff6ff}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99;transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#eff6ff}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:56px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 50%,rgba(124,58,237,.4) 0%,transparent 60%)}
+    .hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto}
+    .hero-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:6px 18px;font-size:.78rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:800;line-height:1.2;margin-bottom:14px}
+    .hero p{opacity:.88;font-size:1.05rem;max-width:540px;margin:0 auto 28px;line-height:1.7}
+    .hero-search{display:flex;max-width:480px;margin:0 auto;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:50px;overflow:hidden}
+    .hero-search input{flex:1;background:transparent;border:none;padding:13px 20px;color:#fff;font-size:.9rem;font-family:'Inter',sans-serif;outline:none}
+    .hero-search input::placeholder{color:rgba(255,255,255,.65)}
+    .hero-search button{background:#fff;color:#0052CC;border:none;padding:13px 22px;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s;font-family:'Inter',sans-serif}
+    .hero-search button:hover{background:#eff6ff}
+
+    /* ── Layout ── */
+    .page-wrap{max-width:1280px;margin:0 auto;padding:36px 24px}
+
+    /* ── Personalization Bar ── */
+    .persona-bar{background:#fff;border-radius:14px;padding:18px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px;box-shadow:0 2px 12px rgba(0,0,0,.05);border-left:4px solid #7c3aed}
+    .persona-icon{width:44px;height:44px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0}
+    .persona-text{flex:1}
+    .persona-text strong{display:block;font-size:.9rem;font-weight:700;color:#1a1a2e;margin-bottom:3px}
+    .persona-text span{font-size:.82rem;color:#64748b}
+    .persona-tags{display:flex;gap:6px;flex-wrap:wrap}
+    .persona-tag{background:#f5f3ff;color:#7c3aed;border:1px solid #e9d5ff;border-radius:20px;padding:4px 12px;font-size:.75rem;font-weight:600}
+    .refresh-btn{background:#f8fafc;border:1.5px solid #e2e8f0;color:#475569;border-radius:10px;padding:8px 16px;font-size:.83rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .refresh-btn:hover{border-color:#0052CC;color:#0052CC}
+
+    /* ── Section Layout ── */
+    .section-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .section-label{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#1a1a2e;display:flex;align-items:center;gap:8px}
+    .section-label i{color:#0052CC}
+    .see-all{font-size:.83rem;color:#0052CC;text-decoration:none;font-weight:600}
+    .see-all:hover{text-decoration:underline}
+    .section-block{margin-bottom:36px}
+
+    /* ── Products Grid ── */
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+    .prod-card{background:#fff;border-radius:16px;overflow:hidden;border:1.5px solid #f1f5f9;transition:all .25s;cursor:pointer;position:relative}
+    .prod-card:hover{border-color:#0052CC;box-shadow:0 8px 28px rgba(0,82,204,.13);transform:translateY(-3px)}
+    .prod-card-img{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#dbeafe,#c7d2fe);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
+    .prod-badge{position:absolute;top:10px;left:10px;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:5px;color:#fff}
+    .badge-ai{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+    .badge-hot{background:#ef4444}
+    .badge-new{background:#16a34a}
+    .badge-sale{background:#f59e0b;color:#1a1a2e}
+    .wishlist-btn{position:absolute;top:10px;right:10px;width:30px;height:30px;background:rgba(255,255,255,.9);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:.85rem;transition:all .2s}
+    .wishlist-btn:hover,.wishlist-btn.active{color:#ef4444}
+    .prod-card-body{padding:14px 16px}
+    .prod-card-name{font-size:.87rem;font-weight:600;color:#1e293b;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;height:2.5em}
+    .prod-card-supplier{font-size:.75rem;color:#64748b;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+    .prod-card-supplier i{color:#f59e0b;font-size:.65rem}
+    .prod-card-price{font-size:.92rem;font-weight:700;color:#0052CC;margin-bottom:6px}
+    .prod-card-moq{font-size:.73rem;color:#64748b;margin-bottom:10px}
+    .reason-tag{font-size:.72rem;color:#7c3aed;background:#f5f3ff;padding:4px 9px;border-radius:6px;display:inline-block;margin-bottom:10px;border:1px solid #e9d5ff}
+    .prod-card-actions{display:flex;gap:8px}
+    .btn-rfq{flex:1;background:#0052CC;color:#fff;border:none;border-radius:8px;padding:8px 10px;font-size:.78rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:'Inter',sans-serif}
+    .btn-rfq:hover{background:#003d99}
+    .btn-chat{width:36px;height:36px;background:#f1f5f9;border:none;border-radius:8px;cursor:pointer;color:#0052CC;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+    .btn-chat:hover{background:#eff6ff}
+
+    /* ── Trending Categories ── */
+    .cats-row{display:flex;gap:14px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+    .cats-row::-webkit-scrollbar{display:none}
+    .cat-card{flex-shrink:0;background:#fff;border-radius:14px;padding:18px 20px;min-width:160px;text-align:center;border:1.5px solid #f1f5f9;cursor:pointer;transition:all .2s}
+    .cat-card:hover,.cat-card.active{border-color:#0052CC;background:#f0f7ff;transform:translateY(-2px)}
+    .cat-emoji{font-size:2rem;margin-bottom:8px;display:block}
+    .cat-name{font-size:.83rem;font-weight:600;color:#1e293b;margin-bottom:4px}
+    .cat-count{font-size:.73rem;color:#64748b}
+    .cat-trend{display:flex;align-items:center;justify-content:center;gap:4px;font-size:.72rem;color:#16a34a;font-weight:600;margin-top:4px}
+
+    /* ── Recently Viewed ── */
+    .viewed-list{display:flex;gap:14px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+    .viewed-list::-webkit-scrollbar{display:none}
+    .viewed-item{flex-shrink:0;background:#fff;border-radius:12px;border:1.5px solid #f1f5f9;overflow:hidden;width:160px;cursor:pointer;transition:all .2s}
+    .viewed-item:hover{border-color:#0052CC;box-shadow:0 4px 16px rgba(0,82,204,.1)}
+    .viewed-img{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;font-size:2rem}
+    .viewed-body{padding:10px 12px}
+    .viewed-name{font-size:.78rem;font-weight:600;color:#1e293b;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .viewed-price{font-size:.8rem;font-weight:700;color:#0052CC}
+
+    /* ── Reasons ── */
+    .reasons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+    .reason-card{background:#fff;border-radius:14px;padding:18px 20px;display:flex;align-items:flex-start;gap:14px;border:1px solid #f1f5f9}
+    .reason-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+    .reason-text strong{display:block;font-size:.87rem;font-weight:700;color:#1e293b;margin-bottom:4px}
+    .reason-text span{font-size:.78rem;color:#64748b;line-height:1.5}
+
+    /* ── Tabs ── */
+    .tab-bar{display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.05);flex-wrap:wrap}
+    .tab-btn{flex:1;min-width:120px;padding:10px 16px;border:none;border-radius:9px;background:transparent;color:#64748b;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+    .tab-btn.active{background:linear-gradient(135deg,#0052CC,#3b82f6);color:#fff;box-shadow:0 3px 10px rgba(0,82,204,.25)}
+    .tab-btn:hover:not(.active){background:#f8fafc;color:#1e293b}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    /* ── Pagination ── */
+    .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:28px;flex-wrap:wrap}
+    .page-btn{width:38px;height:38px;border-radius:9px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center}
+    .page-btn.active{background:#0052CC;border-color:#0052CC;color:#fff}
+    .page-btn:hover:not(.active){border-color:#0052CC;color:#0052CC}
+
+    @media(max-width:600px){.products-grid{grid-template-columns:repeat(2,1fr)}.hero-search{flex-direction:column;border-radius:14px}.hero-search button{border-radius:0}}
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../search.html" class="nav-link">Products</a>
+      <a href="#" class="nav-link active">AI Picks</a>
+      <a href="chatbot.html" class="nav-link">AI Chat</a>
+    </div>
+    <div class="nav-right">
+      <a href="../auth/login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../auth/register.html" class="btn btn-primary"><i class="fas fa-rocket"></i> Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-chip"><i class="fas fa-wand-magic-sparkles"></i> Personalized for You</div>
+    <h1>AI-Powered Product<br/>Recommendations</h1>
+    <p>Our AI analyzes your browsing, searches, and industry to surface the most relevant products from verified global suppliers.</p>
+    <div class="hero-search">
+      <input type="text" placeholder="Tell AI what you're looking for…" id="searchInput"/>
+      <button onclick="handleSearch()"><i class="fas fa-bolt"></i> Find</button>
+    </div>
+  </div>
+</section>
+
+<div class="page-wrap">
+
+  <!-- Personalization Bar -->
+  <div class="persona-bar">
+    <div class="persona-icon"><i class="fas fa-robot"></i></div>
+    <div class="persona-text">
+      <strong>Your AI Profile is Active</strong>
+      <span>Recommendations updated based on your recent activity and industry preferences</span>
+    </div>
+    <div class="persona-tags">
+      <span class="persona-tag">🏭 Manufacturing</span>
+      <span class="persona-tag">⚡ Electronics</span>
+      <span class="persona-tag">🌿 Sustainable</span>
+      <span class="persona-tag">🇩🇪 Germany</span>
+    </div>
+    <button class="refresh-btn" onclick="refreshRecs()"><i class="fas fa-sync-alt"></i> Refresh</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('for-you', this)"><i class="fas fa-star"></i> For You</button>
+    <button class="tab-btn" onclick="switchTab('trending', this)"><i class="fas fa-fire"></i> Trending Now</button>
+    <button class="tab-btn" onclick="switchTab('new-arrivals', this)"><i class="fas fa-sparkles"></i> New Arrivals</button>
+    <button class="tab-btn" onclick="switchTab('best-value', this)"><i class="fas fa-tag"></i> Best Value</button>
+    <button class="tab-btn" onclick="switchTab('verified', this)"><i class="fas fa-shield-check"></i> Verified Only</button>
+  </div>
+
+  <!-- Tab: For You -->
+  <div class="tab-content active" id="tab-for-you">
+
+    <!-- Main Recommendations -->
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-wand-magic-sparkles"></i> Based on Your Searches</div>
+        <a href="#" class="see-all">See all 240+</a>
+      </div>
+      <div class="products-grid" id="mainGrid">
+        <!-- Products rendered by JS -->
+      </div>
+      <div class="pagination">
+        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">…</button>
+        <button class="page-btn">12</button>
+        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+
+    <!-- Trending Categories -->
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-chart-line"></i> Trending in Your Region</div>
+        <a href="#" class="see-all">All categories</a>
+      </div>
+      <div class="cats-row">
+        <div class="cat-card active" onclick="filterByCategory(this,'Solar Energy')">
+          <span class="cat-emoji">☀️</span>
+          <div class="cat-name">Solar Energy</div>
+          <div class="cat-count">4,820 products</div>
+          <div class="cat-trend"><i class="fas fa-arrow-up"></i> +34%</div>
+        </div>
+        <div class="cat-card" onclick="filterByCategory(this,'Electronics')">
+          <span class="cat-emoji">🔌</span>
+          <div class="cat-name">Electronics</div>
+          <div class="cat-count">18,400 products</div>
+          <div class="cat-trend"><i class="fas fa-arrow-up"></i> +18%</div>
+        </div>
+        <div class="cat-card" onclick="filterByCategory(this,'Industrial Machinery')">
+          <span class="cat-emoji">⚙️</span>
+          <div class="cat-name">Machinery</div>
+          <div class="cat-count">9,100 products</div>
+          <div class="cat-trend"><i class="fas fa-arrow-up"></i> +12%</div>
+        </div>
+        <div class="cat-card" onclick="filterByCategory(this,'Packaging')">
+          <span class="cat-emoji">📦</span>
+          <div class="cat-name">Packaging</div>
+          <div class="cat-count">6,750 products</div>
+          <div class="cat-trend"><i class="fas fa-arrow-up"></i> +22%</div>
+        </div>
+        <div class="cat-card" onclick="filterByCategory(this,'Auto Parts')">
+          <span class="cat-emoji">🚗</span>
+          <div class="cat-name">Auto Parts</div>
+          <div class="cat-count">12,300 products</div>
+          <div class="cat-trend"><i class="fas fa-arrow-up"></i> +8%</div>
+        </div>
+        <div class="cat-card" onclick="filterByCategory(this,'LED Lighting')">
+          <span class="cat-emoji">💡</span>
+          <div class="cat-name">LED Lighting</div>
+          <div class="cat-count">5,480 products</div>
+          <div class="cat-trend"><i class="fas fa-arrow-up"></i> +15%</div>
+        </div>
+        <div class="cat-card" onclick="filterByCategory(this,'Textiles')">
+          <span class="cat-emoji">🧵</span>
+          <div class="cat-name">Textiles</div>
+          <div class="cat-count">22,100 products</div>
+          <div class="cat-trend"><i class="fas fa-minus"></i> +2%</div>
+        </div>
+        <div class="cat-card" onclick="filterByCategory(this,'Medical Devices')">
+          <span class="cat-emoji">🏥</span>
+          <div class="cat-name">Medical</div>
+          <div class="cat-count">3,200 products</div>
+          <div class="cat-trend"><i class="fas fa-arrow-up"></i> +41%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recently Viewed -->
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-clock-rotate-left"></i> Recently Viewed</div>
+        <a href="#" class="see-all">Clear history</a>
+      </div>
+      <div class="viewed-list">
+        <div class="viewed-item">
+          <div class="viewed-img">🔋</div>
+          <div class="viewed-body">
+            <div class="viewed-name">LiFePO4 Battery 200Ah</div>
+            <div class="viewed-price">$89 – $145</div>
+          </div>
+        </div>
+        <div class="viewed-item">
+          <div class="viewed-img" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8)">📱</div>
+          <div class="viewed-body">
+            <div class="viewed-name">PCBA Custom Assembly</div>
+            <div class="viewed-price">$0.85 – $3.20</div>
+          </div>
+        </div>
+        <div class="viewed-item">
+          <div class="viewed-img" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">🌿</div>
+          <div class="viewed-body">
+            <div class="viewed-name">Bamboo Packaging Box</div>
+            <div class="viewed-price">$0.45 – $1.20</div>
+          </div>
+        </div>
+        <div class="viewed-item">
+          <div class="viewed-img" style="background:linear-gradient(135deg,#fef9c3,#fef08a)">⚡</div>
+          <div class="viewed-body">
+            <div class="viewed-name">EV Charging Cable</div>
+            <div class="viewed-price">$12.00 – $28.00</div>
+          </div>
+        </div>
+        <div class="viewed-item">
+          <div class="viewed-img" style="background:linear-gradient(135deg,#ffe4e6,#fecdd3)">🔴</div>
+          <div class="viewed-body">
+            <div class="viewed-name">Industrial Pump SS</div>
+            <div class="viewed-price">$45 – $67</div>
+          </div>
+        </div>
+        <div class="viewed-item">
+          <div class="viewed-img" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe)">🔩</div>
+          <div class="viewed-body">
+            <div class="viewed-name">Titanium Fasteners</div>
+            <div class="viewed-price">$0.12 – $0.85</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why These Recommendations -->
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-lightbulb"></i> Why These Recommendations?</div>
+      </div>
+      <div class="reasons-grid">
+        <div class="reason-card">
+          <div class="reason-icon" style="background:#eff6ff;color:#0052CC"><i class="fas fa-search"></i></div>
+          <div class="reason-text">
+            <strong>Based on Your Searches</strong>
+            <span>You recently searched for solar panels, batteries, and EV charging equipment — we've surfaced the top-rated suppliers.</span>
+          </div>
+        </div>
+        <div class="reason-card">
+          <div class="reason-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-industry"></i></div>
+          <div class="reason-text">
+            <strong>Matched to Your Industry</strong>
+            <span>Your profile indicates renewable energy and electronics manufacturing — products are filtered by CE, RoHS, and ISO certifications.</span>
+          </div>
+        </div>
+        <div class="reason-card">
+          <div class="reason-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-globe"></i></div>
+          <div class="reason-text">
+            <strong>Optimized for Your Region</strong>
+            <span>Suppliers with experience shipping to Germany and EU are prioritized, including those with DDP and EUR payment support.</span>
+          </div>
+        </div>
+        <div class="reason-card">
+          <div class="reason-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-chart-bar"></i></div>
+          <div class="reason-text">
+            <strong>Trending Among Similar Buyers</strong>
+            <span>Buyers with profiles similar to yours are ordering these products. Demand is up 28% in your segment this quarter.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Other tabs (simplified) -->
+  <div class="tab-content" id="tab-trending">
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-fire"></i> Trending Globally Right Now</div>
+        <a href="#" class="see-all">View all</a>
+      </div>
+      <div class="products-grid" id="trendingGrid"></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-new-arrivals">
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-sparkles"></i> New Products This Week</div>
+        <a href="#" class="see-all">View all</a>
+      </div>
+      <div class="products-grid" id="newGrid"></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-best-value">
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-tag"></i> Best Value Picks</div>
+        <a href="#" class="see-all">View all</a>
+      </div>
+      <div class="products-grid" id="valueGrid"></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-verified">
+    <div class="section-block">
+      <div class="section-title-row">
+        <div class="section-label"><i class="fas fa-shield-check"></i> Verified Supplier Products</div>
+        <a href="#" class="see-all">View all</a>
+      </div>
+      <div class="products-grid" id="verifiedGrid"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const allProducts = [
+    {emoji:'☀️',name:'Solar Panel 400W Monocrystalline',supplier:'SunPower Industrial Co.',rating:4.9,price:'$62.00 – $88.00',moq:'10 pcs MOQ',badge:'badge-ai',badgeText:'AI Pick',reason:'🔍 Based on your searches',bg:'linear-gradient(135deg,#fef9c3,#fde68a)'},
+    {emoji:'🔋',name:'LiFePO4 Battery Pack 200Ah 48V',supplier:'EnergyStore Tech Ltd.',rating:4.8,price:'$89.00 – $145.00',moq:'5 pcs MOQ',badge:'badge-hot',badgeText:'Hot',reason:'🔥 Top in Energy Storage',bg:'linear-gradient(135deg,#dbeafe,#c7d2fe)'},
+    {emoji:'⚡',name:'EV Charging Station Level 2 22kW',supplier:'ChargePoint Systems',rating:4.7,price:'$180.00 – $260.00',moq:'3 pcs MOQ',badge:'badge-new',badgeText:'New',reason:'📈 Industry trending',bg:'linear-gradient(135deg,#dcfce7,#bbf7d0)'},
+    {emoji:'🔌',name:'Custom PCBA Assembly SMT',supplier:'CircuitPro Electronics',rating:4.9,price:'$0.85 – $3.20',moq:'1000 pcs MOQ',badge:'badge-ai',badgeText:'AI Pick',reason:'🏭 OEM Available',bg:'linear-gradient(135deg,#e0e7ff,#c7d2fe)'},
+    {emoji:'💡',name:'LED Street Light 150W IP68',supplier:'BrightTech Lighting',rating:4.6,price:'$22.00 – $38.00',moq:'50 pcs MOQ',badge:'badge-sale',badgeText:'–20%',reason:'💰 Price Drop',bg:'linear-gradient(135deg,#fef3c7,#fde68a)'},
+    {emoji:'⚙️',name:'CNC Machined Aluminum Parts',supplier:'PrecisionMach Factory',rating:4.8,price:'$1.20 – $8.50',moq:'100 pcs MOQ',badge:'badge-ai',badgeText:'AI Pick',reason:'🔍 Based on your searches',bg:'linear-gradient(135deg,#f1f5f9,#e2e8f0)'},
+    {emoji:'🌿',name:'Biodegradable Packaging Boxes',supplier:'EcoPackaging Ltd.',rating:4.5,price:'$0.45 – $1.20',moq:'500 pcs MOQ',badge:'badge-new',badgeText:'New',reason:'♻️ Eco Trending',bg:'linear-gradient(135deg,#dcfce7,#bbf7d0)'},
+    {emoji:'🚿',name:'Smart Water Flow Sensor IoT',supplier:'AquaTech Solutions',rating:4.7,price:'$8.50 – $15.00',moq:'200 pcs MOQ',badge:'badge-hot',badgeText:'Hot',reason:'📡 IoT Segment Rising',bg:'linear-gradient(135deg,#cffafe,#a5f3fc)'},
+    {emoji:'🔩',name:'Titanium Hex Bolts Grade 5',supplier:'MetalFast Hardware',rating:4.6,price:'$0.12 – $0.85',moq:'5000 pcs MOQ',badge:'badge-ai',badgeText:'AI Pick',reason:'🏭 Similar Buyers Ordered',bg:'linear-gradient(135deg,#f3f4f6,#e5e7eb)'},
+    {emoji:'📦',name:'Corrugated Shipping Boxes Custom',supplier:'BoxWorld Packaging',rating:4.4,price:'$0.22 – $0.68',moq:'1000 pcs MOQ',badge:'badge-sale',badgeText:'–15%',reason:'📦 Logistics Demand',bg:'linear-gradient(135deg,#fff7ed,#fed7aa)'},
+    {emoji:'🏗️',name:'Steel Structural Profiles H-Beam',supplier:'SteelCore Industrial',rating:4.5,price:'$420 – $680/ton',moq:'5 tons MOQ',badge:'badge-hot',badgeText:'Hot',reason:'🏗️ Construction Boom',bg:'linear-gradient(135deg,#fce7f3,#fbcfe8)'},
+    {emoji:'🎛️',name:'Industrial PLC Controller Siemens Compat.',supplier:'AutomationPro Tech',rating:4.9,price:'$145.00 – $320.00',moq:'2 pcs MOQ',badge:'badge-ai',badgeText:'AI Pick',reason:'⚙️ Automation Rising',bg:'linear-gradient(135deg,#f0fdf4,#dcfce7)'},
+  ];
+
+  function renderGrid(containerId, products, badge) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = products.map((p,i) => `
+      <div class="prod-card">
+        <div class="prod-card-img" style="background:${p.bg}">
+          ${p.emoji}
+          <span class="prod-badge ${p.badge}">${p.badgeText}</span>
+          <button class="wishlist-btn" onclick="toggleWishlist(this,event)" aria-label="Save"><i class="far fa-heart"></i></button>
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-name">${p.name}</div>
+          <div class="prod-card-supplier"><i class="fas fa-star"></i>${p.rating} · ${p.supplier}</div>
+          <div class="prod-card-price">${p.price}</div>
+          <div class="prod-card-moq">${p.moq}</div>
+          <div class="reason-tag">${p.reason}</div>
+          <div class="prod-card-actions">
+            <button class="btn-rfq" onclick="sendRFQ('${p.name.replace(/'/g,"\\'")}')">Request Quote</button>
+            <button class="btn-chat" title="Chat with supplier" onclick="chatSupplier('${p.name.replace(/'/g,"\\'")}')"><i class="fas fa-comment-dots"></i></button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    if (id === 'trending') renderGrid('trendingGrid', [...allProducts].sort(() => .5 - Math.random()).slice(0,8), 'badge-hot');
+    if (id === 'new-arrivals') renderGrid('newGrid', [...allProducts].sort(() => .5 - Math.random()).slice(0,8), 'badge-new');
+    if (id === 'best-value') renderGrid('valueGrid', [...allProducts].sort(() => .5 - Math.random()).slice(0,8), 'badge-sale');
+    if (id === 'verified') renderGrid('verifiedGrid', [...allProducts].sort(() => .5 - Math.random()).slice(0,8), 'badge-ai');
+  }
+
+  function toggleWishlist(btn, e) {
+    e.stopPropagation();
+    btn.classList.toggle('active');
+    btn.innerHTML = btn.classList.contains('active') ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+  }
+
+  function filterByCategory(card, cat) {
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    const filtered = allProducts.filter(() => Math.random() > .3);
+    renderGrid('mainGrid', filtered.slice(0, 8), '');
+  }
+
+  function sendRFQ(name) {
+    alert(`RFQ for "${name}" sent! Suppliers will respond within 24 hours.`);
+  }
+
+  function chatSupplier(name) {
+    window.location.href = 'chatbot.html';
+  }
+
+  function refreshRecs() {
+    const shuffled = [...allProducts].sort(() => Math.random() - .5);
+    renderGrid('mainGrid', shuffled, '');
+  }
+
+  function handleSearch() {
+    const q = document.getElementById('searchInput').value.trim();
+    if (!q) return;
+    const filtered = allProducts.filter(() => Math.random() > .4);
+    renderGrid('mainGrid', filtered.slice(0, 8), '');
+    document.querySelector('.section-label').innerHTML = `<i class="fas fa-search"></i> Results for "${q}"`;
+  }
+
+  // Initial render
+  renderGrid('mainGrid', allProducts, '');
+</script>
+</body>
+</html>

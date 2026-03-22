@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Webhooks – Globex Sky API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:52px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;left:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .page-hero::after{content:'';position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:rgba(124,58,237,.15)}
+    .hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:8px}
+    .page-hero p{font-size:1rem;opacity:.88;max-width:540px;margin:0 auto}
+    .section{padding:44px 24px}
+    .container{max-width:1240px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .sec-title{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .sec-sub{font-size:.85rem;color:#64748b;margin-bottom:24px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px}
+    @media(max-width:860px){.grid-2{grid-template-columns:1fr}}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    /* Form */
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.88rem;font-family:'Inter',sans-serif;color:#374151;transition:border-color .2s;outline:none;background:#fff}
+    .form-input:focus{border-color:#0052CC}
+    .form-row{display:flex;gap:10px;align-items:flex-end}
+    .form-row .form-input{flex:1}
+    .btn-primary{background:#0052CC;color:#fff;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:.88rem;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:background .2s;white-space:nowrap}
+    .btn-primary:hover{background:#003d99}
+    /* Event Types */
+    .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:18px}
+    .event-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.82rem;color:#374151}
+    .event-item:hover{border-color:#0052CC;background:#f0f5ff}
+    .event-item input{accent-color:#0052CC;cursor:pointer}
+    .event-item.selected{border-color:#0052CC;background:#eff6ff;color:#0052CC;font-weight:600}
+    .event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .dot-order{background:#0052CC}
+    .dot-payment{background:#059669}
+    .dot-shipment{background:#f97316}
+    .dot-supplier{background:#7c3aed}
+    .dot-product{background:#0891b2}
+    .dot-review{background:#f59e0b}
+    /* Webhooks List */
+    .webhook-list{display:flex;flex-direction:column;gap:14px;margin-bottom:40px}
+    .webhook-item{background:#fff;border-radius:14px;padding:20px 22px;box-shadow:0 4px 16px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px;flex-wrap:wrap;transition:box-shadow .2s}
+    .webhook-item:hover{box-shadow:0 8px 28px rgba(0,0,0,.1)}
+    .wh-icon{width:44px;height:44px;border-radius:12px;background:#eff6ff;color:#0052CC;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .wh-info{flex:1;min-width:200px}
+    .wh-url{font-family:'Courier New',monospace;font-size:.82rem;color:#0a0e27;font-weight:600;margin-bottom:3px;word-break:break-all}
+    .wh-events{font-size:.75rem;color:#64748b;display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+    .event-chip{background:#f1f5f9;color:#374151;padding:2px 8px;border-radius:50px;font-size:.7rem;font-weight:600}
+    .wh-meta{font-size:.75rem;color:#94a3b8;margin-top:4px}
+    .status-pill{padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700}
+    .pill-active{background:#d1fae5;color:#059669}
+    .pill-failing{background:#fff7ed;color:#f97316}
+    .pill-inactive{background:#f1f5f9;color:#94a3b8}
+    .wh-actions{display:flex;gap:6px;flex-shrink:0}
+    .btn-icon{width:34px;height:34px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;color:#64748b;transition:all .2s}
+    .btn-icon.test:hover{border-color:#0052CC;color:#0052CC;background:#eff6ff}
+    .btn-icon.del:hover{border-color:#ef4444;color:#ef4444;background:#fee2e2}
+    .btn-icon.toggle:hover{border-color:#059669;color:#059669;background:#ecfdf5}
+    /* Delivery Logs */
+    .table-card{background:#fff;border-radius:16px;padding:0;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:40px;overflow:hidden}
+    table.logs-table{width:100%;border-collapse:collapse;min-width:640px}
+    .logs-table thead{background:#f8fafc}
+    .logs-table th{padding:11px 14px;text-align:left;font-size:.78rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #e2e8f0}
+    .logs-table td{padding:13px 14px;font-size:.83rem;color:#374151;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .logs-table tr:last-child td{border-bottom:none}
+    .logs-table tr:hover td{background:#f8fbff}
+    .http-code{font-family:'Poppins',sans-serif;font-weight:700;font-size:.88rem}
+    .code-2xx{color:#059669}
+    .code-4xx{color:#f97316}
+    .code-5xx{color:#ef4444}
+    code.log-event{background:#f1f5f9;padding:2px 8px;border-radius:5px;font-size:.78rem;font-family:'Courier New',monospace}
+    .duration-chip{background:#f8fafc;padding:2px 8px;border-radius:6px;font-size:.75rem;color:#374151;font-family:'Poppins',sans-serif;font-weight:600}
+    .btn-retry{background:#fff7ed;border:1px solid #fde68a;color:#f97316;padding:3px 10px;border-radius:6px;font-size:.72rem;cursor:pointer;font-weight:600;transition:all .2s}
+    .btn-retry:hover{background:#fff3cd}
+    /* Footer */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    .toast{position:fixed;bottom:28px;right:24px;background:#059669;color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(120px);transition:transform .3s}
+    .toast.show{transform:translateY(0)}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-satellite-dish" style="color:#93c5fd"></i> Webhook Configuration</h1>
+    <p>Register endpoint URLs to receive real-time push notifications for trade events on your Globex Sky account.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="developer-portal.html">API</a><span>/</span>
+      <span>Webhooks</span>
+    </nav>
+
+    <!-- Add Webhook Form -->
+    <div class="sec-title"><i class="fas fa-plus-circle" style="color:#0052CC"></i> Add New Webhook</div>
+    <p class="sec-sub">Register a public HTTPS endpoint that will receive POST requests when events fire.</p>
+    <div class="card" style="margin-bottom:40px">
+      <div class="form-group">
+        <label class="form-label">Endpoint URL <span style="color:#ef4444">*</span></label>
+        <div class="form-row">
+          <input class="form-input" id="whUrl" type="url" placeholder="https://your-server.com/webhooks/globexsky"/>
+          <button class="btn-primary" onclick="addWebhook()"><i class="fas fa-plus"></i> Register</button>
+        </div>
+        <div style="font-size:.75rem;color:#94a3b8;margin-top:6px">Must be a publicly accessible HTTPS URL. Localhost URLs are only supported in sandbox mode.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Secret Signing Key <small style="font-weight:400;color:#94a3b8">(optional — used to verify payload signatures)</small></label>
+        <input class="form-input" id="whSecret" type="text" placeholder="Leave blank to auto-generate"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Subscribe to Events</label>
+        <div style="margin-bottom:10px;font-size:.78rem;color:#64748b">
+          <button style="background:none;border:none;color:#0052CC;cursor:pointer;font-size:.78rem;font-weight:600" onclick="selectAllEvents()">Select All</button>
+          &nbsp;·&nbsp;
+          <button style="background:none;border:none;color:#64748b;cursor:pointer;font-size:.78rem" onclick="deselectAllEvents()">Deselect All</button>
+        </div>
+        <div class="events-grid" id="eventsGrid">
+          <label class="event-item selected"><input type="checkbox" checked> <span class="event-dot dot-order"></span> order.created</label>
+          <label class="event-item selected"><input type="checkbox" checked> <span class="event-dot dot-order"></span> order.updated</label>
+          <label class="event-item selected"><input type="checkbox" checked> <span class="event-dot dot-order"></span> order.cancelled</label>
+          <label class="event-item selected"><input type="checkbox" checked> <span class="event-dot dot-payment"></span> payment.received</label>
+          <label class="event-item"><input type="checkbox"> <span class="event-dot dot-payment"></span> payment.failed</label>
+          <label class="event-item"><input type="checkbox"> <span class="event-dot dot-payment"></span> payment.refunded</label>
+          <label class="event-item selected"><input type="checkbox" checked> <span class="event-dot dot-shipment"></span> shipment.created</label>
+          <label class="event-item selected"><input type="checkbox" checked> <span class="event-dot dot-shipment"></span> shipment.updated</label>
+          <label class="event-item"><input type="checkbox"> <span class="event-dot dot-shipment"></span> shipment.delivered</label>
+          <label class="event-item"><input type="checkbox"> <span class="event-dot dot-supplier"></span> supplier.verified</label>
+          <label class="event-item"><input type="checkbox"> <span class="event-dot dot-product"></span> product.approved</label>
+          <label class="event-item"><input type="checkbox"> <span class="event-dot dot-review"></span> review.submitted</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registered Webhooks List -->
+    <div class="sec-title"><i class="fas fa-list-ul" style="color:#7c3aed"></i> Registered Webhooks</div>
+    <p class="sec-sub">Manage your active webhook endpoints.</p>
+    <div class="webhook-list" id="webhookList">
+      <div class="webhook-item" data-id="wh1">
+        <div class="wh-icon"><i class="fas fa-server"></i></div>
+        <div class="wh-info">
+          <div class="wh-url">https://api.mycompany.com/hooks/globexsky</div>
+          <div class="wh-events">
+            <span class="event-chip">order.created</span>
+            <span class="event-chip">order.updated</span>
+            <span class="event-chip">payment.received</span>
+            <span class="event-chip">shipment.updated</span>
+            <span class="event-chip">+2 more</span>
+          </div>
+          <div class="wh-meta">Created Nov 1, 2025 · Last delivery 8 min ago</div>
+        </div>
+        <span class="status-pill pill-active">Active</span>
+        <div class="wh-actions">
+          <button class="btn-icon test" title="Send test event" onclick="testWebhook('https://api.mycompany.com/hooks/globexsky')"><i class="fas fa-paper-plane"></i></button>
+          <button class="btn-icon toggle" title="Disable webhook" onclick="toggleWebhook(this)"><i class="fas fa-pause"></i></button>
+          <button class="btn-icon del" title="Delete webhook" onclick="deleteWebhook(this)"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+      <div class="webhook-item" data-id="wh2">
+        <div class="wh-icon" style="background:#fff7ed;color:#f97316"><i class="fas fa-mobile-alt"></i></div>
+        <div class="wh-info">
+          <div class="wh-url">https://hooks.slack.com/services/T0XXXXX/B0XXXXX/xxxxxxxxxx</div>
+          <div class="wh-events">
+            <span class="event-chip">order.created</span>
+            <span class="event-chip">payment.received</span>
+            <span class="event-chip">payment.failed</span>
+          </div>
+          <div class="wh-meta">Created Oct 20, 2025 · Last delivery 2 hours ago · 3 failed in last 24h</div>
+        </div>
+        <span class="status-pill pill-failing">Issues</span>
+        <div class="wh-actions">
+          <button class="btn-icon test" title="Send test event" onclick="testWebhook('Slack')"><i class="fas fa-paper-plane"></i></button>
+          <button class="btn-icon toggle" title="Disable webhook" onclick="toggleWebhook(this)"><i class="fas fa-pause"></i></button>
+          <button class="btn-icon del" title="Delete webhook" onclick="deleteWebhook(this)"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+      <div class="webhook-item" data-id="wh3">
+        <div class="wh-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-code-branch"></i></div>
+        <div class="wh-info">
+          <div class="wh-url">https://staging.internal.co/gsx-events</div>
+          <div class="wh-events">
+            <span class="event-chip">order.created</span>
+            <span class="event-chip">shipment.created</span>
+            <span class="event-chip">shipment.delivered</span>
+          </div>
+          <div class="wh-meta">Created Sep 05, 2025 · Paused manually</div>
+        </div>
+        <span class="status-pill pill-inactive">Paused</span>
+        <div class="wh-actions">
+          <button class="btn-icon test" title="Send test event" onclick="testWebhook('Staging')"><i class="fas fa-paper-plane"></i></button>
+          <button class="btn-icon toggle" title="Enable webhook" onclick="toggleWebhook(this)"><i class="fas fa-play"></i></button>
+          <button class="btn-icon del" title="Delete webhook" onclick="deleteWebhook(this)"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery Logs -->
+    <div class="sec-title"><i class="fas fa-clipboard-list" style="color:#0052CC"></i> Delivery Logs</div>
+    <p class="sec-sub">Recent webhook deliveries across all your endpoints. Logs are retained for 30 days.</p>
+    <div class="table-card">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Event</th>
+            <th>Endpoint</th>
+            <th>HTTP Code</th>
+            <th>Duration</th>
+            <th>Attempts</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Just now</td><td><code class="log-event">order.created</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/hooks/globexsky</td><td><span class="http-code code-2xx">200</span></td><td><span class="duration-chip">142ms</span></td><td>1</td><td>—</td></tr>
+          <tr><td>8 min ago</td><td><code class="log-event">payment.received</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/hooks/globexsky</td><td><span class="http-code code-2xx">200</span></td><td><span class="duration-chip">208ms</span></td><td>1</td><td>—</td></tr>
+          <tr><td>2 hrs ago</td><td><code class="log-event">order.created</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/services/T0XXX…</td><td><span class="http-code code-5xx">503</span></td><td><span class="duration-chip">30,000ms</span></td><td>3</td><td><button class="btn-retry" onclick="retryDelivery(this)"><i class="fas fa-redo"></i> Retry</button></td></tr>
+          <tr><td>3 hrs ago</td><td><code class="log-event">payment.failed</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/services/T0XXX…</td><td><span class="http-code code-4xx">404</span></td><td><span class="duration-chip">320ms</span></td><td>3</td><td><button class="btn-retry" onclick="retryDelivery(this)"><i class="fas fa-redo"></i> Retry</button></td></tr>
+          <tr><td>Nov 12</td><td><code class="log-event">shipment.updated</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/hooks/globexsky</td><td><span class="http-code code-2xx">201</span></td><td><span class="duration-chip">188ms</span></td><td>1</td><td>—</td></tr>
+          <tr><td>Nov 12</td><td><code class="log-event">order.updated</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/hooks/globexsky</td><td><span class="http-code code-2xx">200</span></td><td><span class="duration-chip">155ms</span></td><td>1</td><td>—</td></tr>
+          <tr><td>Nov 11</td><td><code class="log-event">supplier.verified</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/hooks/globexsky</td><td><span class="http-code code-2xx">200</span></td><td><span class="duration-chip">220ms</span></td><td>1</td><td>—</td></tr>
+          <tr><td>Nov 10</td><td><code class="log-event">payment.received</code></td><td style="font-size:.75rem;color:#64748b;font-family:'Courier New',monospace">…/services/T0XXX…</td><td><span class="http-code code-5xx">500</span></td><td><span class="duration-chip">30,000ms</span></td><td>3</td><td><button class="btn-retry" onclick="retryDelivery(this)"><i class="fas fa-redo"></i> Retry</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Done!</span></div>
+
+<script>
+  function showToast(msg,color){
+    const t=document.getElementById('toast');
+    t.style.background=color||'#059669';
+    document.getElementById('toast-msg').textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3200);
+  }
+
+  // Event item toggle
+  document.getElementById('eventsGrid').addEventListener('change',e=>{
+    if(e.target.tagName==='INPUT'){
+      e.target.closest('label').classList.toggle('selected',e.target.checked);
+    }
+  });
+
+  function selectAllEvents(){
+    document.querySelectorAll('#eventsGrid input').forEach(cb=>{cb.checked=true;cb.closest('label').classList.add('selected');});
+  }
+  function deselectAllEvents(){
+    document.querySelectorAll('#eventsGrid input').forEach(cb=>{cb.checked=false;cb.closest('label').classList.remove('selected');});
+  }
+
+  function addWebhook(){
+    const url=document.getElementById('whUrl').value.trim();
+    if(!url||!url.startsWith('http')){
+      document.getElementById('whUrl').style.borderColor='#ef4444';
+      showToast('Please enter a valid HTTPS URL.','#ef4444');
+      return;
+    }
+    const selected=[...document.querySelectorAll('#eventsGrid input:checked')].map(i=>i.closest('label').textContent.trim());
+    if(selected.length===0){showToast('Please select at least one event.','#f97316');return;}
+
+    const item=document.createElement('div');
+    item.className='webhook-item';
+    item.innerHTML=`
+      <div class="wh-icon"><i class="fas fa-plus"></i></div>
+      <div class="wh-info">
+        <div class="wh-url">${url}</div>
+        <div class="wh-events">${selected.slice(0,4).map(e=>`<span class="event-chip">${e}</span>`).join('')}${selected.length>4?`<span class="event-chip">+${selected.length-4} more</span>`:''}</div>
+        <div class="wh-meta">Created just now</div>
+      </div>
+      <span class="status-pill pill-active">Active</span>
+      <div class="wh-actions">
+        <button class="btn-icon test" title="Send test event" onclick="testWebhook(this)"><i class="fas fa-paper-plane"></i></button>
+        <button class="btn-icon toggle" title="Disable webhook" onclick="toggleWebhook(this)"><i class="fas fa-pause"></i></button>
+        <button class="btn-icon del" title="Delete webhook" onclick="deleteWebhook(this)"><i class="fas fa-trash-alt"></i></button>
+      </div>`;
+    document.getElementById('webhookList').prepend(item);
+    document.getElementById('whUrl').value='';
+    document.getElementById('whSecret').value='';
+    showToast('Webhook registered! Test delivery sent.');
+  }
+
+  function testWebhook(urlOrName){
+    showToast('Test event dispatched to endpoint. Check logs below.','#0052CC');
+  }
+
+  function toggleWebhook(btn){
+    const item=btn.closest('.webhook-item');
+    const pill=item.querySelector('.status-pill');
+    const icon=btn.querySelector('i');
+    if(pill.classList.contains('pill-active')){
+      pill.textContent='Paused';pill.className='status-pill pill-inactive';
+      icon.className='fas fa-play';btn.title='Enable webhook';
+      showToast('Webhook paused.','#94a3b8');
+    } else {
+      pill.textContent='Active';pill.className='status-pill pill-active';
+      icon.className='fas fa-pause';btn.title='Disable webhook';
+      showToast('Webhook enabled.');
+    }
+  }
+
+  function deleteWebhook(btn){
+    if(!confirm('Delete this webhook endpoint? All delivery logs will be removed.'))return;
+    const item=btn.closest('.webhook-item');
+    item.style.opacity='0';item.style.transition='opacity .3s';
+    setTimeout(()=>item.remove(),300);
+    showToast('Webhook deleted.','#ef4444');
+  }
+
+  function retryDelivery(btn){
+    btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>';
+    setTimeout(()=>{btn.innerHTML='<i class="fas fa-check"></i> Sent';btn.style.background='#d1fae5';btn.style.color='#059669';},1200);
+    showToast('Retrying delivery…','#0052CC');
+  }
+</script>
+</body>
+</html>

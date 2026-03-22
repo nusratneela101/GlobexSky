@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Factory Live Tours – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e;min-height:100vh}
+
+    /* ── Nav ── */
+    .topnav{background:#fff;box-shadow:0 2px 12px rgba(0,82,204,.08);padding:0 24px;position:sticky;top:0;z-index:200}
+    .topnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:16px;height:64px}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.25rem;color:#1a1a2e;text-decoration:none;flex-shrink:0}
+    .brand-logo span{color:#0052CC}
+    .nav-links{display:flex;gap:4px;margin-left:16px}
+    .nav-link{text-decoration:none;color:#475569;font-size:.875rem;font-weight:500;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-link:hover,.nav-link.active{color:#0052CC;background:#eff6ff}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99;transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}
+    .btn-outline:hover{background:#eff6ff}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#0052CC,#7c3aed);padding:60px 24px 52px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/svg%3E")}
+    .hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto}
+    .hero-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:6px 18px;font-size:.78rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.2;margin-bottom:14px}
+    .hero p{opacity:.9;font-size:1.05rem;max-width:580px;margin:0 auto 32px;line-height:1.7}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn-white{background:#fff;color:#0052CC;font-weight:700;border:none;padding:13px 28px;border-radius:12px;cursor:pointer;font-size:.95rem;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+    .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .btn-ghost-white{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.35);padding:13px 28px;border-radius:12px;cursor:pointer;font-size:.95rem;font-family:'Inter',sans-serif;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+    .btn-ghost-white:hover{background:rgba(255,255,255,.25)}
+    .hero-stats-row{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;margin-top:36px;padding-top:28px;border-top:1px solid rgba(255,255,255,.2)}
+    .hero-stat strong{display:block;font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800}
+    .hero-stat span{font-size:.8rem;opacity:.8}
+
+    /* ── Why Section ── */
+    .why-section{background:#fff;padding:56px 24px}
+    .section-wrap{max-width:1200px;margin:0 auto}
+    .section-center-head{text-align:center;margin-bottom:36px}
+    .section-chip{display:inline-block;background:#eff6ff;color:#0052CC;font-size:.75rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:5px 16px;border-radius:50px;margin-bottom:12px}
+    .section-center-head h2{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:#1a1a2e;margin-bottom:10px}
+    .section-center-head p{color:#64748b;font-size:.95rem;max-width:540px;margin:0 auto;line-height:1.7}
+    .why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+    .why-card{background:#f8fafc;border-radius:16px;padding:24px;border:1px solid #f1f5f9;transition:all .2s}
+    .why-card:hover{border-color:#0052CC;background:#f0f7ff;transform:translateY(-2px)}
+    .why-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:14px;flex-shrink:0}
+    .why-card h4{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#1a1a2e;margin-bottom:7px}
+    .why-card p{font-size:.83rem;color:#64748b;line-height:1.6}
+
+    /* ── Page Wrap ── */
+    .page-wrap{max-width:1280px;margin:0 auto;padding:36px 24px}
+    .grid-layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
+    @media(max-width:960px){.grid-layout{grid-template-columns:1fr}}
+    .section-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-bottom:24px}
+    .section-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#1a1a2e;display:flex;align-items:center;gap:8px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #f1f5f9}
+    .section-card-title i{color:#0052CC}
+
+    /* ── Tour Cards ── */
+    .tours-list{display:flex;flex-direction:column;gap:18px}
+    .tour-card{border:1.5px solid #f1f5f9;border-radius:16px;overflow:hidden;transition:all .25s;cursor:pointer;background:#fff}
+    .tour-card:hover{border-color:#0052CC;box-shadow:0 8px 28px rgba(0,82,204,.1);transform:translateY(-2px)}
+    .tour-card-inner{display:flex;gap:0}
+    .tour-thumb{width:220px;flex-shrink:0;position:relative;overflow:hidden}
+    .tour-thumb-bg{width:100%;height:100%;min-height:160px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative}
+    .tour-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to right,transparent 40%,rgba(255,255,255,.1) 100%)}
+    .tour-status-badge{position:absolute;top:10px;left:10px;font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:5px;color:#fff}
+    .status-live{background:#ef4444;animation:pulse 1.5s infinite}
+    .status-scheduled{background:#f59e0b;color:#1a1a2e}
+    .status-full{background:#64748b}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+    .tour-body{flex:1;padding:20px}
+    .tour-factory-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .factory-logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
+    .factory-info{flex:1}
+    .factory-name{font-size:.88rem;font-weight:700;color:#1a1a2e;display:flex;align-items:center;gap:6px}
+    .factory-name .verified{color:#0052CC;font-size:.75rem}
+    .factory-location{font-size:.75rem;color:#64748b;display:flex;align-items:center;gap:4px}
+    .tour-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#1a1a2e;margin-bottom:8px;line-height:1.4}
+    .tour-meta-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+    .tour-meta{font-size:.75rem;color:#64748b;display:flex;align-items:center;gap:4px}
+    .tour-meta i{color:#0052CC;font-size:.7rem}
+    .tour-certs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+    .cert-badge{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;border-radius:6px;padding:3px 9px;font-size:.7rem;font-weight:600;display:flex;align-items:center;gap:4px}
+    .cert-badge i{font-size:.65rem}
+    .tour-actions{display:flex;gap:8px}
+    .btn-book{background:#0052CC;color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;flex:1;justify-content:center}
+    .btn-book:hover{background:#003d99}
+    .btn-book.full{background:#64748b;cursor:not-allowed}
+    .btn-save{background:#f8fafc;border:1.5px solid #e2e8f0;color:#475569;border-radius:9px;padding:9px 12px;font-size:.85rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif}
+    .btn-save:hover{border-color:#0052CC;color:#0052CC}
+    .spots-left{font-size:.73rem;color:#ea580c;font-weight:600;display:flex;align-items:center;gap:4px}
+
+    /* ── Booking Form ── */
+    .booking-form{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 24px rgba(0,82,204,.1);border:1px solid #e2e8f0;position:sticky;top:80px}
+    .booking-form-header{background:linear-gradient(135deg,#0052CC,#3b82f6);margin:-24px -24px 22px;padding:20px 24px;border-radius:16px 16px 0 0;color:#fff}
+    .booking-form-header h3{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:4px}
+    .booking-form-header p{font-size:.8rem;opacity:.88}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#475569;margin-bottom:6px}
+    .form-label .req{color:#ef4444;margin-left:2px}
+    .form-input,.form-select,.form-textarea{width:100%;border:1.5px solid #e2e8f0;border-radius:9px;padding:10px 13px;font-size:.87rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;background:#f8fafc}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#0052CC;background:#fff}
+    .form-input::placeholder,.form-textarea::placeholder{color:#94a3b8}
+    .form-textarea{resize:vertical;min-height:80px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .available-slots{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+    .slot-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:9px;cursor:pointer;transition:all .2s}
+    .slot-option:hover{border-color:#0052CC;background:#f0f7ff}
+    .slot-option input{accent-color:#0052CC}
+    .slot-option.selected{border-color:#0052CC;background:#eff6ff}
+    .slot-text{flex:1}
+    .slot-text strong{display:block;font-size:.83rem;color:#1a1a2e;font-weight:600}
+    .slot-text span{font-size:.73rem;color:#64748b}
+    .slot-spots{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:10px}
+    .slot-spots.available{background:#f0fdf4;color:#16a34a}
+    .slot-spots.limited{background:#fff7ed;color:#ea580c}
+    .slot-spots.full{background:#f1f5f9;color:#94a3b8}
+    .submit-btn{width:100%;background:linear-gradient(135deg,#0052CC,#3b82f6);color:#fff;border:none;border-radius:11px;padding:14px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+    .submit-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,82,204,.35)}
+    .form-footer-note{text-align:center;font-size:.73rem;color:#94a3b8;margin-top:10px;line-height:1.5}
+
+    /* ── Cert Cards ── */
+    .cert-section{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin-top:24px}
+    .cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+    .cert-card{background:#f8fafc;border:1px solid #f1f5f9;border-radius:12px;padding:14px 12px;text-align:center;transition:all .2s}
+    .cert-card:hover{border-color:#0052CC;background:#f0f7ff}
+    .cert-card-icon{width:44px;height:44px;border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+    .cert-card-name{font-size:.78rem;font-weight:700;color:#1a1a2e;margin-bottom:3px}
+    .cert-card-desc{font-size:.7rem;color:#64748b}
+
+    /* ── How It Works ── */
+    .how-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+    .how-step{text-align:center;padding:20px 16px}
+    .how-step-num{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:800;margin:0 auto 12px;box-shadow:0 4px 12px rgba(0,82,204,.3)}
+    .how-step h4{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:#1a1a2e;margin-bottom:6px}
+    .how-step p{font-size:.78rem;color:#64748b;line-height:1.5}
+    .how-arrows{display:flex;align-items:center;padding-top:22px;color:#0052CC;font-size:.9rem}
+    @media(max-width:768px){.tour-card-inner{flex-direction:column}.tour-thumb{width:100%;min-height:180px}.how-arrows{display:none}.tour-actions{flex-direction:column}}
+
+    /* ── Tab Filter ── */
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tab{background:#fff;border:1.5px solid #e2e8f0;color:#475569;border-radius:9px;padding:7px 16px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+    .filter-tab.active,.filter-tab:hover{background:#0052CC;border-color:#0052CC;color:#fff}
+
+    /* ── Success Toast ── */
+    .toast{position:fixed;bottom:28px;right:28px;background:#16a34a;color:#fff;padding:14px 22px;border-radius:12px;font-size:.88rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all .4s;z-index:9999}
+    .toast.show{transform:translateY(0);opacity:1}
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="../../index.html" class="brand-logo">Globex<span>Sky</span></a>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="browse.html" class="nav-link">Browse Live</a>
+      <a href="create.html" class="nav-link">Go Live</a>
+      <a href="#" class="nav-link active">Factory Tours</a>
+    </div>
+    <div class="nav-right">
+      <a href="../auth/login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="create.html" class="btn btn-primary"><i class="fas fa-video"></i> Host a Tour</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-chip"><i class="fas fa-industry"></i> Virtual Factory Tours</div>
+    <h1>See The Factory<br/>Before You Order</h1>
+    <p>Live virtual tours of verified manufacturer facilities worldwide. Watch production lines, meet quality teams, and audit suppliers — without leaving your office.</p>
+    <div class="hero-actions">
+      <button class="btn-white" onclick="document.getElementById('bookingSection').scrollIntoView({behavior:'smooth'})"><i class="fas fa-calendar-check"></i> Book a Tour</button>
+      <a href="browse.html" class="btn-ghost-white"><i class="fas fa-play"></i> Watch Live Now</a>
+    </div>
+    <div class="hero-stats-row">
+      <div class="hero-stat"><strong>1,240+</strong><span>Verified Factories</span></div>
+      <div class="hero-stat"><strong>48</strong><span>Live Tours Today</span></div>
+      <div class="hero-stat"><strong>94%</strong><span>Buyer Satisfaction</span></div>
+      <div class="hero-stat"><strong>60+</strong><span>Countries</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Section -->
+<div class="why-section">
+  <div class="section-wrap">
+    <div class="section-center-head">
+      <div class="section-chip">Why Factory Tours?</div>
+      <h2>Due Diligence Made Easy</h2>
+      <p>Traditional factory audits cost $2,000–$8,000 and weeks of travel. Our live virtual tours deliver the same confidence in under an hour.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon" style="background:#eff6ff;color:#0052CC"><i class="fas fa-video"></i></div>
+        <h4>Real-Time Video</h4>
+        <p>High-definition live stream directly from the factory floor — production lines, QC stations, warehouse, and management offices.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-comments"></i></div>
+        <h4>Interactive Q&amp;A</h4>
+        <p>Ask questions in real time. Our multilingual interpreters facilitate direct communication with factory managers.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-shield-check"></i></div>
+        <h4>Verified Audits</h4>
+        <p>All tour participants are confirmed buyers. Factories are GlobexSky-verified before being listed for tours.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-file-certificate"></i></div>
+        <h4>Instant Reports</h4>
+        <p>Receive a detailed factory inspection report with photos, certifications, and AI-generated summary within 24 hours.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#fef2f2;color:#dc2626"><i class="fas fa-dollar-sign"></i></div>
+        <h4>100% Free for Buyers</h4>
+        <p>Factory tours are completely free for verified buyers. Suppliers pay a small listing fee to participate.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#ecfeff;color:#0891b2"><i class="fas fa-globe"></i></div>
+        <h4>Replay Available</h4>
+        <p>Missed a tour? All sessions are recorded and available to replay in our library for 90 days.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- How It Works -->
+<div style="background:#f8fafc;padding:50px 24px">
+  <div class="section-wrap">
+    <div class="section-center-head" style="margin-bottom:28px">
+      <div class="section-chip">Simple Process</div>
+      <h2>How Factory Tours Work</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr) auto repeat(2,1fr) auto repeat(1,1fr);gap:0;align-items:start" class="how-steps-wrap">
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <h4>Browse Factories</h4>
+          <p>Filter by industry, country, certifications, and available tour slots.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">2</div>
+          <h4>Book a Slot</h4>
+          <p>Choose a date/time that works for you and confirm your booking for free.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <h4>Join Live Tour</h4>
+          <p>Click your link at the scheduled time. Ask questions and view the entire facility.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">4</div>
+          <h4>Get Report &amp; Order</h4>
+          <p>Receive your audit report, then place orders with confidence through Trade Assurance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="page-wrap">
+  <div class="grid-layout">
+
+    <!-- Left: Tours List -->
+    <div>
+
+      <!-- Upcoming Tours -->
+      <div class="section-card" id="bookingSection">
+        <div class="section-card-title"><i class="fas fa-calendar-check"></i> Upcoming Live Tours</div>
+
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterTours('all',this)">All</button>
+          <button class="filter-tab" onclick="filterTours('solar',this)">Solar Energy</button>
+          <button class="filter-tab" onclick="filterTours('electronics',this)">Electronics</button>
+          <button class="filter-tab" onclick="filterTours('machinery',this)">Machinery</button>
+          <button class="filter-tab" onclick="filterTours('textile',this)">Textiles</button>
+          <button class="filter-tab" onclick="filterTours('packaging',this)">Packaging</button>
+        </div>
+
+        <div class="tours-list" id="toursList">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Certifications Guide -->
+      <div class="cert-section">
+        <div class="section-card-title" style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#1a1a2e;display:flex;align-items:center;gap:8px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #f1f5f9"><i class="fas fa-certificate" style="color:#0052CC"></i> Certification Badges Explained</div>
+        <div class="cert-grid">
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-check-double"></i></div>
+            <div class="cert-card-name">ISO 9001</div>
+            <div class="cert-card-desc">Quality Management System</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#eff6ff;color:#0052CC"><i class="fas fa-plug"></i></div>
+            <div class="cert-card-name">CE Mark</div>
+            <div class="cert-card-desc">EU Conformity Standard</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-leaf"></i></div>
+            <div class="cert-card-name">RoHS</div>
+            <div class="cert-card-desc">Hazardous Substances Free</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-solar-panel"></i></div>
+            <div class="cert-card-name">IEC 61215</div>
+            <div class="cert-card-desc">Solar Panel Performance</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#fef2f2;color:#dc2626"><i class="fas fa-fire-alt"></i></div>
+            <div class="cert-card-name">UL Listed</div>
+            <div class="cert-card-desc">US Safety Certification</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#ecfeff;color:#0891b2"><i class="fas fa-shield-alt"></i></div>
+            <div class="cert-card-name">SGS Audited</div>
+            <div class="cert-card-desc">Third-Party Verified</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#fefce8;color:#ca8a04"><i class="fas fa-star"></i></div>
+            <div class="cert-card-name">Gold Supplier</div>
+            <div class="cert-card-desc">GlobexSky 3+ Years</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-card-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-industry"></i></div>
+            <div class="cert-card-name">ISO 14001</div>
+            <div class="cert-card-desc">Environmental Management</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right: Booking Form -->
+    <div>
+      <div class="booking-form" id="bookFormPanel">
+        <div class="booking-form-header">
+          <h3><i class="fas fa-calendar-plus" style="margin-right:8px"></i>Book a Factory Tour</h3>
+          <p>Free for verified buyers · Confirmation within 2 hours</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Name <span class="req">*</span></label>
+          <input type="text" class="form-input" placeholder="John Smith" id="buyerName"/>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Company <span class="req">*</span></label>
+            <input type="text" class="form-input" placeholder="Company Ltd." id="buyerCompany"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country <span class="req">*</span></label>
+            <select class="form-select" id="buyerCountry">
+              <option value="">Select…</option>
+              <option>Germany</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+              <option>Australia</option>
+              <option>Canada</option>
+              <option>France</option>
+              <option>Netherlands</option>
+              <option>Japan</option>
+              <option>South Korea</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email <span class="req">*</span></label>
+          <input type="email" class="form-input" placeholder="john@company.com" id="buyerEmail"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Factory / Product Category <span class="req">*</span></label>
+          <select class="form-select" id="tourCat" onchange="updateSlots()">
+            <option value="">Choose a factory…</option>
+            <option>SunPower Industrial – Solar Panels</option>
+            <option>CircuitPro Electronics – PCB/PCBA</option>
+            <option>BrightTech Lighting – LED Products</option>
+            <option>EnergyStore Tech – Batteries</option>
+            <option>PrecisionMach – CNC Machining</option>
+            <option>TextilePro Mills – Fabrics</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="slotsGroup" style="display:none">
+          <label class="form-label">Available Time Slots <span class="req">*</span></label>
+          <div class="available-slots" id="slotsContainer"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Sourcing Needs</label>
+          <textarea class="form-textarea" placeholder="What products are you looking for? Quantity, specifications, timeline…" id="buyerNeeds"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500">
+            <input type="checkbox" id="chkInterpreter" style="width:16px;height:16px;accent-color:#0052CC"/>
+            Request a live interpreter (English, German, French, Arabic)
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500">
+            <input type="checkbox" id="chkReport" checked style="width:16px;height:16px;accent-color:#0052CC"/>
+            Receive detailed audit report after tour
+          </label>
+        </div>
+
+        <button class="submit-btn" onclick="submitBooking()">
+          <i class="fas fa-calendar-check"></i> Confirm Booking — Free
+        </button>
+        <div class="form-footer-note">🔒 Your information is secure. No spam — tour confirmation only.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
+
+<script>
+  const tours = [
+    {
+      emoji:'☀️', bg:'linear-gradient(135deg,#2d2000,#5a3e00)', color:'#f59e0b', initials:'SP',
+      factory:'SunPower Industrial Co.', location:'Shenzhen, China',
+      title:'Solar Panel Production Line — From Silicon Wafer to Finished Module',
+      time:'Today 14:00 GMT+8', duration:'1.5 hours',
+      capacity:30, booked:22, category:'solar',
+      certs:['ISO 9001','IEC 61215','TÜV Certified','CE Mark'],
+      status:'scheduled', viewers:null
+    },
+    {
+      emoji:'🔌', bg:'linear-gradient(135deg,#0d001a,#1a0033)', color:'#7c3aed', initials:'CP',
+      factory:'CircuitPro Electronics', location:'Dongguan, China',
+      title:'SMT & PCB Assembly Factory Tour — Quality Control &amp; Testing Stations',
+      time:'Today 16:30 GMT+8', duration:'1 hour',
+      capacity:20, booked:18, category:'electronics',
+      certs:['ISO 9001','RoHS','IPC-A-610','Gold Supplier'],
+      status:'limited', viewers:null
+    },
+    {
+      emoji:'💡', bg:'linear-gradient(135deg,#001a33,#003366)', color:'#0052CC', initials:'BT',
+      factory:'BrightTech Lighting', location:'Zhongshan, China',
+      title:'LED Factory Deep Dive: Smart Street Lights &amp; Industrial Fixtures R&amp;D',
+      time:'Tomorrow 10:00 GMT+8', duration:'2 hours',
+      capacity:40, booked:12, category:'electronics',
+      certs:['ISO 9001','CE Mark','UL Listed','RoHS'],
+      status:'scheduled', viewers:null
+    },
+    {
+      emoji:'⚙️', bg:'linear-gradient(135deg,#1a0a00,#33140a)', color:'#ea580c', initials:'PM',
+      factory:'PrecisionMach Co. Ltd.', location:'Suzhou, China',
+      title:'CNC Machining Facility — Aerospace Aluminum Parts &amp; Precision Tolerances',
+      time:'Tomorrow 14:00 GMT+8', duration:'1.5 hours',
+      capacity:25, booked:8, category:'machinery',
+      certs:['ISO 9001','AS9100','SGS Audited','IATF 16949'],
+      status:'scheduled', viewers:null
+    },
+    {
+      emoji:'🧵', bg:'linear-gradient(135deg,#001a0a,#003314)', color:'#16a34a', initials:'TP',
+      factory:'TextilePro Mills', location:'Guangzhou, China',
+      title:'Premium Fabric Manufacturing — Winter 2024 Collection &amp; OEM Capabilities',
+      time:'This Friday 09:00 GMT+8', duration:'1 hour',
+      capacity:35, booked:35, category:'textile',
+      certs:['OEKO-TEX 100','ISO 9001','GOTS Certified','Bluesign'],
+      status:'full', viewers:null
+    },
+    {
+      emoji:'📦', bg:'linear-gradient(135deg,#0a0a00,#1a1a00)', color:'#ca8a04', initials:'EP',
+      factory:'EcoPackaging Solutions', location:'Hangzhou, China',
+      title:'Biodegradable &amp; Sustainable Packaging Factory — New Bamboo Line Launch',
+      time:'Next Monday 13:00 GMT+8', duration:'1 hour',
+      capacity:50, booked:14, category:'packaging',
+      certs:['ISO 14001','FSC Certified','BPI Compostable','SGS Audited'],
+      status:'scheduled', viewers:null
+    },
+  ];
+
+  const timeSlots = {
+    'SunPower Industrial – Solar Panels': [
+      {time:'Today 14:00–15:30 GMT+8', spots:8, status:'limited'},
+      {time:'Tomorrow 10:00–11:30 GMT+8', spots:18, status:'available'},
+      {time:'This Friday 14:00–15:30 GMT+8', spots:30, status:'available'},
+    ],
+    'CircuitPro Electronics – PCB/PCBA': [
+      {time:'Today 16:30–17:30 GMT+8', spots:2, status:'limited'},
+      {time:'Tomorrow 15:00–16:00 GMT+8', spots:12, status:'available'},
+    ],
+    'BrightTech Lighting – LED Products': [
+      {time:'Tomorrow 10:00–12:00 GMT+8', spots:28, status:'available'},
+      {time:'This Friday 10:00–12:00 GMT+8', spots:40, status:'available'},
+    ],
+    'EnergyStore Tech – Batteries': [
+      {time:'Tomorrow 13:00–14:00 GMT+8', spots:15, status:'available'},
+    ],
+    'PrecisionMach – CNC Machining': [
+      {time:'Tomorrow 14:00–15:30 GMT+8', spots:17, status:'available'},
+    ],
+    'TextilePro Mills – Fabrics': [
+      {time:'This Friday 09:00–10:00 GMT+8', spots:0, status:'full'},
+      {time:'Next Monday 09:00–10:00 GMT+8', spots:20, status:'available'},
+    ],
+  };
+
+  function renderTours(filter) {
+    const filtered = filter === 'all' ? tours : tours.filter(t => t.category === filter);
+    document.getElementById('toursList').innerHTML = filtered.map(t => {
+      const spotsLeft = t.capacity - t.booked;
+      const isFull = t.status === 'full';
+      const isLimited = spotsLeft <= 5 && !isFull;
+      const statusBadge = isFull
+        ? `<span class="tour-status-badge status-full">FULL</span>`
+        : isLimited
+          ? `<span class="tour-status-badge status-scheduled" style="background:#ea580c;color:#fff">⚡ LIMITED</span>`
+          : `<span class="tour-status-badge status-scheduled">📅 UPCOMING</span>`;
+      return `
+        <div class="tour-card">
+          <div class="tour-card-inner">
+            <div class="tour-thumb">
+              <div class="tour-thumb-bg" style="background:${t.bg}">${t.emoji}
+                <div class="tour-thumb-overlay"></div>
+                ${statusBadge}
+              </div>
+            </div>
+            <div class="tour-body">
+              <div class="tour-factory-row">
+                <div class="factory-logo" style="background:${t.color}">${t.initials}</div>
+                <div class="factory-info">
+                  <div class="factory-name">${t.factory} <i class="fas fa-check-circle verified"></i></div>
+                  <div class="factory-location"><i class="fas fa-map-marker-alt"></i>${t.location}</div>
+                </div>
+              </div>
+              <div class="tour-title">${t.title}</div>
+              <div class="tour-meta-row">
+                <span class="tour-meta"><i class="fas fa-clock"></i>${t.time}</span>
+                <span class="tour-meta"><i class="fas fa-hourglass-half"></i>${t.duration}</span>
+                <span class="tour-meta"><i class="fas fa-users"></i>${t.capacity} max</span>
+              </div>
+              <div class="tour-certs">
+                ${t.certs.map(c => `<span class="cert-badge"><i class="fas fa-certificate"></i>${c}</span>`).join('')}
+              </div>
+              <div class="tour-actions">
+                <button class="btn-book${isFull ? ' full' : ''}" onclick="${isFull ? '' : `bookTour('${t.factory.replace(/'/g,"\\'")}', this)`}" ${isFull ? 'disabled' : ''}>${isFull ? '<i class="fas fa-lock"></i> Tour Full' : '<i class="fas fa-calendar-check"></i> Book Free Spot'}</button>
+                ${!isFull && isLimited ? `<span class="spots-left"><i class="fas fa-fire"></i>${spotsLeft} spots left</span>` : ''}
+                <button class="btn-save" onclick="saveTour(this)"><i class="far fa-bookmark"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }).join('') || '<p style="color:#94a3b8;padding:20px;text-align:center">No tours in this category right now. Check back soon!</p>';
+  }
+
+  function filterTours(cat, btn) {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTours(cat);
+  }
+
+  function updateSlots() {
+    const cat = document.getElementById('tourCat').value;
+    const group = document.getElementById('slotsGroup');
+    const container = document.getElementById('slotsContainer');
+    if (!cat || !timeSlots[cat]) { group.style.display = 'none'; return; }
+    group.style.display = 'block';
+    container.innerHTML = timeSlots[cat].map((s, i) => `
+      <label class="slot-option ${s.status === 'full' ? 'disabled' : ''}" style="${s.status === 'full' ? 'opacity:.5;cursor:not-allowed' : ''}">
+        <input type="radio" name="slot" value="${i}" ${s.status === 'full' ? 'disabled' : ''}/>
+        <div class="slot-text">
+          <strong>${s.time}</strong>
+          <span>${s.status !== 'full' ? s.spots + ' spots remaining' : 'Fully booked'}</span>
+        </div>
+        <span class="slot-spots ${s.status}">${s.status === 'limited' ? '⚡ ' + s.spots + ' left' : s.status === 'full' ? 'Full' : s.spots + ' available'}</span>
+      </label>`).join('');
+
+    container.querySelectorAll('.slot-option:not(.disabled)').forEach(opt => {
+      opt.addEventListener('click', () => {
+        container.querySelectorAll('.slot-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+      });
+    });
+  }
+
+  function bookTour(factory, btn) {
+    document.getElementById('tourCat').value = Object.keys(timeSlots).find(k => k.startsWith(factory.split(' ')[0])) || '';
+    document.getElementById('bookFormPanel').scrollIntoView({behavior:'smooth'});
+    updateSlots();
+  }
+
+  function saveTour(btn) {
+    btn.innerHTML = btn.innerHTML.includes('far') ? '<i class="fas fa-bookmark"></i>' : '<i class="far fa-bookmark"></i>';
+    btn.style.color = btn.innerHTML.includes('fas') ? '#0052CC' : '';
+  }
+
+  function submitBooking() {
+    const name = document.getElementById('buyerName').value.trim();
+    const email = document.getElementById('buyerEmail').value.trim();
+    const company = document.getElementById('buyerCompany').value.trim();
+    const cat = document.getElementById('tourCat').value;
+    if (!name || !email || !company || !cat) {
+      showToast('Please fill in all required fields.', '#ef4444');
+      return;
+    }
+    showToast(`Booking confirmed for ${name}! Check ${email} for your tour link.`, '#16a34a');
+    document.getElementById('buyerName').value = '';
+    document.getElementById('buyerEmail').value = '';
+    document.getElementById('buyerCompany').value = '';
+    document.getElementById('buyerNeeds').value = '';
+    document.getElementById('tourCat').value = '';
+    document.getElementById('slotsGroup').style.display = 'none';
+  }
+
+  function showToast(msg, color) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.style.background = color || '#16a34a';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  renderTours('all');
+</script>
+</body>
+</html>

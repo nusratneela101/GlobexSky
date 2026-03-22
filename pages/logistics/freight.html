@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Freight Forwarding – GlobexSky</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="../../assets/css/main.css"/>
+<style>
+:root{--primary:#0052CC;--secondary:#7c3aed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+a{text-decoration:none;color:inherit}
+.site-header{position:sticky;top:0;z-index:100;background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px}
+.btn-login{background:transparent;border:1.5px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+.btn-register{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem}
+.nav-actions{display:flex;gap:12px}
+.page-hero{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);color:#fff;padding:48px 24px;text-align:center}
+.breadcrumb{font-size:.85rem;opacity:.8;margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.85)}
+.breadcrumb span{margin:0 6px}
+.page-hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+.page-hero p{font-size:1rem;opacity:.9;max-width:600px;margin:0 auto}
+.main-content{max-width:1200px;margin:0 auto;padding:32px 24px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
+.kpi-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+.kpi-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem}
+.kpi-icon.blue{background:#dbeafe;color:#0052CC}
+.kpi-icon.green{background:#d1fae5;color:#059669}
+.kpi-icon.orange{background:#ffedd5;color:#f97316}
+.kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+.kpi-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;line-height:1}
+.kpi-label{font-size:.8rem;color:#64748b;margin-top:4px}
+.section-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:20px;color:#1a1a2e;display:flex;align-items:center;gap:8px}
+.section-title i{color:var(--primary)}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:.85rem;font-weight:600;color:#374151}
+input,select,textarea{border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;width:100%;outline:none;font-family:'Inter',sans-serif;font-size:.9rem;background:#fff;color:#1a1a2e}
+input:focus,select:focus{border-color:#0052CC}
+.btn-primary{background:var(--primary);color:#fff;border-radius:8px;padding:10px 22px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.95rem}
+.btn-primary:hover{background:#003fa3}
+table{width:100%;border-collapse:collapse}
+thead{background:#f8faff}
+th{padding:12px 16px;text-align:left;font-size:.82rem;font-weight:600;color:#64748b;border-bottom:2px solid #e2e8f0}
+td{padding:12px 16px;font-size:.88rem;border-bottom:1px solid #f1f5f9}
+tr:hover td{background:#f8faff}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600}
+.badge.blue{background:#dbeafe;color:#0052CC}
+.badge.green{background:#d1fae5;color:#059669}
+.badge.orange{background:#ffedd5;color:#f97316}
+.carrier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.carrier-box{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center}
+.carrier-name{font-size:1.4rem;font-weight:800;margin-bottom:6px}
+.carrier-name.dhl{color:#FC0}
+.carrier-name.fedex{color:#4d148c}
+.carrier-name.aramex{color:#e2231a}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.step-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center}
+.step-num{width:48px;height:48px;background:linear-gradient(135deg,#0052CC,#7c3aed);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;margin:0 auto 14px}
+.track-result{background:#f8faff;border-radius:10px;padding:16px 20px;border:1.5px solid #dbeafe;margin-top:14px;display:none}
+.error-msg{color:#dc2626;font-size:.82rem;margin-top:4px;display:none}
+footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem;margin-top:40px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.steps-grid{grid-template-columns:1fr}.carrier-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.kpi-grid{grid-template-columns:1fr}.page-hero h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" width="180" height="56" alt="GlobexSky"/></a>
+    <div class="nav-actions">
+      <button class="btn-login">Log In</button>
+      <button class="btn-register">Register</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="breadcrumb"><a href="../../index.html">Home</a><span>›</span>Logistics<span>›</span>Freight Forwarding</div>
+  <h1><i class="fa-solid fa-ship"></i> Freight Forwarding</h1>
+  <p>Global freight solutions via air, sea, and road — 150+ carriers, 220+ countries, real-time tracking and competitive rates.</p>
+</div>
+
+<main class="main-content">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon blue"><i class="fa-solid fa-truck-fast"></i></div>
+      <div><div class="kpi-value">150+</div><div class="kpi-label">Carrier Partners</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon green"><i class="fa-solid fa-earth-americas"></i></div>
+      <div><div class="kpi-value">220+</div><div class="kpi-label">Countries Covered</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon orange"><i class="fa-solid fa-circle-check"></i></div>
+      <div><div class="kpi-value">98%</div><div class="kpi-label">On-Time Delivery</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon purple"><i class="fa-solid fa-headset"></i></div>
+      <div><div class="kpi-value">24/7</div><div class="kpi-label">Customer Support</div></div>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="section-title"><i class="fa-solid fa-list-ol"></i> How It Works</div>
+  <div class="steps-grid" style="margin-bottom:32px">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:8px">Get a Quote</div>
+      <div style="font-size:.85rem;color:#64748b">Fill in your shipment details — origin, destination, weight, dimensions, and cargo type. Receive instant competitive rates.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:8px">Book & Pay</div>
+      <div style="font-size:.85rem;color:#64748b">Select your preferred carrier and service level. Complete payment securely with multiple options including trade finance.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:8px">Track Delivery</div>
+      <div style="font-size:.85rem;color:#64748b">Get a tracking number and monitor your shipment in real-time from pickup to final delivery at your doorstep.</div>
+    </div>
+  </div>
+
+  <!-- Quote Form -->
+  <div class="card">
+    <div class="section-title"><i class="fa-solid fa-calculator"></i> Get a Freight Quote</div>
+    <form id="freightForm" onsubmit="submitQuote(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Origin Port / City</label>
+          <input type="text" id="originPort" placeholder="e.g. Shanghai, China"/>
+          <div class="error-msg" id="err-origin">Please enter an origin port.</div>
+        </div>
+        <div class="form-group">
+          <label>Destination Port / City</label>
+          <input type="text" id="destPort" placeholder="e.g. Rotterdam, Netherlands"/>
+          <div class="error-msg" id="err-dest">Please enter a destination port.</div>
+        </div>
+        <div class="form-group">
+          <label>Cargo Weight (kg)</label>
+          <input type="number" id="cargoWeight" placeholder="e.g. 500" min="1"/>
+          <div class="error-msg" id="err-weight">Please enter cargo weight.</div>
+        </div>
+        <div class="form-group">
+          <label>Dimensions (L × W × H in cm)</label>
+          <input type="text" id="dimensions" placeholder="e.g. 120 × 80 × 100"/>
+        </div>
+        <div class="form-group">
+          <label>Cargo Type</label>
+          <select id="cargoType">
+            <option value="">Select cargo type</option>
+            <option>General Cargo</option>
+            <option>Hazardous Materials</option>
+            <option>Perishable Goods</option>
+            <option>Oversized Cargo</option>
+          </select>
+          <div class="error-msg" id="err-cargo">Please select a cargo type.</div>
+        </div>
+        <div class="form-group">
+          <label>Incoterms</label>
+          <select id="incoterms">
+            <option value="">Select Incoterms</option>
+            <option>FOB – Free On Board</option>
+            <option>CIF – Cost, Insurance &amp; Freight</option>
+            <option>EXW – Ex Works</option>
+            <option>DDP – Delivered Duty Paid</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary" style="margin-top:20px"><i class="fa-solid fa-magnifying-glass"></i> Get Quote</button>
+    </form>
+  </div>
+
+  <!-- Results -->
+  <div id="quoteResults" style="display:none">
+    <div class="section-title"><i class="fa-solid fa-table"></i> Available Shipping Options</div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <thead><tr><th>Carrier</th><th>Service</th><th>Transit Time</th><th>Price (USD)</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>DHL Express</strong></td><td><span class="badge blue">Air Express</span></td><td>5–7 days</td><td><strong>$1,240</strong></td><td><button class="btn-primary" style="padding:6px 16px;font-size:.82rem">Select</button></td></tr>
+          <tr><td><strong>FedEx Priority</strong></td><td><span class="badge blue">Air Priority</span></td><td>7–10 days</td><td><strong>$980</strong></td><td><button class="btn-primary" style="padding:6px 16px;font-size:.82rem">Select</button></td></tr>
+          <tr><td><strong>Aramex Standard</strong></td><td><span class="badge orange">Air Standard</span></td><td>12–15 days</td><td><strong>$720</strong></td><td><button class="btn-primary" style="padding:6px 16px;font-size:.82rem">Select</button></td></tr>
+          <tr><td><strong>MSC Ocean Freight</strong></td><td><span class="badge green">Sea FCL</span></td><td>28–35 days</td><td><strong>$340</strong></td><td><button class="btn-primary" style="padding:6px 16px;font-size:.82rem">Select</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tracking -->
+  <div class="card">
+    <div class="section-title"><i class="fa-solid fa-location-dot"></i> Container & Shipment Tracking</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <input type="text" id="trackInput" placeholder="Enter tracking number (e.g. DHL-924871234)" style="flex:1;min-width:220px"/>
+      <button class="btn-primary" onclick="trackShipment()"><i class="fa-solid fa-magnifying-glass"></i> Track</button>
+    </div>
+    <div class="track-result" id="trackResult">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="background:#d1fae5;color:#059669;border-radius:8px;padding:6px 14px;font-weight:700;font-size:.88rem"><i class="fa-solid fa-circle-check"></i> IN TRANSIT</div>
+        <div style="font-weight:600">DHL Express · DHL-924871234</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:.85rem">
+        <div><div style="color:#64748b;font-size:.78rem">Origin</div><div style="font-weight:600">Shanghai, China</div></div>
+        <div><div style="color:#64748b;font-size:.78rem">Destination</div><div style="font-weight:600">Rotterdam, Netherlands</div></div>
+        <div><div style="color:#64748b;font-size:.78rem">Est. Delivery</div><div style="font-weight:600;color:#0052CC">Dec 24, 2024</div></div>
+      </div>
+      <div style="margin-top:14px;font-size:.82rem">
+        <div style="font-weight:600;margin-bottom:8px;color:#64748b">TRACKING HISTORY</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;gap:12px"><span style="color:#64748b;min-width:120px">Dec 19, 14:32</span><span style="color:#059669">● Departed Frankfurt hub</span></div>
+          <div style="display:flex;gap:12px"><span style="color:#64748b;min-width:120px">Dec 18, 08:14</span><span>● Arrived Frankfurt hub</span></div>
+          <div style="display:flex;gap:12px"><span style="color:#64748b;min-width:120px">Dec 17, 22:40</span><span>● Departed Shanghai Pudong</span></div>
+          <div style="display:flex;gap:12px"><span style="color:#64748b;min-width:120px">Dec 17, 16:10</span><span>● Picked up — Shanghai, China</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carriers -->
+  <div class="section-title"><i class="fa-solid fa-building"></i> Our Carrier Partners</div>
+  <div class="carrier-grid">
+    <div class="carrier-box">
+      <div class="carrier-name dhl" style="background:#fc0;display:inline-block;padding:4px 16px;border-radius:4px;color:#d40511">DHL</div>
+      <div style="font-size:.82rem;color:#64748b;margin-top:10px">Express, Standard, Economy<br/>220+ countries</div>
+    </div>
+    <div class="carrier-box">
+      <div class="carrier-name" style="color:#4d148c;font-size:1.4rem;font-weight:800">Fed<span style="color:#f90516">Ex</span></div>
+      <div style="font-size:.82rem;color:#64748b;margin-top:10px">Priority, Economy, Freight<br/>200+ countries</div>
+    </div>
+    <div class="carrier-box">
+      <div class="carrier-name aramex">Aramex</div>
+      <div style="font-size:.82rem;color:#64748b;margin-top:10px">Air, Road, Ocean Freight<br/>MENA specialist</div>
+    </div>
+  </div>
+</main>
+
+<footer>© 2025 Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</footer>
+
+<script>
+function submitQuote(e){
+  e.preventDefault();
+  let valid=true;
+  const origin=document.getElementById('originPort').value.trim();
+  const dest=document.getElementById('destPort').value.trim();
+  const weight=document.getElementById('cargoWeight').value;
+  const cargo=document.getElementById('cargoType').value;
+  document.querySelectorAll('.error-msg').forEach(el=>el.style.display='none');
+  if(!origin){document.getElementById('err-origin').style.display='block';valid=false}
+  if(!dest){document.getElementById('err-dest').style.display='block';valid=false}
+  if(!weight){document.getElementById('err-weight').style.display='block';valid=false}
+  if(!cargo){document.getElementById('err-cargo').style.display='block';valid=false}
+  if(valid){
+    document.getElementById('quoteResults').style.display='block';
+    document.getElementById('quoteResults').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+function trackShipment(){
+  const val=document.getElementById('trackInput').value.trim();
+  if(!val){alert('Please enter a tracking number.');return;}
+  document.getElementById('trackResult').style.display='block';
+}
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
