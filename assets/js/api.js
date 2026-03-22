@@ -41,7 +41,7 @@ const API = (() => {
         // Clear stale session
         localStorage.removeItem('globexSession');
         localStorage.removeItem('globexUser');
-        if (window.Globex Sky?.updateNavUI) window.Globex Sky.updateNavUI();
+        if (window.GlobexSky?.updateNavUI) window.GlobexSky.updateNavUI();
       }
       throw err;
     }
