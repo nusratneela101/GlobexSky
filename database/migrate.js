@@ -6,6 +6,7 @@
  *   node database/migrate.js           # run all pending UP migrations
  *   node database/migrate.js --down 005_create_shipments  # roll back a specific migration
  *   node database/migrate.js --list    # list applied migrations
+ *   node database/migrate.js --sql database/migrations/002_additional_tables.sql  # run a SQL file
  *
  * Prerequisites:
  *   1. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in backend/.env (or env vars).
@@ -18,7 +19,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { readdir } from 'fs/promises';
+import { readdir, readFile } from 'fs/promises';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join, resolve } from 'path';
 import { config } from 'dotenv';
@@ -104,6 +105,32 @@ async function getMigrationFiles() {
     .sort();
 }
 
+/**
+ * Execute a raw SQL migration file by splitting on statement boundaries.
+ *
+ * Limitations:
+ *   - Only single-line comments (-- ...) are stripped before splitting.
+ *     Block comments (/* ... *\/) inside statements are passed through as-is.
+ *   - Semicolons inside string literals or $$ dollar-quoted blocks are not
+ *     handled by this splitter. Migration SQL files should use simple DDL
+ *     (CREATE TABLE, CREATE INDEX, ALTER TABLE, CREATE POLICY) which does
+ *     not embed semicolons in string values.
+ */
+async function executeSqlFile(filePath) {
+  const sql = await readFile(filePath, 'utf8');
+  // Strip single-line comments (-- ...) before splitting
+  const stripped = sql.replace(/--[^\n]*/g, '');
+  // Split on semicolons followed by optional whitespace
+  const statements = stripped
+    .split(/;\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  for (const stmt of statements) {
+    await executeSql(stmt);
+  }
+}
+
 // ─── Commands ─────────────────────────────────────────────────────────────────
 async function runUp() {
   console.log('🔄  Running pending migrations…\n');
@@ -119,14 +146,19 @@ async function runUp() {
   }
 
   for (const file of pending) {
-    const { up } = await import(pathToFileURL(join(MIGRATIONS_DIR, file)).href);
-    if (typeof up !== 'function') {
-      console.warn(`  ⚠  ${file} has no up() export — skipping.`);
-      continue;
-    }
-    process.stdout.write(`  ▶  ${file} … `);
     try {
-      await up(executeSql);
+      if (file.endsWith('.sql')) {
+        process.stdout.write(`  ▶  ${file} … `);
+        await executeSqlFile(join(MIGRATIONS_DIR, file));
+      } else {
+        const { up } = await import(pathToFileURL(join(MIGRATIONS_DIR, file)).href);
+        if (typeof up !== 'function') {
+          console.warn(`  ⚠  ${file} has no up() export — skipping.`);
+          continue;
+        }
+        process.stdout.write(`  ▶  ${file} … `);
+        await up(executeSql);
+      }
       await recordMigration(file);
       console.log('✔');
     } catch (err) {
@@ -155,6 +187,11 @@ async function runDown(target) {
 
   if (!applied.has(file)) {
     console.warn(`⚠  Migration ${file} has not been applied — nothing to roll back.`);
+    return;
+  }
+
+  if (file.endsWith('.sql')) {
+    console.warn(`⚠  SQL migrations do not support automatic rollback. Manually reverse ${file} if needed.`);
     return;
   }
 
@@ -205,6 +242,19 @@ if (args.includes('--list')) {
     process.exit(1);
   }
   runDown(target).catch((err) => { console.error(err.message); process.exit(1); });
+} else if (args.includes('--sql')) {
+  // Run a standalone SQL file (e.g. a reference migration like 002_additional_tables.sql)
+  const idx  = args.indexOf('--sql');
+  const file = args[idx + 1];
+  if (!file) {
+    console.error('❌  Usage: node database/migrate.js --sql <path/to/file.sql>');
+    process.exit(1);
+  }
+  const filePath = resolve(__dirname, file);
+  console.log(`🔄  Executing SQL file: ${filePath}\n`);
+  executeSqlFile(filePath)
+    .then(() => console.log('✅  SQL file executed successfully.'))
+    .catch((err) => { console.error(`❌  ${err.message}`); process.exit(1); });
 } else {
   runUp().catch((err) => { console.error(err.message); process.exit(1); });
 }
