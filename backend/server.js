@@ -61,10 +61,6 @@ import advancedSearchRoutes from './routes/advancedSearch.routes.js';
 import backupRoutes from './routes/backup.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
-import paymentsRoutes from './routes/payments.js';
-import adminPricingRoutes from './routes/pricing.js';
-import reportsRoutes from './routes/reports.js';
-import payoutsRoutes from './routes/payouts.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -94,6 +90,13 @@ app.use(`${API}/shipments`, shipmentRoutes);
 app.use(`${API}/carry`, carryRoutes);
 app.use(`${API}/parcels`, parcelRoutes);
 app.use(`${API}/payments`, paymentRoutes);
+
+// New detailed admin routes (registered before generic /admin to take precedence)
+app.use(`${API}/admin/users`, adminUsersRoutes);
+app.use(`${API}/admin/products`, adminProductsRoutes);
+app.use(`${API}/admin/settings`, adminSettingsRoutes);
+app.use(`${API}/admin/roles`, adminRolesRoutes);
+app.use(`${API}/admin/cms`, adminCmsRoutes);
 app.use(`${API}/admin`, adminRoutes);
 app.use(`${API}/pricing`, pricingRoutes);
 app.use(`${API}/inspections`, inspectionRoutes);
