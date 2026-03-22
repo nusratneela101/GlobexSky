@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="Manage your contract orders — view active contracts, create new ones, and track status on Globex Sky."/>
+  <title>Contract Orders – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--accent:#00C9A7;--dark:#0a0e27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    a{text-decoration:none;color:inherit}
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#1e3a8a 0%,#7c3aed 100%);padding:44px 24px;text-align:center;color:var(--white)}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px}
+    .page-hero p{color:rgba(255,255,255,.8);font-size:.95rem}
+    .container{max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary)}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+    .btn-primary{background:var(--primary);color:var(--white)}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:var(--white);color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-outline:hover{background:#eff6ff}
+    .btn-sm{padding:6px 14px;font-size:.78rem}
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+    .stat-card{background:var(--white);border-radius:12px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.05);text-align:center}
+    .stat-num{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.5rem;color:var(--primary)}
+    .stat-label{font-size:.75rem;color:var(--muted)}
+    /* TOP BAR */
+    .top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+    /* STATUS FILTER */
+    .status-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+    .status-tab{padding:7px 18px;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .2s}
+    .status-tab:hover,.status-tab.active{background:var(--primary);color:var(--white);border-color:var(--primary)}
+    /* CONTRACT CARDS */
+    .contract-list{display:flex;flex-direction:column;gap:16px;margin-bottom:28px}
+    .contract-card{background:var(--white);border-radius:14px;padding:22px 26px;box-shadow:0 2px 10px rgba(0,0,0,.05);border:1.5px solid var(--border);transition:all .2s}
+    .contract-card:hover{border-color:#bfdbfe;box-shadow:0 6px 20px rgba(0,82,204,.1)}
+    .contract-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+    .contract-id{font-size:.75rem;color:var(--muted);margin-bottom:2px}
+    .contract-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.98rem;color:var(--dark)}
+    /* STATUS BADGES */
+    .status-badge{padding:4px 14px;border-radius:50px;font-size:.75rem;font-weight:700;white-space:nowrap}
+    .status-draft{background:#f1f5f9;color:var(--muted)}
+    .status-pending{background:#fef3c7;color:#d97706}
+    .status-active{background:#dcfce7;color:#16a34a}
+    .status-completed{background:#eff6ff;color:var(--primary)}
+    .status-cancelled{background:#fee2e2;color:#dc2626}
+    /* CONTRACT DETAILS */
+    .contract-details{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;background:#f8faff;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+    .detail-item{min-width:0}
+    .detail-label{font-size:.72rem;color:var(--muted);margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em}
+    .detail-val{font-size:.88rem;font-weight:600;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .contract-actions{display:flex;gap:8px;flex-wrap:wrap}
+    /* CREATE FORM */
+    .create-form-card{background:var(--white);border-radius:16px;padding:28px;box-shadow:0 2px 14px rgba(0,0,0,.07);margin-bottom:24px;border-left:4px solid var(--primary)}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;transition:border-color .2s;background:var(--white)}
+    .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .required{color:#ef4444;margin-left:2px}
+    .section-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.88rem;color:var(--primary);margin-bottom:14px;margin-top:4px;padding-bottom:8px;border-bottom:1.5px solid #eff6ff;display:flex;align-items:center;gap:7px}
+    /* EMPTY STATE */
+    .empty-state{text-align:center;padding:60px 24px;color:var(--muted)}
+    .empty-state i{font-size:3rem;display:block;margin-bottom:16px;color:#cbd5e1}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:var(--dark);margin-bottom:8px}
+    /* FOOTER */
+    .site-footer{background:var(--dark);padding:24px 0;margin-top:auto}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.82rem;text-align:center}
+    @media(max-width:768px){.stats-row{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}}
+    @media(max-width:480px){.stats-row{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login" data-i18n="nav.login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register" data-i18n="nav.register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-file-contract"></i> <span data-i18n="contracts.title">Contract Orders</span></h1>
+  <p data-i18n="contracts.subtitle">Manage your long-term supply agreements and contract orders</p>
+</div>
+
+<div class="container">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html" data-i18n="nav.home">Home</a><span>/</span>
+    <a href="index.html" data-i18n="nav.sourcing">Sourcing</a><span>/</span>
+    <span data-i18n="contracts.title">Contract Orders</span>
+  </nav>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="stat-active">—</div><div class="stat-label" data-i18n="contracts.stat_active">Active</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-pending">—</div><div class="stat-label" data-i18n="contracts.stat_pending">Pending</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-completed">—</div><div class="stat-label" data-i18n="contracts.stat_completed">Completed</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-total-val">—</div><div class="stat-label" data-i18n="contracts.stat_total_value">Total Value</div></div>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:var(--dark)" data-i18n="contracts.my_contracts">My Contracts</div>
+    <button class="btn btn-primary" onclick="toggleCreateForm()" id="create-btn"><i class="fas fa-plus"></i> <span data-i18n="contracts.create_new">Create New Contract</span></button>
+  </div>
+
+  <!-- Status Filter Tabs -->
+  <div class="status-tabs">
+    <button class="status-tab active" onclick="filterContracts('all',this)" data-i18n="buttons.view">All</button>
+    <button class="status-tab" onclick="filterContracts('active',this)" data-i18n="contracts.status_active">Active</button>
+    <button class="status-tab" onclick="filterContracts('pending',this)" data-i18n="contracts.status_pending">Pending Approval</button>
+    <button class="status-tab" onclick="filterContracts('draft',this)" data-i18n="contracts.status_draft">Draft</button>
+    <button class="status-tab" onclick="filterContracts('completed',this)" data-i18n="contracts.status_completed">Completed</button>
+    <button class="status-tab" onclick="filterContracts('cancelled',this)" data-i18n="contracts.status_cancelled">Cancelled</button>
+  </div>
+
+  <!-- Create New Contract Form -->
+  <div class="create-form-card" id="create-form" style="display:none">
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:8px">
+      <i class="fas fa-file-signature" style="color:var(--primary)"></i> <span data-i18n="contracts.new_contract_title">New Contract</span>
+    </div>
+    <div class="section-title"><i class="fas fa-info-circle"></i> Contract Details</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.contract_name">Contract Name <span class="required">*</span></label>
+        <input type="text" class="form-control" id="c-name" placeholder="e.g. Annual T-Shirt Supply Agreement"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.supplier_name">Supplier <span class="required">*</span></label>
+        <select class="form-control" id="c-supplier">
+          <option value="">Select Supplier…</option>
+          <option>Guangzhou Apparel Co.</option>
+          <option>Shenzhen Metal Works</option>
+          <option>Dongguan Electronics Ltd.</option>
+          <option>Zhejiang Home Goods</option>
+        </select>
+      </div>
+    </div>
+    <div class="section-title"><i class="fas fa-box"></i> Products &amp; Pricing</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.products_label">Products / Description <span class="required">*</span></label>
+        <input type="text" class="form-control" id="c-products" placeholder="e.g. Cotton T-Shirts, 5 colors, 500 pcs/month"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.agreed_price">Agreed Unit Price (USD) <span class="required">*</span></label>
+        <input type="number" class="form-control" id="c-price" placeholder="e.g. 7.50"/>
+      </div>
+    </div>
+    <div class="section-title"><i class="fas fa-calendar-alt"></i> Duration &amp; Delivery</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.start_date">Start Date <span class="required">*</span></label>
+        <input type="date" class="form-control" id="c-start"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.end_date">End Date <span class="required">*</span></label>
+        <input type="date" class="form-control" id="c-end"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.delivery_schedule">Delivery Schedule</label>
+        <select class="form-control" id="c-delivery">
+          <option>Monthly</option><option>Bi-monthly</option>
+          <option>Quarterly</option><option>On-demand</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="contracts.payment_terms">Payment Terms</label>
+        <select class="form-control" id="c-payment">
+          <option>30% deposit, 70% before shipment</option>
+          <option>Net 30</option><option>Net 60</option><option>Net 90</option>
+          <option>Letter of Credit (L/C)</option><option>T/T in advance</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="contracts.terms_label">Special Terms &amp; Conditions</label>
+      <textarea class="form-control" id="c-terms" rows="3" placeholder="Any special conditions, quality standards, penalty clauses, exclusivity…"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <button class="btn btn-primary" onclick="createContract()" data-i18n="contracts.create_btn"><i class="fas fa-file-signature"></i> Create Contract (Draft)</button>
+      <button class="btn btn-outline" onclick="toggleCreateForm()" data-i18n="buttons.cancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Contracts List -->
+  <div class="contract-list" id="contract-list"></div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="empty-state" style="display:none">
+    <i class="fas fa-file-contract"></i>
+    <h3 data-i18n="contracts.empty_title">No Contracts Found</h3>
+    <p data-i18n="contracts.empty_desc">You don't have any contracts matching this filter. Create a new one to get started.</p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
+</footer>
+
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/contract-orders.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="View your recently browsed products on Globex Sky."/>
+  <title>Recently Viewed – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--accent:#00C9A7;--dark:#0a0e27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    a{text-decoration:none;color:inherit}
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#7c3aed 0%,#0052CC 100%);padding:44px 24px;text-align:center;color:var(--white)}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px}
+    .page-hero p{color:rgba(255,255,255,.8);font-size:.95rem}
+    .container{max-width:1400px;margin:0 auto;padding:32px 24px;flex:1}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:var(--primary)}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+    .btn-primary{background:var(--primary);color:var(--white)}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:var(--white);color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-outline:hover{background:#eff6ff}
+    .btn-danger{background:#fee2e2;color:#dc2626;border:none}
+    .btn-danger:hover{background:#fecaca}
+    .btn-sm{padding:6px 14px;font-size:.78rem}
+    /* TOP BAR */
+    .top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;background:var(--white);border-radius:12px;padding:14px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .top-bar-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:var(--dark);display:flex;align-items:center;gap:8px}
+    .count-badge{background:#eff6ff;color:var(--primary);font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:50px}
+    /* PRODUCTS GRID */
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:32px}
+    .product-card{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1.5px solid var(--border);transition:all .25s;position:relative}
+    .product-card:hover{box-shadow:0 6px 24px rgba(0,82,204,.12);border-color:#bfdbfe;transform:translateY(-2px)}
+    .product-img{width:100%;height:160px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,#f0f4ff,#e0ecff)}
+    .product-body{padding:14px}
+    .product-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:.88rem;color:var(--dark);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .product-supplier{font-size:.75rem;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .product-price{color:var(--primary);font-weight:700;font-size:.95rem;margin-bottom:8px}
+    .viewed-time{font-size:.72rem;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+    .product-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .remove-card-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;color:#ef4444;font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    .remove-card-btn:hover{background:#fee2e2}
+    /* EMPTY STATE */
+    .empty-state{text-align:center;padding:60px 24px;color:var(--muted)}
+    .empty-state i{font-size:3.5rem;display:block;margin-bottom:16px;color:#cbd5e1}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:var(--dark);margin-bottom:8px}
+    /* FOOTER */
+    .site-footer{background:var(--dark);padding:24px 0;margin-top:auto}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.82rem;text-align:center}
+    @media(max-width:600px){.top-bar{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login" data-i18n="nav.login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register" data-i18n="nav.register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-history"></i> <span data-i18n="recently_viewed.title">Recently Viewed</span></h1>
+  <p data-i18n="recently_viewed.subtitle">Products you've browsed recently</p>
+</div>
+
+<div class="container">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html" data-i18n="nav.home">Home</a><span>/</span>
+    <a href="profile.html" data-i18n="account.my_account">My Account</a><span>/</span>
+    <span data-i18n="recently_viewed.title">Recently Viewed</span>
+  </nav>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-title">
+      <i class="fas fa-clock" style="color:var(--primary)"></i>
+      <span data-i18n="recently_viewed.title">Recently Viewed</span>
+      <span class="count-badge" id="item-count">0 items</span>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="clearHistory()" id="clear-btn" style="display:none"><i class="fas fa-trash-alt"></i> <span data-i18n="recently_viewed.clear_history">Clear History</span></button>
+      <a href="../sourcing/products.html" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> <span data-i18n="compare.browse_products">Browse Products</span></a>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="products-grid" id="products-grid"></div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="empty-state" style="display:none">
+    <i class="fas fa-history"></i>
+    <h3 data-i18n="recently_viewed.empty_title">No Recently Viewed Products</h3>
+    <p data-i18n="recently_viewed.empty_desc">Start browsing products and they'll appear here automatically.</p>
+    <a href="../sourcing/products.html" class="btn btn-primary" style="margin-top:20px" data-i18n="compare.browse_products">Browse Products</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
+</footer>
+
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+  const STORAGE_KEY = 'globexsky_recently_viewed';
+  const MAX_ITEMS = 50;
+
+  const DEMO_PRODUCTS = [
+    {id:'p1',name:'Premium Cotton T-Shirt',supplier:'Guangzhou Apparel Co.',price:'$8.50',icon:'👕',time: Date.now() - 1000*60*5},
+    {id:'p2',name:'Stainless Steel Water Bottle',supplier:'Shenzhen Metal Works',price:'$12.00',icon:'🍶',time: Date.now() - 1000*60*30},
+    {id:'p3',name:'Wireless Bluetooth Earbuds',supplier:'Dongguan Electronics Ltd.',price:'$22.00',icon:'🎧',time: Date.now() - 1000*3600*2},
+    {id:'p4',name:'Bamboo Cutting Board Set',supplier:'Zhejiang Home Goods',price:'$15.00',icon:'🪵',time: Date.now() - 1000*3600*5},
+    {id:'p5',name:'Portable Solar Charger',supplier:'Shenzhen Tech Solutions',price:'$35.00',icon:'☀️',time: Date.now() - 1000*3600*24},
+    {id:'p6',name:'Ceramic Coffee Mug',supplier:'Jingdezhen Ceramics',price:'$6.00',icon:'☕',time: Date.now() - 1000*3600*48},
+  ];
+
+  function getHistory() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : DEMO_PRODUCTS;
+    } catch(e) { return DEMO_PRODUCTS; }
+  }
+
+  function saveHistory(items) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0, MAX_ITEMS))); } catch(e) {}
+  }
+
+  function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    if (diff < 60000) return 'Just now';
+    if (diff < 3600000) return Math.floor(diff/60000) + ' min ago';
+    if (diff < 86400000) return Math.floor(diff/3600000) + ' hr ago';
+    return Math.floor(diff/86400000) + ' day(s) ago';
+  }
+
+  function removeItem(id) {
+    const items = getHistory().filter(p => p.id !== id);
+    saveHistory(items);
+    render(items);
+  }
+
+  function clearHistory() {
+    if (!confirm('Clear all recently viewed products?')) return;
+    saveHistory([]);
+    render([]);
+  }
+
+  function render(items) {
+    const grid = document.getElementById('products-grid');
+    const empty = document.getElementById('empty-state');
+    const clearBtn = document.getElementById('clear-btn');
+    const countEl = document.getElementById('item-count');
+    countEl.textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
+    if (!items.length) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      clearBtn.style.display = 'none';
+      return;
+    }
+    empty.style.display = 'none';
+    clearBtn.style.display = 'inline-flex';
+    grid.innerHTML = items.map(p => `
+      <div class="product-card" id="card-${p.id}">
+        <button class="remove-card-btn" onclick="removeItem('${p.id}')" title="Remove"><i class="fas fa-times"></i></button>
+        <a href="../sourcing/product-detail.html?id=${p.id}">
+          <div class="product-img">${p.icon || '📦'}</div>
+        </a>
+        <div class="product-body">
+          <div class="product-name">${p.name}</div>
+          <div class="product-supplier"><i class="fas fa-store" style="margin-right:4px;color:var(--muted)"></i>${p.supplier}</div>
+          <div class="product-price">${p.price}</div>
+          <div class="viewed-time"><i class="fas fa-clock"></i> ${timeAgo(p.time)}</div>
+          <div class="product-actions">
+            <a href="../sourcing/product-detail.html?id=${p.id}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>
+            <button class="btn btn-outline btn-sm" onclick="addToWishlist('${p.id}')"><i class="fas fa-heart"></i></button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function addToWishlist(id) {
+    alert('Product added to your wishlist!');
+  }
+
+  render(getHistory());
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

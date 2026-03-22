@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="Request product samples from suppliers on Globex Sky before placing a bulk order."/>
+  <title>Sample Request – Globex Sky Sourcing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--accent:#00C9A7;--dark:#0a0e27;--text:#1a1a2e;--muted:#64748b;--border:#e2e8f0;--bg:#f4f6fa;--white:#fff}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+    a{text-decoration:none;color:inherit}
+    .site-header{background:var(--white);box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+    .btn-login{color:var(--primary);border:1.5px solid var(--primary)}
+    .btn-login:hover{background:var(--primary);color:var(--white)}
+    .btn-register{background:var(--primary);color:var(--white)}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#00C9A7 0%,#0052CC 100%);padding:44px 24px;text-align:center;color:var(--white)}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px}
+    .page-hero p{color:rgba(255,255,255,.8);font-size:.95rem}
+    .main-layout{max-width:1100px;margin:0 auto;padding:32px 24px;flex:1;display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted);margin-bottom:24px;flex-wrap:wrap;grid-column:1/-1}
+    .breadcrumb a{color:var(--primary)}
+    .btn{padding:10px 22px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+    .btn-primary{background:var(--primary);color:var(--white)}
+    .btn-primary:hover{background:#003d99}
+    .btn-accent{background:var(--accent);color:var(--white)}
+    .btn-accent:hover{background:#00a88e}
+    .btn-block{width:100%;justify-content:center}
+    /* FORM CARD */
+    .card{background:var(--white);border-radius:16px;padding:24px 28px;box-shadow:0 2px 14px rgba(0,0,0,.07);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;transition:border-color .2s;background:var(--white)}
+    .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{resize:vertical}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .required{color:#ef4444;margin-left:2px}
+    .hint{font-size:.75rem;color:var(--muted);margin-top:4px}
+    /* PRODUCT PREVIEW */
+    .product-preview{background:#f8faff;border:1.5px solid #bfdbfe;border-radius:12px;padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:20px}
+    .product-preview-thumb{width:64px;height:64px;border-radius:10px;background:#e0ecff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+    .product-preview-info .name{font-family:'Poppins',sans-serif;font-weight:700;font-size:.92rem;color:var(--dark)}
+    .product-preview-info .supplier{font-size:.78rem;color:var(--muted);margin-top:2px}
+    /* PRICING BOX */
+    .pricing-box{background:#f0fdfb;border:1.5px solid #a7f3d0;border-radius:12px;padding:16px 18px;margin-bottom:16px}
+    .pricing-box-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.88rem;color:#059669;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+    .price-row{display:flex;justify-content:space-between;font-size:.84rem;padding:5px 0;border-bottom:1px solid #d1fae5}
+    .price-row:last-child{border-bottom:none;font-weight:700;font-size:.9rem;color:#059669}
+    /* TERMS */
+    .terms-box{background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+    .terms-box h4{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:700;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .terms-box ul{list-style:none;padding:0}
+    .terms-box ul li{font-size:.8rem;color:#92400e;padding:3px 0;display:flex;align-items:flex-start;gap:6px}
+    .terms-box ul li::before{content:"•";color:#f59e0b;flex-shrink:0;margin-top:2px}
+    .checkbox-group{display:flex;align-items:flex-start;gap:10px;margin-top:8px}
+    .checkbox-group input{margin-top:3px;flex-shrink:0;accent-color:var(--primary)}
+    .checkbox-group label{font-size:.82rem;color:#374151}
+    /* STEPS */
+    .steps{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+    .step{display:flex;gap:12px;align-items:flex-start}
+    .step-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:var(--white);font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step-info .title{font-family:'Poppins',sans-serif;font-weight:600;font-size:.85rem;color:var(--dark)}
+    .step-info .desc{font-size:.78rem;color:var(--muted);margin-top:2px}
+    .site-footer{background:var(--dark);padding:24px 0;margin-top:auto}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.82rem;text-align:center}
+    @media(max-width:900px){.main-layout{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login" data-i18n="nav.login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register" data-i18n="nav.register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-box-open"></i> <span data-i18n="sample.title">Request a Sample</span></h1>
+  <p data-i18n="sample.subtitle">Try before you buy — request product samples directly from suppliers</p>
+</div>
+
+<div class="main-layout">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../index.html" data-i18n="nav.home">Home</a><span>/</span>
+    <a href="index.html" data-i18n="nav.sourcing">Sourcing</a><span>/</span>
+    <span data-i18n="sample.title">Sample Request</span>
+  </nav>
+
+  <!-- LEFT: FORM -->
+  <div>
+    <!-- Product Selection -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-cube" style="color:var(--primary)"></i> <span data-i18n="sample.product_info">Product Information</span></div>
+      <div class="product-preview" id="product-preview">
+        <div class="product-preview-thumb" id="product-thumb">📦</div>
+        <div class="product-preview-info">
+          <div class="name" id="product-name" data-i18n="sample.select_product">Select or search a product</div>
+          <div class="supplier" id="product-supplier"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="product-select" data-i18n="sample.product_label">Product <span class="required">*</span></label>
+        <select class="form-control" id="product-select" onchange="selectProduct(this.value)">
+          <option value="">— Select Product —</option>
+          <option value="p1">Premium Cotton T-Shirt — Guangzhou Apparel Co.</option>
+          <option value="p2">Stainless Steel Water Bottle — Shenzhen Metal Works</option>
+          <option value="p3">Wireless Bluetooth Earbuds — Dongguan Electronics Ltd.</option>
+          <option value="p4">Bamboo Cutting Board Set — Zhejiang Home Goods</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="sample-qty" data-i18n="sample.qty_label">Sample Quantity <span class="required">*</span></label>
+        <input type="number" class="form-control" id="sample-qty" min="1" max="10" value="1" placeholder="1–10 pcs" oninput="updatePricing()"/>
+        <div class="hint" data-i18n="sample.qty_hint">Maximum 10 sample units per order. Sample pricing may apply.</div>
+      </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-map-marker-alt" style="color:#ef4444"></i> <span data-i18n="sample.shipping_address">Shipping Address</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="contact-name" data-i18n="sample.contact_name">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-control" id="contact-name" placeholder="John Smith"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contact-phone" data-i18n="sample.contact_phone">Phone <span class="required">*</span></label>
+          <input type="tel" class="form-control" id="contact-phone" placeholder="+1 555 000 0000"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="address-line1" data-i18n="sample.address_line1">Address Line 1 <span class="required">*</span></label>
+        <input type="text" class="form-control" id="address-line1" placeholder="Street address, building, apt…"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="address-city" data-i18n="sample.city">City <span class="required">*</span></label>
+          <input type="text" class="form-control" id="address-city" placeholder="City"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="address-zip" data-i18n="sample.zip">Postal Code</label>
+          <input type="text" class="form-control" id="address-zip" placeholder="ZIP / Postcode"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="address-country" data-i18n="sample.country">Country <span class="required">*</span></label>
+          <select class="form-control" id="address-country">
+            <option value="">Select Country</option>
+            <option>United States</option><option>United Kingdom</option><option>Germany</option>
+            <option>France</option><option>Canada</option><option>Australia</option>
+            <option>Bangladesh</option><option>India</option><option>Pakistan</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contact-email" data-i18n="auth.email">Email <span class="required">*</span></label>
+          <input type="email" class="form-control" id="contact-email" placeholder="you@example.com"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Special Instructions -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-clipboard-list" style="color:var(--accent)"></i> <span data-i18n="sample.instructions_title">Special Instructions</span></div>
+      <div class="form-group">
+        <label class="form-label" for="special-instructions" data-i18n="sample.instructions_label">Instructions / Customization Notes</label>
+        <textarea class="form-control" id="special-instructions" rows="3" placeholder="Any specific requirements, color preferences, logo placement, etc."></textarea>
+      </div>
+    </div>
+
+    <!-- Terms -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-file-contract" style="color:#7c3aed"></i> <span data-i18n="sample.terms_title">Terms &amp; Conditions</span></div>
+      <div class="terms-box">
+        <h4><i class="fas fa-exclamation-triangle"></i> Sample Policy</h4>
+        <ul>
+          <li>Sample cost is charged at retail price plus international shipping fee</li>
+          <li>Samples are non-refundable unless defective</li>
+          <li>Lead time: 5–10 business days depending on supplier location</li>
+          <li>Maximum 10 sample units per product per buyer</li>
+          <li>Sample cost may be deducted from bulk order value (supplier discretion)</li>
+        </ul>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms-agree"/>
+        <label for="terms-agree" data-i18n="sample.terms_agree">I have read and agree to the sample request terms and conditions.</label>
+      </div>
+      <br/>
+      <button class="btn btn-accent btn-block" onclick="submitSampleRequest()" data-i18n="sample.submit_btn"><i class="fas fa-paper-plane"></i> Submit Sample Request</button>
+    </div>
+  </div>
+
+  <!-- RIGHT: SIDEBAR -->
+  <div>
+    <!-- Pricing Summary -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-receipt" style="color:#059669"></i> <span data-i18n="sample.pricing_summary">Sample Pricing</span></div>
+      <div class="pricing-box">
+        <div class="pricing-box-title"><i class="fas fa-tag"></i> Cost Estimate</div>
+        <div class="price-row"><span data-i18n="sample.unit_price">Unit Price</span><span id="unit-price">—</span></div>
+        <div class="price-row"><span data-i18n="sample.qty">Quantity</span><span id="sample-qty-display">1</span></div>
+        <div class="price-row"><span data-i18n="orders.subtotal">Subtotal</span><span id="subtotal">—</span></div>
+        <div class="price-row"><span data-i18n="orders.shipping_cost">Shipping</span><span>Est. $15–$40</span></div>
+        <div class="price-row"><span data-i18n="orders.grand_total">Total</span><span id="grand-total">—</span></div>
+      </div>
+      <p style="font-size:.75rem;color:var(--muted)" data-i18n="sample.pricing_note">Final shipping cost depends on destination country and weight. You will receive a quote before payment.</p>
+    </div>
+
+    <!-- How it Works -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-info-circle" style="color:var(--primary)"></i> <span data-i18n="sample.how_it_works">How It Works</span></div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-info"><div class="title" data-i18n="sample.step1_title">Submit Request</div><div class="desc" data-i18n="sample.step1_desc">Fill in the form and submit your sample request.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-info"><div class="title" data-i18n="sample.step2_title">Supplier Confirms</div><div class="desc" data-i18n="sample.step2_desc">Supplier reviews and confirms sample availability within 24–48 hrs.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-info"><div class="title" data-i18n="sample.step3_title">Payment</div><div class="desc" data-i18n="sample.step3_desc">Pay the sample fee + shipping to proceed.</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-info"><div class="title" data-i18n="sample.step4_title">Receive Sample</div><div class="desc" data-i18n="sample.step4_desc">Sample ships within 3–5 business days after payment.</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
+</footer>
+
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+  const PRODUCTS = {
+    p1:{name:'Premium Cotton T-Shirt',supplier:'Guangzhou Apparel Co.',icon:'👕',price:8.50},
+    p2:{name:'Stainless Steel Water Bottle',supplier:'Shenzhen Metal Works',icon:'🍶',price:12.00},
+    p3:{name:'Wireless Bluetooth Earbuds',supplier:'Dongguan Electronics Ltd.',icon:'🎧',price:22.00},
+    p4:{name:'Bamboo Cutting Board Set',supplier:'Zhejiang Home Goods',icon:'🪵',price:15.00},
+  };
+
+  // Pre-fill from query param
+  const params = new URLSearchParams(window.location.search);
+  const preProductId = params.get('product_id');
+  if (preProductId && PRODUCTS[preProductId]) {
+    document.getElementById('product-select').value = preProductId;
+    selectProduct(preProductId);
+  }
+
+  function selectProduct(id) {
+    const p = PRODUCTS[id];
+    if (!p) {
+      document.getElementById('product-name').textContent = 'Select or search a product';
+      document.getElementById('product-supplier').textContent = '';
+      document.getElementById('product-thumb').textContent = '📦';
+      return;
+    }
+    document.getElementById('product-name').textContent = p.name;
+    document.getElementById('product-supplier').textContent = p.supplier;
+    document.getElementById('product-thumb').textContent = p.icon;
+    updatePricing();
+  }
+
+  function updatePricing() {
+    const id = document.getElementById('product-select').value;
+    const qty = parseInt(document.getElementById('sample-qty').value) || 1;
+    document.getElementById('sample-qty-display').textContent = qty;
+    const p = PRODUCTS[id];
+    if (!p) { ['unit-price','subtotal','grand-total'].forEach(id => document.getElementById(id).textContent = '—'); return; }
+    const sub = (p.price * qty).toFixed(2);
+    document.getElementById('unit-price').textContent = '$' + p.price.toFixed(2);
+    document.getElementById('subtotal').textContent = '$' + sub;
+    document.getElementById('grand-total').textContent = '$' + (parseFloat(sub) + 25).toFixed(2) + ' (est.)';
+  }
+
+  function submitSampleRequest() {
+    const product = document.getElementById('product-select').value;
+    const qty = document.getElementById('sample-qty').value;
+    const name = document.getElementById('contact-name').value.trim();
+    const phone = document.getElementById('contact-phone').value.trim();
+    const addr = document.getElementById('address-line1').value.trim();
+    const city = document.getElementById('address-city').value.trim();
+    const country = document.getElementById('address-country').value;
+    const email = document.getElementById('contact-email').value.trim();
+    const agreed = document.getElementById('terms-agree').checked;
+    if (!product) { alert('Please select a product.'); return; }
+    if (!name || !phone || !addr || !city || !country || !email) { alert('Please fill in all required fields.'); return; }
+    if (!agreed) { alert('Please agree to the terms and conditions.'); return; }
+    const ref = 'SR-' + Date.now().toString().slice(-8);
+    alert(`Sample request submitted!\nReference: ${ref}\nThe supplier will respond within 24–48 hours with a shipping quote.`);
+  }
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
