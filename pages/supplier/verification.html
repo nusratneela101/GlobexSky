@@ -461,6 +461,51 @@
         </div>
       </div>
 
+      <!-- ── Identity Verification Section (KYC) ── -->
+      <section id="identity-verification-section" style="margin-top:24px">
+        <div class="card" id="kycCard">
+          <h2 class="card-title"><i class="fa-solid fa-shield-halved"></i> Identity Verification (KYC)</h2>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px">
+            Verify your personal identity with a government-issued ID and a live face scan to unlock full supplier privileges.
+          </p>
+
+          <!-- Status display (updated by JS) -->
+          <div id="kycStatusBanner" style="border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:20px;background:#fffbeb;border:1.5px solid #fde68a">
+            <i class="fa-solid fa-clock" style="font-size:1.3rem;color:#f59e0b;flex-shrink:0"></i>
+            <div>
+              <h4 style="font-size:.9rem;font-weight:700;color:#92400e;margin-bottom:3px" id="kycStatusTitle">Identity Not Verified</h4>
+              <p style="font-size:.8rem;color:#78350f" id="kycStatusDesc">Complete KYC to gain full trust from buyers and access premium supplier features.</p>
+            </div>
+          </div>
+
+          <!-- KYC checklist -->
+          <ul class="checklist" id="kycChecklist">
+            <li>
+              <i class="fa-solid fa-circle-check done fa-lg"></i>
+              <span class="checklist-label">Business Registration</span>
+              <span class="checklist-badge done">Complete</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-exclamation fa-lg" style="color:#f97316"></i>
+              <span class="checklist-label">Identity Document (NID/Passport)</span>
+              <span class="checklist-badge pend" id="docBadge">Pending</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-exclamation fa-lg" style="color:#f97316"></i>
+              <span class="checklist-label">Live Face Verification</span>
+              <span class="checklist-badge pend" id="faceBadge">Pending</span>
+            </li>
+          </ul>
+
+          <div style="text-align:center;margin-top:20px" id="kycCTAWrap">
+            <a href="../auth/kyc-verification.html" class="btn btn-primary btn-lg" id="startKycBtn">
+              <i class="fa-solid fa-shield-halved"></i> Start Identity Verification
+            </a>
+            <p style="font-size:.75rem;color:var(--muted);margin-top:10px">Takes less than 5 minutes · Secure &amp; encrypted</p>
+          </div>
+        </div>
+      </section>
+
     </div>
 
     <!-- Sidebar -->
@@ -585,6 +630,53 @@ function addTag(e,wrapId){
     input.value='';
   }
 }
+
+// ── KYC Status Integration ────────────────────────────────────────────────────
+(function initKYCStatus(){
+  // NOTE: localStorage is used here for UI display only. In production, always
+  // validate kyc_status server-side (via /api/v1/verification/status) before
+  // granting access to restricted features — never trust client-side storage alone.
+  const status = localStorage.getItem('kyc_status') || 'unverified';
+  const banner  = document.getElementById('kycStatusBanner');
+  const titleEl = document.getElementById('kycStatusTitle');
+  const descEl  = document.getElementById('kycStatusDesc');
+  const ctaWrap = document.getElementById('kycCTAWrap');
+  const docBadge= document.getElementById('docBadge');
+  const faceBadge=document.getElementById('faceBadge');
+
+  const configs = {
+    unverified:       { bg:'#fffbeb', border:'#fde68a', iconColor:'#f59e0b', titleColor:'#92400e', descColor:'#78350f', icon:'fa-solid fa-clock',        title:'Identity Not Verified',      desc:'Complete KYC to gain full trust from buyers.' },
+    pending_review:   { bg:'#eff6ff', border:'#bfdbfe', iconColor:'#3b82f6', titleColor:'#1e40af', descColor:'#1d4ed8', icon:'fa-solid fa-hourglass-half',title:'Verification Under Review',   desc:'We are reviewing your submission. Expected: 1–2 business days.' },
+    document_uploaded:{ bg:'#eff6ff', border:'#bfdbfe', iconColor:'#3b82f6', titleColor:'#1e40af', descColor:'#1d4ed8', icon:'fa-solid fa-file-check',    title:'Documents Submitted',         desc:'Please complete face verification to finish KYC.' },
+    verified:         { bg:'#f0fdf4', border:'#86efac', iconColor:'#10b981', titleColor:'#065f46', descColor:'#047857', icon:'fa-solid fa-shield-check',   title:'Identity Verified ✓',         desc:'Your identity is verified. Enjoy full supplier benefits.' },
+    rejected:         { bg:'#fef2f2', border:'#fca5a5', iconColor:'#ef4444', titleColor:'#991b1b', descColor:'#b91c1c', icon:'fa-solid fa-circle-xmark',   title:'Verification Rejected',       desc:'Please resubmit your documents with clearer images.' },
+    face_mismatch:    { bg:'#fef2f2', border:'#fca5a5', iconColor:'#ef4444', titleColor:'#991b1b', descColor:'#b91c1c', icon:'fa-solid fa-face-frown',     title:'Face Verification Failed',    desc:'Face did not match document. Please retry.' },
+  };
+
+  const cfg = configs[status] || configs.unverified;
+  banner.style.background = cfg.bg;
+  banner.style.borderColor = cfg.border;
+  banner.querySelector('i').className = cfg.icon+' fa-lg';
+  banner.querySelector('i').style.color = cfg.iconColor;
+  titleEl.style.color = cfg.titleColor;
+  titleEl.textContent = cfg.title;
+  descEl.style.color = cfg.descColor;
+  descEl.textContent = cfg.desc;
+
+  if (status === 'document_uploaded' || status === 'pending_review' || status === 'verified') {
+    docBadge.className = 'checklist-badge done'; docBadge.textContent = 'Complete';
+    docBadge.previousElementSibling.previousElementSibling.className = 'fa-solid fa-circle-check done fa-lg';
+  }
+  if (status === 'verified') {
+    faceBadge.className = 'checklist-badge done'; faceBadge.textContent = 'Verified';
+    faceBadge.previousElementSibling.previousElementSibling.className = 'fa-solid fa-circle-check done fa-lg';
+    ctaWrap.innerHTML = '<span style="background:#f0fdf4;color:#065f46;padding:10px 20px;border-radius:10px;font-weight:600;font-size:.85rem"><i class="fa-solid fa-shield-check"></i> KYC Verified</span>';
+  }
+  if (status === 'pending_review') {
+    document.getElementById('startKycBtn').textContent = 'View Status';
+    document.getElementById('startKycBtn').href = '../account/identity-verification.html';
+  }
+})();
 </script>
 </body>
 </html>

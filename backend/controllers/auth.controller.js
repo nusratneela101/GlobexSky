@@ -15,11 +15,14 @@ export async function register(req, res, next) {
 
     if (error) return res.status(400).json({ success: false, error: error.message });
 
-    // Create profile record
+    // Create profile record — kyc_status starts as 'pending' for all new users
+    // requireKYC middleware (backend/middleware/requireKyc.js) can gate routes that
+    // need a verified identity before proceeding (e.g. high-value orders).
     await supabase.from('profiles').insert({
       user_id: data.user.id,
       full_name: name,
       role,
+      kyc_status: 'pending',
     });
 
     await sendWelcomeEmail(email, name).catch(() => {});
@@ -109,6 +112,31 @@ export async function verifyEmail(req, res, next) {
     const { error } = await supabase.auth.verifyOtp({ token_hash: token, type: 'email' });
     if (error) return res.status(400).json({ success: false, error: error.message });
     res.json({ success: true, message: 'Email verified successfully.' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/** GET /api/v1/auth/kyc-status — return the KYC status for the authenticated user */
+export async function getKYCStatus(req, res, next) {
+  try {
+    const userId = req.user.id;
+
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('kyc_status')
+      .eq('user_id', userId)
+      .single();
+
+    if (error || !profile) {
+      return res.status(404).json({ success: false, message: 'Profile not found.', data: null });
+    }
+
+    res.json({
+      success: true,
+      message: 'KYC status retrieved.',
+      data: { kyc_status: profile.kyc_status || 'pending' },
+    });
   } catch (err) {
     next(err);
   }

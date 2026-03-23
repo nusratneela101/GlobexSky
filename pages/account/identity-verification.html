@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Identity Verification | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --grad:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      --dark:#1a1a2e;--dark2:#16213e;
+      --success:#10b981;--error:#ef4444;--warn:#f59e0b;
+      --card-bg:#fff;--text:#0f172a;--muted:#64748b;
+      --border:#e2e8f0;--radius:16px;
+    }
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;min-height:100vh;color:var(--text)}
+    /* ── Layout ── */
+    .page-layout{display:flex;min-height:100vh}
+    .sidebar{width:260px;background:var(--dark2);flex-shrink:0;padding:24px 0}
+    .sidebar-logo{padding:0 24px 24px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-logo img{width:130px;object-fit:contain;filter:brightness(0) invert(1)}
+    .sidebar-nav{padding:16px 0}
+    .sidebar-nav a{display:flex;align-items:center;gap:12px;padding:12px 24px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.06)}
+    .sidebar-nav a.active{border-left:3px solid #667eea}
+    .sidebar-nav a i{width:18px;text-align:center}
+    .main-content{flex:1;padding:32px;max-width:900px}
+    .page-header{margin-bottom:32px}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:var(--dark)}
+    .page-header p{color:var(--muted);font-size:.9rem;margin-top:4px}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);margin-bottom:12px}
+    .breadcrumb a{color:#667eea;text-decoration:none}
+    /* ── Status Card ── */
+    .status-card{border-radius:var(--radius);padding:28px;margin-bottom:24px;background:var(--card-bg);box-shadow:0 4px 20px rgba(0,0,0,.06)}
+    .status-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+    .status-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+    .status-icon.unverified{background:#f1f5f9;color:var(--muted)}
+    .status-icon.pending{background:#fffbeb;color:var(--warn)}
+    .status-icon.verified{background:#f0fdf4;color:var(--success)}
+    .status-icon.rejected{background:#fef2f2;color:var(--error)}
+    .status-info h3{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:var(--dark);margin-bottom:4px}
+    .status-info p{color:var(--muted);font-size:.875rem;line-height:1.55}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:.75rem;font-weight:600}
+    .badge-unverified{background:#f1f5f9;color:var(--muted)}
+    .badge-pending{background:#fffbeb;color:#92400e}
+    .badge-verified{background:#f0fdf4;color:#065f46}
+    .badge-rejected{background:#fef2f2;color:#991b1b}
+    /* ── Level Progress ── */
+    .levels-track{display:flex;align-items:center;gap:0;margin-bottom:24px}
+    .level-item{flex:1;text-align:center;position:relative}
+    .level-item:not(:last-child)::after{content:'';position:absolute;top:22px;left:50%;width:100%;height:3px;background:var(--border);z-index:0}
+    .level-item.done:not(:last-child)::after{background:var(--grad)}
+    .level-circle{width:44px;height:44px;border-radius:50%;border:3px solid var(--border);background:#fff;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--muted);position:relative;z-index:1;transition:all .3s}
+    .level-item.done .level-circle{background:var(--grad);border-color:transparent;color:#fff}
+    .level-item.active .level-circle{border-color:#667eea;color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.15)}
+    .level-label{font-size:.75rem;font-weight:600;color:var(--muted)}
+    .level-item.done .level-label,.level-item.active .level-label{color:#667eea}
+    /* ── Benefits Grid ── */
+    .benefits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+    .benefit-card{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .25s}
+    .benefit-card:hover{border-color:#667eea;background:#f5f3ff}
+    .benefit-icon{font-size:1.5rem;margin-bottom:10px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .benefit-card h4{font-size:.85rem;font-weight:700;color:var(--dark);margin-bottom:4px}
+    .benefit-card p{font-size:.78rem;color:var(--muted);line-height:1.5}
+    /* ── CTA ── */
+    .cta-section{background:var(--grad);border-radius:var(--radius);padding:28px;color:#fff;text-align:center;margin-bottom:24px}
+    .cta-section h3{font-family:'Poppins',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:8px}
+    .cta-section p{font-size:.875rem;opacity:.85;margin-bottom:20px;line-height:1.55}
+    .btn-white{background:#fff;color:#667eea;border:none;border-radius:10px;padding:12px 28px;font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s}
+    .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+    /* ── History Table ── */
+    .history-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 4px 20px rgba(0,0,0,.06);overflow:hidden;margin-bottom:24px}
+    .history-card .card-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .history-card .card-head h3{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--dark)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px 16px;text-align:left;font-size:.82rem}
+    th{background:#f8fafc;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+    td{border-bottom:1px solid var(--border);color:var(--dark)}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafafa}
+    /* ── Certificate ── */
+    .cert-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 4px 20px rgba(0,0,0,.06);padding:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px}
+    .cert-info{display:flex;align-items:center;gap:16px}
+    .cert-icon{width:52px;height:52px;background:linear-gradient(135deg,#10b981,#059669);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff}
+    .cert-info h4{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:var(--dark);margin-bottom:3px}
+    .cert-info p{font-size:.8rem;color:var(--muted)}
+    .btn-outline{background:transparent;border:2px solid var(--border);color:var(--dark);border-radius:10px;padding:10px 20px;font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s}
+    .btn-outline:hover{border-color:#667eea;color:#667eea}
+    /* ── Mobile ── */
+    @media(max-width:768px){
+      .sidebar{display:none}
+      .main-content{padding:20px}
+      .benefits-grid{grid-template-columns:1fr 1fr}
+      table{font-size:.75rem}
+      th,td{padding:10px 10px}
+    }
+    @media(max-width:480px){.benefits-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div class="page-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="../../index.html"><img src="../../assets/images/logo.png" alt="Globex Sky"/></a>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+      <a href="orders.html"><i class="fas fa-box"></i> My Orders</a>
+      <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
+      <a href="payment-methods.html"><i class="fas fa-credit-card"></i> Payment Methods</a>
+      <a href="addresses.html"><i class="fas fa-map-marker-alt"></i> Addresses</a>
+      <a href="identity-verification.html" class="active"><i class="fas fa-shield-halved"></i> Identity Verification</a>
+      <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+      <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="breadcrumb">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right" style="font-size:.65rem"></i>
+      <a href="index.html">Account</a>
+      <i class="fas fa-chevron-right" style="font-size:.65rem"></i>
+      <span>Identity Verification</span>
+    </div>
+
+    <div class="page-header">
+      <h1><i class="fas fa-shield-halved" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></i> Identity Verification</h1>
+      <p>Verify your identity to unlock higher order limits, trusted buyer badge, and more.</p>
+    </div>
+
+    <!-- ── Status Card ── -->
+    <div class="status-card" id="statusCard">
+      <div class="status-header">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="status-icon unverified" id="statusIcon"><i class="fas fa-user-slash"></i></div>
+          <div class="status-info">
+            <h3 id="statusTitle">Identity Not Verified</h3>
+            <p id="statusDesc">Your identity has not been verified yet. Complete KYC verification to access all platform features.</p>
+          </div>
+        </div>
+        <span class="badge badge-unverified" id="statusBadge"><i class="fas fa-circle" style="font-size:.5rem"></i> Unverified</span>
+      </div>
+
+      <!-- Verification Level Track -->
+      <div class="levels-track">
+        <div class="level-item done" id="lvl0">
+          <div class="level-circle"><i class="fas fa-check" style="font-size:.7rem"></i></div>
+          <div class="level-label">Basic</div>
+        </div>
+        <div class="level-item" id="lvl1">
+          <div class="level-circle"><i class="fas fa-id-card" style="font-size:.75rem"></i></div>
+          <div class="level-label">Identity</div>
+        </div>
+        <div class="level-item" id="lvl2">
+          <div class="level-circle"><i class="fas fa-shield-check" style="font-size:.75rem"></i></div>
+          <div class="level-label">Advanced</div>
+        </div>
+      </div>
+
+      <!-- Last updated -->
+      <p style="font-size:.78rem;color:var(--muted)" id="lastUpdatedText"></p>
+    </div>
+
+    <!-- ── CTA Section ── -->
+    <div class="cta-section" id="ctaSection">
+      <h3><i class="fas fa-rocket"></i> Start Your Verification</h3>
+      <p>The process takes less than 5 minutes. You'll need a valid government-issued ID and access to your device's camera.</p>
+      <a href="../auth/kyc-verification.html" class="btn-white">
+        <i class="fas fa-shield-halved"></i> Verify Now
+      </a>
+    </div>
+
+    <!-- ── Benefits ── -->
+    <div class="status-card">
+      <h3 style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:16px"><i class="fas fa-star" style="color:var(--warn)"></i> Benefits of Being Verified</h3>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon"><i class="fas fa-arrow-trend-up"></i></div>
+          <h4>Higher Order Limits</h4>
+          <p>Place larger orders and access bulk pricing tiers unavailable to unverified buyers.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><i class="fas fa-certificate"></i></div>
+          <h4>Trusted Buyer Badge</h4>
+          <p>Suppliers see a verified badge on your profile, building instant trust and faster responses.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><i class="fas fa-lock-open"></i></div>
+          <h4>Unlock All Features</h4>
+          <p>Access RFQ submissions, contract orders, trade finance, and inspection services.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><i class="fas fa-handshake"></i></div>
+          <h4>Priority Support</h4>
+          <p>Verified buyers get access to a dedicated account manager and priority dispute resolution.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><i class="fas fa-shield-halved"></i></div>
+          <h4>Buyer Protection</h4>
+          <p>Enhanced buyer protection coverage and faster refund processing for verified accounts.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><i class="fas fa-globe"></i></div>
+          <h4>Global Trade Access</h4>
+          <p>Trade with international suppliers who require verified buyers for large transactions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Verification Certificate (shown when verified) ── -->
+    <div class="cert-card" id="certCard" hidden>
+      <div class="cert-info">
+        <div class="cert-icon"><i class="fas fa-certificate"></i></div>
+        <div>
+          <h4>Verification Certificate</h4>
+          <p>Your identity was verified on <span id="verifiedDate">—</span></p>
+        </div>
+      </div>
+      <a href="#" class="btn-outline" onclick="downloadCert(event)">
+        <i class="fas fa-download"></i> Download Certificate
+      </a>
+    </div>
+
+    <!-- ── Verification History ── -->
+    <div class="history-card">
+      <div class="card-head">
+        <h3><i class="fas fa-clock-rotate-left"></i> Verification History</h3>
+        <span style="font-size:.78rem;color:var(--muted)" id="historyCount">0 attempts</span>
+      </div>
+      <div id="historyBody">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Document Type</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="historyRows">
+            <tr>
+              <td colspan="4" style="text-align:center;color:var(--muted);padding:32px">
+                <i class="fas fa-inbox" style="font-size:1.8rem;opacity:.3;display:block;margin-bottom:8px"></i>
+                No verification attempts yet
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const API = '/api/v1';
+  const statusConfig = {
+    unverified:      { icon:'fas fa-user-slash', iconClass:'unverified', title:'Identity Not Verified',     desc:'Your identity has not been verified yet. Complete KYC verification to access all platform features.', badge:'badge-unverified', badgeText:'Unverified' },
+    pending:         { icon:'fas fa-clock',      iconClass:'pending',    title:'Verification Pending',       desc:'Your KYC submission is under review. We\'ll notify you within 1–2 business days.', badge:'badge-pending', badgeText:'Pending Review' },
+    pending_review:  { icon:'fas fa-clock',      iconClass:'pending',    title:'Verification Pending',       desc:'Your KYC submission is under review. We\'ll notify you within 1–2 business days.', badge:'badge-pending', badgeText:'Pending Review' },
+    document_uploaded:{ icon:'fas fa-file-check',iconClass:'pending',    title:'Documents Submitted',        desc:'Your documents have been submitted. Please complete face verification to finalise your KYC.', badge:'badge-pending', badgeText:'In Progress' },
+    verified:        { icon:'fas fa-shield-check',iconClass:'verified',  title:'Identity Verified',          desc:'Your identity has been successfully verified. You have full access to all platform features.', badge:'badge-verified', badgeText:'Verified' },
+    rejected:        { icon:'fas fa-circle-xmark',iconClass:'rejected',  title:'Verification Rejected',      desc:'Your verification was rejected. Please check the notes below and resubmit.', badge:'badge-rejected', badgeText:'Rejected' },
+    resubmit_required:{ icon:'fas fa-arrow-rotate-right',iconClass:'pending',title:'Resubmission Required', desc:'Please resubmit your documents with clearer images as requested.', badge:'badge-pending', badgeText:'Action Required' },
+    face_mismatch:   { icon:'fas fa-face-frown', iconClass:'rejected',   title:'Face Verification Failed',   desc:'Your face did not match the document. Please retry with clear photos.', badge:'badge-rejected', badgeText:'Failed' },
+  };
+
+  function applyStatus(status) {
+    const cfg = statusConfig[status] || statusConfig.unverified;
+    const iconEl  = document.getElementById('statusIcon');
+    const titleEl = document.getElementById('statusTitle');
+    const descEl  = document.getElementById('statusDesc');
+    const badgeEl = document.getElementById('statusBadge');
+    iconEl.className = 'status-icon '+cfg.iconClass;
+    iconEl.innerHTML = '<i class="'+cfg.icon+'"></i>';
+    titleEl.textContent = cfg.title;
+    descEl.textContent  = cfg.desc;
+    badgeEl.className   = 'badge '+cfg.badge;
+    badgeEl.innerHTML   = '<i class="fas fa-circle" style="font-size:.5rem"></i> '+cfg.badgeText;
+
+    // Level progress
+    if (['verified'].includes(status)) {
+      document.getElementById('lvl1').classList.add('done');
+      document.getElementById('lvl2').classList.add('done');
+    } else if (['pending','pending_review','document_uploaded'].includes(status)) {
+      document.getElementById('lvl1').classList.add('active');
+    }
+
+    // CTA / cert visibility
+    const showCta = !['verified'].includes(status);
+    document.getElementById('ctaSection').hidden = !showCta;
+    const isVerified = status === 'verified';
+    document.getElementById('certCard').hidden = !isVerified;
+    if (isVerified) {
+      document.getElementById('verifiedDate').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    }
+  }
+
+  function loadHistory(records) {
+    if (!records || records.length === 0) return;
+    document.getElementById('historyCount').textContent = records.length + ' attempt'+(records.length!==1?'s':'');
+    const tbody = document.getElementById('historyRows');
+    tbody.innerHTML = '';
+    const docLabels = { nid:'National ID', passport:'Passport', drivers_license:"Driver's License" };
+    const statusLabels = {
+      document_uploaded:'<span class="badge badge-pending">Uploaded</span>',
+      pending_review:'<span class="badge badge-pending">Under Review</span>',
+      verified:'<span class="badge badge-verified">Verified</span>',
+      rejected:'<span class="badge badge-rejected">Rejected</span>',
+      resubmit_required:'<span class="badge badge-pending">Resubmit</span>',
+      face_mismatch:'<span class="badge badge-rejected">Face Mismatch</span>',
+    };
+    records.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${new Date(r.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}</td>
+        <td>${docLabels[r.document_type]||r.document_type}</td>
+        <td>${statusLabels[r.status]||r.status}</td>
+        <td style="color:var(--muted)">${r.admin_notes||'—'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function init() {
+    // Check localStorage first (set by kyc-verification.html)
+    const localStatus = localStorage.getItem('kyc_status') || 'unverified';
+    applyStatus(localStatus);
+
+    // Try to fetch from API
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || '';
+    const userId = localStorage.getItem('user_id') || '';
+    if (!token || !userId) {
+      document.getElementById('lastUpdatedText').textContent = 'Sign in to see your live verification status.';
+      return;
+    }
+
+    try {
+      const resp = await fetch(`${API}/verification/status/${userId}`, {
+        headers: { 'Authorization': 'Bearer '+token },
+      });
+      const json = await resp.json();
+      if (json.success && json.data) {
+        const d = json.data;
+        applyStatus(d.status);
+        if (d.updated_at) {
+          document.getElementById('lastUpdatedText').textContent =
+            'Last updated: '+new Date(d.updated_at).toLocaleString();
+        }
+        if (Array.isArray(json.data.history)) loadHistory(json.data.history);
+        else if (d.status && d.status !== 'unverified') {
+          loadHistory([d]);
+        }
+      }
+    } catch(_) {
+      // Use localStorage value already applied above
+    }
+  }
+
+  function downloadCert(e) {
+    e.preventDefault();
+    const userId = localStorage.getItem('user_id') || 'user';
+    const date   = new Date().toISOString().split('T')[0];
+    const text   = `GLOBEX SKY — IDENTITY VERIFICATION CERTIFICATE\n\nThis certifies that the account holder has successfully completed KYC identity verification.\n\nUser ID : ${userId}\nDate    : ${date}\nStatus  : Verified\n\nGlobex International Trade Co., Ltd.\nhttps://globexsky.com`;
+    const blob   = new Blob([text], { type: 'text/plain' });
+    const url    = URL.createObjectURL(blob);
+    const a      = document.createElement('a');
+    a.href       = url; a.download = `globexsky-kyc-certificate-${date}.txt`;
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  init();
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
