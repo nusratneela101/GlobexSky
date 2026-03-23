@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Market Insights – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-header{background:linear-gradient(135deg,#7c3aed 0%,#0052CC 100%);color:#fff;padding:48px 24px;text-align:center}
+    .breadcrumb{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;font-size:.85rem;opacity:.8}
+    .breadcrumb a{color:rgba(255,255,255,.7);text-decoration:none}
+    .breadcrumb a:hover{color:#fff}
+    .breadcrumb i{font-size:.7rem;opacity:.5}
+    .page-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:8px}
+    .page-subtitle{opacity:.8;font-size:1rem;max-width:560px;margin:0 auto}
+    .ai-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;padding:5px 16px;border-radius:50px;font-size:.76rem;font-weight:600;margin-bottom:16px;letter-spacing:.5px;text-transform:uppercase}
+    .main-content{max-width:1400px;margin:0 auto;padding:32px 24px}
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:32px}
+    .kpi-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:16px;transition:transform .2s}
+    .kpi-card:hover{transform:translateY(-2px)}
+    .kpi-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .kpi-icon.blue{background:#dbeafe;color:#0052CC}
+    .kpi-icon.green{background:#d1fae5;color:#059669}
+    .kpi-icon.orange{background:#ffedd5;color:#f97316}
+    .kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+    .kpi-value{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:#0a0e27;line-height:1}
+    .kpi-label{font-size:.8rem;color:#64748b;margin-top:4px}
+    .kpi-change{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:600;margin-top:6px;padding:2px 8px;border-radius:50px}
+    .kpi-change.up{background:#d1fae5;color:#059669}
+    .kpi-change.neutral{background:#ffedd5;color:#f97316}
+    .section-grid{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:24px}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px;justify-content:space-between}
+    .btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .btn-purple{background:#7c3aed;color:#fff}
+    .btn-purple:hover{background:#6d28d9}
+    /* Trend cards grid */
+    .trend-products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+    .trend-product-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:14px;transition:all .2s;cursor:pointer;position:relative}
+    .trend-product-card:hover{border-color:#7c3aed;box-shadow:0 4px 16px rgba(124,58,237,.1)}
+    .confidence-badge{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#7c3aed,#0052CC);color:#fff;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:50px}
+    .trend-product-rank{font-size:.72rem;color:#94a3b8;margin-bottom:6px}
+    .trend-product-name{font-weight:600;font-size:.88rem;color:#0a0e27;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .trend-product-category{font-size:.74rem;color:#7c3aed;font-weight:500;margin-bottom:8px}
+    .trend-product-demand{display:flex;align-items:center;gap:6px;font-size:.8rem;color:#059669;font-weight:600}
+    /* Forecast chart placeholder */
+    .forecast-box{background:linear-gradient(135deg,#ede9fe,#dbeafe);border-radius:12px;height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#64748b;gap:14px;border:1.5px dashed #c4b5fd}
+    .forecast-box i{font-size:3rem;opacity:.4}
+    .forecast-box strong{font-family:'Poppins',sans-serif;font-size:1rem;color:#374151}
+    .forecast-box span{font-size:.85rem}
+    /* Competitor table */
+    .comp-table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .comp-table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0;font-size:.8rem}
+    .comp-table td{padding:11px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:#fafbff}
+    .rec-lower{color:#059669;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:4px}
+    .rec-hold{color:#f97316;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:4px}
+    .rec-raise{color:#0052CC;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:4px}
+    /* AI Recommendations */
+    .ai-recs-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .ai-rec-item{display:flex;align-items:flex-start;gap:10px;padding:12px;background:#f8faff;border-radius:10px;border-left:3px solid #7c3aed}
+    .ai-rec-item i{color:#7c3aed;margin-top:2px;flex-shrink:0}
+    .ai-rec-item span{font-size:.84rem;color:#374151;line-height:1.6}
+    /* Price alerts */
+    .alert-list{display:flex;flex-direction:column;gap:12px}
+    .alert-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:12px;transition:all .2s}
+    .alert-item:hover{border-color:#7c3aed;background:#faf8ff}
+    .alert-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+    .alert-info{flex:1;min-width:0}
+    .alert-name{font-weight:600;font-size:.875rem;color:#0a0e27}
+    .alert-threshold{font-size:.78rem;color:#64748b;margin-top:2px}
+    .alert-status-active{display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;padding:2px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem}
+    @media(max-width:1024px){.section-grid{grid-template-columns:1fr}}
+    @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.trend-products-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+      </a>
+      <div class="nav-controls">
+        <a href="../../pages/auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../../pages/auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-header">
+  <div class="ai-badge"><i class="fas fa-microchip"></i> Powered by AI</div>
+  <div class="breadcrumb">
+    <a href="../../index.html">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="index.html">AI</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>Market Insights</span>
+  </div>
+  <h1 class="page-title"><i class="fas fa-brain"></i> AI Market Insights</h1>
+  <p class="page-subtitle">AI-powered analysis of market trends, demand forecasting, and competitive intelligence</p>
+</div>
+
+<div class="main-content">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon purple"><i class="fas fa-fire"></i></div>
+      <div>
+        <div class="kpi-value">847</div>
+        <div class="kpi-label">Trending Products</div>
+        <span class="kpi-change up"><i class="fas fa-arrow-up"></i> +62 this week</span>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon green"><i class="fas fa-bullseye"></i></div>
+      <div>
+        <div class="kpi-value">94.2%</div>
+        <div class="kpi-label">Demand Accuracy</div>
+        <span class="kpi-change up"><i class="fas fa-arrow-up"></i> +1.4% vs last month</span>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon orange"><i class="fas fa-bell"></i></div>
+      <div>
+        <div class="kpi-value">23</div>
+        <div class="kpi-label">Price Alerts</div>
+        <span class="kpi-change neutral"><i class="fas fa-exclamation"></i> 5 triggered today</span>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon blue"><i class="fas fa-eye"></i></div>
+      <div>
+        <div class="kpi-value">156</div>
+        <div class="kpi-label">Competitor Signals</div>
+        <span class="kpi-change up"><i class="fas fa-arrow-up"></i> +28 this week</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trend Predictions + AI Recommendations -->
+  <div class="section-grid">
+
+    <div>
+      <!-- AI Trend Predictions -->
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fas fa-fire" style="color:#f97316"></i> AI Trend Predictions</span>
+          <a href="#" class="btn btn-sm btn-secondary">View All</a>
+        </div>
+        <div class="trend-products-grid">
+          <div class="trend-product-card">
+            <div class="confidence-badge">97% conf.</div>
+            <div class="trend-product-rank">#1 AI Pick</div>
+            <div class="trend-product-name" title="Solar Panel 400W">Solar Panel 400W</div>
+            <div class="trend-product-category">Electronics</div>
+            <div class="trend-product-demand"><i class="fas fa-arrow-up"></i> Demand +24.5%</div>
+          </div>
+          <div class="trend-product-card">
+            <div class="confidence-badge">94% conf.</div>
+            <div class="trend-product-rank">#2 AI Pick</div>
+            <div class="trend-product-name" title="Organic Skincare Set">Organic Skincare Set</div>
+            <div class="trend-product-category">Beauty</div>
+            <div class="trend-product-demand"><i class="fas fa-arrow-up"></i> Demand +28.4%</div>
+          </div>
+          <div class="trend-product-card">
+            <div class="confidence-badge">92% conf.</div>
+            <div class="trend-product-rank">#3 AI Pick</div>
+            <div class="trend-product-name" title="Bamboo Packaging">Bamboo Packaging</div>
+            <div class="trend-product-category">Industrial</div>
+            <div class="trend-product-demand"><i class="fas fa-arrow-up"></i> Demand +31.0%</div>
+          </div>
+          <div class="trend-product-card">
+            <div class="confidence-badge">89% conf.</div>
+            <div class="trend-product-rank">#4 AI Pick</div>
+            <div class="trend-product-name" title="Wireless Earbuds Pro">Wireless Earbuds Pro</div>
+            <div class="trend-product-category">Electronics</div>
+            <div class="trend-product-demand"><i class="fas fa-arrow-up"></i> Demand +18.2%</div>
+          </div>
+          <div class="trend-product-card">
+            <div class="confidence-badge">85% conf.</div>
+            <div class="trend-product-rank">#5 AI Pick</div>
+            <div class="trend-product-name" title="Yoga Mat Premium">Yoga Mat Premium</div>
+            <div class="trend-product-category">Sports</div>
+            <div class="trend-product-demand"><i class="fas fa-arrow-up"></i> Demand +14.7%</div>
+          </div>
+          <div class="trend-product-card">
+            <div class="confidence-badge">82% conf.</div>
+            <div class="trend-product-rank">#6 AI Pick</div>
+            <div class="trend-product-name" title="Smart LED Strip">Smart LED Strip</div>
+            <div class="trend-product-category">Home &amp; Garden</div>
+            <div class="trend-product-demand"><i class="fas fa-arrow-up"></i> Demand +11.3%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demand Forecast Chart -->
+      <div class="card">
+        <div class="card-title"><span><i class="fas fa-chart-bar" style="color:#0052CC"></i> Demand Forecast</span><span style="font-size:.8rem;color:#64748b;font-weight:400">Next 90 Days</span></div>
+        <div class="forecast-box">
+          <i class="fas fa-chart-line"></i>
+          <strong>AI Demand Forecast Chart — Loading…</strong>
+          <span>Connect Chart.js or Recharts to render AI-generated demand predictions</span>
+        </div>
+      </div>
+
+      <!-- Competitor Analysis -->
+      <div class="card">
+        <div class="card-title"><span><i class="fas fa-chess" style="color:#7c3aed"></i> Competitor Analysis</span></div>
+        <div style="overflow-x:auto">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Product Category</th>
+                <th>Your Price</th>
+                <th>Market Average</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span style="display:flex;align-items:center;gap:8px"><i class="fas fa-microchip" style="color:#0052CC"></i> Electronics</span></td>
+                <td style="font-weight:600">$84.20</td>
+                <td style="color:#64748b">$91.50</td>
+                <td><span class="rec-raise"><i class="fas fa-arrow-up"></i> Room to raise prices</span></td>
+              </tr>
+              <tr>
+                <td><span style="display:flex;align-items:center;gap:8px"><i class="fas fa-tshirt" style="color:#7c3aed"></i> Fashion</span></td>
+                <td style="font-weight:600">$38.00</td>
+                <td style="color:#64748b">$32.50</td>
+                <td><span class="rec-lower"><i class="fas fa-arrow-down"></i> Consider lowering</span></td>
+              </tr>
+              <tr>
+                <td><span style="display:flex;align-items:center;gap:8px"><i class="fas fa-couch" style="color:#f97316"></i> Home &amp; Garden</span></td>
+                <td style="font-weight:600">$48.00</td>
+                <td style="color:#64748b">$47.80</td>
+                <td><span class="rec-hold"><i class="fas fa-minus"></i> Hold current pricing</span></td>
+              </tr>
+              <tr>
+                <td><span style="display:flex;align-items:center;gap:8px"><i class="fas fa-dumbbell" style="color:#059669"></i> Sports</span></td>
+                <td style="font-weight:600">$55.00</td>
+                <td style="color:#64748b">$58.40</td>
+                <td><span class="rec-raise"><i class="fas fa-arrow-up"></i> Room to raise prices</span></td>
+              </tr>
+              <tr>
+                <td><span style="display:flex;align-items:center;gap:8px"><i class="fas fa-spa" style="color:#ec4899"></i> Beauty</span></td>
+                <td style="font-weight:600">$22.50</td>
+                <td style="color:#64748b">$21.90</td>
+                <td><span class="rec-lower"><i class="fas fa-arrow-down"></i> Slight reduction advised</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right sidebar -->
+    <div>
+      <!-- AI Recommendations -->
+      <div class="card">
+        <div class="card-title"><span><i class="fas fa-robot" style="color:#7c3aed"></i> AI Recommendations</span></div>
+        <ul class="ai-recs-list">
+          <li class="ai-rec-item"><i class="fas fa-lightbulb"></i><span>Solar energy products show <strong>+24% demand spike</strong> — consider stocking 30% more inventory before Q3.</span></li>
+          <li class="ai-rec-item"><i class="fas fa-chart-line"></i><span>Beauty category growth accelerating at <strong>28.4% MoM</strong> — new product listings recommended now.</span></li>
+          <li class="ai-rec-item"><i class="fas fa-exclamation-triangle"></i><span>Fashion inventory may be <strong>overstocked</strong> based on falling demand signals in 3 key markets.</span></li>
+          <li class="ai-rec-item"><i class="fas fa-globe"></i><span>Southeast Asia showing <strong>emerging demand</strong> for sustainable packaging — explore eco-certified suppliers.</span></li>
+          <li class="ai-rec-item"><i class="fas fa-dollar-sign"></i><span>Electronics pricing is <strong>below market average</strong> — AI suggests a 5–8% price increase is sustainable.</span></li>
+          <li class="ai-rec-item"><i class="fas fa-calendar-alt"></i><span>Q3 2025 forecast: <strong>Industrial components</strong> expected to surge 18% due to infrastructure projects in APAC.</span></li>
+        </ul>
+      </div>
+
+      <!-- Price Alerts -->
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fas fa-bell" style="color:#f97316"></i> Price Alerts</span>
+          <a href="#" class="btn btn-sm btn-purple">Manage</a>
+        </div>
+        <div class="alert-list">
+          <div class="alert-item">
+            <div class="alert-icon" style="background:#d1fae5;color:#059669"><i class="fas fa-arrow-down"></i></div>
+            <div class="alert-info">
+              <div class="alert-name">Solar Panel 400W</div>
+              <div class="alert-threshold">Alert: price drops below $180</div>
+            </div>
+            <span class="alert-status-active"><i class="fas fa-circle" style="font-size:.5rem"></i> Active</span>
+          </div>
+          <div class="alert-item">
+            <div class="alert-icon" style="background:#dbeafe;color:#0052CC"><i class="fas fa-arrow-up"></i></div>
+            <div class="alert-info">
+              <div class="alert-name">Wireless Earbuds</div>
+              <div class="alert-threshold">Alert: price exceeds $60</div>
+            </div>
+            <span class="alert-status-active"><i class="fas fa-circle" style="font-size:.5rem"></i> Active</span>
+          </div>
+          <div class="alert-item">
+            <div class="alert-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-arrow-down"></i></div>
+            <div class="alert-info">
+              <div class="alert-name">Bamboo Packaging</div>
+              <div class="alert-threshold">Alert: price drops below $10</div>
+            </div>
+            <span class="alert-status-active"><i class="fas fa-circle" style="font-size:.5rem"></i> Active</span>
+          </div>
+          <div class="alert-item">
+            <div class="alert-icon" style="background:#ffedd5;color:#f97316"><i class="fas fa-bell"></i></div>
+            <div class="alert-info">
+              <div class="alert-name">Organic Cotton T-Shirt</div>
+              <div class="alert-threshold">Alert: price drops below $18</div>
+            </div>
+            <span class="alert-status-active"><i class="fas fa-circle" style="font-size:.5rem"></i> Active</span>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <a href="#" class="btn btn-sm btn-secondary" style="width:100%;justify-content:center"><i class="fas fa-plus"></i> Add New Alert</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  &copy; 2025 Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.
+</footer>
+
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

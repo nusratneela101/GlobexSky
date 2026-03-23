@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>My Dashboard | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .navbar{padding:0}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:100}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .logout-link{color:#ef4444!important}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem}
+    .account-sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    /* Welcome banner */
+    .welcome-banner{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);border-radius:16px;padding:28px 32px;color:#fff;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;overflow:hidden;position:relative}
+    .welcome-banner::before{content:'';position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.06)}
+    .welcome-banner::after{content:'';position:absolute;right:60px;bottom:-80px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .welcome-text h2{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:4px}
+    .welcome-text p{opacity:.85;font-size:.9rem}
+    /* Stats grid */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{border-radius:14px;padding:20px;color:#fff;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+    .stat-card::after{content:'';position:absolute;right:-20px;bottom:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.1)}
+    .stat-card-blue{background:linear-gradient(135deg,#0052CC,#2563eb)}
+    .stat-card-orange{background:linear-gradient(135deg,#f97316,#fb923c)}
+    .stat-card-green{background:linear-gradient(135deg,#059669,#10b981)}
+    .stat-card-purple{background:linear-gradient(135deg,#7c3aed,#9f5ef8)}
+    .stat-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;line-height:1}
+    .stat-label{font-size:.8rem;opacity:.85}
+    /* Mini orders table */
+    .mini-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .mini-table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0;font-size:.8rem}
+    .mini-table td{padding:11px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .mini-table tr:last-child td{border-bottom:none}
+    .mini-table tr:hover td{background:#fafbff}
+    .order-link{color:#0052CC;font-weight:600;text-decoration:none;font-size:.85rem}
+    .order-link:hover{text-decoration:underline}
+    /* Quick actions */
+    .quick-actions-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .action-card{border:1.5px solid #e2e8f0;border-radius:14px;padding:20px 16px;text-align:center;text-decoration:none;color:#374151;transition:all .2s;background:#fff}
+    .action-card:hover{border-color:#0052CC;box-shadow:0 4px 16px rgba(0,82,204,.1);transform:translateY(-2px)}
+    .action-card-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 12px}
+    .action-card h4{font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .action-card p{font-size:.75rem;color:#64748b}
+    /* Progress bar */
+    .progress-wrapper{background:#f1f5f9;border-radius:50px;height:10px;overflow:hidden}
+    .progress-bar{height:100%;border-radius:50px;background:linear-gradient(90deg,#0052CC,#00C9A7);transition:width .6s ease}
+    .site-footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.85rem}
+    @media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr)}.quick-actions-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.welcome-banner{flex-direction:column;gap:16px}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn">
+            <div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar">JD</div>
+    <div class="account-sidebar-name">James Davidson</div>
+    <div class="account-sidebar-email">j.davidson@example.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h2>Welcome back, James! 👋</h2>
+        <p id="todayDate">Loading date…</p>
+      </div>
+      <a href="orders.html" class="btn btn-secondary" style="white-space:nowrap;position:relative;z-index:1"><i class="fas fa-shopping-bag"></i> View Orders</a>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card stat-card-blue">
+        <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+        <div class="stat-value">24</div>
+        <div class="stat-label">Total Orders</div>
+      </div>
+      <div class="stat-card stat-card-orange">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-value">3</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card stat-card-green">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-value">18</div>
+        <div class="stat-label">Delivered</div>
+      </div>
+      <div class="stat-card stat-card-purple">
+        <div class="stat-icon"><i class="fas fa-heart"></i></div>
+        <div class="stat-value">12</div>
+        <div class="stat-label">Saved Items</div>
+      </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="page-card">
+      <div class="page-card-title">
+        <i class="fas fa-receipt" style="color:#0052CC"></i> Recent Orders
+        <a href="orders.html" class="btn btn-sm btn-secondary" style="margin-left:auto">View All</a>
+      </div>
+      <table class="mini-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Supplier</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="order-detail.html" class="order-link">#GS-2025-0892</a></td>
+            <td>ShenzTech Electronics</td>
+            <td style="font-weight:600">$3,240.00</td>
+            <td style="color:#64748b;font-size:.82rem">May 18, 2025</td>
+            <td><span class="badge-pill badge-blue"><i class="fas fa-truck" style="margin-right:4px"></i>Shipped</span></td>
+          </tr>
+          <tr>
+            <td><a href="order-detail.html" class="order-link">#GS-2025-0841</a></td>
+            <td>Guangzhou Fabrics Co.</td>
+            <td style="font-weight:600">$1,890.00</td>
+            <td style="color:#64748b;font-size:.82rem">May 9, 2025</td>
+            <td><span class="badge-pill badge-green"><i class="fas fa-check" style="margin-right:4px"></i>Delivered</span></td>
+          </tr>
+          <tr>
+            <td><a href="order-detail.html" class="order-link">#GS-2025-0780</a></td>
+            <td>YiwuGifts Factory</td>
+            <td style="font-weight:600">$5,600.00</td>
+            <td style="color:#64748b;font-size:.82rem">Apr 28, 2025</td>
+            <td><span class="badge-pill badge-orange"><i class="fas fa-hourglass-half" style="margin-right:4px"></i>Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-bolt" style="color:#f97316"></i> Quick Actions</div>
+      <div class="quick-actions-grid">
+        <a href="../sourcing/index.html" class="action-card">
+          <div class="action-card-icon" style="background:#dbeafe;color:#0052CC"><i class="fas fa-search"></i></div>
+          <h4>Browse Products</h4>
+          <p>Discover new items from verified suppliers</p>
+        </a>
+        <a href="orders.html" class="action-card">
+          <div class="action-card-icon" style="background:#d1fae5;color:#059669"><i class="fas fa-map-marker-alt"></i></div>
+          <h4>Track Shipment</h4>
+          <p>View real-time delivery status updates</p>
+        </a>
+        <a href="../sourcing/rfq.html" class="action-card">
+          <div class="action-card-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-file-alt"></i></div>
+          <h4>Submit RFQ</h4>
+          <p>Request quotes from multiple suppliers</p>
+        </a>
+        <a href="messages.html" class="action-card">
+          <div class="action-card-icon" style="background:#ffedd5;color:#f97316"><i class="fas fa-headset"></i></div>
+          <h4>Contact Support</h4>
+          <p>Get help from our support team</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Account Completion -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-user-check" style="color:#0052CC"></i> Account Completion</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <p style="font-size:.9rem;color:#374151">Complete your profile to unlock all features</p>
+        <span style="font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;font-size:1rem">75%</span>
+      </div>
+      <div class="progress-wrapper" style="margin-bottom:20px">
+        <div class="progress-bar" style="width:75%"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:.83rem;color:#374151"><i class="fas fa-check-circle" style="color:#059669"></i> Personal Info</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.83rem;color:#374151"><i class="fas fa-check-circle" style="color:#059669"></i> Email Verified</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.83rem;color:#374151"><i class="fas fa-check-circle" style="color:#059669"></i> Company Details</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.83rem;color:#94a3b8"><i class="fas fa-circle" style="color:#e2e8f0"></i> Payment Method</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.83rem;color:#94a3b8"><i class="fas fa-circle" style="color:#e2e8f0"></i> Business Docs</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.83rem;color:#94a3b8"><i class="fas fa-circle" style="color:#e2e8f0"></i> Profile Photo</div>
+      </div>
+      <div style="margin-top:18px">
+        <a href="profile.html" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> Complete Profile</a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  &copy; 2025 Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.
+</footer>
+
+<script>
+  const d = new Date();
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('todayDate').textContent = 'Today is ' + d.toLocaleDateString('en-US', opts);
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
