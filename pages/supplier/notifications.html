@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notification Settings | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .notif-section{margin-bottom:28px}
+    .notif-section-title{font-weight:600;font-size:.95rem;color:#0a0e27;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .notif-section-title i{color:#0052CC;font-size:1rem}
+    .notif-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1f5f9}
+    .notif-row:last-child{border-bottom:none}
+    .notif-label{font-size:.88rem;color:#374151}
+    .notif-channels{display:flex;align-items:center;gap:18px}
+    .toggle-wrap{display:flex;align-items:center;gap:6px;cursor:pointer}
+    .toggle-wrap span{font-size:.78rem;color:#64748b;white-space:nowrap}
+    .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-slider{position:absolute;inset:0;background:#e2e8f0;border-radius:22px;transition:background .2s;cursor:pointer}
+    .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .toggle input:checked+.toggle-slider{background:#0052CC}
+    .toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+    .notif-feed-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #f1f5f9}
+    .notif-feed-item:last-child{border-bottom:none}
+    .notif-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html"><i class="fas fa-shield-halved"></i> Disputes</a></li>
+        <li><a href="coupons.html"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="bulk-upload.html"><i class="fas fa-file-arrow-up"></i> Bulk Upload</a></li>
+        <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html" class="active"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div style="margin-bottom:24px">
+        <h1 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27">Notification Settings</h1>
+        <p style="color:#64748b;font-size:.9rem;margin-top:4px">Control how and when you receive notifications</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-sliders"></i> Notification Preferences</div>
+
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8faff;border-radius:10px;margin-bottom:24px;font-size:.82rem;color:#374151">
+          <i class="fas fa-circle-info" style="color:#0052CC"></i>
+          <span>Channel legend: &nbsp;<strong>Email</strong> &nbsp;<strong>SMS</strong> &nbsp;<strong>Push</strong></span>
+        </div>
+
+        <!-- Order Notifications -->
+        <div class="notif-section">
+          <div class="notif-section-title"><i class="fas fa-bag-shopping"></i> Order Notifications</div>
+          <div class="notif-row">
+            <span class="notif-label">New order placed</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+          <div class="notif-row">
+            <span class="notif-label">Order cancelled by buyer</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+          <div class="notif-row">
+            <span class="notif-label">Return / refund request</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Notifications -->
+        <div class="notif-section">
+          <div class="notif-section-title"><i class="fas fa-coins"></i> Payment Notifications</div>
+          <div class="notif-row">
+            <span class="notif-label">Payout processed</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+          <div class="notif-row">
+            <span class="notif-label">Earnings credited</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Notifications -->
+        <div class="notif-section">
+          <div class="notif-section-title"><i class="fas fa-star"></i> Review Notifications</div>
+          <div class="notif-row">
+            <span class="notif-label">New customer review posted</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+          <div class="notif-row">
+            <span class="notif-label">Low rating alert (1–2 stars)</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dispute Notifications -->
+        <div class="notif-section">
+          <div class="notif-section-title"><i class="fas fa-shield-halved"></i> Dispute Notifications</div>
+          <div class="notif-row">
+            <span class="notif-label">New dispute opened</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+          <div class="notif-row">
+            <span class="notif-label">Dispute escalated</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+          <div class="notif-row">
+            <span class="notif-label">Dispute resolved</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marketing -->
+        <div class="notif-section">
+          <div class="notif-section-title"><i class="fas fa-bullhorn"></i> Marketing &amp; Platform</div>
+          <div class="notif-row">
+            <span class="notif-label">Promotions and flash sale alerts</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+          <div class="notif-row">
+            <span class="notif-label">Platform tips and feature updates</span>
+            <div class="notif-channels">
+              <label class="toggle-wrap"><span>Email</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>SMS</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+              <label class="toggle-wrap"><span>Push</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></label>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:8px">
+          <button class="btn btn-primary" onclick="savePreferences()"><i class="fas fa-floppy-disk"></i> Save Preferences</button>
+          <button class="btn btn-secondary"><i class="fas fa-rotate-left"></i> Reset to Default</button>
+        </div>
+        <div id="saveMsg" style="display:none;margin-top:12px;padding:10px 16px;background:#d1fae5;border-radius:8px;color:#059669;font-size:.85rem;font-weight:500"><i class="fas fa-circle-check"></i> Notification preferences saved.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-inbox"></i> Recent Notifications</div>
+        <div id="recentNotifs">
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#dbeafe"><i class="fas fa-bag-shopping" style="color:#2563eb"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">New order #ORD-5528 placed for $134.00</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">2 minutes ago</div>
+            </div>
+            <span style="width:8px;height:8px;background:#0052CC;border-radius:50%;flex-shrink:0;margin-top:6px"></span>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#d1fae5"><i class="fas fa-coins" style="color:#059669"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">Payout of $2,500 processed to your Bank account</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">1 hour ago</div>
+            </div>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#fee2e2"><i class="fas fa-shield-halved" style="color:#dc2626"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">Dispute DSP-1084 opened by Ravi Sharma for $84.99</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">3 hours ago</div>
+            </div>
+            <span style="width:8px;height:8px;background:#ef4444;border-radius:50%;flex-shrink:0;margin-top:6px"></span>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#fef3c7"><i class="fas fa-star" style="color:#f59e0b"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">New 2-star review from Tom Nguyen — requires attention</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">5 hours ago</div>
+            </div>
+            <span style="width:8px;height:8px;background:#f59e0b;border-radius:50%;flex-shrink:0;margin-top:6px"></span>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#dbeafe"><i class="fas fa-bag-shopping" style="color:#2563eb"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">Order #ORD-5524 has been shipped — tracking active</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">8 hours ago</div>
+            </div>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#ede9fe"><i class="fas fa-bullhorn" style="color:#7c3aed"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">Flash Sale starts tomorrow — boost your listings now!</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">Yesterday, 4:00 PM</div>
+            </div>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#d1fae5"><i class="fas fa-coins" style="color:#059669"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">Earnings of $384 cleared and added to your balance</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">Yesterday, 10:15 AM</div>
+            </div>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#ffedd5"><i class="fas fa-rotate-left" style="color:#f97316"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">Return request for order #ORD-5509 submitted by buyer</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">2 days ago</div>
+            </div>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#dbeafe"><i class="fas fa-gear" style="color:#2563eb"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">Your account verification has been renewed successfully</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">3 days ago</div>
+            </div>
+          </div>
+          <div class="notif-feed-item">
+            <div class="notif-icon" style="background:#f1f5f9"><i class="fas fa-star" style="color:#f59e0b"></i></div>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:500">5-star review from James Dawson on Wireless Headphones</div>
+              <div style="font-size:.78rem;color:#64748b;margin-top:3px">4 days ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function savePreferences(){
+  var msg=document.getElementById('saveMsg');
+  msg.style.display='block';
+  setTimeout(function(){msg.style.display='none';},3500);
+}
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

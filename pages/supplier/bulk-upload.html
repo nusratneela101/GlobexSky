@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bulk Product Upload | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .drop-zone{border:2.5px dashed #bfdbfe;border-radius:16px;padding:48px 24px;text-align:center;background:#f8fbff;cursor:pointer;transition:all .2s}
+    .drop-zone:hover,.drop-zone.dragover{border-color:#0052CC;background:#eef4ff}
+    .drop-zone i{font-size:3rem;color:#bfdbfe;margin-bottom:16px}
+    .drop-zone.dragover i{color:#0052CC}
+    .step-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:0}
+    .step-item{display:flex;align-items:flex-start;gap:14px;padding:16px;background:#f8faff;border-radius:12px}
+    .step-num{min-width:32px;height:32px;border-radius:50%;background:#0052CC;color:#fff;font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .progress-bar{width:100%;background:#e2e8f0;border-radius:50px;height:10px;overflow:hidden;margin-top:8px}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#0052CC,#00C9A7);border-radius:50px;transition:width .4s}
+    .error-cell{background:#fff5f5;color:#dc2626}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html"><i class="fas fa-shield-halved"></i> Disputes</a></li>
+        <li><a href="coupons.html"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="bulk-upload.html" class="active"><i class="fas fa-file-arrow-up"></i> Bulk Upload</a></li>
+        <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h1 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27">Bulk Product Upload</h1>
+          <p style="color:#64748b;font-size:.9rem;margin-top:4px">Upload multiple products at once using a CSV file</p>
+        </div>
+        <a href="#" class="btn btn-secondary" onclick="downloadTemplate(event)"><i class="fas fa-file-arrow-down"></i> Download CSV Template</a>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-list-ol"></i> How It Works</div>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div>
+              <div style="font-weight:600;font-size:.9rem;margin-bottom:4px">Download Template</div>
+              <div style="font-size:.82rem;color:#64748b">Get our CSV template with all required columns pre-filled as examples.</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div>
+              <div style="font-weight:600;font-size:.9rem;margin-bottom:4px">Fill in Data</div>
+              <div style="font-size:.82rem;color:#64748b">Add your product details: name, SKU, price, stock, category, and description.</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div>
+              <div style="font-weight:600;font-size:.9rem;margin-bottom:4px">Upload CSV</div>
+              <div style="font-size:.82rem;color:#64748b">Drag & drop or click to upload your completed CSV file.</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div>
+              <div style="font-weight:600;font-size:.9rem;margin-bottom:4px">Review &amp; Confirm</div>
+              <div style="font-size:.82rem;color:#64748b">Preview your data, fix any validation errors, then confirm to import.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-cloud-arrow-up"></i> Upload CSV File</div>
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('csvInput').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+          <i class="fas fa-file-csv" id="dropIcon"></i>
+          <p style="font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#374151;margin-bottom:8px" id="dropText">Drag &amp; drop your CSV file here</p>
+          <p style="color:#94a3b8;font-size:.85rem" id="dropSubtext">or click to browse — max file size 5MB</p>
+          <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleFile(this)"/>
+        </div>
+
+        <div id="progressSection" style="display:none;margin-top:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:.85rem;font-weight:500;color:#374151" id="progressLabel">Processing…</span>
+            <span style="font-size:.85rem;font-weight:600;color:#0052CC" id="progressPct">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        </div>
+
+        <div id="previewSection" style="display:none;margin-top:24px">
+          <h3 style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;margin-bottom:12px;color:#0a0e27">Preview — <span id="rowCount">0</span> rows loaded <span style="color:#dc2626;font-size:.85rem" id="errorCount"></span></h3>
+          <div style="overflow-x:auto">
+            <table class="table" id="previewTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product Name</th>
+                  <th>SKU</th>
+                  <th>Price ($)</th>
+                  <th>Stock</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="previewBody"></tbody>
+            </table>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="confirmUpload()"><i class="fas fa-check"></i> Confirm Import</button>
+            <button class="btn btn-secondary" onclick="cancelUpload()"><i class="fas fa-xmark"></i> Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-clock-rotate-left"></i> Recent Uploads</div>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr><th>Filename</th><th>Uploaded</th><th>Rows Imported</th><th>Errors</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><i class="fas fa-file-csv" style="color:#059669;margin-right:8px"></i>products_may2025.csv</td>
+                <td>22 May 2025, 10:14 AM</td>
+                <td>84</td>
+                <td>0</td>
+                <td><span class="badge badge-green"><i class="fas fa-circle-check" style="margin-right:4px"></i>Completed</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></button></td>
+              </tr>
+              <tr>
+                <td><i class="fas fa-file-csv" style="color:#f97316;margin-right:8px"></i>new_arrivals_batch2.csv</td>
+                <td>14 May 2025, 03:45 PM</td>
+                <td>61</td>
+                <td>3</td>
+                <td><span class="badge badge-orange"><i class="fas fa-triangle-exclamation" style="margin-right:4px"></i>Partial</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></button></td>
+              </tr>
+              <tr>
+                <td><i class="fas fa-file-csv" style="color:#059669;margin-right:8px"></i>electronics_q2.csv</td>
+                <td>02 May 2025, 09:30 AM</td>
+                <td>120</td>
+                <td>0</td>
+                <td><span class="badge badge-green"><i class="fas fa-circle-check" style="margin-right:4px"></i>Completed</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></button></td>
+              </tr>
+              <tr>
+                <td><i class="fas fa-file-csv" style="color:#dc2626;margin-right:8px"></i>import_test.csv</td>
+                <td>28 Apr 2025, 06:22 PM</td>
+                <td>0</td>
+                <td>15</td>
+                <td><span class="badge badge-red"><i class="fas fa-xmark" style="margin-right:4px"></i>Failed</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+var sampleRows=[
+  {name:'Wireless Bluetooth Headphones',sku:'WBH-001',price:'49.99',stock:'150',category:'Electronics',valid:true},
+  {name:'Ergonomic Office Chair',sku:'EOC-042',price:'219.00',stock:'30',category:'Furniture',valid:true},
+  {name:'Stainless Steel Water Bottle',sku:'',price:'18.50',stock:'500',category:'Kitchen',valid:false,err:'Missing SKU'},
+  {name:'LED Desk Lamp',sku:'LDL-088',price:'34.99',stock:'200',category:'Home Office',valid:true},
+  {name:'Yoga Mat Premium',sku:'YMP-011',price:'',stock:'80',category:'Sports',valid:false,err:'Missing price'},
+];
+function dragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('dragover');}
+function dragLeave(){document.getElementById('dropZone').classList.remove('dragover');}
+function dropFile(e){e.preventDefault();dragLeave();var f=e.dataTransfer.files[0];if(f)processFile(f);}
+function handleFile(inp){if(inp.files[0])processFile(inp.files[0]);}
+function processFile(f){
+  document.getElementById('dropText').textContent=f.name;
+  document.getElementById('dropSubtext').textContent='File selected — '+Math.round(f.size/1024)+' KB';
+  var prog=document.getElementById('progressSection');
+  prog.style.display='block';
+  var fill=document.getElementById('progressFill');
+  var pct=document.getElementById('progressPct');
+  var lbl=document.getElementById('progressLabel');
+  var p=0;
+  var t=setInterval(function(){
+    p+=10;fill.style.width=p+'%';pct.textContent=p+'%';
+    if(p>=100){clearInterval(t);lbl.textContent='Processing complete!';showPreview();}
+  },120);
+}
+function showPreview(){
+  var sec=document.getElementById('previewSection');
+  var body=document.getElementById('previewBody');
+  body.innerHTML='';
+  var errors=0;
+  sampleRows.forEach(function(r,i){
+    var tr=document.createElement('tr');
+    var statusCell=r.valid?'<span class="badge badge-green"><i class="fas fa-circle-check"></i> Valid</span>':'<span class="badge badge-red"><i class="fas fa-triangle-exclamation"></i> '+r.err+'</span>';
+    tr.innerHTML='<td>'+(i+1)+'</td><td>'+(r.valid?'':'<span style="color:#dc2626">')+r.name+(r.valid?'':'</span>')+'</td><td>'+(r.sku||'<span style="color:#dc2626">—</span>')+'</td><td>'+(r.price||'<span style="color:#dc2626">—</span>')+'</td><td>'+r.stock+'</td><td>'+r.category+'</td><td>'+statusCell+'</td>';
+    body.appendChild(tr);
+    if(!r.valid)errors++;
+  });
+  document.getElementById('rowCount').textContent=sampleRows.length;
+  document.getElementById('errorCount').textContent=errors>0?'('+errors+' error'+(errors>1?'s':'')+' found)':'';
+  sec.style.display='block';
+}
+function confirmUpload(){alert('Products imported successfully! 3 of 5 rows were added. 2 rows had errors and were skipped.');}
+function cancelUpload(){
+  document.getElementById('previewSection').style.display='none';
+  document.getElementById('progressSection').style.display='none';
+  document.getElementById('dropText').textContent='Drag & drop your CSV file here';
+  document.getElementById('dropSubtext').textContent='or click to browse — max file size 5MB';
+}
+function downloadTemplate(e){e.preventDefault();alert('CSV template download would start here in production.');}
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

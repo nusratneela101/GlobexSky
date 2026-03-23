@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dispute Management | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:linear-gradient(135deg,var(--sc,#0052CC),var(--se,#003d99));border-radius:14px;padding:20px;color:#fff}
+    .stat-card .stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+    .stat-card .stat-lbl{font-size:.8rem;opacity:.8;margin-top:4px}
+    .stat-card .stat-icon{font-size:1.4rem;opacity:.6;margin-bottom:8px}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tab{padding:7px 16px;border-radius:50px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;padding:32px;max-width:520px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27;margin-bottom:16px}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Respond Modal -->
+<div class="modal-overlay" id="respondModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-shield-halved" style="color:#0052CC;margin-right:8px"></i>Respond to Dispute</div>
+    <p style="color:#64748b;font-size:.88rem;margin-bottom:16px">Dispute ID: <strong id="modalDisputeId">—</strong> &mdash; Buyer: <strong id="modalBuyer">—</strong></p>
+    <textarea style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:Inter,sans-serif;font-size:.88rem;resize:vertical;min-height:110px;outline:none;color:#1a1a2e" placeholder="Describe your response and proposed resolution…" id="respondText"></textarea>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="submitResponse()"><i class="fas fa-paper-plane"></i> Submit Response</button>
+      <button class="btn btn-success" onclick="resolveDispute()"><i class="fas fa-circle-check"></i> Mark Resolved</button>
+      <button class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-xmark"></i> Cancel</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html" class="active"><i class="fas fa-shield-halved"></i> Disputes</a></li>
+        <li><a href="coupons.html"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="bulk-upload.html"><i class="fas fa-file-arrow-up"></i> Bulk Upload</a></li>
+        <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div style="margin-bottom:24px">
+        <h1 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27">Dispute Management</h1>
+        <p style="color:#64748b;font-size:.9rem;margin-top:4px">Review and resolve buyer disputes efficiently</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card" style="--sc:#ef4444;--se:#dc2626">
+          <div class="stat-icon"><i class="fas fa-circle-exclamation"></i></div>
+          <div class="stat-val">8</div>
+          <div class="stat-lbl">Open Disputes</div>
+        </div>
+        <div class="stat-card" style="--sc:#059669;--se:#047857">
+          <div class="stat-icon"><i class="fas fa-circle-check"></i></div>
+          <div class="stat-val">45</div>
+          <div class="stat-lbl">Resolved</div>
+        </div>
+        <div class="stat-card" style="--sc:#0052CC;--se:#003d99">
+          <div class="stat-icon"><i class="fas fa-thumbs-up"></i></div>
+          <div class="stat-val">38</div>
+          <div class="stat-lbl">In Your Favor</div>
+        </div>
+        <div class="stat-card" style="--sc:#f97316;--se:#ea580c">
+          <div class="stat-icon"><i class="fas fa-arrow-up-right-dots"></i></div>
+          <div class="stat-val">3</div>
+          <div class="stat-lbl">Escalated</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-list-check"></i> Disputes</div>
+        <div class="filter-tabs" id="disputeTabs">
+          <button class="filter-tab active" onclick="filterDisputes(this,'all')">All (56)</button>
+          <button class="filter-tab" onclick="filterDisputes(this,'open')">Open (8)</button>
+          <button class="filter-tab" onclick="filterDisputes(this,'in-progress')">In Progress (5)</button>
+          <button class="filter-tab" onclick="filterDisputes(this,'resolved')">Resolved (45)</button>
+          <button class="filter-tab" onclick="filterDisputes(this,'escalated')">Escalated (3)</button>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table class="table" id="disputeTable">
+            <thead>
+              <tr>
+                <th>Dispute ID</th>
+                <th>Buyer</th>
+                <th>Order ID</th>
+                <th>Issue Type</th>
+                <th>Amount</th>
+                <th>Date Opened</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-status="open">
+                <td><code style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:.8rem">DSP-1084</code></td>
+                <td>
+                  <div style="font-weight:500">Ravi Sharma</div>
+                  <div style="color:#64748b;font-size:.78rem">ravi.s@email.com</div>
+                </td>
+                <td><a href="#" style="color:#0052CC;text-decoration:none">#ORD-5521</a></td>
+                <td><span class="badge badge-red"><i class="fas fa-box-open" style="margin-right:4px"></i>Item Not Received</span></td>
+                <td><strong>$84.99</strong></td>
+                <td>22 May 2025</td>
+                <td><span class="badge badge-red">Open</span></td>
+                <td>
+                  <button class="btn btn-primary btn-sm" onclick="openModal('DSP-1084','Ravi Sharma')"><i class="fas fa-reply"></i> Respond</button>
+                </td>
+              </tr>
+              <tr data-status="open">
+                <td><code style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:.8rem">DSP-1081</code></td>
+                <td>
+                  <div style="font-weight:500">Laura Chen</div>
+                  <div style="color:#64748b;font-size:.78rem">l.chen@email.com</div>
+                </td>
+                <td><a href="#" style="color:#0052CC;text-decoration:none">#ORD-5513</a></td>
+                <td><span class="badge badge-orange"><i class="fas fa-triangle-exclamation" style="margin-right:4px"></i>Item Damaged</span></td>
+                <td><strong>$210.00</strong></td>
+                <td>19 May 2025</td>
+                <td><span class="badge badge-red">Open</span></td>
+                <td>
+                  <button class="btn btn-primary btn-sm" onclick="openModal('DSP-1081','Laura Chen')"><i class="fas fa-reply"></i> Respond</button>
+                </td>
+              </tr>
+              <tr data-status="in-progress">
+                <td><code style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:.8rem">DSP-1075</code></td>
+                <td>
+                  <div style="font-weight:500">Omar Khalid</div>
+                  <div style="color:#64748b;font-size:.78rem">omar.k@email.com</div>
+                </td>
+                <td><a href="#" style="color:#0052CC;text-decoration:none">#ORD-5500</a></td>
+                <td><span class="badge badge-blue"><i class="fas fa-rotate-left" style="margin-right:4px"></i>Wrong Item</span></td>
+                <td><strong>$55.00</strong></td>
+                <td>14 May 2025</td>
+                <td><span class="badge badge-blue">In Progress</span></td>
+                <td>
+                  <button class="btn btn-secondary btn-sm" onclick="openModal('DSP-1075','Omar Khalid')"><i class="fas fa-eye"></i> View</button>
+                </td>
+              </tr>
+              <tr data-status="escalated">
+                <td><code style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:.8rem">DSP-1068</code></td>
+                <td>
+                  <div style="font-weight:500">Nina Foster</div>
+                  <div style="color:#64748b;font-size:.78rem">nina.f@email.com</div>
+                </td>
+                <td><a href="#" style="color:#0052CC;text-decoration:none">#ORD-5488</a></td>
+                <td><span class="badge badge-purple"><i class="fas fa-dollar-sign" style="margin-right:4px"></i>Refund Dispute</span></td>
+                <td><strong>$340.00</strong></td>
+                <td>09 May 2025</td>
+                <td><span class="badge badge-orange">Escalated</span></td>
+                <td>
+                  <button class="btn btn-warning btn-sm" onclick="openModal('DSP-1068','Nina Foster')"><i class="fas fa-arrow-up-right-dots"></i> Escalated</button>
+                </td>
+              </tr>
+              <tr data-status="resolved">
+                <td><code style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:.8rem">DSP-1055</code></td>
+                <td>
+                  <div style="font-weight:500">Alex Murphy</div>
+                  <div style="color:#64748b;font-size:.78rem">alex.m@email.com</div>
+                </td>
+                <td><a href="#" style="color:#0052CC;text-decoration:none">#ORD-5460</a></td>
+                <td><span class="badge badge-gray"><i class="fas fa-magnifying-glass" style="margin-right:4px"></i>Quality Issue</span></td>
+                <td><strong>$120.00</strong></td>
+                <td>02 May 2025</td>
+                <td><span class="badge badge-green">Resolved</span></td>
+                <td>
+                  <button class="btn btn-secondary btn-sm" onclick="openModal('DSP-1055','Alex Murphy')"><i class="fas fa-eye"></i> View</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function filterDisputes(btn,status){
+  document.querySelectorAll('.filter-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('#disputeTable tbody tr').forEach(function(row){
+    row.style.display=(status==='all'||row.dataset.status===status)?'table-row':'none';
+  });
+}
+function openModal(id,buyer){
+  document.getElementById('modalDisputeId').textContent=id;
+  document.getElementById('modalBuyer').textContent=buyer;
+  document.getElementById('respondText').value='';
+  document.getElementById('respondModal').classList.add('open');
+}
+function closeModal(){document.getElementById('respondModal').classList.remove('open');}
+function submitResponse(){
+  var txt=document.getElementById('respondText').value.trim();
+  if(!txt){alert('Please write your response first.');return;}
+  alert('Response submitted for dispute '+document.getElementById('modalDisputeId').textContent);
+  closeModal();
+}
+function resolveDispute(){
+  alert('Dispute '+document.getElementById('modalDisputeId').textContent+' marked as resolved.');
+  closeModal();
+}
+document.getElementById('respondModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

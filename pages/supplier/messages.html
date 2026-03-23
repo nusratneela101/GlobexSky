@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messages &amp; Inbox | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .inbox-layout{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 220px);min-height:500px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}
+    @media(max-width:900px){.inbox-layout{grid-template-columns:1fr;height:auto}}
+    .conv-panel{border-right:1px solid #f1f5f9;display:flex;flex-direction:column}
+    .conv-header{padding:16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .conv-search{flex:1;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;color:#1a1a2e}
+    .conv-search:focus{border-color:#0052CC}
+    .conv-filter{display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid #f1f5f9}
+    .conv-filter-btn{padding:4px 12px;border-radius:50px;font-size:.75rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .conv-filter-btn.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .conv-list{flex:1;overflow-y:auto}
+    .conv-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid #f9fafb;transition:background .15s}
+    .conv-item:hover,.conv-item.active{background:#f0f4ff}
+    .conv-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;font-weight:700;flex-shrink:0}
+    .conv-info{flex:1;min-width:0}
+    .conv-name{font-weight:600;font-size:.88rem;color:#0a0e27}
+    .conv-preview{font-size:.78rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+    .conv-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+    .conv-time{font-size:.72rem;color:#94a3b8}
+    .unread-badge{background:#0052CC;color:#fff;border-radius:50px;padding:2px 7px;font-size:.68rem;font-weight:700}
+    .thread-panel{display:flex;flex-direction:column}
+    .thread-header{padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:14px}
+    .thread-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:.9rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .thread-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+    .msg-bubble{max-width:72%;padding:10px 16px;border-radius:16px;font-size:.88rem;line-height:1.55}
+    .msg-bubble.incoming{background:#f1f5f9;color:#1a1a2e;border-bottom-left-radius:4px;align-self:flex-start}
+    .msg-bubble.outgoing{background:#0052CC;color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+    .msg-time{font-size:.72rem;color:#94a3b8;margin-top:4px}
+    .msg-time.right{text-align:right}
+    .thread-input{padding:14px 20px;border-top:1px solid #f1f5f9;display:flex;align-items:center;gap:10px}
+    .msg-input{flex:1;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Inter',sans-serif;font-size:.88rem;color:#1a1a2e;outline:none;resize:none;max-height:100px}
+    .msg-input:focus{border-color:#0052CC}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px;margin-top:24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html"><i class="fas fa-shield-halved"></i> Disputes</a></li>
+        <li><a href="coupons.html"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="bulk-upload.html"><i class="fas fa-file-arrow-up"></i> Bulk Upload</a></li>
+        <li><a href="messages.html" class="active"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h1 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27">Messages &amp; Inbox</h1>
+          <p style="color:#64748b;font-size:.9rem;margin-top:4px">Communicate with your buyers</p>
+        </div>
+        <button class="btn btn-primary" onclick="alert('New message compose modal would open here.')"><i class="fas fa-pen-to-square"></i> New Message</button>
+      </div>
+
+      <div class="inbox-layout">
+        <!-- Conversation List -->
+        <div class="conv-panel">
+          <div class="conv-header">
+            <input class="conv-search" type="text" placeholder="Search conversations…"/>
+          </div>
+          <div class="conv-filter">
+            <button class="conv-filter-btn active" onclick="setFilter(this,'all')">All</button>
+            <button class="conv-filter-btn" onclick="setFilter(this,'unread')">Unread</button>
+            <button class="conv-filter-btn" onclick="setFilter(this,'archived')">Archived</button>
+          </div>
+          <div class="conv-list">
+            <div class="conv-item active" onclick="openConv(this,'Ravi Sharma','RS','linear-gradient(135deg,#0052CC,#003d99)')">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#0052CC,#003d99)">RS</div>
+              <div class="conv-info">
+                <div class="conv-name">Ravi Sharma</div>
+                <div class="conv-preview">Is the item still in stock? I'd like to…</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">2m ago</span>
+                <span class="unread-badge">3</span>
+              </div>
+            </div>
+            <div class="conv-item" onclick="openConv(this,'Laura Chen','LC','linear-gradient(135deg,#059669,#34d399)')">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#059669,#34d399)">LC</div>
+              <div class="conv-info">
+                <div class="conv-name">Laura Chen</div>
+                <div class="conv-preview">Thanks for the quick reply! The chair…</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">1h ago</span>
+                <span class="unread-badge">1</span>
+              </div>
+            </div>
+            <div class="conv-item" onclick="openConv(this,'Michael Kim','MK','linear-gradient(135deg,#8b5cf6,#d946ef)')">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#8b5cf6,#d946ef)">MK</div>
+              <div class="conv-info">
+                <div class="conv-name">Michael Kim</div>
+                <div class="conv-preview">Great, I'll place the order now.</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">3h ago</span>
+              </div>
+            </div>
+            <div class="conv-item" onclick="openConv(this,'Aisha Lawson','AL','linear-gradient(135deg,#f97316,#fbbf24)')">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#f97316,#fbbf24)">AL</div>
+              <div class="conv-info">
+                <div class="conv-name">Aisha Lawson</div>
+                <div class="conv-preview">Can I get a discount on bulk orders?</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">Yesterday</span>
+                <span class="unread-badge">2</span>
+              </div>
+            </div>
+            <div class="conv-item" onclick="openConv(this,'Tom Nguyen','TN','linear-gradient(135deg,#dc2626,#f87171)')">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#dc2626,#f87171)">TN</div>
+              <div class="conv-info">
+                <div class="conv-name">Tom Nguyen</div>
+                <div class="conv-preview">The water bottle lid has a leak issue…</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">2 days ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Thread -->
+        <div class="thread-panel">
+          <div class="thread-header">
+            <div class="thread-avatar" id="threadAvatar">RS</div>
+            <div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:#0a0e27" id="threadName">Ravi Sharma</div>
+              <div style="color:#94a3b8;font-size:.78rem">Buyer &bull; Order #ORD-5521</div>
+            </div>
+          </div>
+          <div class="thread-messages" id="threadMessages">
+            <div>
+              <div class="msg-bubble incoming">Hi! I wanted to ask — is the Wireless Bluetooth Headphones model compatible with Windows 11?</div>
+              <div class="msg-time">10:02 AM</div>
+            </div>
+            <div>
+              <div class="msg-bubble outgoing">Hi Ravi! Yes, it's fully compatible with Windows 11 via Bluetooth 5.0. It also works with macOS and Android.</div>
+              <div class="msg-time right">10:15 AM</div>
+            </div>
+            <div>
+              <div class="msg-bubble incoming">Perfect! Does it come with a USB-C charging cable?</div>
+              <div class="msg-time">10:18 AM</div>
+            </div>
+            <div>
+              <div class="msg-bubble outgoing">Yes, the package includes a USB-C cable and a 3.5mm audio cable as well. Battery life is up to 30 hours.</div>
+              <div class="msg-time right">10:22 AM</div>
+            </div>
+            <div>
+              <div class="msg-bubble incoming">That's great. Is the item still in stock? I'd like to order 3 units for my team. Any bulk discount available?</div>
+              <div class="msg-time">2 min ago</div>
+            </div>
+          </div>
+          <div class="thread-input">
+            <textarea class="msg-input" id="msgInput" rows="1" placeholder="Type your message…" onkeydown="handleMsgKey(event)"></textarea>
+            <button class="btn btn-primary" style="padding:10px 16px" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function openConv(el,name,initials,bg){
+  document.querySelectorAll('.conv-item').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+  var badge=el.querySelector('.unread-badge');
+  if(badge)badge.remove();
+  document.getElementById('threadName').textContent=name;
+  document.getElementById('threadAvatar').textContent=initials;
+  document.getElementById('threadAvatar').style.background=bg;
+}
+function setFilter(btn,f){
+  document.querySelectorAll('.conv-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function sendMessage(){
+  var inp=document.getElementById('msgInput');
+  var txt=inp.value.trim();
+  if(!txt)return;
+  var msgs=document.getElementById('threadMessages');
+  var wrap=document.createElement('div');
+  var now=new Date();
+  var time=now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes()+' '+(now.getHours()<12?'AM':'PM');
+  wrap.innerHTML='<div class="msg-bubble outgoing">'+txt+'</div><div class="msg-time right">'+time+'</div>';
+  msgs.appendChild(wrap);
+  msgs.scrollTop=msgs.scrollHeight;
+  inp.value='';
+}
+function handleMsgKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

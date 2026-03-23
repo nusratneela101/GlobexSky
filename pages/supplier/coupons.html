@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coupons &amp; Discounts | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.88rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;background:#fff}
+    .form-control:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .coupon-code{font-family:monospace;background:#f0f4ff;color:#0052CC;padding:4px 10px;border-radius:6px;font-size:.9rem;font-weight:700;letter-spacing:1px}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html"><i class="fas fa-shield-halved"></i> Disputes</a></li>
+        <li><a href="coupons.html" class="active"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="bulk-upload.html"><i class="fas fa-file-arrow-up"></i> Bulk Upload</a></li>
+        <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h1 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27">Coupons &amp; Discounts</h1>
+          <p style="color:#64748b;font-size:.9rem;margin-top:4px">Create and manage discount codes for your store</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-circle-plus"></i> Create New Coupon</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px">
+          <div class="form-group">
+            <label class="form-label">Coupon Code</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-control" type="text" id="couponCode" placeholder="e.g. SAVE10" style="text-transform:uppercase"/>
+              <button class="btn btn-secondary btn-sm" style="white-space:nowrap" onclick="generateCode()"><i class="fas fa-wand-magic-sparkles"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Discount Type</label>
+            <select class="form-control" id="discountType">
+              <option value="percent">Percentage (%)</option>
+              <option value="fixed">Fixed Amount ($)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Discount Value</label>
+            <input class="form-control" type="number" placeholder="e.g. 10" min="1" id="discountValue"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Minimum Order ($)</label>
+            <input class="form-control" type="number" placeholder="e.g. 50" min="0" id="minOrder"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expiry Date</label>
+            <input class="form-control" type="date" id="expiryDate"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Usage Limit</label>
+            <input class="form-control" type="number" placeholder="e.g. 100" min="1" id="usageLimit"/>
+          </div>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="createCoupon()"><i class="fas fa-plus"></i> Create Coupon</button>
+          <button class="btn btn-secondary" onclick="resetForm()"><i class="fas fa-xmark"></i> Clear</button>
+        </div>
+        <div id="couponMsg" style="display:none;margin-top:14px;padding:12px 16px;background:#d1fae5;border-radius:8px;color:#059669;font-size:.88rem;font-weight:500"><i class="fas fa-circle-check"></i> Coupon created successfully!</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-tags"></i> Active Coupons</div>
+        <div style="overflow-x:auto">
+          <table class="table" id="couponsTable">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Value</th>
+                <th>Min. Order</th>
+                <th>Used / Limit</th>
+                <th>Expiry</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="coupon-code">SAVE10</span></td>
+                <td>Percentage</td>
+                <td><strong>10%</strong></td>
+                <td>$30.00</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="flex:1;background:#e2e8f0;border-radius:50px;height:6px;min-width:80px"><div style="width:72%;height:100%;background:#0052CC;border-radius:50px"></div></div>
+                    <span style="font-size:.8rem;color:#64748b">72/100</span>
+                  </div>
+                </td>
+                <td>30 Jun 2025</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-secondary btn-sm" style="margin-right:6px"><i class="fas fa-pen"></i></button><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626"><i class="fas fa-trash"></i></button></td>
+              </tr>
+              <tr>
+                <td><span class="coupon-code">NEWBUYER</span></td>
+                <td>Fixed</td>
+                <td><strong>$15.00</strong></td>
+                <td>$75.00</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="flex:1;background:#e2e8f0;border-radius:50px;height:6px;min-width:80px"><div style="width:18%;height:100%;background:#059669;border-radius:50px"></div></div>
+                    <span style="font-size:.8rem;color:#64748b">18/100</span>
+                  </div>
+                </td>
+                <td>31 Jul 2025</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-secondary btn-sm" style="margin-right:6px"><i class="fas fa-pen"></i></button><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626"><i class="fas fa-trash"></i></button></td>
+              </tr>
+              <tr>
+                <td><span class="coupon-code">FLASH20</span></td>
+                <td>Percentage</td>
+                <td><strong>20%</strong></td>
+                <td>$50.00</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="flex:1;background:#e2e8f0;border-radius:50px;height:6px;min-width:80px"><div style="width:100%;height:100%;background:#f97316;border-radius:50px"></div></div>
+                    <span style="font-size:.8rem;color:#64748b">50/50</span>
+                  </div>
+                </td>
+                <td>15 May 2025</td>
+                <td><span class="badge badge-gray">Expired</span></td>
+                <td><button class="btn btn-secondary btn-sm" style="margin-right:6px"><i class="fas fa-pen"></i></button><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626"><i class="fas fa-trash"></i></button></td>
+              </tr>
+              <tr>
+                <td><span class="coupon-code">BULK15</span></td>
+                <td>Percentage</td>
+                <td><strong>15%</strong></td>
+                <td>$200.00</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="flex:1;background:#e2e8f0;border-radius:50px;height:6px;min-width:80px"><div style="width:34%;height:100%;background:#0052CC;border-radius:50px"></div></div>
+                    <span style="font-size:.8rem;color:#64748b">34/100</span>
+                  </div>
+                </td>
+                <td>31 Aug 2025</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-secondary btn-sm" style="margin-right:6px"><i class="fas fa-pen"></i></button><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626"><i class="fas fa-trash"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function generateCode(){
+  var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  var code='';
+  for(var i=0;i<8;i++) code+=chars.charAt(Math.floor(Math.random()*chars.length));
+  document.getElementById('couponCode').value=code;
+}
+function createCoupon(){
+  var code=document.getElementById('couponCode').value.trim().toUpperCase();
+  var val=document.getElementById('discountValue').value;
+  if(!code){alert('Please enter a coupon code.');return;}
+  if(!val||parseFloat(val)<=0){alert('Please enter a valid discount value.');return;}
+  document.getElementById('couponMsg').style.display='block';
+  setTimeout(function(){document.getElementById('couponMsg').style.display='none';},4000);
+}
+function resetForm(){
+  document.getElementById('couponCode').value='';
+  document.getElementById('discountValue').value='';
+  document.getElementById('minOrder').value='';
+  document.getElementById('expiryDate').value='';
+  document.getElementById('usageLimit').value='';
+}
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Customer Reviews | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:linear-gradient(135deg,var(--sc,#0052CC),var(--se,#003d99));border-radius:14px;padding:20px;color:#fff}
+    .stat-card .stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+    .stat-card .stat-lbl{font-size:.8rem;opacity:.8;margin-top:4px}
+    .stat-card .stat-icon{font-size:1.4rem;opacity:.6;margin-bottom:8px}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .star{color:#f59e0b;font-size:.95rem}
+    .star.empty{color:#e2e8f0}
+    .review-card{border:1.5px solid #f1f5f9;border-radius:12px;padding:18px;margin-bottom:14px;transition:border-color .2s}
+    .review-card:hover{border-color:#bfdbfe}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tab{padding:7px 16px;border-radius:50px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab:hover,.filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .rating-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .rating-bar-label{width:40px;font-size:.82rem;color:#374151;text-align:right;flex-shrink:0}
+    .rating-bar-track{flex:1;height:8px;background:#e2e8f0;border-radius:50px;overflow:hidden}
+    .rating-bar-fill{height:100%;border-radius:50px;background:#f59e0b}
+    .rating-bar-count{width:36px;font-size:.82rem;color:#64748b;text-align:left;flex-shrink:0}
+    .reviewer-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html" class="active"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html"><i class="fas fa-shield-halved"></i> Disputes</a></li>
+        <li><a href="coupons.html"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="bulk-upload.html"><i class="fas fa-file-arrow-up"></i> Bulk Upload</a></li>
+        <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div style="margin-bottom:24px">
+        <h1 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27">Customer Reviews</h1>
+        <p style="color:#64748b;font-size:.9rem;margin-top:4px">Monitor and respond to customer feedback</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card" style="--sc:#f59e0b;--se:#d97706">
+          <div class="stat-icon"><i class="fas fa-star"></i></div>
+          <div class="stat-val">4.7</div>
+          <div class="stat-lbl">Overall Rating</div>
+        </div>
+        <div class="stat-card" style="--sc:#0052CC;--se:#003d99">
+          <div class="stat-icon"><i class="fas fa-comments"></i></div>
+          <div class="stat-val">234</div>
+          <div class="stat-lbl">Total Reviews</div>
+        </div>
+        <div class="stat-card" style="--sc:#059669;--se:#047857">
+          <div class="stat-icon"><i class="fas fa-star"></i></div>
+          <div class="stat-val">156</div>
+          <div class="stat-lbl">5-Star Reviews</div>
+        </div>
+        <div class="stat-card" style="--sc:#8b5cf6;--se:#7c3aed">
+          <div class="stat-icon"><i class="fas fa-reply"></i></div>
+          <div class="stat-val">89%</div>
+          <div class="stat-lbl">Response Rate</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:grid;grid-template-columns:160px 1fr;gap:32px;align-items:center">
+          <div style="text-align:center">
+            <div style="font-family:'Poppins',sans-serif;font-size:4rem;font-weight:800;color:#0a0e27;line-height:1">4.7</div>
+            <div style="color:#f59e0b;font-size:1.3rem;margin:8px 0">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i>
+            </div>
+            <div style="color:#64748b;font-size:.82rem">Based on 234 reviews</div>
+          </div>
+          <div>
+            <div class="rating-bar-row">
+              <span class="rating-bar-label">5 <i class="fas fa-star" style="color:#f59e0b;font-size:.75rem"></i></span>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:66.7%"></div></div>
+              <span class="rating-bar-count">156</span>
+            </div>
+            <div class="rating-bar-row">
+              <span class="rating-bar-label">4 <i class="fas fa-star" style="color:#f59e0b;font-size:.75rem"></i></span>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:22.2%"></div></div>
+              <span class="rating-bar-count">52</span>
+            </div>
+            <div class="rating-bar-row">
+              <span class="rating-bar-label">3 <i class="fas fa-star" style="color:#f59e0b;font-size:.75rem"></i></span>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:7.7%"></div></div>
+              <span class="rating-bar-count">18</span>
+            </div>
+            <div class="rating-bar-row">
+              <span class="rating-bar-label">2 <i class="fas fa-star" style="color:#f59e0b;font-size:.75rem"></i></span>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:2.1%"></div></div>
+              <span class="rating-bar-count">5</span>
+            </div>
+            <div class="rating-bar-row">
+              <span class="rating-bar-label">1 <i class="fas fa-star" style="color:#f59e0b;font-size:.75rem"></i></span>
+              <div class="rating-bar-track"><div class="rating-bar-fill" style="width:1.3%"></div></div>
+              <span class="rating-bar-count">3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-list"></i> All Reviews</div>
+        <div class="filter-tabs" id="filterTabs">
+          <button class="filter-tab active" onclick="filterReviews(this,'all')">All (234)</button>
+          <button class="filter-tab" onclick="filterReviews(this,'5')">5★ (156)</button>
+          <button class="filter-tab" onclick="filterReviews(this,'4')">4★ (52)</button>
+          <button class="filter-tab" onclick="filterReviews(this,'3')">3★ (18)</button>
+          <button class="filter-tab" onclick="filterReviews(this,'2')">2★ (5)</button>
+          <button class="filter-tab" onclick="filterReviews(this,'1')">1★ (3)</button>
+        </div>
+
+        <div id="reviewsList">
+          <!-- Review 1 -->
+          <div class="review-card" data-rating="5">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="reviewer-avatar">JD</div>
+                <div>
+                  <div style="font-weight:600;font-size:.9rem">James Dawson</div>
+                  <div style="color:#64748b;font-size:.78rem">Wireless Bluetooth Headphones</div>
+                  <div style="margin-top:4px;color:#f59e0b">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:#64748b;font-size:.8rem">20 May 2025</span>
+                <span class="badge badge-green">Published</span>
+              </div>
+            </div>
+            <p style="margin-top:12px;font-size:.88rem;color:#374151;line-height:1.6">"Absolutely love these headphones! Sound quality is incredible and they arrived way faster than expected. The packaging was excellent and everything matched the description perfectly. Will definitely order again!"</p>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="replyTo(this)"><i class="fas fa-reply"></i> Reply</button>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="review-card" data-rating="4">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="reviewer-avatar" style="background:linear-gradient(135deg,#059669,#34d399)">SR</div>
+                <div>
+                  <div style="font-weight:600;font-size:.9rem">Sofia Rahman</div>
+                  <div style="color:#64748b;font-size:.78rem">Ergonomic Office Chair</div>
+                  <div style="margin-top:4px;color:#f59e0b">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color:#e2e8f0"></i>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:#64748b;font-size:.8rem">18 May 2025</span>
+                <span class="badge badge-green">Published</span>
+              </div>
+            </div>
+            <p style="margin-top:12px;font-size:.88rem;color:#374151;line-height:1.6">"Very comfortable chair. Assembly was straightforward and it looks great in my home office. Only minor gripe is delivery took a day longer than estimated. Otherwise very satisfied!"</p>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="replyTo(this)"><i class="fas fa-reply"></i> Reply</button>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="review-card" data-rating="5">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="reviewer-avatar" style="background:linear-gradient(135deg,#8b5cf6,#d946ef)">MK</div>
+                <div>
+                  <div style="font-weight:600;font-size:.9rem">Michael Kim</div>
+                  <div style="color:#64748b;font-size:.78rem">LED Desk Lamp</div>
+                  <div style="margin-top:4px;color:#f59e0b">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:#64748b;font-size:.8rem">15 May 2025</span>
+                <span class="badge badge-green">Published</span>
+              </div>
+            </div>
+            <p style="margin-top:12px;font-size:.88rem;color:#374151;line-height:1.6">"Perfect lamp for my study. The brightness settings are great and the USB charging port on the base is super convenient. Built very solidly. 5 stars without hesitation."</p>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="replyTo(this)"><i class="fas fa-reply"></i> Reply</button>
+            </div>
+          </div>
+
+          <!-- Review 4 -->
+          <div class="review-card" data-rating="3">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="reviewer-avatar" style="background:linear-gradient(135deg,#f97316,#fbbf24)">AL</div>
+                <div>
+                  <div style="font-weight:600;font-size:.9rem">Aisha Lawson</div>
+                  <div style="color:#64748b;font-size:.78rem">Yoga Mat Premium</div>
+                  <div style="margin-top:4px;color:#f59e0b">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color:#e2e8f0"></i><i class="fas fa-star" style="color:#e2e8f0"></i>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:#64748b;font-size:.8rem">11 May 2025</span>
+                <span class="badge badge-orange">Pending Reply</span>
+              </div>
+            </div>
+            <p style="margin-top:12px;font-size:.88rem;color:#374151;line-height:1.6">"The mat is decent quality but thinner than I expected based on the photos. It does the job for light yoga sessions. Shipping was fast. Might look for something thicker next time."</p>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn btn-primary btn-sm" onclick="replyTo(this)"><i class="fas fa-reply"></i> Reply Now</button>
+            </div>
+          </div>
+
+          <!-- Review 5 -->
+          <div class="review-card" data-rating="2">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="reviewer-avatar" style="background:linear-gradient(135deg,#dc2626,#f87171)">TN</div>
+                <div>
+                  <div style="font-weight:600;font-size:.9rem">Tom Nguyen</div>
+                  <div style="color:#64748b;font-size:.78rem">Stainless Steel Water Bottle</div>
+                  <div style="margin-top:4px;color:#f59e0b">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color:#e2e8f0"></i><i class="fas fa-star" style="color:#e2e8f0"></i><i class="fas fa-star" style="color:#e2e8f0"></i>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:#64748b;font-size:.8rem">07 May 2025</span>
+                <span class="badge badge-red">Needs Attention</span>
+              </div>
+            </div>
+            <p style="margin-top:12px;font-size:.88rem;color:#374151;line-height:1.6">"The lid doesn't seal properly and I've had two minor leaks. Product otherwise looks nice but the lid quality is disappointing. Contacted support and waiting for a response."</p>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn btn-primary btn-sm" onclick="replyTo(this)"><i class="fas fa-reply"></i> Reply Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function filterReviews(btn,rating){
+  document.querySelectorAll('.filter-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.review-card').forEach(function(card){
+    card.style.display=(rating==='all'||card.dataset.rating===rating)?'block':'none';
+  });
+}
+function replyTo(btn){
+  var card=btn.closest('.review-card');
+  if(card.querySelector('.reply-box'))return;
+  var box=document.createElement('div');
+  box.className='reply-box';
+  box.style.cssText='margin-top:12px;background:#f8faff;border-radius:10px;padding:14px';
+  box.innerHTML='<textarea style="width:100%;padding:10px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:Inter,sans-serif;font-size:.85rem;resize:vertical;min-height:80px;outline:none" placeholder="Write your reply…"></textarea><div style="margin-top:8px;display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="sendReply(this)"><i class="fas fa-paper-plane"></i> Send Reply</button><button class="btn btn-secondary btn-sm" onclick="this.closest(\'.reply-box\').remove()">Cancel</button></div>';
+  card.appendChild(box);
+}
+function sendReply(btn){
+  var box=btn.closest('.reply-box');
+  var txt=box.querySelector('textarea').value.trim();
+  if(!txt){alert('Please write a reply first.');return;}
+  box.innerHTML='<p style="color:#059669;font-size:.85rem"><i class="fas fa-circle-check"></i> Reply sent successfully!</p>';
+  setTimeout(function(){box.remove();},3000);
+}
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
