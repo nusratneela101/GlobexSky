@@ -1,6 +1,6 @@
 /**
- * Globex Sky Shared Secondary Navigation Component
- * Injects a consistent secondary nav with all 10 items into every page.
+ * Globex Sky Shared Navigation Component
+ * Injects a consistent secondary nav with all major section links into every page.
  * Base path is derived from this script's own URL so relative links always
  * resolve correctly regardless of the page's directory depth.
  */
@@ -22,16 +22,29 @@
 
   /* ── 2. Build the secondary nav HTML ── */
   var items = [
-    { href: 'pages/sourcing/index.html',      icon: 'fa-boxes',       label: 'Sourcing'      },
-    { href: 'pages/shipment/index.html',      icon: 'fa-shipping-fast', label: 'Shipment'     },
-    { href: 'pages/shipment/carry/index.html',icon: 'fa-people-carry', label: 'Carry Service' },
-    { href: 'pages/dropshipping/index.html',  icon: 'fa-truck',        label: 'Dropshipping'  },
-    { href: 'pages/suppliers/index.html',     icon: 'fa-store',        label: 'Suppliers'     },
-    { href: 'pages/livestream/index.html',    icon: 'fa-video',        label: 'Live Streams'  },
-    { href: 'pages/trade-shows/index.html',   icon: 'fa-handshake',    label: 'Trade Shows'   },
-    { href: 'pages/sourcing/vr-showroom.html',icon: 'fa-vr-cardboard', label: 'VR Showroom'   },
-    { href: 'pages/sourcing/inspection.html', icon: 'fa-search-plus',  label: 'Inspection'    },
-    { href: 'pages/api/index.html',           icon: 'fa-code',         label: 'API Platform'  }
+    { href: 'pages/search/index.html',        icon: 'fa-search',        label: 'Search'        },
+    { href: 'pages/product/index.html',        icon: 'fa-box',           label: 'Products'      },
+    { href: 'pages/sourcing/index.html',       icon: 'fa-boxes',         label: 'Sourcing'      },
+    { href: 'pages/supplier/index.html',       icon: 'fa-store',         label: 'Suppliers'     },
+    { href: 'pages/shipment/index.html',       icon: 'fa-shipping-fast', label: 'Shipment'      },
+    { href: 'pages/logistics/index.html',      icon: 'fa-route',         label: 'Logistics'     },
+    { href: 'pages/trade-finance/index.html',  icon: 'fa-hand-holding-usd', label: 'Trade Finance' },
+    { href: 'pages/dropshipping/index.html',   icon: 'fa-truck',         label: 'Dropshipping'  },
+    { href: 'pages/livestream/index.html',     icon: 'fa-video',         label: 'Live Streams'  },
+    { href: 'pages/communication/index.html',  icon: 'fa-comments',      label: 'Communication' },
+    { href: 'pages/ai/index.html',             icon: 'fa-robot',         label: 'AI Tools'      },
+    { href: 'pages/advertising/index.html',    icon: 'fa-bullhorn',      label: 'Advertising'   },
+    { href: 'pages/campaigns/index.html',      icon: 'fa-tags',          label: 'Campaigns'     },
+    { href: 'pages/flash-sales/index.html',    icon: 'fa-bolt',          label: 'Flash Sales'   },
+    { href: 'pages/vr/index.html',             icon: 'fa-vr-cardboard',  label: 'VR Showroom'   },
+    { href: 'pages/trade-shows/index.html',    icon: 'fa-handshake',     label: 'Trade Shows'   },
+    { href: 'pages/meetings/index.html',       icon: 'fa-calendar-check', label: 'Meetings'     },
+    { href: 'pages/loyalty/index.html',        icon: 'fa-star',          label: 'Loyalty'       },
+    { href: 'pages/insights/index.html',       icon: 'fa-chart-bar',     label: 'Insights'      },
+    { href: 'pages/gdpr/cookie-consent.html',  icon: 'fa-shield-alt',    label: 'GDPR'          },
+    { href: 'pages/account/index.html',        icon: 'fa-user',          label: 'My Account'    },
+    { href: 'pages/cart/index.html',           icon: 'fa-shopping-cart', label: 'Cart'          },
+    { href: 'pages/admin/index.html',          icon: 'fa-cogs',          label: 'Admin'         }
   ];
 
   var listHTML = '';
