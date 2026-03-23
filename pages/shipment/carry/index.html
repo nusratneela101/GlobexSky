@@ -64,7 +64,35 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
 .footer-col ul li a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.85rem;transition:color .2s}
 .footer-col ul li a:hover{color:#fff}
 .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}
-@media(max-width:768px){.nav-links{display:none}.hero-btns{flex-direction:column;align-items:center}}
+/* Rate calculator, booking form, tracking */
+.form-section{padding:64px 24px;background:#f4f6fa}
+.form-section.alt{background:#fff}
+.form-card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(0,82,204,.09);padding:40px;max-width:800px;margin:0 auto}
+.form-card.alt{background:#f4f6fa}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:.85rem;font-weight:600;color:#374151}
+.form-group input,.form-group select,.form-group textarea{padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.9rem;color:#1a1a2e;font-family:'Inter',sans-serif;transition:border-color .2s;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#0052CC}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-hint{font-size:.78rem;color:#94a3b8}
+.btn-submit{padding:12px 32px;background:#0052CC;color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;margin-top:8px}
+.btn-submit:hover{background:#003d99;transform:translateY(-2px)}
+.rate-result{margin-top:24px;padding:20px 24px;background:#eff6ff;border-radius:12px;border-left:4px solid #0052CC;display:none}
+.rate-result.visible{display:block}
+.rate-result-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC;margin-bottom:8px;font-size:1rem}
+.rate-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.rate-table td{padding:6px 0;color:#374151}
+.rate-table td:last-child{font-weight:600;text-align:right;color:#0a0e27}
+.track-result{margin-top:24px;padding:20px 24px;background:#f0fdf9;border-radius:12px;border-left:4px solid #059669;display:none}
+.track-result.visible{display:block}
+.track-steps{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.track-step{display:flex;align-items:flex-start;gap:14px}
+.track-dot{width:36px;height:36px;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem;flex-shrink:0}
+.track-dot.pending{background:#e2e8f0;color:#94a3b8}
+.track-info-title{font-weight:600;color:#0a0e27;font-size:.88rem}
+.track-info-sub{color:#64748b;font-size:.8rem;margin-top:2px}
+@media(max-width:768px){.nav-links{display:none}.hero-btns{flex-direction:column;align-items:center}.form-card{padding:24px 16px}}
 </style>
 </head>
 <body>
@@ -195,6 +223,154 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
   </div>
 </section>
 
+<!-- RATE CALCULATOR -->
+<section class="form-section alt">
+  <div class="container">
+    <h2 class="section-title">Carry Rate Calculator</h2>
+    <p class="section-sub">Estimate your shipment cost before booking</p>
+    <div class="form-card">
+      <form id="rateForm" onsubmit="calcRate(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rc-weight"><i class="fas fa-weight-hanging"></i> Weight (kg)</label>
+            <input type="number" id="rc-weight" min="0.1" step="0.1" placeholder="e.g. 2.5" required>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-cube"></i> Dimensions (cm)</label>
+            <div style="display:flex;gap:8px">
+              <input type="number" id="rc-l" min="1" placeholder="L" required style="width:100%">
+              <input type="number" id="rc-w" min="1" placeholder="W" required style="width:100%">
+              <input type="number" id="rc-h" min="1" placeholder="H" required style="width:100%">
+            </div>
+            <span class="form-hint">Length × Width × Height</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rc-origin"><i class="fas fa-map-marker-alt"></i> Origin City</label>
+            <input type="text" id="rc-origin" placeholder="e.g. Dhaka" required>
+          </div>
+          <div class="form-group">
+            <label for="rc-dest"><i class="fas fa-flag-checkered"></i> Destination City</label>
+            <input type="text" id="rc-dest" placeholder="e.g. New York" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit"><i class="fas fa-calculator"></i> Calculate Rate</button>
+      </form>
+      <div class="rate-result" id="rateResult">
+        <div class="rate-result-title"><i class="fas fa-receipt"></i> Estimated Cost Breakdown</div>
+        <table class="rate-table">
+          <tr><td>Base carry fee</td><td id="rr-base">—</td></tr>
+          <tr><td>Weight surcharge</td><td id="rr-weight">—</td></tr>
+          <tr><td>Dimensional adjustment</td><td id="rr-dim">—</td></tr>
+          <tr style="border-top:1px solid #bfdbfe"><td><strong>Total Estimate</strong></td><td id="rr-total" style="color:#0052CC;font-size:1.05rem">—</td></tr>
+        </table>
+        <p style="font-size:.78rem;color:#64748b;margin-top:10px">* Final price is agreed with the individual carrier. This is an estimate only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK A CARRY SHIPMENT -->
+<section class="form-section">
+  <div class="container">
+    <h2 class="section-title">Book a Carry Shipment</h2>
+    <p class="section-sub">Fill in the details below and we'll match you with an available carrier</p>
+    <div class="form-card">
+      <form id="bookForm" onsubmit="bookShipment(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bk-sender"><i class="fas fa-user"></i> Sender Name</label>
+            <input type="text" id="bk-sender" placeholder="Your full name" required>
+          </div>
+          <div class="form-group">
+            <label for="bk-recipient"><i class="fas fa-user-check"></i> Recipient Name</label>
+            <input type="text" id="bk-recipient" placeholder="Recipient full name" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bk-phone"><i class="fas fa-phone"></i> Contact Phone</label>
+            <input type="tel" id="bk-phone" placeholder="+880 1700-000000" required>
+          </div>
+          <div class="form-group">
+            <label for="bk-weight"><i class="fas fa-weight"></i> Item Weight (kg)</label>
+            <input type="number" id="bk-weight" min="0.1" step="0.1" placeholder="e.g. 1.5" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bk-pickup"><i class="fas fa-map-pin"></i> Pickup Address</label>
+            <input type="text" id="bk-pickup" placeholder="Full pickup address" required>
+          </div>
+          <div class="form-group">
+            <label for="bk-delivery"><i class="fas fa-location-arrow"></i> Delivery Address</label>
+            <input type="text" id="bk-delivery" placeholder="Full delivery address" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label for="bk-desc"><i class="fas fa-box"></i> Item Description</label>
+          <input type="text" id="bk-desc" placeholder="e.g. Electronics, clothing, documents…" required>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label for="bk-notes"><i class="fas fa-sticky-note"></i> Special Instructions</label>
+          <textarea id="bk-notes" placeholder="Fragile? Temperature-sensitive? Any customs notes?"></textarea>
+        </div>
+        <button type="submit" class="btn-submit" style="background:#FF6B35"><i class="fas fa-paper-plane"></i> Book Now</button>
+      </form>
+      <div id="bookConfirm" style="display:none;margin-top:24px;padding:20px;background:#d1fae5;border-radius:12px;border-left:4px solid #059669">
+        <p style="font-family:'Poppins',sans-serif;font-weight:700;color:#059669;margin-bottom:6px"><i class="fas fa-check-circle"></i> Booking Request Received!</p>
+        <p style="font-size:.88rem;color:#374151">We'll match you with a verified carrier and send a confirmation to your contact shortly. Reference: <strong id="bk-ref"></strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACK CARRY SHIPMENT -->
+<section class="form-section alt">
+  <div class="container">
+    <h2 class="section-title">Track Your Carry Shipment</h2>
+    <p class="section-sub">Enter your tracking number to see real-time status updates</p>
+    <div class="form-card">
+      <form id="trackForm" onsubmit="trackShipment(event)" style="display:flex;gap:12px;flex-wrap:wrap">
+        <div class="form-group" style="flex:1;min-width:220px">
+          <label for="tk-num"><i class="fas fa-barcode"></i> Tracking Number</label>
+          <input type="text" id="tk-num" placeholder="e.g. GS-CARRY-20240325-001" required>
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button type="submit" class="btn-submit"><i class="fas fa-search"></i> Track</button>
+        </div>
+      </form>
+      <div class="track-result" id="trackResult">
+        <p style="font-family:'Poppins',sans-serif;font-weight:700;color:#059669;margin-bottom:4px"><i class="fas fa-satellite-dish"></i> Live Tracking — <span id="tk-display"></span></p>
+        <p style="font-size:.82rem;color:#64748b;margin-bottom:16px">Dhaka → New York &nbsp;|&nbsp; Carrier: <strong>Ahmed Rahman</strong> &nbsp;|&nbsp; ETA: <strong>Mar 25, 2024</strong></p>
+        <div class="track-steps">
+          <div class="track-step">
+            <div class="track-dot"><i class="fas fa-check"></i></div>
+            <div><div class="track-info-title">Booking Confirmed</div><div class="track-info-sub">Mar 20, 2024 – 10:14 AM</div></div>
+          </div>
+          <div class="track-step">
+            <div class="track-dot"><i class="fas fa-check"></i></div>
+            <div><div class="track-info-title">Item Handed to Carrier</div><div class="track-info-sub">Mar 22, 2024 – 3:40 PM · Dhaka</div></div>
+          </div>
+          <div class="track-step">
+            <div class="track-dot"><i class="fas fa-plane"></i></div>
+            <div><div class="track-info-title">In Transit – Carrier Departed</div><div class="track-info-sub">Mar 23, 2024 – 8:00 PM · Dhaka Airport</div></div>
+          </div>
+          <div class="track-step">
+            <div class="track-dot pending"><i class="fas fa-clock"></i></div>
+            <div><div class="track-info-title">Arrived at Destination</div><div class="track-info-sub">Estimated Mar 25, 2024</div></div>
+          </div>
+          <div class="track-step">
+            <div class="track-dot pending"><i class="fas fa-box-open"></i></div>
+            <div><div class="track-info-title">Delivered to Recipient</div><div class="track-info-sub">Pending</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-grid">
@@ -235,6 +411,40 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
   </div>
 </footer>
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script>
+function calcRate(e){
+  e.preventDefault();
+  var w=parseFloat(document.getElementById('rc-weight').value)||0;
+  var l=parseFloat(document.getElementById('rc-l').value)||0;
+  var ww=parseFloat(document.getElementById('rc-w').value)||0;
+  var h=parseFloat(document.getElementById('rc-h').value)||0;
+  var base=12, wCharge=w*2.5, dimVol=(l*ww*h)/5000, dimCharge=dimVol>w?((dimVol-w)*1.8):0;
+  var total=base+wCharge+dimCharge;
+  document.getElementById('rr-base').textContent='$'+base.toFixed(2);
+  document.getElementById('rr-weight').textContent='$'+wCharge.toFixed(2);
+  document.getElementById('rr-dim').textContent='$'+dimCharge.toFixed(2);
+  document.getElementById('rr-total').textContent='$'+total.toFixed(2);
+  var r=document.getElementById('rateResult');
+  r.classList.add('visible');
+  r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function bookShipment(e){
+  e.preventDefault();
+  var ref='GS-CARRY-'+Date.now().toString(36).toUpperCase();
+  document.getElementById('bk-ref').textContent=ref;
+  document.getElementById('bookConfirm').style.display='block';
+  document.getElementById('bookForm').reset();
+  document.getElementById('bookConfirm').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function trackShipment(e){
+  e.preventDefault();
+  var num=document.getElementById('tk-num').value.trim();
+  document.getElementById('tk-display').textContent=num;
+  var r=document.getElementById('trackResult');
+  r.classList.add('visible');
+  r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
 <script src="../../../assets/js/navbar.js"></script>
 </body>
 </html>

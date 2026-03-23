@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Your Shopping Cart - GlobexSky Global Trade Marketplace. Review your selected products from verified global suppliers before checkout." />
+  <meta name="robots" content="noindex, nofollow" />
+  <title data-i18n="cart.page_title">Shopping Cart — GlobexSky</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" crossorigin="anonymous" />
+
+  <!-- Site stylesheets -->
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/cart.css" />
+
+  <style>
+    /* Cart page-specific layout overrides */
+    .cart-page-wrapper {
+      background: var(--light, #F4F6FA);
+      min-height: 80vh;
+      padding: 2rem 0 4rem;
+    }
+    .cart-breadcrumb {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+    }
+    .cart-breadcrumb a {
+      color: var(--primary, #0052CC);
+      text-decoration: none;
+    }
+    .cart-breadcrumb a:hover { text-decoration: underline; }
+    .cart-breadcrumb .sep { margin: 0 0.4rem; }
+
+    /* Progress steps */
+    .checkout-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2rem;
+    }
+    .checkout-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      font-family: 'Inter', sans-serif;
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+    .checkout-step.active { color: var(--primary, #0052CC); font-weight: 600; }
+    .checkout-step.done { color: var(--accent, #00C9A7); }
+    .checkout-step-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+      background: #e5e7eb;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+    .checkout-step.active .checkout-step-icon { background: var(--primary, #0052CC); color: #fff; }
+    .checkout-step.done .checkout-step-icon { background: var(--accent, #00C9A7); color: #fff; }
+    .step-connector { flex: 1; max-width: 60px; height: 2px; background: #e5e7eb; margin: 0 0.25rem; }
+    .step-connector.done { background: var(--accent, #00C9A7); }
+
+    /* Vendor group */
+    .vendor-group {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(10,14,39,0.07);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .vendor-group-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 1.25rem;
+      background: var(--light, #F4F6FA);
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .vendor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--primary, #0052CC);
+      color: #fff;
+      border-radius: 20px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+    }
+    .vendor-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--dark, #0A0E27);
+    }
+    .vendor-rating { font-size: 0.78rem; color: #f59e0b; margin-left: auto; }
+    .vendor-country { font-size: 0.78rem; color: #6b7280; margin-left: 0.4rem; }
+
+    /* Cart item row */
+    .cart-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid #f3f4f6;
+      transition: background 0.15s;
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item:hover { background: #f9fafb; }
+    .cart-item-img {
+      width: 80px; height: 80px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      flex-shrink: 0;
+      background: #f9fafb;
+    }
+    .cart-item-body { flex: 1; min-width: 0; }
+    .cart-item-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.93rem;
+      color: var(--dark, #0A0E27);
+      margin-bottom: 0.2rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cart-item-variant {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-bottom: 0.4rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .cart-item-variant span {
+      display: inline-block;
+      background: #f3f4f6;
+      border-radius: 4px;
+      padding: 0.1rem 0.5rem;
+      margin-right: 0.3rem;
+    }
+    .cart-item-price {
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      color: var(--secondary, #FF6B35);
+      font-size: 1rem;
+    }
+    .cart-item-original {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      text-decoration: line-through;
+      margin-left: 0.4rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .cart-item-moq {
+      font-size: 0.72rem;
+      color: var(--accent, #00C9A7);
+      font-family: 'Inter', sans-serif;
+    }
+    .cart-item-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.65rem;
+      flex-shrink: 0;
+    }
+    .qty-control {
+      display: flex;
+      align-items: center;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .qty-btn {
+      width: 32px; height: 32px;
+      background: #f3f4f6;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--dark, #0A0E27);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .qty-btn:hover { background: var(--primary, #0052CC); color: #fff; }
+    .qty-input {
+      width: 42px; height: 32px;
+      border: none; border-left: 1px solid #d1d5db; border-right: 1px solid #d1d5db;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--dark, #0A0E27);
+      background: #fff;
+    }
+    .qty-input:focus { outline: none; background: #eff6ff; }
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .remove-btn:hover { background: #fee2e2; }
+    .item-line-total {
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      color: var(--dark, #0A0E27);
+    }
+
+    /* Cart summary sidebar */
+    .cart-summary-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(10,14,39,0.07);
+      padding: 1.5rem;
+      position: sticky;
+      top: 80px;
+    }
+    .summary-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--dark, #0A0E27);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--light, #F4F6FA);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+    }
+    .summary-row .label { color: #6b7280; }
+    .summary-row .value { font-weight: 600; color: var(--dark, #0A0E27); }
+    .summary-row .value.discount { color: #10b981; }
+    .summary-divider { border: none; border-top: 1px dashed #e5e7eb; margin: 0.75rem 0; }
+    .summary-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .summary-total-label {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--dark, #0A0E27);
+    }
+    .summary-total-value {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--primary, #0052CC);
+    }
+
+    /* Coupon */
+    .coupon-section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(10,14,39,0.07);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .coupon-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--dark, #0A0E27);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .coupon-input-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .coupon-input {
+      flex: 1;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      padding: 0.55rem 0.9rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--dark, #0A0E27);
+      background: var(--light, #F4F6FA);
+      transition: border-color 0.2s;
+    }
+    .coupon-input:focus { outline: none; border-color: var(--primary, #0052CC); background: #fff; }
+    .coupon-apply-btn {
+      background: var(--secondary, #FF6B35);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .coupon-apply-btn:hover { background: #e55b26; }
+    .coupon-success {
+      display: none;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #10b981;
+      font-family: 'Inter', sans-serif;
+    }
+    .coupon-success.show { display: flex; align-items: center; gap: 0.3rem; }
+
+    /* Action buttons */
+    .btn-checkout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      background: var(--primary, #0052CC);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem 1.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 0.75rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-checkout:hover { background: #0041a8; color: #fff; transform: translateY(-1px); }
+    .btn-continue {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      background: transparent;
+      color: var(--primary, #0052CC);
+      border: 2px solid var(--primary, #0052CC);
+      border-radius: 10px;
+      padding: 0.75rem 1.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-continue:hover { background: var(--primary, #0052CC); color: #fff; }
+
+    /* Secure badges */
+    .secure-badges {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      color: #6b7280;
+      font-family: 'Inter', sans-serif;
+    }
+    .secure-badge i { color: var(--accent, #00C9A7); }
+
+    /* Empty cart state */
+    .empty-cart-state {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(10,14,39,0.07);
+    }
+    .empty-cart-state.visible { display: block; }
+    .empty-cart-icon {
+      font-size: 4rem;
+      color: #d1d5db;
+      margin-bottom: 1.5rem;
+    }
+    .empty-cart-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--dark, #0A0E27);
+      margin-bottom: 0.5rem;
+    }
+    .empty-cart-desc {
+      font-family: 'Inter', sans-serif;
+      color: #6b7280;
+      font-size: 0.92rem;
+      margin-bottom: 1.75rem;
+    }
+
+    /* Recently viewed */
+    .section-heading {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--dark, #0A0E27);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary, #0052CC) 0%, transparent 100%);
+      border-radius: 2px;
+      margin-left: 0.5rem;
+    }
+    .horizontal-scroll-track {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.75rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .horizontal-scroll-track::-webkit-scrollbar { height: 4px; }
+    .horizontal-scroll-track::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 2px; }
+    .horizontal-scroll-track::-webkit-scrollbar-thumb { background: var(--primary, #0052CC); border-radius: 2px; }
+
+    /* Product cards (recently viewed & cross-sell) */
+    .product-card-mini {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(10,14,39,0.07);
+      overflow: hidden;
+      flex-shrink: 0;
+      width: 160px;
+      scroll-snap-align: start;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .product-card-mini:hover { box-shadow: 0 4px 16px rgba(0,82,204,0.13); transform: translateY(-3px); }
+    .product-card-mini img {
+      width: 100%; height: 110px;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+    .product-card-mini-body { padding: 0.6rem 0.75rem; }
+    .product-card-mini-name {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--dark, #0A0E27);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 0.2rem;
+    }
+    .product-card-mini-price {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--secondary, #FF6B35);
+    }
+    .product-card-mini-add {
+      width: 100%;
+      margin-top: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--primary, #0052CC);
+      color: #fff;
+      font-size: 0.72rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      padding: 0.3rem 0;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .product-card-mini-add:hover { background: #0041a8; }
+
+    /* Cross-sell grid */
+    .crosssell-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .product-card-grid {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(10,14,39,0.07);
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .product-card-grid:hover { box-shadow: 0 4px 16px rgba(0,82,204,0.13); transform: translateY(-3px); }
+    .product-card-grid img {
+      width: 100%; height: 130px;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+    .product-card-grid-body { padding: 0.75rem; }
+    .product-card-grid-name {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--dark, #0A0E27);
+      margin-bottom: 0.25rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .product-card-grid-rating {
+      font-size: 0.72rem;
+      color: #f59e0b;
+      margin-bottom: 0.25rem;
+    }
+    .product-card-grid-price {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--secondary, #FF6B35);
+    }
+    .product-card-grid-add {
+      width: 100%;
+      margin-top: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--light, #F4F6FA);
+      color: var(--primary, #0052CC);
+      font-size: 0.75rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      padding: 0.4rem 0;
+      cursor: pointer;
+      border: 1.5px solid var(--primary, #0052CC);
+      transition: background 0.15s, color 0.15s;
+    }
+    .product-card-grid-add:hover { background: var(--primary, #0052CC); color: #fff; }
+
+    /* Select all / item count bar */
+    .cart-actions-bar {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(10,14,39,0.07);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .cart-select-all {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--dark, #0A0E27);
+      cursor: pointer;
+    }
+    .cart-item-count {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-left: auto;
+    }
+    .cart-clear-btn {
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #ef4444;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .cart-clear-btn:hover { background: #fee2e2; }
+
+    /* Savings banner */
+    .savings-banner {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 1px solid #a7f3d0;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #065f46;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Dark mode */
+    [data-theme="dark"] .cart-page-wrapper { background: #111827; }
+    [data-theme="dark"] .vendor-group,
+    [data-theme="dark"] .cart-summary-card,
+    [data-theme="dark"] .coupon-section,
+    [data-theme="dark"] .cart-actions-bar,
+    [data-theme="dark"] .empty-cart-state { background: #1f2937; }
+    [data-theme="dark"] .vendor-group-header { background: #111827; border-color: #374151; }
+    [data-theme="dark"] .cart-item { border-color: #374151; }
+    [data-theme="dark"] .cart-item:hover { background: #111827; }
+    [data-theme="dark"] .cart-item-img { border-color: #374151; background: #111827; }
+    [data-theme="dark"] .cart-item-name,
+    [data-theme="dark"] .vendor-name,
+    [data-theme="dark"] .summary-title,
+    [data-theme="dark"] .summary-total-label,
+    [data-theme="dark"] .coupon-title,
+    [data-theme="dark"] .cart-select-all,
+    [data-theme="dark"] .item-line-total { color: #f9fafb; }
+    [data-theme="dark"] .qty-btn { background: #374151; color: #f9fafb; }
+    [data-theme="dark"] .qty-input { background: #1f2937; color: #f9fafb; border-color: #374151; }
+    [data-theme="dark"] .coupon-input { background: #111827; color: #f9fafb; border-color: #374151; }
+    [data-theme="dark"] .product-card-mini,
+    [data-theme="dark"] .product-card-grid { background: #1f2937; }
+    [data-theme="dark"] .product-card-mini-name,
+    [data-theme="dark"] .product-card-grid-name { color: #f9fafb; }
+    [data-theme="dark"] .section-heading { color: #f9fafb; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .cart-item { flex-wrap: wrap; }
+      .cart-item-controls { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+      .checkout-steps { display: none; }
+      .product-card-mini { width: 140px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== SITE HEADER ===== -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="nav-container">
+        <a href="../../index.html" class="nav-logo" aria-label="Globex Sky Home">
+          <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain" />
+        </a>
+        <div class="nav-search" role="search">
+          <div class="search-wrapper">
+            <input type="search" class="search-input" placeholder="Search products, suppliers..." aria-label="Search" />
+            <div class="search-actions">
+              <button class="search-btn search-submit" aria-label="Submit search">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="nav-controls">
+          <a href="../auth/login.html" class="btn-nav btn-login">
+            <i class="fas fa-sign-in-alt" aria-hidden="true"></i> <span data-i18n="nav.login">Login</span>
+          </a>
+          <a href="../auth/register.html" class="btn-nav btn-register">
+            <i class="fas fa-user-plus" aria-hidden="true"></i> <span data-i18n="nav.register">Register</span>
+          </a>
+          <a href="index.html" class="nav-cart" aria-label="Shopping cart">
+            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+            <span class="cart-badge" id="cart-count">3</span>
+          </a>
+        </div>
+        <button class="hamburger" id="hamburger-btn" aria-label="Toggle mobile menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+      <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+        <ul class="mobile-nav-list" role="list">
+          <li><a href="../../index.html"><i class="fas fa-home" aria-hidden="true"></i> Home</a></li>
+          <li><a href="../shipment/index.html"><i class="fas fa-shipping-fast" aria-hidden="true"></i> Shipment</a></li>
+          <li><a href="../auth/login.html" class="mobile-login"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div id="secondary-nav-root"></div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main id="main-content" role="main">
+    <div class="cart-page-wrapper">
+      <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav class="cart-breadcrumb" aria-label="Breadcrumb">
+          <a href="../../index.html" data-i18n="breadcrumb.home">Home</a>
+          <span class="sep" aria-hidden="true">/</span>
+          <span data-i18n="breadcrumb.cart">Shopping Cart</span>
+        </nav>
+
+        <!-- Checkout Progress Steps -->
+        <div class="checkout-steps" aria-label="Checkout progress" role="list">
+          <div class="checkout-step active" role="listitem" aria-current="step">
+            <div class="checkout-step-icon">1</div>
+            <span data-i18n="checkout.step.cart">Cart</span>
+          </div>
+          <div class="step-connector" aria-hidden="true"></div>
+          <div class="checkout-step" role="listitem">
+            <div class="checkout-step-icon">2</div>
+            <span data-i18n="checkout.step.shipping">Shipping</span>
+          </div>
+          <div class="step-connector" aria-hidden="true"></div>
+          <div class="checkout-step" role="listitem">
+            <div class="checkout-step-icon">3</div>
+            <span data-i18n="checkout.step.payment">Payment</span>
+          </div>
+          <div class="step-connector" aria-hidden="true"></div>
+          <div class="checkout-step" role="listitem">
+            <div class="checkout-step-icon">4</div>
+            <span data-i18n="checkout.step.confirm">Confirm</span>
+          </div>
+        </div>
+
+        <div class="row g-4">
+
+          <!-- ===== LEFT COLUMN: CART ITEMS ===== -->
+          <div class="col-lg-8">
+
+            <!-- Actions bar -->
+            <div class="cart-actions-bar" role="toolbar" aria-label="Cart actions">
+              <label class="cart-select-all">
+                <input type="checkbox" id="select-all-items" checked aria-label="Select all items" />
+                <span data-i18n="cart.select_all">Select All (5 items)</span>
+              </label>
+              <button class="cart-clear-btn" id="clear-selected-btn" aria-label="Delete selected items" data-i18n="cart.delete_selected">
+                <i class="fas fa-trash-alt" aria-hidden="true"></i> Delete Selected
+              </button>
+              <span class="cart-item-count" data-i18n="cart.item_count">5 items in cart</span>
+            </div>
+
+            <!-- ===== VENDOR GROUP 1: TechnoSource Electronics ===== -->
+            <div class="vendor-group" data-vendor-id="vendor-001" role="region" aria-label="TechnoSource Electronics items">
+              <div class="vendor-group-header">
+                <span class="vendor-badge">
+                  <i class="fas fa-store" aria-hidden="true"></i>
+                  <span data-i18n="vendor.verified">Verified Supplier</span>
+                </span>
+                <span class="vendor-name" data-i18n="vendor.technosource.name">TechnoSource Electronics Co., Ltd.</span>
+                <span class="vendor-rating" aria-label="Supplier rating 4.8 stars">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                  4.8
+                </span>
+                <span class="vendor-country"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Shenzhen, China</span>
+              </div>
+
+              <!-- Item 1 -->
+              <article class="cart-item" data-item-id="item-001" aria-label="Product: Wireless Noise-Cancelling Headphones">
+                <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
+                <img
+                  src="https://via.placeholder.com/80x80/0052CC/ffffff?text=HP"
+                  alt="Wireless Noise-Cancelling Headphones"
+                  class="cart-item-img"
+                  width="80" height="80"
+                  loading="lazy"
+                />
+                <div class="cart-item-body">
+                  <div class="cart-item-name" data-i18n="item.001.name">Wireless Noise-Cancelling Headphones Pro X9</div>
+                  <div class="cart-item-variant">
+                    <span data-i18n="item.001.color">Color: Midnight Black</span>
+                    <span data-i18n="item.001.model">Model: X9-BT50</span>
+                  </div>
+                  <div>
+                    <span class="cart-item-price" data-i18n="item.001.price">$34.50</span>
+                    <span class="cart-item-original" data-i18n="item.001.original">$42.00</span>
+                  </div>
+                  <div class="cart-item-moq" data-i18n="item.001.moq">
+                    <i class="fas fa-boxes" aria-hidden="true"></i> MOQ: 50 units
+                  </div>
+                </div>
+                <div class="cart-item-controls">
+                  <div class="qty-control" role="group" aria-label="Quantity control">
+                    <button class="qty-btn" aria-label="Decrease quantity" data-action="decrease" data-item="item-001">
+                      <i class="fas fa-minus" aria-hidden="true"></i>
+                    </button>
+                    <input type="number" class="qty-input" value="100" min="50" max="10000" aria-label="Quantity" data-item="item-001" />
+                    <button class="qty-btn" aria-label="Increase quantity" data-action="increase" data-item="item-001">
+                      <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="item-line-total" data-line-total="item-001" aria-label="Item total">$3,450.00</div>
+                  <button class="remove-btn" aria-label="Remove item" data-remove="item-001">
+                    <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="cart.remove">Remove</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Item 2 -->
+              <article class="cart-item" data-item-id="item-002" aria-label="Product: 4K Ultra HD Smart Security Camera">
+                <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
+                <img
+                  src="https://via.placeholder.com/80x80/00C9A7/ffffff?text=CAM"
+                  alt="4K Ultra HD Smart Security Camera"
+                  class="cart-item-img"
+                  width="80" height="80"
+                  loading="lazy"
+                />
+                <div class="cart-item-body">
+                  <div class="cart-item-name" data-i18n="item.002.name">4K Ultra HD Smart Security Camera with AI Detection</div>
+                  <div class="cart-item-variant">
+                    <span data-i18n="item.002.storage">Storage: 128GB</span>
+                    <span data-i18n="item.002.connectivity">WiFi + PoE</span>
+                  </div>
+                  <div>
+                    <span class="cart-item-price" data-i18n="item.002.price">$58.90</span>
+                    <span class="cart-item-original" data-i18n="item.002.original">$74.00</span>
+                  </div>
+                  <div class="cart-item-moq" data-i18n="item.002.moq">
+                    <i class="fas fa-boxes" aria-hidden="true"></i> MOQ: 20 units
+                  </div>
+                </div>
+                <div class="cart-item-controls">
+                  <div class="qty-control" role="group" aria-label="Quantity control">
+                    <button class="qty-btn" aria-label="Decrease quantity" data-action="decrease" data-item="item-002">
+                      <i class="fas fa-minus" aria-hidden="true"></i>
+                    </button>
+                    <input type="number" class="qty-input" value="40" min="20" max="5000" aria-label="Quantity" data-item="item-002" />
+                    <button class="qty-btn" aria-label="Increase quantity" data-action="increase" data-item="item-002">
+                      <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="item-line-total" data-line-total="item-002" aria-label="Item total">$2,356.00</div>
+                  <button class="remove-btn" aria-label="Remove item" data-remove="item-002">
+                    <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="cart.remove">Remove</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Item 3 -->
+              <article class="cart-item" data-item-id="item-003" aria-label="Product: USB-C 65W GaN Fast Charger">
+                <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
+                <img
+                  src="https://via.placeholder.com/80x80/FF6B35/ffffff?text=CHG"
+                  alt="USB-C 65W GaN Fast Charger"
+                  class="cart-item-img"
+                  width="80" height="80"
+                  loading="lazy"
+                />
+                <div class="cart-item-body">
+                  <div class="cart-item-name" data-i18n="item.003.name">USB-C 65W GaN Fast Charger — 3-Port Compact</div>
+                  <div class="cart-item-variant">
+                    <span data-i18n="item.003.plug">Plug: EU / US / UK</span>
+                    <span data-i18n="item.003.color">White</span>
+                  </div>
+                  <div>
+                    <span class="cart-item-price" data-i18n="item.003.price">$12.80</span>
+                    <span class="cart-item-original" data-i18n="item.003.original">$16.50</span>
+                  </div>
+                  <div class="cart-item-moq" data-i18n="item.003.moq">
+                    <i class="fas fa-boxes" aria-hidden="true"></i> MOQ: 100 units
+                  </div>
+                </div>
+                <div class="cart-item-controls">
+                  <div class="qty-control" role="group" aria-label="Quantity control">
+                    <button class="qty-btn" aria-label="Decrease quantity" data-action="decrease" data-item="item-003">
+                      <i class="fas fa-minus" aria-hidden="true"></i>
+                    </button>
+                    <input type="number" class="qty-input" value="200" min="100" max="50000" aria-label="Quantity" data-item="item-003" />
+                    <button class="qty-btn" aria-label="Increase quantity" data-action="increase" data-item="item-003">
+                      <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="item-line-total" data-line-total="item-003" aria-label="Item total">$2,560.00</div>
+                  <button class="remove-btn" aria-label="Remove item" data-remove="item-003">
+                    <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="cart.remove">Remove</span>
+                  </button>
+                </div>
+              </article>
+            </div>
+
+            <!-- ===== VENDOR GROUP 2: StyleForward Apparel ===== -->
+            <div class="vendor-group" data-vendor-id="vendor-002" role="region" aria-label="StyleForward Apparel items">
+              <div class="vendor-group-header">
+                <span class="vendor-badge" style="background: var(--secondary, #FF6B35);">
+                  <i class="fas fa-store" aria-hidden="true"></i>
+                  <span data-i18n="vendor.verified">Verified Supplier</span>
+                </span>
+                <span class="vendor-name" data-i18n="vendor.styleforward.name">StyleForward Apparel & Textile Ltd.</span>
+                <span class="vendor-rating" aria-label="Supplier rating 4.6 stars">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                  4.6
+                </span>
+                <span class="vendor-country"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Guangzhou, China</span>
+              </div>
+
+              <!-- Item 4 -->
+              <article class="cart-item" data-item-id="item-004" aria-label="Product: Men's Premium Slim-Fit Business Shirt">
+                <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
+                <img
+                  src="https://via.placeholder.com/80x80/6366f1/ffffff?text=SHIRT"
+                  alt="Men's Premium Slim-Fit Business Shirt"
+                  class="cart-item-img"
+                  width="80" height="80"
+                  loading="lazy"
+                />
+                <div class="cart-item-body">
+                  <div class="cart-item-name" data-i18n="item.004.name">Men's Premium Slim-Fit Business Shirt — 100% Cotton</div>
+                  <div class="cart-item-variant">
+                    <span data-i18n="item.004.size">Size: M / L / XL / XXL</span>
+                    <span data-i18n="item.004.color">Color: Navy Blue</span>
+                  </div>
+                  <div>
+                    <span class="cart-item-price" data-i18n="item.004.price">$8.20</span>
+                    <span class="cart-item-original" data-i18n="item.004.original">$11.00</span>
+                  </div>
+                  <div class="cart-item-moq" data-i18n="item.004.moq">
+                    <i class="fas fa-boxes" aria-hidden="true"></i> MOQ: 200 pieces
+                  </div>
+                </div>
+                <div class="cart-item-controls">
+                  <div class="qty-control" role="group" aria-label="Quantity control">
+                    <button class="qty-btn" aria-label="Decrease quantity" data-action="decrease" data-item="item-004">
+                      <i class="fas fa-minus" aria-hidden="true"></i>
+                    </button>
+                    <input type="number" class="qty-input" value="500" min="200" max="100000" aria-label="Quantity" data-item="item-004" />
+                    <button class="qty-btn" aria-label="Increase quantity" data-action="increase" data-item="item-004">
+                      <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="item-line-total" data-line-total="item-004" aria-label="Item total">$4,100.00</div>
+                  <button class="remove-btn" aria-label="Remove item" data-remove="item-004">
+                    <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="cart.remove">Remove</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Item 5 -->
+              <article class="cart-item" data-item-id="item-005" aria-label="Product: Women's Athletic Running Leggings">
+                <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
+                <img
+                  src="https://via.placeholder.com/80x80/ec4899/ffffff?text=LEG"
+                  alt="Women's Athletic Running Leggings"
+                  class="cart-item-img"
+                  width="80" height="80"
+                  loading="lazy"
+                />
+                <div class="cart-item-body">
+                  <div class="cart-item-name" data-i18n="item.005.name">Women's High-Waist Athletic Running Leggings — Seamless</div>
+                  <div class="cart-item-variant">
+                    <span data-i18n="item.005.size">Size: S / M / L</span>
+                    <span data-i18n="item.005.color">Color: Charcoal Grey</span>
+                  </div>
+                  <div>
+                    <span class="cart-item-price" data-i18n="item.005.price">$6.90</span>
+                    <span class="cart-item-original" data-i18n="item.005.original">$9.50</span>
+                  </div>
+                  <div class="cart-item-moq" data-i18n="item.005.moq">
+                    <i class="fas fa-boxes" aria-hidden="true"></i> MOQ: 300 pieces
+                  </div>
+                </div>
+                <div class="cart-item-controls">
+                  <div class="qty-control" role="group" aria-label="Quantity control">
+                    <button class="qty-btn" aria-label="Decrease quantity" data-action="decrease" data-item="item-005">
+                      <i class="fas fa-minus" aria-hidden="true"></i>
+                    </button>
+                    <input type="number" class="qty-input" value="600" min="300" max="100000" aria-label="Quantity" data-item="item-005" />
+                    <button class="qty-btn" aria-label="Increase quantity" data-action="increase" data-item="item-005">
+                      <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="item-line-total" data-line-total="item-005" aria-label="Item total">$4,140.00</div>
+                  <button class="remove-btn" aria-label="Remove item" data-remove="item-005">
+                    <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="cart.remove">Remove</span>
+                  </button>
+                </div>
+              </article>
+            </div>
+
+            <!-- ===== EMPTY CART STATE ===== -->
+            <div class="empty-cart-state" id="empty-cart-state" role="status" aria-live="polite">
+              <div class="empty-cart-icon" aria-hidden="true">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <h2 class="empty-cart-title" data-i18n="cart.empty.title">Your cart is empty</h2>
+              <p class="empty-cart-desc" data-i18n="cart.empty.desc">
+                Looks like you haven't added any products yet.<br />
+                Browse our marketplace to find quality global suppliers.
+              </p>
+              <a href="../../index.html" class="btn-checkout" style="display:inline-flex;width:auto;padding:0.75rem 2rem;" data-i18n="cart.empty.cta">
+                <i class="fas fa-search" aria-hidden="true"></i> Browse Products
+              </a>
+            </div>
+
+          </div><!-- /col-lg-8 -->
+
+          <!-- ===== RIGHT COLUMN: SUMMARY ===== -->
+          <div class="col-lg-4">
+
+            <!-- Coupon / Promo Code -->
+            <div class="coupon-section" role="region" aria-label="Promo code">
+              <div class="coupon-title">
+                <i class="fas fa-tag" aria-hidden="true"></i>
+                <span data-i18n="cart.coupon.title">Promo / Coupon Code</span>
+              </div>
+              <div class="coupon-input-group">
+                <input
+                  type="text"
+                  class="coupon-input"
+                  id="coupon-code-input"
+                  placeholder="Enter promo code"
+                  data-i18n-placeholder="cart.coupon.placeholder"
+                  aria-label="Promo code"
+                  autocomplete="off"
+                />
+                <button class="coupon-apply-btn" id="apply-coupon-btn" aria-label="Apply coupon" data-i18n="cart.coupon.apply">
+                  Apply
+                </button>
+              </div>
+              <div class="coupon-success" id="coupon-success" role="status" aria-live="polite">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <span data-i18n="cart.coupon.success">Coupon GLOBEX10 applied! You saved 10%.</span>
+              </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="cart-summary-card" role="region" aria-label="Order summary">
+              <h2 class="summary-title" data-i18n="cart.summary.title">Order Summary</h2>
+
+              <div class="savings-banner" aria-label="Savings information">
+                <i class="fas fa-piggy-bank" aria-hidden="true"></i>
+                <span data-i18n="cart.summary.savings_msg">You're saving <strong>$3,282.00</strong> on this order!</span>
+              </div>
+
+              <div class="summary-row">
+                <span class="label" data-i18n="cart.summary.subtotal">Subtotal (5 items)</span>
+                <span class="value" id="summary-subtotal">$16,606.00</span>
+              </div>
+              <div class="summary-row">
+                <span class="label" data-i18n="cart.summary.shipping">Estimated Shipping</span>
+                <span class="value" id="summary-shipping">$420.00</span>
+              </div>
+              <div class="summary-row">
+                <span class="label" data-i18n="cart.summary.insurance">Cargo Insurance</span>
+                <span class="value" id="summary-insurance">$83.03</span>
+              </div>
+              <div class="summary-row">
+                <span class="label" data-i18n="cart.summary.tax">Import Duty (est.)</span>
+                <span class="value" id="summary-tax">$830.30</span>
+              </div>
+              <div class="summary-row">
+                <span class="label" data-i18n="cart.summary.discount">Promo Discount</span>
+                <span class="value discount" id="summary-discount">—</span>
+              </div>
+
+              <hr class="summary-divider" />
+
+              <div class="summary-total-row">
+                <span class="summary-total-label" data-i18n="cart.summary.total">Total</span>
+                <span class="summary-total-value" id="summary-total">$17,939.33</span>
+              </div>
+
+              <a href="../payment/index.html" class="btn-checkout" id="proceed-checkout-btn" aria-label="Proceed to checkout">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+                <span data-i18n="cart.action.checkout">Proceed to Checkout</span>
+              </a>
+
+              <a href="../../index.html" class="btn-continue" id="continue-shopping-btn" aria-label="Continue shopping">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                <span data-i18n="cart.action.continue">Continue Shopping</span>
+              </a>
+
+              <div class="secure-badges" role="list" aria-label="Trust badges">
+                <div class="secure-badge" role="listitem">
+                  <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                  <span data-i18n="cart.badge.secure">Secure Checkout</span>
+                </div>
+                <div class="secure-badge" role="listitem">
+                  <i class="fas fa-lock" aria-hidden="true"></i>
+                  <span data-i18n="cart.badge.ssl">SSL Encrypted</span>
+                </div>
+                <div class="secure-badge" role="listitem">
+                  <i class="fas fa-undo" aria-hidden="true"></i>
+                  <span data-i18n="cart.badge.returns">Easy Returns</span>
+                </div>
+              </div>
+
+              <!-- Payment method icons -->
+              <div style="display:flex;justify-content:center;gap:0.5rem;margin-top:1rem;flex-wrap:wrap;" role="list" aria-label="Accepted payment methods">
+                <i class="fab fa-cc-visa fa-2x" style="color:#1a1f71;" role="img" aria-label="Visa" title="Visa"></i>
+                <i class="fab fa-cc-mastercard fa-2x" style="color:#eb001b;" role="img" aria-label="Mastercard" title="Mastercard"></i>
+                <i class="fab fa-cc-paypal fa-2x" style="color:#003087;" role="img" aria-label="PayPal" title="PayPal"></i>
+                <i class="fab fa-cc-amex fa-2x" style="color:#007bc1;" role="img" aria-label="American Express" title="American Express"></i>
+                <i class="fab fa-cc-stripe fa-2x" style="color:#635bff;" role="img" aria-label="Stripe" title="Stripe"></i>
+              </div>
+            </div>
+
+          </div><!-- /col-lg-4 -->
+
+        </div><!-- /row -->
+
+        <!-- ===== RECENTLY VIEWED PRODUCTS ===== -->
+        <section class="mt-5" aria-labelledby="recently-viewed-heading">
+          <h2 class="section-heading" id="recently-viewed-heading">
+            <i class="fas fa-history" aria-hidden="true" style="color:var(--primary,#0052CC);"></i>
+            <span data-i18n="cart.recently_viewed">Recently Viewed</span>
+          </h2>
+          <div class="horizontal-scroll-track" role="list" aria-label="Recently viewed products">
+
+            <div class="product-card-mini" role="listitem" aria-label="Smart LED Desk Lamp">
+              <img src="https://via.placeholder.com/160x110/0052CC/ffffff?text=LAMP" alt="Smart LED Desk Lamp" width="160" height="110" loading="lazy" />
+              <div class="product-card-mini-body">
+                <div class="product-card-mini-name" data-i18n="rv.001.name">Smart LED Desk Lamp</div>
+                <div class="product-card-mini-price" data-i18n="rv.001.price">$7.50 / unit</div>
+                <button class="product-card-mini-add" aria-label="Add Smart LED Desk Lamp to cart" data-i18n="cart.add">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-mini" role="listitem" aria-label="Bluetooth Earbuds TWS">
+              <img src="https://via.placeholder.com/160x110/FF6B35/ffffff?text=TWS" alt="Bluetooth Earbuds TWS" width="160" height="110" loading="lazy" />
+              <div class="product-card-mini-body">
+                <div class="product-card-mini-name" data-i18n="rv.002.name">Bluetooth Earbuds TWS</div>
+                <div class="product-card-mini-price" data-i18n="rv.002.price">$18.90 / unit</div>
+                <button class="product-card-mini-add" aria-label="Add Bluetooth Earbuds to cart" data-i18n="cart.add">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-mini" role="listitem" aria-label="Stainless Steel Water Bottle">
+              <img src="https://via.placeholder.com/160x110/00C9A7/ffffff?text=BOTTLE" alt="Stainless Steel Water Bottle" width="160" height="110" loading="lazy" />
+              <div class="product-card-mini-body">
+                <div class="product-card-mini-name" data-i18n="rv.003.name">Stainless Steel Bottle 500ml</div>
+                <div class="product-card-mini-price" data-i18n="rv.003.price">$4.20 / unit</div>
+                <button class="product-card-mini-add" aria-label="Add Water Bottle to cart" data-i18n="cart.add">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-mini" role="listitem" aria-label="Portable Solar Power Bank">
+              <img src="https://via.placeholder.com/160x110/6366f1/ffffff?text=SOLAR" alt="Portable Solar Power Bank" width="160" height="110" loading="lazy" />
+              <div class="product-card-mini-body">
+                <div class="product-card-mini-name" data-i18n="rv.004.name">Portable Solar Power Bank</div>
+                <div class="product-card-mini-price" data-i18n="rv.004.price">$22.00 / unit</div>
+                <button class="product-card-mini-add" aria-label="Add Solar Power Bank to cart" data-i18n="cart.add">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-mini" role="listitem" aria-label="Ergonomic Laptop Stand">
+              <img src="https://via.placeholder.com/160x110/f59e0b/ffffff?text=STAND" alt="Ergonomic Laptop Stand" width="160" height="110" loading="lazy" />
+              <div class="product-card-mini-body">
+                <div class="product-card-mini-name" data-i18n="rv.005.name">Ergonomic Laptop Stand</div>
+                <div class="product-card-mini-price" data-i18n="rv.005.price">$14.75 / unit</div>
+                <button class="product-card-mini-add" aria-label="Add Laptop Stand to cart" data-i18n="cart.add">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-mini" role="listitem" aria-label="Ceramic Coffee Mug Set">
+              <img src="https://via.placeholder.com/160x110/ef4444/ffffff?text=MUG" alt="Ceramic Coffee Mug Set" width="160" height="110" loading="lazy" />
+              <div class="product-card-mini-body">
+                <div class="product-card-mini-name" data-i18n="rv.006.name">Ceramic Coffee Mug Set (6pc)</div>
+                <div class="product-card-mini-price" data-i18n="rv.006.price">$11.30 / set</div>
+                <button class="product-card-mini-add" aria-label="Add Ceramic Mug Set to cart" data-i18n="cart.add">Add to Cart</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ===== YOU MAY ALSO LIKE ===== -->
+        <section class="mt-4 mb-2" aria-labelledby="crosssell-heading">
+          <h2 class="section-heading" id="crosssell-heading">
+            <i class="fas fa-thumbs-up" aria-hidden="true" style="color:var(--secondary,#FF6B35);"></i>
+            <span data-i18n="cart.crosssell.title">You May Also Like</span>
+          </h2>
+          <div class="crosssell-grid" role="list" aria-label="Recommended products">
+
+            <div class="product-card-grid" role="listitem" aria-label="True Wireless Sport Earphones">
+              <img src="https://via.placeholder.com/200x130/0052CC/ffffff?text=SPORT+EAR" alt="True Wireless Sport Earphones" width="200" height="130" loading="lazy" />
+              <div class="product-card-grid-body">
+                <div class="product-card-grid-name" data-i18n="cs.001.name">True Wireless Sport Earphones IPX7 Waterproof</div>
+                <div class="product-card-grid-rating" aria-label="Rating 4.7">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                  4.7
+                </div>
+                <div class="product-card-grid-price" data-i18n="cs.001.price">$21.50 / unit</div>
+                <button class="product-card-grid-add" aria-label="Add to cart" data-i18n="cart.add_to_cart">+ Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-grid" role="listitem" aria-label="Smart Fitness Tracker Band">
+              <img src="https://via.placeholder.com/200x130/00C9A7/ffffff?text=FITNESS" alt="Smart Fitness Tracker Band" width="200" height="130" loading="lazy" />
+              <div class="product-card-grid-body">
+                <div class="product-card-grid-name" data-i18n="cs.002.name">Smart Fitness Tracker Band with Heart Rate & SpO2</div>
+                <div class="product-card-grid-rating" aria-label="Rating 4.5">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                  4.5
+                </div>
+                <div class="product-card-grid-price" data-i18n="cs.002.price">$38.00 / unit</div>
+                <button class="product-card-grid-add" aria-label="Add to cart" data-i18n="cart.add_to_cart">+ Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-grid" role="listitem" aria-label="Organic Cotton Unisex T-Shirt">
+              <img src="https://via.placeholder.com/200x130/FF6B35/ffffff?text=T-SHIRT" alt="Organic Cotton Unisex T-Shirt" width="200" height="130" loading="lazy" />
+              <div class="product-card-grid-body">
+                <div class="product-card-grid-name" data-i18n="cs.003.name">Organic Cotton Unisex T-Shirt — Customizable Print</div>
+                <div class="product-card-grid-rating" aria-label="Rating 4.8">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  4.8
+                </div>
+                <div class="product-card-grid-price" data-i18n="cs.003.price">$5.80 / piece</div>
+                <button class="product-card-grid-add" aria-label="Add to cart" data-i18n="cart.add_to_cart">+ Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-grid" role="listitem" aria-label="Wireless Phone Charging Pad">
+              <img src="https://via.placeholder.com/200x130/6366f1/ffffff?text=CHARGER" alt="Wireless Phone Charging Pad" width="200" height="130" loading="lazy" />
+              <div class="product-card-grid-body">
+                <div class="product-card-grid-name" data-i18n="cs.004.name">Wireless 15W Fast Charging Pad Qi Compatible</div>
+                <div class="product-card-grid-rating" aria-label="Rating 4.6">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                  4.6
+                </div>
+                <div class="product-card-grid-price" data-i18n="cs.004.price">$9.90 / unit</div>
+                <button class="product-card-grid-add" aria-label="Add to cart" data-i18n="cart.add_to_cart">+ Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-grid" role="listitem" aria-label="Canvas Tote Shopping Bag">
+              <img src="https://via.placeholder.com/200x130/10b981/ffffff?text=TOTE" alt="Canvas Tote Shopping Bag" width="200" height="130" loading="lazy" />
+              <div class="product-card-grid-body">
+                <div class="product-card-grid-name" data-i18n="cs.005.name">Canvas Tote Shopping Bag — Eco Friendly Reusable</div>
+                <div class="product-card-grid-rating" aria-label="Rating 4.4">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="far fa-star" aria-hidden="true"></i>
+                  4.4
+                </div>
+                <div class="product-card-grid-price" data-i18n="cs.005.price">$2.40 / piece</div>
+                <button class="product-card-grid-add" aria-label="Add to cart" data-i18n="cart.add_to_cart">+ Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card-grid" role="listitem" aria-label="Portable Mini Projector">
+              <img src="https://via.placeholder.com/200x130/f59e0b/ffffff?text=PROJ" alt="Portable Mini Projector" width="200" height="130" loading="lazy" />
+              <div class="product-card-grid-body">
+                <div class="product-card-grid-name" data-i18n="cs.006.name">Portable Mini Projector 1080P Full HD WiFi</div>
+                <div class="product-card-grid-rating" aria-label="Rating 4.7">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                  4.7
+                </div>
+                <div class="product-card-grid-price" data-i18n="cs.006.price">$78.50 / unit</div>
+                <button class="product-card-grid-add" aria-label="Add to cart" data-i18n="cart.add_to_cart">+ Add to Cart</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div><!-- /container -->
+    </div><!-- /cart-page-wrapper -->
+  </main>
+
+  <!-- ===== SITE FOOTER ===== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-main">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col footer-brand-col">
+            <a href="../../index.html" class="footer-logo" aria-label="Globex Sky Home">
+              <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain" />
+            </a>
+            <p class="footer-tagline" data-i18n="footer.tagline">Your Global Trade Gateway. Connecting buyers and suppliers across 150+ countries.</p>
+            <nav class="footer-social" aria-label="Social media links">
+              <a href="https://twitter.com/globexsky" class="social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+              <a href="https://linkedin.com/company/globexsky" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
+              <a href="https://facebook.com/globexsky" class="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+            </nav>
+          </div>
+          <div class="footer-col">
+            <h3 class="footer-col-title" data-i18n="footer.quick_links">Quick Links</h3>
+            <ul class="footer-links" role="list">
+              <li><a href="../../index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> <span data-i18n="footer.home">Home</span></a></li>
+              <li><a href="../shipment/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> <span data-i18n="footer.shipping">Shipping</span></a></li>
+              <li><a href="../payment/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> <span data-i18n="footer.payment">Payment</span></a></li>
+              <li><a href="../support/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> <span data-i18n="footer.support">Support</span></a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3 class="footer-col-title" data-i18n="footer.contact">Contact Us</h3>
+            <address class="footer-contact" aria-label="Contact information">
+              <p class="footer-contact-item"><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@globexsky.com">info@globexsky.com</a></p>
+              <p class="footer-contact-item"><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+8613086766947">+8613086766947</a></p>
+            </address>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <p class="footer-copyright" data-i18n="footer.copyright">
+            &copy; <span id="footer-year"></span> Globex International Trade Co., Ltd. All rights reserved.
+          </p>
+          <nav class="footer-legal-links" aria-label="Legal links">
+            <a href="../legal/privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+            <a href="../legal/terms.html" data-i18n="footer.terms">Terms of Service</a>
+            <a href="../legal/cookies.html" data-i18n="footer.cookies">Cookie Policy</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+  <!-- Site scripts -->
+  <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
+  <script src="../../assets/js/cart.js"></script>
+
+  <!-- Inline cart interaction bootstrap (gracefully no-ops if cart.js covers it) -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ── Footer year ───────────────────────────────────────────────────────
+      var yearEl = document.getElementById('footer-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      // ── Quantity controls ──────────────────────────────────────────────────
+      document.querySelectorAll('.qty-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var itemId = btn.dataset.item;
+          var input = document.querySelector('.qty-input[data-item="' + itemId + '"]');
+          if (!input) return;
+          var val = parseInt(input.value, 10) || 0;
+          var min = parseInt(input.min, 10) || 1;
+          if (btn.dataset.action === 'increase') {
+            input.value = val + (min > 1 ? min : 1);
+          } else {
+            input.value = Math.max(min, val - (min > 1 ? min : 1));
+          }
+          input.dispatchEvent(new Event('change'));
+        });
+      });
+
+      // ── Remove item ────────────────────────────────────────────────────────
+      document.querySelectorAll('.remove-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var itemId = btn.dataset.remove;
+          var row = document.querySelector('.cart-item[data-item-id="' + itemId + '"]');
+          if (row) {
+            row.style.transition = 'opacity 0.3s, max-height 0.3s';
+            row.style.opacity = '0';
+            row.style.overflow = 'hidden';
+            setTimeout(function () {
+              row.style.maxHeight = '0';
+              row.style.padding = '0';
+              setTimeout(function () { row.remove(); checkEmptyCart(); }, 300);
+            }, 300);
+          }
+        });
+      });
+
+      function checkEmptyCart() {
+        var remaining = document.querySelectorAll('.cart-item');
+        var emptyState = document.getElementById('empty-cart-state');
+        var actionsBar = document.querySelector('.cart-actions-bar');
+        if (remaining.length === 0) {
+          if (emptyState) emptyState.classList.add('visible');
+          if (actionsBar) actionsBar.style.display = 'none';
+          document.querySelectorAll('.vendor-group').forEach(function (g) { g.style.display = 'none'; });
+        }
+        var countEl = document.querySelector('.cart-item-count');
+        if (countEl) countEl.textContent = remaining.length + ' item' + (remaining.length !== 1 ? 's' : '') + ' in cart';
+        var cartBadge = document.getElementById('cart-count');
+        if (cartBadge) cartBadge.textContent = remaining.length;
+      }
+
+      // ── Coupon code ────────────────────────────────────────────────────────
+      var applyBtn = document.getElementById('apply-coupon-btn');
+      var couponInput = document.getElementById('coupon-code-input');
+      var couponSuccess = document.getElementById('coupon-success');
+      if (applyBtn && couponInput) {
+        applyBtn.addEventListener('click', function () {
+          var code = couponInput.value.trim().toUpperCase();
+          if (code === 'GLOBEX10' || code === 'SAVE10') {
+            if (couponSuccess) couponSuccess.classList.add('show');
+            couponInput.disabled = true;
+            applyBtn.disabled = true;
+            applyBtn.textContent = '✓ Applied';
+            applyBtn.style.background = '#10b981';
+            var discountEl = document.getElementById('summary-discount');
+            if (discountEl) discountEl.textContent = '−$1,660.60';
+          } else if (code !== '') {
+            couponInput.style.borderColor = '#ef4444';
+            setTimeout(function () { couponInput.style.borderColor = ''; }, 2000);
+          }
+        });
+      }
+
+      // ── Select all checkbox ────────────────────────────────────────────────
+      var selectAll = document.getElementById('select-all-items');
+      if (selectAll) {
+        selectAll.addEventListener('change', function () {
+          document.querySelectorAll('.item-select').forEach(function (cb) {
+            cb.checked = selectAll.checked;
+          });
+        });
+      }
+
+      // ── Clear selected ────────────────────────────────────────────────────
+      var clearBtn = document.getElementById('clear-selected-btn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+          document.querySelectorAll('.item-select:checked').forEach(function (cb) {
+            var row = cb.closest('.cart-item');
+            if (row) row.remove();
+          });
+          checkEmptyCart();
+        });
+      }
+    }());
+  </script>
+</body>
+</html>
