@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Advertisements | Globex Sky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    /* Layout */
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    /* Sidebar */
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    /* Content */
+    .content-area{min-width:0}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    /* Stat grid */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:linear-gradient(135deg,var(--sc,#0052CC),var(--se,#003d99));border-radius:14px;padding:20px;color:#fff}
+    .stat-card .stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;line-height:1}
+    .stat-card .stat-lbl{font-size:.78rem;opacity:.8;margin-top:6px}
+    .stat-card .stat-icon{font-size:1.2rem;opacity:.6;margin-bottom:8px}
+    /* Card */
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .card-title-left{display:flex;align-items:center;gap:10px}
+    .card-title-left i{color:#0052CC}
+    /* Buttons */
+    .btn{padding:9px 18px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#dc2626;border:none}
+    .btn-danger:hover{background:#fecaca}
+    .btn-warning{background:#fef3c7;color:#d97706;border:none}
+    .btn-warning:hover{background:#fde68a}
+    .btn-success{background:#d1fae5;color:#059669;border:none}
+    .btn-success:hover{background:#a7f3d0}
+    .btn-sm{padding:5px 11px;font-size:.77rem}
+    .btn-orange{background:#FF6B35;color:#fff}
+    .btn-orange:hover{background:#e85a25}
+    /* Filter bar */
+    .filter-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-bar .form-control{padding:8px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#374151;outline:none;transition:border-color .2s;background:#fff}
+    .filter-bar .form-control:focus{border-color:#0052CC}
+    .filter-bar select.form-control{min-width:160px}
+    .search-input{flex:1;min-width:200px;padding:8px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#374151;outline:none;transition:border-color .2s;background:#fff}
+    .search-input:focus{border-color:#0052CC}
+    /* Badges */
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.74rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-cyan{background:#cffafe;color:#0891b2}
+    /* Table */
+    .table{width:100%;border-collapse:collapse;font-size:.84rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .table .actions{display:flex;gap:5px;flex-wrap:nowrap}
+    .ad-title{font-weight:600;color:#0a0e27;font-size:.86rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ad-sub{font-size:.74rem;color:#94a3b8;margin-top:2px}
+    /* Quick stats chart placeholder */
+    .chart-placeholder{background:linear-gradient(135deg,#f8faff,#f0f4ff);border-radius:12px;border:1.5px dashed #c7d8ff;padding:32px;text-align:center;color:#94a3b8;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px}
+    .chart-placeholder i{font-size:2.5rem;color:#c7d8ff;margin-bottom:12px}
+    .chart-placeholder p{font-size:.9rem;font-family:'Poppins',sans-serif;font-weight:500}
+    .chart-placeholder span{font-size:.8rem;margin-top:4px;display:block}
+    /* Mini perf bars */
+    .perf-bars{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .perf-bar-item{}
+    .perf-bar-label{display:flex;justify-content:space-between;font-size:.78rem;color:#374151;margin-bottom:5px}
+    .perf-bar-label span:last-child{font-weight:600;color:#0052CC}
+    .perf-bar-track{height:7px;background:#e8eeff;border-radius:50px;overflow:hidden}
+    .perf-bar-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,#0052CC,#00C9A7)}
+    /* Pagination */
+    .pagination{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:16px}
+    .pag-info{font-size:.83rem;color:#64748b}
+    .pag-btns{display:flex;gap:6px}
+    .pag-btn{width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s;font-family:'Poppins',sans-serif}
+    .pag-btn:hover,.pag-btn.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    /* Toast */
+    .toast{position:fixed;bottom:28px;right:28px;background:#00C9A7;color:#fff;padding:13px 20px;border-radius:12px;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:600;box-shadow:0 6px 24px rgba(0,201,167,.35);display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:9999}
+    .toast.show{transform:translateY(0);opacity:1}
+    /* Footer */
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px;margin-top:20px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="page-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-avatar">SU</div>
+      <div class="sidebar-name">Supplier Hub</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="#"><i class="fas fa-boxes-stacked"></i> My Products</a></li>
+        <li><a href="#"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="manage.html" class="active"><i class="fas fa-rectangle-ad"></i> Advertisements</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="#"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="content-area">
+      <div class="page-header">
+        <h1><i class="fas fa-rectangle-ad" style="color:#0052CC"></i> Manage Advertisements</h1>
+        <a href="create.html" class="btn btn-primary"><i class="fas fa-circle-plus"></i> Create New Ad</a>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card" style="--sc:#0052CC;--se:#003d99">
+          <div class="stat-icon"><i class="fas fa-rectangle-ad"></i></div>
+          <div class="stat-val">8</div>
+          <div class="stat-lbl">Active Ads</div>
+        </div>
+        <div class="stat-card" style="--sc:#00C9A7;--se:#00a88a">
+          <div class="stat-icon"><i class="fas fa-eye"></i></div>
+          <div class="stat-val">145K</div>
+          <div class="stat-lbl">Total Impressions</div>
+        </div>
+        <div class="stat-card" style="--sc:#f97316;--se:#ea580c">
+          <div class="stat-icon"><i class="fas fa-computer-mouse"></i></div>
+          <div class="stat-val">3,240</div>
+          <div class="stat-lbl">Total Clicks</div>
+        </div>
+        <div class="stat-card" style="--sc:#dc2626;--se:#b91c1c">
+          <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+          <div class="stat-val">$892</div>
+          <div class="stat-lbl">Total Spend</div>
+        </div>
+      </div>
+
+      <!-- Filter / Search Bar -->
+      <div class="card" style="padding:20px 24px">
+        <div class="filter-bar">
+          <select class="form-control" id="status-filter" onchange="filterAds()">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="ended">Ended</option>
+          </select>
+          <input type="text" class="search-input" id="search-input" placeholder="Search by Ad ID, title or product…" oninput="filterAds()"/>
+          <a href="create.html" class="btn btn-orange btn-sm"><i class="fas fa-plus"></i> Create New Ad</a>
+        </div>
+      </div>
+
+      <!-- Ads Table -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><i class="fas fa-table-list"></i> All Advertisements</div>
+          <span class="badge badge-blue" id="row-count">6 ads</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table" id="ads-table">
+            <thead>
+              <tr>
+                <th>Ad ID</th>
+                <th>Ad Type</th>
+                <th>Product / Title</th>
+                <th>Budget</th>
+                <th>Spent</th>
+                <th>Impressions</th>
+                <th>Clicks</th>
+                <th>CTR%</th>
+                <th>Status</th>
+                <th>Start – End</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ads-tbody">
+              <tr data-status="active">
+                <td style="color:#94a3b8;font-size:.78rem">#AD-1041</td>
+                <td><span class="badge badge-blue">Featured</span></td>
+                <td>
+                  <div class="ad-title">Ultra-Slim Laptop 15" i7</div>
+                  <div class="ad-sub">Category: Electronics</div>
+                </td>
+                <td>$300</td>
+                <td>$218</td>
+                <td>38,400</td>
+                <td>920</td>
+                <td><strong>2.40%</strong></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td style="font-size:.78rem;white-space:nowrap;color:#64748b">Jun 1 – Jun 30</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-secondary btn-sm" title="Edit" onclick="showToast('Edit')"><i class="fas fa-pen"></i></button>
+                    <button class="btn btn-warning btn-sm" title="Pause" onclick="toggleStatus(this,'paused')"><i class="fas fa-pause"></i></button>
+                    <button class="btn btn-danger btn-sm" title="Delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="active">
+                <td style="color:#94a3b8;font-size:.78rem">#AD-1038</td>
+                <td><span class="badge badge-purple">Sponsored</span></td>
+                <td>
+                  <div class="ad-title">Noise Cancelling Headphones BT5</div>
+                  <div class="ad-sub">Category: Accessories</div>
+                </td>
+                <td>$200</td>
+                <td>$174</td>
+                <td>29,100</td>
+                <td>810</td>
+                <td><strong>2.78%</strong></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td style="font-size:.78rem;white-space:nowrap;color:#64748b">May 20 – Jun 20</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-secondary btn-sm" title="Edit" onclick="showToast('Edit')"><i class="fas fa-pen"></i></button>
+                    <button class="btn btn-warning btn-sm" title="Pause" onclick="toggleStatus(this,'paused')"><i class="fas fa-pause"></i></button>
+                    <button class="btn btn-danger btn-sm" title="Delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="active">
+                <td style="color:#94a3b8;font-size:.78rem">#AD-1035</td>
+                <td><span class="badge badge-orange">Banner</span></td>
+                <td>
+                  <div class="ad-title">Summer Flash Sale Homepage</div>
+                  <div class="ad-sub">Homepage hero placement</div>
+                </td>
+                <td>$150</td>
+                <td>$132</td>
+                <td>24,800</td>
+                <td>680</td>
+                <td><strong>2.74%</strong></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td style="font-size:.78rem;white-space:nowrap;color:#64748b">Jun 5 – Jun 15</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-secondary btn-sm" title="Edit" onclick="showToast('Edit')"><i class="fas fa-pen"></i></button>
+                    <button class="btn btn-warning btn-sm" title="Pause" onclick="toggleStatus(this,'paused')"><i class="fas fa-pause"></i></button>
+                    <button class="btn btn-danger btn-sm" title="Delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="paused">
+                <td style="color:#94a3b8;font-size:.78rem">#AD-1028</td>
+                <td><span class="badge badge-cyan">Search</span></td>
+                <td>
+                  <div class="ad-title">4K Monitor 27" IPS — Keyword</div>
+                  <div class="ad-sub">Keywords: monitor, display, 4K</div>
+                </td>
+                <td>$100</td>
+                <td>$64</td>
+                <td>14,200</td>
+                <td>310</td>
+                <td><strong>2.18%</strong></td>
+                <td><span class="badge badge-orange">Paused</span></td>
+                <td style="font-size:.78rem;white-space:nowrap;color:#64748b">May 10 – Jul 10</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-secondary btn-sm" title="Edit" onclick="showToast('Edit')"><i class="fas fa-pen"></i></button>
+                    <button class="btn btn-success btn-sm" title="Resume" onclick="toggleStatus(this,'active')"><i class="fas fa-play"></i></button>
+                    <button class="btn btn-danger btn-sm" title="Delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="active">
+                <td style="color:#94a3b8;font-size:.78rem">#AD-1022</td>
+                <td><span class="badge badge-blue">Featured</span></td>
+                <td>
+                  <div class="ad-title">Smart Phone X12 Pro 256GB</div>
+                  <div class="ad-sub">Category: Electronics</div>
+                </td>
+                <td>$250</td>
+                <td>$198</td>
+                <td>22,600</td>
+                <td>340</td>
+                <td><strong>1.50%</strong></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td style="font-size:.78rem;white-space:nowrap;color:#64748b">Jun 1 – Jul 1</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-secondary btn-sm" title="Edit" onclick="showToast('Edit')"><i class="fas fa-pen"></i></button>
+                    <button class="btn btn-warning btn-sm" title="Pause" onclick="toggleStatus(this,'paused')"><i class="fas fa-pause"></i></button>
+                    <button class="btn btn-danger btn-sm" title="Delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="ended">
+                <td style="color:#94a3b8;font-size:.78rem">#AD-1010</td>
+                <td><span class="badge badge-orange">Banner</span></td>
+                <td>
+                  <div class="ad-title">Spring Sale Category Promo</div>
+                  <div class="ad-sub">Sidebar placement — All pages</div>
+                </td>
+                <td>$120</td>
+                <td>$120</td>
+                <td>16,200</td>
+                <td>180</td>
+                <td><strong>1.11%</strong></td>
+                <td><span class="badge badge-gray">Ended</span></td>
+                <td style="font-size:.78rem;white-space:nowrap;color:#64748b">Apr 1 – May 31</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn btn-secondary btn-sm" title="View Report" onclick="showToast('Report')"><i class="fas fa-chart-bar"></i></button>
+                    <button class="btn btn-danger btn-sm" title="Delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <span class="pag-info">Showing 1–6 of 6 ads</span>
+          <div class="pag-btns">
+            <button class="pag-btn" title="Previous"><i class="fas fa-chevron-left"></i></button>
+            <button class="pag-btn active">1</button>
+            <button class="pag-btn">2</button>
+            <button class="pag-btn">3</button>
+            <button class="pag-btn" title="Next"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats for Selected Ad -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><i class="fas fa-chart-bar"></i> Quick Performance Stats</div>
+          <select class="form-control" style="padding:6px 12px;font-size:.82rem;width:auto;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;outline:none;font-family:'Inter',sans-serif" onchange="updateChart(this)">
+            <option>Ultra-Slim Laptop 15" i7 (#AD-1041)</option>
+            <option>Noise Cancelling Headphones (#AD-1038)</option>
+            <option>Summer Flash Sale Homepage (#AD-1035)</option>
+            <option>Smart Phone X12 Pro (#AD-1022)</option>
+          </select>
+        </div>
+
+        <div class="perf-bars" style="margin-bottom:20px">
+          <div class="perf-bar-item">
+            <div class="perf-bar-label"><span>Budget Used</span><span id="pb-budget">72.7%</span></div>
+            <div class="perf-bar-track"><div class="perf-bar-fill" id="pf-budget" style="width:72.7%"></div></div>
+          </div>
+          <div class="perf-bar-item">
+            <div class="perf-bar-label"><span>Impression Goal</span><span id="pb-imp">76.8%</span></div>
+            <div class="perf-bar-track"><div class="perf-bar-fill" id="pf-imp" style="width:76.8%"></div></div>
+          </div>
+          <div class="perf-bar-item">
+            <div class="perf-bar-label"><span>Click Goal</span><span id="pb-click">46.0%</span></div>
+            <div class="perf-bar-track"><div class="perf-bar-fill" id="pf-click" style="width:46%"></div></div>
+          </div>
+          <div class="perf-bar-item">
+            <div class="perf-bar-label"><span>Campaign Duration</span><span id="pb-dur">50%</span></div>
+            <div class="perf-bar-track"><div class="perf-bar-fill" id="pf-dur" style="width:50%"></div></div>
+          </div>
+        </div>
+
+        <div class="chart-placeholder">
+          <i class="fas fa-chart-area"></i>
+          <p>Impressions &amp; Clicks Over Time</p>
+          <span>Connect your analytics integration to view the full chart</span>
+          <a href="analytics.html" class="btn btn-secondary" style="width:auto;margin-top:14px;font-size:.82rem"><i class="fas fa-chart-line"></i> View Full Analytics</a>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Action completed.</span></div>
+
+<script>
+  // Filter table by status and search text
+  function filterAds() {
+    const status = document.getElementById('status-filter').value;
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const rows = document.querySelectorAll('#ads-tbody tr');
+    let visible = 0;
+    rows.forEach(row => {
+      const rowStatus = row.dataset.status;
+      const text = row.textContent.toLowerCase();
+      const statusOk = status === 'all' || rowStatus === status;
+      const searchOk = !query || text.includes(query);
+      row.style.display = statusOk && searchOk ? '' : 'none';
+      if (statusOk && searchOk) visible++;
+    });
+    document.getElementById('row-count').textContent = visible + ' ad' + (visible !== 1 ? 's' : '');
+  }
+
+  // Toggle status (pause/resume)
+  function toggleStatus(btn, newStatus) {
+    const row = btn.closest('tr');
+    row.dataset.status = newStatus;
+    const statusCell = row.querySelector('.badge:last-of-type');
+    const actionsCell = row.querySelector('.actions');
+    if (newStatus === 'paused') {
+      statusCell.className = 'badge badge-orange';
+      statusCell.textContent = 'Paused';
+      btn.className = 'btn btn-success btn-sm';
+      btn.title = 'Resume';
+      btn.innerHTML = '<i class="fas fa-play"></i>';
+      btn.setAttribute('onclick', "toggleStatus(this,'active')");
+    } else {
+      statusCell.className = 'badge badge-green';
+      statusCell.textContent = 'Active';
+      btn.className = 'btn btn-warning btn-sm';
+      btn.title = 'Pause';
+      btn.innerHTML = '<i class="fas fa-pause"></i>';
+      btn.setAttribute('onclick', "toggleStatus(this,'paused')");
+    }
+    showToast(newStatus === 'paused' ? 'Ad paused successfully.' : 'Ad resumed successfully.');
+    filterAds();
+  }
+
+  // Delete row
+  function deleteRow(btn) {
+    if (!confirm('Are you sure you want to delete this ad?')) return;
+    btn.closest('tr').remove();
+    filterAds();
+    showToast('Ad deleted.');
+  }
+
+  // Update perf bars based on selected ad
+  const adPerf = [
+    {budget:72.7,imp:76.8,click:46,dur:50},
+    {budget:87,imp:58.2,click:40.5,dur:55},
+    {budget:88,imp:49.6,click:34,dur:70},
+    {budget:79.2,imp:45.2,click:17,dur:50},
+  ];
+  function updateChart(sel) {
+    const p = adPerf[sel.selectedIndex] || adPerf[0];
+    document.getElementById('pb-budget').textContent = p.budget + '%';
+    document.getElementById('pf-budget').style.width = p.budget + '%';
+    document.getElementById('pb-imp').textContent = p.imp + '%';
+    document.getElementById('pf-imp').style.width = p.imp + '%';
+    document.getElementById('pb-click').textContent = p.click + '%';
+    document.getElementById('pf-click').style.width = p.click + '%';
+    document.getElementById('pb-dur').textContent = p.dur + '%';
+    document.getElementById('pf-dur').style.width = p.dur + '%';
+  }
+
+  // Toast helper
+  function showToast(msg) {
+    document.getElementById('toast-msg').textContent = msg;
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
