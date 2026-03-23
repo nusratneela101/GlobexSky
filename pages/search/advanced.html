@@ -264,16 +264,19 @@
 
   async function fetchSuggestions(q) {
     try {
-      const res = await fetch(`${API}/search/suggestions?q=${encodeURIComponent(q)}`);
+      // Try AI-powered suggestions first, fall back to regular
+      let res = await fetch(`${API}/ai/search/suggestions?q=${encodeURIComponent(q)}`);
+      if (!res.ok) res = await fetch(`${API}/search/suggestions?q=${encodeURIComponent(q)}`);
       const json = await res.json();
-      if (json.success && json.suggestions.length > 0) showSuggestions(json.suggestions);
+      if (json.success && json.suggestions?.length > 0) showSuggestions(json.suggestions, true);
       else closeSuggestions();
     } catch { closeSuggestions(); }
   }
 
-  function showSuggestions(items) {
+  function showSuggestions(items, aiPowered) {
     const dd = document.getElementById('suggestionsDropdown');
-    dd.innerHTML = items.map((s) => {
+    const aiLabel = aiPowered ? `<div style="padding:6px 16px 4px;font-size:.7rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.05em"><i class="fas fa-robot" style="color:#0052CC;margin-right:4px"></i>AI Suggestions</div>` : '';
+    dd.innerHTML = aiLabel + items.map((s) => {
       const div = document.createElement('div');
       div.className = 'suggestion-item';
       div.innerHTML = '<i class="fas fa-search"></i>';
@@ -283,7 +286,7 @@
     }).join('');
     dd.classList.add('open');
     dd.querySelectorAll('.suggestion-item').forEach(el => {
-      el.addEventListener('click', () => setSearch(el.dataset.q));
+      if (el.dataset.q) el.addEventListener('click', () => setSearch(el.dataset.q));
     });
   }
 
@@ -302,16 +305,43 @@
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('spellSuggest').style.display = 'none';
 
-    let url = `${API}/search?q=${encodeURIComponent(q)}`;
-    if (minPrice) url += `&minPrice=${minPrice}`;
-    if (maxPrice) url += `&maxPrice=${maxPrice}`;
-    if (minRating) url += `&minRating=${minRating}`;
-
+    let aiPowered = false;
     try {
-      const res = await fetch(url);
-      const json = await res.json();
+      let data, meta, suggestion;
+      // Try AI-powered semantic search first
+      try {
+        const payload = { query: q, limit: 20 };
+        if (minPrice) payload.minPrice = parseFloat(minPrice);
+        if (maxPrice) payload.maxPrice = parseFloat(maxPrice);
+        const res = await fetch(`${API}/ai/search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (json.success !== false) {
+          data = json.products || json.data || [];
+          meta = json.meta || { total: data.length };
+          suggestion = json.spell_suggestion || json.suggestion;
+          aiPowered = true;
+        }
+      } catch (_) {}
+
+      if (!aiPowered) {
+        // Fall back to regular search
+        let url = `${API}/search?q=${encodeURIComponent(q)}`;
+        if (minPrice) url += `&minPrice=${minPrice}`;
+        if (maxPrice) url += `&maxPrice=${maxPrice}`;
+        if (minRating) url += `&minRating=${minRating}`;
+        const res = await fetch(url);
+        const json = await res.json();
+        data = json.data || [];
+        meta = json.meta || { total: data.length };
+        suggestion = json.suggestion;
+      }
+
       showLoading(false);
-      if (json.success) renderResults(json.data, json.meta, json.suggestion);
+      renderResults(data, meta, suggestion, aiPowered);
     } catch {
       showLoading(false);
       showEmpty();
@@ -321,7 +351,7 @@
     if (q) saveRecentSearch(q);
   }
 
-  function renderResults(data, meta, suggestion) {
+  function renderResults(data, meta, suggestion, aiPowered) {
     const grid = document.getElementById('resultsGrid');
     const header = document.getElementById('resultsHeader');
     const count = document.getElementById('resultsCount');
@@ -333,15 +363,23 @@
       spell.style.display = 'block';
     }
 
-    count.innerHTML = `<strong>${meta?.total ?? data.length}</strong> results`;
+    const aiChip = aiPowered ? ' <span style="display:inline-flex;align-items:center;gap:4px;background:#eff6ff;color:#0052CC;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;vertical-align:middle"><i class="fas fa-robot"></i> AI Search</span>' : '';
+    count.innerHTML = `<strong>${meta?.total ?? data.length}</strong> results${aiChip}`;
     header.style.display = 'flex';
 
     if (!data || data.length === 0) { grid.innerHTML = ''; showEmpty(); return; }
 
     grid.innerHTML = data.map((p, i) => {
       const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-      const tier = i < 3 ? 'badge-high' : i < 8 ? 'badge-medium' : 'badge-low';
-      const label = i < 3 ? '🔥 Top Match' : i < 8 ? 'Good Match' : 'Match';
+      const score = p.relevance_score ?? p.score;
+      let tier, label;
+      if (score != null) {
+        tier = score >= 0.7 ? 'badge-high' : score >= 0.4 ? 'badge-medium' : 'badge-low';
+        label = score >= 0.7 ? '🔥 Top Match' : score >= 0.4 ? 'Good Match' : 'Match';
+      } else {
+        tier = i < 3 ? 'badge-high' : i < 8 ? 'badge-medium' : 'badge-low';
+        label = i < 3 ? '🔥 Top Match' : i < 8 ? 'Good Match' : 'Match';
+      }
       return `
       <div class="product-card" data-id="${esc(p.id)}">
         <div class="product-img"><i class="fas fa-box"></i></div>
@@ -422,14 +460,24 @@
     reader.readAsDataURL(file);
   }
   async function doImageSearch(base64) {
-    const token = localStorage.getItem('token');
-    if (!token) { alert('Please log in to use image search.'); return; }
     showLoading(true);
     try {
-      const res = await fetch(`${API}/search/image`, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}, body: JSON.stringify({ imageBase64: base64 }) });
-      const json = await res.json();
+      // Try AI image search endpoint first, fall back to legacy
+      let json;
+      try {
+        const res = await fetch(`${API}/ai/search/image`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64 }),
+        });
+        json = await res.json();
+      } catch (_) {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API}/search/image`, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}, body: JSON.stringify({ imageBase64: base64 }) });
+        json = await res.json();
+      }
       showLoading(false);
-      if (json.success) renderResults(json.data, { total: json.data.length }, null);
+      if (json.success !== false) renderResults(json.data || [], { total: (json.data || []).length }, null, true);
     } catch { showLoading(false); }
   }
 
@@ -439,10 +487,17 @@
     if (!barcode) return;
     showLoading(true);
     try {
-      const res = await fetch(`${API}/search/barcode`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ barcode }) });
-      const json = await res.json();
+      // Try AI barcode endpoint first, fall back to legacy
+      let json;
+      try {
+        const res = await fetch(`${API}/ai/search/barcode/${encodeURIComponent(barcode)}`);
+        json = await res.json();
+      } catch (_) {
+        const res = await fetch(`${API}/search/barcode`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ barcode }) });
+        json = await res.json();
+      }
       showLoading(false);
-      if (json.success) renderResults(json.data, { total: json.data.length }, null);
+      if (json.success !== false) renderResults(json.data || [], { total: (json.data || []).length }, null, true);
     } catch { showLoading(false); }
   }
 
