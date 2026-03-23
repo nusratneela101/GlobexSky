@@ -32,6 +32,19 @@ export async function getLCById(id) {
 }
 
 /**
+ * List all LCs for a given user (as applicant or beneficiary).
+ */
+export async function listLCRecords(userId) {
+  const { data, error } = await supabase
+    .from('letters_of_credit')
+    .select('*')
+    .or(`applicant_id.eq.${userId},beneficiary_id.eq.${userId}`)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+/**
  * Advance an LC through the status workflow.
  * Only forward transitions are allowed: draft → issued → accepted → fulfilled → closed
  */
@@ -55,12 +68,29 @@ export async function advanceLCStatus(id, newStatus) {
   return data;
 }
 
+/**
+ * Create an LC amendment request.
+ */
+export async function createLCAmendmentRecord({ lc_id, requested_by, field, new_value, reason }) {
+  const { data, error } = await supabase.from('lc_amendments').insert([{
+    lc_id,
+    requested_by,
+    field,
+    new_value,
+    reason: reason || null,
+    status: 'pending',
+  }]).select().single();
+
+  if (error) throw error;
+  return data;
+}
+
 // ─── Escrow ──────────────────────────────────────────────────────────────────
 
 /**
  * Create an escrow payment record.
  */
-export async function createEscrowRecord({ buyer_id, seller_id, order_id, amount, currency, conditions }) {
+export async function createEscrowRecord({ buyer_id, seller_id, order_id, amount, currency, conditions, milestones }) {
   const { data, error } = await supabase.from('escrow_payments').insert([{
     buyer_id,
     seller_id: seller_id || null,
@@ -68,11 +98,25 @@ export async function createEscrowRecord({ buyer_id, seller_id, order_id, amount
     amount,
     currency: currency || 'USD',
     conditions: conditions || null,
+    milestones: milestones || null,
     status: 'held',
   }]).select().single();
 
   if (error) throw error;
   return data;
+}
+
+/**
+ * List escrow payments for a given user (as buyer or seller).
+ */
+export async function listEscrowRecords(userId) {
+  const { data, error } = await supabase
+    .from('escrow_payments')
+    .select('*')
+    .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
 }
 
 /**
@@ -104,6 +148,28 @@ export async function refundEscrow(id) {
 
   if (error) throw error;
   if (!data) throw new Error('Escrow not found or not in held status');
+  return data;
+}
+
+/**
+ * File an escrow dispute and update escrow status to 'disputed'.
+ */
+export async function fileEscrowDisputeRecord({ escrow_id, filed_by, reason, description }) {
+  // Mark escrow as disputed
+  await supabase.from('escrow_payments')
+    .update({ status: 'disputed', updated_at: new Date().toISOString() })
+    .eq('id', escrow_id)
+    .eq('status', 'held');
+
+  const { data, error } = await supabase.from('escrow_disputes').insert([{
+    escrow_id,
+    filed_by,
+    reason,
+    description: description || null,
+    status: 'open',
+  }]).select().single();
+
+  if (error) throw error;
   return data;
 }
 
@@ -141,6 +207,143 @@ export async function createInvoiceFactoringRecord({ supplier_id, invoice_number
     reserve_amount: terms.reserve_amount,
     net_proceeds: terms.net_proceeds,
     status: 'pending',
+  }]).select().single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * List invoice factoring records for a supplier.
+ */
+export async function listInvoiceFactoringRecords(supplierId) {
+  const { data, error } = await supabase
+    .from('invoice_factoring')
+    .select('*')
+    .eq('supplier_id', supplierId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+// ─── PO Financing ─────────────────────────────────────────────────────────────
+
+/**
+ * Compute PO financing terms.
+ */
+export function calculatePOFinancing({ po_amount, advance_pct = 70, interest_rate = 8, term_days = 90 }) {
+  const advance_amount  = +(po_amount * (advance_pct / 100)).toFixed(2);
+  const interest_amount = +(advance_amount * (interest_rate / 100) * (term_days / 365)).toFixed(2);
+  const total_repayment = +(advance_amount + interest_amount).toFixed(2);
+  return { advance_amount, interest_amount, total_repayment };
+}
+
+/**
+ * Create a PO financing application.
+ */
+export async function createPOFinancingRecord({ supplier_id, po_number, po_amount, buyer_name, delivery_date, advance_pct = 70, interest_rate = 8, term_days = 90, notes }) {
+  const terms = calculatePOFinancing({ po_amount, advance_pct, interest_rate, term_days });
+
+  const { data, error } = await supabase.from('po_financing').insert([{
+    supplier_id,
+    po_number,
+    po_amount,
+    buyer_name,
+    delivery_date,
+    advance_pct,
+    interest_rate,
+    term_days,
+    advance_amount: terms.advance_amount,
+    interest_amount: terms.interest_amount,
+    total_repayment: terms.total_repayment,
+    amount_repaid: 0,
+    notes: notes || null,
+    status: 'pending',
+  }]).select().single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Get PO financing record by ID.
+ */
+export async function getPOFinancingById(id) {
+  const { data, error } = await supabase.from('po_financing').select('*').eq('id', id).single();
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Record a repayment transaction for a PO financing.
+ */
+export async function recordPORepaymentTx({ financing_id, amount }) {
+  const current = await getPOFinancingById(financing_id);
+  const newRepaid = +(current.amount_repaid + amount).toFixed(2);
+  const isFullyRepaid = newRepaid >= current.total_repayment;
+
+  const { data, error } = await supabase.from('po_financing')
+    .update({
+      amount_repaid: newRepaid,
+      status: isFullyRepaid ? 'repaid' : 'active',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', financing_id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── Currency / Forward Contracts ────────────────────────────────────────────
+
+/**
+ * Create a forward contract (locked exchange rate).
+ */
+export async function createForwardContractRecord({ user_id, from_currency, to_currency, amount, locked_rate, settlement_date }) {
+  const converted_amount = +(amount * locked_rate).toFixed(2);
+
+  const { data, error } = await supabase.from('currency_forward_contracts').insert([{
+    user_id,
+    from_currency,
+    to_currency,
+    amount,
+    locked_rate,
+    converted_amount,
+    settlement_date,
+    status: 'active',
+  }]).select().single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * List forward contracts for a user.
+ */
+export async function listForwardContractRecords(userId) {
+  const { data, error } = await supabase
+    .from('currency_forward_contracts')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+/**
+ * Create a currency rate alert.
+ */
+export async function createRateAlertRecord({ user_id, from_currency, to_currency, target_rate, direction }) {
+  const { data, error } = await supabase.from('currency_rate_alerts').insert([{
+    user_id,
+    from_currency,
+    to_currency,
+    target_rate,
+    direction,
+    triggered: false,
+    status: 'active',
   }]).select().single();
 
   if (error) throw error;

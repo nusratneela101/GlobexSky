@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Payment Protection Dashboard – Globex Sky Trade Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/trade-finance.css"/>
+</head>
+<body>
+
+<!-- ─── Header ─────────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ─── Hero ───────────────────────────────────────────────────────────────── -->
+<div class="page-hero page-hero--dark">
+  <h1 class="page-hero-title"><i class="fas fa-shield-alt"></i> Payment Protection Dashboard</h1>
+  <p class="page-hero-sub">Your complete overview of active escrow, letters of credit, disputes, and milestones.</p>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num" id="dash-escrow-held">—</div><div class="stat-lbl">Funds in Escrow</div></div>
+    <div class="stat-item"><div class="stat-num" id="dash-lc-total">—</div><div class="stat-lbl">Active LCs</div></div>
+    <div class="stat-item"><div class="stat-num" id="dash-factoring-total">—</div><div class="stat-lbl">Invoices Factored</div></div>
+    <div class="stat-item"><div class="stat-num" id="dash-lc-value">—</div><div class="stat-lbl">Total LC Value</div></div>
+  </div>
+</div>
+
+<!-- ─── Main Content ────────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="index.html">Trade Finance</a><span>/</span>
+      <span>Dashboard</span>
+    </nav>
+
+    <!-- Quick Navigation -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">
+      <a href="lc.html" class="btn btn-secondary btn-sm"><i class="fas fa-file-contract"></i> Letters of Credit</a>
+      <a href="escrow.html" class="btn btn-secondary btn-sm"><i class="fas fa-shield-alt"></i> Escrow</a>
+      <a href="invoice-factoring.html" class="btn btn-secondary btn-sm"><i class="fas fa-receipt"></i> Invoice Factoring</a>
+      <a href="financing.html" class="btn btn-secondary btn-sm"><i class="fas fa-hand-holding-usd"></i> PO Financing</a>
+      <a href="currency.html" class="btn btn-secondary btn-sm"><i class="fas fa-exchange-alt"></i> Currency</a>
+    </div>
+
+    <!-- KPI Cards (dynamic) -->
+    <div class="kpi-grid" id="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue"><i class="fas fa-file-contract"></i></div>
+        <div>
+          <div class="kpi-value" id="kpi-lc-total">—</div>
+          <div class="kpi-label">Total LCs</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon green"><i class="fas fa-lock"></i></div>
+        <div>
+          <div class="kpi-value" id="kpi-escrow-held">—</div>
+          <div class="kpi-label">Escrow Held</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon orange"><i class="fas fa-receipt"></i></div>
+        <div>
+          <div class="kpi-value" id="kpi-factoring-proceeds">—</div>
+          <div class="kpi-label">Net Factoring Proceeds</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon teal"><i class="fas fa-check-circle"></i></div>
+        <div>
+          <div class="kpi-value" id="kpi-escrow-released">—</div>
+          <div class="kpi-label">Released to Sellers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+
+      <!-- ─── Active Escrow Transactions ─── -->
+      <div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-shield-alt" style="color:#059669"></i> Active Escrow</h3>
+          <div id="dashboard-escrow-list">
+            <!-- Populated by escrow.js -->
+            <div class="empty-state">
+              <i class="fas fa-shield-alt"></i>
+              <p>Loading escrow transactions…</p>
+            </div>
+          </div>
+          <a href="escrow.html" class="btn btn-secondary btn-sm" style="margin-top:8px"><i class="fas fa-arrow-right"></i> View All</a>
+        </div>
+
+        <!-- Refund Guarantee Info -->
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-hand-holding-usd" style="color:#0052cc"></i> Buyer Protection Guarantee</h3>
+          <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            All payments processed through Globex Sky's escrow system are protected. Funds are only released when you confirm receipt and quality of goods.
+          </div>
+          <ul style="list-style:none;padding:0;font-size:.88rem;color:#374151">
+            <li style="padding:8px 0;border-bottom:1px solid #f1f5f9"><i class="fas fa-check-circle" style="color:#059669;margin-right:8px"></i> Full refund if goods not delivered within agreed timeframe</li>
+            <li style="padding:8px 0;border-bottom:1px solid #f1f5f9"><i class="fas fa-check-circle" style="color:#059669;margin-right:8px"></i> Dispute resolution within 48–72 hours</li>
+            <li style="padding:8px 0;border-bottom:1px solid #f1f5f9"><i class="fas fa-check-circle" style="color:#059669;margin-right:8px"></i> Partial refund for items not matching description</li>
+            <li style="padding:8px 0"><i class="fas fa-check-circle" style="color:#059669;margin-right:8px"></i> Milestone-based release for extra control</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ─── LC Status + Disputes ─── -->
+      <div>
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-file-contract" style="color:#0052cc"></i> Letters of Credit</h3>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>LC #</th>
+                  <th>Amount</th>
+                  <th>Expiry</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-lc-list">
+                <tr><td colspan="4" style="text-align:center;color:#64748b;padding:20px">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <a href="lc.html" class="btn btn-secondary btn-sm" style="margin-top:12px"><i class="fas fa-arrow-right"></i> Manage LCs</a>
+        </div>
+
+        <!-- Milestone Tracker -->
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-tasks" style="color:#7c3aed"></i> Milestone Payment Tracker</h3>
+          <p style="font-size:.85rem;color:#64748b;margin-bottom:16px">Select an escrow to view its milestone breakdown.</p>
+          <div class="form-group">
+            <label class="form-label" for="milestone-escrow-select">Escrow Reference</label>
+            <select class="form-control" id="milestone-escrow-select">
+              <option value="">— Select an escrow —</option>
+            </select>
+          </div>
+          <div id="milestone-display">
+            <!-- Sample static milestones for visual reference -->
+            <div class="milestone-track">
+              <div class="milestone-item done">
+                <div class="milestone-dot"></div>
+                <div class="milestone-title">Order Placement <span class="badge-pill badge-green" style="margin-left:8px">Paid</span></div>
+                <div class="milestone-meta">30% — $6,750 released on Mar 10, 2026</div>
+              </div>
+              <div class="milestone-item active">
+                <div class="milestone-dot"></div>
+                <div class="milestone-title">Production Complete <span class="badge-pill badge-orange" style="margin-left:8px">Pending</span></div>
+                <div class="milestone-meta">30% — $6,750 awaiting confirmation</div>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-dot"></div>
+                <div class="milestone-title">Delivery &amp; Inspection</div>
+                <div class="milestone-meta">40% — $9,000 locked until delivery</div>
+              </div>
+            </div>
+            <div style="margin-top:16px">
+              <div style="display:flex;justify-content:space-between;font-size:.82rem;color:#64748b;margin-bottom:4px">
+                <span>Progress</span><span>1/3 milestones complete</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill green" style="width:33%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dispute Status -->
+        <div class="card" id="dispute-status-card">
+          <h3 class="card-title"><i class="fas fa-flag" style="color:#ef4444"></i> Open Disputes</h3>
+          <div id="dispute-status-list">
+            <div class="empty-state" style="padding:20px 0">
+              <i class="fas fa-check-circle" style="color:#059669"></i>
+              <p>No open disputes. Great news!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── Footer ─────────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
+</footer>
+
+<script src="../../assets/js/trade-finance.js"></script>
+<script src="../../assets/js/escrow.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Load analytics summary
+    Escrow.loadDashboardSummary();
+
+    // Populate KPI cards
+    (async () => {
+      try {
+        const API = (window.GlobexConfig?.API_BASE_URL || '/api/v1') + '/trade-finance';
+        const token = localStorage.getItem('globex_token') || sessionStorage.getItem('globex_token') || '';
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+        const res = await fetch(`${API}/analytics`, { headers });
+        if (res.ok) {
+          const { data } = await res.json();
+          document.getElementById('kpi-lc-total').textContent = data.lc?.total ?? '—';
+          document.getElementById('kpi-escrow-held').textContent =
+            data.escrow?.total_held ? `$${data.escrow.total_held.toLocaleString()}` : '—';
+          document.getElementById('kpi-escrow-released').textContent =
+            data.escrow?.total_released ? `$${data.escrow.total_released.toLocaleString()}` : '—';
+          document.getElementById('kpi-factoring-proceeds').textContent =
+            data.invoice_factoring?.total_net_proceeds ? `$${data.invoice_factoring.total_net_proceeds.toLocaleString()}` : '—';
+
+          // Hero stats
+          document.getElementById('dash-escrow-held').textContent =
+            data.escrow?.total_held ? `$${(data.escrow.total_held / 1000).toFixed(0)}K` : '—';
+          document.getElementById('dash-lc-total').textContent = data.lc?.total ?? '—';
+          document.getElementById('dash-factoring-total').textContent = data.invoice_factoring?.total ?? '—';
+          document.getElementById('dash-lc-value').textContent =
+            data.lc?.total_value ? `$${(data.lc.total_value / 1000).toFixed(0)}K` : '—';
+        }
+      } catch (_) { /* use placeholder values */ }
+    })();
+
+    // Load LC list
+    TradeFinance.loadLCList('dashboard-lc-list');
+
+    // Load escrow list
+    Escrow.loadEscrowList('dashboard-escrow-list');
+  });
+</script>
+</body>
+</html>
