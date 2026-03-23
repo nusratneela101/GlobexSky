@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supplier Support | Globex Sky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:200}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-success{background:#d1fae5;color:#059669;border:1px solid #a7f3d0}.btn-success:hover{background:#a7f3d0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    .toast.show{transform:translateY(0);opacity:1}
+    /* Quick Help */
+    .help-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .help-card{background:#fff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);cursor:pointer;transition:all .2s;border:1.5px solid transparent;text-decoration:none;display:block}
+    .help-card:hover{border-color:#0052CC;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,82,204,.1)}
+    .help-card-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 12px}
+    .help-card-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:#0a0e27;margin-bottom:4px}
+    .help-card-desc{font-size:.75rem;color:#64748b;line-height:1.4}
+    /* File upload */
+    .file-upload-area{border:2px dashed #c7d8f8;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:#f8faff;font-size:.85rem;color:#64748b}
+    .file-upload-area:hover{border-color:#0052CC;background:#eef3ff}
+    .file-upload-area i{font-size:1.5rem;color:#0052CC;margin-bottom:6px;display:block}
+    /* Priority indicator */
+    .priority-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+    @media(max-width:900px){.help-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.help-grid{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+        <div><div class="nav-subtitle">Supplier Dashboard</div></div>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="rfq.html"><i class="fas fa-file-contract"></i> RFQ</a></li>
+      <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+      <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+      <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="support.html" class="active"><i class="fas fa-headset"></i> Support</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <!-- Header -->
+    <div class="page-card">
+      <div class="page-card-header">
+        <div class="page-card-title"><i class="fas fa-headset" style="color:#0052CC"></i> Supplier Support</div>
+        <span style="font-size:.82rem;color:#64748b">Average response time: <strong style="color:#059669">~2 hours</strong></span>
+      </div>
+    </div>
+
+    <!-- Quick Help Cards -->
+    <div class="help-grid">
+      <a href="#" class="help-card" onclick="showToast('📖 Opening FAQ Center...');return false">
+        <div class="help-card-icon" style="background:#eef3ff;color:#0052CC"><i class="fas fa-circle-question"></i></div>
+        <div class="help-card-title">FAQs</div>
+        <div class="help-card-desc">Browse 150+ answers to common supplier questions</div>
+      </a>
+      <a href="#" class="help-card" onclick="showToast('🎬 Opening Video Tutorials...');return false">
+        <div class="help-card-icon" style="background:#fff7ed;color:#f97316"><i class="fas fa-play-circle"></i></div>
+        <div class="help-card-title">Video Tutorials</div>
+        <div class="help-card-desc">Step-by-step guides for listing, shipping &amp; more</div>
+      </a>
+      <a href="#" class="help-card" onclick="openLiveChat()">
+        <div class="help-card-icon" style="background:#d1fae5;color:#059669"><i class="fas fa-comments"></i></div>
+        <div class="help-card-title">Contact Support</div>
+        <div class="help-card-desc">Live chat or email our dedicated supplier team</div>
+      </a>
+      <a href="#" class="help-card" onclick="showToast('🌐 Opening Community Forum...');return false">
+        <div class="help-card-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-users"></i></div>
+        <div class="help-card-title">Community Forum</div>
+        <div class="help-card-desc">Connect with other suppliers, share tips &amp; insights</div>
+      </a>
+    </div>
+
+    <!-- Open a Ticket -->
+    <div class="page-card">
+      <div class="page-card-title" style="margin-bottom:20px"><i class="fas fa-ticket" style="color:#0052CC"></i> Open a Support Ticket</div>
+
+      <div class="form-group">
+        <label class="form-label">Subject <span style="color:#ef4444">*</span></label>
+        <input type="text" class="form-control" id="ticketSubject" placeholder="Brief description of your issue">
+      </div>
+
+      <div class="form-row" style="margin-bottom:18px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Category <span style="color:#ef4444">*</span></label>
+          <select class="form-control" id="ticketCategory">
+            <option value="">-- Select Category --</option>
+            <option>Account &amp; Verification</option>
+            <option>Product Listing</option>
+            <option>Orders &amp; Fulfillment</option>
+            <option>Payments &amp; Withdrawals</option>
+            <option>RFQ &amp; Quotations</option>
+            <option>Shipping &amp; Logistics</option>
+            <option>Buyer Disputes</option>
+            <option>Technical Issue</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Priority <span style="color:#ef4444">*</span></label>
+          <select class="form-control" id="ticketPriority">
+            <option value="low">🟢 Low — General inquiry</option>
+            <option value="medium" selected>🟡 Medium — Needs attention</option>
+            <option value="high">🔴 High — Urgent issue</option>
+            <option value="critical">🚨 Critical — Business blocked</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description <span style="color:#ef4444">*</span></label>
+        <textarea class="form-control" id="ticketDesc" rows="5" placeholder="Please describe your issue in detail. Include any relevant order numbers, product IDs, or error messages to help us resolve this faster."></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">Attachments <span style="color:#64748b;font-weight:400">(optional)</span></label>
+        <div class="file-upload-area" onclick="document.getElementById('ticketFiles').click()">
+          <i class="fas fa-paperclip"></i>
+          Click to attach screenshots or documents (JPG, PNG, PDF — max 10MB each)
+          <input type="file" id="ticketFiles" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" style="display:none" onchange="handleTicketFiles(this.files)">
+        </div>
+        <div id="fileList" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="submitTicket()"><i class="fas fa-paper-plane"></i> Submit Ticket</button>
+      </div>
+    </div>
+
+    <!-- My Tickets -->
+    <div class="page-card">
+      <div class="page-card-header">
+        <div class="page-card-title"><i class="fas fa-list-check" style="color:#0052CC"></i> My Tickets</div>
+        <span style="font-size:.8rem;color:#64748b">4 total &bull; 1 open</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Ticket ID</th>
+              <th>Subject</th>
+              <th>Category</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#TKT-2025-0214</span></td>
+              <td><div style="font-weight:500;color:#0a0e27">Withdrawal pending for 7+ days</div><div style="font-size:.72rem;color:#64748b">WD-2025-0043 — $750.00 via Payoneer</div></td>
+              <td>Payments &amp; Withdrawals</td>
+              <td><span class="badge badge-red"><span class="priority-dot" style="background:#ef4444"></span>High</span></td>
+              <td><span class="badge badge-orange">Open</span></td>
+              <td style="white-space:nowrap;color:#64748b;font-size:.82rem">May 10, 2025</td>
+              <td><button class="btn btn-primary btn-sm" onclick="viewTicket('#TKT-2025-0214')"><i class="fas fa-eye"></i> View</button></td>
+            </tr>
+            <tr>
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#TKT-2025-0198</span></td>
+              <td><div style="font-weight:500;color:#0a0e27">Product image upload error</div><div style="font-size:.72rem;color:#64748b">500 error on second image upload for SKU ARD-PCB-V3</div></td>
+              <td>Technical Issue</td>
+              <td><span class="badge badge-orange"><span class="priority-dot" style="background:#f97316"></span>Medium</span></td>
+              <td><span class="badge badge-green">Resolved</span></td>
+              <td style="white-space:nowrap;color:#64748b;font-size:.82rem">Apr 28, 2025</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="viewTicket('#TKT-2025-0198')"><i class="fas fa-eye"></i> View</button></td>
+            </tr>
+            <tr>
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#TKT-2025-0177</span></td>
+              <td><div style="font-weight:500;color:#0a0e27">Buyer dispute on Order #GS-2025-0741</div><div style="font-size:.72rem;color:#64748b">Buyer claims items not received — tracking shows delivered</div></td>
+              <td>Buyer Disputes</td>
+              <td><span class="badge badge-red"><span class="priority-dot" style="background:#ef4444"></span>High</span></td>
+              <td><span class="badge badge-green">Resolved</span></td>
+              <td style="white-space:nowrap;color:#64748b;font-size:.82rem">Apr 15, 2025</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="viewTicket('#TKT-2025-0177')"><i class="fas fa-eye"></i> View</button></td>
+            </tr>
+            <tr>
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#TKT-2025-0142</span></td>
+              <td><div style="font-weight:500;color:#0a0e27">How to set up tiered pricing for bulk orders</div><div style="font-size:.72rem;color:#64748b">General question about pricing tiers</div></td>
+              <td>Product Listing</td>
+              <td><span class="badge badge-gray"><span class="priority-dot" style="background:#94a3b8"></span>Low</span></td>
+              <td><span class="badge badge-green">Closed</span></td>
+              <td style="white-space:nowrap;color:#64748b;font-size:.82rem">Mar 30, 2025</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="viewTicket('#TKT-2025-0142')"><i class="fas fa-eye"></i> View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="page-card" style="background:linear-gradient(135deg,#0052CC 0%,#0066ff 100%);color:#fff;border-radius:16px">
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:6px"><i class="fas fa-phone-volume"></i> Need Immediate Help?</div>
+          <div style="font-size:.85rem;opacity:.9">Our supplier success team is available Mon–Fri, 09:00–18:00 UTC.</div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="mailto:supplier-support@globexsky.com" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3)"><i class="fas fa-envelope"></i> Email Us</a>
+          <button class="btn" style="background:#fff;color:#0052CC" onclick="openLiveChat()"><i class="fas fa-comment-dots"></i> Live Chat</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../../assets/js/navbar.js"></script>
+<script>
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function openLiveChat() { showToast('💬 Connecting to live chat...'); }
+  function viewTicket(id) { showToast('👁️ Opening ticket ' + id + '...'); }
+
+  function handleTicketFiles(files) {
+    const list = document.getElementById('fileList');
+    Array.from(files).forEach(file => {
+      const tag = document.createElement('div');
+      tag.style.cssText = 'background:#f1f5f9;border-radius:6px;padding:4px 10px;font-size:.78rem;color:#374151;display:flex;align-items:center;gap:6px;border:1px solid #e2e8f0';
+      tag.innerHTML = `<i class="fas fa-file" style="color:#0052CC"></i> ${file.name} <button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.7rem;padding:0 2px">&times;</button>`;
+      list.appendChild(tag);
+    });
+  }
+
+  function submitTicket() {
+    const subject = document.getElementById('ticketSubject').value.trim();
+    const category = document.getElementById('ticketCategory').value;
+    const desc = document.getElementById('ticketDesc').value.trim();
+    if (!subject) { showToast('⚠️ Please enter a ticket subject.'); return; }
+    if (!category) { showToast('⚠️ Please select a category.'); return; }
+    if (!desc) { showToast('⚠️ Please describe your issue.'); return; }
+    document.getElementById('ticketSubject').value = '';
+    document.getElementById('ticketDesc').value = '';
+    document.getElementById('fileList').innerHTML = '';
+    showToast('✅ Ticket submitted! We\'ll respond within 2–4 hours.');
+  }
+</script>
+</body>
+</html>

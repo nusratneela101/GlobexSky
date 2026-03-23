@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Withdrawal Request | Globex Sky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:200}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-success{background:#d1fae5;color:#059669;border:1px solid #a7f3d0}.btn-success:hover{background:#a7f3d0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-yellow{background:#fef3c7;color:#d97706}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    .toast.show{transform:translateY(0);opacity:1}
+    /* Balance cards */
+    .balance-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+    .balance-card{border-radius:16px;padding:22px;color:#fff;position:relative;overflow:hidden}
+    .balance-card::after{content:'';position:absolute;right:-20px;bottom:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.08)}
+    .balance-card-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:12px}
+    .balance-card-label{font-size:.78rem;opacity:.85;margin-bottom:4px}
+    .balance-card-amount{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:800}
+    /* Payment method sections */
+    .method-section{display:none;padding-top:4px}
+    .method-section.visible{display:block}
+    .form-hint{font-size:.75rem;color:#94a3b8;margin-top:4px}
+    .amount-quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .amount-quick button{padding:4px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#f8faff;font-size:.78rem;font-weight:600;color:#374151;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+    .amount-quick button:hover{border-color:#0052CC;color:#0052CC;background:#eef3ff}
+    @media(max-width:900px){.balance-row{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.balance-row{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+        <div><div class="nav-subtitle">Supplier Dashboard</div></div>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="rfq.html"><i class="fas fa-file-contract"></i> RFQ</a></li>
+      <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+      <li><a href="earnings.html" class="active"><i class="fas fa-coins"></i> Earnings</a></li>
+      <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="support.html"><i class="fas fa-headset"></i> Support</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <!-- Header -->
+    <div class="page-card">
+      <div class="page-card-header">
+        <div class="page-card-title"><i class="fas fa-money-bill-transfer" style="color:#0052CC"></i> Withdrawal Request</div>
+        <a href="earnings.html" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Earnings</a>
+      </div>
+    </div>
+
+    <!-- Balance Cards -->
+    <div class="balance-row">
+      <div class="balance-card" style="background:linear-gradient(135deg,#0052CC,#0066ff)">
+        <div class="balance-card-icon"><i class="fas fa-wallet"></i></div>
+        <div class="balance-card-label">Available Balance</div>
+        <div class="balance-card-amount">$4,280.00</div>
+        <div style="font-size:.72rem;opacity:.75;margin-top:4px">Ready to withdraw</div>
+      </div>
+      <div class="balance-card" style="background:linear-gradient(135deg,#f97316,#fb923c)">
+        <div class="balance-card-icon"><i class="fas fa-clock"></i></div>
+        <div class="balance-card-label">Pending Clearance</div>
+        <div class="balance-card-amount">$890.00</div>
+        <div style="font-size:.72rem;opacity:.75;margin-top:4px">Clears in 3–5 business days</div>
+      </div>
+      <div class="balance-card" style="background:linear-gradient(135deg,#059669,#10b981)">
+        <div class="balance-card-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="balance-card-label">Total Withdrawn</div>
+        <div class="balance-card-amount">$12,450.00</div>
+        <div style="font-size:.72rem;opacity:.75;margin-top:4px">All-time</div>
+      </div>
+    </div>
+
+    <!-- Withdrawal Form -->
+    <div class="page-card">
+      <div class="page-card-title" style="margin-bottom:20px"><i class="fas fa-paper-plane" style="color:#0052CC"></i> New Withdrawal Request</div>
+
+      <div class="form-group">
+        <label class="form-label">Withdrawal Amount (USD) <span style="color:#ef4444">*</span></label>
+        <input type="number" class="form-control" id="withdrawAmount" placeholder="0.00" min="50" max="4280" step="0.01">
+        <div class="amount-quick">
+          <button onclick="setAmount(500)">$500</button>
+          <button onclick="setAmount(1000)">$1,000</button>
+          <button onclick="setAmount(2000)">$2,000</button>
+          <button onclick="setAmount(4280)">Max ($4,280)</button>
+        </div>
+        <p class="form-hint">Minimum withdrawal: $50.00 &bull; Maximum: $4,280.00 (available balance) &bull; Processing fee: 1%</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Payment Method <span style="color:#ef4444">*</span></label>
+        <select class="form-control" id="payMethod" onchange="updateMethodSection()">
+          <option value="">-- Select Payment Method --</option>
+          <option value="bank">Bank Transfer (Wire)</option>
+          <option value="paypal">PayPal</option>
+          <option value="payoneer">Payoneer</option>
+          <option value="usdt">USDT / Crypto</option>
+        </select>
+      </div>
+
+      <!-- Bank Transfer Details -->
+      <div class="method-section" id="bankSection">
+        <div style="background:#f8faff;border:1.5px solid #e8f0fe;border-radius:12px;padding:18px;margin-bottom:18px">
+          <div style="font-size:.82rem;font-weight:700;color:#0052CC;margin-bottom:14px"><i class="fas fa-university"></i> Bank Transfer Details</div>
+          <div class="form-row" style="margin-bottom:16px">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Bank Name <span style="color:#ef4444">*</span></label>
+              <input type="text" class="form-control" placeholder="e.g. HSBC, Barclays, Citibank">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Account Holder Name <span style="color:#ef4444">*</span></label>
+              <input type="text" class="form-control" placeholder="Full name as on account">
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:16px">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Account Number <span style="color:#ef4444">*</span></label>
+              <input type="text" class="form-control" placeholder="e.g. 12345678">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">IBAN (if applicable)</label>
+              <input type="text" class="form-control" placeholder="e.g. GB29NWBK60161331926819">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">SWIFT / BIC Code <span style="color:#ef4444">*</span></label>
+              <input type="text" class="form-control" placeholder="e.g. HBUKGB4B">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Bank Country</label>
+              <select class="form-control">
+                <option value="">-- Select --</option>
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Germany</option>
+                <option>China</option>
+                <option>Hong Kong</option>
+                <option>Singapore</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PayPal Details -->
+      <div class="method-section" id="paypalSection">
+        <div style="background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:18px;margin-bottom:18px">
+          <div style="font-size:.82rem;font-weight:700;color:#1d4ed8;margin-bottom:14px"><i class="fab fa-paypal"></i> PayPal Details</div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">PayPal Email Address <span style="color:#ef4444">*</span></label>
+            <input type="email" class="form-control" placeholder="your-paypal@email.com">
+            <p class="form-hint">Funds will be sent to this PayPal account. Please ensure it is verified.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payoneer Details -->
+      <div class="method-section" id="payoneerSection">
+        <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:18px;margin-bottom:18px">
+          <div style="font-size:.82rem;font-weight:700;color:#c2410c;margin-bottom:14px"><i class="fas fa-credit-card"></i> Payoneer Details</div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Payoneer Email Address <span style="color:#ef4444">*</span></label>
+            <input type="email" class="form-control" placeholder="your-payoneer@email.com">
+            <p class="form-hint">Your Payoneer registered email. Ensure your account is active and approved.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- USDT/Crypto Details -->
+      <div class="method-section" id="usdtSection">
+        <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:18px;margin-bottom:18px">
+          <div style="font-size:.82rem;font-weight:700;color:#065f46;margin-bottom:14px"><i class="fas fa-coins"></i> USDT / Crypto Details</div>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Network <span style="color:#ef4444">*</span></label>
+              <select class="form-control">
+                <option>USDT — TRC20 (Tron)</option>
+                <option>USDT — ERC20 (Ethereum)</option>
+                <option>USDT — BEP20 (BSC)</option>
+                <option>Bitcoin (BTC)</option>
+                <option>USDC — ERC20</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Wallet Address <span style="color:#ef4444">*</span></label>
+              <input type="text" class="form-control" placeholder="e.g. TQn9Y2khEsLJW1ChVWFMSMeRDow...">
+            </div>
+          </div>
+          <p class="form-hint" style="margin-top:8px"><i class="fas fa-exclamation-triangle" style="color:#f59e0b"></i> Double-check the network and wallet address. Crypto transfers are irreversible.</p>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:22px">
+        <label class="form-label">Reference / Note <span style="color:#64748b;font-weight:400">(optional)</span></label>
+        <input type="text" class="form-control" placeholder="e.g. May payout, Invoice #1042">
+      </div>
+
+      <!-- Fee Preview -->
+      <div style="background:#f8faff;border:1.5px solid #e8f0fe;border-radius:12px;padding:14px;margin-bottom:20px" id="feePreview" style="display:none">
+        <div style="font-size:.8rem;font-weight:700;color:#0052CC;margin-bottom:10px"><i class="fas fa-calculator"></i> Withdrawal Summary</div>
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;color:#374151;padding:4px 0;border-bottom:1px solid #e8f0fe"><span>Requested Amount</span><span id="prevAmount">$0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;color:#ef4444;padding:4px 0;border-bottom:1px solid #e8f0fe"><span>Processing Fee (1%)</span><span id="prevFee">−$0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.9rem;font-weight:700;color:#0a0e27;padding:6px 0"><span>You Will Receive</span><span id="prevNet" style="color:#059669">$0.00</span></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="submitWithdrawal()"><i class="fas fa-paper-plane"></i> Request Withdrawal</button>
+      </div>
+    </div>
+
+    <!-- Withdrawal History -->
+    <div class="page-card">
+      <div class="page-card-title" style="margin-bottom:18px"><i class="fas fa-history" style="color:#0052CC"></i> Withdrawal History</div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Reference</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>May 5, 2025</td>
+              <td><strong>$2,000.00</strong></td>
+              <td><i class="fas fa-university" style="color:#0052CC"></i> Bank Transfer</td>
+              <td><span style="font-family:monospace;font-size:.8rem">WD-2025-0091</span></td>
+              <td><span class="badge badge-green">Completed</span></td>
+            </tr>
+            <tr>
+              <td>Apr 18, 2025</td>
+              <td><strong>$1,500.00</strong></td>
+              <td><i class="fab fa-paypal" style="color:#1d4ed8"></i> PayPal</td>
+              <td><span style="font-family:monospace;font-size:.8rem">WD-2025-0078</span></td>
+              <td><span class="badge badge-green">Completed</span></td>
+            </tr>
+            <tr>
+              <td>Apr 2, 2025</td>
+              <td><strong>$3,200.00</strong></td>
+              <td><i class="fas fa-university" style="color:#0052CC"></i> Bank Transfer</td>
+              <td><span style="font-family:monospace;font-size:.8rem">WD-2025-0065</span></td>
+              <td><span class="badge badge-green">Completed</span></td>
+            </tr>
+            <tr>
+              <td>Mar 14, 2025</td>
+              <td><strong>$980.00</strong></td>
+              <td><i class="fas fa-coins" style="color:#059669"></i> USDT TRC20</td>
+              <td><span style="font-family:monospace;font-size:.8rem">WD-2025-0051</span></td>
+              <td><span class="badge badge-green">Completed</span></td>
+            </tr>
+            <tr>
+              <td>Mar 1, 2025</td>
+              <td><strong>$750.00</strong></td>
+              <td><i class="fas fa-credit-card" style="color:#c2410c"></i> Payoneer</td>
+              <td><span style="font-family:monospace;font-size:.8rem">WD-2025-0043</span></td>
+              <td><span class="badge badge-orange">Pending</span></td>
+            </tr>
+            <tr>
+              <td>Feb 20, 2025</td>
+              <td><strong>$4,020.00</strong></td>
+              <td><i class="fas fa-university" style="color:#0052CC"></i> Bank Transfer</td>
+              <td><span style="font-family:monospace;font-size:.8rem">WD-2025-0031</span></td>
+              <td><span class="badge badge-green">Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../../assets/js/navbar.js"></script>
+<script>
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function setAmount(val) {
+    document.getElementById('withdrawAmount').value = val;
+    updateFeePreview(val);
+  }
+
+  document.getElementById('withdrawAmount').addEventListener('input', function() {
+    updateFeePreview(parseFloat(this.value) || 0);
+  });
+
+  function updateFeePreview(amt) {
+    const fee = amt * 0.01;
+    const net = amt - fee;
+    document.getElementById('prevAmount').textContent = '$' + amt.toFixed(2);
+    document.getElementById('prevFee').textContent = '−$' + fee.toFixed(2);
+    document.getElementById('prevNet').textContent = '$' + net.toFixed(2);
+    document.getElementById('feePreview').style.display = amt > 0 ? 'block' : 'none';
+  }
+
+  function updateMethodSection() {
+    const val = document.getElementById('payMethod').value;
+    ['bankSection','paypalSection','payoneerSection','usdtSection'].forEach(id => {
+      document.getElementById(id).classList.remove('visible');
+    });
+    if (val === 'bank') document.getElementById('bankSection').classList.add('visible');
+    else if (val === 'paypal') document.getElementById('paypalSection').classList.add('visible');
+    else if (val === 'payoneer') document.getElementById('payoneerSection').classList.add('visible');
+    else if (val === 'usdt') document.getElementById('usdtSection').classList.add('visible');
+  }
+
+  function submitWithdrawal() {
+    const amt = parseFloat(document.getElementById('withdrawAmount').value);
+    const method = document.getElementById('payMethod').value;
+    if (!amt || amt < 50) { showToast('⚠️ Minimum withdrawal amount is $50.00'); return; }
+    if (amt > 4280) { showToast('⚠️ Amount exceeds your available balance.'); return; }
+    if (!method) { showToast('⚠️ Please select a payment method.'); return; }
+    showToast('✅ Withdrawal request submitted! Processing in 1–3 business days.');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add New Product | Globex Sky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:200}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-success{background:#d1fae5;color:#059669;border:1px solid #a7f3d0}.btn-success:hover{background:#a7f3d0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    .toast.show{transform:translateY(0);opacity:1}
+    /* Page-specific */
+    .section-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:#0052CC;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #e8f0fe;display:flex;align-items:center;gap:8px}
+    .upload-area{border:2px dashed #c7d8f8;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;background:#f8faff}
+    .upload-area:hover,.upload-area.drag-over{border-color:#0052CC;background:#eef3ff}
+    .upload-area i{font-size:2rem;color:#0052CC;margin-bottom:8px}
+    .upload-area p{color:#64748b;font-size:.85rem;margin-bottom:4px}
+    .upload-area span{font-size:.75rem;color:#94a3b8}
+    .thumb-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:12px}
+    .thumb-item{aspect-ratio:1;border-radius:8px;background:#f1f5f9;border:1.5px solid #e2e8f0;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;cursor:pointer}
+    .thumb-item img{width:100%;height:100%;object-fit:cover}
+    .thumb-item .remove-thumb{position:absolute;top:2px;right:2px;background:rgba(239,68,68,.85);color:#fff;border:none;border-radius:50%;width:16px;height:16px;font-size:.6rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+    .thumb-item:hover .remove-thumb{display:flex}
+    .thumb-placeholder{color:#94a3b8;font-size:1.1rem}
+    .tier-table{width:100%;border-collapse:collapse;font-size:.85rem}
+    .tier-table th{background:#f8faff;padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-weight:600;color:#374151}
+    .tier-table td{padding:6px 10px;border-bottom:1px solid #f1f5f9}
+    .tier-table td input{width:100%;border:1.5px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:.82rem;font-family:'Inter',sans-serif}
+    .tier-table td input:focus{outline:none;border-color:#0052CC}
+    .cert-grid{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+    .cert-item{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.85rem;color:#374151;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 12px;transition:all .2s}
+    .cert-item input[type=checkbox]{accent-color:#0052CC;width:14px;height:14px}
+    .cert-item:has(input:checked){background:#eef3ff;border-color:#0052CC;color:#0052CC;font-weight:600}
+    .form-hint{font-size:.75rem;color:#94a3b8;margin-top:4px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-row,.form-row-3{grid-template-columns:1fr}.thumb-grid{grid-template-columns:repeat(4,1fr)}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+        <div><div class="nav-subtitle">Supplier Dashboard</div></div>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html" class="active"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="rfq.html"><i class="fas fa-file-contract"></i> RFQ</a></li>
+      <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+      <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+      <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="support.html"><i class="fas fa-headset"></i> Support</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <!-- Header -->
+    <div class="page-card">
+      <div class="page-card-header">
+        <div>
+          <div style="font-size:.8rem;color:#64748b;margin-bottom:4px"><a href="products.html" style="color:#0052CC;text-decoration:none">Products</a> <i class="fas fa-chevron-right" style="font-size:.65rem"></i> Add New Product</div>
+          <div class="page-card-title"><i class="fas fa-plus-circle" style="color:#0052CC"></i> Add New Product</div>
+        </div>
+        <a href="products.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Products</a>
+      </div>
+    </div>
+
+    <!-- Basic Info -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-info-circle"></i> Basic Information</div>
+      <div class="form-row" style="margin-bottom:18px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Product Name <span style="color:#ef4444">*</span></label>
+          <input type="text" class="form-control" id="productName" placeholder="e.g. Wireless Bluetooth Earbuds Pro X200">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">SKU / Model Number <span style="color:#ef4444">*</span></label>
+          <input type="text" class="form-control" id="productSku" placeholder="e.g. BT-EAR-X200">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Category <span style="color:#ef4444">*</span></label>
+          <select class="form-control" id="productCategory">
+            <option value="">-- Select Category --</option>
+            <option value="electronics">Electronics</option>
+            <option value="fashion">Fashion</option>
+            <option value="sports">Sports</option>
+            <option value="home">Home &amp; Garden</option>
+            <option value="beauty">Beauty &amp; Health</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Sub-Category</label>
+          <input type="text" class="form-control" placeholder="e.g. Audio Accessories">
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Images -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-images"></i> Product Images</div>
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('imgInput').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Drag &amp; drop photos here, or <strong style="color:#0052CC">click to browse</strong></p>
+        <span>Up to 8 images &bull; JPG, PNG, WEBP &bull; Max 5MB each</span>
+        <input type="file" id="imgInput" multiple accept="image/*" style="display:none" onchange="handleFiles(this.files)">
+      </div>
+      <div class="thumb-grid" id="thumbGrid">
+        <!-- thumbnails injected by JS -->
+      </div>
+      <p class="form-hint" style="margin-top:8px"><i class="fas fa-lightbulb" style="color:#f59e0b"></i> First image will be used as the main product thumbnail.</p>
+    </div>
+
+    <!-- Description -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-align-left"></i> Description</div>
+      <div class="form-group">
+        <label class="form-label">Full Description <span style="color:#ef4444">*</span></label>
+        <textarea class="form-control" id="productDesc" rows="5" placeholder="Describe your product in detail. Include materials, use cases, target audience, and any relevant technical information..."></textarea>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Key Features <span style="color:#64748b;font-weight:400">(one per line)</span></label>
+        <textarea class="form-control" id="productFeatures" rows="5" placeholder="Bluetooth 5.3 with 30m range&#10;Active Noise Cancellation (ANC)&#10;30-hour battery life&#10;IPX5 waterproof rating&#10;USB-C fast charging (15 min = 3h playback)"></textarea>
+        <p class="form-hint">Each line will appear as a bullet point on the product listing.</p>
+      </div>
+    </div>
+
+    <!-- Pricing & MOQ -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-tag"></i> Pricing &amp; MOQ</div>
+      <div class="form-row" style="margin-bottom:18px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Unit Price (USD) <span style="color:#ef4444">*</span></label>
+          <input type="number" class="form-control" id="unitPrice" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Minimum Order Quantity <span style="color:#ef4444">*</span></label>
+          <input type="number" class="form-control" id="moq" placeholder="e.g. 50" min="1">
+        </div>
+      </div>
+      <label class="form-label" style="margin-bottom:10px">Tiered Pricing <span style="color:#64748b;font-weight:400">(optional)</span></label>
+      <div style="overflow-x:auto;border-radius:10px;border:1.5px solid #e2e8f0">
+        <table class="tier-table" id="tierTable">
+          <thead>
+            <tr>
+              <th>Min Qty</th>
+              <th>Max Qty</th>
+              <th>Price per Unit (USD)</th>
+              <th style="width:48px"></th>
+            </tr>
+          </thead>
+          <tbody id="tierBody">
+            <tr>
+              <td><input type="number" placeholder="50" min="1"></td>
+              <td><input type="number" placeholder="199" min="1"></td>
+              <td><input type="number" placeholder="12.50" step="0.01" min="0"></td>
+              <td><button class="btn btn-danger btn-sm" onclick="removeTierRow(this)" title="Remove"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="number" placeholder="200" min="1"></td>
+              <td><input type="number" placeholder="999" min="1"></td>
+              <td><input type="number" placeholder="11.00" step="0.01" min="0"></td>
+              <td><button class="btn btn-danger btn-sm" onclick="removeTierRow(this)" title="Remove"><i class="fas fa-trash"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="addTierRow()"><i class="fas fa-plus"></i> Add Tier</button>
+    </div>
+
+    <!-- Dimensions & Weight -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-ruler-combined"></i> Dimensions &amp; Weight</div>
+      <div class="form-row-3" style="margin-bottom:16px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Length (cm)</label>
+          <input type="number" class="form-control" placeholder="0.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Width (cm)</label>
+          <input type="number" class="form-control" placeholder="0.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Height (cm)</label>
+          <input type="number" class="form-control" placeholder="0.0" step="0.1" min="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Weight (kg)</label>
+          <input type="number" class="form-control" placeholder="0.000" step="0.001" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Package Type</label>
+          <select class="form-control">
+            <option value="">-- Select --</option>
+            <option>Retail Box</option>
+            <option>Bulk / Poly Bag</option>
+            <option>Blister Pack</option>
+            <option>Custom Packaging</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-shipping-fast"></i> Shipping</div>
+      <div class="form-row" style="margin-bottom:18px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Shipping Origin Country <span style="color:#ef4444">*</span></label>
+          <select class="form-control">
+            <option value="">-- Select Country --</option>
+            <option selected>China</option>
+            <option>United States</option>
+            <option>Germany</option>
+            <option>India</option>
+            <option>Turkey</option>
+            <option>Vietnam</option>
+            <option>South Korea</option>
+            <option>Japan</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Processing / Lead Time <span style="color:#ef4444">*</span></label>
+          <select class="form-control">
+            <option>1–3 Business Days</option>
+            <option>3–5 Business Days</option>
+            <option selected>5–10 Business Days</option>
+            <option>10–20 Business Days</option>
+            <option>20–30 Business Days</option>
+            <option>Custom (specify in description)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Can Ship To</label>
+        <select class="form-control" multiple style="height:110px">
+          <option selected>Worldwide</option>
+          <option>United States</option>
+          <option>European Union</option>
+          <option>United Kingdom</option>
+          <option>Canada</option>
+          <option>Australia</option>
+          <option>Middle East</option>
+          <option>Africa</option>
+          <option>Southeast Asia</option>
+        </select>
+        <p class="form-hint">Hold Ctrl / Cmd to select multiple regions.</p>
+      </div>
+    </div>
+
+    <!-- Certifications -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-certificate"></i> Certifications &amp; Compliance</div>
+      <div class="cert-grid">
+        <label class="cert-item"><input type="checkbox" value="CE"> CE Mark</label>
+        <label class="cert-item"><input type="checkbox" value="RoHS"> RoHS</label>
+        <label class="cert-item"><input type="checkbox" value="ISO9001"> ISO 9001</label>
+        <label class="cert-item"><input type="checkbox" value="FDA"> FDA</label>
+        <label class="cert-item"><input type="checkbox" value="FCC"> FCC</label>
+        <label class="cert-item"><input type="checkbox" value="UL"> UL Listed</label>
+        <label class="cert-item"><input type="checkbox" value="REACH"> REACH</label>
+        <label class="cert-item"><input type="checkbox" value="BSCI"> BSCI</label>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Other Certifications</label>
+        <input type="text" class="form-control" placeholder="e.g. MFi, GS, PSE, KC, BIS...">
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="page-card" style="display:flex;align-items:center;justify-content:flex-end;gap:12px">
+      <a href="products.html" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+      <button class="btn btn-primary" onclick="submitProduct()"><i class="fas fa-paper-plane"></i> Save &amp; Submit for Review</button>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../../assets/js/navbar.js"></script>
+<script>
+  const thumbGrid = document.getElementById('thumbGrid');
+  let uploadedFiles = [];
+
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.add('drag-over');
+  }
+  function handleDragLeave(e) {
+    document.getElementById('uploadArea').classList.remove('drag-over');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  }
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      if (uploadedFiles.length >= 8) { showToast('Maximum 8 images allowed.'); return; }
+      if (!file.type.startsWith('image/')) return;
+      uploadedFiles.push(file);
+      const reader = new FileReader();
+      reader.onload = e => addThumb(e.target.result, uploadedFiles.length - 1);
+      reader.readAsDataURL(file);
+    });
+  }
+  function addThumb(src, idx) {
+    const div = document.createElement('div');
+    div.className = 'thumb-item';
+    div.dataset.idx = idx;
+    div.innerHTML = `<img src="${src}" alt="Product image"><button class="remove-thumb" onclick="removeThumb(this,${idx})"><i class="fas fa-times"></i></button>`;
+    thumbGrid.appendChild(div);
+  }
+  function removeThumb(btn, idx) {
+    btn.closest('.thumb-item').remove();
+    uploadedFiles[idx] = null;
+  }
+
+  function addTierRow() {
+    const tbody = document.getElementById('tierBody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input type="number" placeholder="Min qty" min="1"></td>
+      <td><input type="number" placeholder="Max qty" min="1"></td>
+      <td><input type="number" placeholder="0.00" step="0.01" min="0"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="removeTierRow(this)" title="Remove"><i class="fas fa-trash"></i></button></td>`;
+    tbody.appendChild(tr);
+  }
+  function removeTierRow(btn) {
+    const rows = document.querySelectorAll('#tierBody tr');
+    if (rows.length <= 1) { showToast('At least one tier row is required.'); return; }
+    btn.closest('tr').remove();
+  }
+
+  function submitProduct() {
+    const name = document.getElementById('productName').value.trim();
+    const sku = document.getElementById('productSku').value.trim();
+    const cat = document.getElementById('productCategory').value;
+    const price = document.getElementById('unitPrice').value;
+    const moq = document.getElementById('moq').value;
+    if (!name || !sku || !cat || !price || !moq) {
+      showToast('⚠️ Please fill in all required fields.');
+      return;
+    }
+    showToast('✅ Product submitted for review!');
+  }
+</script>
+</body>
+</html>

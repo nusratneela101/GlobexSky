@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RFQ Management | Globex Sky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:200}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-success{background:#d1fae5;color:#059669;border:1px solid #a7f3d0}.btn-success:hover{background:#a7f3d0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    .toast.show{transform:translateY(0);opacity:1}
+    /* Stats */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+    .stat-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px}
+    .stat-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .stat-num{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:800;color:#0a0e27;line-height:1}
+    .stat-label{font-size:.75rem;color:#64748b;margin-top:2px}
+    /* Tabs */
+    .filter-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+    .tab-btn{padding:6px 16px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;font-size:.82rem;font-weight:600;color:#64748b;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+    .tab-btn:hover{border-color:#0052CC;color:#0052CC}
+    .tab-btn.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:#fff;border-radius:16px;padding:28px;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+    .modal-subtitle{font-size:.8rem;color:#64748b;margin-bottom:18px}
+    @media(max-width:900px){.stats-row{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.stats-row{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+        <div><div class="nav-subtitle">Supplier Dashboard</div></div>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="rfq.html" class="active"><i class="fas fa-file-contract"></i> RFQ</a></li>
+      <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+      <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+      <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="support.html"><i class="fas fa-headset"></i> Support</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <!-- Page Header -->
+    <div class="page-card">
+      <div class="page-card-header">
+        <div class="page-card-title"><i class="fas fa-file-contract" style="color:#0052CC"></i> RFQ Management</div>
+        <span style="font-size:.82rem;color:#64748b">Requests for Quotation sent to your store</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-file-contract"></i></div>
+        <div><div class="stat-num">24</div><div class="stat-label">Total RFQs</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#ffedd5;color:#f97316"><i class="fas fa-clock"></i></div>
+        <div><div class="stat-num">8</div><div class="stat-label">Pending Response</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe;color:#0052CC"><i class="fas fa-paper-plane"></i></div>
+        <div><div class="stat-num">12</div><div class="stat-label">Responded</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#d1fae5;color:#059669"><i class="fas fa-trophy"></i></div>
+        <div><div class="stat-num">6</div><div class="stat-label">Won</div></div>
+      </div>
+    </div>
+
+    <!-- Filter Tabs + Table -->
+    <div class="page-card">
+      <div class="filter-tabs" id="filterTabs">
+        <button class="tab-btn active" onclick="filterRFQ('all',this)">All <span style="background:#e2e8f0;border-radius:10px;padding:1px 7px;font-size:.7rem;margin-left:2px">24</span></button>
+        <button class="tab-btn" onclick="filterRFQ('pending',this)">Pending <span style="background:#ffedd5;color:#f97316;border-radius:10px;padding:1px 7px;font-size:.7rem;margin-left:2px">8</span></button>
+        <button class="tab-btn" onclick="filterRFQ('responded',this)">Responded <span style="background:#dbeafe;color:#0052CC;border-radius:10px;padding:1px 7px;font-size:.7rem;margin-left:2px">12</span></button>
+        <button class="tab-btn" onclick="filterRFQ('won',this)">Won <span style="background:#d1fae5;color:#059669;border-radius:10px;padding:1px 7px;font-size:.7rem;margin-left:2px">6</span></button>
+        <button class="tab-btn" onclick="filterRFQ('expired',this)">Expired <span style="background:#f1f5f9;color:#64748b;border-radius:10px;padding:1px 7px;font-size:.7rem;margin-left:2px">2</span></button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table" id="rfqTable">
+          <thead>
+            <tr>
+              <th>RFQ ID</th>
+              <th>Buyer</th>
+              <th>Product / Description</th>
+              <th>Qty Required</th>
+              <th>Deadline</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rfqBody">
+            <tr data-status="pending">
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#RFQ-2025-0441</span></td>
+              <td><div style="font-weight:600;color:#0a0e27">Global Parts Inc.</div><div style="font-size:.72rem;color:#64748b">🇺🇸 United States</div></td>
+              <td><div style="font-weight:500">Arduino PCB Board v3 (custom silkscreen)</div><div style="font-size:.72rem;color:#64748b">Custom logo, white silkscreen, RoHS compliant</div></td>
+              <td><strong>2,000 pcs</strong></td>
+              <td><span style="color:#f97316;font-size:.82rem;font-weight:600"><i class="fas fa-clock"></i> May 20, 2025</span></td>
+              <td><span class="badge badge-orange">Pending</span></td>
+              <td>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <button class="btn btn-secondary btn-sm" onclick="viewRFQ('#RFQ-2025-0441')"><i class="fas fa-eye"></i></button>
+                  <button class="btn btn-primary btn-sm" onclick="openRespondModal('#RFQ-2025-0441','Arduino PCB Board v3','2,000 pcs')"><i class="fas fa-reply"></i> Respond</button>
+                  <button class="btn btn-danger btn-sm" onclick="declineRFQ('#RFQ-2025-0441')"><i class="fas fa-times"></i></button>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#RFQ-2025-0438</span></td>
+              <td><div style="font-weight:600;color:#0a0e27">Techno Distributors GmbH</div><div style="font-size:.72rem;color:#64748b">🇩🇪 Germany</div></td>
+              <td><div style="font-weight:500">ESP32 WiFi Module (bulk)</div><div style="font-size:.72rem;color:#64748b">Standard firmware, tray packaging</div></td>
+              <td><strong>5,000 pcs</strong></td>
+              <td><span style="color:#f97316;font-size:.82rem;font-weight:600"><i class="fas fa-clock"></i> May 22, 2025</span></td>
+              <td><span class="badge badge-orange">Pending</span></td>
+              <td>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <button class="btn btn-secondary btn-sm" onclick="viewRFQ('#RFQ-2025-0438')"><i class="fas fa-eye"></i></button>
+                  <button class="btn btn-primary btn-sm" onclick="openRespondModal('#RFQ-2025-0438','ESP32 WiFi Module','5,000 pcs')"><i class="fas fa-reply"></i> Respond</button>
+                  <button class="btn btn-danger btn-sm" onclick="declineRFQ('#RFQ-2025-0438')"><i class="fas fa-times"></i></button>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="responded">
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#RFQ-2025-0431</span></td>
+              <td><div style="font-weight:600;color:#0a0e27">Bright Retail Ltd.</div><div style="font-size:.72rem;color:#64748b">🇬🇧 United Kingdom</div></td>
+              <td><div style="font-weight:500">JST Connector Set (50pcs/bag)</div><div style="font-size:.72rem;color:#64748b">2.0mm pitch, mixed gender, branded bags</div></td>
+              <td><strong>500 bags</strong></td>
+              <td><span style="color:#64748b;font-size:.82rem">May 28, 2025</span></td>
+              <td><span class="badge badge-blue">Responded</span></td>
+              <td>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <button class="btn btn-secondary btn-sm" onclick="viewRFQ('#RFQ-2025-0431')"><i class="fas fa-eye"></i></button>
+                  <button class="btn btn-success btn-sm" disabled style="opacity:.5;cursor:not-allowed"><i class="fas fa-check"></i> Sent</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="won">
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#RFQ-2025-0418</span></td>
+              <td><div style="font-weight:600;color:#0a0e27">AsiaTech Solutions</div><div style="font-size:.72rem;color:#64748b">🇸🇬 Singapore</div></td>
+              <td><div style="font-weight:500">Raspberry Pi HAT — Custom PCB</div><div style="font-size:.72rem;color:#64748b">GPIO breakout board, 40-pin, custom design</div></td>
+              <td><strong>1,000 pcs</strong></td>
+              <td><span style="color:#64748b;font-size:.82rem">Apr 30, 2025</span></td>
+              <td><span class="badge badge-green">Won</span></td>
+              <td>
+                <button class="btn btn-secondary btn-sm" onclick="viewRFQ('#RFQ-2025-0418')"><i class="fas fa-eye"></i> View</button>
+              </td>
+            </tr>
+            <tr data-status="responded">
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#RFQ-2025-0412</span></td>
+              <td><div style="font-weight:600;color:#0a0e27">Meridian Electronics Co.</div><div style="font-size:.72rem;color:#64748b">🇦🇺 Australia</div></td>
+              <td><div style="font-weight:500">Wireless Bluetooth Audio Transmitter</div><div style="font-size:.72rem;color:#64748b">aptX HD, USB-C, 3.5mm, OEM packaging</div></td>
+              <td><strong>300 pcs</strong></td>
+              <td><span style="color:#64748b;font-size:.82rem">Jun 5, 2025</span></td>
+              <td><span class="badge badge-blue">Responded</span></td>
+              <td>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <button class="btn btn-secondary btn-sm" onclick="viewRFQ('#RFQ-2025-0412')"><i class="fas fa-eye"></i></button>
+                  <button class="btn btn-success btn-sm" disabled style="opacity:.5;cursor:not-allowed"><i class="fas fa-check"></i> Sent</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="expired">
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">#RFQ-2025-0389</span></td>
+              <td><div style="font-weight:600;color:#0a0e27">Euro Import SARL</div><div style="font-size:.72rem;color:#64748b">🇫🇷 France</div></td>
+              <td><div style="font-weight:500">USB-C to HDMI Adapters</div><div style="font-size:.72rem;color:#64748b">4K@60Hz, aluminum housing, retail box</div></td>
+              <td><strong>1,500 pcs</strong></td>
+              <td><span style="color:#ef4444;font-size:.82rem"><i class="fas fa-ban"></i> Expired</span></td>
+              <td><span class="badge badge-gray">Expired</span></td>
+              <td>
+                <button class="btn btn-secondary btn-sm" onclick="viewRFQ('#RFQ-2025-0389')"><i class="fas fa-eye"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Respond Modal -->
+<div class="modal-overlay" id="respondModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-reply" style="color:#0052CC"></i> Respond to RFQ</div>
+    <div class="modal-subtitle" id="modalSubtitle">RFQ #RFQ-2025-0000 — Arduino PCB Board v3 (2,000 pcs)</div>
+
+    <div class="form-row" style="margin-bottom:18px">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Quote Price per Unit (USD) <span style="color:#ef4444">*</span></label>
+        <input type="number" class="form-control" id="quotePrice" placeholder="e.g. 4.20" step="0.01" min="0">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Lead Time <span style="color:#ef4444">*</span></label>
+        <select class="form-control" id="leadTime">
+          <option>3–5 Business Days</option>
+          <option>5–10 Business Days</option>
+          <option selected>10–15 Business Days</option>
+          <option>15–20 Business Days</option>
+          <option>20–30 Business Days</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:18px">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Quote Validity <span style="color:#ef4444">*</span></label>
+        <select class="form-control" id="validity">
+          <option>7 Days</option>
+          <option selected>14 Days</option>
+          <option>30 Days</option>
+          <option>60 Days</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Minimum Order Qty</label>
+        <input type="number" class="form-control" id="quoteMinQty" placeholder="e.g. 500" min="1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sample Availability</label>
+      <select class="form-control">
+        <option>Samples available — free</option>
+        <option>Samples available — charged</option>
+        <option>No samples available</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:20px">
+      <label class="form-label">Notes / Additional Information</label>
+      <textarea class="form-control" id="quoteNotes" rows="3" placeholder="Add any specifications, packaging options, payment terms, or special notes for the buyer..."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeRespondModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitQuote()"><i class="fas fa-paper-plane"></i> Submit Quote</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../../assets/js/navbar.js"></script>
+<script>
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function filterRFQ(status, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#rfqBody tr').forEach(row => {
+      row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+    });
+  }
+
+  function viewRFQ(id) { showToast('👁️ Viewing details for ' + id); }
+  function declineRFQ(id) {
+    if (confirm('Decline RFQ ' + id + '? This action cannot be undone.')) {
+      showToast('❌ RFQ ' + id + ' declined.');
+    }
+  }
+
+  let currentRFQ = {};
+  function openRespondModal(id, product, qty) {
+    currentRFQ = { id, product, qty };
+    document.getElementById('modalSubtitle').textContent = id + ' — ' + product + ' (' + qty + ')';
+    document.getElementById('respondModal').classList.add('open');
+  }
+  function closeRespondModal() { document.getElementById('respondModal').classList.remove('open'); }
+  function submitQuote() {
+    const price = document.getElementById('quotePrice').value;
+    if (!price) { showToast('⚠️ Please enter a quote price.'); return; }
+    closeRespondModal();
+    showToast('✅ Quote submitted for ' + currentRFQ.id + '!');
+  }
+  document.getElementById('respondModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRespondModal();
+  });
+</script>
+</body>
+</html>

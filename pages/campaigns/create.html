@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Campaign | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .container{max-width:860px;margin:0 auto;padding:0 24px}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:48px 24px 36px;color:#fff}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;opacity:.7;margin-bottom:12px;flex-wrap:wrap}
+    .breadcrumb a{color:#fff;text-decoration:none}
+    .breadcrumb a:hover{opacity:1;text-decoration:underline}
+    .breadcrumb i{font-size:.65rem}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:700}
+    .content-section{padding:40px 24px 60px}
+    /* Steps progress */
+    .steps-bar{display:flex;align-items:center;margin-bottom:32px}
+    .step-item{display:flex;align-items:center;gap:10px;flex:1;position:relative}
+    .step-item:not(:last-child)::after{content:'';flex:1;height:2px;background:#e2e8f0;margin:0 8px}
+    .step-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:.85rem;flex-shrink:0;transition:all .3s}
+    .step-circle.done{background:#00C9A7;color:#fff}
+    .step-circle.active{background:#0052CC;color:#fff;box-shadow:0 0 0 4px rgba(0,82,204,.18)}
+    .step-circle.pending{background:#e2e8f0;color:#94a3b8}
+    .step-label{font-size:.8rem;font-weight:500;color:#94a3b8;white-space:nowrap}
+    .step-label.active{color:#0052CC;font-weight:600}
+    .step-label.done{color:#00C9A7}
+    .step-item:not(:last-child) .step-label{display:none}
+    @media(min-width:600px){.step-item .step-label{display:block}}
+    /* Cards */
+    .card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    /* Form */
+    .form-group{margin-bottom:20px}
+    .form-label{display:block;font-size:.88rem;font-weight:500;color:#374151;margin-bottom:7px}
+    .form-label span.required{color:#dc2626;margin-left:2px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;background:#fff}
+    .form-control:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{resize:vertical;min-height:90px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:560px){.form-row{grid-template-columns:1fr}}
+    /* Type cards */
+    .type-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+    .type-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
+    .type-card:hover{border-color:#0052CC;background:#f0f4ff}
+    .type-card input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+    .type-card.selected{border-color:#0052CC;background:#f0f4ff}
+    .type-card .type-icon{font-size:1.6rem;margin-bottom:8px}
+    .type-card .type-name{font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:600;color:#0a0e27}
+    .type-card .type-desc{font-size:.73rem;color:#64748b;margin-top:3px}
+    /* Upload */
+    .upload-zone{border:2px dashed #c7d8ff;border-radius:12px;padding:32px;text-align:center;cursor:pointer;background:#f8faff;transition:all .2s}
+    .upload-zone:hover{border-color:#0052CC;background:#eef3ff}
+    .upload-zone i{font-size:2rem;color:#0052CC;opacity:.6;margin-bottom:10px}
+    .upload-zone p{font-size:.88rem;color:#64748b}
+    .upload-zone strong{color:#0052CC}
+    /* Buttons */
+    .btn{padding:10px 22px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-orange{background:#FF6B35;color:#fff}
+    .btn-orange:hover{background:#e85a25}
+    .btn-success{background:#00C9A7;color:#fff}
+    .btn-success:hover{background:#00a88a}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .form-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:8px}
+    /* Product table */
+    .table{width:100%;border-collapse:collapse;font-size:.87rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .prod-thumb{width:40px;height:40px;border-radius:8px;background:#e8eeff;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#0052CC;flex-shrink:0}
+    .price-final{font-weight:700;color:#059669}
+    /* Summary */
+    .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:560px){.summary-grid{grid-template-columns:1fr}}
+    .summary-item{background:#f8faff;border-radius:10px;padding:16px}
+    .summary-item .si-label{font-size:.78rem;color:#94a3b8;font-weight:500;margin-bottom:4px}
+    .summary-item .si-val{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27}
+    .metric-card{background:linear-gradient(135deg,#0052CC,#003d99);border-radius:12px;padding:20px;color:#fff;text-align:center}
+    .metric-card .mc-val{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800}
+    .metric-card .mc-lbl{font-size:.8rem;opacity:.8;margin-top:4px}
+    .publish-options{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+    @media(max-width:480px){.publish-options{grid-template-columns:1fr}}
+    .pub-opt{border:1.5px solid #e2e8f0;border-radius:12px;padding:18px;cursor:pointer;transition:all .2s}
+    .pub-opt:hover{border-color:#0052CC;background:#f0f4ff}
+    .pub-opt.selected{border-color:#0052CC;background:#f0f4ff}
+    .pub-opt input[type=radio]{display:none}
+    .pub-opt .po-icon{font-size:1.5rem;margin-bottom:8px}
+    .pub-opt .po-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .pub-opt .po-desc{font-size:.78rem;color:#64748b}
+    /* Hidden step panels */
+    .step-panel{display:none}
+    .step-panel.active{display:block}
+    /* Toast */
+    .toast{position:fixed;bottom:28px;right:28px;background:#00C9A7;color:#fff;padding:14px 22px;border-radius:12px;font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;box-shadow:0 6px 24px rgba(0,201,167,.35);display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:9999}
+    .toast.show{transform:translateY(0);opacity:1}
+    /* Footer */
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../../pages/auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../../pages/auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div style="max-width:860px;margin:0 auto;padding:0 24px">
+    <div class="breadcrumb">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="index.html">Campaigns</a>
+      <i class="fas fa-chevron-right"></i>
+      <span>Create Campaign</span>
+    </div>
+    <h1><i class="fas fa-plus-circle"></i> Create New Campaign</h1>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container">
+
+    <!-- Steps Progress Bar -->
+    <div class="steps-bar">
+      <div class="step-item" id="si-1">
+        <div class="step-circle active" id="sc-1">1</div>
+        <span class="step-label active" id="sl-1">Basic Info</span>
+        <div style="flex:1;height:2px;background:#e2e8f0;margin:0 8px"></div>
+      </div>
+      <div class="step-item" id="si-2">
+        <div class="step-circle pending" id="sc-2">2</div>
+        <span class="step-label" id="sl-2">Products &amp; Discounts</span>
+        <div style="flex:1;height:2px;background:#e2e8f0;margin:0 8px"></div>
+      </div>
+      <div class="step-item" id="si-3">
+        <div class="step-circle pending" id="sc-3">3</div>
+        <span class="step-label" id="sl-3">Review &amp; Publish</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: Basic Info -->
+    <div class="step-panel active" id="step-1">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-info-circle"></i> Campaign Details</div>
+
+        <div class="form-group">
+          <label class="form-label">Campaign Name <span class="required">*</span></label>
+          <input type="text" class="form-control" id="camp-name" placeholder="e.g. Summer Electronics Flash Sale" maxlength="80"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Campaign Type <span class="required">*</span></label>
+          <div class="type-cards" id="type-cards">
+            <label class="type-card selected" data-type="flash">
+              <input type="radio" name="camp-type" value="Flash Sale" checked/>
+              <div class="type-icon">⚡</div>
+              <div class="type-name">Flash Sale</div>
+              <div class="type-desc">Short-burst high discount</div>
+            </label>
+            <label class="type-card" data-type="seasonal">
+              <input type="radio" name="camp-type" value="Seasonal Promotion"/>
+              <div class="type-icon">🌸</div>
+              <div class="type-name">Seasonal Promo</div>
+              <div class="type-desc">Holiday &amp; seasonal deals</div>
+            </label>
+            <label class="type-card" data-type="clearance">
+              <input type="radio" name="camp-type" value="Clearance"/>
+              <div class="type-icon">🏷️</div>
+              <div class="type-name">Clearance</div>
+              <div class="type-desc">Sell excess inventory</div>
+            </label>
+            <label class="type-card" data-type="bundle">
+              <input type="radio" name="camp-type" value="Bundle Deal"/>
+              <div class="type-icon">📦</div>
+              <div class="type-name">Bundle Deal</div>
+              <div class="type-desc">Buy more, save more</div>
+            </label>
+            <label class="type-card" data-type="limited">
+              <input type="radio" name="camp-type" value="Limited Offer"/>
+              <div class="type-icon">⏳</div>
+              <div class="type-name">Limited Offer</div>
+              <div class="type-desc">Exclusive time-limited</div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Campaign Description</label>
+          <textarea class="form-control" id="camp-desc" placeholder="Describe what buyers can expect from this campaign…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Campaign Banner Image</label>
+          <div class="upload-zone" onclick="document.getElementById('banner-upload').click()">
+            <i class="fas fa-cloud-arrow-up"></i>
+            <p>Drag &amp; drop or <strong>click to upload</strong></p>
+            <p style="font-size:.78rem;margin-top:4px">PNG, JPG up to 5MB — recommended 1200×400px</p>
+            <input type="file" id="banner-upload" accept="image/*" style="display:none" onchange="previewBanner(event)"/>
+          </div>
+          <div id="banner-preview" style="display:none;margin-top:12px">
+            <img id="banner-img" src="" alt="Banner preview" style="width:100%;max-height:160px;object-fit:cover;border-radius:10px;border:1.5px solid #e2e8f0"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Start Date &amp; Time <span class="required">*</span></label>
+            <input type="datetime-local" class="form-control" id="start-dt"/>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">End Date &amp; Time <span class="required">*</span></label>
+            <input type="datetime-local" class="form-control" id="end-dt"/>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <a href="index.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+        <button class="btn btn-primary" onclick="goStep(2)">Next: Products <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Products & Discounts -->
+    <div class="step-panel" id="step-2">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-boxes-stacked"></i> Add Products</div>
+
+        <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+          <input type="text" class="form-control" id="product-search" placeholder="Search products by name or SKU…" style="flex:1;min-width:200px"/>
+          <button class="btn btn-primary" onclick="addProduct()"><i class="fas fa-plus"></i> Add Product</button>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table class="table" id="products-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Product</th>
+                <th>Original Price</th>
+                <th>Discount %</th>
+                <th>Sale Price</th>
+                <th>Stock Limit</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <tr data-id="1">
+                <td><div class="prod-thumb"><i class="fas fa-laptop"></i></div></td>
+                <td><strong>Wireless Laptop 15"</strong><br/><span style="font-size:.75rem;color:#94a3b8">SKU: EL-1024</span></td>
+                <td>$480.00</td>
+                <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" value="20" min="0" max="90" oninput="calcPrice(this,480)"/></td>
+                <td class="price-final">$384.00</td>
+                <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" placeholder="∞" min="1"/></td>
+                <td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="removeRow(this)"><i class="fas fa-trash"></i></button></td>
+              </tr>
+              <tr data-id="2">
+                <td><div class="prod-thumb"><i class="fas fa-headphones"></i></div></td>
+                <td><strong>Noise Cancelling Headphones</strong><br/><span style="font-size:.75rem;color:#94a3b8">SKU: EL-2088</span></td>
+                <td>$120.00</td>
+                <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" value="30" min="0" max="90" oninput="calcPrice(this,120)"/></td>
+                <td class="price-final">$84.00</td>
+                <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" placeholder="∞" min="1"/></td>
+                <td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="removeRow(this)"><i class="fas fa-trash"></i></button></td>
+              </tr>
+              <tr data-id="3">
+                <td><div class="prod-thumb"><i class="fas fa-mobile-screen"></i></div></td>
+                <td><strong>Smart Phone X12 Pro</strong><br/><span style="font-size:.75rem;color:#94a3b8">SKU: EL-3301</span></td>
+                <td>$650.00</td>
+                <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" value="15" min="0" max="90" oninput="calcPrice(this,650)"/></td>
+                <td class="price-final">$552.50</td>
+                <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" placeholder="∞" min="1"/></td>
+                <td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="removeRow(this)"><i class="fas fa-trash"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-percent"></i> Global Discount Settings</div>
+        <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">
+          <div class="form-group" style="margin-bottom:0;flex:1;min-width:180px">
+            <label class="form-label">Apply Discount % to All Products</label>
+            <input type="number" class="form-control" id="global-discount" placeholder="e.g. 25" min="0" max="90"/>
+          </div>
+          <button class="btn btn-orange" onclick="applyGlobalDiscount()"><i class="fas fa-wand-magic-sparkles"></i> Apply to All</button>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="goStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn btn-primary" onclick="goStep(3)">Next: Review <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Review & Publish -->
+    <div class="step-panel" id="step-3">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-clipboard-check"></i> Campaign Summary</div>
+
+        <div class="summary-grid" id="summary-grid">
+          <div class="summary-item">
+            <div class="si-label">Campaign Name</div>
+            <div class="si-val" id="sum-name">—</div>
+          </div>
+          <div class="summary-item">
+            <div class="si-label">Campaign Type</div>
+            <div class="si-val" id="sum-type">—</div>
+          </div>
+          <div class="summary-item">
+            <div class="si-label">Start Date</div>
+            <div class="si-val" id="sum-start">—</div>
+          </div>
+          <div class="summary-item">
+            <div class="si-label">End Date</div>
+            <div class="si-val" id="sum-end">—</div>
+          </div>
+          <div class="summary-item">
+            <div class="si-label">Total Products</div>
+            <div class="si-val" id="sum-products">—</div>
+          </div>
+          <div class="summary-item">
+            <div class="si-label">Max Discount</div>
+            <div class="si-val" id="sum-discount">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px">
+          <div class="metric-card">
+            <div class="mc-val"><i class="fas fa-users" style="font-size:1.5rem;opacity:.7"></i> ~12,400</div>
+            <div class="mc-lbl">Estimated Buyer Reach</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-rocket"></i> Publish Options</div>
+        <div class="publish-options">
+          <label class="pub-opt selected" id="pub-now" onclick="selectPub('now')">
+            <input type="radio" name="pub-opt" value="now" checked/>
+            <div class="po-icon">🚀</div>
+            <div class="po-title">Publish Now</div>
+            <div class="po-desc">Go live immediately after review</div>
+          </label>
+          <label class="pub-opt" id="pub-sched" onclick="selectPub('sched')">
+            <input type="radio" name="pub-opt" value="schedule"/>
+            <div class="po-icon">🗓️</div>
+            <div class="po-title">Schedule</div>
+            <div class="po-desc">Go live on the start date you set</div>
+          </label>
+        </div>
+
+        <div class="form-actions" style="margin-top:0">
+          <button class="btn btn-secondary" onclick="goStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn btn-success" onclick="submitCampaign()"><i class="fas fa-paper-plane"></i> Submit Campaign</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../../pages/privacy.html">Privacy</a></li>
+      <li><a href="../../pages/terms.html">Terms</a></li>
+      <li><a href="../../pages/contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> Campaign submitted for review!</div>
+
+<script>
+  // Set default datetime values
+  (function(){
+    const now = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    document.getElementById('start-dt').value = fmt(now);
+    const end = new Date(now.getTime() + 7*24*60*60*1000);
+    document.getElementById('end-dt').value = fmt(end);
+  })();
+
+  // Type card selection
+  document.querySelectorAll('.type-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  function previewBanner(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('banner-img').src = ev.target.result;
+      document.getElementById('banner-preview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function goStep(n) {
+    // Validate step 1
+    if (n > 1) {
+      const name = document.getElementById('camp-name').value.trim();
+      if (!name) { alert('Please enter a campaign name.'); return; }
+    }
+    // Populate summary on step 3
+    if (n === 3) populateSummary();
+
+    [1,2,3].forEach(i => {
+      document.getElementById('step-'+i).classList.toggle('active', i === n);
+      const sc = document.getElementById('sc-'+i);
+      const sl = document.getElementById('sl-'+i);
+      if (i < n) { sc.className = 'step-circle done'; sc.innerHTML = '<i class="fas fa-check" style="font-size:.7rem"></i>'; sl.className = 'step-label done'; }
+      else if (i === n) { sc.className = 'step-circle active'; sc.textContent = i; sl.className = 'step-label active'; }
+      else { sc.className = 'step-circle pending'; sc.textContent = i; sl.className = 'step-label'; }
+    });
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function calcPrice(input, original) {
+    const disc = Math.min(90, Math.max(0, parseFloat(input.value) || 0));
+    const sale = (original * (1 - disc/100)).toFixed(2);
+    input.closest('tr').querySelector('.price-final').textContent = '$' + sale;
+  }
+
+  function removeRow(btn) {
+    btn.closest('tr').remove();
+  }
+
+  let nextId = 4;
+  const sampleProducts = [
+    {icon:'fa-keyboard',name:'Mechanical Keyboard',sku:'EL-4412',price:89},
+    {icon:'fa-display',name:'4K Monitor 27"',sku:'EL-5520',price:320},
+    {icon:'fa-computer-mouse',name:'Wireless Mouse',sku:'EL-6634',price:45},
+    {icon:'fa-camera',name:'DSLR Camera Bundle',sku:'EL-7710',price:780},
+  ];
+  let spIdx = 0;
+
+  function addProduct() {
+    if (spIdx >= sampleProducts.length) { alert('No more sample products to add.'); return; }
+    const p = sampleProducts[spIdx++];
+    const tr = document.createElement('tr');
+    tr.dataset.id = nextId++;
+    tr.innerHTML = `
+      <td><div class="prod-thumb"><i class="fas ${p.icon}"></i></div></td>
+      <td><strong>${p.name}</strong><br/><span style="font-size:.75rem;color:#94a3b8">SKU: ${p.sku}</span></td>
+      <td>$${p.price.toFixed(2)}</td>
+      <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" value="20" min="0" max="90" oninput="calcPrice(this,${p.price})"/></td>
+      <td class="price-final">$${(p.price*0.8).toFixed(2)}</td>
+      <td><input type="number" class="form-control" style="width:80px;padding:6px 10px" placeholder="∞" min="1"/></td>
+      <td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:none" onclick="removeRow(this)"><i class="fas fa-trash"></i></button></td>`;
+    document.getElementById('products-tbody').appendChild(tr);
+  }
+
+  function applyGlobalDiscount() {
+    const disc = parseFloat(document.getElementById('global-discount').value);
+    if (!disc || disc <= 0) { alert('Enter a valid discount percentage.'); return; }
+    document.querySelectorAll('#products-tbody tr').forEach(tr => {
+      const priceCell = tr.cells[2].textContent.replace('$','');
+      const original = parseFloat(priceCell);
+      const input = tr.querySelector('input[type=number]');
+      input.value = disc;
+      const sale = (original * (1 - disc/100)).toFixed(2);
+      tr.querySelector('.price-final').textContent = '$' + sale;
+    });
+  }
+
+  function populateSummary() {
+    const name = document.getElementById('camp-name').value.trim() || '—';
+    const type = document.querySelector('input[name="camp-type"]:checked')?.value || '—';
+    const start = document.getElementById('start-dt').value;
+    const end = document.getElementById('end-dt').value;
+    const rows = document.querySelectorAll('#products-tbody tr').length;
+    const discounts = [...document.querySelectorAll('#products-tbody input[type=number]:first-of-type')].map(i => parseFloat(i.value)||0);
+    const maxDisc = discounts.length ? Math.max(...discounts) : 0;
+
+    document.getElementById('sum-name').textContent = name;
+    document.getElementById('sum-type').textContent = type;
+    document.getElementById('sum-start').textContent = start ? new Date(start).toLocaleString() : '—';
+    document.getElementById('sum-end').textContent = end ? new Date(end).toLocaleString() : '—';
+    document.getElementById('sum-products').textContent = rows + ' products';
+    document.getElementById('sum-discount').textContent = maxDisc ? maxDisc + '%' : '—';
+  }
+
+  function selectPub(opt) {
+    document.getElementById('pub-now').classList.toggle('selected', opt === 'now');
+    document.getElementById('pub-sched').classList.toggle('selected', opt === 'sched');
+  }
+
+  function submitCampaign() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 3500);
+    setTimeout(() => { window.location.href = 'index.html'; }, 3800);
+  }
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
