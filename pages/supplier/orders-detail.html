@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Detail | Globex Sky Supplier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .nav-cart{position:relative;color:#374151;font-size:1.2rem;text-decoration:none;padding:8px}
+    .cart-badge{position:absolute;top:-2px;right:-2px;background:#FF6B35;color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .nav-user-dropdown{position:relative}
+    .user-avatar-btn{border:none;background:none;cursor:pointer;padding:4px}
+    .dropdown-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:180px;list-style:none;overflow:hidden;z-index:200}
+    .nav-user-dropdown:hover .dropdown-menu{display:block}
+    .dropdown-menu li a{display:flex;align-items:center;gap:10px;padding:10px 16px;text-decoration:none;color:#374151;font-size:.88rem}
+    .dropdown-menu li a:hover{background:#f0f4ff;color:#0052CC}
+    .dropdown-divider{border-top:1px solid #f1f5f9;margin:4px 0}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-sidebar-email{color:#64748b;font-size:.75rem;text-align:center;margin-bottom:18px}
+    .account-nav{list-style:none}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-success{background:#d1fae5;color:#059669;border:1px solid #a7f3d0}.btn-success:hover{background:#a7f3d0}
+    .btn-warning{background:#fef3c7;color:#d97706;border:1px solid #fde68a}.btn-warning:hover{background:#fde68a}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-yellow{background:#fef3c7;color:#d97706}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s}
+    .toast.show{transform:translateY(0);opacity:1}
+    /* Timeline */
+    .timeline{display:flex;align-items:flex-start;gap:0;margin:8px 0;overflow-x:auto;padding-bottom:8px}
+    .timeline-step{display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;position:relative}
+    .timeline-step:not(:last-child)::after{content:'';position:absolute;top:16px;left:calc(50% + 16px);width:calc(100% - 32px);height:2px;background:#e2e8f0;z-index:0}
+    .timeline-step:not(:last-child).done::after,.timeline-step:not(:last-child).active::after{background:#0052CC}
+    .timeline-dot{width:32px;height:32px;border-radius:50%;background:#e2e8f0;color:#94a3b8;display:flex;align-items:center;justify-content:center;font-size:.8rem;z-index:1;position:relative;transition:all .2s}
+    .timeline-step.done .timeline-dot{background:#0052CC;color:#fff}
+    .timeline-step.active .timeline-dot{background:#0052CC;color:#fff;box-shadow:0 0 0 4px rgba(0,82,204,.2)}
+    .timeline-label{font-size:.7rem;color:#64748b;text-align:center;margin-top:6px;font-weight:500;line-height:1.3}
+    .timeline-step.done .timeline-label,.timeline-step.active .timeline-label{color:#0052CC;font-weight:600}
+    /* Buyer info grid */
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .info-item label{font-size:.75rem;color:#64748b;font-weight:600;display:block;margin-bottom:2px}
+    .info-item span{font-size:.875rem;color:#1a1a2e;font-weight:500}
+    /* Order summary */
+    .summary-box{background:#f8faff;border-radius:12px;padding:16px;border:1.5px solid #e8f0fe}
+    .summary-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:.875rem;color:#374151;border-bottom:1px solid #e8f0fe}
+    .summary-row:last-child{border-bottom:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27;padding-top:10px}
+    /* Tracking modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:#fff;border-radius:16px;padding:28px;width:460px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+        <div><div class="nav-subtitle">Supplier Dashboard</div></div>
+      </a>
+      <div class="nav-controls">
+        <a href="../sourcing/cart.html" class="nav-cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
+        <div class="nav-user-dropdown">
+          <button class="user-avatar-btn"><div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">JD</div></button>
+          <ul class="dropdown-menu">
+            <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+            <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="account-sidebar">
+    <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
+    <div class="account-sidebar-name">ShenzTech Electronics</div>
+    <div class="account-sidebar-email">supplier@shenztech.com</div>
+    <ul class="account-nav">
+      <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="orders.html" class="active"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="rfq.html"><i class="fas fa-file-contract"></i> RFQ</a></li>
+      <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+      <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+      <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li class="account-nav-divider"></li>
+      <li><a href="profile.html"><i class="fas fa-id-badge"></i> Profile</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="support.html"><i class="fas fa-headset"></i> Support</a></li>
+    </ul>
+  </aside>
+
+  <main class="account-content">
+    <!-- Header -->
+    <div class="page-card">
+      <div class="page-card-header">
+        <div>
+          <div style="font-size:.8rem;color:#64748b;margin-bottom:4px"><a href="orders.html" style="color:#0052CC;text-decoration:none">Orders</a> <i class="fas fa-chevron-right" style="font-size:.65rem"></i> Order #GS-2025-0892</div>
+          <div class="page-card-title"><i class="fas fa-shopping-bag" style="color:#0052CC"></i> Order #GS-2025-0892</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="badge badge-orange"><i class="fas fa-circle" style="font-size:.5rem"></i> Processing</span>
+          <button class="btn btn-secondary btn-sm" onclick="printPage()"><i class="fas fa-print"></i> Print</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadInvoice()"><i class="fas fa-file-invoice"></i> Invoice</button>
+          <a href="orders.html" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Timeline -->
+    <div class="page-card">
+      <div class="page-card-title" style="margin-bottom:20px"><i class="fas fa-route" style="color:#0052CC"></i> Order Timeline</div>
+      <div class="timeline">
+        <div class="timeline-step done">
+          <div class="timeline-dot"><i class="fas fa-check"></i></div>
+          <div class="timeline-label">Placed<br><span style="color:#94a3b8;font-weight:400;font-size:.65rem">May 12</span></div>
+        </div>
+        <div class="timeline-step done">
+          <div class="timeline-dot"><i class="fas fa-check"></i></div>
+          <div class="timeline-label">Confirmed<br><span style="color:#94a3b8;font-weight:400;font-size:.65rem">May 12</span></div>
+        </div>
+        <div class="timeline-step active">
+          <div class="timeline-dot"><i class="fas fa-cog"></i></div>
+          <div class="timeline-label">Processing<br><span style="color:#94a3b8;font-weight:400;font-size:.65rem">In progress</span></div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot"><i class="fas fa-box"></i></div>
+          <div class="timeline-label">Ready to Ship</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot"><i class="fas fa-truck-loading"></i></div>
+          <div class="timeline-label">Shipped</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot"><i class="fas fa-plane"></i></div>
+          <div class="timeline-label">In Transit</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot"><i class="fas fa-home"></i></div>
+          <div class="timeline-label">Delivered</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Header Card -->
+    <div class="page-card">
+      <div class="page-card-title" style="margin-bottom:18px"><i class="fas fa-user-tie" style="color:#0052CC"></i> Order &amp; Buyer Information</div>
+      <div class="info-grid">
+        <div class="info-item"><label>Order Number</label><span>#GS-2025-0892</span></div>
+        <div class="info-item"><label>Order Date</label><span>May 12, 2025 — 14:37 UTC</span></div>
+        <div class="info-item"><label>Buyer Name</label><span>Bright Retail Ltd.</span></div>
+        <div class="info-item"><label>Buyer Account</label><span>buyer_brightretail</span></div>
+        <div class="info-item"><label>Contact Email</label><span>procurement@brightretail.co.uk</span></div>
+        <div class="info-item"><label>Phone</label><span>+44 20 7946 0321</span></div>
+        <div class="info-item"><label>Shipping Address</label><span>14 Commerce Park, Leeds, LS1 2AB, United Kingdom</span></div>
+        <div class="info-item"><label>Incoterm</label><span>DDP (Delivered Duty Paid)</span></div>
+        <div class="info-item"><label>Payment Method</label><span>Bank Transfer (T/T)</span></div>
+        <div class="info-item"><label>Payment Status</label><span class="badge badge-green">Paid</span></div>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="page-card">
+      <div class="page-card-title" style="margin-bottom:18px"><i class="fas fa-boxes-stacked" style="color:#0052CC"></i> Order Items</div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="font-weight:600;color:#0a0e27">Arduino PCB Board v3</div><div style="font-size:.75rem;color:#64748b">Microcontrollers &amp; Dev Boards</div></td>
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">ARD-PCB-V3-STD</span></td>
+              <td>500</td>
+              <td>$4.20</td>
+              <td style="font-weight:600">$2,100.00</td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;color:#0a0e27">ESP32 WiFi Module</div><div style="font-size:.75rem;color:#64748b">Wireless Modules</div></td>
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">ESP32-WROOM-D4</span></td>
+              <td>200</td>
+              <td>$3.50</td>
+              <td style="font-weight:600">$700.00</td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;color:#0a0e27">JST 2.0mm Connector Set (50pcs)</div><div style="font-size:.75rem;color:#64748b">Connectors &amp; Cables</div></td>
+              <td><span style="font-family:monospace;font-size:.82rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">JST-2MM-SET-50</span></td>
+              <td>10</td>
+              <td>$8.90</td>
+              <td style="font-weight:600">$89.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Summary + Actions -->
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start">
+      <!-- Actions -->
+      <div>
+        <div class="page-card">
+          <div class="page-card-title" style="margin-bottom:16px"><i class="fas fa-bolt" style="color:#0052CC"></i> Actions</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-warning" style="justify-content:flex-start" onclick="markProcessing()"><i class="fas fa-cog"></i> Mark as Processing</button>
+            <button class="btn btn-primary" style="justify-content:flex-start" onclick="openShipModal()"><i class="fas fa-truck"></i> Mark as Shipped</button>
+            <button class="btn btn-secondary" style="justify-content:flex-start" onclick="downloadInvoice()"><i class="fas fa-file-invoice-dollar"></i> Download Invoice</button>
+            <button class="btn btn-danger" style="justify-content:flex-start" onclick="showToast('⚠️ Please contact support to dispute this order.')"><i class="fas fa-flag"></i> Dispute Order</button>
+          </div>
+        </div>
+
+        <!-- Buyer Message -->
+        <div class="page-card">
+          <div class="page-card-title" style="margin-bottom:14px"><i class="fas fa-comment-dots" style="color:#0052CC"></i> Buyer Message</div>
+          <div style="background:#f8faff;border-radius:10px;padding:14px;border:1.5px solid #e8f0fe;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="width:28px;height:28px;border-radius:50%;background:#dbeafe;color:#0052CC;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center">BR</div>
+              <div>
+                <div style="font-size:.8rem;font-weight:600;color:#0a0e27">Bright Retail Ltd.</div>
+                <div style="font-size:.7rem;color:#94a3b8">May 12, 2025 — 14:37 UTC</div>
+              </div>
+            </div>
+            <p style="font-size:.85rem;color:#374151;line-height:1.6">Hi, please ensure the Arduino boards are packed with ESD protection bags. Also please include test certificates for the ESP32 modules. We need this shipment by May 25th at the latest. Thank you!</p>
+          </div>
+          <div class="form-group" style="margin-bottom:10px">
+            <label class="form-label">Reply to Buyer</label>
+            <textarea class="form-control" rows="3" id="replyMsg" placeholder="Type your reply here..."></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="sendReply()"><i class="fas fa-paper-plane"></i> Send Reply</button>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="page-card">
+        <div class="page-card-title" style="margin-bottom:16px"><i class="fas fa-receipt" style="color:#0052CC"></i> Order Summary</div>
+        <div class="summary-box">
+          <div class="summary-row"><span>Subtotal (3 items)</span><span>$2,889.00</span></div>
+          <div class="summary-row"><span>Platform Commission (5%)</span><span style="color:#ef4444">−$144.45</span></div>
+          <div class="summary-row"><span>Shipping (DHL Express)</span><span>$120.00</span></div>
+          <div class="summary-row"><span>Insurance</span><span>$28.90</span></div>
+          <div class="summary-row"><span style="color:#0052CC">Your Earnings</span><span style="color:#059669">$2,893.45</span></div>
+          <div class="summary-row"><span>Total (Buyer Paid)</span><span>$3,037.90</span></div>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f1f5f9">
+          <div style="font-size:.78rem;color:#64748b;margin-bottom:6px;font-weight:600">PAYMENT DETAILS</div>
+          <div style="font-size:.82rem;color:#374151;display:flex;flex-direction:column;gap:4px">
+            <div><span style="color:#64748b">Method:</span> Bank Transfer (T/T)</div>
+            <div><span style="color:#64748b">Reference:</span> GS-PAY-0892-2025</div>
+            <div><span style="color:#64748b">Cleared:</span> May 12, 2025</div>
+            <div><span style="color:#64748b">Payout Date:</span> Upon delivery confirmation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Ship Modal -->
+<div class="modal-overlay" id="shipModal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-truck" style="color:#0052CC"></i> Mark Order as Shipped</div>
+    <div class="form-group">
+      <label class="form-label">Carrier / Courier <span style="color:#ef4444">*</span></label>
+      <select class="form-control" id="carrier">
+        <option>DHL Express</option>
+        <option>FedEx International</option>
+        <option>UPS Worldwide</option>
+        <option>China Post</option>
+        <option>SF Express</option>
+        <option>EMS / ePacket</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tracking Number <span style="color:#ef4444">*</span></label>
+      <input type="text" class="form-control" id="trackingNum" placeholder="e.g. 1234567890AB">
+    </div>
+    <div class="form-group" style="margin-bottom:20px">
+      <label class="form-label">Estimated Delivery Date</label>
+      <input type="date" class="form-control" id="estDelivery">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeShipModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmShipped()"><i class="fas fa-check"></i> Confirm Shipped</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../../assets/js/navbar.js"></script>
+<script>
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+  function markProcessing() { showToast('✅ Order status updated to Processing.'); }
+  function downloadInvoice() { showToast('📄 Invoice download started.'); }
+  function openShipModal() { document.getElementById('shipModal').classList.add('open'); }
+  function closeShipModal() { document.getElementById('shipModal').classList.remove('open'); }
+  function confirmShipped() {
+    const tn = document.getElementById('trackingNum').value.trim();
+    if (!tn) { showToast('⚠️ Please enter a tracking number.'); return; }
+    closeShipModal();
+    showToast('🚚 Order marked as Shipped! Tracking: ' + tn);
+  }
+  function sendReply() {
+    const msg = document.getElementById('replyMsg').value.trim();
+    if (!msg) { showToast('⚠️ Reply cannot be empty.'); return; }
+    document.getElementById('replyMsg').value = '';
+    showToast('✉️ Reply sent to buyer.');
+  }
+  function printPage() { window.print(); }
+  document.getElementById('shipModal').addEventListener('click', function(e) {
+    if (e.target === this) closeShipModal();
+  });
+</script>
+</body>
+</html>
