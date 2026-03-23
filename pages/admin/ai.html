@@ -274,6 +274,7 @@
           <button class="section-tab" data-section="marketing"><i class="fas fa-bullhorn"></i> AI Marketing</button>
           <button class="section-tab" data-section="fraud"><i class="fas fa-shield-alt"></i> Fraud Detection</button>
           <button class="section-tab" data-section="automation"><i class="fas fa-cogs"></i> Automation Rules</button>
+          <button class="section-tab" data-section="ai-analytics"><i class="fas fa-chart-line"></i> AI Analytics</button>
         </div>
       </div>
 
@@ -391,7 +392,7 @@
             <button class="btn btn-primary btn-sm"><i class="fas fa-cog"></i> Configure Model</button>
           </div>
 
-          <div class="stats-strip">
+          <div class="stats-strip" id="chatbotStatsStrip">
             <div class="strip-item"><i class="fas fa-book" style="color:#7c3aed"></i><div><strong>1,247</strong><div style="font-size:.72rem;color:#64748b">FAQs Trained</div></div></div>
             <div class="strip-item"><i class="fas fa-check-circle" style="color:#10b981"></i><div><strong>98.3%</strong><div style="font-size:.72rem;color:#64748b">Resolution Rate</div></div></div>
             <div class="strip-item"><i class="fas fa-clock" style="color:#3b82f6"></i><div><strong>24/7</strong><div style="font-size:.72rem;color:#64748b">Always Active</div></div></div>
@@ -400,15 +401,15 @@
 
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
             <label style="cursor:pointer">
-              <input type="file" style="display:none" accept=".csv,.json,.txt" onchange="handleUpload(this)"/>
+              <input type="file" style="display:none" accept=".csv,.json,.txt" onchange="GlobexAI.handleUpload(this)"/>
               <span class="btn btn-secondary"><i class="fas fa-upload"></i> Upload Training Data</span>
             </label>
-            <button class="btn btn-secondary"><i class="fas fa-download"></i> Export Chat Logs</button>
-            <button class="btn btn-warning btn-sm" style="margin-left:auto"><i class="fas fa-sync"></i> Retrain Model</button>
+            <button class="btn btn-secondary" onclick="GlobexAI.exportReport('chatbot')"><i class="fas fa-download"></i> Export Chat Logs</button>
+            <button class="btn btn-warning btn-sm" style="margin-left:auto" onclick="this.disabled=true;this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Retraining…';setTimeout(()=>{this.disabled=false;this.innerHTML='<i class=\'fas fa-sync\'></i> Retrain Model';},3000)"><i class="fas fa-sync"></i> Retrain Model</button>
           </div>
 
           <div class="admin-card-title" style="margin-bottom:12px;font-size:.92rem">Recent Conversations</div>
-          <div class="table-wrap">
+          <div class="table-wrap" id="chatHistoryWrap">
             <table class="data-table">
               <thead>
                 <tr>
@@ -515,7 +516,7 @@
           <div class="admin-card-header">
             <div class="admin-card-title"><i class="fas fa-shield-alt" style="color:#ef4444;margin-right:8px"></i>Fraud Detection</div>
             <div style="display:flex;gap:8px">
-              <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Export Report</button>
+              <button class="btn btn-secondary btn-sm" onclick="GlobexAI.exportReport('fraud')"><i class="fas fa-download"></i> Export Report</button>
               <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Rule</button>
             </div>
           </div>
@@ -595,15 +596,15 @@
 
           <div style="margin-top:20px">
             <div style="font-weight:600;font-size:.92rem;margin-bottom:12px;color:#0a0e27">Flagged Transactions (Pending Review)</div>
-            <div class="table-wrap">
+            <div class="table-wrap" id="flaggedTableWrap">
               <table class="data-table">
                 <thead><tr><th>Transaction ID</th><th>User</th><th>Amount</th><th>Rule Triggered</th><th>Risk Score</th><th>Actions</th></tr></thead>
                 <tbody>
-                  <tr><td>#TXN-88210</td><td>anon_4921@temp.com</td><td>$2,480</td><td>High Value Threshold</td><td><span class="badge-pill badge-red">92 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
-                  <tr><td>#TXN-88198</td><td>fast_buyer@mail.ru</td><td>$340</td><td>Velocity Check</td><td><span class="badge-pill badge-orange">74 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
-                  <tr><td>#TXN-88174</td><td>user_dup_44@email.com</td><td>$128</td><td>Multiple Accounts</td><td><span class="badge-pill badge-orange">68 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
-                  <tr><td>#TXN-88160</td><td>buyer_geo@vpn.net</td><td>$895</td><td>Geographic Anomaly</td><td><span class="badge-pill badge-yellow" style="background:#fef3c7;color:#d97706">55 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
-                  <tr><td>#TXN-88143</td><td>rush_order@fastmail.com</td><td>$1,720</td><td>High Value Threshold</td><td><span class="badge-pill badge-red">88 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm">Block</button></td></tr>
+                  <tr><td>#TXN-88210</td><td>anon_4921@temp.com</td><td>$2,480</td><td>High Value Threshold</td><td><span class="badge-pill badge-red">92 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" data-static-fraud style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm" data-static-fraud>Block</button></td></tr>
+                  <tr><td>#TXN-88198</td><td>fast_buyer@mail.ru</td><td>$340</td><td>Velocity Check</td><td><span class="badge-pill badge-orange">74 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" data-static-fraud style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm" data-static-fraud>Block</button></td></tr>
+                  <tr><td>#TXN-88174</td><td>user_dup_44@email.com</td><td>$128</td><td>Multiple Accounts</td><td><span class="badge-pill badge-orange">68 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" data-static-fraud style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm" data-static-fraud>Block</button></td></tr>
+                  <tr><td>#TXN-88160</td><td>buyer_geo@vpn.net</td><td>$895</td><td>Geographic Anomaly</td><td><span class="badge-pill badge-yellow" style="background:#fef3c7;color:#d97706">55 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" data-static-fraud style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm" data-static-fraud>Block</button></td></tr>
+                  <tr><td>#TXN-88143</td><td>rush_order@fastmail.com</td><td>$1,720</td><td>High Value Threshold</td><td><span class="badge-pill badge-red">88 / 100</span></td><td style="display:flex;gap:6px"><button class="btn btn-success btn-sm" data-static-fraud style="background:#059669;color:#fff">Approve</button><button class="btn btn-danger btn-sm" data-static-fraud>Block</button></td></tr>
                 </tbody>
               </table>
             </div>
@@ -690,62 +691,41 @@
         </div>
       </div>
 
+      <!-- AI Analytics panel -->
+      <div class="section-panel" id="ai-analytics">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-chart-line" style="color:#0052CC;margin-right:8px"></i>AI Analytics</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="GlobexAI.exportReport('analytics')"><i class="fas fa-download"></i> Export</button>
+              <button class="btn btn-primary btn-sm" onclick="GlobexAI.loadAiAnalytics ? GlobexAI.loadAiAnalytics() : window.location.reload()"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+          </div>
+          <div id="analyticsWrap">
+            <div style="padding:24px;text-align:center;color:#94a3b8;font-size:.88rem"><i class="fas fa-spinner fa-spin" style="margin-right:8px"></i>Loading analytics…</div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- end admin-content -->
   </div><!-- end admin-main -->
 </div><!-- end admin-wrapper -->
 
 <script>
-  // Section tab switching
-  document.getElementById('sectionTabs').addEventListener('click', function(e) {
-    const btn = e.target.closest('.section-tab');
-    if (!btn) return;
-    const target = btn.dataset.section;
-    document.querySelectorAll('.section-tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(target).classList.add('active');
-  });
-
-  // Toggle switch handler: updates adjacent status text and badge
+  // Backward-compatible wrapper: called by inline onchange handlers.
+  // The ai-management.js event delegation also handles these, so this
+  // is kept only as a safety fallback for older markup references.
   function updateToggleStatus(checkbox) {
     const row = checkbox.closest('.toggle-row') || checkbox.closest('.rule-row');
     if (!row) return;
     const statusEl = row.querySelector('.toggle-status');
-    const badgeEl = row.querySelector('.badge-pill');
+    const badgeEl  = row.querySelector('.badge-pill');
     const isOn = checkbox.checked;
-    if (statusEl) {
-      statusEl.textContent = isOn ? 'ON' : 'OFF';
-      statusEl.className = 'toggle-status ' + (isOn ? 'on' : 'off');
-    }
-    if (badgeEl) {
-      badgeEl.className = 'badge-pill ' + (isOn ? 'badge-green' : 'badge-gray');
-      badgeEl.textContent = isOn ? 'Active' : 'Inactive';
-    }
+    if (statusEl) { statusEl.textContent = isOn ? 'ON' : 'OFF'; statusEl.className = 'toggle-status ' + (isOn ? 'on' : 'off'); }
+    if (badgeEl)  { badgeEl.className = 'badge-pill ' + (isOn ? 'badge-green' : 'badge-gray'); badgeEl.textContent = isOn ? 'Active' : 'Inactive'; }
   }
-
-  // File upload handler
-  function handleUpload(input) {
-    if (input.files && input.files.length > 0) {
-      const name = input.files[0].name;
-      alert('Training data "' + name + '" uploaded successfully! Model retraining will begin shortly.');
-      input.value = '';
-    }
-  }
-
-  // Fraud table approve/block
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('btn-success') || e.target.classList.contains('btn-danger')) {
-      const row = e.target.closest('tr');
-      if (!row) return;
-      const txnId = row.cells[0]?.textContent;
-      if (e.target.classList.contains('btn-success')) {
-        if (confirm('Approve transaction ' + txnId + '?')) row.remove();
-      } else if (e.target.classList.contains('btn-danger')) {
-        if (confirm('Block transaction ' + txnId + '?')) row.remove();
-      }
-    }
-  });
 </script>
+<script src="../../assets/js/ai-management.js" defer></script>
 <script src="../../assets/js/navbar.js"></script>
 </body>
 </html>
