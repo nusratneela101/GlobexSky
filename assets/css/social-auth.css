@@ -1,0 +1,134 @@
+/* ─── Social Authentication Styles ─────────────────────────────────────────── */
+
+/* Social buttons container */
+.social-btns {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Base social button */
+.btn-social {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  color: #374151;
+  transition: all 0.2s;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-social:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Google button */
+.btn-google:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.btn-google i {
+  color: #ea4335;
+  font-size: 1rem;
+}
+
+/* Facebook button */
+.btn-facebook:hover:not(:disabled) {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.btn-facebook i {
+  color: #1877f2;
+  font-size: 1rem;
+}
+
+/* Loading spinner */
+.btn-social .social-spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: social-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.btn-social.loading .social-spinner {
+  display: inline-block;
+}
+
+.btn-social.loading .social-btn-icon,
+.btn-social.loading .social-btn-text {
+  opacity: 0.6;
+}
+
+@keyframes social-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* OR divider */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+/* Error / success toast for social auth */
+.social-auth-toast {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.social-auth-toast.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  display: block;
+}
+
+.social-auth-toast.success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #86efac;
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .social-btns {
+    flex-direction: column;
+  }
+}
