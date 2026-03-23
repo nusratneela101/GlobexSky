@@ -307,7 +307,7 @@ class LiveStreamViewer {
       <div style="font-size:1rem;opacity:.8;margin-bottom:6px">🎉 Limited-Time Offer</div>
       <div style="font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;letter-spacing:4px;
                   margin:8px 0">${this._esc(coupon.code)}</div>
-      <div style="font-size:1.3rem;font-weight:700">${coupon.discount}% OFF</div>
+      <div style="font-size:1.3rem;font-weight:700">${parseFloat(coupon.discount) || 0}% OFF</div>
       <div id="coupon-timer" style="margin-top:12px;font-size:1.5rem;font-weight:700;color:#fde68a">
         ${seconds}s
       </div>

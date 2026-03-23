@@ -361,7 +361,7 @@ class LiveStreamBroadcaster {
       <div style="font-size:1.8rem;font-weight:700;letter-spacing:3px;margin:6px 0">
         ${this._esc(code)}
       </div>
-      <div style="font-size:1.1rem;font-weight:700">${discount}% OFF</div>
+      <div style="font-size:1.1rem;font-weight:700">${parseFloat(discount) || 0}% OFF</div>
       <button onclick="document.getElementById('coupon-preview').remove()"
               style="margin-top:10px;background:rgba(255,255,255,.2);border:none;color:#fff;
                      padding:6px 18px;border-radius:16px;cursor:pointer;font-size:.8rem">
