@@ -45,4 +45,6 @@ router.get('/me', authenticate, ctrl.getMe);
 
 router.post('/verify-email', [body('token').notEmpty()], validate, ctrl.verifyEmail);
 
+router.get('/kyc-status', authenticate, ctrl.getKYCStatus);
+
 export default router;
