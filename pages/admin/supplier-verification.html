@@ -263,7 +263,115 @@
           </table>
         </div>
       </div>
+
+      <!-- ── Identity Document Review (KYC) Panel ── -->
+      <div class="admin-card" style="margin-top:24px">
+        <div class="admin-card-header">
+          <span class="admin-card-title"><i class="fas fa-shield-halved" style="color:#667eea"></i> Identity Document (KYC) Review</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span id="kycPendingCount" style="background:#fef3c7;color:#92400e;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:600">Loading…</span>
+            <input type="text" class="filter-input" placeholder="Search by name…" style="width:200px" id="kycSearchInput" oninput="filterKYCTable(this.value)"/>
+            <button class="btn-sm btn-secondary" onclick="loadKYCPending()"><i class="fas fa-rotate-right"></i> Refresh</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Document Type</th>
+                <th>Document No.</th>
+                <th>Country</th>
+                <th>Face Match</th>
+                <th>Liveness</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="kycTableBody">
+              <tr><td colspan="9" style="text-align:center;padding:32px;color:#94a3b8"><i class="fas fa-spinner fa-spin"></i> Loading KYC submissions…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </main>
+  </div>
+</div>
+
+<!-- ── KYC Review Modal ── -->
+<div class="modal-overlay" id="kycModal">
+  <div class="modal-box" style="max-width:680px;max-height:90vh;overflow-y:auto">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-shield-halved"></i> KYC Review — <span id="kycModalName">—</span></span>
+      <button class="modal-close" onclick="closeKYCModal()">&times;</button>
+    </div>
+
+    <!-- Images Side by Side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div>
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:8px">Document (Front)</div>
+        <div style="border-radius:10px;overflow:hidden;border:2px solid #e2e8f0;aspect-ratio:16/10;background:#f8fafc;display:flex;align-items:center;justify-content:center">
+          <img id="kycDocImage" src="" alt="Document" style="width:100%;height:100%;object-fit:cover;display:none"/>
+          <span id="kycDocPlaceholder" style="color:#94a3b8;font-size:.8rem"><i class="fas fa-file-image fa-2x" style="display:block;margin-bottom:6px;opacity:.3"></i>No image</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:8px">Captured Selfie</div>
+        <div style="border-radius:10px;overflow:hidden;border:2px solid #e2e8f0;aspect-ratio:16/10;background:#f8fafc;display:flex;align-items:center;justify-content:center">
+          <img id="kycSelfieImage" src="" alt="Selfie" style="width:100%;height:100%;object-fit:cover;display:none"/>
+          <span id="kycSelfiePlaceholder" style="color:#94a3b8;font-size:.8rem"><i class="fas fa-user-circle fa-2x" style="display:block;margin-bottom:6px;opacity:.3"></i>No image</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scores -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:#f8fafc;border-radius:10px;padding:14px;text-align:center;border:1px solid #e2e8f0">
+        <div style="font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="kycFaceScore">—</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px;font-weight:600">Face Match Score</div>
+        <div style="margin-top:8px;background:#e2e8f0;border-radius:4px;height:6px;overflow:hidden">
+          <div id="kycFaceScoreBar" style="height:100%;background:linear-gradient(135deg,#667eea,#764ba2);width:0%;transition:width .5s"></div>
+        </div>
+      </div>
+      <div style="background:#f8fafc;border-radius:10px;padding:14px;text-align:center;border:1px solid #e2e8f0">
+        <div style="font-size:1.6rem;font-weight:800;color:#10b981" id="kycLivenessScore">—</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px;font-weight:600">Liveness Confidence</div>
+        <div style="margin-top:8px;background:#e2e8f0;border-radius:4px;height:6px;overflow:hidden">
+          <div id="kycLivenessScoreBar" style="height:100%;background:#10b981;width:0%;transition:width .5s"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document Details -->
+    <div style="background:#f8faff;border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:10px">Document Details</div>
+      <div class="company-detail-row"><span class="company-detail-label">Document Type</span><span class="company-detail-value" id="kycDocType">—</span></div>
+      <div class="company-detail-row"><span class="company-detail-label">Document No.</span><span class="company-detail-value" id="kycDocNo">—</span></div>
+      <div class="company-detail-row"><span class="company-detail-label">Country</span><span class="company-detail-value" id="kycCountry">—</span></div>
+      <div class="company-detail-row"><span class="company-detail-label">Expiry Date</span><span class="company-detail-value" id="kycExpiry">—</span></div>
+      <div class="company-detail-row"><span class="company-detail-label">Submitted</span><span class="company-detail-value" id="kycSubmitted">—</span></div>
+    </div>
+
+    <!-- Notes -->
+    <div style="margin-bottom:16px">
+      <label style="font-size:.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Admin Notes / Rejection Reason</label>
+      <textarea id="kycAdminNotes" class="form-control" rows="3" placeholder="Enter notes or reason for rejection…" style="width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:.85rem;resize:vertical"></textarea>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn-sm btn-success" style="flex:1;min-width:140px;justify-content:center" onclick="submitKYCDecision('approved')">
+        <i class="fas fa-check"></i> Approve
+      </button>
+      <button class="btn-sm" style="flex:1;min-width:140px;justify-content:center;background:#f59e0b;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600" onclick="submitKYCDecision('resubmit')">
+        <i class="fas fa-rotate-right"></i> Request Resubmit
+      </button>
+      <button class="btn-sm btn-danger" style="flex:1;min-width:140px;justify-content:center" onclick="submitKYCDecision('rejected')">
+        <i class="fas fa-times"></i> Reject
+      </button>
+    </div>
   </div>
 </div>
 
@@ -364,6 +472,163 @@
     document.getElementById('rejectReasonGroup').style.display = 'none';
     document.getElementById('verifyModal').classList.add('open');
   }
+
+  // ── KYC Admin Panel ──────────────────────────────────────────────────────
+  const API = '/api/v1';
+  let kycRecords = [];
+  let activeKYCId = null;
+
+  async function loadKYCPending() {
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || '';
+    const tbody = document.getElementById('kycTableBody');
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:#94a3b8"><i class="fas fa-spinner fa-spin"></i> Loading…</td></tr>';
+    try {
+      const resp = await fetch(`${API}/verification/admin/pending?limit=50`, {
+        headers: { 'Authorization': 'Bearer '+token },
+      });
+      const json = await resp.json();
+      if (json.success) {
+        kycRecords = json.data?.records || [];
+        document.getElementById('kycPendingCount').textContent = (json.data?.pagination?.total || kycRecords.length)+' pending';
+        renderKYCTable(kycRecords);
+      } else {
+        renderKYCDemo();
+      }
+    } catch(_) {
+      renderKYCDemo();
+    }
+  }
+
+  function renderKYCDemo() {
+    kycRecords = [
+      { id:'kyc-001', user_id:'u1', profiles:{full_name:'John Doe', email:'john@example.com'}, document_type:'passport', document_number:'A1234567', country:'BD', face_match_score:94, liveness_score:97, status:'pending_review', front_image_url:'', selfie_url:'', created_at: new Date().toISOString() },
+      { id:'kyc-002', user_id:'u2', profiles:{full_name:'Jane Smith', email:'jane@example.com'}, document_type:'nid', document_number:'NID9876543', country:'IN', face_match_score:88, liveness_score:92, status:'pending_review', front_image_url:'', selfie_url:'', created_at: new Date(Date.now()-86400000).toISOString() },
+    ];
+    document.getElementById('kycPendingCount').textContent = kycRecords.length+' pending';
+    renderKYCTable(kycRecords);
+  }
+
+  function renderKYCTable(records) {
+    const tbody = document.getElementById('kycTableBody');
+    if (!records || records.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:#94a3b8"><i class="fas fa-inbox fa-2x" style="display:block;margin-bottom:8px;opacity:.3"></i>No pending KYC submissions</td></tr>';
+      return;
+    }
+    const docLabels = { nid:'National ID', passport:'Passport', drivers_license:"Driver's License" };
+    const statusBadge = {
+      pending_review: '<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:600">Pending</span>',
+      document_uploaded: '<span style="background:#dbeafe;color:#1e40af;padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:600">Uploaded</span>',
+    };
+    tbody.innerHTML = records.map(r => {
+      const name = r.profiles?.full_name || r.user_id;
+      const email = r.profiles?.email || '—';
+      const faceScore = r.face_match_score ? r.face_match_score+'%' : '—';
+      const livenessScore = r.liveness_score ? r.liveness_score+'%' : '—';
+      const faceColor = r.face_match_score >= 80 ? '#10b981' : r.face_match_score >= 60 ? '#f59e0b' : '#ef4444';
+      const date = new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      return `<tr>
+        <td><div style="font-weight:600;color:#1e293b">${name}</div><div style="font-size:.75rem;color:#94a3b8">${email}</div></td>
+        <td>${docLabels[r.document_type]||r.document_type||'—'}</td>
+        <td style="font-family:monospace;font-size:.8rem">${r.document_number||'—'}</td>
+        <td>${r.country||'—'}</td>
+        <td style="color:${faceColor};font-weight:700">${faceScore}</td>
+        <td style="color:#10b981;font-weight:700">${livenessScore}</td>
+        <td style="font-size:.8rem;color:#64748b">${date}</td>
+        <td>${statusBadge[r.status]||r.status}</td>
+        <td><button class="btn-sm" data-kyc-id="${r.id}" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:.78rem;font-weight:600" onclick="openKYCModalById(this.dataset.kycId)"><i class="fas fa-eye"></i> Review</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function filterKYCTable(query) {
+    if (!query.trim()) { renderKYCTable(kycRecords); return; }
+    const q = query.toLowerCase();
+    renderKYCTable(kycRecords.filter(r =>
+      (r.profiles?.full_name||'').toLowerCase().includes(q) ||
+      (r.profiles?.email||'').toLowerCase().includes(q) ||
+      (r.document_number||'').toLowerCase().includes(q)
+    ));
+  }
+
+  function openKYCModalById(id) {
+    const record = kycRecords.find(r => r.id === id);
+    if (!record) { alert('Record not found.'); return; }
+    openKYCModal(record);
+  }
+
+  function openKYCModal(record) {
+    activeKYCId = record.id;
+    document.getElementById('kycModalName').textContent = record.profiles?.full_name || record.user_id;
+    document.getElementById('kycDocType').textContent = ({nid:'National ID',passport:'Passport',drivers_license:"Driver's License"})[record.document_type]||record.document_type||'—';
+    document.getElementById('kycDocNo').textContent = record.document_number||'—';
+    document.getElementById('kycCountry').textContent = record.country||'—';
+    document.getElementById('kycExpiry').textContent = record.expiry_date ? new Date(record.expiry_date).toLocaleDateString() : '—';
+    document.getElementById('kycSubmitted').textContent = new Date(record.created_at).toLocaleString();
+    document.getElementById('kycAdminNotes').value = '';
+
+    // Images
+    const docImg = document.getElementById('kycDocImage');
+    const docPh  = document.getElementById('kycDocPlaceholder');
+    if (record.front_image_url) { docImg.src=record.front_image_url; docImg.style.display='block'; docPh.style.display='none'; }
+    else { docImg.style.display='none'; docPh.style.display='flex'; }
+
+    const selfieImg = document.getElementById('kycSelfieImage');
+    const selfiePh  = document.getElementById('kycSelfiePlaceholder');
+    if (record.selfie_url) { selfieImg.src=record.selfie_url; selfieImg.style.display='block'; selfiePh.style.display='none'; }
+    else { selfieImg.style.display='none'; selfiePh.style.display='flex'; }
+
+    // Scores
+    const fs = record.face_match_score || 0;
+    const ls = record.liveness_score || 0;
+    document.getElementById('kycFaceScore').textContent = fs ? fs+'%' : '—';
+    document.getElementById('kycLivenessScore').textContent = ls ? ls+'%' : '—';
+    setTimeout(() => {
+      document.getElementById('kycFaceScoreBar').style.width = fs+'%';
+      document.getElementById('kycLivenessScoreBar').style.width = ls+'%';
+    }, 100);
+
+    document.getElementById('kycModal').classList.add('open');
+  }
+
+  function closeKYCModal() {
+    document.getElementById('kycModal').classList.remove('open');
+    document.getElementById('kycFaceScoreBar').style.width = '0%';
+    document.getElementById('kycLivenessScoreBar').style.width = '0%';
+    activeKYCId = null;
+  }
+
+  async function submitKYCDecision(decision) {
+    if (!activeKYCId) return;
+    const notes = document.getElementById('kycAdminNotes').value.trim();
+    if (decision === 'rejected' && !notes) { alert('Please enter a rejection reason.'); return; }
+
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || '';
+    try {
+      const resp = await fetch(`${API}/verification/admin/review/${activeKYCId}`, {
+        method: 'PUT',
+        headers: { 'Authorization':'Bearer '+token, 'Content-Type':'application/json' },
+        body: JSON.stringify({ decision, notes }),
+      });
+      const json = await resp.json();
+      if (json.success || resp.status === 200) {
+        alert('Decision submitted: '+decision);
+        closeKYCModal();
+        loadKYCPending();
+      } else {
+        alert(json.message || 'Failed to submit decision.');
+      }
+    } catch(_) {
+      // Demo mode
+      alert('Decision recorded (demo): '+decision);
+      closeKYCModal();
+      kycRecords = kycRecords.filter(r => r.id !== activeKYCId);
+      renderKYCTable(kycRecords);
+      document.getElementById('kycPendingCount').textContent = kycRecords.length+' pending';
+    }
+  }
+
+  // Load on page ready
+  loadKYCPending();
 </script>
 </body>
 </html>

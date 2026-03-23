@@ -198,7 +198,7 @@ function renderPriceBreakdown(breakdown, container) {
   if (!container) return;
 
   const currency = localStorage.getItem('globexCurrency') || 'USD';
-  const symbol = window.Globex Sky?.CURRENCY_SYMBOLS?.[currency] || '$';
+  const symbol = window.GlobexSky?.CURRENCY_SYMBOLS?.[currency] || '$';
 
   const fmt = (n) => `${symbol}${Number(n).toFixed(2)}`;
   const speedLabel = breakdown.speed.charAt(0).toUpperCase() + breakdown.speed.slice(1);
@@ -344,7 +344,7 @@ function initCalculator() {
 
     // Also update any standalone total display
     const totalDisplay = document.querySelector('.calculator-total-price, [data-calculator-total]');
-    const symbol = window.Globex Sky?.CURRENCY_SYMBOLS?.[localStorage.getItem('globexCurrency') || 'USD'] || '$';
+    const symbol = window.GlobexSky?.CURRENCY_SYMBOLS?.[localStorage.getItem('globexCurrency') || 'USD'] || '$';
     if (totalDisplay) totalDisplay.textContent = `${symbol}${breakdown.total.toFixed(2)}`;
   };
 
@@ -370,8 +370,8 @@ document.addEventListener('DOMContentLoaded', initCalculator);
 /* ─────────────────────────────────────────────
    EXPORTS
 ───────────────────────────────────────────── */
-window.Globex Sky = window.Globex Sky || {};
-Object.assign(window.Globex Sky, {
+window.GlobexSky = window.GlobexSky || {};
+Object.assign(window.GlobexSky, {
   calculateParcelPrice,
   renderPriceBreakdown,
   getZone,
