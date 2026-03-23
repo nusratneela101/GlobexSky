@@ -424,7 +424,20 @@
 </div>
 
 <script>
-  const responses = {
+  /* ── Config ─────────────────────────────────────────────────────────────── */
+  const BASE_URL = (() => {
+    const h = window.location.hostname;
+    return (h === 'localhost' || h === '127.0.0.1')
+      ? 'http://localhost:5000/api/v1'
+      : 'https://globexsky-backend.up.railway.app/api/v1';
+  })();
+
+  function getToken() {
+    try { return JSON.parse(localStorage.getItem('globexSession') || 'null')?.token || null; } catch { return null; }
+  }
+
+  /* ── Offline / keyword-matching fallback ────────────────────────────────── */
+  const offlineResponses = {
     default: [
       "Great question! Let me look into that for you. Based on our global supplier database, I can help you find the best options. Could you share more details like your target quantity and destination country?",
       "I've analyzed thousands of similar trade queries. Here's what I recommend: start by shortlisting 3–5 Gold Suppliers, request samples before placing bulk orders, and use Trade Assurance for payment protection.",
@@ -432,27 +445,32 @@
       "Based on current market data, prices for that category have stabilized after Q3 adjustments. I'd suggest getting at least 3 quotes to compare. Want me to send an automated RFQ to top suppliers?",
     ],
     supplier: ["For supplier verification, I recommend checking: 1) Business license validity, 2) Gold Supplier status (3+ years), 3) Trade Assurance participation, 4) Export record to your region, and 5) Third-party inspection reports. Shall I filter suppliers meeting all these criteria?"],
-    shipping: ["For shipping options, you have: **Sea Freight** (20–45 days, best for 300kg+), **Air Freight** (3–7 days, best for urgent/high-value), **Express Courier** (2–5 days via DHL/FedEx). For your route, sea freight via FCL/LCL would be most cost-effective. Want a detailed quote?"],
+    shipping: ["For shipping options, you have: Sea Freight (20–45 days, best for 300kg+), Air Freight (3–7 days, best for urgent/high-value), Express Courier (2–5 days via DHL/FedEx). For your route, sea freight via FCL/LCL would be most cost-effective. Want a detailed quote?"],
     payment: ["GlobexSky supports: Trade Assurance (escrow-like protection), T/T Bank Transfer, L/C (Letter of Credit), Western Union for small orders, and Alipay International. I recommend Trade Assurance for your first order — funds are only released after you confirm receipt."],
     solar: ["Solar panels are one of our top categories! Current pricing: Standard 400W monocrystalline: $60–90/pc (MOQ 10 pcs), Premium bifacial 500W: $90–130/pc, Full container load pricing available from $52/pc. Top verified suppliers include SunPower Industrial, GreenEnergy Tech, and SolarMax. Shall I request quotes from all three?"],
   };
 
   let msgCount = 0;
+  let sessionId = null;
 
+  /* ── Helpers ─────────────────────────────────────────────────────────────── */
   function getTime() {
-    return new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    return new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
   }
 
-  function appendMsg(text, type, isWidget) {
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function appendMsg(text, type) {
     const area = document.getElementById('chatMessages');
     const div = document.createElement('div');
     div.className = `msg ${type}`;
     const avatarIcon = type === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
-    const avatarClass = type === 'bot' ? 'bot' : 'user';
     div.innerHTML = `
-      <div class="msg-avatar ${avatarClass}">${avatarIcon}</div>
+      <div class="msg-avatar ${type}">${avatarIcon}</div>
       <div>
-        <div class="msg-bubble">${text}</div>
+        <div class="msg-bubble">${escapeHtml(text)}</div>
         <div class="msg-time">${getTime()}</div>
       </div>`;
     area.appendChild(div);
@@ -467,27 +485,77 @@
     document.getElementById('typingIndicator').style.display = 'none';
   }
 
-  function getBotResponse(text) {
+  /* ── Offline keyword matcher ─────────────────────────────────────────────── */
+  function getOfflineResponse(text) {
     const lower = text.toLowerCase();
-    if (lower.includes('supplier') || lower.includes('verify') || lower.includes('certif')) return responses.supplier[0];
-    if (lower.includes('ship') || lower.includes('freight') || lower.includes('logistics') || lower.includes('dhl')) return responses.shipping[0];
-    if (lower.includes('pay') || lower.includes('escrow') || lower.includes('wire') || lower.includes('lc')) return responses.payment[0];
-    if (lower.includes('solar') || lower.includes('panel')) return responses.solar[0];
-    return responses.default[msgCount % responses.default.length];
+    if (lower.includes('supplier') || lower.includes('verify') || lower.includes('certif')) return offlineResponses.supplier[0];
+    if (lower.includes('ship') || lower.includes('freight') || lower.includes('logistics') || lower.includes('dhl')) return offlineResponses.shipping[0];
+    if (lower.includes('pay') || lower.includes('escrow') || lower.includes('wire') || lower.includes('lc')) return offlineResponses.payment[0];
+    if (lower.includes('solar') || lower.includes('panel')) return offlineResponses.solar[0];
+    return offlineResponses.default[msgCount % offlineResponses.default.length];
   }
 
-  function sendMessage() {
+  /* ── API chatbot call ────────────────────────────────────────────────────── */
+  async function callChatbotAPI(message) {
+    const token = getToken();
+    if (!token) return null; // Not logged in — fall back to offline
+    try {
+      const body = { message };
+      if (sessionId) body.session_id = sessionId;
+      const res = await fetch(`${BASE_URL}/ai/chatbot`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) return null;
+      const json = await res.json();
+      if (json.data?.session_id) sessionId = json.data.session_id;
+      return json.data?.response || null;
+    } catch {
+      return null;
+    }
+  }
+
+  /* ── Load history from API ───────────────────────────────────────────────── */
+  async function loadHistory() {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE_URL}/ai/chatbot/history?limit=10`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      const json = await res.json();
+      const msgs = json.data || [];
+      if (!msgs.length) return;
+      const area = document.getElementById('chatMessages');
+      area.innerHTML = '';
+      msgs.slice().reverse().forEach(m => {
+        appendMsg(m.message, 'user');
+        if (m.response) appendMsg(m.response, 'bot');
+      });
+    } catch { /* ignore */ }
+  }
+
+  /* ── Main send ───────────────────────────────────────────────────────────── */
+  async function sendMessage() {
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text) return;
     input.value = '';
+    input.disabled = true;
     appendMsg(text, 'user');
     msgCount++;
     showTyping();
-    setTimeout(() => {
-      hideTyping();
-      appendMsg(getBotResponse(text), 'bot');
-    }, 1200 + Math.random() * 800);
+
+    // Try API first; fall back to offline keyword matching
+    const apiReply = await callChatbotAPI(text);
+    const reply = apiReply ?? getOfflineResponse(text);
+
+    hideTyping();
+    appendMsg(reply, 'bot');
+    input.disabled = false;
+    input.focus();
   }
 
   function sendSuggested(btn) {
@@ -499,20 +567,40 @@
   function askFAQ(question) {
     document.getElementById('chatInput').value = question;
     sendMessage();
-    document.querySelector('.chat-panel').scrollIntoView({behavior:'smooth'});
+    document.querySelector('.chat-panel').scrollIntoView({behavior: 'smooth'});
   }
 
   function askAboutProduct(product) {
     document.getElementById('chatInput').value = `Tell me about sourcing ${product} — pricing, MOQ, and top suppliers`;
     sendMessage();
-    document.querySelector('.chat-panel').scrollIntoView({behavior:'smooth'});
+    document.querySelector('.chat-panel').scrollIntoView({behavior: 'smooth'});
   }
 
-  function clearChat() {
+  async function clearChat() {
     const area = document.getElementById('chatMessages');
     area.innerHTML = '';
+    sessionId = null;
     appendMsg('New conversation started! How can I help you with your trade needs today? 🌍', 'bot');
+    // Optionally clear history on server
+    const token = getToken();
+    if (token) {
+      try {
+        await fetch(`${BASE_URL}/ai/chatbot/history`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      } catch { /* ignore */ }
+    }
   }
+
+  /* ── Enter key support ───────────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('chatInput');
+    if (input) {
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+    }
+    // Load previous session history if logged in
+    loadHistory();
+  });
 </script>
   <script src="../../assets/js/ai.js"></script>
 </body>

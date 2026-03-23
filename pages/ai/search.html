@@ -108,7 +108,8 @@
       <p>Describe what you're looking for in natural language — our AI finds the best matches</p>
       <div class="search-bar">
         <span class="ai-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-        <input id="searchInput" type="text" placeholder="Describe what you're looking for in natural language..."/>
+        <input id="searchInput" type="text" placeholder="Describe what you're looking for in natural language..." list="searchSuggestions"/>
+        <datalist id="searchSuggestions"></datalist>
         <div class="search-actions">
           <button class="voice-btn" title="Voice Search"><i class="fa-solid fa-microphone"></i></button>
           <button class="search-btn" onclick="doSearch()"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
@@ -126,12 +127,12 @@
       <button class="btn btn-secondary"><i class="fa-solid fa-camera"></i> Search by Image</button>
       <button class="btn btn-secondary"><i class="fa-solid fa-microphone"></i> Voice Search</button>
       <div style="flex:1"></div>
-      <span style="font-size:.85rem;color:#6b7280">Showing 6 AI-matched results</span>
+      <span id="resultCountLabel" style="font-size:.85rem;color:#6b7280">Showing 6 AI-matched results</span>
     </div>
 
-    <div class="card" style="padding:16px 20px;margin-bottom:20px">
+    <div id="refinementsBar" class="card" style="padding:16px 20px;margin-bottom:20px">
       <div style="font-size:.85rem;color:#6b7280;margin-bottom:10px"><i class="fa-solid fa-filter" style="color:#0052CC"></i> AI Suggested Refinements:</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div id="refinementsChips" style="display:flex;gap:8px;flex-wrap:wrap">
         <span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer">Waterproof Rating: IPX4+</span>
         <span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer">Material: Aluminum / Teak</span>
         <span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer">Price: Under $200</span>
@@ -139,7 +140,7 @@
       </div>
     </div>
 
-    <div class="result-grid">
+    <div id="resultsGrid" class="result-grid">
       <div class="result-card">
         <div class="result-img"><i class="fa-solid fa-chair"></i></div>
         <div class="result-body">
@@ -216,10 +217,12 @@
 
     <div class="card">
       <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Search History</div>
-      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">durable waterproof outdoor furniture under $200</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">2 min ago</span></div>
-      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">eco-friendly packaging materials MOQ 1000</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">1 hour ago</span></div>
-      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">stainless steel industrial bolts grade 8.8 bulk</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">Yesterday</span></div>
-      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">solar LED street lights 100W with remote</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">2 days ago</span></div>
+      <div id="searchHistoryList">
+        <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">durable waterproof outdoor furniture under $200</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">2 min ago</span></div>
+        <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">eco-friendly packaging materials MOQ 1000</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">1 hour ago</span></div>
+        <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">stainless steel industrial bolts grade 8.8 bulk</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">Yesterday</span></div>
+        <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">solar LED street lights 100W with remote</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">2 days ago</span></div>
+      </div>
     </div>
   </main>
 </div>
@@ -236,8 +239,182 @@
 </footer>
 <script src="../../assets/js/main.js" defer></script>
 <script>
-function setSearch(q){document.getElementById('searchInput').value=q}
-function doSearch(){var q=document.getElementById('searchInput').value;if(q)alert('AI Search: "'+q+'"\n\nSearching across 2.4M products...\nResults shown below.')}
+  const AI_BASE = (() => {
+    const h = window.location.hostname;
+    return (h === 'localhost' || h === '127.0.0.1')
+      ? 'http://localhost:5000/api/v1'
+      : 'https://globexsky-backend.up.railway.app/api/v1';
+  })();
+
+  function getToken() {
+    try { return JSON.parse(localStorage.getItem('globexSession') || 'null')?.token || null; } catch { return null; }
+  }
+
+  /* Escape for HTML output */
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* Set query input */
+  function setSearch(q) { document.getElementById('searchInput').value = q; }
+
+  /* Render a single result card */
+  function renderResultCard(p) {
+    const score = p.ai_score ?? p.relevance ?? 0;
+    const pct = Math.round(score * 100) || '';
+    const priceStr = p.price_range
+      ? `$${p.price_range.min ?? '—'} – $${p.price_range.max ?? '—'}`
+      : (p.price ? `$${p.price}` : '—');
+    const icon = p.category ? getCategoryIcon(p.category) : 'fa-solid fa-box';
+    return `
+      <div class="result-card">
+        <div class="result-img"><i class="${icon}"></i></div>
+        <div class="result-body">
+          <div class="result-name">${esc(p.name || p.title || 'Product')}</div>
+          <div class="result-price">${priceStr}</div>
+          <div style="font-size:.78rem;color:#6b7280;margin-top:4px">${p.moq ? `MOQ: ${p.moq} units` : ''} ${p.supplier ? '· ' + esc(p.supplier) : ''}</div>
+          ${pct ? `<div class="confidence-bar">
+            <div class="confidence-label"><span>AI Match</span><span>${pct}%</span></div>
+            <div class="confidence-track"><div class="confidence-fill" style="width:${pct}%"></div></div>
+          </div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  /* Category → icon mapping */
+  function getCategoryIcon(cat) {
+    cat = (cat || '').toLowerCase();
+    if (cat.includes('solar') || cat.includes('energy')) return 'fa-solid fa-solar-panel';
+    if (cat.includes('electronic') || cat.includes('circuit')) return 'fa-solid fa-microchip';
+    if (cat.includes('furniture') || cat.includes('chair')) return 'fa-solid fa-chair';
+    if (cat.includes('packaging') || cat.includes('box')) return 'fa-solid fa-box-open';
+    if (cat.includes('lighting') || cat.includes('led')) return 'fa-solid fa-lightbulb';
+    if (cat.includes('textile') || cat.includes('fabric')) return 'fa-solid fa-shirt';
+    if (cat.includes('metal') || cat.includes('steel') || cat.includes('bolt')) return 'fa-solid fa-gear';
+    return 'fa-solid fa-box';
+  }
+
+  /* Save query to local search history */
+  function saveToHistory(q) {
+    const KEY = 'globexSearchHistory';
+    try {
+      const arr = JSON.parse(localStorage.getItem(KEY) || '[]');
+      const filtered = arr.filter(item => item.q !== q).slice(0, 9);
+      filtered.unshift({ q, t: Date.now() });
+      localStorage.setItem(KEY, JSON.stringify(filtered));
+      renderHistoryItems(filtered);
+    } catch { /* ignore */ }
+  }
+
+  /* Render search history */
+  function renderHistoryItems(items) {
+    const el = document.getElementById('searchHistoryList');
+    if (!el) return;
+    if (!items || !items.length) return;
+    function ago(ts) {
+      const d = (Date.now() - ts) / 1000;
+      if (d < 120) return 'Just now';
+      if (d < 3600) return `${Math.round(d / 60)} min ago`;
+      if (d < 86400) return `${Math.round(d / 3600)} hr ago`;
+      return `${Math.round(d / 86400)} days ago`;
+    }
+    el.innerHTML = items.map(item => `
+      <div class="history-item" style="cursor:pointer" onclick="setSearch(${JSON.stringify(item.q)});doSearch()">
+        <i class="fa-solid fa-clock"></i>
+        <span style="font-size:.87rem">${esc(item.q)}</span>
+        <span style="margin-left:auto;font-size:.78rem;color:#94a3b8">${ago(item.t)}</span>
+      </div>`).join('');
+  }
+
+  /* Load history on page start */
+  (function loadStoredHistory() {
+    try {
+      const arr = JSON.parse(localStorage.getItem('globexSearchHistory') || '[]');
+      renderHistoryItems(arr);
+    } catch { /* ignore */ }
+  })();
+
+  /* Fetch suggestions from API */
+  async function fetchSuggestions(q) {
+    if (!q || q.length < 2) return;
+    try {
+      const res = await fetch(`${AI_BASE}/ai/search/suggestions?q=${encodeURIComponent(q)}`);
+      if (!res.ok) return;
+      const json = await res.json();
+      const suggestions = json.data || [];
+      const datalist = document.getElementById('searchSuggestions');
+      if (datalist) {
+        datalist.innerHTML = suggestions.map(s => `<option value="${esc(s)}"></option>`).join('');
+      }
+    } catch { /* ignore */ }
+  }
+
+  /* Main search function */
+  async function doSearch() {
+    const q = document.getElementById('searchInput')?.value?.trim();
+    if (!q) return;
+
+    const grid = document.getElementById('resultsGrid');
+    const countLabel = document.getElementById('resultCountLabel');
+    const searchBtn = document.querySelector('.search-btn');
+
+    if (searchBtn) { searchBtn.disabled = true; searchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Searching…'; }
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;padding:32px;text-align:center;color:#94a3b8"><i class="fas fa-spinner fa-spin fa-lg"></i><div style="margin-top:8px;font-size:.88rem">AI is searching 2.4M+ products…</div></div>';
+    if (countLabel) countLabel.textContent = 'Searching…';
+
+    try {
+      const token = getToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch(`${AI_BASE}/ai/search`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ query: q, limit: 12 }),
+      });
+
+      if (!res.ok) throw new Error('Search failed');
+      const json = await res.json();
+      const results = json.data?.results || json.data || [];
+      const total = json.data?.total ?? results.length;
+
+      if (!results.length) {
+        if (grid) grid.innerHTML = '<div style="grid-column:1/-1;padding:32px;text-align:center;color:#94a3b8"><i class="fas fa-search fa-2x" style="margin-bottom:12px;opacity:.4"></i><div>No results found for "' + esc(q) + '".<br>Try different keywords.</div></div>';
+        if (countLabel) countLabel.textContent = 'No results found';
+      } else {
+        if (grid) grid.innerHTML = results.map(renderResultCard).join('');
+        if (countLabel) countLabel.textContent = `Showing ${results.length} of ${total} AI-matched results`;
+      }
+
+      // Update refinements bar
+      const refinements = json.data?.facets || json.data?.suggestions || [];
+      if (refinements.length) {
+        const chipsEl = document.getElementById('refinementsChips');
+        if (chipsEl) chipsEl.innerHTML = refinements.slice(0, 6).map(f =>
+          `<span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer" onclick="setSearch('${esc(q)} ${esc(f)}');doSearch()">${esc(f)}</span>`
+        ).join('');
+      }
+
+      saveToHistory(q);
+    } catch {
+      // API not available — show friendly message
+      if (grid) grid.innerHTML = '<div style="grid-column:1/-1;padding:32px;text-align:center;color:#94a3b8"><i class="fas fa-wifi fa-lg" style="margin-bottom:10px;opacity:.4"></i><div style="font-size:.88rem">AI search is not available right now.<br>Please try again later or <a href="../sourcing/products.html" style="color:#0052CC">browse products manually</a>.</div></div>';
+      if (countLabel) countLabel.textContent = '—';
+    } finally {
+      if (searchBtn) { searchBtn.disabled = false; searchBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Search'; }
+    }
+  }
+
+  /* Enter key support */
+  document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('searchInput');
+    if (input) {
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+      });
+      input.addEventListener('input', function () { fetchSuggestions(this.value.trim()); });
+    }
+  });
 </script>
   <script src="../../assets/js/ai.js"></script>
 </body>

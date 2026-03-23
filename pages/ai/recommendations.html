@@ -491,8 +491,71 @@
     document.querySelector('.section-label').innerHTML = `<i class="fas fa-search"></i> Results for "${q}"`;
   }
 
-  // Initial render
+  /* ── API integration ──────────────────────────────────────────────── */
+  const REC_BASE = (() => {
+    const h = window.location.hostname;
+    return (h === 'localhost' || h === '127.0.0.1')
+      ? 'http://localhost:5000/api/v1'
+      : 'https://globexsky-backend.up.railway.app/api/v1';
+  })();
+
+  function getToken() {
+    try { return JSON.parse(localStorage.getItem('globexSession') || 'null')?.token || null; } catch { return null; }
+  }
+
+  function getUserId() {
+    try { return JSON.parse(localStorage.getItem('globexUser') || 'null')?.id || null; } catch { return null; }
+  }
+
+  /* Map API product shape → renderGrid-compatible shape */
+  function mapApiProduct(p) {
+    return {
+      emoji: p.thumbnail ? null : '📦',
+      thumbnailUrl: p.thumbnail || p.image || null,
+      name: p.name || p.title || 'Product',
+      supplier: p.supplier_name || p.supplier || 'Verified Supplier',
+      rating: p.rating || 4.5,
+      price: p.price_range
+        ? `$${p.price_range.min ?? '—'} – $${p.price_range.max ?? '—'}`
+        : (p.price ? `$${p.price}` : 'Get Quote'),
+      moq: p.moq ? `${p.moq} pcs MOQ` : 'MOQ available',
+      badge: 'badge-ai',
+      badgeText: 'AI Pick',
+      reason: '🤖 AI Recommended',
+      bg: 'linear-gradient(135deg,#f1f5f9,#e2e8f0)',
+    };
+  }
+
+  async function loadRecsFromAPI() {
+    try {
+      const token = getToken();
+      const userId = getUserId();
+      let url = `${REC_BASE}/ai/recommendations/trending?limit=12`;
+      const headers = {};
+
+      if (token && userId) {
+        url = `${REC_BASE}/ai/recommendations/${userId}?type=personalized&limit=12`;
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(url, { headers });
+      if (!res.ok) return; // silent fallback to static
+
+      const json = await res.json();
+      const products = (json.data || []).map(mapApiProduct);
+      if (products.length) {
+        renderGrid('mainGrid', products, '');
+        const label = document.querySelector('.section-label');
+        if (label) label.innerHTML = token
+          ? '<i class="fas fa-user-check"></i> Personalized For You'
+          : '<i class="fas fa-fire"></i> Trending Products';
+      }
+    } catch { /* silent fallback */ }
+  }
+
+  // Initial render with static data, then try to upgrade with API data
   renderGrid('mainGrid', allProducts, '');
+  loadRecsFromAPI();
 </script>
   <script src="../../assets/js/ai.js"></script>
 </body>
