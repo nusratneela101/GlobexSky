@@ -1,7 +1,7 @@
 /**
  * Globex Sky — payment.js
- * Frontend payment page logic: Stripe Elements, PayPal, Bank Transfer, Escrow,
- * payment history, and result pages.
+ * Frontend payment page logic: Stripe Elements, PayPal, bKash, Nagad,
+ * Bank Transfer, Escrow, payment history, and result pages.
  *
  * GLOBEX_CONFIG must be defined before this module is loaded, e.g.:
  *   <script>
@@ -14,6 +14,7 @@
  */
 
 import { API_BASE } from './config.js';
+import { initGateways, selectMethod, showSpinner, setPayBtnDisabled, showError } from './payment-gateways.js';
 
 /* ─── Constants ───────────────────────────────────────────────────────── */
 const STRIPE_PUBLISHABLE_KEY = window.GLOBEX_CONFIG?.stripe_publishable_key || '';
@@ -34,22 +35,24 @@ export function initPaymentPage() {
   const form     = $('payment-form');
   if (!form) return;
 
-  // Method selection
-  document.querySelectorAll('.method-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
-      document.querySelectorAll('.payment-section').forEach(s => s.classList.remove('active'));
-      card.classList.add('active');
-      const section = $(`section-${card.dataset.method}`);
-      if (section) section.classList.add('active');
-    });
+  const amount   = parseFloat(amountEl?.dataset.amount || amountEl?.textContent?.replace(/[^0-9.]/g, '') || '0');
+  const currency = amountEl?.dataset.currency || 'USD';
+
+  // Init unified gateway module
+  initGateways({
+    orderId,
+    amount,
+    currency,
+    onSuccess: ({ orderId: oid, ref, gateway }) => redirectToSuccess(oid, ref, gateway),
+    onError:   (msg) => { showError(msg); setPayBtnDisabled(false); showSpinner(false); },
   });
 
-  // Init Stripe
-  if (STRIPE_PUBLISHABLE_KEY) initStripe(orderId);
-
-  // Init PayPal
-  if (PAYPAL_CLIENT_ID) initPayPal(orderId);
+  // Method selection (delegate to gateway module)
+  document.querySelectorAll('.method-card').forEach(card => {
+    card.addEventListener('click', () => {
+      selectMethod(card.dataset.method);
+    });
+  });
 
   // Bank transfer form submit
   const bankForm = $('bank-transfer-form');
@@ -84,110 +87,8 @@ export function initPaymentPage() {
 }
 
 /* ─── Stripe Integration ──────────────────────────────────────────────── */
-let stripe, cardElement;
-
-function initStripe(orderId) {
-  if (!window.Stripe) return;
-  stripe = window.Stripe(STRIPE_PUBLISHABLE_KEY);
-  const elements = stripe.elements();
-
-  cardElement = elements.create('card', {
-    style: {
-      base: {
-        fontFamily: 'Inter, sans-serif',
-        fontSize: '16px',
-        color: '#1a1a2e',
-        '::placeholder': { color: '#94a3b8' },
-      },
-      invalid: { color: '#ef4444' },
-    },
-  });
-
-  const mountEl = $('stripe-card-element');
-  if (mountEl) cardElement.mount('#stripe-card-element');
-
-  cardElement.addEventListener('change', e => {
-    const errEl = $('stripe-errors');
-    if (errEl) errEl.textContent = e.error ? e.error.message : '';
-  });
-
-  const stripeForm = $('stripe-form');
-  if (stripeForm) {
-    stripeForm.addEventListener('submit', async e => {
-      e.preventDefault();
-      await submitStripePayment(orderId);
-    });
-  }
-}
-
-async function submitStripePayment(orderId) {
-  showSpinner(true);
-  setPayBtnDisabled(true);
-
-  try {
-    // 1. Create PaymentIntent on backend
-    const res = await fetch(`${API_BASE}/payments/create-intent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getAuthToken()}` },
-      body: JSON.stringify({ order_id: orderId }),
-    });
-    const { data, success, error } = await res.json();
-    if (!success) throw new Error(error || 'Failed to create payment intent.');
-
-    // 2. Confirm with Stripe.js
-    const { error: stripeErr, paymentIntent } = await stripe.confirmCardPayment(data.client_secret, {
-      payment_method: { card: cardElement },
-    });
-
-    if (stripeErr) throw new Error(stripeErr.message);
-
-    if (paymentIntent.status === 'succeeded') {
-      redirectToSuccess(orderId, paymentIntent.id);
-    } else {
-      redirectToFailed(orderId, paymentIntent.id);
-    }
-  } catch (err) {
-    showError(err.message);
-    setPayBtnDisabled(false);
-    showSpinner(false);
-  }
-}
-
-/* ─── PayPal Integration ──────────────────────────────────────────────── */
-function initPayPal(orderId) {
-  if (!window.paypal) return;
-
-  window.paypal.Buttons({
-    createOrder: async () => {
-      const res = await fetch(`${API_BASE}/payments/paypal/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getAuthToken()}` },
-        body: JSON.stringify({ order_id: orderId }),
-      });
-      const { data, success, error } = await res.json();
-      if (!success) throw new Error(error);
-      return data.paypal_order_id;
-    },
-    onApprove: async data => {
-      showSpinner(true);
-      const res = await fetch(`${API_BASE}/payments/paypal/capture`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getAuthToken()}` },
-        body: JSON.stringify({ paypal_order_id: data.orderID }),
-      });
-      const { success, error } = await res.json();
-      if (success) {
-        redirectToSuccess(orderId, data.orderID);
-      } else {
-        showError(error || 'PayPal capture failed.');
-        showSpinner(false);
-      }
-    },
-    onError: err => {
-      showError('PayPal error: ' + err.message);
-    },
-  }).render('#paypal-button-container');
-}
+// Stripe is now handled by payment-gateways.js (initGateways)
+// This section kept for backwards-compatibility with any existing inline scripts.
 
 /* ─── Bank Transfer ───────────────────────────────────────────────────── */
 async function submitBankTransfer(orderId, form) {
@@ -267,33 +168,11 @@ export async function loadPaymentHistory() {
 }
 
 /* ─── UI Helpers ──────────────────────────────────────────────────────── */
-function showSpinner(show) {
-  const spinner = $('payment-spinner');
-  const form    = $('payment-form');
-  if (spinner) spinner.classList.toggle('visible', show);
-  if (form)    form.style.display = show ? 'none' : '';
-}
+// showSpinner, setPayBtnDisabled, showError are imported from payment-gateways.js
 
-function setPayBtnDisabled(disabled) {
-  document.querySelectorAll('.btn-pay').forEach(btn => {
-    btn.disabled = disabled;
-    if (disabled) btn.classList.add('disabled');
-    else btn.classList.remove('disabled');
-  });
-}
-
-function showError(message) {
-  const errEl = $('payment-error') || $('stripe-errors');
-  if (errEl) {
-    errEl.textContent = message;
-    errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } else {
-    alert(message);
-  }
-}
-
-function redirectToSuccess(orderId, ref) {
+function redirectToSuccess(orderId, ref, gateway) {
   const params = new URLSearchParams({ order_id: orderId, ref });
+  if (gateway) params.set('gateway', gateway);
   window.location.href = `payment-success.html?${params}`;
 }
 
@@ -304,11 +183,14 @@ function redirectToFailed(orderId, ref) {
 
 function formatMethod(method) {
   const map = {
-    card:          '<i class="fas fa-credit-card" style="color:#0052CC"></i> Card',
-    paypal:        '<i class="fab fa-paypal" style="color:#0369a1"></i> PayPal',
-    bank_transfer: '<i class="fas fa-university" style="color:#059669"></i> Bank Transfer',
-    escrow:        '<i class="fas fa-shield-alt" style="color:#7c3aed"></i> Escrow',
-    cod:           '<i class="fas fa-money-bill" style="color:#d97706"></i> COD',
+    card:           '<i class="fas fa-credit-card" style="color:#0052CC"></i> Card',
+    paypal:         '<i class="fab fa-paypal" style="color:#0369a1"></i> PayPal',
+    bkash:          '<i class="fas fa-mobile-alt" style="color:#e2136e"></i> bKash',
+    mobile_banking: '<i class="fas fa-mobile-alt" style="color:#e2136e"></i> Mobile Banking',
+    nagad:          '<i class="fas fa-mobile-screen" style="color:#f05829"></i> Nagad',
+    bank_transfer:  '<i class="fas fa-university" style="color:#059669"></i> Bank Transfer',
+    escrow:         '<i class="fas fa-shield-alt" style="color:#7c3aed"></i> Escrow',
+    cod:            '<i class="fas fa-money-bill" style="color:#d97706"></i> COD',
   };
   return map[method] || method;
 }

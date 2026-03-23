@@ -64,6 +64,35 @@ export const escrowConfig = {
   disputeWindowDays: parseInt(process.env.ESCROW_DISPUTE_WINDOW_DAYS || '3', 10),
 };
 
+export const bkashConfig = {
+  appKey: process.env.BKASH_APP_KEY || '',
+  appSecret: process.env.BKASH_APP_SECRET || '',
+  username: process.env.BKASH_USERNAME || '',
+  password: process.env.BKASH_PASSWORD || '',
+  mode: process.env.BKASH_MODE || 'sandbox',   // 'sandbox' | 'live'
+  baseUrl:
+    (process.env.BKASH_MODE || 'sandbox') === 'live'
+      ? 'https://checkout.pay.bka.sh/v1.2.0-beta'
+      : 'https://checkout.sandbox.bka.sh/v1.2.0-beta',
+  callbackURL:
+    process.env.BKASH_CALLBACK_URL ||
+    `${process.env.FRONTEND_URL || 'https://globexsky.com'}/pages/payment/payment.html`,
+};
+
+export const nagadConfig = {
+  merchantId: process.env.NAGAD_MERCHANT_ID || '',
+  merchantPrivateKey: process.env.NAGAD_MERCHANT_PRIVATE_KEY || '',
+  nagadPublicKey: process.env.NAGAD_PUBLIC_KEY || '',
+  mode: process.env.NAGAD_MODE || 'sandbox',   // 'sandbox' | 'live'
+  baseUrl:
+    (process.env.NAGAD_MODE || 'sandbox') === 'live'
+      ? 'https://api.mynagad.com'
+      : 'https://sandbox.mynagad.com:10080',
+  callbackURL:
+    process.env.NAGAD_CALLBACK_URL ||
+    `${process.env.FRONTEND_URL || 'https://globexsky.com'}/pages/payment/payment.html`,
+};
+
 export const emailConfig = {
   host: process.env.SMTP_HOST || '',
   port: parseInt(process.env.SMTP_PORT || '587', 10),

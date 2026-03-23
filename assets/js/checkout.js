@@ -263,10 +263,13 @@ function renderOrderReview() {
 
   if (paymentEl && checkoutState.paymentMethod) {
     const methods = {
-      credit_card: '💳 Credit/Debit Card',
-      paypal: '🅿️ PayPal',
+      credit_card:  '💳 Credit/Debit Card',
+      paypal:       '🅿️ PayPal',
+      bkash:        '📱 bKash (Mobile Banking)',
+      nagad:        '📱 Nagad (Mobile Banking)',
       bank_transfer: '🏦 Bank Transfer',
-      escrow: '🛡️ Escrow / Trade Assurance',
+      escrow:       '🛡️ Escrow / Trade Assurance',
+      cod:          '💵 Cash on Delivery',
     };
     paymentEl.textContent = methods[checkoutState.paymentMethod] || checkoutState.paymentMethod;
   }
