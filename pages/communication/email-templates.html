@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Templates | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1300px;margin:32px auto;padding:0 24px}
+    .sidebar{background:#fff;border-radius:14px;padding:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.06);height:fit-content;position:sticky;top:80px}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:0 20px 10px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;color:#374151;text-decoration:none;font-size:.88rem;font-weight:500;transition:all .15s;border-left:3px solid transparent}
+    .sidebar-nav li a:hover{background:#f0f5ff;color:#0052CC}
+    .sidebar-nav li a.active{background:#f0f5ff;color:#0052CC;border-left-color:#0052CC;font-weight:600}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:'Poppins',sans-serif;transition:all .2s}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem;border-radius:6px}
+    .btn-ghost{background:transparent;color:#0052CC;border:1px solid #0052CC}.btn-ghost:hover{background:#f0f5ff}
+    .category-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .cat-pill{padding:6px 14px;border-radius:16px;font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;transition:all .2s}
+    .cat-pill.active,.cat-pill:hover{background:#0052CC;color:#fff;border-color:#0052CC}
+    .card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    table{width:100%;border-collapse:collapse}
+    th{font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;padding:10px 14px;text-align:left;border-bottom:1.5px solid #f1f5f9}
+    td{padding:14px;border-bottom:1px solid #f1f5f9;font-size:.87rem;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafcff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.74rem;font-weight:700}
+    .badge-active{background:#d1fae5;color:#059669}
+    .badge-draft{background:#fef3c7;color:#d97706}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+    .close-btn{background:none;border:none;font-size:1.2rem;cursor:pointer;color:#94a3b8;padding:4px}
+    .close-btn:hover{color:#374151}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{min-height:160px;resize:vertical}
+    .vars-ref{background:#f8faff;border:1px solid #dbeafe;border-radius:8px;padding:14px;font-size:.82rem;color:#374151;margin-bottom:16px}
+    .vars-ref strong{color:#0052CC;font-family:monospace;margin-right:4px}
+    .preview-pane{background:#f8faff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:20px;margin-top:16px;min-height:120px;font-size:.88rem;line-height:1.7;color:#374151}
+    .preview-pane h4{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:700;color:#0052CC;margin-bottom:8px}
+    .actions-row{display:flex;gap:6px}
+    .site-footer{background:#0a0e27;padding:20px;text-align:center;margin-top:40px}
+    .footer-inner{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap}
+    .footer-inner a{color:rgba(255,255,255,.5);font-size:.82rem;text-decoration:none}.footer-inner a:hover{color:#fff}
+    .footer-copy{color:rgba(255,255,255,.4);font-size:.8rem;margin-top:8px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.sidebar{display:none}table{font-size:.8rem}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Communication</div>
+    <ul class="sidebar-nav">
+      <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+      <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+      <li><a href="meeting.html"><i class="fas fa-video"></i> Meetings</a></li>
+      <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="email-templates.html" class="active"><i class="fas fa-envelope"></i> Email Templates</a></li>
+      <li><a href="sms.html"><i class="fas fa-sms"></i> SMS</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <div class="page-header">
+      <h1 class="page-title"><i class="fas fa-envelope" style="color:#0052CC"></i> Email Templates</h1>
+      <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Create Template</button>
+    </div>
+
+    <!-- Category filter -->
+    <div class="category-pills" id="catPills">
+      <button class="cat-pill active" onclick="filterCat(this,'all')">All Templates</button>
+      <button class="cat-pill" onclick="filterCat(this,'Order Confirmation')">Order Confirmation</button>
+      <button class="cat-pill" onclick="filterCat(this,'Shipping Update')">Shipping Update</button>
+      <button class="cat-pill" onclick="filterCat(this,'Welcome Email')">Welcome Email</button>
+      <button class="cat-pill" onclick="filterCat(this,'Password Reset')">Password Reset</button>
+      <button class="cat-pill" onclick="filterCat(this,'Payment Receipt')">Payment Receipt</button>
+      <button class="cat-pill" onclick="filterCat(this,'Dispute Notice')">Dispute Notice</button>
+    </div>
+
+    <!-- Templates Table -->
+    <div class="card" style="overflow-x:auto">
+      <div class="card-title"><i class="fas fa-list" style="color:#0052CC"></i> All Templates <span style="font-size:.8rem;color:#94a3b8;font-weight:400;margin-left:8px">6 templates</span></div>
+      <table id="templateTable">
+        <thead>
+          <tr>
+            <th>Template Name</th>
+            <th>Category</th>
+            <th>Subject Line</th>
+            <th>Last Updated</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-cat="Order Confirmation">
+            <td><strong>Order Confirmation Email</strong></td>
+            <td><span style="color:#0052CC;font-weight:600">Order Confirmation</span></td>
+            <td style="color:#64748b">Your order #{order_id} has been confirmed!</td>
+            <td>Apr 1, 2024</td>
+            <td><span class="badge badge-active">Active</span></td>
+            <td><div class="actions-row">
+              <button class="btn btn-sm btn-primary" onclick="editTemplate('Order Confirmation Email')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-secondary" onclick="previewTemplate('Order Confirmation Email')"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-sm btn-ghost" onclick="duplicateTemplate('Order Confirmation Email')"><i class="fas fa-copy"></i></button>
+            </div></td>
+          </tr>
+          <tr data-cat="Shipping Update">
+            <td><strong>Shipment Dispatched</strong></td>
+            <td><span style="color:#059669;font-weight:600">Shipping Update</span></td>
+            <td style="color:#64748b">Your order #{order_id} is on its way!</td>
+            <td>Mar 28, 2024</td>
+            <td><span class="badge badge-active">Active</span></td>
+            <td><div class="actions-row">
+              <button class="btn btn-sm btn-primary" onclick="editTemplate('Shipment Dispatched')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-secondary" onclick="previewTemplate('Shipment Dispatched')"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-sm btn-ghost" onclick="duplicateTemplate('Shipment Dispatched')"><i class="fas fa-copy"></i></button>
+            </div></td>
+          </tr>
+          <tr data-cat="Welcome Email">
+            <td><strong>Welcome to Globex Sky</strong></td>
+            <td><span style="color:#7c3aed;font-weight:600">Welcome Email</span></td>
+            <td style="color:#64748b">Welcome, {customer_name}! Your account is ready.</td>
+            <td>Mar 20, 2024</td>
+            <td><span class="badge badge-active">Active</span></td>
+            <td><div class="actions-row">
+              <button class="btn btn-sm btn-primary" onclick="editTemplate('Welcome to Globex Sky')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-secondary" onclick="previewTemplate('Welcome to Globex Sky')"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-sm btn-ghost" onclick="duplicateTemplate('Welcome to Globex Sky')"><i class="fas fa-copy"></i></button>
+            </div></td>
+          </tr>
+          <tr data-cat="Password Reset">
+            <td><strong>Password Reset Request</strong></td>
+            <td><span style="color:#ef4444;font-weight:600">Password Reset</span></td>
+            <td style="color:#64748b">Reset your Globex Sky password</td>
+            <td>Mar 15, 2024</td>
+            <td><span class="badge badge-active">Active</span></td>
+            <td><div class="actions-row">
+              <button class="btn btn-sm btn-primary" onclick="editTemplate('Password Reset Request')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-secondary" onclick="previewTemplate('Password Reset Request')"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-sm btn-ghost" onclick="duplicateTemplate('Password Reset Request')"><i class="fas fa-copy"></i></button>
+            </div></td>
+          </tr>
+          <tr data-cat="Payment Receipt">
+            <td><strong>Payment Receipt</strong></td>
+            <td><span style="color:#059669;font-weight:600">Payment Receipt</span></td>
+            <td style="color:#64748b">Payment of {amount} received – Invoice #{invoice_id}</td>
+            <td>Mar 10, 2024</td>
+            <td><span class="badge badge-draft">Draft</span></td>
+            <td><div class="actions-row">
+              <button class="btn btn-sm btn-primary" onclick="editTemplate('Payment Receipt')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-secondary" onclick="previewTemplate('Payment Receipt')"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-sm btn-ghost" onclick="duplicateTemplate('Payment Receipt')"><i class="fas fa-copy"></i></button>
+            </div></td>
+          </tr>
+          <tr data-cat="Dispute Notice">
+            <td><strong>Dispute Opened Notice</strong></td>
+            <td><span style="color:#ef4444;font-weight:600">Dispute Notice</span></td>
+            <td style="color:#64748b">A dispute has been opened for Order #{order_id}</td>
+            <td>Feb 28, 2024</td>
+            <td><span class="badge badge-draft">Draft</span></td>
+            <td><div class="actions-row">
+              <button class="btn btn-sm btn-primary" onclick="editTemplate('Dispute Opened Notice')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-secondary" onclick="previewTemplate('Dispute Opened Notice')"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-sm btn-ghost" onclick="duplicateTemplate('Dispute Opened Notice')"><i class="fas fa-copy"></i></button>
+            </div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal-overlay" id="templateModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-envelope" style="color:#0052CC;margin-right:8px"></i> <span id="modalTitle">Create Email Template</span></div>
+      <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="vars-ref">
+      <strong>Available variables:</strong>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{customer_name}</span>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{order_id}</span>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{invoice_id}</span>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{amount}</span>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{company_name}</span>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{tracking_number}</span>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{due_date}</span>
+      <span style="font-family:monospace;background:#dbeafe;padding:1px 6px;border-radius:4px;margin:2px;display:inline-block">{reset_link}</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Template Name *</label>
+      <input type="text" class="form-control" id="tmplName" placeholder="e.g. Order Confirmation Email"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select class="form-control" id="tmplCat">
+          <option>Order Confirmation</option>
+          <option>Shipping Update</option>
+          <option>Welcome Email</option>
+          <option>Password Reset</option>
+          <option>Payment Receipt</option>
+          <option>Dispute Notice</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-control" id="tmplStatus">
+          <option value="Active">Active</option>
+          <option value="Draft">Draft</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Subject Line *</label>
+      <input type="text" class="form-control" id="tmplSubject" placeholder="e.g. Your order {order_id} has been confirmed!"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Body (HTML supported)</label>
+      <textarea class="form-control" id="tmplBody" oninput="updatePreview()" placeholder="Hi {customer_name},&#10;&#10;Your order #{order_id} has been confirmed…"></textarea>
+    </div>
+
+    <div class="preview-pane" id="previewPane">
+      <h4><i class="fas fa-eye" style="margin-right:6px"></i>Preview</h4>
+      <div id="previewContent" style="color:#64748b;font-style:italic">Start typing to see a preview…</div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTemplate()"><i class="fas fa-save"></i> Save Template</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="../privacy.html">Privacy Policy</a>
+    <a href="../terms.html">Terms of Service</a>
+    <a href="../contact.html">Contact Us</a>
+  </div>
+  <div class="footer-copy">&copy; 2024 Globex Sky. All rights reserved.</div>
+</footer>
+
+<script>
+  function openModal(title) {
+    document.getElementById('modalTitle').textContent = title || 'Create Email Template';
+    document.getElementById('templateModal').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('templateModal').classList.remove('open');
+  }
+  function editTemplate(name) { openModal('Edit: ' + name); }
+  function previewTemplate(name) { openModal('Preview: ' + name); }
+  function duplicateTemplate(name) { openModal('Duplicate: ' + name); }
+  function saveTemplate() {
+    alert('Template saved successfully!');
+    closeModal();
+  }
+  function updatePreview() {
+    const body = document.getElementById('tmplBody').value;
+    const prev = document.getElementById('previewContent');
+    prev.innerHTML = body || '<span style="color:#94a3b8;font-style:italic">Start typing to see a preview…</span>';
+  }
+  function filterCat(btn, cat) {
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#templateTable tbody tr').forEach(row => {
+      row.style.display = (cat === 'all' || row.dataset.cat === cat) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notification Center | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo img{object-fit:contain}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1300px;margin:32px auto;padding:0 24px}
+    .sidebar{background:#fff;border-radius:14px;padding:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.06);height:fit-content;position:sticky;top:80px}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:0 20px 10px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;color:#374151;text-decoration:none;font-size:.88rem;font-weight:500;transition:all .15s;border-left:3px solid transparent}
+    .sidebar-nav li a:hover{background:#f0f5ff;color:#0052CC}
+    .sidebar-nav li a.active{background:#f0f5ff;color:#0052CC;border-left-color:#0052CC;font-weight:600}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .main-content{}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:'Poppins',sans-serif;transition:all .2s}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:6px 14px;font-size:.8rem;border-radius:6px}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tab{padding:7px 16px;border-radius:20px;font-size:.83rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;transition:all .2s;font-family:'Inter',sans-serif}
+    .filter-tab.active,.filter-tab:hover{background:#0052CC;color:#fff;border-color:#0052CC}
+    .notif-list{display:flex;flex-direction:column;gap:10px}
+    .notif-item{background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.05);display:flex;align-items:flex-start;gap:16px;border-left:4px solid transparent;transition:box-shadow .2s,transform .1s;cursor:pointer}
+    .notif-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-1px)}
+    .notif-item.unread{background:#f8faff;border-left-color:#0052CC}
+    .notif-item.unread-dot::before{content:'';width:8px;height:8px;background:#0052CC;border-radius:50%;flex-shrink:0;margin-top:6px}
+    .notif-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .icon-blue{background:#dbeafe;color:#0052CC}
+    .icon-green{background:#d1fae5;color:#059669}
+    .icon-purple{background:#ede9fe;color:#7c3aed}
+    .icon-gray{background:#f1f5f9;color:#64748b}
+    .icon-red{background:#fee2e2;color:#ef4444}
+    .notif-body{flex:1}
+    .notif-title{font-weight:600;font-size:.9rem;color:#0a0e27;margin-bottom:3px}
+    .notif-desc{font-size:.83rem;color:#64748b;line-height:1.5}
+    .notif-time{font-size:.78rem;color:#94a3b8;white-space:nowrap;margin-top:2px}
+    .unread-badge{width:9px;height:9px;background:#0052CC;border-radius:50%;flex-shrink:0;margin-top:6px}
+    .card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0a0e27;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .settings-link{display:flex;align-items:center;gap:8px;color:#0052CC;font-size:.88rem;font-weight:500;text-decoration:none;padding:10px 0;border-top:1px solid #f1f5f9;margin-top:12px}
+    .settings-link:hover{text-decoration:underline}
+    .site-footer{background:#0a0e27;padding:20px;text-align:center;margin-top:40px}
+    .footer-inner{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap}
+    .footer-inner a{color:rgba(255,255,255,.5);font-size:.82rem;text-decoration:none}.footer-inner a:hover{color:#fff}
+    .footer-copy{color:rgba(255,255,255,.4);font-size:.8rem;margin-top:8px;text-align:center}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.sidebar{display:none}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Communication</div>
+    <ul class="sidebar-nav">
+      <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+      <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+      <li><a href="meeting.html"><i class="fas fa-video"></i> Meetings</a></li>
+      <li><a href="notifications.html" class="active"><i class="fas fa-bell"></i> Notifications</a></li>
+      <li><a href="email-templates.html"><i class="fas fa-envelope"></i> Email Templates</a></li>
+      <li><a href="sms.html"><i class="fas fa-sms"></i> SMS</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title"><i class="fas fa-bell" style="color:#0052CC"></i> Notification Center</h1>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark All as Read</button>
+        <a href="#settings" class="btn btn-primary btn-sm"><i class="fas fa-cog"></i> Settings</a>
+      </div>
+    </div>
+
+    <!-- Unread count -->
+    <div style="margin-bottom:16px;font-size:.88rem;color:#64748b">
+      You have <strong id="unreadCount" style="color:#0052CC">6</strong> unread notifications
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all" onclick="filterNotifs(this,'all')">All</button>
+      <button class="filter-tab" data-filter="unread" onclick="filterNotifs(this,'unread')">Unread</button>
+      <button class="filter-tab" data-filter="order" onclick="filterNotifs(this,'order')"><i class="fas fa-box"></i> Orders</button>
+      <button class="filter-tab" data-filter="payment" onclick="filterNotifs(this,'payment')"><i class="fas fa-credit-card"></i> Payments</button>
+      <button class="filter-tab" data-filter="message" onclick="filterNotifs(this,'message')"><i class="fas fa-comment"></i> Messages</button>
+      <button class="filter-tab" data-filter="system" onclick="filterNotifs(this,'system')"><i class="fas fa-cog"></i> System</button>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="notif-list" id="notifList">
+
+      <div class="notif-item unread" data-type="order">
+        <div class="notif-icon icon-blue"><i class="fas fa-box"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Order #ORD-8845 Confirmed</div>
+          <div class="notif-desc">Your order for 500 units of Industrial Bearings from TechParts GmbH has been confirmed and is being processed.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>2 minutes ago</div>
+        </div>
+        <div class="unread-badge"></div>
+      </div>
+
+      <div class="notif-item unread" data-type="payment">
+        <div class="notif-icon icon-green"><i class="fas fa-credit-card"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Payment Received – $12,500</div>
+          <div class="notif-desc">Payment of $12,500 USD has been successfully received for Invoice #INV-2024-0091.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>15 minutes ago</div>
+        </div>
+        <div class="unread-badge"></div>
+      </div>
+
+      <div class="notif-item unread" data-type="message">
+        <div class="notif-icon icon-purple"><i class="fas fa-comment-alt"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">New Message from Apex Electronics</div>
+          <div class="notif-desc">Sarah Chen sent you a message: "Hi, can you confirm the delivery timeline for the latest order?"</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>1 hour ago</div>
+        </div>
+        <div class="unread-badge"></div>
+      </div>
+
+      <div class="notif-item unread" data-type="order">
+        <div class="notif-icon icon-blue"><i class="fas fa-shipping-fast"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Shipment Dispatched – Order #ORD-8821</div>
+          <div class="notif-desc">Your order has been dispatched via DHL Express. Tracking number: 1Z999AA1012345678. Estimated delivery in 3–5 business days.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>3 hours ago</div>
+        </div>
+        <div class="unread-badge"></div>
+      </div>
+
+      <div class="notif-item unread" data-type="system">
+        <div class="notif-icon icon-gray"><i class="fas fa-shield-alt"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Security Alert: New Login Detected</div>
+          <div class="notif-desc">A new sign-in to your account was detected from London, UK (Chrome on Windows). If this was not you, secure your account immediately.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>5 hours ago</div>
+        </div>
+        <div class="unread-badge"></div>
+      </div>
+
+      <div class="notif-item unread" data-type="payment">
+        <div class="notif-icon icon-red"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Payment Overdue – Invoice #INV-2024-0082</div>
+          <div class="notif-desc">Invoice #INV-2024-0082 for $8,200 is overdue by 5 days. Please arrange payment to avoid service interruption.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>Yesterday</div>
+        </div>
+        <div class="unread-badge"></div>
+      </div>
+
+      <div class="notif-item" data-type="order">
+        <div class="notif-icon icon-blue"><i class="fas fa-check-circle"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Order #ORD-8802 Delivered</div>
+          <div class="notif-desc">Order #ORD-8802 has been delivered successfully. Please confirm receipt to release escrow funds.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>2 days ago</div>
+        </div>
+      </div>
+
+      <div class="notif-item" data-type="message">
+        <div class="notif-icon icon-purple"><i class="fas fa-star"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">New Review Received</div>
+          <div class="notif-desc">GlobalSupplies Ltd. left you a 5-star review: "Excellent communication and fast processing. Highly recommended."</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>3 days ago</div>
+        </div>
+      </div>
+
+      <div class="notif-item" data-type="system">
+        <div class="notif-icon icon-gray"><i class="fas fa-sync-alt"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Platform Maintenance Scheduled</div>
+          <div class="notif-desc">Scheduled maintenance on Saturday, Apr 5 from 02:00–04:00 UTC. Some services may be temporarily unavailable.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>4 days ago</div>
+        </div>
+      </div>
+
+      <div class="notif-item" data-type="payment">
+        <div class="notif-icon icon-green"><i class="fas fa-file-invoice-dollar"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Invoice #INV-2024-0088 Generated</div>
+          <div class="notif-desc">A new invoice of $6,750 has been generated for Order #ORD-8839. Payment is due within 30 days.</div>
+          <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px"></i>5 days ago</div>
+        </div>
+      </div>
+
+    </div><!-- /notifList -->
+
+    <!-- Notification Settings -->
+    <div class="card" id="settings" style="margin-top:28px">
+      <div class="card-title"><i class="fas fa-cog" style="color:#0052CC"></i> Notification Preferences</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+        <label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:#0052CC;width:16px;height:16px"/> Order Updates
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:#0052CC;width:16px;height:16px"/> Payment Alerts
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:#0052CC;width:16px;height:16px"/> New Messages
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:#0052CC;width:16px;height:16px"/> System Alerts
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer">
+          <input type="checkbox" style="accent-color:#0052CC;width:16px;height:16px"/> Marketing & Promotions
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:#0052CC;width:16px;height:16px"/> Security Alerts
+        </label>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px">
+        <button class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Save Preferences</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="../privacy.html">Privacy Policy</a>
+    <a href="../terms.html">Terms of Service</a>
+    <a href="../contact.html">Contact Us</a>
+  </div>
+  <div class="footer-copy">&copy; 2024 Globex Sky. All rights reserved.</div>
+</footer>
+
+<script>
+  function filterNotifs(btn, type) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.notif-item').forEach(item => {
+      if (type === 'all') { item.style.display = 'flex'; }
+      else if (type === 'unread') { item.style.display = item.classList.contains('unread') ? 'flex' : 'none'; }
+      else { item.style.display = item.dataset.type === type ? 'flex' : 'none'; }
+    });
+  }
+
+  function markAllRead() {
+    document.querySelectorAll('.notif-item.unread').forEach(item => {
+      item.classList.remove('unread');
+      const dot = item.querySelector('.unread-badge');
+      if (dot) dot.remove();
+    });
+    document.getElementById('unreadCount').textContent = '0';
+  }
+</script>
+</body>
+</html>

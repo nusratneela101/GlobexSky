@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Credit Terms | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1300px;margin:32px auto;padding:0 24px}
+    .sidebar{background:#fff;border-radius:14px;padding:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.06);height:fit-content;position:sticky;top:80px}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:0 16px 10px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:9px;padding:9px 16px;color:#374151;text-decoration:none;font-size:.84rem;font-weight:500;transition:all .15s;border-left:3px solid transparent}
+    .sidebar-nav li a:hover{background:#f0f5ff;color:#0052CC}
+    .sidebar-nav li a.active{background:#f0f5ff;color:#0052CC;border-left-color:#0052CC;font-weight:600}
+    .sidebar-nav li a i{width:16px;text-align:center}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .credit-limit-bar{background:#fff;border-radius:14px;padding:22px 26px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:22px}
+    .credit-limit-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+    .credit-limit-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27}
+    .credit-figures{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .credit-fig{text-align:center}
+    .credit-fig-num{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700}
+    .credit-fig-label{font-size:.78rem;color:#94a3b8;margin-top:2px}
+    .progress-bar{background:#e2e8f0;border-radius:99px;height:10px;margin-top:14px;overflow:hidden}
+    .progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#0052CC,#00C9A7);transition:width .6s ease}
+    .terms-options{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+    .term-card{background:#fff;border-radius:12px;padding:18px;border:2px solid #e2e8f0;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+    .term-card:hover,.term-card.selected{border-color:#0052CC;background:#f0f5ff}
+    .term-card.selected .term-days{color:#0052CC}
+    .term-days{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:#0a0e27;margin-bottom:4px}
+    .term-name{font-size:.82rem;font-weight:600;color:#374151}
+    .term-rate{font-size:.75rem;color:#94a3b8;margin-top:4px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    .card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;transition:all .2s}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem;border-radius:6px}
+    table{width:100%;border-collapse:collapse}
+    th{font-size:.76rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;padding:10px 14px;text-align:left;border-bottom:1.5px solid #f1f5f9;white-space:nowrap}
+    td{padding:12px 14px;border-bottom:1px solid #f1f5f9;font-size:.87rem;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafcff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.74rem;font-weight:700}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .score-ring{width:80px;height:80px;border-radius:50%;background:conic-gradient(#0052CC 0% 82%,#e2e8f0 82% 100%);display:flex;align-items:center;justify-content:center;position:relative}
+    .score-inner{width:60px;height:60px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .score-num{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:800;color:#0052CC;line-height:1}
+    .score-label{font-size:.58rem;color:#94a3b8}
+    .site-footer{background:#0a0e27;padding:20px;text-align:center;margin-top:40px}
+    .footer-inner{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap}
+    .footer-inner a{color:rgba(255,255,255,.5);font-size:.82rem;text-decoration:none}.footer-inner a:hover{color:#fff}
+    .footer-copy{color:rgba(255,255,255,.4);font-size:.8rem;margin-top:8px}
+    @media(max-width:1024px){.terms-options{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.sidebar{display:none}.two-col{grid-template-columns:1fr}.credit-figures{grid-template-columns:repeat(3,1fr)}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Trade Finance</div>
+    <ul class="sidebar-nav">
+      <li><a href="index.html"><i class="fas fa-home"></i> Overview</a></li>
+      <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="apply.html"><i class="fas fa-file-signature"></i> Apply</a></li>
+      <li><a href="financing.html"><i class="fas fa-hand-holding-usd"></i> Financing</a></li>
+      <li><a href="escrow.html"><i class="fas fa-shield-alt"></i> Escrow</a></li>
+      <li><a href="lc.html"><i class="fas fa-file-contract"></i> Letters of Credit</a></li>
+      <li><a href="invoice-factoring.html"><i class="fas fa-file-invoice-dollar"></i> Invoice Factoring</a></li>
+      <li><a href="currency.html"><i class="fas fa-exchange-alt"></i> Currency</a></li>
+      <li><a href="credit-terms.html" class="active"><i class="fas fa-calendar-check"></i> Credit Terms</a></li>
+      <li><a href="transactions.html"><i class="fas fa-list-alt"></i> Transactions</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <div class="page-header">
+      <h1 class="page-title"><i class="fas fa-calendar-check" style="color:#0052CC"></i> Credit Terms</h1>
+      <a href="apply.html" class="btn btn-primary"><i class="fas fa-plus"></i> Apply for Credit</a>
+    </div>
+
+    <!-- Credit Limit Bar -->
+    <div class="credit-limit-bar">
+      <div class="credit-limit-header">
+        <div>
+          <div class="credit-limit-title">Credit Limit Overview</div>
+          <div style="font-size:.82rem;color:#64748b;margin-top:4px">Approved limit for Net Payment Terms</div>
+        </div>
+        <span class="badge badge-green"><i class="fas fa-check-circle" style="margin-right:5px"></i>Active</span>
+      </div>
+      <div class="credit-figures">
+        <div class="credit-fig">
+          <div class="credit-fig-num" style="color:#0052CC">$50,000</div>
+          <div class="credit-fig-label">Approved Limit</div>
+        </div>
+        <div class="credit-fig">
+          <div class="credit-fig-num" style="color:#ef4444">$18,400</div>
+          <div class="credit-fig-label">Used</div>
+        </div>
+        <div class="credit-fig">
+          <div class="credit-fig-num" style="color:#059669">$31,600</div>
+          <div class="credit-fig-label">Available</div>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:36.8%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.76rem;color:#94a3b8;margin-top:6px">
+        <span>36.8% utilized</span>
+        <span>Next review: Jul 1, 2024</span>
+      </div>
+    </div>
+
+    <!-- Terms Options -->
+    <div style="font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:700;color:#374151;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">Available Credit Terms</div>
+    <div class="terms-options" id="termsOptions">
+      <div class="term-card" onclick="selectTerm(this,'Net 15')">
+        <div class="term-days">15</div>
+        <div class="term-name">Net 15</div>
+        <div class="term-rate">1.2% / month</div>
+      </div>
+      <div class="term-card selected" onclick="selectTerm(this,'Net 30')">
+        <div class="term-days">30</div>
+        <div class="term-name">Net 30</div>
+        <div class="term-rate">1.8% / month</div>
+      </div>
+      <div class="term-card" onclick="selectTerm(this,'Net 60')">
+        <div class="term-days">60</div>
+        <div class="term-name">Net 60</div>
+        <div class="term-rate">2.5% / month</div>
+      </div>
+      <div class="term-card" onclick="selectTerm(this,'Net 90')">
+        <div class="term-days">90</div>
+        <div class="term-name">Net 90</div>
+        <div class="term-rate">3.2% / month</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <!-- Application Form -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-file-alt" style="color:#0052CC"></i> Apply Credit Term</div>
+        <div class="form-group">
+          <label class="form-label">Credit Term *</label>
+          <select class="form-control" id="selectedTerm">
+            <option value="Net 15">Net 15 – 1.2% / month</option>
+            <option value="Net 30" selected>Net 30 – 1.8% / month</option>
+            <option value="Net 60">Net 60 – 2.5% / month</option>
+            <option value="Net 90">Net 90 – 3.2% / month</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Order Amount ($) *</label>
+          <input type="number" class="form-control" placeholder="e.g. 12000" min="100"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Supplier *</label>
+          <select class="form-control">
+            <option value="">— Select Supplier —</option>
+            <option>TechParts GmbH</option>
+            <option>Apex Electronics Ltd.</option>
+            <option>GlobalSupplies Co.</option>
+            <option>Pacific Traders</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Purpose</label>
+          <select class="form-control">
+            <option>Purchase of Goods</option>
+            <option>Raw Materials</option>
+            <option>Equipment</option>
+            <option>Inventory Restocking</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="applyTerm()"><i class="fas fa-paper-plane"></i> Apply</button>
+      </div>
+
+      <!-- Payment Performance -->
+      <div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-line" style="color:#059669"></i> Payment Performance</div>
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px">
+            <div class="score-ring">
+              <div class="score-inner">
+                <div class="score-num">82</div>
+                <div class="score-label">Score</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#059669">Excellent</div>
+              <div style="font-size:.82rem;color:#64748b;margin-top:4px">Based on 36 past transactions</div>
+              <div style="font-size:.78rem;color:#94a3b8;margin-top:2px">On-time rate: 94.4%</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:#f0f5ff;border-radius:8px;padding:12px;text-align:center">
+              <div style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0052CC">34</div>
+              <div style="font-size:.76rem;color:#64748b">On Time</div>
+            </div>
+            <div style="background:#fff7f0;border-radius:8px;padding:12px;text-align:center">
+              <div style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#f97316">2</div>
+              <div style="font-size:.76rem;color:#64748b">Late</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rates Table -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-percent" style="color:#0052CC"></i> Interest Rates &amp; Fees</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Rate / Month</th>
+                <th>Late Fee</th>
+                <th>Processing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Net 15</td><td>1.2%</td><td>$25 flat</td><td>0.5%</td></tr>
+              <tr><td><strong>Net 30</strong></td><td><strong>1.8%</strong></td><td><strong>$35 flat</strong></td><td><strong>0.5%</strong></td></tr>
+              <tr><td>Net 60</td><td>2.5%</td><td>$50 flat</td><td>0.75%</td></tr>
+              <tr><td>Net 90</td><td>3.2%</td><td>$75 flat</td><td>1.0%</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;font-size:.78rem;color:#94a3b8"><i class="fas fa-info-circle" style="margin-right:4px"></i>Rates are per month on outstanding balance. Fees apply upon late payment.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Credit Terms Table -->
+    <div class="card" style="overflow-x:auto">
+      <div class="card-title"><i class="fas fa-list" style="color:#0052CC"></i> Active Credit Terms</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Supplier</th>
+            <th>Amount</th>
+            <th>Term</th>
+            <th>Start Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code style="color:#0052CC;font-size:.8rem">#ORD-8845</code></td>
+            <td>TechParts GmbH</td>
+            <td style="font-weight:700;color:#0a0e27">$8,200</td>
+            <td><span class="badge badge-blue">Net 30</span></td>
+            <td>Apr 1, 2024</td>
+            <td>May 1, 2024</td>
+            <td><span class="badge badge-green">Current</span></td>
+          </tr>
+          <tr>
+            <td><code style="color:#0052CC;font-size:.8rem">#ORD-8839</code></td>
+            <td>Apex Electronics</td>
+            <td style="font-weight:700;color:#0a0e27">$6,750</td>
+            <td><span class="badge badge-blue">Net 60</span></td>
+            <td>Mar 20, 2024</td>
+            <td>May 19, 2024</td>
+            <td><span class="badge badge-green">Current</span></td>
+          </tr>
+          <tr>
+            <td><code style="color:#0052CC;font-size:.8rem">#ORD-8821</code></td>
+            <td>GlobalSupplies Co.</td>
+            <td style="font-weight:700;color:#0a0e27">$3,450</td>
+            <td><span class="badge badge-blue">Net 30</span></td>
+            <td>Mar 12, 2024</td>
+            <td>Apr 11, 2024</td>
+            <td><span class="badge badge-orange">Due Soon</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="../privacy.html">Privacy Policy</a>
+    <a href="../terms.html">Terms of Service</a>
+    <a href="../contact.html">Contact Us</a>
+  </div>
+  <div class="footer-copy">&copy; 2024 Globex Sky. All rights reserved.</div>
+</footer>
+
+<script>
+  function selectTerm(card, name) {
+    document.querySelectorAll('.term-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    document.getElementById('selectedTerm').value = name;
+  }
+  function applyTerm() {
+    alert('Credit term application submitted successfully!');
+  }
+</script>
+</body>
+</html>
