@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My RFQs | Globex Sky</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:20px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.9rem;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:16px;text-align:center}
+    .content-area{min-width:0}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:20px}
+    .stat-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center}
+    .stat-val{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0052CC}
+    .stat-lbl{font-size:.78rem;color:#64748b;margin-top:4px}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .filter-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+    .filter-tab{padding:6px 16px;border-radius:50px;font-size:.83rem;font-weight:500;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-tab.active,.filter-tab:hover{background:#0052CC;color:#fff;border-color:#0052CC}
+    .table{width:100%;border-collapse:collapse;font-size:.87rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .btn{padding:6px 14px;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-danger{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+    .site-footer{background:#0A0E27;color:#fff;padding:28px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav><div class="nav-container">
+    <a href="../../../index.html" class="nav-logo"><img src="../../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+    <div class="nav-controls">
+      <a href="../../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+  </div></nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title"><i class="fas fa-file-alt" style="color:#0052CC;margin-right:6px"></i> RFQ Center</div>
+      <ul class="sidebar-nav">
+        <li><a href="../../sourcing/rfq-list.html"><i class="fas fa-list"></i> Browse RFQs</a></li>
+        <li><a href="index.html" class="active"><i class="fas fa-folder-open"></i> My RFQs</a></li>
+        <li><a href="create.html"><i class="fas fa-plus-circle"></i> Create RFQ</a></li>
+        <li><a href="detail.html"><i class="fas fa-eye"></i> RFQ Detail</a></li>
+        <li><a href="../../sourcing/index.html"><i class="fas fa-arrow-left"></i> Sourcing</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div class="page-header">
+        <div class="page-title"><i class="fas fa-folder-open" style="color:#0052CC;margin-right:10px"></i>My RFQs</div>
+        <a href="create.html" class="btn btn-primary" style="padding:10px 20px;font-size:.88rem"><i class="fas fa-plus"></i> Create New RFQ</a>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-val">12</div><div class="stat-lbl">Active RFQs</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:#059669">48</div><div class="stat-lbl">Quotes Received</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:#7c3aed">8</div><div class="stat-lbl">Awarded</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:#94a3b8">3</div><div class="stat-lbl">Draft</div></div>
+      </div>
+
+      <div class="card">
+        <div class="filter-tabs">
+          <button class="filter-tab active">All (23)</button>
+          <button class="filter-tab">Active (12)</button>
+          <button class="filter-tab">Awaiting Quotes (5)</button>
+          <button class="filter-tab">Awarded (8)</button>
+          <button class="filter-tab">Expired (3)</button>
+          <button class="filter-tab">Draft (3)</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr><th>RFQ ID</th><th>Product / Description</th><th>Qty</th><th>Budget</th><th>Quotes</th><th>Due Date</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="detail.html" style="color:#0052CC;text-decoration:none;font-weight:600">#RFQ-2025-0112</a></td>
+                <td><strong>Custom PCB Boards</strong><div style="font-size:.78rem;color:#64748b">4-layer, 100x80mm, ENIG finish</div></td>
+                <td>500 pcs</td><td>$2,500</td>
+                <td><span class="badge badge-green">7 quotes</span></td>
+                <td>Apr 1, 2025</td>
+                <td><span class="badge badge-blue">Active</span></td>
+                <td style="white-space:nowrap">
+                  <a href="detail.html" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
+                  <button class="btn btn-secondary" style="margin-left:4px"><i class="fas fa-pen"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><a href="detail.html" style="color:#0052CC;text-decoration:none;font-weight:600">#RFQ-2025-0108</a></td>
+                <td><strong>Recycled Cardboard Boxes</strong><div style="font-size:.78rem;color:#64748b">30x20x15cm, printed logo</div></td>
+                <td>10,000 pcs</td><td>$4,000</td>
+                <td><span class="badge badge-blue">3 quotes</span></td>
+                <td>Mar 28, 2025</td>
+                <td><span class="badge badge-orange">Awaiting</span></td>
+                <td style="white-space:nowrap">
+                  <a href="detail.html" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
+                  <button class="btn btn-secondary" style="margin-left:4px"><i class="fas fa-pen"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><a href="detail.html" style="color:#0052CC;text-decoration:none;font-weight:600">#RFQ-2025-0099</a></td>
+                <td><strong>Cotton T-Shirts (Unbranded)</strong><div style="font-size:.78rem;color:#64748b">S/M/L/XL mix, white, 180gsm</div></td>
+                <td>2,000 pcs</td><td>$6,000</td>
+                <td><span class="badge badge-green">12 quotes</span></td>
+                <td>Mar 20, 2025</td>
+                <td><span class="badge badge-green">Awarded</span></td>
+                <td style="white-space:nowrap">
+                  <a href="detail.html" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
+                </td>
+              </tr>
+              <tr>
+                <td><a href="detail.html" style="color:#0052CC;text-decoration:none;font-weight:600">#RFQ-2025-0094</a></td>
+                <td><strong>Industrial Ball Bearings</strong><div style="font-size:.78rem;color:#64748b">6205-2RS, steel, multiple sizes</div></td>
+                <td>5,000 pcs</td><td>$3,200</td>
+                <td><span class="badge badge-orange">1 quote</span></td>
+                <td>Apr 5, 2025</td>
+                <td><span class="badge badge-blue">Active</span></td>
+                <td style="white-space:nowrap">
+                  <a href="detail.html" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
+                  <button class="btn btn-secondary" style="margin-left:4px"><i class="fas fa-pen"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><a href="detail.html" style="color:#0052CC;text-decoration:none;font-weight:600">#RFQ-2025-0082</a></td>
+                <td><strong>Solar Panels 400W</strong><div style="font-size:.78rem;color:#64748b">Monocrystalline, CE certified</div></td>
+                <td>100 pcs</td><td>$15,000</td>
+                <td><span class="badge badge-gray">0 quotes</span></td>
+                <td>—</td>
+                <td><span class="badge badge-gray">Draft</span></td>
+                <td style="white-space:nowrap">
+                  <button class="btn btn-secondary"><i class="fas fa-pen"></i> Edit</button>
+                  <button class="btn btn-danger" style="margin-left:4px"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../../privacy.html">Privacy</a></li>
+      <li><a href="../../terms.html">Terms</a></li>
+      <li><a href="../../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

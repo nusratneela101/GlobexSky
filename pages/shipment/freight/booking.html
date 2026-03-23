@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Freight | Globex Sky</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:20px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.9rem;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:16px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+    .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .summary-item{background:#f8faff;border-radius:8px;padding:12px 16px}
+    .summary-label{font-size:.78rem;color:#64748b;margin-bottom:4px}
+    .summary-value{font-size:.9rem;font-weight:600;color:#0a0e27}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.84rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    textarea.form-control{resize:vertical;min-height:90px}
+    .btn{padding:10px 22px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .price-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:.88rem}
+    .price-row.total{border-bottom:none;font-weight:700;font-size:1rem;padding-top:14px}
+    .success-panel{display:none;text-align:center;padding:40px 24px}
+    .success-panel.show{display:block}
+    .success-icon{width:80px;height:80px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem;color:#059669}
+    .next-steps{list-style:none;text-align:left;max-width:400px;margin:20px auto 0}
+    .next-steps li{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.87rem;color:#374151}
+    .next-steps li i{color:#0052CC;width:18px}
+    .site-footer{background:#0A0E27;color:#fff;padding:28px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav><div class="nav-container">
+    <a href="../../../index.html" class="nav-logo"><img src="../../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+    <div class="nav-controls">
+      <a href="../../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+  </div></nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title"><i class="fas fa-ship" style="color:#0052CC;margin-right:6px"></i> Freight</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fas fa-house"></i> Freight Home</a></li>
+        <li><a href="quote.html"><i class="fas fa-file-invoice-dollar"></i> Get Quote</a></li>
+        <li><a href="booking.html" class="active"><i class="fas fa-calendar-check"></i> Book Freight</a></li>
+        <li><a href="../index.html"><i class="fas fa-arrow-left"></i> All Shipment</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <!-- Booking Form -->
+      <div id="booking-form">
+        <!-- Quote Summary -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-ship"></i> Selected Freight Option</div>
+          <div style="background:#f0f9ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27">COSCO Sea Freight — FCL 20ft</div>
+              <div style="font-size:.82rem;color:#64748b;margin-top:4px">Shanghai → Los Angeles • 18–25 transit days</div>
+            </div>
+            <div style="font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0052CC">$1,240</div>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-item"><div class="summary-label">Origin</div><div class="summary-value">Shanghai, China</div></div>
+            <div class="summary-item"><div class="summary-label">Destination</div><div class="summary-value">Los Angeles, USA</div></div>
+            <div class="summary-item"><div class="summary-label">Cargo Weight</div><div class="summary-value">500 kg</div></div>
+            <div class="summary-item"><div class="summary-label">Volume</div><div class="summary-value">2.5 CBM</div></div>
+          </div>
+        </div>
+
+        <!-- Booking Details -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-clipboard-list"></i> Booking Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Your Reference Number</label>
+              <input type="text" class="form-control" placeholder="e.g. ORD-2025-0842">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pickup Date</label>
+              <input type="date" class="form-control">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Pickup Address</label>
+              <input type="text" class="form-control" placeholder="Full pickup address">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Delivery Address</label>
+              <input type="text" class="form-control" placeholder="Full delivery address">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Special Instructions</label>
+            <textarea class="form-control" placeholder="Any special handling requirements, notes for carrier…"></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <input type="checkbox" id="insurance" checked>
+            <label for="insurance" style="font-size:.87rem;color:#374151">Add cargo insurance (1.2% of cargo value = $120)</label>
+          </div>
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-receipt"></i> Price Breakdown</div>
+          <div class="price-row"><span>Sea Freight (FCL 20ft)</span><span>$1,240.00</span></div>
+          <div class="price-row"><span>Cargo Insurance</span><span>$120.00</span></div>
+          <div class="price-row"><span>Documentation Fee</span><span>$45.00</span></div>
+          <div class="price-row"><span>Fuel Surcharge (4%)</span><span>$49.60</span></div>
+          <div class="price-row total"><span>Total</span><span style="color:#0052CC">$1,454.60</span></div>
+          <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
+            <input type="checkbox" id="terms-agree">
+            <label for="terms-agree" style="font-size:.85rem;color:#374151">I agree to the <a href="../../terms.html" style="color:#0052CC">Terms of Service</a> and freight booking conditions.</label>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:16px">
+            <a href="quote.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Quotes</a>
+            <button class="btn btn-primary" onclick="confirmBooking()"><i class="fas fa-check-circle"></i> Confirm Booking — $1,454.60</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Panel -->
+      <div class="card success-panel" id="success-panel">
+        <div class="success-icon"><i class="fas fa-check"></i></div>
+        <h2 style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:8px">Booking Confirmed!</h2>
+        <p style="color:#64748b;font-size:.9rem">Your freight booking has been submitted successfully.</p>
+        <div style="background:#f8faff;border-radius:10px;padding:16px;margin:20px auto;max-width:380px">
+          <div class="price-row"><span>Booking ID</span><strong>FRT-2025-00842</strong></div>
+          <div class="price-row"><span>Tracking Number</span><strong>COSCO20250323001</strong></div>
+          <div class="price-row" style="border:none"><span>Estimated Departure</span><strong>Mar 28, 2025</strong></div>
+        </div>
+        <ul class="next-steps">
+          <li><i class="fas fa-envelope"></i> Confirmation email sent to your registered address</li>
+          <li><i class="fas fa-file-alt"></i> Shipping documents will be ready in 24h</li>
+          <li><i class="fas fa-location-dot"></i> Track your shipment using the tracking number above</li>
+        </ul>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:20px">
+          <a href="../tracking.html" class="btn btn-primary"><i class="fas fa-location-dot"></i> Track Shipment</a>
+          <a href="index.html" class="btn btn-secondary">Back to Freight</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../../privacy.html">Privacy</a></li>
+      <li><a href="../../terms.html">Terms</a></li>
+      <li><a href="../../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function confirmBooking(){
+  if(!document.getElementById('terms-agree').checked){alert('Please agree to the terms and conditions.');return;}
+  document.getElementById('booking-form').style.display='none';
+  document.getElementById('success-panel').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

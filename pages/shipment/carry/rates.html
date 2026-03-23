@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carry Service Rates | Globex Sky</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:20px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.9rem;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:16px;text-align:center}
+    .content-area{min-width:0}
+    .hero{background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:16px;padding:36px 28px;color:#fff;margin-bottom:24px}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:8px}
+    .hero p{opacity:.85;font-size:.95rem}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+    .btn{padding:10px 22px;border-radius:8px;font-size:.87rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC}
+    .form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+    .form-label{display:block;font-size:.84rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-group{margin-bottom:14px}
+    .table{width:100%;border-collapse:collapse;font-size:.87rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9}
+    .table tr:hover td{background:#f8faff}
+    .result-box{background:#f0f9ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:18px;margin-top:16px;display:none}
+    .result-box.show{display:block}
+    .result-price{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;color:#0052CC}
+    .site-footer{background:#0A0E27;color:#fff;padding:28px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav><div class="nav-container">
+    <a href="../../../index.html" class="nav-logo"><img src="../../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+    <div class="nav-controls">
+      <a href="../../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+  </div></nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title"><i class="fas fa-person-walking-luggage" style="color:#0052CC;margin-right:6px"></i> Carry Service</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fas fa-house"></i> Carry Home</a></li>
+        <li><a href="tracking.html"><i class="fas fa-location-dot"></i> Track Shipment</a></li>
+        <li><a href="rates.html" class="active"><i class="fas fa-tag"></i> Rates</a></li>
+        <li><a href="../index.html"><i class="fas fa-arrow-left"></i> All Shipment</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div class="hero">
+        <h1><i class="fas fa-tag" style="margin-right:10px"></i>Carry Service Rates</h1>
+        <p>Transparent pricing for all carry service deliveries. No hidden fees.</p>
+      </div>
+
+      <!-- Rate Calculator -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-calculator"></i> Rate Calculator</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">From City</label>
+            <input type="text" class="form-control" id="from-city" placeholder="e.g. Guangzhou">
+          </div>
+          <div class="form-group">
+            <label class="form-label">To City</label>
+            <input type="text" class="form-control" id="to-city" placeholder="e.g. Dhaka">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Weight (kg)</label>
+            <input type="number" class="form-control" id="weight" placeholder="e.g. 2.5" min="0.1" step="0.1">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:16px">
+          <div class="form-group">
+            <label class="form-label">Package Type</label>
+            <select class="form-control" id="pkg-type">
+              <option value="doc">Documents</option>
+              <option value="small">Small Package (&lt;5kg)</option>
+              <option value="medium">Medium Package (5–20kg)</option>
+              <option value="large">Large Package (&gt;20kg)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Service Level</label>
+            <select class="form-control" id="service-level">
+              <option value="std">Standard (5–10 days)</option>
+              <option value="exp">Express (2–3 days)</option>
+              <option value="same">Same Day (local only)</option>
+            </select>
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-end">
+            <button class="btn btn-primary" style="width:100%" onclick="calcRate()"><i class="fas fa-calculator"></i> Calculate</button>
+          </div>
+        </div>
+        <div class="result-box" id="calc-result">
+          <p style="font-size:.85rem;color:#374151;margin-bottom:4px">Estimated Cost</p>
+          <div class="result-price" id="result-price">$0.00</div>
+          <p style="font-size:.82rem;color:#64748b;margin-top:6px" id="result-desc"></p>
+          <a href="index.html" class="btn btn-primary" style="margin-top:14px"><i class="fas fa-box"></i> Book Now</a>
+        </div>
+      </div>
+
+      <!-- Rate Tables -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-table"></i> Standard Rate Table</div>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead><tr><th>Destination Zone</th><th>Documents</th><th>Small (&lt;5kg)</th><th>Medium (5–20kg)</th><th>Large (&gt;20kg)</th><th>Est. Days</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Domestic</strong></td><td>$1.50</td><td>$3.00/kg</td><td>$2.50/kg</td><td>$2.00/kg</td><td>1–2</td></tr>
+              <tr><td><strong>South Asia</strong></td><td>$4.00</td><td>$5.00/kg</td><td>$4.50/kg</td><td>$4.00/kg</td><td>3–5</td></tr>
+              <tr><td><strong>Southeast Asia</strong></td><td>$5.00</td><td>$6.50/kg</td><td>$5.80/kg</td><td>$5.00/kg</td><td>4–7</td></tr>
+              <tr><td><strong>Middle East</strong></td><td>$7.00</td><td>$9.00/kg</td><td>$8.00/kg</td><td>$7.00/kg</td><td>5–8</td></tr>
+              <tr><td><strong>Europe</strong></td><td>$9.00</td><td>$12.00/kg</td><td>$10.50/kg</td><td>$9.50/kg</td><td>7–12</td></tr>
+              <tr><td><strong>Americas</strong></td><td>$10.00</td><td>$14.00/kg</td><td>$12.00/kg</td><td>$10.50/kg</td><td>8–14</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Insurance & Fees -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-shield-alt"></i> Insurance &amp; Additional Fees</div>
+        <table class="table">
+          <thead><tr><th>Service</th><th>Rate</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Basic Insurance</td><td>0.5% of declared value</td><td>Min $1.00</td></tr>
+            <tr><td>Full Insurance</td><td>1.2% of declared value</td><td>Covers loss &amp; damage</td></tr>
+            <tr><td>Special Handling</td><td>$2.50 per shipment</td><td>Fragile, hazardous items</td></tr>
+            <tr><td>Signature Required</td><td>$1.00 per shipment</td><td>Proof of delivery</td></tr>
+            <tr><td>Fuel Surcharge</td><td>4% of shipping fee</td><td>Subject to change</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../../privacy.html">Privacy</a></li>
+      <li><a href="../../terms.html">Terms</a></li>
+      <li><a href="../../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function calcRate(){
+  const w=parseFloat(document.getElementById('weight').value)||1;
+  const lvl=document.getElementById('service-level').value;
+  const pkg=document.getElementById('pkg-type').value;
+  const to=document.getElementById('to-city').value||'destination';
+  const base={doc:5,small:6.5,medium:5.8,large:5}[pkg]||5;
+  const mult={std:1,exp:1.8,same:0.5}[lvl]||1;
+  const price=(base*w*mult).toFixed(2);
+  const days={std:'5–10 days',exp:'2–3 days',same:'Same day (local)'}[lvl];
+  document.getElementById('result-price').textContent='$'+price;
+  document.getElementById('result-desc').textContent='Estimated delivery to '+to+' in '+days+'. Final price may vary based on actual weight & dimensions.';
+  document.getElementById('calc-result').classList.add('show');
+}
+</script>
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

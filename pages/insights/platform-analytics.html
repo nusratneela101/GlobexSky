@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Platform Analytics | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:20px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.9rem;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:16px;text-align:center}
+    .content-area{min-width:0}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px}
+    .stat-card{background:linear-gradient(135deg,var(--sc,#0052CC),var(--se,#003d99));border-radius:14px;padding:20px;color:#fff}
+    .stat-icon{font-size:1.4rem;opacity:.6;margin-bottom:8px}
+    .stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+    .stat-lbl{font-size:.8rem;opacity:.8;margin-top:4px}
+    .stat-change{font-size:.75rem;opacity:.9;margin-top:6px}
+    .chart-placeholder{height:200px;background:#f8faff;border:2px dashed #e2e8f0;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;gap:8px}
+    .chart-placeholder i{font-size:2.5rem}
+    .chart-placeholder p{font-size:.87rem}
+    .table{width:100%;border-collapse:collapse;font-size:.87rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
+    .health-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1f5f9}
+    .health-item:last-child{border-bottom:none}
+    .health-label{font-size:.88rem;color:#374151}
+    .health-val{font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem}
+    .health-val.good{color:#059669}
+    .health-val.warn{color:#f97316}
+    .geo-bar{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .geo-bar-track{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+    .geo-bar-fill{height:100%;border-radius:4px;background:#0052CC;transition:width .5s}
+    .geo-country{font-size:.84rem;color:#374151;width:100px}
+    .geo-pct{font-size:.82rem;color:#64748b;width:42px;text-align:right}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title"><i class="fas fa-chart-line" style="color:#0052CC;margin-right:6px"></i> Insights</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fas fa-house"></i> Overview</a></li>
+        <li><a href="buyer-analytics.html"><i class="fas fa-users"></i> Buyer Analytics</a></li>
+        <li><a href="supplier-analytics.html"><i class="fas fa-store"></i> Supplier Analytics</a></li>
+        <li><a href="reports.html"><i class="fas fa-file-chart-column"></i> Reports</a></li>
+        <li><a href="market.html"><i class="fas fa-globe"></i> Market Data</a></li>
+        <li><a href="trends.html"><i class="fas fa-trending-up"></i> Trends</a></li>
+        <li><a href="platform-analytics.html" class="active"><i class="fas fa-server"></i> Platform Analytics</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div class="page-header">
+        <div class="page-title"><i class="fas fa-server" style="color:#0052CC;margin-right:10px"></i>Platform Analytics</div>
+        <div style="display:flex;gap:8px">
+          <select style="padding:8px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;color:#374151;background:#fff">
+            <option>Last 30 Days</option>
+            <option>Last 7 Days</option>
+            <option>Last 3 Months</option>
+            <option>This Year</option>
+          </select>
+          <button class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Export</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card" style="--sc:#0052CC;--se:#003d99"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-val">284K</div><div class="stat-lbl">Total Users</div><div class="stat-change"><i class="fas fa-arrow-up"></i> +12.4% vs last month</div></div>
+        <div class="stat-card" style="--sc:#059669;--se:#047857"><div class="stat-icon"><i class="fas fa-store"></i></div><div class="stat-val">12,400</div><div class="stat-lbl">Active Suppliers</div><div class="stat-change"><i class="fas fa-arrow-up"></i> +8.2% vs last month</div></div>
+        <div class="stat-card" style="--sc:#f97316;--se:#ea580c"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-val">$8.4M</div><div class="stat-lbl">Monthly GMV</div><div class="stat-change"><i class="fas fa-arrow-up"></i> +18.6% vs last month</div></div>
+        <div class="stat-card" style="--sc:#7c3aed;--se:#6d28d9"><div class="stat-icon"><i class="fas fa-shopping-cart"></i></div><div class="stat-val">48,200</div><div class="stat-lbl">Orders This Month</div><div class="stat-change"><i class="fas fa-arrow-up"></i> +22.1% vs last month</div></div>
+      </div>
+
+      <!-- Platform Growth Chart -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-chart-line"></i> Platform Growth (Last 12 Months)</div>
+        <div class="chart-placeholder">
+          <i class="fas fa-chart-area"></i>
+          <p>Platform growth chart — connects to analytics API</p>
+        </div>
+      </div>
+
+      <!-- Category Performance + Geo -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-tags"></i> Category Performance</div>
+          <div style="overflow-x:auto">
+            <table class="table">
+              <thead><tr><th>Category</th><th>Orders</th><th>GMV</th><th>Growth</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Electronics</strong></td><td>14,820</td><td>$2.8M</td><td><span class="badge badge-green">+24%</span></td></tr>
+                <tr><td><strong>Textiles</strong></td><td>9,400</td><td>$1.4M</td><td><span class="badge badge-green">+16%</span></td></tr>
+                <tr><td><strong>Machinery</strong></td><td>4,200</td><td>$1.9M</td><td><span class="badge badge-green">+11%</span></td></tr>
+                <tr><td><strong>Packaging</strong></td><td>8,100</td><td>$680K</td><td><span class="badge badge-green">+19%</span></td></tr>
+                <tr><td><strong>Food &amp; Agri</strong></td><td>6,300</td><td>$540K</td><td><span class="badge badge-red">-3%</span></td></tr>
+                <tr><td><strong>Chemicals</strong></td><td>3,100</td><td>$820K</td><td><span class="badge badge-green">+7%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="fas fa-globe"></i> Top Countries by Orders</div>
+          <div style="padding:4px 0">
+            <div class="geo-bar"><span class="geo-country">China</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:78%"></div></div><span class="geo-pct">78%</span></div>
+            <div class="geo-bar"><span class="geo-country">Bangladesh</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:48%"></div></div><span class="geo-pct">48%</span></div>
+            <div class="geo-bar"><span class="geo-country">India</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:42%"></div></div><span class="geo-pct">42%</span></div>
+            <div class="geo-bar"><span class="geo-country">USA</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:38%"></div></div><span class="geo-pct">38%</span></div>
+            <div class="geo-bar"><span class="geo-country">Germany</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:28%"></div></div><span class="geo-pct">28%</span></div>
+            <div class="geo-bar"><span class="geo-country">UK</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:22%"></div></div><span class="geo-pct">22%</span></div>
+            <div class="geo-bar"><span class="geo-country">UAE</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:18%"></div></div><span class="geo-pct">18%</span></div>
+            <div class="geo-bar"><span class="geo-country">Brazil</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:14%"></div></div><span class="geo-pct">14%</span></div>
+            <div class="geo-bar"><span class="geo-country">Nigeria</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:11%"></div></div><span class="geo-pct">11%</span></div>
+            <div class="geo-bar"><span class="geo-country">Vietnam</span><div class="geo-bar-track"><div class="geo-bar-fill" style="width:9%"></div></div><span class="geo-pct">9%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Health -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-heartbeat"></i> Platform Health Metrics</div>
+        <div class="grid-2">
+          <div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-server" style="margin-right:8px;color:#64748b"></i>Uptime (30 days)</span><span class="health-val good">99.98%</span></div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-bolt" style="margin-right:8px;color:#64748b"></i>Avg Response Time</span><span class="health-val good">120ms</span></div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-bug" style="margin-right:8px;color:#64748b"></i>Error Rate</span><span class="health-val good">0.02%</span></div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-users" style="margin-right:8px;color:#64748b"></i>Concurrent Users (peak)</span><span class="health-val good">14,200</span></div>
+          </div>
+          <div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-database" style="margin-right:8px;color:#64748b"></i>DB Query Avg Time</span><span class="health-val good">8ms</span></div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-shield-alt" style="margin-right:8px;color:#64748b"></i>Blocked Fraud Attempts</span><span class="health-val warn">284</span></div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-envelope" style="margin-right:8px;color:#64748b"></i>Email Delivery Rate</span><span class="health-val good">99.1%</span></div>
+            <div class="health-item"><span class="health-label"><i class="fas fa-mobile-alt" style="margin-right:8px;color:#64748b"></i>Mobile Traffic Share</span><span class="health-val good">64%</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

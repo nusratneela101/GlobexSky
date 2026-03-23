@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Smart Search | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-logo img{height:36px}
+    .nav-logo span{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:flex;max-width:1400px;margin:0 auto;padding:24px;gap:24px}
+    .sidebar{width:220px;flex-shrink:0}
+    .sidebar-card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding:0 8px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:.86rem;color:#4b5563;transition:all .2s}
+    .sidebar-nav a:hover{background:#f0f4ff;color:#0052CC}
+    .sidebar-nav a.active{background:#e8f0fe;color:#0052CC;font-weight:600}
+    .sidebar-nav a i{width:16px;text-align:center}
+    .main-content{flex:1;min-width:0}
+    .page-header{margin-bottom:24px}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27}
+    .page-header p{color:#6b7280;font-size:.9rem;margin-top:4px}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .search-hero{background:linear-gradient(135deg,#0052CC,#0070f3);border-radius:16px;padding:36px;color:#fff;margin-bottom:24px;text-align:center}
+    .search-hero h2{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:8px}
+    .search-hero p{opacity:.85;margin-bottom:24px}
+    .search-bar{display:flex;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.15)}
+    .search-bar .ai-icon{padding:14px 18px;color:#0052CC;font-size:1.1rem;display:flex;align-items:center}
+    .search-bar input{flex:1;border:none;outline:none;font-size:1rem;font-family:'Inter',sans-serif;color:#1a1a2e;padding:14px 8px}
+    .search-bar .search-actions{display:flex;gap:4px;padding:8px}
+    .search-bar .search-btn{background:#0052CC;color:#fff;border:none;border-radius:8px;padding:8px 20px;cursor:pointer;font-weight:600;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:6px}
+    .search-bar .voice-btn{background:#f1f5f9;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;color:#0052CC}
+    .example-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+    .chip{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 14px;font-size:.8rem;cursor:pointer;transition:all .2s;color:#fff}
+    .chip:hover{background:rgba(255,255,255,.35)}
+    .result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .result-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #f1f5f9;transition:all .2s}
+    .result-card:hover{box-shadow:0 4px 20px rgba(0,82,204,.12);transform:translateY(-2px)}
+    .result-img{height:140px;background:linear-gradient(135deg,#e8f0fe,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#0052CC}
+    .result-body{padding:14px}
+    .result-name{font-weight:600;font-size:.9rem;color:#0a0e27;margin-bottom:4px}
+    .result-price{color:#059669;font-weight:700;font-family:'Poppins',sans-serif}
+    .confidence-bar{margin-top:10px}
+    .confidence-label{font-size:.75rem;color:#6b7280;margin-bottom:4px;display:flex;justify-content:space-between}
+    .confidence-track{background:#e2e8f0;border-radius:4px;height:6px}
+    .confidence-fill{background:linear-gradient(90deg,#0052CC,#00C9A7);border-radius:4px;height:6px}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .history-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .2s}
+    .history-item:hover{background:#f8faff}
+    .history-item i{color:#94a3b8}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky"/><span>Globex Sky</span></a>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn-nav btn-login"><i class="fa-regular fa-user"></i> Login</a>
+      <a href="../auth/register.html" class="btn-nav btn-register"><i class="fa-solid fa-rocket"></i> Register</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">AI Features</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fa-solid fa-robot"></i> AI Overview</a></li>
+        <li><a href="chatbot.html"><i class="fa-solid fa-comments"></i> AI Chatbot</a></li>
+        <li><a href="fraud-detection.html"><i class="fa-solid fa-shield-halved"></i> Fraud Detection</a></li>
+        <li><a href="recommendations.html"><i class="fa-solid fa-thumbs-up"></i> Recommendations</a></li>
+        <li><a href="analytics.html"><i class="fa-solid fa-chart-line"></i> AI Analytics</a></li>
+        <li><a href="search.html" class="active"><i class="fa-solid fa-magnifying-glass"></i> AI Search</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="search-hero">
+      <h2><i class="fa-solid fa-brain"></i> AI Smart Search</h2>
+      <p>Describe what you're looking for in natural language — our AI finds the best matches</p>
+      <div class="search-bar">
+        <span class="ai-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <input id="searchInput" type="text" placeholder="Describe what you're looking for in natural language..."/>
+        <div class="search-actions">
+          <button class="voice-btn" title="Voice Search"><i class="fa-solid fa-microphone"></i></button>
+          <button class="search-btn" onclick="doSearch()"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+        </div>
+      </div>
+      <div class="example-chips">
+        <div class="chip" onclick="setSearch('durable waterproof outdoor furniture under $200')">durable waterproof outdoor furniture under $200</div>
+        <div class="chip" onclick="setSearch('eco-friendly packaging materials MOQ 1000')">eco-friendly packaging MOQ 1000</div>
+        <div class="chip" onclick="setSearch('industrial stainless steel bolts bulk order')">industrial SS bolts bulk</div>
+        <div class="chip" onclick="setSearch('LED lighting commercial warehouse 50W+')">LED warehouse lighting 50W+</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-secondary"><i class="fa-solid fa-camera"></i> Search by Image</button>
+      <button class="btn btn-secondary"><i class="fa-solid fa-microphone"></i> Voice Search</button>
+      <div style="flex:1"></div>
+      <span style="font-size:.85rem;color:#6b7280">Showing 6 AI-matched results</span>
+    </div>
+
+    <div class="card" style="padding:16px 20px;margin-bottom:20px">
+      <div style="font-size:.85rem;color:#6b7280;margin-bottom:10px"><i class="fa-solid fa-filter" style="color:#0052CC"></i> AI Suggested Refinements:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer">Waterproof Rating: IPX4+</span>
+        <span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer">Material: Aluminum / Teak</span>
+        <span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer">Price: Under $200</span>
+        <span style="padding:5px 14px;background:#e8f0fe;color:#0052CC;border-radius:20px;font-size:.8rem;cursor:pointer">MOQ: &lt; 50 units</span>
+      </div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="result-img"><i class="fa-solid fa-chair"></i></div>
+        <div class="result-body">
+          <div class="result-name">Outdoor Aluminum Patio Chair Set</div>
+          <div class="result-price">$89.00</div>
+          <div style="font-size:.78rem;color:#6b7280;margin-top:4px">MOQ: 10 sets | Waterproof IPX6</div>
+          <div class="confidence-bar">
+            <div class="confidence-label"><span>AI Match</span><span>96%</span></div>
+            <div class="confidence-track"><div class="confidence-fill" style="width:96%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-img"><i class="fa-solid fa-umbrella-beach"></i></div>
+        <div class="result-body">
+          <div class="result-name">Weatherproof Garden Lounge Set</div>
+          <div class="result-price">$165.00</div>
+          <div style="font-size:.78rem;color:#6b7280;margin-top:4px">MOQ: 5 sets | UV Resistant</div>
+          <div class="confidence-bar">
+            <div class="confidence-label"><span>AI Match</span><span>91%</span></div>
+            <div class="confidence-track"><div class="confidence-fill" style="width:91%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-img"><i class="fa-solid fa-couch"></i></div>
+        <div class="result-body">
+          <div class="result-name">Teak Wood Outdoor Bench</div>
+          <div class="result-price">$124.50</div>
+          <div style="font-size:.78rem;color:#6b7280;margin-top:4px">MOQ: 20 units | Weatherproof</div>
+          <div class="confidence-bar">
+            <div class="confidence-label"><span>AI Match</span><span>88%</span></div>
+            <div class="confidence-track"><div class="confidence-fill" style="width:88%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-img"><i class="fa-solid fa-table"></i></div>
+        <div class="result-body">
+          <div class="result-name">Folding Outdoor Dining Table</div>
+          <div class="result-price">$78.00</div>
+          <div style="font-size:.78rem;color:#6b7280;margin-top:4px">MOQ: 15 units | Rust-proof</div>
+          <div class="confidence-bar">
+            <div class="confidence-label"><span>AI Match</span><span>84%</span></div>
+            <div class="confidence-track"><div class="confidence-fill" style="width:84%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-img"><i class="fa-solid fa-box-open"></i></div>
+        <div class="result-body">
+          <div class="result-name">Stackable Resin Outdoor Chairs</div>
+          <div class="result-price">$32.00</div>
+          <div style="font-size:.78rem;color:#6b7280;margin-top:4px">MOQ: 50 units | All-weather</div>
+          <div class="confidence-bar">
+            <div class="confidence-label"><span>AI Match</span><span>79%</span></div>
+            <div class="confidence-track"><div class="confidence-fill" style="width:79%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-img"><i class="fa-solid fa-person-booth"></i></div>
+        <div class="result-body">
+          <div class="result-name">Rattan Hanging Egg Chair</div>
+          <div class="result-price">$185.00</div>
+          <div style="font-size:.78rem;color:#6b7280;margin-top:4px">MOQ: 8 units | Waterproof cushion</div>
+          <div class="confidence-bar">
+            <div class="confidence-label"><span>AI Match</span><span>75%</span></div>
+            <div class="confidence-track"><div class="confidence-fill" style="width:75%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Search History</div>
+      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">durable waterproof outdoor furniture under $200</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">2 min ago</span></div>
+      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">eco-friendly packaging materials MOQ 1000</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">1 hour ago</span></div>
+      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">stainless steel industrial bolts grade 8.8 bulk</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">Yesterday</span></div>
+      <div class="history-item"><i class="fa-solid fa-clock"></i><span style="font-size:.87rem">solar LED street lights 100W with remote</span><span style="margin-left:auto;font-size:.78rem;color:#94a3b8">2 days ago</span></div>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copyright">&copy; 2024 Globex Sky. All rights reserved.</span>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy Policy</a></li>
+      <li><a href="../terms.html">Terms of Service</a></li>
+      <li><a href="../contact.html">Contact Us</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../assets/js/main.js" defer></script>
+<script>
+function setSearch(q){document.getElementById('searchInput').value=q}
+function doSearch(){var q=document.getElementById('searchInput').value;if(q)alert('AI Search: "'+q+'"\n\nSearching across 2.4M products...\nResults shown below.')}
+</script>
+</body>
+</html>

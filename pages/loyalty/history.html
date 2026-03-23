@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Points History | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-logo img{height:36px}
+    .nav-logo span{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#0052CC}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:flex;max-width:1400px;margin:0 auto;padding:24px;gap:24px}
+    .sidebar{width:220px;flex-shrink:0}
+    .sidebar-card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding:0 8px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:.86rem;color:#4b5563;transition:all .2s}
+    .sidebar-nav a:hover{background:#f0f4ff;color:#0052CC}
+    .sidebar-nav a.active{background:#e8f0fe;color:#0052CC;font-weight:600}
+    .sidebar-nav a i{width:16px;text-align:center}
+    .main-content{flex:1;min-width:0}
+    .page-header{margin-bottom:24px}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27}
+    .page-header p{color:#6b7280;font-size:.9rem;margin-top:4px}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{border-radius:14px;padding:20px;color:#fff}
+    .stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+    .stat-lbl{font-size:.8rem;opacity:.8;margin-top:4px}
+    .filter-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+    .filter-tab{padding:7px 18px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:.84rem;font-weight:500;cursor:pointer;color:#6b7280;transition:all .2s}
+    .filter-tab.active{background:#0052CC;color:#fff;border-color:#0052CC}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .notice{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;font-size:.86rem;color:#92400e;margin-bottom:20px}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo">
+      <img src="../../assets/images/logo.png" alt="Globex Sky"/>
+      <span>Globex Sky</span>
+    </a>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn-nav btn-login"><i class="fa-regular fa-user"></i> Login</a>
+      <a href="../auth/register.html" class="btn-nav btn-register"><i class="fa-solid fa-rocket"></i> Register</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">Loyalty Program</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fa-solid fa-star"></i> Overview</a></li>
+        <li><a href="buyer-rewards.html"><i class="fa-solid fa-gift"></i> Buyer Rewards</a></li>
+        <li><a href="supplier-membership.html"><i class="fa-solid fa-crown"></i> Supplier Membership</a></li>
+        <li><a href="redeem.html"><i class="fa-solid fa-ticket"></i> Redeem Rewards</a></li>
+        <li><a href="history.html" class="active"><i class="fa-solid fa-clock-rotate-left"></i> Points History</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1><i class="fa-solid fa-clock-rotate-left" style="color:#0052CC;margin-right:10px"></i>Points History</h1>
+      <p>Track all your GlobexPoints earnings and redemptions.</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card" style="background:linear-gradient(135deg,#0052CC,#003d99)">
+        <div class="stat-val">8,240</div><div class="stat-lbl">Total Earned</div>
+      </div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#f97316,#ea580c)">
+        <div class="stat-val">3,390</div><div class="stat-lbl">Total Redeemed</div>
+      </div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#94a3b8,#64748b)">
+        <div class="stat-val">0</div><div class="stat-lbl">Expired</div>
+      </div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#00C9A7,#00a98d)">
+        <div class="stat-val">4,850</div><div class="stat-lbl">Current Balance</div>
+      </div>
+    </div>
+
+    <div class="notice"><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b"></i> Points expire after <strong>12 months</strong> of inactivity. Your next expiry date: <strong>December 31, 2025</strong>.</div>
+
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-list"></i> Transaction History</div>
+      <div class="filter-tabs">
+        <button class="filter-tab active">All</button>
+        <button class="filter-tab">Earned</button>
+        <button class="filter-tab">Redeemed</button>
+        <button class="filter-tab">Expired</button>
+      </div>
+      <table class="table">
+        <thead>
+          <tr><th>Date</th><th>Description</th><th>Points</th><th>Balance After</th><th>Type</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dec 12, 2024</td>
+            <td>Order #ORD-98234 — Electronics Purchase</td>
+            <td style="color:#059669;font-weight:700">+350</td>
+            <td>4,850</td>
+            <td><span class="badge badge-green">Earned</span></td>
+          </tr>
+          <tr>
+            <td>Dec 10, 2024</td>
+            <td>Redeemed: $10 Discount Voucher (GS-XVK924)</td>
+            <td style="color:#dc2626;font-weight:700">-1,000</td>
+            <td>4,500</td>
+            <td><span class="badge badge-orange">Redeemed</span></td>
+          </tr>
+          <tr>
+            <td>Nov 30, 2024</td>
+            <td>Order #ORD-97811 — Bulk Office Supplies</td>
+            <td style="color:#059669;font-weight:700">+620</td>
+            <td>5,500</td>
+            <td><span class="badge badge-green">Earned</span></td>
+          </tr>
+          <tr>
+            <td>Nov 28, 2024</td>
+            <td>Redeemed: Free Shipping Coupon (GS-FSH112)</td>
+            <td style="color:#dc2626;font-weight:700">-750</td>
+            <td>4,880</td>
+            <td><span class="badge badge-orange">Redeemed</span></td>
+          </tr>
+          <tr>
+            <td>Nov 15, 2024</td>
+            <td>Referral Bonus — Invited user joined</td>
+            <td style="color:#059669;font-weight:700">+200</td>
+            <td>5,630</td>
+            <td><span class="badge badge-green">Earned</span></td>
+          </tr>
+          <tr>
+            <td>Nov 05, 2024</td>
+            <td>Redeemed: $5 Discount Voucher (GS-DIS885)</td>
+            <td style="color:#dc2626;font-weight:700">-500</td>
+            <td>5,430</td>
+            <td><span class="badge badge-orange">Redeemed</span></td>
+          </tr>
+          <tr>
+            <td>Oct 22, 2024</td>
+            <td>Order #ORD-96450 — Industrial Equipment</td>
+            <td style="color:#059669;font-weight:700">+1,200</td>
+            <td>5,930</td>
+            <td><span class="badge badge-green">Earned</span></td>
+          </tr>
+          <tr>
+            <td>Oct 19, 2024</td>
+            <td>Redeemed: $20 Cash Back (GS-CBK773)</td>
+            <td style="color:#dc2626;font-weight:700">-2,000</td>
+            <td>4,730</td>
+            <td><span class="badge badge-orange">Redeemed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copyright">&copy; 2024 Globex Sky. All rights reserved.</span>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy Policy</a></li>
+      <li><a href="../terms.html">Terms of Service</a></li>
+      <li><a href="../contact.html">Contact Us</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../assets/js/main.js" defer></script>
+<script>
+document.querySelectorAll('.filter-tab').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.filter-tab').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
+</script>
+</body>
+</html>
