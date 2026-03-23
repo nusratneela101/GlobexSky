@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Sandbox | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:20px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.9rem;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:16px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-green{background:#059669;color:#fff}.btn-green:hover{background:#047857}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-group{margin-bottom:14px}
+    select.form-control{cursor:pointer}
+    .request-bar{display:flex;gap:10px;margin-bottom:14px}
+    .method-select{padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;min-width:110px;background:#fff}
+    .method-select:focus{outline:none;border-color:#0052CC}
+    .endpoint-input{flex:1;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'monospace','Inter',sans-serif;color:#1a1a2e;background:#fff}
+    .endpoint-input:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .response-panel{background:#0a0e27;border-radius:12px;padding:20px;min-height:180px;font-family:'Courier New',monospace;font-size:.82rem;color:#e2e8f0;white-space:pre-wrap;overflow-x:auto;line-height:1.6}
+    .status-line{margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px}
+    .status-200{color:#22c55e;font-weight:700}
+    .status-4xx{color:#ef4444;font-weight:700}
+    .json-key{color:#79c0ff}
+    .json-str{color:#a5f3c5}
+    .json-num{color:#ffa657}
+    .json-bool{color:#ff7b72}
+    .sample-call{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid #e2e8f0;transition:all .2s}
+    .sample-call:hover{border-color:#0052CC;background:#f0f4ff}
+    .sample-method{font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:4px;min-width:48px;text-align:center}
+    .m-get{background:#d1fae5;color:#059669}
+    .m-post{background:#dbeafe;color:#2563eb}
+    .m-put{background:#fff7ed;color:#f97316}
+    .m-delete{background:#fee2e2;color:#dc2626}
+    .sample-endpoint{font-family:'Courier New',monospace;font-size:.82rem;color:#374151;flex:1;margin-left:12px}
+    .sample-desc{font-size:.78rem;color:#64748b}
+    .key-box{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-family:'Courier New',monospace;font-size:.82rem;color:#374151;display:flex;align-items:center;justify-content:space-between}
+    .rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .rate-item{background:#f8faff;border-radius:10px;padding:16px;text-align:center}
+    .rate-val{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0052CC}
+    .rate-lbl{font-size:.8rem;color:#64748b;margin-top:4px}
+    .header-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title"><i class="fas fa-code" style="color:#0052CC;margin-right:6px"></i> Developer API</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fas fa-house"></i> Overview</a></li>
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="documentation.html"><i class="fas fa-book"></i> Documentation</a></li>
+        <li><a href="developer-portal.html"><i class="fas fa-code-branch"></i> Dev Portal</a></li>
+        <li><a href="keys.html"><i class="fas fa-key"></i> API Keys</a></li>
+        <li><a href="webhooks.html"><i class="fas fa-webhook"></i> Webhooks</a></li>
+        <li><a href="pricing.html"><i class="fas fa-dollar-sign"></i> Pricing</a></li>
+        <li><a href="sandbox.html" class="active"><i class="fas fa-flask"></i> Sandbox</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <!-- Sandbox API Key -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-key"></i> Sandbox API Key</div>
+        <p style="font-size:.87rem;color:#64748b;margin-bottom:12px">Use this key for all sandbox requests. Sandbox data is reset every 24 hours.</p>
+        <div class="key-box">
+          <span id="api-key">sk_sandbox_4f8a2b1c9d3e6f7a8b9c0d1e2f3a4b5c</span>
+          <button class="btn btn-secondary btn-sm" onclick="copyKey()"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+        <p style="font-size:.78rem;color:#64748b;margin-top:8px"><i class="fas fa-info-circle" style="margin-right:4px"></i> Base URL: <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px">https://api.globexsky.com/v1/sandbox</code></p>
+      </div>
+
+      <!-- Rate Limits -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-gauge-high"></i> Rate Limits</div>
+        <div class="rate-grid">
+          <div class="rate-item"><div class="rate-val">100</div><div class="rate-lbl">Sandbox: requests per minute</div></div>
+          <div class="rate-item"><div class="rate-val" style="color:#059669">1,000</div><div class="rate-lbl">Production: requests per minute</div></div>
+        </div>
+      </div>
+
+      <!-- API Tester -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-flask"></i> API Request Tester</div>
+        <div class="request-bar">
+          <select class="method-select" id="req-method">
+            <option value="GET" style="color:#059669">GET</option>
+            <option value="POST" style="color:#2563eb">POST</option>
+            <option value="PUT" style="color:#f97316">PUT</option>
+            <option value="DELETE" style="color:#dc2626">DELETE</option>
+          </select>
+          <input type="text" class="endpoint-input" id="req-endpoint" value="/products" placeholder="/products">
+          <button class="btn btn-green" onclick="sendRequest()"><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+
+        <!-- Headers -->
+        <div class="form-group">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="form-label" style="margin:0">Request Headers</label>
+            <button class="btn btn-secondary btn-sm" onclick="addHeader()"><i class="fas fa-plus"></i> Add Header</button>
+          </div>
+          <div id="headers-container">
+            <div class="header-row">
+              <input type="text" class="form-control" placeholder="Key" value="Authorization" style="max-width:180px">
+              <input type="text" class="form-control" placeholder="Value" value="Bearer sk_sandbox_4f8a2b1c...">
+              <button class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="header-row">
+              <input type="text" class="form-control" placeholder="Key" value="Content-Type" style="max-width:180px">
+              <input type="text" class="form-control" placeholder="Value" value="application/json">
+              <button class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Request Body -->
+        <div class="form-group">
+          <label class="form-label">Request Body (JSON)</label>
+          <textarea class="form-control" id="req-body" rows="5" style="font-family:'Courier New',monospace;font-size:.82rem" placeholder='{"key": "value"}'></textarea>
+        </div>
+
+        <!-- Response -->
+        <div class="form-group">
+          <label class="form-label">Response</label>
+          <div class="response-panel" id="response-panel">
+            <div class="status-line"><span>Status:</span> <span class="status-200">200 OK</span> <span style="color:#94a3b8;font-size:.78rem">142ms</span></div><span class="json-key">"data"</span>: [&#123;
+  <span class="json-key">"id"</span>: <span class="json-str">"prod_abc123"</span>,
+  <span class="json-key">"name"</span>: <span class="json-str">"Arduino PCB Board v3"</span>,
+  <span class="json-key">"price"</span>: <span class="json-num">12.50</span>,
+  <span class="json-key">"in_stock"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"supplier_id"</span>: <span class="json-str">"sup_xyz789"</span>
+&#125;]</div>
+        </div>
+      </div>
+
+      <!-- Sample Calls -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-list"></i> Sample API Calls</div>
+        <p style="font-size:.85rem;color:#64748b;margin-bottom:14px">Click a sample to load it into the tester above.</p>
+        <div class="sample-call" onclick="loadSample('GET','/products','')">
+          <span class="sample-method m-get">GET</span>
+          <span class="sample-endpoint">/products</span>
+          <span class="sample-desc">List all products</span>
+        </div>
+        <div class="sample-call" onclick="loadSample('GET','/products/prod_abc123','')">
+          <span class="sample-method m-get">GET</span>
+          <span class="sample-endpoint">/products/prod_abc123</span>
+          <span class="sample-desc">Get product by ID</span>
+        </div>
+        <div class="sample-call" onclick="loadSample('GET','/orders','')">
+          <span class="sample-method m-get">GET</span>
+          <span class="sample-endpoint">/orders</span>
+          <span class="sample-desc">List all orders</span>
+        </div>
+        <div class="sample-call" onclick="loadSample('POST','/orders',JSON.stringify({product_id:'prod_abc123',quantity:5,buyer_id:'usr_123'},null,2))">
+          <span class="sample-method m-post">POST</span>
+          <span class="sample-endpoint">/orders</span>
+          <span class="sample-desc">Create a new order</span>
+        </div>
+        <div class="sample-call" onclick="loadSample('GET','/suppliers','')">
+          <span class="sample-method m-get">GET</span>
+          <span class="sample-endpoint">/suppliers</span>
+          <span class="sample-desc">List verified suppliers</span>
+        </div>
+        <div class="sample-call" onclick="loadSample('POST','/rfq',JSON.stringify({product:'Custom PCB',quantity:500,budget:2500,deadline:'2025-06-01'},null,2))">
+          <span class="sample-method m-post">POST</span>
+          <span class="sample-endpoint">/rfq</span>
+          <span class="sample-desc">Submit a Request for Quotation</span>
+        </div>
+        <div class="sample-call" onclick="loadSample('GET','/shipment/track/TRK123456789','')">
+          <span class="sample-method m-get">GET</span>
+          <span class="sample-endpoint">/shipment/track/TRK123456789</span>
+          <span class="sample-desc">Track a shipment</span>
+        </div>
+        <div class="sample-call" onclick="loadSample('DELETE','/products/prod_abc123','')">
+          <span class="sample-method m-delete">DELETE</span>
+          <span class="sample-endpoint">/products/prod_abc123</span>
+          <span class="sample-desc">Delete a product</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function copyKey(){navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('api-key').textContent).then(()=>alert('API key copied!')).catch(()=>alert('Please copy the key manually.'));}
+function addHeader(){const container=document.getElementById('headers-container');const row=document.createElement('div');row.className='header-row';row.innerHTML='<input type="text" class="form-control" placeholder="Key" style="max-width:180px"><input type="text" class="form-control" placeholder="Value"><button class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>';container.appendChild(row);}
+function loadSample(method,endpoint,body){document.getElementById('req-method').value=method;document.getElementById('req-endpoint').value=endpoint;document.getElementById('req-body').value=body;}
+function sendRequest(){
+  const method=document.getElementById('req-method').value;
+  const endpoint=document.getElementById('req-endpoint').value;
+  const panel=document.getElementById('response-panel');
+  panel.innerHTML='<span style="color:#94a3b8"><i class="fas fa-spinner fa-spin"></i> Sending request...</span>';
+  setTimeout(()=>{
+    panel.innerHTML='<div class="status-line"><span>Status:</span> <span class="status-200">200 OK</span> <span style="color:#94a3b8;font-size:.78rem">'+(80+Math.floor(Math.random()*120))+'ms</span></div><span class="json-key">"success"</span>: <span class="json-bool">true</span>,\n<span class="json-key">"endpoint"</span>: <span class="json-str">"'+endpoint+'"</span>,\n<span class="json-key">"method"</span>: <span class="json-str">"'+method+'"</span>,\n<span class="json-key">"data"</span>: &#123; <span class="json-key">"sandbox"</span>: <span class="json-bool">true</span>, <span class="json-key">"message"</span>: <span class="json-str">"Sandbox response"</span> &#125;';
+  },800);
+}
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

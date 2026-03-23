@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inspection Services | Globex Sky</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:20px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-title{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:.9rem;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:16px;text-align:center}
+    .content-area{min-width:0}
+    .hero{background:linear-gradient(135deg,#0052CC,#7c3aed);border-radius:16px;padding:36px 28px;color:#fff;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:700;margin-bottom:8px}
+    .hero p{opacity:.85;font-size:.9rem;max-width:420px}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:20px}
+    .stat-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center}
+    .stat-val{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0052CC}
+    .stat-lbl{font-size:.78rem;color:#64748b;margin-top:4px}
+    .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .card-title-left{display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+    .service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:8px}
+    .service-card{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:12px;padding:18px;text-align:center;transition:all .2s}
+    .service-card:hover{border-color:#0052CC;box-shadow:0 4px 14px rgba(0,82,204,.1)}
+    .service-icon{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 12px}
+    .service-name{font-family:'Poppins',sans-serif;font-weight:700;font-size:.9rem;color:#0a0e27;margin-bottom:6px}
+    .service-desc{font-size:.8rem;color:#64748b;line-height:1.5}
+    .table{width:100%;border-collapse:collapse;font-size:.87rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .btn{padding:6px 14px;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.6)}.btn-outline:hover{background:rgba(255,255,255,.15)}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .site-footer{background:#0A0E27;color:#fff;padding:28px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav><div class="nav-container">
+    <a href="../../../index.html" class="nav-logo"><img src="../../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+    <div class="nav-controls">
+      <a href="../../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+  </div></nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title"><i class="fas fa-magnifying-glass-chart" style="color:#0052CC;margin-right:6px"></i> Inspection</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html" class="active"><i class="fas fa-list-check"></i> My Inspections</a></li>
+        <li><a href="request.html"><i class="fas fa-plus-circle"></i> Request Inspection</a></li>
+        <li><a href="report.html"><i class="fas fa-file-chart-column"></i> Reports</a></li>
+        <li><a href="../../sourcing/index.html"><i class="fas fa-arrow-left"></i> Sourcing</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div class="hero">
+        <div>
+          <h1><i class="fas fa-magnifying-glass-chart" style="margin-right:10px"></i>Inspection Services</h1>
+          <p>Verify product quality before you ship. Trusted inspectors in 50+ countries with 24-hour report turnaround.</p>
+        </div>
+        <a href="request.html" class="btn btn-outline" style="white-space:nowrap;padding:12px 22px;font-size:.9rem"><i class="fas fa-plus"></i> Request Inspection</a>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-val">6</div><div class="stat-lbl">Active</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:#059669">42</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:#7c3aed">8</div><div class="stat-lbl">Reports Ready</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:#f97316">4</div><div class="stat-lbl">Scheduled</div></div>
+      </div>
+
+      <!-- Service Types -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><i class="fas fa-grid"></i> Inspection Types</div></div>
+        <div class="service-grid">
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-industry"></i></div>
+            <div class="service-name">Pre-Production</div>
+            <div class="service-desc">Verify raw materials and factory readiness before production begins.</div>
+          </div>
+          <div class="service-card">
+            <div class="service-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-gears"></i></div>
+            <div class="service-name">During Production</div>
+            <div class="service-desc">Monitor quality checkpoints during the manufacturing process.</div>
+          </div>
+          <div class="service-card">
+            <div class="service-icon" style="background:linear-gradient(135deg,#059669,#00C9A7)"><i class="fas fa-boxes-stacked"></i></div>
+            <div class="service-name">Pre-Shipment</div>
+            <div class="service-desc">Final quality check before goods are loaded for shipment.</div>
+          </div>
+          <div class="service-card">
+            <div class="service-icon" style="background:linear-gradient(135deg,#f97316,#ef4444)"><i class="fas fa-ship"></i></div>
+            <div class="service-name">Container Loading</div>
+            <div class="service-desc">Supervise container loading to ensure correct and safe packing.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspections Table -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><i class="fas fa-list"></i> My Inspections</div>
+          <a href="request.html" class="btn btn-primary"><i class="fas fa-plus"></i> New Request</a>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr><th>ID</th><th>Product</th><th>Supplier</th><th>Type</th><th>Date</th><th>Location</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color:#0052CC">#INS-2025-0042</strong></td>
+                <td>Custom PCB Boards</td><td>TechCore Electronics</td>
+                <td><span class="badge badge-green">Pre-Shipment</span></td>
+                <td>Mar 25, 2025</td><td>Shenzhen, CN</td>
+                <td><span class="badge badge-blue">Scheduled</span></td>
+                <td><a href="report.html" class="btn btn-secondary"><i class="fas fa-eye"></i> View</a></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0052CC">#INS-2025-0038</strong></td>
+                <td>Cotton T-Shirts</td><td>SilkRoute Fabrics</td>
+                <td><span class="badge badge-orange">During Prod.</span></td>
+                <td>Mar 20, 2025</td><td>Dhaka, BD</td>
+                <td><span class="badge badge-orange">In Progress</span></td>
+                <td><a href="report.html" class="btn btn-secondary"><i class="fas fa-eye"></i> View</a></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0052CC">#INS-2025-0031</strong></td>
+                <td>Industrial Ball Bearings</td><td>MachPro Industries</td>
+                <td><span class="badge badge-purple">Pre-Production</span></td>
+                <td>Mar 15, 2025</td><td>Guangzhou, CN</td>
+                <td><span class="badge badge-green">Report Ready</span></td>
+                <td><a href="report.html" class="btn btn-primary"><i class="fas fa-file-alt"></i> Report</a></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0052CC">#INS-2025-0029</strong></td>
+                <td>Solar Panels 400W</td><td>EnergyCell Corp</td>
+                <td><span class="badge badge-green">Pre-Shipment</span></td>
+                <td>Mar 10, 2025</td><td>Hangzhou, CN</td>
+                <td><span class="badge badge-green">Completed</span></td>
+                <td><a href="report.html" class="btn btn-primary"><i class="fas fa-file-alt"></i> Report</a></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0052CC">#INS-2025-0025</strong></td>
+                <td>Eco Packaging Boxes</td><td>GreenPack Solutions</td>
+                <td><span class="badge badge-orange">Container Load</span></td>
+                <td>Mar 5, 2025</td><td>Ningbo, CN</td>
+                <td><span class="badge badge-green">Completed</span></td>
+                <td><a href="report.html" class="btn btn-primary"><i class="fas fa-file-alt"></i> Report</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../../privacy.html">Privacy</a></li>
+      <li><a href="../../terms.html">Terms</a></li>
+      <li><a href="../../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

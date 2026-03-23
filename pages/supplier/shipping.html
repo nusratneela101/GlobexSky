@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipping Setup | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+    .zone-card{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:12px}
+    .zone-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .zone-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;font-size:.95rem}
+    .carrier-list{list-style:none}
+    .carrier-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border-radius:8px;margin-bottom:8px;border:1px solid #e2e8f0}
+    .carrier-name{font-size:.88rem;font-weight:500;color:#374151}
+    .carrier-rate{font-size:.88rem;color:#0052CC;font-weight:600}
+    .toggle{position:relative;display:inline-block;width:42px;height:22px}
+    .toggle input{opacity:0;width:0;height:0}
+    .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#e2e8f0;border-radius:22px;transition:.3s}
+    .slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+    input:checked+.slider{background:#0052CC}
+    input:checked+.slider:before{transform:translateX(20px)}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html" class="active"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html"><i class="fas fa-gavel"></i> Disputes</a></li>
+        <li><a href="coupons.html"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <!-- Shipping Origin -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-map-pin"></i> Shipping Origin</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <select class="form-control">
+              <option>China</option><option>Bangladesh</option><option>India</option><option>USA</option><option>Germany</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" value="Guangzhou">
+          </div>
+          <div class="form-group">
+            <label class="form-label">State / Province</label>
+            <input type="text" class="form-control" value="Guangdong">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ZIP / Postal Code</label>
+            <input type="text" class="form-control" value="510000">
+          </div>
+        </div>
+        <button class="btn btn-primary"><i class="fas fa-save"></i> Save Origin</button>
+      </div>
+
+      <!-- Shipping Zones -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-globe"></i> Shipping Zones &amp; Rates
+          <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="addZone()"><i class="fas fa-plus"></i> Add Zone</button>
+        </div>
+
+        <div class="zone-card">
+          <div class="zone-header">
+            <span class="zone-name"><i class="fas fa-globe-asia" style="color:#0052CC;margin-right:8px"></i>Asia Pacific</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i> Edit</button>
+              <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <ul class="carrier-list">
+            <li class="carrier-item">
+              <div><div class="carrier-name">Standard Shipping</div><div style="font-size:.78rem;color:#64748b">5–10 business days</div></div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span class="carrier-rate">$4.99 / kg</span>
+                <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+              </div>
+            </li>
+            <li class="carrier-item">
+              <div><div class="carrier-name">Express Shipping</div><div style="font-size:.78rem;color:#64748b">2–3 business days</div></div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span class="carrier-rate">$12.99 / kg</span>
+                <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="zone-card">
+          <div class="zone-header">
+            <span class="zone-name"><i class="fas fa-globe-europe" style="color:#7c3aed;margin-right:8px"></i>Europe</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i> Edit</button>
+              <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <ul class="carrier-list">
+            <li class="carrier-item">
+              <div><div class="carrier-name">International Standard</div><div style="font-size:.78rem;color:#64748b">10–18 business days</div></div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span class="carrier-rate">$7.50 / kg</span>
+                <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="zone-card">
+          <div class="zone-header">
+            <span class="zone-name"><i class="fas fa-globe-americas" style="color:#059669;margin-right:8px"></i>Americas</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i> Edit</button>
+              <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <ul class="carrier-list">
+            <li class="carrier-item">
+              <div><div class="carrier-name">Economy Freight</div><div style="font-size:.78rem;color:#64748b">15–25 business days</div></div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span class="carrier-rate">$5.99 / kg</span>
+                <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+              </div>
+            </li>
+            <li class="carrier-item">
+              <div><div class="carrier-name">Air Express</div><div style="font-size:.78rem;color:#64748b">3–5 business days</div></div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span class="carrier-rate">$18.00 / kg</span>
+                <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Free Shipping Rule -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-gift"></i> Free Shipping Rules</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <input type="checkbox" id="free-ship" checked>
+          <label for="free-ship" style="font-size:.88rem;color:#374151">Enable free shipping for orders above a minimum value</label>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Minimum Order Value (USD)</label>
+            <input type="number" class="form-control" value="150" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Applies To</label>
+            <select class="form-control">
+              <option>All Zones</option>
+              <option>Asia Pacific Only</option>
+              <option>Domestic Only</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary"><i class="fas fa-save"></i> Save Rules</button>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function addZone(){alert('Add Zone feature coming soon. Use the zone editor to define regions and carriers.');}
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

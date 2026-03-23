@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Knowledge Base | Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:100vh;display:flex;flex-direction:column}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.layout{display:flex;flex:1;max-width:1400px;margin:0 auto;width:100%;padding:24px;gap:24px}
+.sidebar{width:240px;flex-shrink:0}
+.sidebar-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;position:sticky;top:86px}
+.sidebar-header{background:#0052CC;padding:20px;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:10px}
+.sidebar-nav{padding:8px 0}
+.sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 20px;text-decoration:none;color:#374151;font-size:.875rem;font-weight:500;transition:all .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{background:#eff6ff;color:#0052CC;border-left:3px solid #0052CC}
+.sidebar-nav a .icon{width:18px;text-align:center}
+.sidebar-nav .divider{height:1px;background:#f1f5f9;margin:6px 0}
+.main{flex:1;min-width:0}
+.page-title{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.categories-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.cat-chip{padding:8px 16px;border-radius:99px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s;display:flex;align-items:center;gap:6px}
+.cat-chip:hover,.cat-chip.active{background:#0052CC;color:#fff;border-color:#0052CC}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.search-input{flex:1;min-width:180px;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 14px;font-size:.875rem;font-family:'Inter',sans-serif;color:#374151}
+.search-input:focus{outline:none;border-color:#0052CC}
+.btn{padding:10px 20px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+table{width:100%;border-collapse:collapse}
+th{background:#f8fafc;font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;padding:10px 14px;text-align:left;white-space:nowrap}
+td{padding:12px 14px;font-size:.85rem;color:#374151;border-bottom:1px solid #f8fafc;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge-green{background:#d1fae5;color:#059669}
+.badge-gray{background:#f1f5f9;color:#64748b}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-orange{background:#ffedd5;color:#ea580c}
+.btn-sm{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:4px;margin:1px}
+.btn-edit{background:#eff6ff;color:#0052CC}.btn-edit:hover{background:#dbeafe}
+.btn-del{background:#fee2e2;color:#dc2626}.btn-del:hover{background:#fecaca}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:580px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:.83rem;font-weight:500;color:#374151;margin-bottom:5px}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+textarea.form-control{min-height:120px;resize:vertical}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.btn-secondary{background:#f1f5f9;color:#374151;border:none;border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.site-footer{background:#0a0e27;padding:28px 0;margin-top:auto}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%}.sidebar-card{position:static}.table-wrap{overflow-x:auto}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-header"><i class="fas fa-headset"></i> Support Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="icon"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a>
+        <a href="index.html"><span class="icon"><i class="fas fa-ticket-alt"></i></span> Tickets</a>
+        <a href="live-chat.html"><span class="icon"><i class="fas fa-comments"></i></span> Live Chat</a>
+        <a href="disputes.html"><span class="icon"><i class="fas fa-balance-scale"></i></span> Disputes</a>
+        <div class="divider"></div>
+        <a href="orders.html"><span class="icon"><i class="fas fa-box"></i></span> Orders</a>
+        <a href="refunds.html"><span class="icon"><i class="fas fa-undo-alt"></i></span> Refunds</a>
+        <a href="users.html"><span class="icon"><i class="fas fa-user-check"></i></span> Users</a>
+        <div class="divider"></div>
+        <a href="knowledge-base.html" class="active"><span class="icon"><i class="fas fa-book-open"></i></span> Knowledge Base</a>
+        <a href="announcements.html"><span class="icon"><i class="fas fa-bullhorn"></i></span> Announcements</a>
+        <a href="seller-onboarding.html"><span class="icon"><i class="fas fa-store"></i></span> Seller Onboarding</a>
+        <a href="#"><span class="icon"><i class="fas fa-robot"></i></span> Chatbot</a>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-title"><i class="fas fa-book-open" style="color:#0052CC"></i> Knowledge Base</div>
+
+    <!-- Categories -->
+    <div class="categories-row">
+      <div class="cat-chip active" onclick="filterCat(this,'All')"><i class="fas fa-border-all"></i> All</div>
+      <div class="cat-chip" onclick="filterCat(this,'Account')"><i class="fas fa-user-circle"></i> Account</div>
+      <div class="cat-chip" onclick="filterCat(this,'Orders')"><i class="fas fa-box"></i> Orders</div>
+      <div class="cat-chip" onclick="filterCat(this,'Payments')"><i class="fas fa-credit-card"></i> Payments</div>
+      <div class="cat-chip" onclick="filterCat(this,'Shipping')"><i class="fas fa-truck"></i> Shipping</div>
+      <div class="cat-chip" onclick="filterCat(this,'Returns')"><i class="fas fa-undo-alt"></i> Returns</div>
+      <div class="cat-chip" onclick="filterCat(this,'Security')"><i class="fas fa-shield-alt"></i> Security</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span><i class="fas fa-list" style="color:#0052CC"></i> Articles</span>
+        <button class="btn btn-primary" onclick="document.getElementById('article-modal').classList.add('open')"><i class="fas fa-plus"></i> Create Article</button>
+      </div>
+      <div class="toolbar">
+        <input class="search-input" placeholder="Search articles by title, category or tag…" oninput="filterTable(this.value)">
+      </div>
+      <div class="table-wrap">
+        <table id="articles-table">
+          <thead>
+            <tr><th>Title</th><th>Category</th><th>Views</th><th>Updated</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr data-cat="Account">
+              <td><strong>How to reset your password</strong></td>
+              <td><span class="badge badge-blue">Account</span></td>
+              <td>4,821</td><td>Dec 8, 2024</td>
+              <td><span class="badge badge-green">Published</span></td>
+              <td>
+                <button class="btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-sm btn-del" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr data-cat="Orders">
+              <td><strong>How to track your order</strong></td>
+              <td><span class="badge badge-orange">Orders</span></td>
+              <td>6,312</td><td>Dec 5, 2024</td>
+              <td><span class="badge badge-green">Published</span></td>
+              <td>
+                <button class="btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-sm btn-del" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr data-cat="Payments">
+              <td><strong>Accepted payment methods</strong></td>
+              <td><span class="badge badge-green">Payments</span></td>
+              <td>3,140</td><td>Nov 30, 2024</td>
+              <td><span class="badge badge-green">Published</span></td>
+              <td>
+                <button class="btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-sm btn-del" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr data-cat="Shipping">
+              <td><strong>Understanding shipping timelines</strong></td>
+              <td><span class="badge" style="background:#e0f2fe;color:#0369a1">Shipping</span></td>
+              <td>2,890</td><td>Dec 1, 2024</td>
+              <td><span class="badge badge-green">Published</span></td>
+              <td>
+                <button class="btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-sm btn-del" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr data-cat="Returns">
+              <td><strong>How to request a refund or return</strong></td>
+              <td><span class="badge" style="background:#fce7f3;color:#9d174d">Returns</span></td>
+              <td>5,204</td><td>Dec 6, 2024</td>
+              <td><span class="badge badge-green">Published</span></td>
+              <td>
+                <button class="btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-sm btn-del" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr data-cat="Security">
+              <td><strong>Keeping your account secure (2FA guide)</strong></td>
+              <td><span class="badge" style="background:#fef9c3;color:#854d0e">Security</span></td>
+              <td>1,723</td><td>Dec 3, 2024</td>
+              <td><span class="badge badge-gray">Draft</span></td>
+              <td>
+                <button class="btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-sm btn-del" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Create Article Modal -->
+<div class="modal-overlay" id="article-modal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-plus-circle" style="color:#0052CC"></i> Create New Article</div>
+    <div class="form-group">
+      <label class="form-label">Article Title *</label>
+      <input type="text" class="form-control" id="art-title" placeholder="e.g. How to place an order">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category *</label>
+      <select class="form-control" id="art-cat">
+        <option value="">Select category</option>
+        <option>Account</option><option>Orders</option><option>Payments</option>
+        <option>Shipping</option><option>Returns</option><option>Security</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Content *</label>
+      <textarea class="form-control" id="art-content" placeholder="Write the article content here…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags (comma-separated)</label>
+      <input type="text" class="form-control" id="art-tags" placeholder="e.g. login, password, account">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="document.getElementById('article-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveArticle()"><i class="fas fa-save"></i> Save Article</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. All rights reserved. &nbsp;|&nbsp;
+      <a href="../privacy.html" style="color:rgba(255,255,255,.5);text-decoration:none">Privacy</a> &nbsp;|&nbsp;
+      <a href="../terms.html" style="color:rgba(255,255,255,.5);text-decoration:none">Terms</a> &nbsp;|&nbsp;
+      <a href="../contact.html" style="color:rgba(255,255,255,.5);text-decoration:none">Contact</a>
+    </p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+document.getElementById('article-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+function filterCat(chip,cat){
+  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  document.querySelectorAll('#articles-table tbody tr').forEach(row=>{
+    row.style.display=(cat==='All'||row.dataset.cat===cat)?'':'none';
+  });
+}
+function filterTable(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('#articles-table tbody tr').forEach(row=>{
+    row.style.display=row.textContent.toLowerCase().includes(q)?'':'none';
+  });
+}
+function deleteRow(btn){
+  if(confirm('Delete this article?'))btn.closest('tr').remove();
+}
+function saveArticle(){
+  const title=document.getElementById('art-title').value.trim();
+  const cat=document.getElementById('art-cat').value;
+  if(!title||!cat){alert('Please fill in all required fields.');return;}
+  const tbody=document.querySelector('#articles-table tbody');
+  const tr=document.createElement('tr');
+  tr.dataset.cat=escapeHtml(cat);
+  tr.innerHTML='<td><strong>'+escapeHtml(title)+'</strong></td><td><span class="badge badge-blue">'+escapeHtml(cat)+'</span></td><td>0</td><td>Today</td><td><span class="badge badge-gray">Draft</span></td><td><button class="btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</button> <button class="btn-sm btn-del" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>';
+  tbody.prepend(tr);
+  document.getElementById('article-modal').classList.remove('open');
+  document.getElementById('art-title').value='';
+  document.getElementById('art-cat').value='';
+  document.getElementById('art-content').value='';
+  document.getElementById('art-tags').value='';
+}
+</script>
+</body>
+</html>

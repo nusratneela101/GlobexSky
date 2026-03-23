@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Order Assistance | Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:100vh;display:flex;flex-direction:column}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.layout{display:flex;flex:1;max-width:1400px;margin:0 auto;width:100%;padding:24px;gap:24px}
+.sidebar{width:240px;flex-shrink:0}
+.sidebar-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;position:sticky;top:86px}
+.sidebar-header{background:#0052CC;padding:20px;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:10px}
+.sidebar-nav{padding:8px 0}
+.sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 20px;text-decoration:none;color:#374151;font-size:.875rem;font-weight:500;transition:all .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{background:#eff6ff;color:#0052CC;border-left:3px solid #0052CC}
+.sidebar-nav a .icon{width:18px;text-align:center}
+.sidebar-nav .divider{height:1px;background:#f1f5f9;margin:6px 0}
+.main{flex:1;min-width:0}
+.page-title{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.search-bar{display:flex;gap:10px;margin-bottom:0}
+.search-input{flex:1;border:1.5px solid #e2e8f0;border-radius:8px;padding:12px 16px;font-size:.9rem;font-family:'Inter',sans-serif;color:#374151}
+.search-input:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.btn-search{background:#0052CC;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:8px;transition:background .2s}
+.btn-search:hover{background:#003d99}
+table{width:100%;border-collapse:collapse}
+th{background:#f8fafc;font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;padding:10px 14px;text-align:left;white-space:nowrap}
+td{padding:12px 14px;font-size:.85rem;color:#374151;border-bottom:1px solid #f8fafc;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge-red{background:#fee2e2;color:#dc2626}
+.badge-orange{background:#ffedd5;color:#ea580c}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-green{background:#d1fae5;color:#059669}
+.badge-gray{background:#f1f5f9;color:#64748b}
+.btn-sm{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:4px;margin:1px;white-space:nowrap}
+.btn-buyer{background:#eff6ff;color:#0052CC}.btn-buyer:hover{background:#dbeafe}
+.btn-seller{background:#f5f3ff;color:#7c3aed}.btn-seller:hover{background:#ede9fe}
+.btn-refund{background:#ffedd5;color:#ea580c}.btn-refund:hover{background:#fed7aa}
+.btn-cancel{background:#fee2e2;color:#dc2626}.btn-cancel:hover{background:#fecaca}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:0}
+.action-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);text-align:center;cursor:pointer;transition:all .2s;border:1.5px solid transparent}
+.action-card:hover{border-color:#0052CC;transform:translateY(-2px)}
+.action-card .action-icon{font-size:1.4rem;margin-bottom:8px}
+.action-card .action-label{font-size:.8rem;font-weight:600;color:#374151}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:560px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#0a0e27;margin-bottom:16px}
+.order-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.detail-item{background:#f8fafc;border-radius:8px;padding:12px}
+.detail-label{font-size:.75rem;color:#64748b;margin-bottom:4px}
+.detail-value{font-size:.875rem;font-weight:600;color:#0a0e27}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.btn-primary{background:#0052CC;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.btn-secondary{background:#f1f5f9;color:#374151;border:none;border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.site-footer{background:#0a0e27;padding:28px 0;margin-top:auto}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:900px){.quick-actions{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%}.sidebar-card{position:static}.table-wrap{overflow-x:auto}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-header"><i class="fas fa-headset"></i> Support Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="icon"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a>
+        <a href="index.html"><span class="icon"><i class="fas fa-ticket-alt"></i></span> Tickets</a>
+        <a href="live-chat.html"><span class="icon"><i class="fas fa-comments"></i></span> Live Chat</a>
+        <a href="disputes.html"><span class="icon"><i class="fas fa-balance-scale"></i></span> Disputes</a>
+        <div class="divider"></div>
+        <a href="orders.html" class="active"><span class="icon"><i class="fas fa-box"></i></span> Orders</a>
+        <a href="refunds.html"><span class="icon"><i class="fas fa-undo-alt"></i></span> Refunds</a>
+        <a href="users.html"><span class="icon"><i class="fas fa-user-check"></i></span> Users</a>
+        <div class="divider"></div>
+        <a href="knowledge-base.html"><span class="icon"><i class="fas fa-book-open"></i></span> Knowledge Base</a>
+        <a href="announcements.html"><span class="icon"><i class="fas fa-bullhorn"></i></span> Announcements</a>
+        <a href="seller-onboarding.html"><span class="icon"><i class="fas fa-store"></i></span> Seller Onboarding</a>
+        <a href="#"><span class="icon"><i class="fas fa-robot"></i></span> Chatbot</a>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-title"><i class="fas fa-box" style="color:#0052CC"></i> Order Assistance</div>
+
+    <!-- Search -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-search" style="color:#0052CC"></i> Order Lookup</div>
+      <div class="search-bar">
+        <input class="search-input" id="order-search" placeholder="Enter Order ID (e.g. ORD-9041) or customer email…">
+        <button class="btn-search" onclick="lookupOrder()"><i class="fas fa-search"></i> Search</button>
+      </div>
+      <div id="search-result" style="margin-top:14px"></div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-bolt" style="color:#f97316"></i> Quick Actions</div>
+      <div class="quick-actions">
+        <div class="action-card" onclick="showToast('Opening buyer contact form…')">
+          <div class="action-icon" style="color:#0052CC"><i class="fas fa-envelope"></i></div>
+          <div class="action-label">Contact Buyer</div>
+        </div>
+        <div class="action-card" onclick="showToast('Opening seller contact form…')">
+          <div class="action-icon" style="color:#7c3aed"><i class="fas fa-store"></i></div>
+          <div class="action-label">Contact Seller</div>
+        </div>
+        <div class="action-card" onclick="showToast('Redirecting to refund manager…')">
+          <div class="action-icon" style="color:#ea580c"><i class="fas fa-undo-alt"></i></div>
+          <div class="action-label">Initiate Refund</div>
+        </div>
+        <div class="action-card" onclick="confirmCancel()">
+          <div class="action-icon" style="color:#dc2626"><i class="fas fa-times-circle"></i></div>
+          <div class="action-label">Cancel Order</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Needing Attention -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-exclamation-triangle" style="color:#f97316"></i> Orders Needing Attention</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Order ID</th><th>Customer</th><th>Seller</th><th>Total</th><th>Issue</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#" style="color:#0052CC;font-weight:600;text-decoration:none" onclick="openOrderModal('ORD-9041');return false">#ORD-9041</a></td>
+              <td>Adaeze Mensah</td><td>TechMart NG</td><td>$124.00</td>
+              <td><span class="badge badge-red">Not Delivered</span></td>
+              <td><span class="badge badge-orange">Escalated</span></td>
+              <td>
+                <button class="btn-sm btn-buyer"><i class="fas fa-envelope"></i> Buyer</button>
+                <button class="btn-sm btn-seller"><i class="fas fa-store"></i> Seller</button>
+                <button class="btn-sm btn-refund"><i class="fas fa-undo-alt"></i> Refund</button>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="#" style="color:#0052CC;font-weight:600;text-decoration:none" onclick="openOrderModal('ORD-8812');return false">#ORD-8812</a></td>
+              <td>James Okafor</td><td>GlobalGoods</td><td>$78.50</td>
+              <td><span class="badge badge-orange">Wrong Item</span></td>
+              <td><span class="badge badge-blue">In Review</span></td>
+              <td>
+                <button class="btn-sm btn-buyer"><i class="fas fa-envelope"></i> Buyer</button>
+                <button class="btn-sm btn-seller"><i class="fas fa-store"></i> Seller</button>
+                <button class="btn-sm btn-cancel"><i class="fas fa-times"></i> Cancel</button>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="#" style="color:#0052CC;font-weight:600;text-decoration:none" onclick="openOrderModal('ORD-7730');return false">#ORD-7730</a></td>
+              <td>Li Chen</td><td>SkyDeal Store</td><td>$340.00</td>
+              <td><span class="badge badge-red">Payment Failed</span></td>
+              <td><span class="badge badge-gray">Pending</span></td>
+              <td>
+                <button class="btn-sm btn-buyer"><i class="fas fa-envelope"></i> Buyer</button>
+                <button class="btn-sm btn-refund"><i class="fas fa-undo-alt"></i> Refund</button>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="#" style="color:#0052CC;font-weight:600;text-decoration:none" onclick="openOrderModal('ORD-7641');return false">#ORD-7641</a></td>
+              <td>Kwame Asante</td><td>PrimeTech</td><td>$215.00</td>
+              <td><span class="badge badge-orange">Delayed</span></td>
+              <td><span class="badge badge-blue">In Transit</span></td>
+              <td>
+                <button class="btn-sm btn-buyer"><i class="fas fa-envelope"></i> Buyer</button>
+                <button class="btn-sm btn-seller"><i class="fas fa-store"></i> Seller</button>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="#" style="color:#0052CC;font-weight:600;text-decoration:none" onclick="openOrderModal('ORD-7501');return false">#ORD-7501</a></td>
+              <td>Priya Nair</td><td>FashionHub</td><td>$55.00</td>
+              <td><span class="badge badge-gray">Quality Issue</span></td>
+              <td><span class="badge badge-orange">Open</span></td>
+              <td>
+                <button class="btn-sm btn-buyer"><i class="fas fa-envelope"></i> Buyer</button>
+                <button class="btn-sm btn-seller"><i class="fas fa-store"></i> Seller</button>
+                <button class="btn-sm btn-refund"><i class="fas fa-undo-alt"></i> Refund</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-box" style="color:#0052CC"></i> Order Detail — <span id="modal-order-id"></span></div>
+    <div class="order-detail-grid">
+      <div class="detail-item"><div class="detail-label">Customer</div><div class="detail-value" id="modal-customer">Adaeze Mensah</div></div>
+      <div class="detail-item"><div class="detail-label">Seller</div><div class="detail-value" id="modal-seller">TechMart NG</div></div>
+      <div class="detail-item"><div class="detail-label">Order Date</div><div class="detail-value">Dec 10, 2024</div></div>
+      <div class="detail-item"><div class="detail-label">Total</div><div class="detail-value" id="modal-total">$124.00</div></div>
+      <div class="detail-item"><div class="detail-label">Payment Method</div><div class="detail-value">Debit Card</div></div>
+      <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value"><span class="badge badge-orange">In Transit</span></div></div>
+    </div>
+    <p style="font-size:.85rem;color:#64748b;margin-bottom:16px"><strong>Items:</strong> 1x Wireless Headphones (Black) · Qty: 1 · $124.00</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="document.getElementById('order-modal').classList.remove('open')">Close</button>
+      <button class="btn-primary" style="background:#ea580c" onclick="showToast('Refund initiated');document.getElementById('order-modal').classList.remove('open')"><i class="fas fa-undo-alt"></i> Initiate Refund</button>
+      <button class="btn-primary" onclick="showToast('Buyer contacted');document.getElementById('order-modal').classList.remove('open')"><i class="fas fa-envelope"></i> Contact Buyer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:#0052CC;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;font-weight:500;z-index:3000;opacity:0;transition:opacity .3s;pointer-events:none"></div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. All rights reserved. &nbsp;|&nbsp;
+      <a href="../privacy.html" style="color:rgba(255,255,255,.5);text-decoration:none">Privacy</a> &nbsp;|&nbsp;
+      <a href="../terms.html" style="color:rgba(255,255,255,.5);text-decoration:none">Terms</a> &nbsp;|&nbsp;
+      <a href="../contact.html" style="color:rgba(255,255,255,.5);text-decoration:none">Contact</a>
+    </p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+const orders={
+  'ORD-9041':{customer:'Adaeze Mensah',seller:'TechMart NG',total:'$124.00'},
+  'ORD-8812':{customer:'James Okafor',seller:'GlobalGoods',total:'$78.50'},
+  'ORD-7730':{customer:'Li Chen',seller:'SkyDeal Store',total:'$340.00'},
+  'ORD-7641':{customer:'Kwame Asante',seller:'PrimeTech',total:'$215.00'},
+  'ORD-7501':{customer:'Priya Nair',seller:'FashionHub',total:'$55.00'}
+};
+function openOrderModal(id){
+  const o=orders[id]||{customer:'—',seller:'—',total:'—'};
+  document.getElementById('modal-order-id').textContent='#'+escapeHtml(id);
+  document.getElementById('modal-customer').textContent=o.customer;
+  document.getElementById('modal-seller').textContent=o.seller;
+  document.getElementById('modal-total').textContent=o.total;
+  document.getElementById('order-modal').classList.add('open');
+}
+document.getElementById('order-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+function lookupOrder(){
+  const q=document.getElementById('order-search').value.trim().toUpperCase().replace('ORD-','');
+  const key='ORD-'+q;
+  const res=document.getElementById('search-result');
+  if(orders[key]){
+    const o=orders[key];
+    res.innerHTML='<div style="background:#eff6ff;border:1.5px solid #dbeafe;border-radius:8px;padding:14px;font-size:.875rem"><strong style="color:#0052CC">'+escapeHtml(key)+'</strong> found — Customer: <strong>'+escapeHtml(o.customer)+'</strong>, Seller: <strong>'+escapeHtml(o.seller)+'</strong>, Total: <strong>'+escapeHtml(o.total)+'</strong> <button onclick="openOrderModal(\''+escapeHtml(key)+'\')" style="margin-left:12px;background:#0052CC;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:.8rem;cursor:pointer">View Detail</button></div>';
+  } else {
+    res.innerHTML='<div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:8px;padding:14px;font-size:.875rem;color:#92400e">No order found matching that ID or email. Please verify and try again.</div>';
+  }
+}
+function confirmCancel(){
+  if(confirm('Are you sure you want to cancel this order? This action cannot be undone.'))showToast('Order cancelled successfully.');
+}
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.style.opacity='0',3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advertising Billing | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .balance-banner{background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:16px;padding:28px 32px;color:#fff;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+    .balance-left h2{font-family:'Poppins',sans-serif;font-size:2.4rem;font-weight:800;margin-bottom:4px}
+    .balance-left p{opacity:.85;font-size:.9rem}
+    .balance-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;background:#fff}
+    .form-control:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .add-funds-form{display:grid;grid-template-columns:1fr 1fr auto;gap:16px;align-items:flex-end}
+    @media(max-width:700px){.add-funds-form{grid-template-columns:1fr}}
+    .quick-amounts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+    .quick-btn{padding:6px 16px;border-radius:8px;font-size:.83rem;font-weight:600;cursor:pointer;border:1.5px solid #0052CC;background:#fff;color:#0052CC;transition:all .2s;font-family:'Inter',sans-serif}
+    .quick-btn:hover,.quick-btn.selected{background:#0052CC;color:#fff}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none;white-space:nowrap}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .spend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:8px}
+    .spend-card{background:#f8faff;border:1.5px solid #e8eeff;border-radius:12px;padding:16px}
+    .spend-name{font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .spend-amount{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0052CC}
+    .spend-budget{font-size:.75rem;color:#94a3b8;margin-top:2px}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #f1f5f9}
+    .toggle-label h4{font-size:.9rem;font-weight:600;color:#374151}
+    .toggle-label p{font-size:.8rem;color:#94a3b8;margin-top:2px}
+    .toggle-switch{position:relative;width:48px;height:26px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#e2e8f0;border-radius:26px;transition:.3s}
+    .toggle-slider:before{content:'';position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+    .toggle-switch input:checked+.toggle-slider{background:#0052CC}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(22px)}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px;margin-top:20px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header"><nav><div class="nav-container">
+  <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+  <div class="nav-controls">
+    <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+    <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+  </div>
+</div></nav></header>
+
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">AD</div>
+      <div class="sidebar-name">Advertiser Hub</div>
+      <div class="sidebar-email">advertiser@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fas fa-gauge"></i> Overview</a></li>
+        <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="create.html"><i class="fas fa-circle-plus"></i> Create Campaign</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="billing.html" class="active"><i class="fas fa-credit-card"></i> Billing</a></li>
+      </ul>
+    </aside>
+
+    <section class="content-area">
+      <div class="page-header">
+        <h1><i class="fas fa-credit-card" style="color:#0052CC"></i> Advertising Billing</h1>
+      </div>
+
+      <!-- Balance Banner -->
+      <div class="balance-banner">
+        <div class="balance-left">
+          <h2><i class="fas fa-wallet" style="opacity:.8;font-size:1.8rem"></i> $450.00</h2>
+          <p>Ad credit remaining &nbsp;·&nbsp; Auto top-up is <strong>ON</strong></p>
+        </div>
+        <div class="balance-right">
+          <span style="font-size:.82rem;opacity:.8">Last funded: Mar 18, 2025</span>
+          <span style="font-size:.82rem;opacity:.8">Threshold: $50.00 triggers top-up of $200</span>
+        </div>
+      </div>
+
+      <!-- Add Funds -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-plus-circle"></i> Add Funds</div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:.82rem;font-weight:500;color:#374151;display:block;margin-bottom:8px">Quick amounts:</label>
+          <div class="quick-amounts">
+            <button class="quick-btn">$50</button>
+            <button class="quick-btn selected">$100</button>
+            <button class="quick-btn">$200</button>
+            <button class="quick-btn">$500</button>
+            <button class="quick-btn">$1,000</button>
+          </div>
+        </div>
+        <div class="add-funds-form">
+          <div class="form-group">
+            <label class="form-label">Amount (USD)</label>
+            <input type="number" class="form-control" value="100" min="10" step="10"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select class="form-control">
+              <option>💳 Visa ending in 4242</option>
+              <option>💳 Mastercard ending in 8810</option>
+              <option>🏦 Ad Wallet Balance</option>
+              <option>+ Add New Card</option>
+            </select>
+          </div>
+          <button class="btn btn-primary"><i class="fas fa-plus"></i> Add Funds</button>
+        </div>
+      </div>
+
+      <!-- Active Campaign Spend Summary -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-bullhorn"></i> Active Campaign Spend Summary</div>
+        <div class="spend-grid">
+          <div class="spend-card">
+            <div class="spend-name">Spring Sale Banner</div>
+            <div class="spend-amount">$412 spent</div>
+            <div class="spend-budget">of $600 budget</div>
+          </div>
+          <div class="spend-card">
+            <div class="spend-name">Electronics Sponsored</div>
+            <div class="spend-amount">$694 spent</div>
+            <div class="spend-budget">of $800 budget</div>
+          </div>
+          <div class="spend-card">
+            <div class="spend-name">Search Boost — Fashion</div>
+            <div class="spend-amount">$388 spent</div>
+            <div class="spend-budget">of $400 budget</div>
+          </div>
+          <div class="spend-card">
+            <div class="spend-name">Retargeting — Cart Abandon</div>
+            <div class="spend-amount">$340 spent</div>
+            <div class="spend-budget">of $500 budget</div>
+          </div>
+        </div>
+        <p style="font-size:.82rem;color:#94a3b8;margin-top:8px"><i class="fas fa-circle-info"></i> Total active spend: <strong style="color:#374151">$1,834</strong> across 4 campaigns</p>
+      </div>
+
+      <!-- Auto Top-Up Settings -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-rotate"></i> Auto Top-Up Settings</div>
+        <div class="toggle-row">
+          <div class="toggle-label">
+            <h4>Enable Auto Top-Up</h4>
+            <p>Automatically add funds when balance falls below threshold</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Top-Up Amount ($)</label>
+            <input type="number" class="form-control" value="200"/>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Trigger When Balance Below ($)</label>
+            <input type="number" class="form-control" value="50"/>
+          </div>
+        </div>
+        <div style="margin-top:16px;text-align:right">
+          <button class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Save Settings</button>
+        </div>
+      </div>
+
+      <!-- Billing History -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-clock-rotate-left"></i> Billing History</div>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance After</th><th>Status</th><th>Invoice</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>24 Mar 2025</td>
+                <td>Campaign Spend — Spring Sale Banner</td>
+                <td style="color:#dc2626">−$82.40</td>
+                <td>$450.00</td>
+                <td><span class="badge badge-green">Settled</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Invoice</button></td>
+              </tr>
+              <tr>
+                <td>22 Mar 2025</td>
+                <td>Campaign Spend — Electronics Sponsored</td>
+                <td style="color:#dc2626">−$124.60</td>
+                <td>$532.40</td>
+                <td><span class="badge badge-green">Settled</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Invoice</button></td>
+              </tr>
+              <tr>
+                <td>18 Mar 2025</td>
+                <td>Auto Top-Up — Visa ending 4242</td>
+                <td style="color:#059669">+$200.00</td>
+                <td>$657.00</td>
+                <td><span class="badge badge-green">Paid</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Invoice</button></td>
+              </tr>
+              <tr>
+                <td>15 Mar 2025</td>
+                <td>Campaign Spend — Search Boost Fashion</td>
+                <td style="color:#dc2626">−$96.20</td>
+                <td>$457.00</td>
+                <td><span class="badge badge-green">Settled</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Invoice</button></td>
+              </tr>
+              <tr>
+                <td>10 Mar 2025</td>
+                <td>Manual Top-Up — Visa ending 4242</td>
+                <td style="color:#059669">+$300.00</td>
+                <td>$553.20</td>
+                <td><span class="badge badge-green">Paid</span></td>
+                <td><button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Invoice</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../assets/js/main.js" defer></script>
+<script>
+  document.querySelectorAll('.quick-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.quick-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      const amount=btn.textContent.replace(/[$,]/g,'');
+      const input=document.querySelector('.add-funds-form input[type=number]');
+      if(input) input.value=amount;
+    });
+  });
+</script>
+</body>
+</html>
