@@ -14,6 +14,7 @@ import corsConfig from './config/cors.js';
 import websocketConfig from './config/websocket.js';
 import { globalRateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { ipBlocker, xssSanitiser, requestLogger, authLimiter, apiLimiter } from './middleware/security.middleware.js';
 
 import authRoutes from './routes/auth.routes.js';
 import socialAuthRoutes from './routes/socialAuth.routes.js';
@@ -79,7 +80,7 @@ import paymentsRoutes from './routes/payments.js';
 import adminPricingRoutes from './routes/pricing.js';
 import reportsRoutes from './routes/reports.js';
 import payoutsRoutes from './routes/payouts.js';
-import languageRoutes, { adminLanguageRouter as adminLanguageRoutes } from './routes/language.routes.js';
+
 import { initializeWebSocket } from './services/websocket.service.js';
 import { initializeWebRTC } from './services/webrtc.service.js';
 
@@ -95,10 +96,13 @@ initializeWebRTC(io);
 // ─── Core Middleware ─────────────────────────────────────────────────────────
 app.use(helmet());
 app.use(corsConfig);
+app.use(ipBlocker);
+app.use(requestLogger);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(globalRateLimiter);
+app.use(xssSanitiser);
 
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
@@ -108,8 +112,8 @@ app.get('/health', (_req, res) => {
 // ─── API Routes ──────────────────────────────────────────────────────────────
 const API = '/api/v1';
 
-app.use(`${API}/auth`, authRoutes);
-app.use(`${API}/auth`, socialAuthRoutes);
+app.use(`${API}/auth`, authLimiter, authRoutes);
+app.use(`${API}/auth`, authLimiter, socialAuthRoutes);
 app.use(`${API}/users`, userRoutes);
 app.use(`${API}/products`, productRoutes);
 app.use(`${API}/orders`, orderRoutes);
@@ -176,8 +180,7 @@ app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
 app.use(`${API}/admin/payouts`, payoutsRoutes);
-app.use(`${API}/languages`, languageRoutes);
-app.use(`${API}/admin/languages`, adminLanguageRoutes);
+
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);
