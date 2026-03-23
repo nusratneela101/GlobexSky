@@ -33,15 +33,17 @@
     .stat-info .val{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0A0E27;line-height:1}
     .stat-info .lbl{font-size:.78rem;color:#64748b;margin-top:4px}
     .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
-    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
     .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0A0E27;display:flex;align-items:center;gap:8px}
     .card-title i{color:#0052CC}
+    .card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
     .btn-primary{background:#0052CC;color:#fff}
     .btn-primary:hover{background:#003d99}
     .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
     .btn-secondary:hover{background:#e2e8f0}
     .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
     .btn-danger{background:#ef4444;color:#fff}
     .btn-warning{background:#f59e0b;color:#fff}
     .btn-sm{padding:5px 12px;font-size:.78rem}
@@ -56,12 +58,39 @@
     .badge-red{background:#fee2e2;color:#dc2626}
     .badge-gray{background:#f1f5f9;color:#64748b}
     .badge-purple{background:#f5f3ff;color:#7c3aed}
-    .search-bar{display:flex;align-items:center;gap:10px;background:#f4f6fa;border-radius:8px;padding:8px 14px;font-size:.88rem;color:#64748b;border:1.5px solid #e2e8f0;min-width:240px}
+    /* Toggle switch */
+    .toggle-switch{position:relative;display:inline-block;width:40px;height:22px}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:22px;transition:.3s}
+    .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+    input:checked + .toggle-slider{background:#0052CC}
+    input:checked + .toggle-slider:before{transform:translateX(18px)}
+    /* Inline edit */
+    .editable{cursor:pointer;border-bottom:1px dashed #94a3b8;outline:none}
+    .editable:hover{background:#f0f9ff;border-radius:4px}
+    .editable:focus{background:#eff6ff;border-color:#0052CC;padding:2px 4px}
+    /* Progress bar */
+    .progress-wrap{display:flex;align-items:center;gap:8px}
+    .progress-bar-bg{flex:1;height:6px;background:#e2e8f0;border-radius:3px;min-width:60px}
+    .progress-bar-fill{height:6px;border-radius:3px;background:#0052CC;transition:width .4s}
+    .progress-pct{font-size:.75rem;color:#64748b;white-space:nowrap}
+    /* Search */
+    .search-bar{display:flex;align-items:center;gap:10px;background:#f4f6fa;border-radius:8px;padding:8px 14px;font-size:.88rem;color:#64748b;border:1.5px solid #e2e8f0;min-width:220px}
     .search-bar input{background:none;border:none;outline:none;font-size:.88rem;color:#374151;flex:1;font-family:'Inter',sans-serif}
-    .filter-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-    .select-filter{border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 12px;font-size:.85rem;font-family:'Inter',sans-serif;color:#374151;background:#fff;outline:none}
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:.2s}
+    .modal-overlay.open{opacity:1;visibility:visible}
+    .modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);transform:translateY(16px);transition:.2s}
+    .modal-overlay.open .modal{transform:none}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0A0E27}
+    .modal-close{background:none;border:none;cursor:pointer;color:#94a3b8;font-size:1.1rem;padding:4px}
+    .modal-close:hover{color:#374151}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-input,.form-select{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#374151;outline:none;background:#fff}
+    .form-input:focus,.form-select:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
     @media(max-width:900px){.admin-sidebar{display:none}.content-wrap{padding:16px}}
-    .admin-auth-check{display:none}
   </style>
 </head>
 <body>
@@ -72,11 +101,8 @@
       <a href="index.html"><i class="fas fa-gauge"></i> Dashboard</a>
       <div class="admin-nav-section">Management</div>
       <a href="users.html"><i class="fas fa-users"></i> Users</a>
-      <div class="admin-nav-section">Management</div>
       <a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a>
-      <div class="admin-nav-section">Management</div>
       <a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a>
-      <div class="admin-nav-section">Management</div>
       <a href="suppliers.html"><i class="fas fa-store"></i> Suppliers</a>
       <div class="admin-nav-section">Finance</div>
       <a href="commissions.html"><i class="fas fa-percent"></i> Commissions</a>
@@ -87,11 +113,10 @@
       <a href="reports.html"><i class="fas fa-chart-bar"></i> Reports</a>
       <div class="admin-nav-section">Settings</div>
       <a href="languages.html" class="active"><i class="fas fa-language"></i> Languages</a>
-      <a href="livestream.html"><i class="fas fa-video"></i> Livestream</a>
       <a href="settings.html"><i class="fas fa-gear"></i> Settings</a>
-      
     </nav>
   </aside>
+
   <div class="admin-main">
     <div class="admin-topbar">
       <div class="topbar-title">Language Management</div>
@@ -101,38 +126,311 @@
         <div class="admin-avatar" title="Admin">A</div>
       </div>
     </div>
+
     <div class="content-wrap">
-  <div class="card">
-    <div class="card-header"><div class="card-title"><i class="fas fa-language"></i> Installed Languages</div><button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Language</button></div>
-    <table class="table">
-      <thead><tr><th>Language</th><th>Code</th><th>Direction</th><th>Translated</th><th>Default</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>
-        <tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">🇺🇸</span> English</div></td><td>en</td><td>LTR</td><td>100%</td><td><span class="badge badge-green">Default</span></td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i> Edit</button></td></tr>
-        <tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">🇧🇩</span> Bengali (বাংলা)</div></td><td>bn</td><td>LTR</td><td>94%</td><td>—</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-primary btn-sm"><i class="fas fa-star"></i> Set Default</button></div></td></tr>
-        <tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">🇨🇳</span> Chinese (中文)</div></td><td>zh</td><td>LTR</td><td>87%</td><td>—</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fas fa-eye-slash"></i></button></div></td></tr>
-        <tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">🇸🇦</span> Arabic (عربي)</div></td><td>ar</td><td>RTL</td><td>79%</td><td>—</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fas fa-eye-slash"></i></button></div></td></tr>
-        <tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">🇫🇷</span> French (Français)</div></td><td>fr</td><td>LTR</td><td>62%</td><td>—</td><td><span class="badge badge-orange">In Progress</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title"><i class="fas fa-plus-circle"></i> Add New Language</div></div>
-    <form onsubmit="return false" style="max-width:480px">
-      <div style="margin-bottom:16px"><label style="display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px">Language Name</label><input type="text" placeholder="e.g. German" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none"></div>
-      <div style="margin-bottom:16px"><label style="display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px">Language Code</label><input type="text" placeholder="e.g. de" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none"></div>
-      <div style="margin-bottom:16px"><label style="display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px">Direction</label>
-        <select style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none"><option>LTR (Left to Right)</option><option>RTL (Right to Left)</option></select>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#eff6ff"><i class="fas fa-language" style="color:#0052CC"></i></div>
+          <div class="stat-info"><div class="val">20</div><div class="lbl">Total Languages</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#d1fae5"><i class="fas fa-circle-check" style="color:#059669"></i></div>
+          <div class="stat-info"><div class="val" id="stat-active">20</div><div class="lbl">Active</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#f5f3ff"><i class="fas fa-align-right" style="color:#7c3aed"></i></div>
+          <div class="stat-info"><div class="val">3</div><div class="lbl">RTL Languages</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fff7ed"><i class="fas fa-flag" style="color:#f97316"></i></div>
+          <div class="stat-info"><div class="val">1</div><div class="lbl">Default Language</div></div>
+        </div>
       </div>
-      <div style="margin-bottom:20px"><label style="display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px">Upload Translation File (.json)</label><input type="file" accept=".json" style="font-size:.85rem"></div>
-      <button class="btn btn-primary"><i class="fas fa-plus"></i> Add Language</button>
-    </form>
-  </div>
+
+      <!-- Language Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-language"></i> Installed Languages</div>
+          <div class="card-actions">
+            <div class="search-bar"><i class="fas fa-search"></i><input id="lang-search" type="search" placeholder="Search languages…"/></div>
+            <button class="btn btn-secondary btn-sm" id="btn-import" title="Import JSON"><i class="fas fa-upload"></i> Import</button>
+            <button class="btn btn-secondary btn-sm" id="btn-export" title="Export all JSON"><i class="fas fa-download"></i> Export</button>
+            <button class="btn btn-primary btn-sm" id="btn-add-lang"><i class="fas fa-plus"></i> Add Language</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table" id="lang-table">
+            <thead>
+              <tr>
+                <th>Language</th>
+                <th>Code</th>
+                <th>Direction</th>
+                <th>Translation Coverage</th>
+                <th>Default</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="lang-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Add Language Modal -->
+      <div class="modal-overlay" id="add-lang-modal">
+        <div class="modal">
+          <div class="modal-header">
+            <div class="modal-title"><i class="fas fa-plus-circle" style="color:#0052CC;margin-right:8px"></i> Add New Language</div>
+            <button class="modal-close" id="modal-close-btn"><i class="fas fa-times"></i></button>
+          </div>
+          <form id="add-lang-form" onsubmit="return submitAddLang(event)">
+            <div class="form-group">
+              <label class="form-label">Language Name <span style="color:#ef4444">*</span></label>
+              <input type="text" class="form-input" id="new-lang-name" placeholder="e.g. German" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Language Code <span style="color:#ef4444">*</span></label>
+              <input type="text" class="form-input" id="new-lang-code" placeholder="e.g. de" maxlength="5" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Text Direction</label>
+              <select class="form-select" id="new-lang-dir">
+                <option value="ltr">LTR — Left to Right</option>
+                <option value="rtl">RTL — Right to Left</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Flag Emoji</label>
+              <input type="text" class="form-input" id="new-lang-flag" placeholder="e.g. 🇩🇪" maxlength="4"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Upload Translation File (.json)</label>
+              <input type="file" id="new-lang-file" accept=".json" style="font-size:.85rem;width:100%"/>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Language</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Hidden file input for import -->
+      <input type="file" id="import-file-input" accept=".json" style="display:none"/>
+
     </div>
   </div>
+
   <script>
-    if(!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminAuth')) {
-      // Comment out for demo: window.location.href = '../auth/login.html?redirect=admin';
+    /* ── Language data ── */
+    var LANGUAGES = [
+      { code:'en', name:'English',          native:'English',          flag:'🇬🇧', dir:'ltr', coverage:100, isDefault:true,  active:true  },
+      { code:'bn', name:'Bengali',          native:'বাংলা',            flag:'🇧🇩', dir:'ltr', coverage:94,  isDefault:false, active:true  },
+      { code:'ar', name:'Arabic',           native:'العربية',          flag:'🇸🇦', dir:'rtl', coverage:90,  isDefault:false, active:true  },
+      { code:'hi', name:'Hindi',            native:'हिन्दी',           flag:'🇮🇳', dir:'ltr', coverage:88,  isDefault:false, active:true  },
+      { code:'zh', name:'Chinese',          native:'中文',             flag:'🇨🇳', dir:'ltr', coverage:87,  isDefault:false, active:true  },
+      { code:'fr', name:'French',           native:'Français',         flag:'🇫🇷', dir:'ltr', coverage:85,  isDefault:false, active:true  },
+      { code:'es', name:'Spanish',          native:'Español',          flag:'🇪🇸', dir:'ltr', coverage:85,  isDefault:false, active:true  },
+      { code:'pt', name:'Portuguese',       native:'Português',        flag:'🇧🇷', dir:'ltr', coverage:83,  isDefault:false, active:true  },
+      { code:'ru', name:'Russian',          native:'Русский',          flag:'🇷🇺', dir:'ltr', coverage:80,  isDefault:false, active:true  },
+      { code:'de', name:'German',           native:'Deutsch',          flag:'🇩🇪', dir:'ltr', coverage:80,  isDefault:false, active:true  },
+      { code:'ja', name:'Japanese',         native:'日本語',           flag:'🇯🇵', dir:'ltr', coverage:78,  isDefault:false, active:true  },
+      { code:'ko', name:'Korean',           native:'한국어',           flag:'🇰🇷', dir:'ltr', coverage:76,  isDefault:false, active:true  },
+      { code:'tr', name:'Turkish',          native:'Türkçe',           flag:'🇹🇷', dir:'ltr', coverage:75,  isDefault:false, active:true  },
+      { code:'id', name:'Indonesian',       native:'Bahasa Indonesia',  flag:'🇮🇩', dir:'ltr', coverage:74,  isDefault:false, active:true  },
+      { code:'ms', name:'Malay',            native:'Bahasa Melayu',    flag:'🇲🇾', dir:'ltr', coverage:72,  isDefault:false, active:true  },
+      { code:'th', name:'Thai',             native:'ภาษาไทย',         flag:'🇹🇭', dir:'ltr', coverage:70,  isDefault:false, active:true  },
+      { code:'vi', name:'Vietnamese',       native:'Tiếng Việt',       flag:'🇻🇳', dir:'ltr', coverage:70,  isDefault:false, active:true  },
+      { code:'ur', name:'Urdu',             native:'اردو',             flag:'🇵🇰', dir:'rtl', coverage:68,  isDefault:false, active:true  },
+      { code:'fa', name:'Persian',          native:'فارسی',            flag:'🇮🇷', dir:'rtl', coverage:66,  isDefault:false, active:true  },
+      { code:'sw', name:'Swahili',          native:'Kiswahili',        flag:'🇰🇪', dir:'ltr', coverage:65,  isDefault:false, active:true  },
+    ];
+
+    /* ── Render helpers ── */
+    function coverageColor(pct) {
+      if (pct >= 90) return '#0052CC';
+      if (pct >= 70) return '#059669';
+      if (pct >= 50) return '#f59e0b';
+      return '#ef4444';
     }
+
+    function renderTable(filter) {
+      var tbody = document.getElementById('lang-tbody');
+      var rows = LANGUAGES.filter(function(l) {
+        if (!filter) return true;
+        var q = filter.toLowerCase();
+        return l.name.toLowerCase().indexOf(q) !== -1 ||
+               l.native.toLowerCase().indexOf(q) !== -1 ||
+               l.code.toLowerCase().indexOf(q) !== -1;
+      });
+
+      tbody.innerHTML = rows.map(function(lang, idx) {
+        var realIdx = LANGUAGES.indexOf(lang);
+        var coverColor = coverageColor(lang.coverage);
+        return '<tr>' +
+          '<td><div style="display:flex;align-items:center;gap:10px">' +
+            '<span style="font-size:1.3rem">' + lang.flag + '</span>' +
+            '<div>' +
+              '<div style="font-weight:600">' + lang.name + '</div>' +
+              '<div style="font-size:.76rem;color:#94a3b8">' + lang.native + '</div>' +
+            '</div>' +
+          '</div></td>' +
+          '<td><code style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:.82rem">' + lang.code + '</code></td>' +
+          '<td>' +
+            (lang.dir === 'rtl'
+              ? '<span class="badge badge-purple"><i class="fas fa-align-right" style="margin-right:4px"></i>RTL</span>'
+              : '<span class="badge badge-blue"><i class="fas fa-align-left" style="margin-right:4px"></i>LTR</span>') +
+          '</td>' +
+          '<td><div class="progress-wrap">' +
+            '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + lang.coverage + '%;background:' + coverColor + '"></div></div>' +
+            '<span class="progress-pct">' + lang.coverage + '%</span>' +
+          '</div></td>' +
+          '<td>' + (lang.isDefault ? '<span class="badge badge-green">Default</span>' : '<button class="btn btn-sm btn-secondary" onclick="setDefault(' + realIdx + ')">Set Default</button>') + '</td>' +
+          '<td><label class="toggle-switch" title="' + (lang.active ? 'Disable' : 'Enable') + ' language">' +
+            '<input type="checkbox" ' + (lang.active ? 'checked' : '') + ' onchange="toggleActive(' + realIdx + ', this)"/>' +
+            '<span class="toggle-slider"></span>' +
+          '</label></td>' +
+          '<td><div style="display:flex;gap:6px">' +
+            '<button class="btn btn-sm btn-secondary" onclick="exportLang(\'' + lang.code + '\')" title="Export translations"><i class="fas fa-download"></i></button>' +
+            '<button class="btn btn-sm btn-secondary" onclick="editLang(' + realIdx + ')" title="Edit"><i class="fas fa-pen"></i></button>' +
+            (lang.isDefault ? '' : '<button class="btn btn-sm btn-danger" onclick="deleteLang(' + realIdx + ')" title="Remove"><i class="fas fa-trash"></i></button>') +
+          '</div></td>' +
+        '</tr>';
+      }).join('');
+
+      document.getElementById('stat-active').textContent = LANGUAGES.filter(function(l){ return l.active; }).length;
+    }
+
+    /* ── Actions ── */
+    function toggleActive(idx, cb) {
+      LANGUAGES[idx].active = cb.checked;
+      document.getElementById('stat-active').textContent = LANGUAGES.filter(function(l){ return l.active; }).length;
+    }
+
+    function setDefault(idx) {
+      LANGUAGES.forEach(function(l){ l.isDefault = false; });
+      LANGUAGES[idx].isDefault = true;
+      renderTable(document.getElementById('lang-search').value);
+    }
+
+    function deleteLang(idx) {
+      if (!confirm('Remove language "' + LANGUAGES[idx].name + '"?')) return;
+      LANGUAGES.splice(idx, 1);
+      renderTable(document.getElementById('lang-search').value);
+    }
+
+    function editLang(idx) {
+      var lang = LANGUAGES[idx];
+      document.getElementById('new-lang-name').value  = lang.name;
+      document.getElementById('new-lang-code').value  = lang.code;
+      document.getElementById('new-lang-dir').value   = lang.dir;
+      document.getElementById('new-lang-flag').value  = lang.flag;
+      document.getElementById('add-lang-modal').classList.add('open');
+    }
+
+    function exportLang(code) {
+      fetch('/locales/' + code + '.json')
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+          var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = code + '.json';
+          a.click();
+          URL.revokeObjectURL(a.href);
+        })
+        .catch(function() { alert('Could not fetch locale file for ' + code); });
+    }
+
+    function exportAll() {
+      var all = {};
+      var codes = LANGUAGES.map(function(l){ return l.code; });
+      var promises = codes.map(function(code) {
+        return fetch('/locales/' + code + '.json')
+          .then(function(r){ return r.json(); })
+          .then(function(data){ all[code] = data; })
+          .catch(function(){});
+      });
+      Promise.all(promises).then(function() {
+        var blob = new Blob([JSON.stringify(all, null, 2)], { type:'application/json' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'all-translations.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+    }
+
+    function submitAddLang(e) {
+      e.preventDefault();
+      var name = document.getElementById('new-lang-name').value.trim();
+      var code = document.getElementById('new-lang-code').value.trim().toLowerCase();
+      var dir  = document.getElementById('new-lang-dir').value;
+      var flag = document.getElementById('new-lang-flag').value.trim() || '🏳';
+      if (!name || !code) { alert('Name and Code are required.'); return false; }
+      var exists = LANGUAGES.some(function(l){ return l.code === code; });
+      if (exists) {
+        // Update existing
+        LANGUAGES.forEach(function(l) {
+          if (l.code === code) { l.name = name; l.dir = dir; l.flag = flag; }
+        });
+      } else {
+        LANGUAGES.push({ code:code, name:name, native:name, flag:flag, dir:dir, coverage:0, isDefault:false, active:true });
+      }
+      document.getElementById('add-lang-form').reset();
+      document.getElementById('add-lang-modal').classList.remove('open');
+      renderTable('');
+      return false;
+    }
+
+    /* ── Search ── */
+    document.getElementById('lang-search').addEventListener('input', function() {
+      renderTable(this.value.trim());
+    });
+
+    /* ── Modal open/close ── */
+    document.getElementById('btn-add-lang').addEventListener('click', function() {
+      document.getElementById('add-lang-form').reset();
+      document.getElementById('add-lang-modal').classList.add('open');
+    });
+    document.getElementById('modal-close-btn').addEventListener('click', function() {
+      document.getElementById('add-lang-modal').classList.remove('open');
+    });
+    document.getElementById('modal-cancel-btn').addEventListener('click', function() {
+      document.getElementById('add-lang-modal').classList.remove('open');
+    });
+    document.getElementById('add-lang-modal').addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+
+    /* ── Export / Import buttons ── */
+    document.getElementById('btn-export').addEventListener('click', exportAll);
+    document.getElementById('btn-import').addEventListener('click', function() {
+      document.getElementById('import-file-input').click();
+    });
+    document.getElementById('import-file-input').addEventListener('change', function() {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          var data = JSON.parse(evt.target.result);
+          // Expect { code: {...} } or single locale object
+          if (typeof data === 'object' && !Array.isArray(data)) {
+            alert('File imported successfully. In production this would update the locale files on the server.');
+          }
+        } catch(err) {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+      this.value = '';
+    });
+
+    /* ── Init ── */
+    renderTable('');
   </script>
   <script src="../../assets/js/main.js" defer></script>
   <script src="../../assets/js/admin.js" defer></script>

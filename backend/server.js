@@ -80,7 +80,7 @@ import paymentsRoutes from './routes/payments.js';
 import adminPricingRoutes from './routes/pricing.js';
 import reportsRoutes from './routes/reports.js';
 import payoutsRoutes from './routes/payouts.js';
-import gdprRoutes from './routes/gdpr.routes.js';
+
 import { initializeWebSocket } from './services/websocket.service.js';
 import { initializeWebRTC } from './services/webrtc.service.js';
 
@@ -180,7 +180,7 @@ app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
 app.use(`${API}/admin/payouts`, payoutsRoutes);
-app.use(`${API}/gdpr`, gdprRoutes);
+
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);
