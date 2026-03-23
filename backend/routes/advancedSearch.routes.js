@@ -5,6 +5,63 @@ import { authenticate, optionalAuthenticate } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/roleCheck.js';
 import * as ctrl from '../controllers/advancedSearch.controller.js';
 
+/**
+ * @swagger
+ * /api/v1/search:
+ *   get:
+ *     tags: [Search]
+ *     summary: Full-text product search
+ *     description: Search products with filters, sorting, and pagination. Supports category, price range, and rating filters.
+ *     security: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema: { type: string }
+ *         description: Search query string
+ *       - in: query
+ *         name: category_id
+ *         schema: { type: string, format: uuid }
+ *       - in: query
+ *         name: minPrice
+ *         schema: { type: number }
+ *       - in: query
+ *         name: maxPrice
+ *         schema: { type: number }
+ *       - in: query
+ *         name: minRating
+ *         schema: { type: number, minimum: 1, maximum: 5 }
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           enum: [relevance, price_asc, price_desc, newest, rating]
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 20 }
+ *     responses:
+ *       200:
+ *         description: Search results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean }
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *                 total: { type: integer }
+ *                 page: { type: integer }
+ *                 suggestion: { type: string, description: Spelling suggestion if zero results }
+ *       400:
+ *         description: Invalid query parameters
+ */
+
+
 const router = Router();
 
 // ─── Text Search & Autocomplete ───────────────────────────────────────────────

@@ -81,6 +81,7 @@ import adminPricingRoutes from './routes/pricing.js';
 import reportsRoutes from './routes/reports.js';
 import payoutsRoutes from './routes/payouts.js';
 
+import { swaggerUi, swaggerSpec } from './swagger.js';
 import { initializeWebSocket } from './services/websocket.service.js';
 import { initializeWebRTC } from './services/webrtc.service.js';
 
@@ -181,6 +182,9 @@ app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
 app.use(`${API}/admin/payouts`, payoutsRoutes);
 
+// Swagger docs available at /api/docs
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/api/docs.json', (_req, res) => { res.json(swaggerSpec); });
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFoundHandler);

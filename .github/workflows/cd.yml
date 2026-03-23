@@ -1,0 +1,48 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to Railway
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Placeholder: Deploy backend to Railway
+      # Uncomment and configure when Railway token is available
+      # - name: Install Railway CLI
+      #   run: npm install -g @railway/cli
+      #
+      # - name: Deploy to Railway
+      #   run: railway up --service backend
+      #   env:
+      #     RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deployment placeholder
+        run: echo "Backend deployment to Railway is configured. Add RAILWAY_TOKEN secret to enable."
+
+  deploy-frontend:
+    name: Deploy Frontend to Vercel
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Placeholder: Deploy frontend to Vercel
+      # Uncomment and configure when Vercel token is available
+      # - name: Install Vercel CLI
+      #   run: npm install -g vercel
+      #
+      # - name: Deploy to Vercel
+      #   run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+      #   env:
+      #     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      #     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deployment placeholder
+        run: echo "Frontend deployment to Vercel is configured. Add VERCEL_TOKEN secret to enable."

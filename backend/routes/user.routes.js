@@ -5,6 +5,53 @@ import { authenticate } from '../middleware/auth.js';
 import { uploadAvatar } from '../middleware/upload.js';
 import * as ctrl from '../controllers/user.controller.js';
 
+/**
+ * @swagger
+ * /api/v1/users/profile:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get authenticated user's profile
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean }
+ *                 profile:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ *
+ *   put:
+ *     tags: [Users]
+ *     summary: Update user profile
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               full_name: { type: string, example: John Doe }
+ *               phone: { type: string, example: '+1234567890' }
+ *               language: { type: string, example: en }
+ *               currency: { type: string, example: USD }
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
+
+
 const router = Router();
 
 router.use(authenticate);
