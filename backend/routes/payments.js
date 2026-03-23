@@ -1,6 +1,6 @@
 /**
  * Globex Sky — payments.js (route)
- * Payment API routes: Stripe, PayPal, Bank Transfer, Escrow, History, Refund, Webhooks.
+ * Payment API routes: Stripe, PayPal, bKash, Nagad, Bank Transfer, Escrow, History, Refund, Webhooks.
  */
 
 import { Router } from 'express';
@@ -9,6 +9,10 @@ import rateLimit from 'express-rate-limit';
 import { validate } from '../middleware/validator.js';
 import { authenticate } from '../middleware/auth.js';
 import * as ctrl from '../controllers/paymentController.js';
+import stripeGatewayRoutes from './paymentGateways/stripe.js';
+import paypalGatewayRoutes from './paymentGateways/paypal.js';
+import bkashGatewayRoutes from './paymentGateways/bkash.js';
+import nagadGatewayRoutes from './paymentGateways/nagad.js';
 
 const router = Router();
 
@@ -96,5 +100,15 @@ router.post(
 /* ─── Webhooks (no auth — verified by signature) ─────────────────────── */
 router.post('/webhook/stripe', webhookRateLimiter, ctrl.handleStripeWebhook);
 router.post('/webhook/paypal', webhookRateLimiter, ctrl.handlePaypalWebhook);
+
+/* ─── Gateway Sub-Routers ────────────────────────────────────────────── */
+// Full Stripe gateway (create intent, confirm, saved cards, subscriptions, refund, webhook)
+router.use('/stripe', stripeGatewayRoutes);
+// Full PayPal gateway (create order, capture, refund, payout, webhook)
+router.use('/paypal/v2', paypalGatewayRoutes);
+// bKash mobile payment (BD)
+router.use('/bkash', bkashGatewayRoutes);
+// Nagad mobile payment (BD)
+router.use('/nagad', nagadGatewayRoutes);
 
 export default router;
