@@ -473,7 +473,7 @@
   ───────────────────────────────────────────── */
 
   /**
-   * Public i18n object exposed on window.Globex Sky.i18n
+   * Public i18n object exposed on window.GlobexSky.i18n
    * and also as window.i18n for convenience.
    */
   const i18n = {
@@ -507,11 +507,11 @@
     translateDOM: translateDOM,
   };
 
-  // Attach to window.Globex Sky namespace (created by main.js if needed)
-  if (!window.Globex Sky) {
-    window.Globex Sky = {};
+  // Attach to window.GlobexSky namespace (created by main.js if needed)
+  if (!window.GlobexSky) {
+    window.GlobexSky = {};
   }
-  window.Globex Sky.i18n = i18n;
+  window.GlobexSky.i18n = i18n;
 
   // Convenience alias
   window.i18n = i18n;
