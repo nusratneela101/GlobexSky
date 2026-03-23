@@ -16,6 +16,7 @@ import { globalRateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 import authRoutes from './routes/auth.routes.js';
+import socialAuthRoutes from './routes/socialAuth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import productRoutes from './routes/product.routes.js';
 import orderRoutes from './routes/order.routes.js';
@@ -105,6 +106,7 @@ app.get('/health', (_req, res) => {
 const API = '/api/v1';
 
 app.use(`${API}/auth`, authRoutes);
+app.use(`${API}/auth`, socialAuthRoutes);
 app.use(`${API}/users`, userRoutes);
 app.use(`${API}/products`, productRoutes);
 app.use(`${API}/orders`, orderRoutes);
