@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipment Management | Admin | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/admin.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1e293b;background:#f0f2f5;display:flex}
+    .admin-sidebar{width:240px;min-height:100vh;background:#0A0E27;color:#fff;flex-shrink:0;position:sticky;top:0;overflow-y:auto;display:flex;flex-direction:column}
+    .admin-sidebar-logo{padding:20px 20px 0;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:20px}
+    .admin-nav-section{padding:8px 12px 4px;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.8px;text-transform:uppercase;margin-top:8px}
+    .admin-nav a{display:flex;align-items:center;gap:10px;padding:10px 16px;color:rgba(255,255,255,.75);text-decoration:none;font-size:.88rem;border-radius:8px;margin:2px 8px;transition:all .2s}
+    .admin-nav a:hover,.admin-nav a.active{background:rgba(255,255,255,.1);color:#fff}
+    .admin-nav a i{width:18px;text-align:center;font-size:.9rem}
+    .admin-main{flex:1;min-width:0;display:flex;flex-direction:column}
+    .admin-topbar{background:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:10}
+    .topbar-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0A0E27}
+    .topbar-actions{display:flex;align-items:center;gap:12px}
+    .topbar-icon-btn{width:36px;height:36px;border-radius:8px;background:#f4f6fa;border:none;cursor:pointer;color:#374151;font-size:.9rem;display:flex;align-items:center;justify-content:center;position:relative}
+    .topbar-icon-btn .badge-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:1.5px solid #fff}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .content-wrap{padding:24px;flex:1}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px}
+    .stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .stat-info .val{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0A0E27;line-height:1}
+    .stat-info .lbl{font-size:.78rem;color:#64748b;margin-top:4px}
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0A0E27;display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+    .btn{padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .table{width:100%;border-collapse:collapse;font-size:.85rem}
+    .table th{background:#f8faff;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#f5f3ff;color:#7c3aed}
+    .search-bar{display:flex;align-items:center;gap:10px;background:#f4f6fa;border-radius:8px;padding:8px 14px;font-size:.88rem;color:#64748b;border:1.5px solid #e2e8f0;min-width:240px}
+    .search-bar input{background:none;border:none;outline:none;font-size:.88rem;color:#374151;flex:1;font-family:'Inter',sans-serif}
+    .filter-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+    .select-filter{border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 12px;font-size:.85rem;font-family:'Inter',sans-serif;color:#374151;background:#fff;outline:none}
+    @media(max-width:900px){.admin-sidebar{display:none}.content-wrap{padding:16px}}
+    .admin-auth-check{display:none}
+  </style>
+</head>
+<body>
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-logo"><a href="../../index.html"><img src="../../assets/images/logo.png" alt="Globex Sky" width="140" height="44" style="object-fit:contain;filter:brightness(0) invert(1)"></a></div>
+    <nav class="admin-nav">
+      <div class="admin-nav-section">Main</div>
+      <a href="index.html"><i class="fas fa-gauge"></i> Dashboard</a>
+      <div class="admin-nav-section">Management</div>
+      <a href="users.html"><i class="fas fa-users"></i> Users</a>
+      <div class="admin-nav-section">Management</div>
+      <a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a>
+      <div class="admin-nav-section">Management</div>
+      <a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a>
+      <div class="admin-nav-section">Management</div>
+      <a href="suppliers.html"><i class="fas fa-store"></i> Suppliers</a>
+      <div class="admin-nav-section">Finance</div>
+      <a href="commissions.html"><i class="fas fa-percent"></i> Commissions</a>
+      <div class="admin-nav-section">Logistics</div>
+      <a href="shipment.html" class="active"><i class="fas fa-truck"></i> Shipment</a>
+      <div class="admin-nav-section">Marketing</div>
+      <a href="campaigns.html"><i class="fas fa-bullhorn"></i> Campaigns</a>
+      <a href="reports.html"><i class="fas fa-chart-bar"></i> Reports</a>
+      <div class="admin-nav-section">Settings</div>
+      <a href="languages.html"><i class="fas fa-language"></i> Languages</a>
+      <a href="livestream.html"><i class="fas fa-video"></i> Livestream</a>
+      <a href="settings.html"><i class="fas fa-gear"></i> Settings</a>
+      
+    </nav>
+  </aside>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title">Shipment Management</div>
+      <div class="topbar-actions">
+        <button class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        <button class="topbar-icon-btn"><i class="fas fa-question-circle"></i></button>
+        <div class="admin-avatar" title="Admin">A</div>
+      </div>
+    </div>
+    <div class="content-wrap">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-icon" style="background:#eff6ff;color:#0052CC"><i class="fas fa-truck-fast"></i></div><div class="stat-info"><div class="val">3,421</div><div class="lbl">Active Shipments</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#d1fae5;color:#059669"><i class="fas fa-box-open"></i></div><div class="stat-info"><div class="val">18,204</div><div class="lbl">Delivered This Month</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#ffedd5;color:#f97316"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="val">247</div><div class="lbl">Pending Dispatch</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2;color:#dc2626"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-info"><div class="val">34</div><div class="lbl">Exceptions</div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fas fa-handshake"></i> Courier Partners</div><button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Partner</button></div>
+    <table class="table">
+      <thead><tr><th>Courier</th><th>Coverage</th><th>Avg. Delivery</th><th>Active Shipments</th><th>Rate/kg</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pathao</strong></td><td>Nationwide (BD)</td><td>1–2 days</td><td>1,240</td><td>৳50–80/kg</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fas fa-power-off"></i></button></div></td></tr>
+        <tr><td><strong>Paperfly</strong></td><td>Nationwide (BD)</td><td>2–3 days</td><td>864</td><td>৳45–75/kg</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fas fa-power-off"></i></button></div></td></tr>
+        <tr><td><strong>RedX</strong></td><td>Nationwide (BD)</td><td>2–4 days</td><td>521</td><td>৳40–70/kg</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fas fa-power-off"></i></button></div></td></tr>
+        <tr><td><strong>DHL Express</strong></td><td>International</td><td>3–7 days</td><td>796</td><td>৳500–2000/kg</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fas fa-power-off"></i></button></div></td></tr>
+        <tr><td><strong>FedEx</strong></td><td>International</td><td>2–5 days</td><td>0</td><td>৳600–2500/kg</td><td><span class="badge badge-gray">Inactive</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-success"><i class="fas fa-power-off"></i></button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fas fa-map-location-dot"></i> Shipping Zones</div><button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Zone</button></div>
+    <table class="table">
+      <thead><tr><th>Zone Name</th><th>Coverage</th><th>Base Rate</th><th>Per kg Rate</th><th>Free Shipping Threshold</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>Dhaka City</td><td>Inside Dhaka Metropolitan</td><td>৳60</td><td>৳20/kg</td><td>৳500</td><td><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button></td></tr>
+        <tr><td>Outside Dhaka</td><td>Other districts (BD)</td><td>৳100</td><td>৳30/kg</td><td>৳1,000</td><td><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button></td></tr>
+        <tr><td>International</td><td>Outside Bangladesh</td><td>৳500</td><td>৳150/kg</td><td>—</td><td><button class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i></button></td></tr>
+      </tbody>
+    </table>
+  </div>
+    </div>
+  </div>
+  <script>
+    if(!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminAuth')) {
+      // Comment out for demo: window.location.href = '../auth/login.html?redirect=admin';
+    }
+  </script>
+  <script src="../../assets/js/main.js" defer></script>
+  <script src="../../assets/js/admin.js" defer></script>
+</body>
+</html>

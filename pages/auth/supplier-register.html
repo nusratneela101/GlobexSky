@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supplier Registration | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa}
+    .page-nav{background:#fff;box-shadow:0 2px 12px rgba(0,82,204,.08);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;max-width:100%;position:sticky;top:0;z-index:100}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .main-wrap{max-width:820px;margin:40px auto;padding:0 24px 60px}
+    .page-header{text-align:center;margin-bottom:36px}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:#0A0E27;margin-bottom:8px}
+    .page-header p{color:#64748b;font-size:.9rem}
+    .card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0A0E27;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-label span{color:#ef4444;margin-left:2px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;background:#fff}
+    .form-control:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+    .upload-box{border:2px dashed #cbd5e1;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s;color:#64748b;font-size:.88rem}
+    .upload-box:hover{border-color:#0052CC;color:#0052CC}
+    .upload-box i{font-size:1.6rem;margin-bottom:8px;display:block}
+    .btn-primary{background:#0052CC;color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:.95rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary:hover{background:#003d99}
+    .agree-wrap{display:flex;align-items:flex-start;gap:10px;margin-bottom:24px;font-size:.85rem;color:#374151}
+    .agree-wrap input{margin-top:2px;accent-color:#0052CC}
+    .agree-wrap a{color:#0052CC;text-decoration:none;font-weight:500}
+    .footer-link{text-align:center;font-size:.85rem;color:#64748b;margin-top:16px}
+    .footer-link a{color:#0052CC;font-weight:600;text-decoration:none}
+  </style>
+</head>
+<body>
+  <nav class="page-nav">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky" width="160" height="50" style="object-fit:contain"></a>
+    <a href="login.html" style="color:#0052CC;font-size:.88rem;font-weight:500;text-decoration:none"><i class="fas fa-sign-in-alt"></i> Already a supplier? Login</a>
+  </nav>
+  <div class="main-wrap">
+    <div class="page-header">
+      <h1>Become a Supplier on Globex Sky</h1>
+      <p>Join thousands of verified suppliers and reach millions of buyers worldwide.</p>
+    </div>
+    <form id="supplierRegForm" onsubmit="return submitSupReg(event)">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-building"></i> Company Information</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="compName">Company Name <span>*</span></label><input class="form-control" type="text" id="compName" required placeholder="e.g. Global Supplies Ltd."></div>
+          <div class="form-group"><label class="form-label" for="regNo">Business Registration No. <span>*</span></label><input class="form-control" type="text" id="regNo" required placeholder="e.g. REG-2023-1234567"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="country">Country <span>*</span></label>
+            <select class="form-control" id="country" required>
+              <option value="">Select country</option>
+              <option value="BD" selected>Bangladesh</option>
+              <option value="CN">China</option>
+              <option value="IN">India</option>
+              <option value="US">United States</option>
+              <option value="GB">United Kingdom</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label" for="city">City <span>*</span></label><input class="form-control" type="text" id="city" required placeholder="e.g. Dhaka"></div>
+        </div>
+        <div class="form-group"><label class="form-label" for="address">Business Address <span>*</span></label><textarea class="form-control" id="address" rows="2" required placeholder="Full business address"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="category">Main Product Category <span>*</span></label>
+            <select class="form-control" id="category" required>
+              <option value="">Select category</option>
+              <option>Electronics</option><option>Apparel &amp; Fashion</option><option>Home &amp; Living</option><option>Industrial Equipment</option><option>Food &amp; Agriculture</option><option>Health &amp; Beauty</option><option>Toys &amp; Sports</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label" for="employees">Number of Employees</label>
+            <select class="form-control" id="employees">
+              <option value="">Select range</option>
+              <option>1-10</option><option>11-50</option><option>51-200</option><option>201-1000</option><option>1000+</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-user-tie"></i> Contact Person</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="contactName">Full Name <span>*</span></label><input class="form-control" type="text" id="contactName" required placeholder="Your full name"></div>
+          <div class="form-group"><label class="form-label" for="contactTitle">Job Title <span>*</span></label><input class="form-control" type="text" id="contactTitle" required placeholder="e.g. Sales Manager"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="email">Email Address <span>*</span></label><input class="form-control" type="email" id="email" required placeholder="you@company.com"></div>
+          <div class="form-group"><label class="form-label" for="phone">Phone / WhatsApp <span>*</span></label><input class="form-control" type="tel" id="phone" required placeholder="+8801XXXXXXXXX"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="password">Password <span>*</span></label><input class="form-control" type="password" id="password" required minlength="8" placeholder="Min 8 characters"></div>
+          <div class="form-group"><label class="form-label" for="confirmPw">Confirm Password <span>*</span></label><input class="form-control" type="password" id="confirmPw" required minlength="8" placeholder="Re-enter password"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-file-alt"></i> Documents</div>
+        <p style="color:#64748b;font-size:.85rem;margin-bottom:16px">Upload required business documents for verification. Accepted: PDF, JPG, PNG (max 5MB each).</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Trade License / Business Certificate <span>*</span></label>
+            <label class="upload-box"><i class="fas fa-upload"></i>Click to upload trade license<input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" required></label>
+          </div>
+          <div class="form-group">
+            <label class="form-label">National ID / Passport of Owner</label>
+            <label class="upload-box"><i class="fas fa-id-card"></i>Click to upload ID<input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none"></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">TIN / VAT Certificate (optional)</label>
+          <label class="upload-box"><i class="fas fa-file-invoice"></i>Click to upload TIN/VAT<input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none"></label>
+        </div>
+      </div>
+      <div class="agree-wrap">
+        <input type="checkbox" id="agreeTerms" required>
+        <label for="agreeTerms">I agree to the <a href="../terms.html">Terms &amp; Conditions</a> and <a href="../privacy.html">Privacy Policy</a> of Globex Sky. I confirm all information provided is accurate.</label>
+      </div>
+      <div style="text-align:center">
+        <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Submit for Verification</button>
+      </div>
+    </form>
+    <p class="footer-link">Already have an account? <a href="login.html">Log in here</a></p>
+  </div>
+  <script>
+    function submitSupReg(e){
+      e.preventDefault();
+      const p1=document.getElementById('password').value;
+      const p2=document.getElementById('confirmPw').value;
+      if(p1!==p2){alert('Passwords do not match.');return;}
+      alert('Application submitted! Our team will review and contact you within 2-3 business days.');
+      window.location.href='../../index.html';
+    }
+  </script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
