@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Refund Management | Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:100vh;display:flex;flex-direction:column}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.layout{display:flex;flex:1;max-width:1400px;margin:0 auto;width:100%;padding:24px;gap:24px}
+.sidebar{width:240px;flex-shrink:0}
+.sidebar-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;position:sticky;top:86px}
+.sidebar-header{background:#0052CC;padding:20px;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:10px}
+.sidebar-nav{padding:8px 0}
+.sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 20px;text-decoration:none;color:#374151;font-size:.875rem;font-weight:500;transition:all .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{background:#eff6ff;color:#0052CC;border-left:3px solid #0052CC}
+.sidebar-nav a .icon{width:18px;text-align:center}
+.sidebar-nav .divider{height:1px;background:#f1f5f9;margin:6px 0}
+.main{flex:1;min-width:0}
+.page-title{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;gap:16px}
+.stat-icon{width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.stat-icon-blue{background:#eff6ff;color:#0052CC}
+.stat-icon-green{background:#d1fae5;color:#059669}
+.stat-icon-purple{background:#f5f3ff;color:#7c3aed}
+.stat-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+.stat-label{font-size:.78rem;color:#64748b}
+.grid-2{display:grid;grid-template-columns:380px 1fr;gap:20px;margin-bottom:20px}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:.83rem;font-weight:500;color:#374151;margin-bottom:5px}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+.form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+textarea.form-control{min-height:80px;resize:vertical}
+.btn{padding:10px 22px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+table{width:100%;border-collapse:collapse}
+th{background:#f8fafc;font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;padding:10px 14px;text-align:left;white-space:nowrap}
+td{padding:12px 14px;font-size:.85rem;color:#374151;border-bottom:1px solid #f8fafc;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge-pending{background:#fef3c7;color:#d97706}
+.badge-approved{background:#d1fae5;color:#059669}
+.badge-rejected{background:#fee2e2;color:#dc2626}
+.badge-hold{background:#dbeafe;color:#1d4ed8}
+.btn-sm{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:4px;margin:1px}
+.btn-approve{background:#d1fae5;color:#059669}.btn-approve:hover{background:#a7f3d0}
+.btn-deny{background:#fee2e2;color:#dc2626}.btn-deny:hover{background:#fecaca}
+.btn-hold{background:#dbeafe;color:#1d4ed8}.btn-hold:hover{background:#bfdbfe}
+.site-footer{background:#0a0e27;padding:28px 0;margin-top:24px}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:1000px){.grid-2{grid-template-columns:1fr}}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%}.sidebar-card{position:static}.stats-grid{grid-template-columns:1fr}.table-wrap{overflow-x:auto}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-header"><i class="fas fa-headset"></i> Support Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="icon"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a>
+        <a href="index.html"><span class="icon"><i class="fas fa-ticket-alt"></i></span> Tickets</a>
+        <a href="live-chat.html"><span class="icon"><i class="fas fa-comments"></i></span> Live Chat</a>
+        <a href="disputes.html"><span class="icon"><i class="fas fa-balance-scale"></i></span> Disputes</a>
+        <div class="divider"></div>
+        <a href="orders.html"><span class="icon"><i class="fas fa-box"></i></span> Orders</a>
+        <a href="refunds.html" class="active"><span class="icon"><i class="fas fa-undo-alt"></i></span> Refunds</a>
+        <a href="users.html"><span class="icon"><i class="fas fa-user-check"></i></span> Users</a>
+        <div class="divider"></div>
+        <a href="knowledge-base.html"><span class="icon"><i class="fas fa-book-open"></i></span> Knowledge Base</a>
+        <a href="announcements.html"><span class="icon"><i class="fas fa-bullhorn"></i></span> Announcements</a>
+        <a href="seller-onboarding.html"><span class="icon"><i class="fas fa-store"></i></span> Seller Onboarding</a>
+        <a href="#"><span class="icon"><i class="fas fa-robot"></i></span> Chatbot</a>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-title"><i class="fas fa-undo-alt" style="color:#0052CC"></i> Refund Management</div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue"><i class="fas fa-clock"></i></div>
+        <div><div class="stat-value">18</div><div class="stat-label">Pending Refunds</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green"><i class="fas fa-check-circle"></i></div>
+        <div><div class="stat-value">24</div><div class="stat-label">Approved Today</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-purple"><i class="fas fa-dollar-sign"></i></div>
+        <div><div class="stat-value">$12,840</div><div class="stat-label">Refunded This Month</div></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Refund Request Form -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-plus-circle" style="color:#0052CC"></i> New Refund Request</div>
+        <div class="form-group">
+          <label class="form-label">Order ID *</label>
+          <input type="text" class="form-control" placeholder="e.g. ORD-9041" id="rf-order">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Customer Email *</label>
+          <input type="email" class="form-control" placeholder="customer@example.com" id="rf-email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Refund Amount ($) *</label>
+          <input type="number" class="form-control" placeholder="0.00" id="rf-amount" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reason *</label>
+          <select class="form-control" id="rf-reason">
+            <option value="">Select reason</option>
+            <option>Item Not Received</option>
+            <option>Wrong Item Sent</option>
+            <option>Damaged / Defective</option>
+            <option>Not as Described</option>
+            <option>Duplicate Payment</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Evidence / Notes</label>
+          <textarea class="form-control" placeholder="Describe the issue or paste evidence link…" id="rf-notes"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="submitRefund()"><i class="fas fa-paper-plane"></i> Submit Refund</button>
+      </div>
+
+      <!-- Refund Table -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-list" style="color:#0052CC"></i> Refund Requests</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Refund ID</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>#RF-0892</strong></td><td>Adaeze Mensah</td><td>$124.00</td>
+                <td>Item Not Received</td><td>Dec 10</td>
+                <td><span class="badge badge-pending">Pending</span></td>
+                <td>
+                  <button class="btn-sm btn-approve" onclick="setStatus(this,'Approved')"><i class="fas fa-check"></i></button>
+                  <button class="btn-sm btn-deny" onclick="setStatus(this,'Rejected')"><i class="fas fa-times"></i></button>
+                  <button class="btn-sm btn-hold" onclick="setStatus(this,'On Hold')"><i class="fas fa-pause"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#RF-0891</strong></td><td>James Okafor</td><td>$78.50</td>
+                <td>Wrong Item</td><td>Dec 9</td>
+                <td><span class="badge badge-hold">On Hold</span></td>
+                <td>
+                  <button class="btn-sm btn-approve" onclick="setStatus(this,'Approved')"><i class="fas fa-check"></i></button>
+                  <button class="btn-sm btn-deny" onclick="setStatus(this,'Rejected')"><i class="fas fa-times"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#RF-0890</strong></td><td>Li Chen</td><td>$340.00</td>
+                <td>Duplicate Payment</td><td>Dec 8</td>
+                <td><span class="badge badge-approved">Approved</span></td>
+                <td><span style="font-size:.78rem;color:#64748b">Processed</span></td>
+              </tr>
+              <tr>
+                <td><strong>#RF-0889</strong></td><td>Kwame Asante</td><td>$215.00</td>
+                <td>Not as Described</td><td>Dec 7</td>
+                <td><span class="badge badge-pending">Pending</span></td>
+                <td>
+                  <button class="btn-sm btn-approve" onclick="setStatus(this,'Approved')"><i class="fas fa-check"></i></button>
+                  <button class="btn-sm btn-deny" onclick="setStatus(this,'Rejected')"><i class="fas fa-times"></i></button>
+                  <button class="btn-sm btn-hold" onclick="setStatus(this,'On Hold')"><i class="fas fa-pause"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#RF-0888</strong></td><td>Priya Nair</td><td>$55.00</td>
+                <td>Damaged / Defective</td><td>Dec 6</td>
+                <td><span class="badge badge-rejected">Rejected</span></td>
+                <td><span style="font-size:.78rem;color:#64748b">Closed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. All rights reserved. &nbsp;|&nbsp;
+      <a href="../privacy.html" style="color:rgba(255,255,255,.5);text-decoration:none">Privacy</a> &nbsp;|&nbsp;
+      <a href="../terms.html" style="color:rgba(255,255,255,.5);text-decoration:none">Terms</a> &nbsp;|&nbsp;
+      <a href="../contact.html" style="color:rgba(255,255,255,.5);text-decoration:none">Contact</a>
+    </p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function setStatus(btn,status){
+  const td=btn.closest('td');
+  const statusCell=td.previousElementSibling;
+  const classes={'Approved':'badge-approved','Rejected':'badge-rejected','On Hold':'badge-hold'};
+  statusCell.innerHTML='<span class="badge '+classes[status]+'">'+escapeHtml(status)+'</span>';
+  if(status==='Approved'||status==='Rejected'){td.innerHTML='<span style="font-size:.78rem;color:#64748b">Processed</span>';}
+}
+function submitRefund(){
+  const order=document.getElementById('rf-order').value.trim();
+  const email=document.getElementById('rf-email').value.trim();
+  const amount=document.getElementById('rf-amount').value;
+  const reason=document.getElementById('rf-reason').value;
+  if(!order||!email||!amount||!reason){alert('Please fill in all required fields.');return;}
+  const emailRx=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!emailRx.test(email)){alert('Please enter a valid email address.');return;}
+  alert('Refund request for '+escapeHtml(order)+' submitted successfully. It will appear in the queue once reviewed.');
+  document.getElementById('rf-order').value='';
+  document.getElementById('rf-email').value='';
+  document.getElementById('rf-amount').value='';
+  document.getElementById('rf-reason').value='';
+  document.getElementById('rf-notes').value='';
+}
+</script>
+</body>
+</html>

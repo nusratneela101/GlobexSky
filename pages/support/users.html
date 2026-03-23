@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>User Verification Assistance | Globex Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:100vh;display:flex;flex-direction:column}
+.site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+.btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+.layout{display:flex;flex:1;max-width:1400px;margin:0 auto;width:100%;padding:24px;gap:24px}
+.sidebar{width:240px;flex-shrink:0}
+.sidebar-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;position:sticky;top:86px}
+.sidebar-header{background:#0052CC;padding:20px;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:10px}
+.sidebar-nav{padding:8px 0}
+.sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 20px;text-decoration:none;color:#374151;font-size:.875rem;font-weight:500;transition:all .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{background:#eff6ff;color:#0052CC;border-left:3px solid #0052CC}
+.sidebar-nav a .icon{width:18px;text-align:center}
+.sidebar-nav .divider{height:1px;background:#f1f5f9;margin:6px 0}
+.main{flex:1;min-width:0}
+.page-title{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;gap:14px}
+.stat-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.stat-icon-blue{background:#eff6ff;color:#0052CC}
+.stat-icon-green{background:#d1fae5;color:#059669}
+.stat-icon-red{background:#fee2e2;color:#dc2626}
+.stat-value{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+.stat-label{font-size:.78rem;color:#64748b}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
+.card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.search-bar{display:flex;gap:10px;margin-bottom:0}
+.search-input{flex:1;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:.875rem;font-family:'Inter',sans-serif;color:#374151}
+.search-input:focus{outline:none;border-color:#0052CC}
+.btn-search{background:#0052CC;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:6px}
+table{width:100%;border-collapse:collapse}
+th{background:#f8fafc;font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;padding:10px 14px;text-align:left;white-space:nowrap}
+td{padding:12px 14px;font-size:.85rem;color:#374151;border-bottom:1px solid #f8fafc;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-orange{background:#ffedd5;color:#ea580c}
+.badge-green{background:#d1fae5;color:#059669}
+.badge-red{background:#fee2e2;color:#dc2626}
+.badge-gray{background:#f1f5f9;color:#64748b}
+.badge-purple{background:#f5f3ff;color:#7c3aed}
+.btn-sm{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:4px;margin:1px;white-space:nowrap}
+.btn-verify{background:#d1fae5;color:#059669}.btn-verify:hover{background:#a7f3d0}
+.btn-reject{background:#fee2e2;color:#dc2626}.btn-reject:hover{background:#fecaca}
+.btn-info{background:#dbeafe;color:#1d4ed8}.btn-info:hover{background:#bfdbfe}
+.doc-link{display:inline-flex;align-items:center;gap:4px;color:#0052CC;font-size:.78rem;text-decoration:none;background:#eff6ff;padding:3px 8px;border-radius:4px}
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.activity-text{font-size:.875rem;color:#374151}
+.activity-time{font-size:.75rem;color:#94a3b8;margin-top:2px}
+.site-footer{background:#0a0e27;padding:28px 0;margin-top:auto}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 24px}
+.footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%}.sidebar-card{position:static}.stats-grid{grid-template-columns:1fr}.table-wrap{overflow-x:auto}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-header"><i class="fas fa-headset"></i> Support Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="icon"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a>
+        <a href="index.html"><span class="icon"><i class="fas fa-ticket-alt"></i></span> Tickets</a>
+        <a href="live-chat.html"><span class="icon"><i class="fas fa-comments"></i></span> Live Chat</a>
+        <a href="disputes.html"><span class="icon"><i class="fas fa-balance-scale"></i></span> Disputes</a>
+        <div class="divider"></div>
+        <a href="orders.html"><span class="icon"><i class="fas fa-box"></i></span> Orders</a>
+        <a href="refunds.html"><span class="icon"><i class="fas fa-undo-alt"></i></span> Refunds</a>
+        <a href="users.html" class="active"><span class="icon"><i class="fas fa-user-check"></i></span> Users</a>
+        <div class="divider"></div>
+        <a href="knowledge-base.html"><span class="icon"><i class="fas fa-book-open"></i></span> Knowledge Base</a>
+        <a href="announcements.html"><span class="icon"><i class="fas fa-bullhorn"></i></span> Announcements</a>
+        <a href="seller-onboarding.html"><span class="icon"><i class="fas fa-store"></i></span> Seller Onboarding</a>
+        <a href="#"><span class="icon"><i class="fas fa-robot"></i></span> Chatbot</a>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-title"><i class="fas fa-user-check" style="color:#0052CC"></i> User Verification Assistance</div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue"><i class="fas fa-hourglass-half"></i></div>
+        <div><div class="stat-value">32</div><div class="stat-label">Pending Verifications</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green"><i class="fas fa-user-check"></i></div>
+        <div><div class="stat-value">15</div><div class="stat-label">Verified Today</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-red"><i class="fas fa-user-times"></i></div>
+        <div><div class="stat-value">4</div><div class="stat-label">Rejected</div></div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-search" style="color:#0052CC"></i> Search User</div>
+      <div class="search-bar">
+        <input class="search-input" placeholder="Search by email or User ID…">
+        <button class="btn-search"><i class="fas fa-search"></i> Search</button>
+      </div>
+    </div>
+
+    <!-- Pending Verifications -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-id-card" style="color:#0052CC"></i> Pending Verifications</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>User ID</th><th>Name</th><th>Email</th><th>Submitted</th><th>Type</th><th>Documents</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>#USR-1041</strong></td>
+              <td>Adaeze Mensah</td>
+              <td>adaeze.m@email.com</td>
+              <td>Dec 10, 2024</td>
+              <td><span class="badge badge-purple">Seller</span></td>
+              <td><a href="#" class="doc-link"><i class="fas fa-file-alt"></i> ID</a> <a href="#" class="doc-link"><i class="fas fa-file-alt"></i> BizReg</a></td>
+              <td>
+                <button class="btn-sm btn-verify" onclick="verifyUser(this)"><i class="fas fa-check"></i> Verify</button>
+                <button class="btn-sm btn-reject" onclick="rejectUser(this)"><i class="fas fa-times"></i> Reject</button>
+                <button class="btn-sm btn-info"><i class="fas fa-question-circle"></i> More Info</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>#USR-1040</strong></td>
+              <td>James Okafor</td>
+              <td>james.o@email.com</td>
+              <td>Dec 9, 2024</td>
+              <td><span class="badge badge-blue">Buyer</span></td>
+              <td><a href="#" class="doc-link"><i class="fas fa-file-alt"></i> NIN</a></td>
+              <td>
+                <button class="btn-sm btn-verify" onclick="verifyUser(this)"><i class="fas fa-check"></i> Verify</button>
+                <button class="btn-sm btn-reject" onclick="rejectUser(this)"><i class="fas fa-times"></i> Reject</button>
+                <button class="btn-sm btn-info"><i class="fas fa-question-circle"></i> More Info</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>#USR-1039</strong></td>
+              <td>Li Chen</td>
+              <td>li.chen@email.com</td>
+              <td>Dec 8, 2024</td>
+              <td><span class="badge badge-purple">Seller</span></td>
+              <td><a href="#" class="doc-link"><i class="fas fa-file-alt"></i> Passport</a> <a href="#" class="doc-link"><i class="fas fa-file-alt"></i> Tax</a></td>
+              <td>
+                <button class="btn-sm btn-verify" onclick="verifyUser(this)"><i class="fas fa-check"></i> Verify</button>
+                <button class="btn-sm btn-reject" onclick="rejectUser(this)"><i class="fas fa-times"></i> Reject</button>
+                <button class="btn-sm btn-info"><i class="fas fa-question-circle"></i> More Info</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>#USR-1038</strong></td>
+              <td>Kwame Asante</td>
+              <td>kwame.a@email.com</td>
+              <td>Dec 7, 2024</td>
+              <td><span class="badge badge-blue">Buyer</span></td>
+              <td><a href="#" class="doc-link"><i class="fas fa-file-alt"></i> Passport</a></td>
+              <td>
+                <button class="btn-sm btn-verify" onclick="verifyUser(this)"><i class="fas fa-check"></i> Verify</button>
+                <button class="btn-sm btn-reject" onclick="rejectUser(this)"><i class="fas fa-times"></i> Reject</button>
+                <button class="btn-sm btn-info"><i class="fas fa-question-circle"></i> More Info</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>#USR-1037</strong></td>
+              <td>Priya Nair</td>
+              <td>priya.n@email.com</td>
+              <td>Dec 7, 2024</td>
+              <td><span class="badge badge-purple">Seller</span></td>
+              <td><a href="#" class="doc-link"><i class="fas fa-file-alt"></i> ID</a></td>
+              <td>
+                <button class="btn-sm btn-verify" onclick="verifyUser(this)"><i class="fas fa-check"></i> Verify</button>
+                <button class="btn-sm btn-reject" onclick="rejectUser(this)"><i class="fas fa-times"></i> Reject</button>
+                <button class="btn-sm btn-info"><i class="fas fa-question-circle"></i> More Info</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-stream" style="color:#0052CC"></i> Recent Verification Activity</div>
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#22c55e"></div>
+        <div><div class="activity-text"><strong>#USR-1036</strong> — Emeka Obi verified as Seller by <strong>Amaka O.</strong></div><div class="activity-time">1h ago</div></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#dc2626"></div>
+        <div><div class="activity-text"><strong>#USR-1035</strong> — Fatou Diallo rejected — Blurry document</div><div class="activity-time">2h ago</div></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#0052CC"></div>
+        <div><div class="activity-text"><strong>#USR-1034</strong> — More info requested from Yemi Adeyemi</div><div class="activity-time">3h ago</div></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#22c55e"></div>
+        <div><div class="activity-text"><strong>#USR-1033</strong> — Ngozi Eze verified as Buyer</div><div class="activity-time">4h ago</div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <span id="yr"></span> Globex International Trade Co., Ltd. All rights reserved. &nbsp;|&nbsp;
+      <a href="../privacy.html" style="color:rgba(255,255,255,.5);text-decoration:none">Privacy</a> &nbsp;|&nbsp;
+      <a href="../terms.html" style="color:rgba(255,255,255,.5);text-decoration:none">Terms</a> &nbsp;|&nbsp;
+      <a href="../contact.html" style="color:rgba(255,255,255,.5);text-decoration:none">Contact</a>
+    </p>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+function verifyUser(btn){
+  const row=btn.closest('tr');
+  row.querySelector('td:last-child').innerHTML='<span class="badge badge-green"><i class="fas fa-check-circle"></i> &nbsp;Verified</span>';
+}
+function rejectUser(btn){
+  const row=btn.closest('tr');
+  row.querySelector('td:last-child').innerHTML='<span class="badge badge-red"><i class="fas fa-times-circle"></i> &nbsp;Rejected</span>';
+}
+</script>
+</body>
+</html>

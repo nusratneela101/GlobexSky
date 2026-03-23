@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventory Management | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}.btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .card-title-left{display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:linear-gradient(135deg,var(--sc,#0052CC),var(--se,#003d99));border-radius:14px;padding:20px;color:#fff}
+    .stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+    .stat-lbl{font-size:.8rem;opacity:.8;margin-top:4px}
+    .stat-icon{font-size:1.4rem;opacity:.6;margin-bottom:8px}
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .search-bar{display:flex;gap:10px;margin-bottom:20px}
+    .low-stock-alert{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .low-stock-alert i{color:#f97316;font-size:1.2rem}
+    .low-stock-alert p{font-size:.88rem;color:#92400e;margin:0}
+    .stock-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;width:100px}
+    .stock-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a></li>
+        <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+        <li><a href="inventory.html" class="active"><i class="fas fa-warehouse"></i> Inventory</a></li>
+        <li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li>
+        <li><a href="shipping.html"><i class="fas fa-truck"></i> Shipping</a></li>
+        <li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li>
+        <li><a href="payouts.html"><i class="fas fa-money-bill-transfer"></i> Payouts</a></li>
+        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+        <li><a href="disputes.html"><i class="fas fa-gavel"></i> Disputes</a></li>
+        <li><a href="coupons.html"><i class="fas fa-tag"></i> Coupons</a></li>
+        <li><a href="bulk-upload.html"><i class="fas fa-upload"></i> Bulk Upload</a></li>
+        <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
+      </ul>
+    </aside>
+    <section class="content-area">
+      <div class="stat-grid">
+        <div class="stat-card" style="--sc:#0052CC;--se:#003d99"><div class="stat-icon"><i class="fas fa-boxes-stacked"></i></div><div class="stat-val">1,248</div><div class="stat-lbl">Total SKUs</div></div>
+        <div class="stat-card" style="--sc:#059669;--se:#047857"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-val">1,104</div><div class="stat-lbl">In Stock</div></div>
+        <div class="stat-card" style="--sc:#f97316;--se:#ea580c"><div class="stat-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-val">98</div><div class="stat-lbl">Low Stock</div></div>
+        <div class="stat-card" style="--sc:#ef4444;--se:#dc2626"><div class="stat-icon"><i class="fas fa-ban"></i></div><div class="stat-val">46</div><div class="stat-lbl">Out of Stock</div></div>
+      </div>
+
+      <div class="low-stock-alert">
+        <i class="fas fa-triangle-exclamation"></i>
+        <p><strong>98 products</strong> are running low on stock. Review and restock to avoid missed orders.</p>
+        <a href="#" class="btn btn-warning btn-sm" style="margin-left:auto">View Low Stock</a>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><i class="fas fa-warehouse"></i> Inventory Overview</div>
+          <a href="bulk-upload.html" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Bulk Update</a>
+        </div>
+        <div class="search-bar">
+          <input class="form-control" type="text" placeholder="Search products by name or SKU…" style="max-width:320px" id="inv-search">
+          <select class="form-control" style="max-width:180px" id="inv-filter">
+            <option value="">All Status</option>
+            <option value="in-stock">In Stock</option>
+            <option value="low-stock">Low Stock</option>
+            <option value="out-of-stock">Out of Stock</option>
+          </select>
+          <button class="btn btn-secondary btn-sm"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table" id="inv-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Stock Level</th>
+                <th>Alert Threshold</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Arduino PCB Board v3</strong></td>
+                <td style="color:#64748b;font-size:.82rem">SKU-001</td>
+                <td>Electronics</td>
+                <td>240</td>
+                <td><div class="stock-bar"><div class="stock-bar-fill" style="width:80%;background:#22c55e"></div></div></td>
+                <td>50</td>
+                <td><span class="badge badge-green">In Stock</span></td>
+                <td><button class="btn btn-secondary btn-sm" onclick="editStock(this)"><i class="fas fa-pen"></i></button></td>
+              </tr>
+              <tr>
+                <td><strong>USB-C Hub 7-in-1</strong></td>
+                <td style="color:#64748b;font-size:.82rem">SKU-002</td>
+                <td>Accessories</td>
+                <td>38</td>
+                <td><div class="stock-bar"><div class="stock-bar-fill" style="width:30%;background:#f97316"></div></div></td>
+                <td>50</td>
+                <td><span class="badge badge-orange">Low Stock</span></td>
+                <td><button class="btn btn-warning btn-sm" onclick="editStock(this)"><i class="fas fa-pen"></i></button></td>
+              </tr>
+              <tr>
+                <td><strong>SMD LED Strip 5050</strong></td>
+                <td style="color:#64748b;font-size:.82rem">SKU-003</td>
+                <td>Lighting</td>
+                <td>0</td>
+                <td><div class="stock-bar"><div class="stock-bar-fill" style="width:0%;background:#ef4444"></div></div></td>
+                <td>20</td>
+                <td><span class="badge badge-red">Out of Stock</span></td>
+                <td><button class="btn btn-primary btn-sm" onclick="editStock(this)"><i class="fas fa-plus"></i> Restock</button></td>
+              </tr>
+              <tr>
+                <td><strong>Raspberry Pi 4B 8GB</strong></td>
+                <td style="color:#64748b;font-size:.82rem">SKU-004</td>
+                <td>Electronics</td>
+                <td>125</td>
+                <td><div class="stock-bar"><div class="stock-bar-fill" style="width:62%;background:#22c55e"></div></div></td>
+                <td>30</td>
+                <td><span class="badge badge-green">In Stock</span></td>
+                <td><button class="btn btn-secondary btn-sm" onclick="editStock(this)"><i class="fas fa-pen"></i></button></td>
+              </tr>
+              <tr>
+                <td><strong>Wireless Charging Pad</strong></td>
+                <td style="color:#64748b;font-size:.82rem">SKU-005</td>
+                <td>Accessories</td>
+                <td>15</td>
+                <td><div class="stock-bar"><div class="stock-bar-fill" style="width:15%;background:#f97316"></div></div></td>
+                <td>20</td>
+                <td><span class="badge badge-orange">Low Stock</span></td>
+                <td><button class="btn btn-warning btn-sm" onclick="editStock(this)"><i class="fas fa-pen"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><i class="fas fa-bell"></i> Stock Alert Settings</div></div>
+        <p style="font-size:.88rem;color:#64748b;margin-bottom:16px">Configure automatic alerts when stock falls below the threshold.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Default Low Stock Threshold</label>
+            <input type="number" class="form-control" value="50" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alert Email</label>
+            <input type="email" class="form-control" value="supplier@globexsky.com">
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <input type="checkbox" id="email-alert" checked>
+          <label for="email-alert" style="font-size:.88rem;color:#374151">Send email alerts when stock is low</label>
+        </div>
+        <button class="btn btn-primary"><i class="fas fa-save"></i> Save Alert Settings</button>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+function editStock(btn){
+  const row = btn.closest('tr');
+  const stockCell = row.cells[3];
+  const currentStock = parseInt(stockCell.textContent);
+  const newStock = prompt('Update stock quantity:', currentStock);
+  if(newStock !== null && !isNaN(parseInt(newStock))){
+    stockCell.textContent = parseInt(newStock);
+    alert('Stock updated successfully!');
+  }
+}
+document.getElementById('inv-search').addEventListener('input', function(){
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('#inv-table tbody tr').forEach(row=>{
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+</script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
