@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Go Live – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/livestream.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh}
+    .page-topbar{background:#161b22;padding:12px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #30363d;position:sticky;top:0;z-index:100}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
+    .brand-logo span{color:#0052CC}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#e6edf3}
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+    .btn-outline{background:transparent;color:#8b949e;border:1px solid #30363d}
+    .btn-outline:hover{background:#1c2128;color:#e6edf3}
+  </style>
+</head>
+<body>
+<header class="page-topbar">
+  <a href="../../index.html" class="brand-logo">
+    <img src="../../assets/images/logo.png" alt="Globex Sky" width="140" height="44" style="object-fit:contain"/>
+  </a>
+  <span style="color:#30363d">|</span>
+  <div class="page-title"><i class="fas fa-circle" style="color:#ef4444;font-size:.7rem"></i> Go Live</div>
+  <div class="topbar-right">
+    <a href="browse.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+  </div>
+</header>
+
+<div class="go-live-wrap">
+  <!-- Left: Camera preview -->
+  <div>
+    <div class="camera-preview-card">
+      <div class="camera-preview-video" id="cameraPreviewWrap">
+        <video id="localVideo" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;display:none"></video>
+        <div class="camera-preview-placeholder" id="previewPlaceholder">
+          <i class="fas fa-video"></i>
+          <span>Camera preview will appear here</span>
+          <button class="btn btn-outline" onclick="enableCamera()">
+            <i class="fas fa-video"></i> Enable Camera
+          </button>
+        </div>
+        <div class="live-indicator" id="liveBadge" style="display:none">LIVE</div>
+        <div class="stream-quality-badge" id="streamQualityBadge" style="display:none">
+          <span class="quality-dot"></span> <span id="qualityLabel">HD</span>
+        </div>
+      </div>
+      <div class="camera-controls-row">
+        <button class="cam-ctrl-btn on" id="btnMic" onclick="toggleMic()" title="Toggle Microphone">
+          <i class="fas fa-microphone"></i>
+        </button>
+        <button class="cam-ctrl-btn on" id="btnCam" onclick="toggleCam()" title="Toggle Camera">
+          <i class="fas fa-video"></i>
+        </button>
+        <button class="cam-ctrl-btn on" id="btnScreen" onclick="toggleScreen()" title="Share Screen">
+          <i class="fas fa-desktop"></i>
+        </button>
+        <button class="cam-ctrl-btn on" id="btnRecord" title="Record stream" onclick="toggleRecordPref()" style="background:none;border:1px solid #30363d">
+          <i class="fas fa-circle" style="color:#ef4444"></i>
+        </button>
+      </div>
+      <!-- Health stats (visible when live) -->
+      <div class="stream-health-bar" id="healthBar" style="display:none">
+        <div class="health-stat"><i class="fas fa-tachometer-alt"></i> Bitrate: <strong id="healthBitrate">—</strong></div>
+        <div class="health-stat"><i class="fas fa-clock"></i> Latency: <strong id="healthLatency">—</strong></div>
+        <div class="health-stat"><i class="fas fa-exclamation-triangle"></i> Packet Loss: <strong id="healthPacketLoss">—</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Settings panel -->
+  <div class="go-live-settings">
+
+    <!-- Stream info -->
+    <div class="settings-card">
+      <div class="settings-card-title"><i class="fas fa-info-circle"></i> Stream Info</div>
+
+      <div class="form-field">
+        <label class="field-label" for="streamTitle">Stream Title *</label>
+        <input type="text" class="field-input" id="streamTitle" placeholder="e.g. Summer Collection Launch 2025" maxlength="100"/>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="streamDesc">Description</label>
+        <textarea class="field-input field-textarea" id="streamDesc" placeholder="Tell viewers what you'll be showcasing today…"></textarea>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="streamCategory">Category</label>
+        <select class="field-input" id="streamCategory">
+          <option value="">Select a category</option>
+          <option value="electronics">Electronics</option>
+          <option value="fashion">Fashion &amp; Apparel</option>
+          <option value="home">Home &amp; Living</option>
+          <option value="beauty">Beauty &amp; Health</option>
+          <option value="sports">Sports &amp; Outdoors</option>
+          <option value="food">Food &amp; Beverages</option>
+          <option value="machinery">Machinery &amp; Industrial</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="streamTags">Tags (comma separated)</label>
+        <input type="text" class="field-input" id="streamTags" placeholder="e.g. new-arrival, summer, sale"/>
+      </div>
+    </div>
+
+    <!-- Quality settings -->
+    <div class="settings-card">
+      <div class="settings-card-title"><i class="fas fa-sliders-h"></i> Quality Settings</div>
+      <div class="quality-pills" id="qualityPills">
+        <button class="quality-pill" onclick="selectQuality('360p',this)">360p</button>
+        <button class="quality-pill active" onclick="selectQuality('720p',this)">720p HD</button>
+        <button class="quality-pill" onclick="selectQuality('1080p',this)">1080p Full HD</button>
+      </div>
+      <p style="font-size:.76rem;color:#8b949e;margin-top:10px">
+        <i class="fas fa-info-circle"></i> Higher quality requires a stable internet connection (5+ Mbps upload recommended for 1080p).
+      </p>
+    </div>
+
+    <!-- Product selection -->
+    <div class="settings-card">
+      <div class="settings-card-title"><i class="fas fa-tag"></i> Feature Products</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input type="text" class="field-input" id="productSearch" placeholder="Search your products…" oninput="searchProducts(this.value)" style="margin:0"/>
+      </div>
+      <div class="product-select-list" id="productList">
+        <div style="text-align:center;padding:20px;color:#8b949e;font-size:.83rem">
+          <i class="fas fa-spinner fa-spin"></i> Loading products…
+        </div>
+      </div>
+      <p style="font-size:.75rem;color:#8b949e;margin-top:8px">
+        Selected: <span id="selectedProductCount">0</span> product(s)
+      </p>
+    </div>
+
+    <!-- Go Live CTA -->
+    <button class="go-live-cta" id="btnGoLive" onclick="goLive()" disabled>
+      <i class="fas fa-circle"></i> Go Live Now
+    </button>
+
+    <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px" onclick="window.location.href='schedule.html'">
+      <i class="fas fa-calendar-alt"></i> Schedule for Later
+    </button>
+  </div>
+</div>
+
+<!-- Agora Web SDK -->
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.0.js"></script>
+<script src="../../assets/js/livestream.js"></script>
+<script>
+  let localStream = null;
+  let micOn = false;
+  let camOn = false;
+  let screenSharing = false;
+  let selectedQuality = '720p';
+  let selectedProducts = new Set();
+  let allProducts = [];
+  let enableRecording = false;
+  let streamId = null;
+
+  async function enableCamera() {
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const video = document.getElementById('localVideo');
+      video.srcObject = localStream;
+      video.style.display = 'block';
+      document.getElementById('previewPlaceholder').style.display = 'none';
+      micOn = true;
+      camOn = true;
+      updateControlBtns();
+      document.getElementById('btnGoLive').disabled = false;
+      document.getElementById('streamQualityBadge').style.display = 'flex';
+    } catch (e) {
+      alert('Could not access camera/microphone: ' + e.message);
+    }
+  }
+
+  function toggleMic() {
+    if (!localStream) { enableCamera(); return; }
+    micOn = !micOn;
+    localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+    updateControlBtns();
+  }
+
+  function toggleCam() {
+    if (!localStream) { enableCamera(); return; }
+    camOn = !camOn;
+    localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+    updateControlBtns();
+  }
+
+  async function toggleScreen() {
+    if (screenSharing) {
+      await LiveStream.stopScreenShare();
+      screenSharing = false;
+      document.getElementById('btnScreen').className = 'cam-ctrl-btn on';
+    } else if (LiveStream.isJoined) {
+      await LiveStream.shareScreen();
+      screenSharing = true;
+      document.getElementById('btnScreen').className = 'cam-ctrl-btn off';
+    } else {
+      // Preview mode: use browser API directly
+      try {
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        document.getElementById('localVideo').srcObject = screenStream;
+        screenStream.getVideoTracks()[0].addEventListener('ended', () => {
+          if (localStream) document.getElementById('localVideo').srcObject = localStream;
+          screenSharing = false;
+          document.getElementById('btnScreen').className = 'cam-ctrl-btn on';
+        });
+        screenSharing = true;
+        document.getElementById('btnScreen').className = 'cam-ctrl-btn off';
+      } catch (e) { /* cancelled */ }
+    }
+  }
+
+  function toggleRecordPref() {
+    enableRecording = !enableRecording;
+    const btn = document.getElementById('btnRecord');
+    btn.style.background = enableRecording ? 'rgba(239,68,68,.15)' : '';
+    btn.style.borderColor = enableRecording ? '#ef4444' : '';
+  }
+
+  function updateControlBtns() {
+    const mic = document.getElementById('btnMic');
+    mic.className = 'cam-ctrl-btn ' + (micOn ? 'on' : 'off');
+    mic.innerHTML = `<i class="fas fa-microphone${micOn ? '' : '-slash'}"></i>`;
+
+    const cam = document.getElementById('btnCam');
+    cam.className = 'cam-ctrl-btn ' + (camOn ? 'on' : 'off');
+    cam.innerHTML = `<i class="fas fa-video${camOn ? '' : '-slash'}"></i>`;
+  }
+
+  function selectQuality(q, btn) {
+    selectedQuality = q;
+    document.querySelectorAll('.quality-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('qualityLabel').textContent = q.toUpperCase();
+    if (LiveStream.isJoined) LiveStream.setQuality(q);
+  }
+
+  /* ── Products ─────────────────────────────────────────────────────── */
+  async function loadProducts() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch('/api/v1/products/my', { headers: { Authorization: `Bearer ${token}` } });
+      const json = await res.json();
+      allProducts = json.data || [];
+      renderProducts(allProducts);
+    } catch (e) {
+      document.getElementById('productList').innerHTML =
+        '<div style="color:#8b949e;font-size:.83rem;text-align:center;padding:16px">Could not load products</div>';
+    }
+  }
+
+  function renderProducts(products) {
+    const list = document.getElementById('productList');
+    if (!products.length) {
+      list.innerHTML = '<div style="color:#8b949e;font-size:.83rem;text-align:center;padding:16px">No products found</div>';
+      return;
+    }
+    list.innerHTML = products.map(p => `
+      <div class="product-select-item ${selectedProducts.has(p.id) ? 'selected' : ''}"
+           id="pi-${p.id}" onclick="toggleProduct('${p.id}')">
+        <img class="product-select-img" src="${p.images?.[0] || ''}" alt="" onerror="this.style.display='none'"/>
+        <span class="product-select-name">${p.name || 'Product'}</span>
+        <span class="product-select-price">$${Number(p.price || 0).toFixed(2)}</span>
+        <i class="fas fa-check product-select-check"></i>
+      </div>`).join('');
+  }
+
+  function toggleProduct(id) {
+    if (selectedProducts.has(id)) selectedProducts.delete(id);
+    else if (selectedProducts.size < 20) selectedProducts.add(id);
+    document.getElementById('selectedProductCount').textContent = selectedProducts.size;
+    const el = document.getElementById('pi-' + id);
+    if (el) el.classList.toggle('selected', selectedProducts.has(id));
+  }
+
+  function searchProducts(q) {
+    const filtered = q
+      ? allProducts.filter(p => (p.name || '').toLowerCase().includes(q.toLowerCase()))
+      : allProducts;
+    renderProducts(filtered);
+  }
+
+  /* ── Go Live ──────────────────────────────────────────────────────── */
+  async function goLive() {
+    const title = (document.getElementById('streamTitle').value || '').trim();
+    if (!title) { alert('Please enter a stream title.'); return; }
+
+    const token = localStorage.getItem('token');
+    if (!token) { window.location.href = '../auth/login.html'; return; }
+
+    const btn = document.getElementById('btnGoLive');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting…';
+
+    try {
+      // 1. Create stream record
+      const createRes = await fetch('/api/v1/livestreams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          title,
+          description: document.getElementById('streamDesc').value,
+          category:    document.getElementById('streamCategory').value,
+        }),
+      });
+      const createJson = await createRes.json();
+      if (!createJson.success) throw new Error(createJson.error || 'Failed to create stream');
+      streamId = createJson.data.id;
+
+      // 2. Get Agora token
+      let agoraToken = null;
+      try {
+        agoraToken = await LiveStream.fetchToken(streamId, 0, 'publisher', token);
+      } catch (e) {
+        // Proceed without token (test mode)
+        console.warn('Agora token unavailable, using null token');
+      }
+
+      // 3. Join Agora channel
+      const appId = (window.AGORA_APP_ID || '');
+      if (appId) {
+        await LiveStream.init({
+          appId,
+          channel:  streamId,
+          token:    agoraToken,
+          uid:      0,
+          role:     'host',
+          quality:  selectedQuality,
+        });
+      }
+
+      // 4. Tag selected products
+      for (const productId of selectedProducts) {
+        await fetch(`/api/v1/livestreams/${streamId}/products`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ product_id: productId }),
+        }).catch(() => {});
+      }
+
+      // 5. Mark as started
+      await fetch(`/api/v1/livestreams/${streamId}/start`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // 6. Redirect to broadcast page
+      window.location.href = `broadcast.html?id=${streamId}`;
+
+    } catch (e) {
+      alert('Could not start stream: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-circle"></i> Go Live Now';
+    }
+  }
+
+  /* ── Init ─────────────────────────────────────────────────────────── */
+  if (!LiveStream.isSupported()) {
+    document.querySelector('.go-live-wrap').innerHTML = `
+      <div style="grid-column:1/-1">
+        <div class="no-webrtc-notice">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Live Streaming Not Supported</h3>
+          <p>Your browser does not support WebRTC. Please use Chrome, Firefox, or Edge to go live.</p>
+        </div>
+      </div>`;
+  } else {
+    loadProducts();
+  }
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
