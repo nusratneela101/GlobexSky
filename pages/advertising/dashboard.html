@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advertising Dashboard | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:linear-gradient(135deg,var(--sc,#0052CC),var(--se,#003d99));border-radius:14px;padding:20px;color:#fff}
+    .stat-card .stat-val{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:700}
+    .stat-card .stat-lbl{font-size:.78rem;opacity:.8;margin-top:4px}
+    .stat-card .stat-icon{font-size:1.3rem;opacity:.6;margin-bottom:8px}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .card-title-left{display:flex;align-items:center;gap:10px}
+    .card-title-left i{color:#0052CC}
+    .btn{padding:9px 18px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#dc2626;border:none}
+    .btn-warning{background:#fef3c7;color:#d97706;border:none}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    .table{width:100%;border-collapse:collapse;font-size:.85rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle;white-space:nowrap}
+    .table tr:hover td{background:#f8faff}
+    .top-ads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+    .ad-card{background:#f8faff;border:1.5px solid #e8eeff;border-radius:12px;padding:16px}
+    .ad-card-type{font-size:.72rem;font-weight:600;color:#0052CC;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+    .ad-card-name{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0a0e27;margin-bottom:10px;line-height:1.3}
+    .ad-metric{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:4px}
+    .ad-metric-label{color:#94a3b8}
+    .ad-metric-val{font-weight:600;color:#374151}
+    .roas-badge{display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;padding:4px 10px;border-radius:50px;font-size:.8rem;font-weight:700;margin-top:8px}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px;margin-top:20px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header"><nav><div class="nav-container">
+  <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+  <div class="nav-controls">
+    <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+    <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+  </div>
+</div></nav></header>
+
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">AD</div>
+      <div class="sidebar-name">Advertiser Hub</div>
+      <div class="sidebar-email">advertiser@globexsky.com</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><i class="fas fa-gauge"></i> Overview</a></li>
+        <li><a href="dashboard.html" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="create.html"><i class="fas fa-circle-plus"></i> Create Campaign</a></li>
+        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="billing.html"><i class="fas fa-credit-card"></i> Billing</a></li>
+      </ul>
+    </aside>
+
+    <section class="content-area">
+      <div class="page-header">
+        <h1><i class="fas fa-bullhorn" style="color:#0052CC"></i> Advertising Dashboard</h1>
+        <a href="create.html" class="btn btn-primary"><i class="fas fa-circle-plus"></i> New Campaign</a>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card" style="--sc:#0052CC;--se:#003d99"><div class="stat-icon"><i class="fas fa-bullhorn"></i></div><div class="stat-val">8</div><div class="stat-lbl">Active Campaigns</div></div>
+        <div class="stat-card" style="--sc:#00C9A7;--se:#00a88a"><div class="stat-icon"><i class="fas fa-eye"></i></div><div class="stat-val">1.2M</div><div class="stat-lbl">Total Impressions</div></div>
+        <div class="stat-card" style="--sc:#f97316;--se:#ea580c"><div class="stat-icon"><i class="fas fa-computer-mouse"></i></div><div class="stat-val">48.6K</div><div class="stat-lbl">Total Clicks</div></div>
+        <div class="stat-card" style="--sc:#dc2626;--se:#b91c1c"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-val">$2,840</div><div class="stat-lbl">Total Spend</div></div>
+        <div class="stat-card" style="--sc:#8b5cf6;--se:#7c3aed"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-val">4.2x</div><div class="stat-lbl">ROAS</div></div>
+      </div>
+
+      <!-- Campaigns Table -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><i class="fas fa-table-list"></i> All Campaigns</div>
+          <button class="btn btn-secondary btn-sm"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Campaign Name</th><th>Type</th><th>Status</th><th>Budget</th><th>Spent</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Spring Sale Banner</strong></td>
+                <td><span class="badge badge-blue">Banner</span></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td>$600</td><td>$412</td><td>320,400</td><td>14,200</td><td>4.43%</td>
+                <td>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i></button>
+                  <button class="btn btn-warning btn-sm"><i class="fas fa-pause"></i></button>
+                  <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Electronics Sponsored</strong></td>
+                <td><span class="badge badge-purple">Sponsored</span></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td>$800</td><td>$694</td><td>280,120</td><td>11,800</td><td>4.21%</td>
+                <td>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i></button>
+                  <button class="btn btn-warning btn-sm"><i class="fas fa-pause"></i></button>
+                  <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Search Boost — Fashion</strong></td>
+                <td><span class="badge badge-orange">Search</span></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td>$400</td><td>$388</td><td>195,600</td><td>9,400</td><td>4.80%</td>
+                <td>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i></button>
+                  <button class="btn btn-warning btn-sm"><i class="fas fa-pause"></i></button>
+                  <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Home &amp; Living Banner</strong></td>
+                <td><span class="badge badge-blue">Banner</span></td>
+                <td><span class="badge badge-orange">Paused</span></td>
+                <td>$300</td><td>$210</td><td>128,400</td><td>5,840</td><td>4.55%</td>
+                <td>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i></button>
+                  <button class="btn btn-primary btn-sm"><i class="fas fa-play"></i></button>
+                  <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Retargeting — Cart Abandon</strong></td>
+                <td><span class="badge badge-blue">Banner</span></td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td>$500</td><td>$340</td><td>277,480</td><td>7,360</td><td>2.65%</td>
+                <td>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-pen"></i></button>
+                  <button class="btn btn-warning btn-sm"><i class="fas fa-pause"></i></button>
+                  <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Top Performing Ads -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><i class="fas fa-star"></i> Top Performing Ads</div>
+          <a href="analytics.html" class="btn btn-secondary btn-sm"><i class="fas fa-chart-line"></i> Full Analytics</a>
+        </div>
+        <div class="top-ads-grid">
+          <div class="ad-card">
+            <div class="ad-card-type">Banner</div>
+            <div class="ad-card-name">Spring Sale — Homepage Hero</div>
+            <div class="ad-metric"><span class="ad-metric-label">Impressions</span><span class="ad-metric-val">120,400</span></div>
+            <div class="ad-metric"><span class="ad-metric-label">Clicks</span><span class="ad-metric-val">6,820</span></div>
+            <div class="ad-metric"><span class="ad-metric-label">CTR</span><span class="ad-metric-val">5.67%</span></div>
+            <div class="roas-badge"><i class="fas fa-arrow-trend-up"></i> 5.8x ROAS</div>
+          </div>
+          <div class="ad-card">
+            <div class="ad-card-type">Sponsored</div>
+            <div class="ad-card-name">Wireless Earbuds — Category Top</div>
+            <div class="ad-metric"><span class="ad-metric-label">Impressions</span><span class="ad-metric-val">98,600</span></div>
+            <div class="ad-metric"><span class="ad-metric-label">Clicks</span><span class="ad-metric-val">5,240</span></div>
+            <div class="ad-metric"><span class="ad-metric-label">CTR</span><span class="ad-metric-val">5.32%</span></div>
+            <div class="roas-badge"><i class="fas fa-arrow-trend-up"></i> 4.9x ROAS</div>
+          </div>
+          <div class="ad-card">
+            <div class="ad-card-type">Search</div>
+            <div class="ad-card-name">Summer Dress — Keyword Ad</div>
+            <div class="ad-metric"><span class="ad-metric-label">Impressions</span><span class="ad-metric-val">82,300</span></div>
+            <div class="ad-metric"><span class="ad-metric-label">Clicks</span><span class="ad-metric-val">4,950</span></div>
+            <div class="ad-metric"><span class="ad-metric-label">CTR</span><span class="ad-metric-val">6.01%</span></div>
+            <div class="roas-badge"><i class="fas fa-arrow-trend-up"></i> 4.5x ROAS</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
