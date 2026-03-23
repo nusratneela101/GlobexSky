@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>3D Product Viewer – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/vr.css"/>
+  <style>
+    /* ── 3D object simulation (CSS transforms as Three.js fallback) ── */
+    .object-3d-wrap{perspective:900px;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    .object-3d{position:relative;width:160px;height:160px;transform-style:preserve-3d;transition:transform .05s linear}
+    .face{position:absolute;width:160px;height:160px;border:2px solid rgba(0,82,204,.4);display:flex;align-items:center;justify-content:center;font-size:3rem;backdrop-filter:blur(4px)}
+    .face-front  {background:rgba(0,82,204,.12);transform:translateZ(80px)}
+    .face-back   {background:rgba(124,58,237,.12);transform:rotateY(180deg) translateZ(80px)}
+    .face-left   {background:rgba(0,82,204,.08);transform:rotateY(-90deg) translateZ(80px)}
+    .face-right  {background:rgba(124,58,237,.08);transform:rotateY(90deg) translateZ(80px)}
+    .face-top    {background:rgba(16,185,129,.08);transform:rotateX(90deg) translateZ(80px)}
+    .face-bottom {background:rgba(239,68,68,.08);transform:rotateX(-90deg) translateZ(80px)}
+    /* Hotspot tooltip */
+    .hs-tooltip{position:absolute;background:rgba(0,0,0,.82);color:#fff;font-size:.72rem;padding:6px 12px;border-radius:8px;pointer-events:none;white-space:nowrap;z-index:30;opacity:0;transform:translateY(-4px);transition:all .2s;max-width:200px;white-space:normal;line-height:1.4}
+    .viewer-hotspot:hover .hs-tooltip{opacity:1;transform:translateY(-8px)}
+    /* Product selection tiles */
+    .prod-tile{padding:12px;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .2s;text-align:center}
+    .prod-tile:hover,.prod-tile.selected{border-color:#0052CC;background:#f0f5ff}
+    .prod-tile .icon{font-size:1.6rem;margin-bottom:4px}
+    .prod-tile .name{font-size:.75rem;font-weight:600;color:#0a0e27}
+    .prod-tile .price{font-size:.7rem;color:#0052CC;font-weight:700}
+    /* Info row */
+    .spec-row{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #e2e8f0;font-size:.82rem}
+    .spec-row:last-child{border-bottom:none}
+    .spec-row .key{color:#64748b;min-width:90px}
+    .spec-row .val{font-weight:600;color:#0a0e27}
+    /* Zoom slider */
+    .zoom-slider{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:#e2e8f0;outline:none}
+    .zoom-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#0052CC;cursor:pointer}
+  </style>
+</head>
+<body class="vr-page">
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="showroom.html"     class="btn-nav btn-login"><i class="fas fa-store"></i> VR Showroom</a>
+        <a href="factory-tour.html" class="btn-nav btn-login"><i class="fas fa-industry"></i> Factory Tour</a>
+        <a href="../auth/login.html"    class="btn-nav btn-register">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── Hero ── -->
+<div class="vr-hero">
+  <h1><i class="fas fa-cube"></i> 3D Product Viewer</h1>
+  <p>Inspect products from every angle with interactive 360° rotation, zoom, and AR try-on</p>
+  <div class="vr-hero-actions">
+    <span id="ar-capability-badge" class="ar-support-badge checking">
+      <i class="fas fa-spinner fa-spin"></i> Checking AR support…
+    </span>
+  </div>
+</div>
+
+<!-- ── Fallback banner ── -->
+<div class="vr-container" style="padding-top:20px">
+  <div id="ar-fallback-banner" class="vr-fallback-banner" style="display:none">
+    <i class="fas fa-info-circle"></i>
+    <p>Your device does not support WebXR AR. A 2D interactive preview is shown instead.
+       For full AR experience, use Chrome on an ARCore-compatible Android device or Safari on iOS 15+.</p>
+  </div>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="vr-section">
+  <div class="vr-container">
+    <nav class="vr-breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+      <span>VR / AR</span>
+      <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+      <span>3D Product Viewer</span>
+    </nav>
+
+    <div class="vr-layout">
+      <!-- ── Left: viewer ── -->
+      <div>
+        <!-- 3D Viewer Canvas -->
+        <div class="vr-card" style="padding:16px">
+          <div class="viewer-wrap" id="viewer-wrap">
+            <!-- Loading overlay -->
+            <div class="viewer-overlay" id="viewer-loading">
+              <div style="text-align:center;color:#fff">
+                <div class="viewer-spinner" style="margin:0 auto 12px"></div>
+                <div style="font-size:.85rem;opacity:.8">Loading 3D model…</div>
+              </div>
+            </div>
+
+            <!-- 3D object (CSS fallback when Three.js not loaded) -->
+            <div class="object-3d-wrap">
+              <div class="object-3d" id="object-3d">
+                <div class="face face-front">⚙️</div>
+                <div class="face face-back">⚙️</div>
+                <div class="face face-left">⚙️</div>
+                <div class="face face-right">⚙️</div>
+                <div class="face face-top">⚙️</div>
+                <div class="face face-bottom">⚙️</div>
+              </div>
+            </div>
+
+            <!-- Hotspots -->
+            <div class="viewer-hotspot" style="top:32%;left:38%" id="hs-motor"
+                 onclick="showHotspotDetail('motor-shaft')">
+              <div class="viewer-hotspot-pulse"></div>
+              1
+              <div class="hs-tooltip">Motor Shaft<br>High-precision hardened steel, ±0.005 mm tolerance</div>
+            </div>
+            <div class="viewer-hotspot" style="top:54%;left:62%"
+                 onclick="showHotspotDetail('cooling-fins')">
+              <div class="viewer-hotspot-pulse"></div>
+              2
+              <div class="hs-tooltip">Cooling Fins<br>Die-cast aluminium alloy, max temp 180°C</div>
+            </div>
+            <div class="viewer-hotspot" style="top:40%;left:70%"
+                 onclick="showHotspotDetail('terminal-box')">
+              <div class="viewer-hotspot-pulse"></div>
+              3
+              <div class="hs-tooltip">Terminal Box<br>IP55 rated, accepts 3-phase 380–480V</div>
+            </div>
+
+            <!-- Angle presets -->
+            <div class="viewer-angle-bar">
+              <button class="angle-btn active" onclick="setAngle('front')">Front</button>
+              <button class="angle-btn"        onclick="setAngle('back')">Back</button>
+              <button class="angle-btn"        onclick="setAngle('side')">Side</button>
+              <button class="angle-btn"        onclick="setAngle('top')">Top</button>
+            </div>
+
+            <!-- Bottom controls -->
+            <div class="viewer-controls">
+              <button class="viewer-btn" onclick="zoomIn()"  title="Zoom In">  <i class="fas fa-search-plus"></i></button>
+              <button class="viewer-btn" onclick="zoomOut()" title="Zoom Out"> <i class="fas fa-search-minus"></i></button>
+              <button class="viewer-btn" onclick="resetView()" title="Reset">  <i class="fas fa-undo"></i></button>
+              <button class="viewer-btn" id="btn-auto-spin" onclick="toggleSpin()" title="Auto Rotate">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="viewer-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Zoom slider -->
+          <div style="margin-top:14px;padding:0 8px">
+            <label style="font-size:.75rem;color:#64748b;margin-bottom:4px;display:block">Zoom</label>
+            <input type="range" class="zoom-slider" id="zoom-slider" min="0.5" max="2.5" step="0.05" value="1"
+                   oninput="setZoom(this.value)"/>
+          </div>
+        </div>
+
+        <!-- AR Try-on -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-camera" style="color:#7c3aed"></i> AR Try-on</div>
+          <div class="ar-instructions">
+            <h3>View in Your Space</h3>
+            <p>Place this product in your environment using Augmented Reality to check size, fit, and aesthetics before ordering.</p>
+            <div class="ar-steps">
+              <div class="ar-step"><i class="fas fa-mobile-alt"></i><span>Open on mobile</span></div>
+              <div class="ar-step"><i class="fas fa-camera"></i><span>Allow camera</span></div>
+              <div class="ar-step"><i class="fas fa-hand-pointer"></i><span>Tap to place</span></div>
+              <div class="ar-step"><i class="fas fa-ruler"></i><span>Compare size</span></div>
+            </div>
+            <div class="vr-hero-actions">
+              <a href="../../pages/vr/product-viewer.html?ar=1" class="btn-vr btn-vr-white"
+                 onclick="ARViewer.launchAR();return false">
+                <i class="fas fa-camera"></i> View in AR
+              </a>
+              <a href="../../pages/vr/product-viewer.html?measure=1" class="btn-vr btn-vr-accent"
+                 onclick="ARViewer.startMeasurement();return false">
+                <i class="fas fa-ruler"></i> Measure Tool
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: sidebar ── -->
+      <div class="vr-sidebar">
+        <!-- Product selector -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-th-large" style="color:#0052CC"></i> Products</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="product-tiles">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- Specs panel -->
+        <div class="vr-card" id="product-specs">
+          <div class="vr-card-title"><i class="fas fa-info-circle" style="color:#0052CC"></i> Specifications</div>
+          <div id="specs-body">
+            <div class="spec-row"><span class="key">Name</span>       <span class="val" id="spec-name">—</span></div>
+            <div class="spec-row"><span class="key">Category</span>   <span class="val" id="spec-cat">—</span></div>
+            <div class="spec-row"><span class="key">Dimensions</span> <span class="val" id="spec-dims">—</span></div>
+            <div class="spec-row"><span class="key">Weight</span>      <span class="val" id="spec-weight">—</span></div>
+            <div class="spec-row"><span class="key">MOQ</span>         <span class="val" id="spec-moq">—</span></div>
+            <div class="spec-row"><span class="key">Price</span>       <span class="val" id="spec-price" style="color:#0052CC">—</span></div>
+          </div>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+            <button class="btn-vr btn-vr-primary" style="width:100%;justify-content:center" onclick="requestQuote()">
+              <i class="fas fa-file-alt"></i> Request Quote
+            </button>
+            <button class="btn-vr btn-vr-outline" style="width:100%;justify-content:center" onclick="addToCart()">
+              <i class="fas fa-cart-plus"></i> Add to Cart
+            </button>
+          </div>
+        </div>
+
+        <!-- Hotspot details -->
+        <div class="vr-card" id="hotspot-detail-panel" style="display:none">
+          <div class="vr-card-title"><i class="fas fa-crosshairs" style="color:#7c3aed"></i> Feature Detail</div>
+          <div id="hotspot-detail-body" style="font-size:.85rem;color:#374151;line-height:1.6"></div>
+          <button class="btn-vr btn-vr-outline" style="margin-top:12px" onclick="hideHotspotDetail()">
+            <i class="fas fa-times"></i> Close
+          </button>
+        </div>
+
+        <!-- Links -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-link" style="color:#10b981"></i> Explore More</div>
+          <a href="showroom.html"     class="btn-vr btn-vr-outline" style="width:100%;justify-content:center;margin-bottom:8px">
+            <i class="fas fa-store"></i> VR Showroom
+          </a>
+          <a href="factory-tour.html" class="btn-vr btn-vr-outline" style="width:100%;justify-content:center">
+            <i class="fas fa-industry"></i> Factory Tour
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="vr-toast" id="vr-toast">
+  <i class="fas fa-info-circle" id="vr-toast-icon"></i>
+  <span id="vr-toast-text"></span>
+</div>
+
+<!-- ── Hotspot modal ── -->
+<div class="vr-modal-overlay" id="hotspot-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="vr-modal">
+    <span class="vr-modal-close" onclick="document.getElementById('hotspot-modal').classList.remove('open')">
+      <i class="fas fa-times"></i>
+    </span>
+    <h3 id="hotspot-modal-title">Feature</h3>
+    <p id="hotspot-modal-body" style="font-size:.88rem;color:#374151;line-height:1.7"></p>
+  </div>
+</div>
+
+<script>
+/* ── Product data ── */
+const products = [
+  { id:1, name:'Industrial Motor X200', icon:'⚙️', cat:'Machinery',    dims:'45×38×30 cm', weight:'12 kg',   moq:'50 units',   price:'$420' },
+  { id:2, name:'LED Panel Pro 60W',      icon:'💡', cat:'Lighting',     dims:'60×60×5 cm',  weight:'2.1 kg',  moq:'200 units',  price:'$18'  },
+  { id:3, name:'Safety Helmet Pro',      icon:'⛑️', cat:'Safety',       dims:'28×26×22 cm', weight:'0.4 kg',  moq:'500 units',  price:'$8'   },
+  { id:4, name:'Circuit Board Alpha',    icon:'🔌', cat:'Electronics',  dims:'20×15×3 cm',  weight:'0.15 kg', moq:'100 units',  price:'$55'  },
+  { id:5, name:'Hydraulic Pump HX-40',  icon:'🔧', cat:'Hydraulics',   dims:'50×40×35 cm', weight:'18 kg',   moq:'20 units',   price:'$280' },
+];
+
+/* ── 3D rotation state ── */
+let rotX = -15, rotY = 20, zoom = 1;
+let isDragging = false, lastX = 0, lastY = 0;
+let spinAnim = null, isSpinning = false;
+
+const hotspotDetails = {
+  'motor-shaft':  { title:'Motor Shaft',   body:'High-precision hardened steel shaft, ±0.005 mm tolerance. Dynamic balanced to ISO 1940 G2.5. Suitable for radial loads up to 2.8 kN.' },
+  'cooling-fins': { title:'Cooling Fins',  body:'Die-cast ADC12 aluminium alloy cooling fins. Maximum continuous operating temperature 180°C. Thermal resistance 0.12 K/W.' },
+  'terminal-box': { title:'Terminal Box',  body:'IP55-rated cast iron terminal box. Accepts 3-phase 380–480V ±10%, 50/60 Hz. Includes PTC thermistor connections and PE earth terminal.' },
+};
+
+/* ── Init tiles ── */
+function buildTiles() {
+  const el = document.getElementById('product-tiles');
+  if (!el) return;
+  el.innerHTML = products.map(p => `
+    <div class="prod-tile" id="tile-${p.id}" onclick="selectProduct(${p.id})">
+      <div class="icon">${p.icon}</div>
+      <div class="name">${p.name.split(' ').slice(0,2).join(' ')}</div>
+      <div class="price">${p.price}</div>
+    </div>`).join('');
+}
+
+/* ── Select product ── */
+function selectProduct(id) {
+  const prod = products.find(p => p.id === id);
+  if (!prod) return;
+  document.querySelectorAll('.prod-tile').forEach(t => t.classList.remove('selected'));
+  document.getElementById(`tile-${id}`)?.classList.add('selected');
+  // Update all cube faces
+  document.querySelectorAll('.face').forEach(f => f.textContent = prod.icon);
+  // Update specs
+  document.getElementById('spec-name').textContent   = prod.name;
+  document.getElementById('spec-cat').textContent    = prod.cat;
+  document.getElementById('spec-dims').textContent   = prod.dims;
+  document.getElementById('spec-weight').textContent = prod.weight;
+  document.getElementById('spec-moq').textContent    = prod.moq;
+  document.getElementById('spec-price').textContent  = prod.price;
+  showToast('Loaded: ' + prod.name, 'cube');
+}
+
+/* ── 3D rotation ── */
+function applyTransform() {
+  const obj = document.getElementById('object-3d');
+  if (obj) obj.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${zoom})`;
+}
+
+function toggleSpin() {
+  isSpinning = !isSpinning;
+  const btn = document.getElementById('btn-auto-spin');
+  if (isSpinning) {
+    btn?.classList.add('active');
+    (function spin() { rotY += 0.5; applyTransform(); spinAnim = requestAnimationFrame(spin); })();
+  } else {
+    cancelAnimationFrame(spinAnim);
+    btn?.classList.remove('active');
+  }
+}
+
+/* ── Drag ── */
+const wrap = document.getElementById('viewer-wrap');
+wrap?.addEventListener('mousedown', e => { isDragging=true; lastX=e.clientX; lastY=e.clientY; isSpinning=false; cancelAnimationFrame(spinAnim); });
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  rotY += (e.clientX - lastX) * 0.5;
+  rotX = Math.max(-80, Math.min(80, rotX - (e.clientY - lastY) * 0.5));
+  lastX = e.clientX; lastY = e.clientY;
+  applyTransform();
+});
+window.addEventListener('mouseup', () => isDragging = false);
+wrap?.addEventListener('touchstart', e => { isDragging=true; lastX=e.touches[0].clientX; lastY=e.touches[0].clientY; }, { passive:true });
+window.addEventListener('touchmove', e => {
+  if (!isDragging) return;
+  rotY += (e.touches[0].clientX - lastX) * 0.5;
+  rotX = Math.max(-80, Math.min(80, rotX - (e.touches[0].clientY - lastY) * 0.5));
+  lastX=e.touches[0].clientX; lastY=e.touches[0].clientY;
+  applyTransform();
+}, { passive:true });
+window.addEventListener('touchend', () => isDragging = false);
+
+/* ── Angle presets ── */
+const angles = { front:[-15,0], back:[-15,180], side:[-15,90], top:[80,0] };
+function setAngle(name) {
+  const [rx,ry] = angles[name] || [-15,0];
+  rotX = rx; rotY = ry; applyTransform();
+  document.querySelectorAll('.angle-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+/* ── Zoom ── */
+function zoomIn()  { zoom = Math.min(2.5, zoom + 0.15); document.getElementById('zoom-slider').value = zoom; applyTransform(); }
+function zoomOut() { zoom = Math.max(0.5, zoom - 0.15); document.getElementById('zoom-slider').value = zoom; applyTransform(); }
+function setZoom(v){ zoom = parseFloat(v); applyTransform(); }
+function resetView(){ rotX=-15; rotY=20; zoom=1; document.getElementById('zoom-slider').value=1; applyTransform(); }
+
+/* ── Fullscreen ── */
+function toggleFullscreen() {
+  const el = document.getElementById('viewer-wrap');
+  if (!document.fullscreenElement) el?.requestFullscreen?.();
+  else document.exitFullscreen?.();
+}
+
+/* ── Hotspots ── */
+function showHotspotDetail(key) {
+  const data = hotspotDetails[key];
+  if (!data) return;
+  const modal = document.getElementById('hotspot-modal');
+  document.getElementById('hotspot-modal-title').textContent = data.title;
+  document.getElementById('hotspot-modal-body').textContent  = data.body;
+  modal.classList.add('open');
+}
+function hideHotspotDetail() { document.getElementById('hotspot-detail-panel').style.display='none'; }
+
+/* ── Toast ── */
+function showToast(msg, icon) {
+  const toast = document.getElementById('vr-toast');
+  document.getElementById('vr-toast-text').textContent = msg;
+  if (icon) document.getElementById('vr-toast-icon').className = `fas fa-${icon}`;
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+/* ── Cart / Quote ── */
+function addToCart() { showToast('Added to cart! Go to cart to checkout.', 'cart-shopping'); }
+function requestQuote(){ showToast('Quote request sent! Supplier will respond within 24h.', 'file-alt'); }
+
+/* ── Startup ── */
+document.addEventListener('DOMContentLoaded', function() {
+  buildTiles();
+  selectProduct(1);
+  // Hide loading overlay after brief delay
+  setTimeout(() => document.getElementById('viewer-loading')?.classList.add('hidden'), 1200);
+  // Start auto-spin
+  toggleSpin();
+
+  // AR detection
+  if ('xr' in navigator) {
+    navigator.xr.isSessionSupported('immersive-ar').then(ok => {
+      const badge = document.getElementById('ar-capability-badge');
+      if (!badge) return;
+      badge.className = ok ? 'ar-support-badge supported' : 'ar-support-badge unsupported';
+      badge.innerHTML = ok
+        ? '<i class="fas fa-check-circle"></i> AR supported'
+        : '<i class="fas fa-exclamation-circle"></i> AR not available on this device';
+      if (!ok) document.getElementById('ar-fallback-banner').style.display = 'flex';
+    });
+  } else {
+    const badge = document.getElementById('ar-capability-badge');
+    badge.className = 'ar-support-badge unsupported';
+    badge.innerHTML = '<i class="fas fa-times-circle"></i> AR not supported';
+    document.getElementById('ar-fallback-banner').style.display = 'flex';
+  }
+});
+</script>
+<script src="../../assets/js/ar-viewer.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

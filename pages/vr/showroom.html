@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>VR Showroom – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/vr.css"/>
+  <style>
+    /* ── Simulated-VR overlay ── */
+    .simulated-vr .vr-scene::after{content:'SIMULATED VR MODE';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.06);font-size:4rem;font-weight:900;pointer-events:none;white-space:nowrap;font-family:'Poppins',sans-serif}
+    /* ── Stars background ── */
+    .vr-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+    .vr-stars span{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite}
+    @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.8}}
+    /* ── Product panel (slide-in sidebar) ── */
+    .vr-product-panel{position:fixed;right:-340px;top:0;bottom:0;width:320px;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.15);z-index:500;transition:right .3s ease;overflow-y:auto;padding:24px}
+    .vr-product-panel.open{right:0}
+    .vr-product-panel h3{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27;margin-bottom:4px}
+    .vr-product-panel .cat{font-size:.78rem;color:#64748b;margin-bottom:14px}
+    .vr-product-panel .price{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#0052CC;margin-bottom:6px}
+    .vr-product-panel .moq{font-size:.78rem;color:#94a3b8;margin-bottom:16px}
+    /* ── User list ── */
+    .vr-user-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #e2e8f0;font-size:.82rem}
+    .vr-user-item:last-child{border-bottom:none}
+    /* ── Teleport buttons ── */
+    .teleport-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+    .tp-btn{padding:10px 8px;background:#f0f5ff;border:1.5px solid #bfdbfe;border-radius:10px;cursor:pointer;font-size:.78rem;font-weight:600;color:#0052CC;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+    .tp-btn:hover{background:#0052CC;color:#fff;border-color:#0052CC}
+    .tp-btn i{font-size:1.2rem}
+    /* ── Ambient particles ── */
+    .particle{position:absolute;border-radius:50%;animation:float var(--dur,6s) ease-in-out infinite;pointer-events:none;opacity:.4}
+    @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.1)}}
+  </style>
+</head>
+<body class="vr-page">
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="product-viewer.html" class="btn-nav btn-login"><i class="fas fa-cube"></i> 3D Viewer</a>
+        <a href="factory-tour.html"   class="btn-nav btn-login"><i class="fas fa-industry"></i> Factory Tour</a>
+        <a href="../auth/login.html"      class="btn-nav btn-register">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── Hero ── -->
+<div class="vr-hero">
+  <h1><i class="fas fa-vr-cardboard"></i> VR Showroom</h1>
+  <p>Explore our immersive virtual showroom — interact with products, meet suppliers, and experience B2B sourcing like never before</p>
+  <div class="vr-hero-actions">
+    <button id="btn-toggle-vr" class="btn-vr btn-vr-accent" data-vr-action="toggle-vr">
+      <i class="fas fa-vr-cardboard"></i> Enter VR
+    </button>
+    <button class="btn-vr btn-vr-white" data-vr-action="schedule-meeting">
+      <i class="fas fa-calendar-alt"></i> Schedule Meeting
+    </button>
+    <span id="vr-capability-banner" class="ar-support-badge checking" style="margin-left:8px">
+      <i class="fas fa-spinner fa-spin"></i> Checking…
+    </span>
+  </div>
+</div>
+
+<!-- ── Stats ── -->
+<div class="vr-container" style="padding-top:24px">
+  <div class="vr-stats-bar">
+    <div class="vr-stat"><div class="vr-stat-num">2,400+</div><div class="vr-stat-label">Products</div></div>
+    <div class="vr-stat"><div class="vr-stat-num">340+</div><div class="vr-stat-label">Suppliers</div></div>
+    <div class="vr-stat"><div class="vr-stat-num" id="live-users">3</div><div class="vr-stat-label">Live Users</div></div>
+    <div class="vr-stat"><div class="vr-stat-num">5</div><div class="vr-stat-label">Halls</div></div>
+    <div class="vr-stat"><div class="vr-stat-num">24/7</div><div class="vr-stat-label">Available</div></div>
+  </div>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="vr-section">
+  <div class="vr-container">
+    <nav class="vr-breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+      <span>VR / AR</span>
+      <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+      <span>VR Showroom</span>
+    </nav>
+
+    <div class="vr-layout">
+      <!-- ── Left: showroom ── -->
+      <div>
+        <!-- VR Scene -->
+        <div class="vr-card" style="padding:0;overflow:hidden">
+          <div class="vr-showroom-wrap" id="vr-showroom-wrap">
+            <div class="vr-scene" id="vr-scene">
+              <!-- Stars -->
+              <div class="vr-stars" id="vr-stars"></div>
+              <!-- Scene geometry -->
+              <div class="vr-back-wall" id="vr-scene-inner"></div>
+              <div class="vr-ceiling"></div>
+              <div class="vr-floor"></div>
+              <div class="vr-floor-grid"></div>
+
+              <!-- Product pods -->
+              <div class="vr-product-pods" id="vr-pods"></div>
+
+              <!-- HUD -->
+              <div class="vr-hud">
+                <div class="vr-hud-title">🏢 Globex Sky Virtual Showroom</div>
+                <div style="font-size:.72rem;opacity:.7">Drag to look around &middot; Click pods to inspect</div>
+              </div>
+
+              <!-- VR mode badge -->
+              <div class="vr-mode-badge" id="vr-badge" style="display:none">
+                <div class="vr-mode-dot"></div>
+                VR LIVE
+              </div>
+
+              <!-- Navigation controls -->
+              <div class="vr-nav-controls">
+                <button class="vr-nav-btn" data-vr-action="turn-left"   title="Turn Left">  <i class="fas fa-arrow-left"></i></button>
+                <button class="vr-nav-btn" data-vr-action="move-forward" title="Forward">   <i class="fas fa-arrow-up"></i></button>
+                <button class="vr-nav-btn" data-vr-action="move-back"   title="Back">       <i class="fas fa-arrow-down"></i></button>
+                <button class="vr-nav-btn" data-vr-action="turn-right"  title="Turn Right"> <i class="fas fa-arrow-right"></i></button>
+                <div style="width:1px;background:rgba(255,255,255,.15);margin:0 4px"></div>
+                <button class="vr-nav-btn" data-vr-action="toggle-rotate" title="Toggle Auto-rotate">
+                  <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="vr-nav-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teleport zones -->
+        <div class="vr-card" style="margin-top:20px">
+          <div class="vr-card-title"><i class="fas fa-location-dot" style="color:#0052CC"></i> Teleport to Hall</div>
+          <div class="teleport-grid">
+            <button class="tp-btn" data-vr-action="teleport" data-location="Main Entrance">
+              <i class="fas fa-door-open"></i>Main Entrance
+            </button>
+            <button class="tp-btn" data-vr-action="teleport" data-location="Electronics Hall">
+              <i class="fas fa-microchip"></i>Electronics
+            </button>
+            <button class="tp-btn" data-vr-action="teleport" data-location="Machinery Hall">
+              <i class="fas fa-cogs"></i>Machinery
+            </button>
+            <button class="tp-btn" data-vr-action="teleport" data-location="Safety & PPE Hall">
+              <i class="fas fa-hard-hat"></i>Safety &amp; PPE
+            </button>
+            <button class="tp-btn" data-vr-action="teleport" data-location="Lighting Showroom">
+              <i class="fas fa-lightbulb"></i>Lighting
+            </button>
+            <button class="tp-btn" data-vr-action="teleport" data-location="Meeting Pods">
+              <i class="fas fa-handshake"></i>Meeting Pods
+            </button>
+          </div>
+        </div>
+
+        <!-- Features grid -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-star" style="color:#f59e0b"></i> Showroom Features</div>
+          <div class="vr-feature-grid">
+            <div class="vr-feature-card">
+              <div class="vr-feature-icon" style="background:#eff6ff"><i class="fas fa-cube" style="color:#0052CC"></i></div>
+              <h3>Product Inspection</h3>
+              <p>Pick up, rotate, and inspect products in full 3D before placing your order.</p>
+            </div>
+            <div class="vr-feature-card">
+              <div class="vr-feature-icon" style="background:#faf5ff"><i class="fas fa-users" style="color:#7c3aed"></i></div>
+              <h3>Multi-user Sessions</h3>
+              <p>Meet your supplier's team in the same virtual space for live product demos.</p>
+            </div>
+            <div class="vr-feature-card">
+              <div class="vr-feature-icon" style="background:#ecfdf5"><i class="fas fa-cart-plus" style="color:#10b981"></i></div>
+              <h3>Add to Cart in VR</h3>
+              <p>Confirm specs and add directly to your B2B cart without leaving the showroom.</p>
+            </div>
+            <div class="vr-feature-card">
+              <div class="vr-feature-icon" style="background:#fff7ed"><i class="fas fa-calendar-check" style="color:#f59e0b"></i></div>
+              <h3>Live Buyer Meetings</h3>
+              <p>Schedule a live VR meeting with suppliers for real-time negotiation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: sidebar ── -->
+      <div class="vr-sidebar">
+        <!-- Live users -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-circle" style="color:#10b981;font-size:.6rem"></i> Live in Showroom</div>
+          <div id="vr-users-list">
+            <!-- Populated by JS -->
+          </div>
+          <button class="btn-vr btn-vr-outline" style="width:100%;justify-content:center;margin-top:12px"
+                  data-vr-action="schedule-meeting">
+            <i class="fas fa-video"></i> Join Meeting
+          </button>
+        </div>
+
+        <!-- 3D Viewer link -->
+        <div class="vr-card" style="background:linear-gradient(135deg,#0052CC,#7c3aed);color:#fff">
+          <div style="font-size:2rem;margin-bottom:10px">🎮</div>
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;margin-bottom:6px">Try 3D Product Viewer</div>
+          <p style="font-size:.82rem;opacity:.85;margin-bottom:14px">Rotate, zoom and inspect any product with full AR try-on</p>
+          <a href="product-viewer.html" class="btn-vr btn-vr-white" style="width:100%;justify-content:center">
+            <i class="fas fa-cube"></i> Open 3D Viewer
+          </a>
+        </div>
+
+        <!-- Factory tour link -->
+        <div class="vr-card">
+          <div class="vr-card-title"><i class="fas fa-industry" style="color:#0052CC"></i> Factory Tour</div>
+          <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">Take a virtual walkthrough of supplier factories and verify production capacity.</p>
+          <a href="factory-tour.html" class="btn-vr btn-vr-primary" style="width:100%;justify-content:center">
+            <i class="fas fa-walking"></i> Start Tour
+          </a>
+        </div>
+
+        <!-- Help -->
+        <div class="vr-card">
+          <div class="vr-sidebar-label">VR Requirements</div>
+          <div class="vr-info-row"><i class="fas fa-desktop"></i><span>Desktop</span>    <strong>Chrome 79+</strong></div>
+          <div class="vr-info-row"><i class="fab fa-android"></i><span>Android AR</span><strong>ARCore + Chrome</strong></div>
+          <div class="vr-info-row"><i class="fab fa-apple"></i><span>iOS AR</span>       <strong>Safari 15+</strong></div>
+          <div class="vr-info-row"><i class="fas fa-vr-cardboard"></i><span>Headset</span><strong>WebXR API</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Product inspect panel ── -->
+<div class="vr-product-panel" id="vr-product-panel">
+  <button data-vr-action="close-product" style="float:right;background:none;border:none;font-size:1.1rem;cursor:pointer;color:#64748b">
+    <i class="fas fa-times"></i>
+  </button>
+  <div style="font-size:3rem;margin-bottom:10px;text-align:center" id="vr-prod-icon">⚙️</div>
+  <h3 id="vr-prod-name">Product Name</h3>
+  <div class="cat" id="vr-prod-category">Category</div>
+  <div class="price" id="vr-prod-price">$0</div>
+  <div class="moq">MOQ: <span id="vr-prod-moq">—</span></div>
+  <button class="btn-vr btn-vr-primary" style="width:100%;justify-content:center;margin-bottom:8px"
+          data-vr-action="add-to-cart">
+    <i class="fas fa-cart-plus"></i> Add to Cart
+  </button>
+  <a href="product-viewer.html" class="btn-vr btn-vr-outline" style="width:100%;justify-content:center">
+    <i class="fas fa-cube"></i> View in 3D
+  </a>
+</div>
+
+<!-- ── Meeting modal ── -->
+<div class="vr-modal-overlay" id="vr-meeting-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="vr-modal">
+    <span class="vr-modal-close" data-vr-action="close-modal" data-target="#vr-meeting-modal">
+      <i class="fas fa-times"></i>
+    </span>
+    <h3><i class="fas fa-calendar-alt" style="color:#0052CC"></i> Schedule VR Meeting</h3>
+    <form id="meeting-form" onsubmit="VRShowroom.scheduleMeeting ? event.preventDefault() : null">
+      <div class="vr-form-group">
+        <label>Your Name</label>
+        <input type="text" placeholder="e.g. Ahmed Hassan" required/>
+      </div>
+      <div class="vr-form-group">
+        <label>Company</label>
+        <input type="text" placeholder="Your company name" required/>
+      </div>
+      <div class="vr-form-group">
+        <label>Preferred Date</label>
+        <input type="date" required/>
+      </div>
+      <div class="vr-form-group">
+        <label>Meeting Purpose</label>
+        <select>
+          <option>Product Demo</option>
+          <option>Price Negotiation</option>
+          <option>Quality Review</option>
+          <option>Factory Introduction</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="vr-form-group">
+        <label>Notes</label>
+        <textarea placeholder="Any specific products or requirements…"></textarea>
+      </div>
+      <button type="submit" class="btn-vr btn-vr-primary" style="width:100%;justify-content:center"
+              onclick="submitMeetingForm(event)">
+        <i class="fas fa-paper-plane"></i> Send Request
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="vr-toast" id="vr-toast">
+  <i class="fas fa-info-circle" id="vr-toast-icon"></i>
+  <span id="vr-toast-text"></span>
+</div>
+
+<script>
+/* ── Build stars ── */
+(function buildStars() {
+  const container = document.getElementById('vr-stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('span');
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px;height:${size}px;
+      top:${Math.random()*100}%;left:${Math.random()*100}%;
+      --d:${(Math.random()*4+2).toFixed(1)}s;
+      animation-delay:${(Math.random()*3).toFixed(1)}s`;
+    container.appendChild(s);
+  }
+})();
+
+/* ── Build product pods ── */
+const vrProducts = [
+  { id:1, name:'Industrial Motor',  icon:'⚙️',  price:'$420',  moq:'50 units',   category:'Machinery' },
+  { id:2, name:'LED Panel 60W',     icon:'💡',  price:'$18',   moq:'200 units',  category:'Lighting' },
+  { id:3, name:'Safety Helmet',     icon:'⛑️',  price:'$8',    moq:'500 units',  category:'Safety' },
+  { id:4, name:'Circuit Board',     icon:'🔌',  price:'$55',   moq:'100 units',  category:'Electronics' },
+  { id:5, name:'Hydraulic Pump',    icon:'🔧',  price:'$280',  moq:'20 units',   category:'Hydraulics' },
+];
+
+(function buildPods() {
+  const container = document.getElementById('vr-pods');
+  vrProducts.forEach(p => {
+    const pod = document.createElement('div');
+    pod.className = 'vr-pod';
+    pod.dataset.vrAction = 'select-product';
+    pod.dataset.id = p.id;
+    pod.innerHTML = `
+      <div class="vr-pod-item">${p.icon}</div>
+      <div class="vr-pod-platform"></div>
+      <div class="vr-pod-label">${p.name}</div>`;
+    container.appendChild(pod);
+  });
+})();
+
+/* ── Drag showroom ── */
+let isDragging = false, lastX = 0;
+const wrap = document.getElementById('vr-showroom-wrap');
+wrap?.addEventListener('mousedown', e => { isDragging=true; lastX=e.clientX; });
+wrap?.addEventListener('touchstart', e => { isDragging=true; lastX=e.touches[0].clientX; }, { passive:true });
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const dx = e.clientX - lastX; lastX = e.clientX;
+  const inner = document.getElementById('vr-scene-inner');
+  if (inner) { const cur = parseFloat(inner.dataset.rot||0); inner.dataset.rot = cur+dx*0.1; inner.style.transform = `rotateY(${cur+dx*0.1}deg)`; }
+});
+window.addEventListener('mouseup', () => isDragging=false);
+window.addEventListener('touchend', () => isDragging=false);
+window.addEventListener('touchmove', e => {
+  if (!isDragging) return;
+  const dx = e.touches[0].clientX - lastX; lastX = e.touches[0].clientX;
+  const inner = document.getElementById('vr-scene-inner');
+  if (inner) { const cur = parseFloat(inner.dataset.rot||0); inner.dataset.rot=cur+dx*0.1; inner.style.transform=`rotateY(${cur+dx*0.1}deg)`; }
+}, { passive:true });
+
+/* ── Fullscreen ── */
+function toggleFullscreen() {
+  const el = document.getElementById('vr-showroom-wrap');
+  if (!document.fullscreenElement) el?.requestFullscreen?.();
+  else document.exitFullscreen?.();
+}
+
+/* ── Meeting form submit ── */
+function submitMeetingForm(e) {
+  e.preventDefault();
+  document.getElementById('vr-meeting-modal')?.classList.remove('open');
+  const toast = document.getElementById('vr-toast');
+  document.getElementById('vr-toast-text').textContent = 'Meeting request sent! You\'ll receive a confirmation shortly.';
+  document.getElementById('vr-toast-icon').className = 'fas fa-check-circle';
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+/* ── VR badge toggle hook ── */
+document.getElementById('btn-toggle-vr')?.addEventListener('click', function() {
+  const badge = document.getElementById('vr-badge');
+  if (badge) badge.style.display = badge.style.display === 'none' ? 'flex' : 'none';
+});
+</script>
+<script src="../../assets/js/vr-showroom.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
