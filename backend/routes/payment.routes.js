@@ -4,6 +4,90 @@ import { body, param } from 'express-validator';
 import { validate } from '../middleware/validator.js';
 import { authenticate } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/roleCheck.js';
+
+/**
+ * @swagger
+ * /api/v1/payments/stripe/intent:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Create a Stripe PaymentIntent
+ *     description: Creates a Stripe PaymentIntent for a given amount. Returns client_secret for frontend confirmation.
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [amount, currency]
+ *             properties:
+ *               amount:
+ *                 type: integer
+ *                 description: Amount in smallest currency unit (e.g., cents for USD)
+ *                 example: 5000
+ *               currency:
+ *                 type: string
+ *                 example: usd
+ *               orderId:
+ *                 type: string
+ *                 description: Associated order ID for metadata
+ *     responses:
+ *       200:
+ *         description: PaymentIntent created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean }
+ *                 clientSecret: { type: string }
+ *                 paymentIntentId: { type: string }
+ *       400:
+ *         description: Invalid amount or currency
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Stripe configuration error
+ *
+ * /api/v1/payments/bkash/init:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Initialize a bKash payment
+ *     description: Creates a bKash payment session. Returns paymentURL for redirect.
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [amount, orderId]
+ *             properties:
+ *               amount:
+ *                 type: number
+ *                 example: 500
+ *               orderId:
+ *                 type: string
+ *                 example: order-uuid-123
+ *     responses:
+ *       200:
+ *         description: bKash payment initialized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean }
+ *                 paymentURL: { type: string }
+ *                 paymentID: { type: string }
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
+
 import * as ctrl from '../controllers/payment.controller.js';
 
 const router = Router();
