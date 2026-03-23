@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify Email | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f6fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-box {
+      background: #fff;
+      border-radius: 20px;
+      padding: 52px 44px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,.1);
+      margin: 24px 16px;
+      text-align: center;
+    }
+
+    .auth-logo { display: flex; justify-content: center; margin-bottom: 32px; }
+
+    .logo-mark {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, #0052CC, #00C9A7);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-right: 10px;
+    }
+
+    .logo-mark span { color: #fff; font-size: 1.4rem; font-weight: 800; }
+    .logo-text { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 700; color: #0A0E27; line-height: 1.2; }
+    .logo-text small { display: block; font-size: .65rem; font-weight: 500; color: #64748b; letter-spacing: .06em; text-transform: uppercase; }
+
+    /* ── State: Verifying ── */
+    #state-verifying { display: none; }
+
+    .spinner-icon {
+      width: 80px; height: 80px;
+      background: #eff6ff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #0052CC;
+      margin: 0 auto 24px;
+    }
+
+    .spinner-icon i { animation: spin 1.2s linear infinite; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── State: Success ── */
+    #state-success { display: none; }
+
+    .success-icon {
+      width: 80px; height: 80px;
+      background: #ecfdf5;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #10b981;
+      margin: 0 auto 24px;
+    }
+
+    /* ── State: Error ── */
+    #state-error { display: none; }
+
+    .error-icon {
+      width: 80px; height: 80px;
+      background: #fef2f2;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #ef4444;
+      margin: 0 auto 24px;
+    }
+
+    /* ── State: Expired / resend ── */
+    #state-expired { display: none; }
+
+    .warning-icon {
+      width: 80px; height: 80px;
+      background: #fffbeb;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #f59e0b;
+      margin: 0 auto 24px;
+    }
+
+    h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0A0E27;
+      margin-bottom: 10px;
+    }
+
+    p.sub {
+      color: #64748b;
+      font-size: .9rem;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    p.sub strong { color: #0A0E27; }
+
+    .email-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-family: inherit;
+      color: #0A0E27;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .form-input:focus { border-color: #0052CC; box-shadow: 0 0 0 3px rgba(0,82,204,.1); }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #0052CC, #003d99);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: .95rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover { background: linear-gradient(135deg, #003d99, #002b6b); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,82,204,.3); }
+    .btn-primary:disabled { opacity: .65; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-teal {
+      width: 100%;
+      background: linear-gradient(135deg, #00C9A7, #00b896);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: .95rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all .25s;
+      margin-bottom: 12px;
+    }
+
+    .btn-teal:hover { background: linear-gradient(135deg, #00b896, #009d7c); transform: translateY(-1px); }
+
+    .btn-outline {
+      width: 100%;
+      background: transparent;
+      color: #0052CC;
+      border: 2px solid #0052CC;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: .9rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all .25s;
+    }
+
+    .btn-outline:hover { background: #eff6ff; }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: .85rem;
+      color: #64748b;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: #0052CC; }
+    .back-link i { margin-right: 4px; }
+
+    .alert {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: .85rem;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .alert-error   { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .alert-success { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .alert.show    { display: flex; align-items: flex-start; gap: 10px; }
+    .alert i       { flex-shrink: 0; margin-top: 1px; }
+
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      color: #cbd5e1; font-size: .8rem; margin: 20px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: #e2e8f0;
+    }
+
+    .resend-text {
+      font-size: .85rem;
+      color: #64748b;
+    }
+
+    .resend-text button {
+      background: none; border: none;
+      color: #0052CC; font-weight: 600; cursor: pointer; font-size: .85rem;
+    }
+
+    .resend-text button:hover { text-decoration: underline; }
+    .resend-text button:disabled { color: #94a3b8; cursor: not-allowed; }
+
+    #timer { font-weight: 600; color: #0052CC; }
+  </style>
+</head>
+<body>
+
+  <div class="auth-box">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="logo-mark"><span>G</span></div>
+      <div class="logo-text">Globex Sky<small>Global B2B Marketplace</small></div>
+    </div>
+
+    <!-- ── State: verifying (auto token from URL) ── -->
+    <div id="state-verifying">
+      <div class="spinner-icon"><i class="fa-solid fa-circle-notch"></i></div>
+      <h2>Verifying your email…</h2>
+      <p class="sub">Please wait while we confirm your email address.</p>
+    </div>
+
+    <!-- ── State: success ── -->
+    <div id="state-success">
+      <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <h2>Email Verified!</h2>
+      <p class="sub">Your email address has been successfully verified. You can now access all features of your account.</p>
+      <button class="btn-teal" id="go-to-login-btn">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Go to Login
+      </button>
+      <button class="btn-outline" id="back-to-home-btn">
+        Back to Home
+      </button>
+    </div>
+
+    <!-- ── State: error ── -->
+    <div id="state-error">
+      <div class="error-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+      <h2>Verification Failed</h2>
+      <p class="sub" id="error-message">The verification link is invalid or has already been used.</p>
+      <button class="btn-outline" id="show-resend-btn">
+        <i class="fa-solid fa-envelope"></i> Resend Verification Email
+      </button>
+      <a href="/pages/auth/login.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Login
+      </a>
+    </div>
+
+    <!-- ── State: expired / resend ── -->
+    <div id="state-expired">
+      <div class="warning-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      <h2>Resend Verification Email</h2>
+      <p class="sub">Enter the email address you used when registering and we'll send you a new verification link.</p>
+
+      <div class="alert alert-error" id="resend-error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="resend-error-msg">An error occurred.</span>
+      </div>
+
+      <div class="alert alert-success" id="resend-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Verification email sent! Check your inbox.</span>
+      </div>
+
+      <form class="email-form" id="resend-form" novalidate>
+        <input
+          type="email"
+          id="resend-email"
+          class="form-input"
+          placeholder="your@email.com"
+          autocomplete="email"
+          required
+        />
+        <button type="submit" class="btn-primary" id="resend-submit-btn">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Send Verification Email</span>
+        </button>
+      </form>
+
+      <div class="resend-text" id="resend-timer-wrap" style="display:none">
+        Resend available in <span id="timer">60</span>s
+      </div>
+
+      <a href="/pages/auth/login.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Login
+      </a>
+    </div>
+
+    <!-- ── State: no token (default landing) ── -->
+    <div id="state-default">
+      <div class="success-icon" style="background:#eff6ff">
+        <i class="fa-solid fa-envelope-open-text" style="color:#0052CC"></i>
+      </div>
+      <h2>Check Your Email</h2>
+      <p class="sub">
+        We sent a verification link to <strong id="registered-email">your email address</strong>.
+        Click the link in the email to verify your account.
+      </p>
+
+      <div class="divider">didn't receive it?</div>
+
+      <div class="resend-text">
+        <button id="resend-link-btn">Resend verification email</button>
+      </div>
+
+      <a href="/pages/auth/login.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Login
+      </a>
+    </div>
+
+  </div><!-- /.auth-box -->
+
+  <script src="../../assets/js/api.js"></script>
+  <script>
+    /* ─── Helpers ────────────────────────────────────────────── */
+    const states = ['state-verifying', 'state-success', 'state-error', 'state-expired', 'state-default'];
+
+    function showState(id) {
+      states.forEach(s => {
+        document.getElementById(s).style.display = s === id ? 'block' : 'none';
+      });
+    }
+
+    function showExpiredState() { showState('state-expired'); }
+
+    /* ─── Parse URL parameters ───────────────────────────────── */
+    const params      = new URLSearchParams(window.location.search);
+    const token       = params.get('token');
+    const type        = params.get('type');  // 'email' | 'recovery'
+    const email       = params.get('email');
+    const accessToken = params.get('access_token'); // Supabase flow
+
+    /* ─── Pre-fill registered email if passed ────────────────── */
+    if (email) {
+      const el = document.getElementById('registered-email');
+      if (el) el.textContent = email;
+      const resendInput = document.getElementById('resend-email');
+      if (resendInput) resendInput.value = email;
+    }
+
+    /* ─── Main verification flow ─────────────────────────────── */
+    async function verifyEmail(verificationToken) {
+      showState('state-verifying');
+      try {
+        await window.API.post('/auth/verify-email', { token: verificationToken });
+        showState('state-success');
+      } catch (err) {
+        const msg = err?.data?.error || err?.message || 'Verification failed.';
+        document.getElementById('error-message').textContent = msg;
+        showState('state-error');
+      }
+    }
+
+    /* ─── Resend form ────────────────────────────────────────── */
+    let resendTimer = null;
+
+    function startResendTimer(seconds) {
+      const wrap  = document.getElementById('resend-timer-wrap');
+      const timerEl = document.getElementById('timer');
+      const btn   = document.getElementById('resend-submit-btn');
+      wrap.style.display = 'block';
+      btn.disabled = true;
+      let remaining = seconds;
+      timerEl.textContent = remaining;
+      resendTimer = setInterval(() => {
+        remaining--;
+        timerEl.textContent = remaining;
+        if (remaining <= 0) {
+          clearInterval(resendTimer);
+          wrap.style.display = 'none';
+          btn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    document.getElementById('resend-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const emailVal = document.getElementById('resend-email').value.trim();
+      const errorEl  = document.getElementById('resend-error');
+      const msgEl    = document.getElementById('resend-error-msg');
+      const successEl = document.getElementById('resend-success');
+      const btn       = document.getElementById('resend-submit-btn');
+
+      errorEl.classList.remove('show');
+      successEl.classList.remove('show');
+
+      if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+        msgEl.textContent = 'Please enter a valid email address.';
+        errorEl.classList.add('show');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Sending…';
+
+      try {
+        await window.API.post('/auth/resend-verification', { email: emailVal });
+        successEl.classList.add('show');
+        startResendTimer(60);
+      } catch (err) {
+        msgEl.textContent = err?.data?.error || err?.message || 'Failed to send email.';
+        errorEl.classList.add('show');
+        btn.disabled = false;
+      } finally {
+        btn.querySelector('span').textContent = 'Send Verification Email';
+      }
+    });
+
+    document.getElementById('resend-link-btn')?.addEventListener('click', () => {
+      showState('state-expired');
+    });
+
+    document.getElementById('go-to-login-btn')?.addEventListener('click', () => {
+      window.location.href = '/pages/auth/login.html';
+    });
+
+    document.getElementById('back-to-home-btn')?.addEventListener('click', () => {
+      window.location.href = '/index.html';
+    });
+
+    document.getElementById('show-resend-btn')?.addEventListener('click', () => {
+      showState('state-expired');
+    });
+
+    /* ─── Entry point ────────────────────────────────────────── */
+    (function init() {
+      if (token) {
+        // Explicit token in URL — verify it
+        verifyEmail(token);
+      } else if (accessToken) {
+        // Supabase passes access_token in the URL fragment on email confirmation
+        verifyEmail(accessToken);
+      } else {
+        // No token — show the "check your email" default state
+        showState('state-default');
+      }
+    })();
+  </script>
+</body>
+</html>

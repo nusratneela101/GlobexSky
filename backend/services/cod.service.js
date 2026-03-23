@@ -188,3 +188,112 @@ export async function getCodAnalyticsData({ start, end } = {}) {
     by_status: byStatus,
   };
 }
+
+/**
+ * Create a COD order (alias for createCodOrderRecord with richer input shape).
+ * @param {object} orderData
+ */
+export async function createCodOrder(orderData) {
+  return createCodOrderRecord(orderData);
+}
+
+/**
+ * Mark a COD order as undelivered (failed delivery attempt).
+ * @param {string} codOrderId
+ * @param {string} reason
+ */
+export async function markUndelivered(codOrderId, reason) {
+  const { data, error } = await supabase
+    .from('cod_orders')
+    .update({ status: 'undelivered', undelivered_reason: reason || null, updated_at: new Date().toISOString() })
+    .eq('id', codOrderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Schedule a re-delivery attempt for an undelivered COD order.
+ * @param {string} codOrderId
+ * @param {string} date - ISO 8601 date string for re-delivery
+ */
+export async function scheduleRedelivery(codOrderId, date) {
+  const { data, error } = await supabase
+    .from('cod_orders')
+    .update({ status: 'redelivery_scheduled', redelivery_date: date, updated_at: new Date().toISOString() })
+    .eq('id', codOrderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Reconcile a COD payment — record cash collected by a delivery agent.
+ * @param {object} opts
+ * @param {string}  opts.codOrderId
+ * @param {number}  opts.collectedAmount - Amount collected in local currency
+ * @param {string}  opts.agentId         - Delivery agent user ID
+ */
+export async function reconcilePayment({ codOrderId, collectedAmount, agentId }) {
+  const { data, error } = await supabase
+    .from('cod_orders')
+    .update({
+      status: 'collected',
+      collected_at: new Date().toISOString(),
+      collected_amount: collectedAmount,
+      agent_id: agentId || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', codOrderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Get a COD summary for a supplier within a date range.
+ * @param {object} opts
+ * @param {string}  opts.supplierId
+ * @param {object}  [opts.dateRange] - { start, end } ISO date strings
+ */
+export async function getCodSummary({ supplierId, dateRange = {} } = {}) {
+  let query = supabase
+    .from('cod_orders')
+    .select('status,amount,collected_amount,fraud_score,is_flagged,created_at')
+    .eq('supplier_id', supplierId);
+
+  if (dateRange.start) query = query.gte('created_at', dateRange.start);
+  if (dateRange.end)   query = query.lte('created_at', dateRange.end);
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  const orders = data || [];
+  const totalOrders = orders.length;
+
+  const stats = orders.reduce((acc, o) => {
+    acc.totalAmount += +o.amount;
+    if (o.status === 'collected') acc.collectedAmt += +(o.collected_amount || o.amount);
+    if (['pending', 'delivered'].includes(o.status)) acc.pendingAmt += +o.amount;
+    if (o.is_flagged) acc.flaggedCount += 1;
+    acc.byStatus[o.status] = (acc.byStatus[o.status] || 0) + 1;
+    return acc;
+  }, { totalAmount: 0, collectedAmt: 0, pendingAmt: 0, flaggedCount: 0, byStatus: {} });
+
+  return {
+    supplier_id: supplierId,
+    total_orders: totalOrders,
+    total_amount: +stats.totalAmount.toFixed(2),
+    collected_amount: +stats.collectedAmt.toFixed(2),
+    pending_amount: +stats.pendingAmt.toFixed(2),
+    flagged_count: stats.flaggedCount,
+    by_status: stats.byStatus,
+    date_range: dateRange,
+  };
+}

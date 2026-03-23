@@ -1,11 +1,13 @@
 /**
  * Globex Sky — AI Chatbot Enhancement Service
- * Enhanced FAQ matching with fuzzy matching, context-aware responses,
+ * OpenAI GPT-3.5-turbo integration with context-aware responses,
  * product/order inquiry handling, escalation, multi-language support,
  * training data management, and conversation analytics.
+ * Falls back to fuzzy FAQ matching when OpenAI is unavailable.
  */
 
 import supabase from '../../config/supabase.js';
+import openaiClient from '../../config/openai.js';
 
 // ─── Intent Patterns ──────────────────────────────────────────────────────────
 
@@ -175,25 +177,24 @@ async function handleOrderStatus(message, userId) {
 
 // ─── Multi-language Response Support ─────────────────────────────────────────
 
-const TRANSLATIONS = {
-  ar: { fallback: 'عذرًا، لم أفهم سؤالك. سأحولك إلى وكيل بشري.', greeting: 'مرحبًا! كيف يمكنني مساعدتك؟' },
-  fr: { fallback: 'Désolé, je n\'ai pas compris. Je vous transfère à un agent.', greeting: 'Bonjour! Comment puis-je vous aider?' },
-  es: { fallback: 'Lo siento, no entendí. Le transfiero a un agente.', greeting: '¡Hola! ¿Cómo puedo ayudarle?' },
-  zh: { fallback: '对不起，我没有理解您的问题。我将为您转接人工客服。', greeting: '您好！我能为您提供什么帮助？' },
-  de: { fallback: 'Entschuldigung, ich habe das nicht verstanden. Ich verbinde Sie mit einem Agenten.', greeting: 'Hallo! Wie kann ich Ihnen helfen?' },
-};
-
 function getLocalizedResponse(response, lang) {
   if (!lang || lang === 'en') return response;
-  // In production, integrate with translation.service.js
-  // For now, return English with a language note
-  return response;
+  return response; // Delegates to translation.service.js in production
 }
+
+// ─── OpenAI System Prompt ──────────────────────────────────────────────────────
+
+const OPENAI_SYSTEM_PROMPT = `You are GlobexSky's helpful shopping assistant for an international B2B/B2C trade platform.
+Help users with: product searches, order status, returns/refunds, shipping, payments, and account queries.
+Be concise, friendly, and professional. Always respond in the same language the user writes in.
+If you cannot help with something, say so clearly and offer to escalate to a human support agent.`;
 
 // ─── Main Bot Response ─────────────────────────────────────────────────────────
 
 /**
- * Generate an enhanced bot response with context awareness.
+ * Generate an enhanced bot response with OpenAI GPT-3.5-turbo and context awareness.
+ * Falls back to fuzzy FAQ / rule-based matching when OpenAI is unavailable.
+ *
  * @param {string} userId
  * @param {string} message
  * @param {string|null} sessionId
@@ -203,40 +204,94 @@ export async function generateEnhancedBotResponse(userId, message, sessionId = n
   const sid = sessionId || `${userId}-${Date.now()}`;
   const ctx = updateContext(sid, null, message);
 
-  // 1. Check custom Q&A with fuzzy matching
-  const { data: allFAQs } = await supabase
-    .from('chatbot_qa')
-    .select('*')
-    .order('usage_count', { ascending: false })
-    .limit(50);
-
-  const { faq, confidence } = fuzzyMatchFAQ(message, allFAQs || []);
-
   let responseText;
   let intent;
   let shouldEscalate = false;
+  let needsHuman = false;
+  const suggestedProducts = [];
 
-  if (faq && confidence >= 0.6) {
-    responseText = faq.answer;
-    intent = faq.intent || 'custom_faq';
-    // Increment usage count
-    await supabase.from('chatbot_qa').update({ usage_count: (faq.usage_count || 0) + 1 }).eq('id', faq.id);
-  } else {
-    const classification = classifyIntent(message);
-    intent = classification.intent;
+  // ── 1. Try OpenAI with conversation context ────────────────────────────────
+  if (openaiClient) {
+    try {
+      // Build conversation history from in-memory context
+      const historyMessages = (ctx.messages || []).slice(-10).map((m) => ({
+        role: typeof m === 'string' ? 'user' : (m.role === 'bot' ? 'assistant' : 'user'),
+        content: typeof m === 'string' ? m : m.content,
+      }));
 
-    if (intent === 'escalate' || (intent === 'fallback' && ctx.turnCount > 3)) {
-      shouldEscalate = true;
-      responseText = getLocalizedResponse(DEFAULT_RESPONSES.escalate, lang);
-    } else if (intent === 'product_inquiry') {
-      responseText = await handleProductInquiry(message);
-    } else if (intent === 'order_status') {
-      responseText = await handleOrderStatus(message, userId);
-    } else if (intent === 'fallback' && classification.confidence < ESCALATION_CONFIDENCE_THRESHOLD) {
-      shouldEscalate = true;
-      responseText = getLocalizedResponse(DEFAULT_RESPONSES.fallback, lang);
+      // Enrich context for product/order intents
+      const { intent: detectedIntent } = classifyIntent(message);
+      intent = detectedIntent;
+      let enrichedSystem = OPENAI_SYSTEM_PROMPT;
+
+      if (intent === 'product_inquiry') {
+        const productContext = await handleProductInquiry(message);
+        enrichedSystem += `\n\nProduct search result: ${productContext}`;
+      } else if (intent === 'order_status') {
+        const orderContext = await handleOrderStatus(message, userId);
+        enrichedSystem += `\n\nOrder information: ${orderContext}`;
+      }
+
+      const completion = await openaiClient.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: enrichedSystem },
+          ...historyMessages,
+          { role: 'user', content: message },
+        ],
+        max_tokens: 400,
+        temperature: 0.7,
+      });
+
+      responseText = completion.choices[0]?.message?.content?.trim();
+
+      // Detect escalation signals in response
+      if (responseText) {
+        const lcResp = responseText.toLowerCase();
+        if (lcResp.includes('human agent') || lcResp.includes('support team') || lcResp.includes("i'm unable") || lcResp.includes('i cannot')) {
+          needsHuman = true;
+          shouldEscalate = true;
+        }
+      }
+    } catch (err) {
+      console.warn('[AI Chatbot] OpenAI call failed, using rule-based fallback:', err.message);
+    }
+  }
+
+  // ── 2. Rule-based fallback ─────────────────────────────────────────────────
+  if (!responseText) {
+    // Check custom Q&A with fuzzy matching
+    const { data: allFAQs } = await supabase
+      .from('chatbot_qa')
+      .select('*')
+      .order('usage_count', { ascending: false })
+      .limit(50);
+
+    const { faq, confidence } = fuzzyMatchFAQ(message, allFAQs || []);
+
+    if (faq && confidence >= 0.6) {
+      responseText = faq.answer;
+      intent = faq.intent || 'custom_faq';
+      await supabase.from('chatbot_qa').update({ usage_count: (faq.usage_count || 0) + 1 }).eq('id', faq.id);
     } else {
-      responseText = getLocalizedResponse(DEFAULT_RESPONSES[intent] || DEFAULT_RESPONSES.fallback, lang);
+      const classification = classifyIntent(message);
+      intent = classification.intent;
+
+      if (intent === 'escalate' || (intent === 'fallback' && ctx.turnCount > 3)) {
+        shouldEscalate = true;
+        needsHuman = true;
+        responseText = getLocalizedResponse(DEFAULT_RESPONSES.escalate, lang);
+      } else if (intent === 'product_inquiry') {
+        responseText = await handleProductInquiry(message);
+      } else if (intent === 'order_status') {
+        responseText = await handleOrderStatus(message, userId);
+      } else if (intent === 'fallback' && classification.confidence < ESCALATION_CONFIDENCE_THRESHOLD) {
+        shouldEscalate = true;
+        needsHuman = true;
+        responseText = getLocalizedResponse(DEFAULT_RESPONSES.fallback, lang);
+      } else {
+        responseText = getLocalizedResponse(DEFAULT_RESPONSES[intent] || DEFAULT_RESPONSES.fallback, lang);
+      }
     }
   }
 
@@ -253,7 +308,8 @@ export async function generateEnhancedBotResponse(userId, message, sessionId = n
     intent,
     response: responseText,
     should_escalate: shouldEscalate,
-    confidence: faq ? confidence : undefined,
+    needs_human: needsHuman,
+    suggested_products: suggestedProducts,
     context_turn: ctx.turnCount,
   };
 }

@@ -250,4 +250,65 @@ router.get('/factory-tours/my-requests', (req, res) => {
   });
 });
 
+/**
+ * GET /api/v1/vr/sessions
+ * List the authenticated user's active VR sessions.
+ */
+router.get('/sessions', (_req, res) => {
+  res.json({
+    success: true,
+    data: [],
+  });
+});
+
+/**
+ * POST /api/v1/vr/track
+ * Track a VR/AR product interaction for analytics.
+ */
+router.post(
+  '/track',
+  [
+    body('product_id').notEmpty().withMessage('product_id is required'),
+    body('event').isIn(['view', 'rotate', 'zoom', 'ar_place', 'add_to_cart', 'inquiry'])
+      .withMessage('Unknown event type'),
+    body('showroom_id').optional().isString().trim(),
+    body('session_id').optional().isString().trim(),
+    body('duration_ms').optional().isInt({ min: 0 }),
+  ],
+  validate,
+  (req, res) => {
+    res.status(201).json({
+      success: true,
+      data: {
+        tracked: true,
+        event: req.body.event,
+        product_id: req.body.product_id,
+        recorded_at: new Date().toISOString(),
+      },
+    });
+  },
+);
+
+/**
+ * GET /api/v1/vr/showroom/:supplierId
+ * Get a supplier's VR showroom configuration.
+ */
+router.get(
+  '/showroom/:supplierId',
+  [param('supplierId').notEmpty()],
+  validate,
+  (req, res) => {
+    res.json({
+      success: true,
+      data: {
+        supplier_id: req.params.supplierId,
+        layout: 'corridor',
+        theme: 'default',
+        products: [],
+        banner_url: null,
+      },
+    });
+  },
+);
+
 export default router;

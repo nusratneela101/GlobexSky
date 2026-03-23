@@ -18,12 +18,30 @@
 
   /** Supported languages with display names and flag emoji. */
   const LANGUAGES = {
-    en: { label: 'English',  flag: '🇬🇧', dir: 'ltr' },
-    bn: { label: 'বাংলা',    flag: '🇧🇩', dir: 'ltr' },
-    zh: { label: '中文',     flag: '🇨🇳', dir: 'ltr' },
-    ar: { label: 'العربية',  flag: '🇸🇦', dir: 'rtl' },
-    hi: { label: 'हिन्दी',   flag: '🇮🇳', dir: 'ltr' },
+    en: { label: 'English',           flag: '🇬🇧', dir: 'ltr' },
+    bn: { label: 'বাংলা',             flag: '🇧🇩', dir: 'ltr' },
+    ar: { label: 'العربية',           flag: '🇸🇦', dir: 'rtl' },
+    hi: { label: 'हिन्दी',            flag: '🇮🇳', dir: 'ltr' },
+    zh: { label: '中文',              flag: '🇨🇳', dir: 'ltr' },
+    fr: { label: 'Français',          flag: '🇫🇷', dir: 'ltr' },
+    es: { label: 'Español',           flag: '🇪🇸', dir: 'ltr' },
+    pt: { label: 'Português',         flag: '🇧🇷', dir: 'ltr' },
+    ru: { label: 'Русский',           flag: '🇷🇺', dir: 'ltr' },
+    de: { label: 'Deutsch',           flag: '🇩🇪', dir: 'ltr' },
+    ja: { label: '日本語',            flag: '🇯🇵', dir: 'ltr' },
+    ko: { label: '한국어',            flag: '🇰🇷', dir: 'ltr' },
+    tr: { label: 'Türkçe',            flag: '🇹🇷', dir: 'ltr' },
+    id: { label: 'Bahasa Indonesia',  flag: '🇮🇩', dir: 'ltr' },
+    ms: { label: 'Bahasa Melayu',     flag: '🇲🇾', dir: 'ltr' },
+    th: { label: 'ภาษาไทย',          flag: '🇹🇭', dir: 'ltr' },
+    vi: { label: 'Tiếng Việt',        flag: '🇻🇳', dir: 'ltr' },
+    ur: { label: 'اردو',              flag: '🇵🇰', dir: 'rtl' },
+    fa: { label: 'فارسی',             flag: '🇮🇷', dir: 'rtl' },
+    sw: { label: 'Kiswahili',         flag: '🇰🇪', dir: 'ltr' },
   };
+
+  /** RTL language codes. */
+  const RTL_LANGS = ['ar', 'ur', 'fa', 'he'];
 
   /* ─────────────────────────────────────────────
      INTERNAL STATE
@@ -477,8 +495,97 @@
    * and also as window.i18n for convenience.
    */
   const i18n = {
-    /** Switch to a different language. */
+    /** Switch to a different language (alias: setLanguage). */
     switchLanguage: switchLanguage,
+
+    /**
+     * Set the active language, save preference, re-render page.
+     * Alias for switchLanguage().
+     * @param {string} langCode
+     * @returns {Promise<void>}
+     */
+    setLanguage: switchLanguage,
+
+    /**
+     * Load a language file and cache it (does not change active language).
+     * @param {string} langCode
+     * @returns {Promise<Object>}
+     */
+    loadLanguage: fetchTranslations,
+
+    /**
+     * Detect the best language to use.
+     * Priority: 1) localStorage, 2) browser navigator.language, 3) default 'en'.
+     * @returns {string} language code
+     */
+    detectLanguage: resolveInitialLanguage,
+
+    /**
+     * Run on page load: detect and apply language.
+     * Already called automatically — exposed for manual re-init scenarios.
+     */
+    autoInit: init,
+
+    /**
+     * Return true if the current language is RTL (Arabic, Urdu, Persian, Hebrew).
+     * @returns {boolean}
+     */
+    getRTL: function () {
+      return RTL_LANGS.indexOf(_currentLang) !== -1;
+    },
+
+    /**
+     * Format a currency amount using Intl.NumberFormat for the current locale.
+     * @param {number} amount
+     * @param {string} [currencyCode] - ISO 4217 code, e.g. 'USD', 'EUR'.
+     * @returns {string}
+     */
+    formatCurrency: function (amount, currencyCode) {
+      var currency = currencyCode || 'USD';
+      try {
+        return new Intl.NumberFormat(_currentLang, {
+          style: 'currency',
+          currency: currency,
+        }).format(amount);
+      } catch (e) {
+        return amount.toString();
+      }
+    },
+
+    /**
+     * Format a date using Intl.DateTimeFormat for the current locale.
+     * @param {Date|string|number} date
+     * @param {Intl.DateTimeFormatOptions} [options]
+     * @returns {string}
+     */
+    formatDate: function (date, options) {
+      try {
+        return new Intl.DateTimeFormat(_currentLang, options || {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }).format(new Date(date));
+      } catch (e) {
+        return String(date);
+      }
+    },
+
+    /**
+     * Return a pluralized translation string based on count.
+     * Expects translation keys: key + '_one' and key + '_other' (or just key).
+     * @param {string} key - Base translation key.
+     * @param {number} count
+     * @returns {string}
+     */
+    pluralize: function (key, count) {
+      var pluralKey = count === 1 ? key + '_one' : key + '_other';
+      var val = getNestedValue(_translations, pluralKey);
+      if (val === undefined) {
+        val = getNestedValue(_translations, key);
+      }
+      if (val === undefined) return key;
+      return val.replace(/\{count\}/g, count);
+    },
 
     /**
      * Translate a single key.
