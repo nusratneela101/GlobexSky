@@ -333,4 +333,82 @@ router.get(
   ctrl.getAiAnalytics,
 );
 
+// ─── Semantic Search (OpenAI embeddings) ─────────────────────────────────────
+
+router.post(
+  '/search/semantic',
+  optionalAuthenticate,
+  [
+    body('query').trim().notEmpty().withMessage('query is required').isLength({ max: 500 }),
+    body('limit').optional().isInt({ min: 1, max: 100 }),
+    body('minPrice').optional().isFloat({ min: 0 }),
+    body('maxPrice').optional().isFloat({ min: 0 }),
+    body('category_id').optional().isString(),
+  ],
+  validate,
+  ctrl.semanticSearch,
+);
+
+router.post(
+  '/search/filters',
+  optionalAuthenticate,
+  [body('query').trim().notEmpty().withMessage('query is required').isLength({ max: 300 })],
+  validate,
+  ctrl.generateSearchFilters,
+);
+
+// ─── Content Generation ───────────────────────────────────────────────────────
+
+router.post(
+  '/content/generate-description',
+  authenticate,
+  [
+    body('name').trim().notEmpty().withMessage('name is required'),
+    body('category').trim().notEmpty().withMessage('category is required'),
+    body('attributes').optional().isObject(),
+    body('tone').optional().isIn(['professional', 'casual', 'engaging']),
+  ],
+  validate,
+  ctrl.generateDescription,
+);
+
+router.post(
+  '/content/seo-meta',
+  authenticate,
+  [
+    body('productName').trim().notEmpty().withMessage('productName is required'),
+    body('category').trim().notEmpty().withMessage('category is required'),
+    body('description').optional().isString(),
+  ],
+  validate,
+  ctrl.generateSeoMeta,
+);
+
+router.post(
+  '/content/summarize-reviews/:productId',
+  optionalAuthenticate,
+  [param('productId').notEmpty()],
+  validate,
+  ctrl.summarizeReviews,
+);
+
+router.post(
+  '/content/moderate',
+  optionalAuthenticate,
+  [body('text').notEmpty().withMessage('text is required').isLength({ max: 5000 })],
+  validate,
+  ctrl.moderateContent,
+);
+
+router.post(
+  '/content/email-subject',
+  authenticate,
+  [
+    body('emailType').notEmpty().withMessage('emailType is required'),
+    body('context').optional().isObject(),
+  ],
+  validate,
+  ctrl.generateEmailSubject,
+);
+
 export default router;
