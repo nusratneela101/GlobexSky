@@ -1,0 +1,304 @@
+/* ============================================================
+   Report Builder CSS
+   Styles for the custom report builder interface
+   ============================================================ */
+
+/* ── Layout ── */
+.rb-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .rb-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Left Panel (metrics / dimensions) ── */
+.rb-panel {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.rb-panel-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #0a0e27;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rb-category {
+  margin-bottom: 10px;
+}
+
+.rb-category-label {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #94a3b8;
+  padding: 4px 0;
+  margin-bottom: 4px;
+}
+
+.rb-item {
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: .83rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  border: 1.5px solid transparent;
+  margin-bottom: 3px;
+  user-select: none;
+  color: #374151;
+}
+
+.rb-item:hover {
+  background: #f0f4ff;
+  border-color: #c7d7ff;
+}
+
+.rb-item.selected {
+  background: #dbeafe;
+  border-color: #0052CC;
+  color: #0052CC;
+  font-weight: 600;
+}
+
+.rb-item[draggable="true"] {
+  cursor: grab;
+}
+
+.rb-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* ── Drop Zones ── */
+.rb-drop-zone {
+  min-height: 60px;
+  border: 2px dashed #c7d7ff;
+  border-radius: 8px;
+  padding: 10px;
+  transition: background .15s, border-color .15s;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.rb-drop-zone.drag-over {
+  background: #f0f4ff;
+  border-color: #0052CC;
+}
+
+/* ── Selected Tags ── */
+.selected-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #0052CC;
+  color: #fff;
+  padding: 3px 8px 3px 10px;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+.selected-tag-dim {
+  background: #7c3aed;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.7);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color .15s;
+}
+
+.tag-remove:hover {
+  color: #fff;
+}
+
+/* ── Chart Type Picker ── */
+.chart-type-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chart-type-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #64748b;
+  transition: all .15s;
+  min-width: 60px;
+}
+
+.chart-type-btn i {
+  font-size: 1.1rem;
+}
+
+.chart-type-btn:hover {
+  border-color: #0052CC;
+  color: #0052CC;
+  background: #f0f4ff;
+}
+
+.chart-type-btn.active {
+  border-color: #0052CC;
+  background: #0052CC;
+  color: #fff;
+}
+
+/* ── Date Presets ── */
+.date-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.date-preset-btn {
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 600;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  cursor: pointer;
+  color: #374151;
+  transition: all .15s;
+}
+
+.date-preset-btn:hover {
+  border-color: #0052CC;
+  color: #0052CC;
+}
+
+.date-preset-btn.active {
+  background: #0052CC;
+  border-color: #0052CC;
+  color: #fff;
+}
+
+/* ── Report Preview Area ── */
+.rb-preview {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  min-height: 350px;
+}
+
+.rb-preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #94a3b8;
+  gap: 12px;
+}
+
+.rb-preview-placeholder i {
+  font-size: 3rem;
+  color: #c7d7ff;
+}
+
+/* ── Saved Reports ── */
+.saved-report-card {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 8px;
+}
+
+.saved-report-card:hover {
+  border-color: #0052CC;
+  background: #f0f4ff;
+}
+
+/* ── Action Bar ── */
+.rb-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 16px;
+}
+
+/* ── Report Name Input ── */
+.rb-name-input {
+  font-family: 'Poppins', sans-serif;
+  font-size: .95rem;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 4px 8px;
+  color: #0a0e27;
+  background: transparent;
+  transition: border-color .2s;
+  min-width: 200px;
+}
+
+.rb-name-input:focus {
+  border-bottom-color: #0052CC;
+}
+
+/* ── Toast ── */
+#rb-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 24px;
+  background: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.14);
+  font-size: .88rem;
+  font-weight: 500;
+  z-index: 9999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: transform .3s, opacity .3s;
+}
+
+/* ── Responsive Helpers ── */
+.rb-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .rb-two-col {
+    grid-template-columns: 1fr;
+  }
+}
