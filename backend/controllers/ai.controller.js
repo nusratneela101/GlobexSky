@@ -1,7 +1,8 @@
 /**
  * Globex Sky — AI Controller
  * Handles all AI-powered feature endpoints:
- * recommendations, fraud detection, search, chatbot, price optimization, translation.
+ * recommendations, fraud detection, search, chatbot, price optimization, translation,
+ * semantic search, and content generation.
  */
 
 import * as recommendationService from '../services/ai/recommendation.service.js';
@@ -10,6 +11,8 @@ import * as aiSearchService from '../services/ai/search.service.js';
 import * as chatbotService from '../services/ai/chatbot.service.js';
 import * as priceService from '../services/ai/priceOptimization.service.js';
 import * as translationService from '../services/ai/translation.service.js';
+import * as semanticSearchService from '../services/ai/semantic-search.service.js';
+import * as contentService from '../services/ai/content.service.js';
 
 // ─── Recommendations ──────────────────────────────────────────────────────────
 
@@ -376,5 +379,80 @@ export async function getAiAnalytics(req, res, next) {
       aiSearchService.getSearchAnalytics(),
     ]);
     res.json({ success: true, data: { chatbot, search } });
+  } catch (err) { next(err); }
+}
+
+// ─── Semantic Search ──────────────────────────────────────────────────────────
+
+/** POST /api/v1/ai/search/semantic */
+export async function semanticSearch(req, res, next) {
+  try {
+    const { query, limit, minPrice, maxPrice, category_id } = req.body;
+    const userId = req.user?.id || null;
+    const data = await semanticSearchService.semanticSearch(query, { limit, minPrice, maxPrice, category_id }, userId);
+    res.json({ success: true, ...data });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/ai/search/filters */
+export async function generateSearchFilters(req, res, next) {
+  try {
+    const { query } = req.body;
+    const data = await semanticSearchService.generateSearchFilters(query);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+// ─── Content Generation ───────────────────────────────────────────────────────
+
+/** POST /api/v1/ai/content/generate-description */
+export async function generateDescription(req, res, next) {
+  try {
+    const { name, category, attributes = {}, tone = 'engaging' } = req.body;
+    const description = await contentService.generateProductDescription(name, category, attributes, tone);
+    res.json({ success: true, data: { description } });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/ai/content/seo-meta */
+export async function generateSeoMeta(req, res, next) {
+  try {
+    const { productName, category, description } = req.body;
+    const data = await contentService.generateSeoMeta(productName, category, description);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/ai/content/summarize-reviews/:productId */
+export async function summarizeReviews(req, res, next) {
+  try {
+    const { productId } = req.params;
+    // Fetch reviews from DB
+    const supabase = (await import('../config/supabase.js')).default;
+    const { data: reviews } = await supabase
+      .from('reviews')
+      .select('rating, comment')
+      .eq('product_id', productId)
+      .limit(100);
+    const data = await contentService.summarizeProductReviews(productId, reviews || []);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/ai/content/moderate */
+export async function moderateContent(req, res, next) {
+  try {
+    const { text } = req.body;
+    const data = await contentService.moderateContent(text);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/ai/content/email-subject */
+export async function generateEmailSubject(req, res, next) {
+  try {
+    const { emailType, context = {} } = req.body;
+    const subject = await contentService.generateEmailSubject(emailType, context);
+    res.json({ success: true, data: { subject } });
   } catch (err) { next(err); }
 }
