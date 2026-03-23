@@ -8,6 +8,11 @@ import {
   addProductToStream,
   sendChatMessage,
   getStreamAnalytics,
+  getUpcomingStreams,
+  getChatHistory,
+  pinProduct,
+  generateAgoraToken,
+  sendVirtualGift,
 } from '../services/livestream.service.js';
 
 export async function createStream(req, res, next) {
@@ -127,5 +132,45 @@ export async function deleteLivestream(req, res, next) {
     const { error } = await supabase.from('livestreams').delete().eq('id', req.params.id);
     if (error) return res.status(400).json({ success: false, error: error.message });
     res.json({ success: true, message: 'Livestream deleted.' });
+  } catch (err) { next(err); }
+}
+
+export async function getUpcomingStreamsHandler(req, res, next) {
+  try {
+    const data = await getUpcomingStreams(req.query.supplier_id || null);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function getChatHistoryHandler(req, res, next) {
+  try {
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 200);
+    const data = await getChatHistory(req.params.id, limit);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function pinProductHandler(req, res, next) {
+  try {
+    const { product_id } = req.body;
+    const data = await pinProduct(req.params.id, product_id);
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function generateTokenHandler(req, res, next) {
+  try {
+    const { channel, uid, role } = req.query;
+    if (!channel) return res.status(400).json({ success: false, error: 'channel is required' });
+    const data = generateAgoraToken(channel, uid ? Number(uid) : 0, role || 'subscriber');
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+export async function sendGiftHandler(req, res, next) {
+  try {
+    const { gift_type, amount } = req.body;
+    const data = await sendVirtualGift(req.params.id, req.user.id, gift_type, amount ?? 1);
+    res.status(201).json({ success: true, data });
   } catch (err) { next(err); }
 }

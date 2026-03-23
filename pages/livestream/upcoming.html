@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Upcoming Streams – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/livestream.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh}
+
+    /* ── Top bar ── */
+    .page-topbar{background:#161b22;padding:12px 24px;display:flex;align-items:center;gap:16px;
+      border-bottom:1px solid #30363d;position:sticky;top:0;z-index:100}
+    .brand-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;
+      text-decoration:none;display:flex;align-items:center;gap:8px}
+    .brand-logo span{color:#0052CC}
+    .page-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#e6edf3}
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;
+      border:none;transition:all .2s;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-outline{background:transparent;color:#8b949e;border:1px solid #30363d}
+    .btn-outline:hover{background:#1c2128;color:#e6edf3}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+
+    /* ── Page content ── */
+    .page-content{max-width:1100px;margin:0 auto;padding:32px 24px}
+    .section-header{margin-bottom:28px}
+    .section-header h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;
+      color:#e6edf3;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+    .section-header p{color:#8b949e;font-size:.9rem}
+
+    /* ── Filters ── */
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
+    .filter-input{background:#161b22;border:1px solid #30363d;color:#e6edf3;padding:9px 14px;
+      border-radius:8px;font-size:.85rem;flex:1;min-width:200px}
+    .filter-input:focus{outline:none;border-color:#0052CC}
+    .filter-select{background:#161b22;border:1px solid #30363d;color:#e6edf3;padding:9px 14px;
+      border-radius:8px;font-size:.85rem;cursor:pointer}
+    .filter-select:focus{outline:none;border-color:#0052CC}
+
+    /* ── Stream cards grid ── */
+    .streams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+
+    .stream-card{background:#161b22;border:1px solid #30363d;border-radius:14px;
+      overflow:hidden;transition:border-color .2s,transform .2s}
+    .stream-card:hover{border-color:#0052CC;transform:translateY(-2px)}
+
+    .stream-thumbnail{position:relative;aspect-ratio:16/9;background:#1c2128;overflow:hidden}
+    .stream-thumbnail img{width:100%;height:100%;object-fit:cover}
+    .stream-thumbnail-placeholder{width:100%;height:100%;display:flex;align-items:center;
+      justify-content:center;background:linear-gradient(135deg,#161b22,#1c2128)}
+    .stream-thumbnail-placeholder i{font-size:2.5rem;color:#30363d}
+
+    .scheduled-badge{position:absolute;top:10px;left:10px;background:rgba(22,27,34,.85);
+      color:#8b949e;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:6px;
+      display:flex;align-items:center;gap:5px;border:1px solid #30363d}
+    .scheduled-badge i{color:#f59e0b}
+
+    .notify-btn{position:absolute;top:10px;right:10px;background:rgba(22,27,34,.85);
+      color:#8b949e;border:1px solid #30363d;border-radius:6px;padding:5px 10px;
+      font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;
+      align-items:center;gap:5px}
+    .notify-btn:hover,.notify-btn.notifying{background:#0052CC;border-color:#0052CC;color:#fff}
+    .notify-btn i{font-size:.7rem}
+
+    .stream-body{padding:14px}
+    .stream-host{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+    .host-avatar{width:30px;height:30px;border-radius:50%;background:#0052CC;
+      display:flex;align-items:center;justify-content:center;font-weight:700;
+      font-size:.75rem;color:#fff;flex-shrink:0}
+    .host-name{font-size:.8rem;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .stream-title{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#e6edf3;
+      margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;
+      -webkit-box-orient:vertical;overflow:hidden}
+    .stream-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .meta-item{display:flex;align-items:center;gap:5px;font-size:.75rem;color:#8b949e}
+    .meta-item i{color:#0052CC;font-size:.7rem}
+    .category-tag{background:rgba(0,82,204,.15);color:#60a5fa;font-size:.7rem;font-weight:600;
+      padding:3px 9px;border-radius:20px;border:1px solid rgba(0,82,204,.3)}
+
+    .countdown-timer{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);
+      border-radius:8px;padding:8px 12px;text-align:center;margin-bottom:12px}
+    .countdown-label{font-size:.7rem;color:#8b949e;margin-bottom:4px}
+    .countdown-value{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#f59e0b;
+      letter-spacing:1px}
+
+    .stream-actions{display:flex;gap:8px}
+    .stream-actions .btn{flex:1;justify-content:center;font-size:.8rem;padding:8px 12px}
+
+    /* ── Empty state ── */
+    .empty-state{text-align:center;padding:60px 20px;color:#8b949e}
+    .empty-state i{font-size:3rem;margin-bottom:16px;display:block;color:#30363d}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;
+      color:#e6edf3;margin-bottom:8px}
+    .empty-state p{font-size:.9rem;line-height:1.6;max-width:400px;margin:0 auto 20px}
+
+    /* ── Loading skeleton ── */
+    .skeleton{background:linear-gradient(90deg,#1c2128 25%,#30363d 50%,#1c2128 75%);
+      background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .skel-card{background:#161b22;border:1px solid #30363d;border-radius:14px;overflow:hidden}
+    .skel-thumb{aspect-ratio:16/9}
+    .skel-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+
+    /* ── Toast ── */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+      background:#22c55e;color:#fff;padding:10px 24px;border-radius:20px;
+      font-weight:600;font-size:.85rem;z-index:9999;opacity:0;transition:opacity .3s;
+      pointer-events:none;white-space:nowrap}
+    .toast.show{opacity:1}
+  </style>
+</head>
+<body>
+
+<header class="page-topbar">
+  <a href="../../index.html" class="brand-logo">
+    Globex<span>Sky</span>
+  </a>
+  <span style="color:#30363d">|</span>
+  <div class="page-title">
+    <i class="fas fa-calendar-alt" style="color:#0052CC;margin-right:6px"></i>Upcoming Streams
+  </div>
+  <div class="topbar-right">
+    <a href="browse.html" class="btn btn-outline btn-sm"><i class="fas fa-circle" style="color:#ef4444"></i> Live Now</a>
+    <a href="schedule.html" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Schedule</a>
+  </div>
+</header>
+
+<main class="page-content">
+  <div class="section-header">
+    <h1><i class="fas fa-calendar-check" style="color:#0052CC"></i> Upcoming Streams</h1>
+    <p>Browse scheduled streams and set reminders so you never miss a live sale.</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <input type="search" class="filter-input" id="search-input" placeholder="Search streams…" aria-label="Search streams"/>
+    <select class="filter-select" id="category-filter" aria-label="Filter by category">
+      <option value="">All Categories</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Machinery">Machinery</option>
+      <option value="Safety">Safety &amp; PPE</option>
+      <option value="Lighting">Lighting</option>
+      <option value="Trade">Trade Show</option>
+    </select>
+    <select class="filter-select" id="sort-filter" aria-label="Sort">
+      <option value="soonest">Soonest First</option>
+      <option value="latest">Latest First</option>
+    </select>
+  </div>
+
+  <!-- Streams grid -->
+  <div class="streams-grid" id="streams-grid" aria-live="polite">
+    <!-- Skeleton loaders -->
+    <div class="skel-card" aria-hidden="true">
+      <div class="skel-thumb skeleton"></div>
+      <div class="skel-body">
+        <div class="skeleton" style="height:12px;width:60%"></div>
+        <div class="skeleton" style="height:16px;width:90%"></div>
+        <div class="skeleton" style="height:12px;width:40%"></div>
+      </div>
+    </div>
+    <div class="skel-card" aria-hidden="true">
+      <div class="skel-thumb skeleton"></div>
+      <div class="skel-body">
+        <div class="skeleton" style="height:12px;width:50%"></div>
+        <div class="skeleton" style="height:16px;width:80%"></div>
+        <div class="skeleton" style="height:12px;width:45%"></div>
+      </div>
+    </div>
+    <div class="skel-card" aria-hidden="true">
+      <div class="skel-thumb skeleton"></div>
+      <div class="skel-body">
+        <div class="skeleton" style="height:12px;width:55%"></div>
+        <div class="skeleton" style="height:16px;width:85%"></div>
+        <div class="skeleton" style="height:12px;width:35%"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"><i class="fas fa-check" style="margin-right:8px"></i><span id="toast-text"></span></div>
+
+<script>
+(function () {
+  'use strict';
+
+  const grid      = document.getElementById('streams-grid');
+  const searchEl  = document.getElementById('search-input');
+  const catEl     = document.getElementById('category-filter');
+  const sortEl    = document.getElementById('sort-filter');
+
+  let allStreams  = [];
+  let notifySet  = new Set(JSON.parse(localStorage.getItem('notifyStreams') || '[]'));
+
+  /* ── Mock / fallback data ── */
+  const MOCK_STREAMS = [
+    {
+      id: 'a1b2c3d4-0000-0000-0000-000000000001',
+      title: 'Industrial Machinery Showcase – Q3 2025',
+      supplier: { company_name: 'TechForge Industries' },
+      category: 'Machinery',
+      scheduled_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+      thumbnail: null,
+      description: 'Live demo of our latest CNC and hydraulic systems.',
+    },
+    {
+      id: 'a1b2c3d4-0000-0000-0000-000000000002',
+      title: 'LED Lighting Flash Sale Event',
+      supplier: { company_name: 'BrightLux Co.' },
+      category: 'Lighting',
+      scheduled_at: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
+      thumbnail: null,
+      description: 'Up to 40% off LED panels during the live event.',
+    },
+    {
+      id: 'a1b2c3d4-0000-0000-0000-000000000003',
+      title: 'Safety Equipment Product Review',
+      supplier: { company_name: 'SafeGuard Supplies' },
+      category: 'Safety',
+      scheduled_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      thumbnail: null,
+      description: 'Live review of helmets, harnesses and PPE.',
+    },
+    {
+      id: 'a1b2c3d4-0000-0000-0000-000000000004',
+      title: 'Electronics Components Deep Dive',
+      supplier: { company_name: 'CircuitPro Asia' },
+      category: 'Electronics',
+      scheduled_at: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+      thumbnail: null,
+      description: 'Explore the latest circuit boards and sensors.',
+    },
+  ];
+
+  /* ── Fetch streams ── */
+  async function fetchStreams() {
+    try {
+      const res = await fetch('/api/v1/livestream/upcoming');
+      if (!res.ok) throw new Error('API error');
+      const json = await res.json();
+      return json.data || [];
+    } catch (_) {
+      return MOCK_STREAMS;
+    }
+  }
+
+  /* ── Render ── */
+  function renderStreams(streams) {
+    if (!streams.length) {
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <i class="fas fa-calendar-xmark"></i>
+          <h3>No Upcoming Streams</h3>
+          <p>There are no scheduled streams matching your filters right now. Check back soon or schedule your own!</p>
+          <a href="schedule.html" class="btn btn-primary" style="display:inline-flex">
+            <i class="fas fa-plus"></i> Schedule a Stream
+          </a>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = streams.map(s => {
+      const scheduledDate = new Date(s.scheduled_at);
+      const dateStr = scheduledDate.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+      const timeStr = scheduledDate.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+      const isNotifying = notifySet.has(s.id);
+
+      return `
+        <article class="stream-card" data-id="${esc(s.id)}" data-category="${esc(s.category||'')}">
+          <div class="stream-thumbnail">
+            ${s.thumbnail
+              ? `<img src="${esc(s.thumbnail)}" alt="${esc(s.title)}" loading="lazy"/>`
+              : `<div class="stream-thumbnail-placeholder"><i class="fas fa-tower-broadcast"></i></div>`}
+            <div class="scheduled-badge"><i class="fas fa-clock"></i> Scheduled</div>
+            <button class="notify-btn ${isNotifying ? 'notifying' : ''}"
+                    data-stream-id="${esc(s.id)}"
+                    aria-label="${isNotifying ? 'Cancel notification' : 'Notify me'}">
+              <i class="fas fa-${isNotifying ? 'bell-slash' : 'bell'}"></i>
+              ${isNotifying ? 'Notifying' : 'Notify Me'}
+            </button>
+          </div>
+          <div class="stream-body">
+            <div class="stream-host">
+              <div class="host-avatar">${esc((s.supplier?.company_name||'?').charAt(0))}</div>
+              <span class="host-name">${esc(s.supplier?.company_name || 'Unknown Supplier')}</span>
+            </div>
+            <h2 class="stream-title">${esc(s.title)}</h2>
+            <div class="stream-meta">
+              <span class="meta-item"><i class="fas fa-calendar"></i>${dateStr}</span>
+              <span class="meta-item"><i class="fas fa-clock"></i>${timeStr}</span>
+              ${s.category ? `<span class="category-tag">${esc(s.category)}</span>` : ''}
+            </div>
+            <div class="countdown-timer">
+              <div class="countdown-label">Starts in</div>
+              <div class="countdown-value" id="countdown-${esc(s.id)}" data-target="${esc(s.scheduled_at)}">
+                Calculating…
+              </div>
+            </div>
+            <div class="stream-actions">
+              <a href="watch.html?id=${esc(s.id)}" class="btn btn-outline">
+                <i class="fas fa-eye"></i> Preview
+              </a>
+              <button class="btn btn-primary set-reminder-btn" data-stream-id="${esc(s.id)}" style="flex:1">
+                <i class="fas fa-${isNotifying ? 'bell-slash' : 'bell'}"></i>
+                ${isNotifying ? 'Remove Reminder' : 'Set Reminder'}
+              </button>
+            </div>
+          </div>
+        </article>`;
+    }).join('');
+
+    // Start countdown timers
+    streams.forEach(s => startCountdown(s.id, s.scheduled_at));
+    attachCardHandlers();
+  }
+
+  /* ── Countdown logic ── */
+  const countdownTimers = {};
+
+  function startCountdown(id, targetIso) {
+    if (countdownTimers[id]) clearInterval(countdownTimers[id]);
+    const target = new Date(targetIso).getTime();
+
+    function tick() {
+      const el = document.getElementById('countdown-' + id);
+      if (!el) { clearInterval(countdownTimers[id]); return; }
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        el.textContent = 'Starting now!';
+        el.style.color = '#22c55e';
+        clearInterval(countdownTimers[id]);
+        return;
+      }
+      const days  = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins  = Math.floor((diff % 3600000) / 60000);
+      const secs  = Math.floor((diff % 60000) / 1000);
+      el.textContent = days > 0
+        ? `${days}d ${pad(hours)}h ${pad(mins)}m`
+        : `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+    }
+    tick();
+    countdownTimers[id] = setInterval(tick, 1000);
+  }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  /* ── Notify / remind ── */
+  function toggleNotify(streamId) {
+    if (notifySet.has(streamId)) {
+      notifySet.delete(streamId);
+      showToast('Reminder removed.');
+    } else {
+      notifySet.add(streamId);
+      showToast('Reminder set! We\'ll notify you before the stream starts.', 'bell');
+    }
+    localStorage.setItem('notifyStreams', JSON.stringify([...notifySet]));
+
+    // Update button states
+    document.querySelectorAll(`[data-stream-id="${streamId}"]`).forEach(btn => {
+      const isNotifying = notifySet.has(streamId);
+      btn.classList.toggle('notifying', isNotifying);
+      if (btn.classList.contains('notify-btn')) {
+        btn.innerHTML = `<i class="fas fa-${isNotifying ? 'bell-slash' : 'bell'}"></i> ${isNotifying ? 'Notifying' : 'Notify Me'}`;
+      } else if (btn.classList.contains('set-reminder-btn')) {
+        btn.innerHTML = `<i class="fas fa-${isNotifying ? 'bell-slash' : 'bell'}"></i> ${isNotifying ? 'Remove Reminder' : 'Set Reminder'}`;
+      }
+    });
+  }
+
+  /* ── Event delegation ── */
+  function attachCardHandlers() {
+    grid.addEventListener('click', function handler(e) {
+      const notifyBtn  = e.target.closest('.notify-btn');
+      const reminderBtn = e.target.closest('.set-reminder-btn');
+      if (notifyBtn)   toggleNotify(notifyBtn.dataset.streamId);
+      if (reminderBtn) toggleNotify(reminderBtn.dataset.streamId);
+    }, { once: true });
+    // Re-attach on re-render
+    grid.addEventListener('click', function(e) {
+      const notifyBtn   = e.target.closest('.notify-btn');
+      const reminderBtn = e.target.closest('.set-reminder-btn');
+      if (notifyBtn)   toggleNotify(notifyBtn.dataset.streamId);
+      if (reminderBtn) toggleNotify(reminderBtn.dataset.streamId);
+    });
+  }
+
+  /* ── Filtering ── */
+  function filterStreams() {
+    const query = searchEl.value.toLowerCase().trim();
+    const cat   = catEl.value;
+    const sort  = sortEl.value;
+
+    let filtered = allStreams.filter(s => {
+      const matchSearch = !query ||
+        s.title.toLowerCase().includes(query) ||
+        (s.supplier?.company_name || '').toLowerCase().includes(query);
+      const matchCat = !cat || s.category === cat;
+      return matchSearch && matchCat;
+    });
+
+    filtered.sort((a, b) => {
+      const tA = new Date(a.scheduled_at).getTime();
+      const tB = new Date(b.scheduled_at).getTime();
+      return sort === 'latest' ? tB - tA : tA - tB;
+    });
+
+    renderStreams(filtered);
+  }
+
+  /* ── Toast ── */
+  function showToast(msg, icon = 'check') {
+    const toast = document.getElementById('toast');
+    const text  = document.getElementById('toast-text');
+    if (!toast || !text) return;
+    text.textContent = msg;
+    const iconEl = toast.querySelector('i');
+    if (iconEl) iconEl.className = `fas fa-${icon}`;
+    toast.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  /* ── HTML escape ── */
+  function esc(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ── Init ── */
+  async function init() {
+    allStreams = await fetchStreams();
+    filterStreams();
+
+    searchEl.addEventListener('input',  filterStreams);
+    catEl.addEventListener('change',    filterStreams);
+    sortEl.addEventListener('change',   filterStreams);
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
