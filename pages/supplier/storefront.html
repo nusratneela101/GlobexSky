@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Storefront Setup | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}}
+    .sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    @media(max-width:768px){.sidebar{position:static}}
+    .sidebar-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:1rem;margin-bottom:4px}
+    .sidebar-email{color:#64748b;font-size:.8rem;text-align:center;margin-bottom:20px}
+    .sidebar-nav{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.88rem;transition:all .2s}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .sidebar-nav li a i{width:18px;text-align:center}
+    .content-area{min-width:0}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:linear-gradient(135deg,var(--sc,#0052CC),var(--se,#003d99));border-radius:14px;padding:20px;color:#fff}
+    .stat-card .stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+    .stat-card .stat-lbl{font-size:.8rem;opacity:.8;margin-top:4px}
+    .stat-card .stat-icon{font-size:1.4rem;opacity:.6;margin-bottom:8px}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.88rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;background:#fff}
+    .form-control:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  <div class="page-layout">
+    <aside class="sidebar">
+      <div class="sidebar-avatar">GS</div>
+      <div class="sidebar-name">Global Supplies Ltd.</div>
+      <div class="sidebar-email">supplier@globexsky.com</div>
+      <ul class="sidebar-nav"><li><a href="index.html"><i class="fas fa-gauge"></i> Dashboard</a></li><li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li><li><a href="orders.html"><i class="fas fa-bag-shopping"></i> Orders</a></li><li><a href="earnings.html"><i class="fas fa-coins"></i> Earnings</a></li><li><a href="storefront.html" class="active"><i class="fas fa-store"></i> Storefront</a></li><li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li><li><a href="live.html"><i class="fas fa-video"></i> Live Stream</a></li></ul>
+    </aside>
+    <section class="content-area">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-store"></i> Store Information</div>
+        <div class="form-group"><label class="form-label">Store Name</label><input class="form-control" type="text" value="Global Supplies Ltd."></div>
+        <div class="form-group"><label class="form-label">Store Tagline</label><input class="form-control" type="text" value="Your Trusted Electronics Partner"></div>
+        <div class="form-group"><label class="form-label">Store Description</label><textarea class="form-control" rows="4">We are a leading electronics supplier based in Dhaka, Bangladesh, offering quality products at wholesale prices.</textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group"><label class="form-label">Store Email</label><input class="form-control" type="email" value="store@globalsupplies.com"></div>
+          <div class="form-group"><label class="form-label">Store Phone</label><input class="form-control" type="tel" value="+8801712000000"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Business Address</label><textarea class="form-control" rows="2">House 45, Road 12, Uttara, Dhaka 1230, Bangladesh</textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-image"></i> Store Branding</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="form-group">
+            <label class="form-label">Store Logo</label>
+            <div style="border:2px dashed #cbd5e1;border-radius:10px;padding:24px;text-align:center;cursor:pointer;color:#64748b">
+              <i class="fas fa-image" style="font-size:2rem;margin-bottom:8px;display:block;color:#94a3b8"></i>
+              <p style="font-size:.85rem">Click to upload logo</p>
+              <p style="font-size:.75rem;color:#94a3b8">PNG, JPG • Max 2MB • 200×200px</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Store Banner</label>
+            <div style="border:2px dashed #cbd5e1;border-radius:10px;padding:24px;text-align:center;cursor:pointer;color:#64748b">
+              <i class="fas fa-panorama" style="font-size:2rem;margin-bottom:8px;display:block;color:#94a3b8"></i>
+              <p style="font-size:.85rem">Click to upload banner</p>
+              <p style="font-size:.75rem;color:#94a3b8">PNG, JPG • Max 5MB • 1200×300px</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-file-contract"></i> Store Policies</div>
+        <div class="form-group"><label class="form-label">Return Policy</label><textarea class="form-control" rows="3">We accept returns within 7 days of delivery for defective or incorrect items. Please contact us within 48 hours of receiving the order.</textarea></div>
+        <div class="form-group"><label class="form-label">Shipping Policy</label><textarea class="form-control" rows="3">We dispatch orders within 24 hours. Delivery takes 2–5 business days within Bangladesh. International shipping available on request.</textarea></div>
+      </div>
+      <div style="display:flex;gap:12px"><button class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button><button class="btn btn-secondary"><i class="fas fa-eye"></i> Preview Store</button></div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

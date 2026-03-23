@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OTP Verification | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .auth-box{background:#fff;border-radius:20px;padding:48px 40px;max-width:460px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.1);margin:24px 16px;text-align:center}
+    .auth-logo{display:flex;justify-content:center;margin-bottom:32px}
+    .otp-icon{width:72px;height:72px;background:#eff6ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#0052CC;margin:0 auto 20px}
+    .auth-box h2{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0A0E27;margin-bottom:8px}
+    .auth-box p.sub{color:#64748b;font-size:.9rem;margin-bottom:28px}
+    .otp-inputs{display:flex;gap:12px;justify-content:center;margin-bottom:28px}
+    .otp-input{width:52px;height:56px;border:2px solid #e2e8f0;border-radius:10px;font-size:1.4rem;font-weight:700;text-align:center;color:#0A0E27;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s}
+    .otp-input:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .btn-primary{width:100%;background:#0052CC;color:#fff;border:none;border-radius:10px;padding:13px;font-size:.95rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .25s;margin-bottom:16px}
+    .btn-primary:hover{background:#003d99}
+    .resend-txt{font-size:.85rem;color:#64748b}
+    .resend-txt button{background:none;border:none;color:#0052CC;font-weight:600;cursor:pointer;font-size:.85rem}
+    .resend-txt button:hover{text-decoration:underline}
+    .timer{font-weight:600;color:#0052CC}
+    .back-link{display:block;margin-top:20px;font-size:.85rem;color:#64748b}
+    .back-link a{color:#0052CC;font-weight:600;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="auth-box">
+    <div class="auth-logo"><a href="../../index.html"><img src="../../assets/images/logo.png" alt="Globex Sky" width="160" height="50" style="object-fit:contain"></a></div>
+    <div class="otp-icon"><i class="fas fa-shield-halved"></i></div>
+    <h2>OTP Verification</h2>
+    <p class="sub">We've sent a 6-digit OTP to your email/phone. Enter it below to continue.</p>
+    <form id="otpForm" onsubmit="return submitOtp(event)">
+      <div class="otp-inputs">
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code">
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+      </div>
+      <button type="submit" class="btn-primary"><i class="fas fa-check-circle"></i> Verify OTP</button>
+    </form>
+    <p class="resend-txt">Didn't receive it? <button onclick="resendOtp()">Resend OTP</button> <span class="timer" id="timer">(01:30)</span></p>
+    <p class="back-link"><a href="login.html"><i class="fas fa-arrow-left"></i> Back to Login</a></p>
+  </div>
+  <script>
+    // OTP auto-advance
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((inp, i) => {
+      inp.addEventListener('input', () => {
+        if(inp.value && i < inputs.length - 1) inputs[i+1].focus();
+      });
+      inp.addEventListener('keydown', e => {
+        if(e.key === 'Backspace' && !inp.value && i > 0) inputs[i-1].focus();
+      });
+    });
+    // Timer
+    let seconds = 90;
+    const timerEl = document.getElementById('timer');
+    const interval = setInterval(() => {
+      seconds--;
+      const m = Math.floor(seconds/60).toString().padStart(2,'0');
+      const s = (seconds%60).toString().padStart(2,'0');
+      timerEl.textContent = `(${m}:${s})`;
+      if(seconds <= 0) clearInterval(interval);
+    }, 1000);
+    function resendOtp(){ alert('OTP resent!'); seconds = 90; }
+    function submitOtp(e){
+      e.preventDefault();
+      const otp = Array.from(inputs).map(i => i.value).join('');
+      if(otp.length < 6){ alert('Please enter all 6 digits.'); return; }
+      const params = new URLSearchParams(window.location.search);
+      if(params.get('mode') === 'reset') window.location.href = 'reset-password.html';
+      else window.location.href = '../../index.html';
+    }
+  </script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

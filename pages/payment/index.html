@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/animations.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/payment.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:72px 24px 56px;text-align:center;color:#fff}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:12px}
+    .page-hero p{font-size:.97rem;opacity:.8;max-width:520px;margin:0 auto}
+    .content-section{padding:48px 24px}
+    .card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#0a0e27;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:#0052CC}
+    .btn{padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-warning{background:#f59e0b;color:#fff}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#2563eb}
+    .badge-red{background:#fee2e2;color:#dc2626}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table th{background:#f8faff;padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e2e8f0}
+    .table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .table tr:hover td{background:#f8faff}
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.88rem;font-weight:500;color:#374151;margin-bottom:6px}
+    .form-control{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;background:#fff}
+    .form-control:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain"></a>
+      <div class="nav-controls">
+        <a href="../../pages/auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../../pages/auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="content-section">
+  <div class="container">
+    <h2 style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0A0E27;margin-bottom:24px"><i class="fas fa-shopping-cart" style="color:#0052CC"></i> Checkout</h2>
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:24px">
+      <div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-location-dot"></i> Delivery Address</div>
+          <div style="border:1.5px solid #0052CC;border-radius:10px;padding:16px;margin-bottom:12px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between"><div><strong>John Doe</strong> <span class="badge badge-blue" style="margin-left:8px">Default</span><br><span style="font-size:.88rem;color:#64748b">House 12, Road 4, Dhanmondi, Dhaka 1205, Bangladesh<br>📞 +8801712-XXXXXX</span></div><button class="btn btn-sm btn-secondary">Change</button></div>
+          </div>
+          <button class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add New Address</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-credit-card"></i> Payment Method</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">
+            <label style="border:2px solid #0052CC;border-radius:10px;padding:16px;cursor:pointer;text-align:center;background:#f0f4ff"><input type="radio" name="pay" value="bkash" checked style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">📱</div><strong style="font-size:.85rem">bKash</strong></label>
+            <label style="border:2px solid #e2e8f0;border-radius:10px;padding:16px;cursor:pointer;text-align:center"><input type="radio" name="pay" value="nagad" style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">💳</div><strong style="font-size:.85rem">Nagad</strong></label>
+            <label style="border:2px solid #e2e8f0;border-radius:10px;padding:16px;cursor:pointer;text-align:center"><input type="radio" name="pay" value="card" style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">🏦</div><strong style="font-size:.85rem">Card</strong></label>
+            <label style="border:2px solid #e2e8f0;border-radius:10px;padding:16px;cursor:pointer;text-align:center"><input type="radio" name="pay" value="cod" style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">💵</div><strong style="font-size:.85rem">Cash on Delivery</strong></label>
+            <label style="border:2px solid #e2e8f0;border-radius:10px;padding:16px;cursor:pointer;text-align:center"><input type="radio" name="pay" value="bank" style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">🏛️</div><strong style="font-size:.85rem">Bank Transfer</strong></label>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-receipt"></i> Order Summary</div>
+          <div style="font-size:.88rem;color:#374151">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span>Wireless Headphones × 2</span><span>৳4,800</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span>Smart Watch × 1</span><span>৳8,200</span></div>
+            <hr style="border:none;border-top:1px solid #f1f5f9;margin:12px 0">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span>Subtotal</span><span>৳13,000</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span>Shipping</span><span>৳100</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;color:#059669"><span>Discount</span><span>-৳500</span></div>
+            <hr style="border:none;border-top:1px solid #f1f5f9;margin:12px 0">
+            <div style="display:flex;justify-content:space-between;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0A0E27"><span>Total</span><span>৳12,600</span></div>
+          </div>
+          <div style="margin-top:16px;margin-bottom:12px">
+            <div style="display:flex;gap:8px"><input class="form-control" type="text" placeholder="Coupon code" style="flex:1;padding:8px 12px;font-size:.85rem"><button class="btn btn-secondary btn-sm">Apply</button></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="window.location.href='success.html'"><i class="fas fa-lock"></i> Place Order — ৳12,600</button>
+          <p style="font-size:.75rem;color:#64748b;text-align:center;margin-top:8px"><i class="fas fa-shield-halved"></i> Secured by SSL encryption</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../../pages/privacy.html">Privacy</a></li>
+      <li><a href="../../pages/terms.html">Terms</a></li>
+      <li><a href="../../pages/contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../../assets/js/main.js" defer></script>
+<script src="../../assets/js/payment.js" defer></script>
+</body>
+</html>
