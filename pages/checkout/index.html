@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title data-i18n="checkout.pageTitle">Checkout — GlobexSky</title>
+  <meta name="description" content="Complete your order securely on GlobexSky — the global trade marketplace." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn08JUzONNMVEKglsAEY+PA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/payment.css" />
+
+  <style>
+    /* ── CSS Custom Properties ─────────────────────────────── */
+    :root {
+      --primary:    #0052CC;
+      --secondary:  #FF6B35;
+      --accent:     #00C9A7;
+      --dark:       #0A0E27;
+      --light:      #F4F6FA;
+      --border:     #DDE2EE;
+      --text-muted: #6B7280;
+      --success:    #22C55E;
+      --danger:     #EF4444;
+      --radius-sm:  6px;
+      --radius-md:  12px;
+      --radius-lg:  20px;
+      --shadow-sm:  0 1px 4px rgba(0,0,0,.08);
+      --shadow-md:  0 4px 16px rgba(0,82,204,.10);
+      --transition: .22s ease;
+    }
+
+    /* ── Page Shell ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+    main { flex: 1; }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Navbar (checkout-simplified) ─────────────────────── */
+    .site-header { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .navbar { width: 100%; }
+    .nav-container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 68px; }
+    .nav-logo img { display: block; }
+    .nav-controls { display: flex; gap: .75rem; align-items: center; }
+    .btn-nav { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem 1.1rem; border-radius: var(--radius-sm); font-size: .875rem; font-weight: 500; transition: background var(--transition), color var(--transition); border: 1.5px solid var(--primary); color: var(--primary); background: transparent; }
+    .btn-nav:hover { background: var(--primary); color: #fff; text-decoration: none; }
+
+    /* ── Checkout Layout ───────────────────────────────────── */
+    .checkout-wrapper { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 3rem; display: grid; grid-template-columns: 1fr 360px; gap: 2rem; align-items: start; }
+
+    /* ── Step Indicator ────────────────────────────────────── */
+    .steps-bar { grid-column: 1 / -1; display: flex; align-items: center; gap: 0; margin-bottom: .5rem; }
+    .step-item { display: flex; align-items: center; flex: 1; position: relative; }
+    .step-item:last-child { flex: 0; }
+    .step-bubble { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: .85rem; background: #fff; border: 2.5px solid var(--border); color: var(--text-muted); transition: background var(--transition), border-color var(--transition), color var(--transition); flex-shrink: 0; }
+    .step-label { font-size: .78rem; font-weight: 500; color: var(--text-muted); margin-left: .55rem; white-space: nowrap; transition: color var(--transition); }
+    .step-connector { flex: 1; height: 2px; background: var(--border); margin: 0 .5rem; transition: background var(--transition); }
+    .step-item.active   .step-bubble { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .step-item.active   .step-label  { color: var(--primary); font-weight: 600; }
+    .step-item.done     .step-bubble { background: var(--accent);  border-color: var(--accent);  color: #fff; }
+    .step-item.done     .step-label  { color: var(--accent); }
+    .step-item.done + .step-connector,
+    .step-item.active + .step-connector { background: var(--primary); }
+
+    /* ── Step Panels ───────────────────────────────────────── */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+    .panel-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.75rem 2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+    .panel-card h2 { font-size: 1.2rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: .6rem; }
+    .panel-card h2 .icon { width: 32px; height: 32px; border-radius: var(--radius-sm); background: rgba(0,82,204,.08); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: .9rem; }
+
+    /* ── Address Selector ──────────────────────────────────── */
+    .address-list { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1rem; }
+    .address-card { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 1.1rem; border: 2px solid var(--border); border-radius: var(--radius-md); cursor: pointer; transition: border-color var(--transition), background var(--transition); }
+    .address-card:hover { border-color: var(--primary); background: rgba(0,82,204,.03); }
+    .address-card.selected { border-color: var(--primary); background: rgba(0,82,204,.05); }
+    .address-card input[type="radio"] { margin-top: .25rem; accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
+    .address-card-body { flex: 1; }
+    .address-card-body strong { font-size: .95rem; font-family: 'Poppins', sans-serif; }
+    .address-card-body p { font-size: .85rem; color: var(--text-muted); margin-top: .15rem; }
+    .address-card-badge { font-size: .7rem; font-weight: 600; background: var(--accent); color: #fff; padding: .15rem .5rem; border-radius: 20px; margin-left: .5rem; vertical-align: middle; }
+
+    /* Add New Address Accordion */
+    .add-address-toggle { display: inline-flex; align-items: center; gap: .5rem; padding: .55rem 1.1rem; border: 1.5px dashed var(--primary); border-radius: var(--radius-sm); background: transparent; color: var(--primary); font-size: .875rem; font-weight: 500; cursor: pointer; transition: background var(--transition); margin-top: .25rem; }
+    .add-address-toggle:hover { background: rgba(0,82,204,.06); }
+    .new-address-form { display: none; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+    .new-address-form.open { display: block; }
+
+    /* ── Form Grid ─────────────────────────────────────────── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem 1rem; }
+    .form-grid .col-full { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; gap: .35rem; }
+    .form-group label { font-size: .8rem; font-weight: 600; color: var(--dark); }
+    .form-group label .required-star { color: var(--danger); margin-left: 2px; }
+    .form-control { width: 100%; padding: .6rem .85rem; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: .875rem; font-family: 'Inter', sans-serif; color: var(--dark); background: #fff; transition: border-color var(--transition), box-shadow var(--transition); outline: none; }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,82,204,.12); }
+    .form-control::placeholder { color: #B0B8CC; }
+    .form-control.error { border-color: var(--danger); }
+    .form-error { font-size: .75rem; color: var(--danger); display: none; }
+    .form-error.show { display: block; }
+
+    /* ── Payment Methods ───────────────────────────────────── */
+    .payment-methods-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
+    .payment-option { position: relative; }
+    .payment-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .payment-option label { display: flex; flex-direction: column; align-items: center; gap: .5rem; padding: 1rem .75rem; border: 2px solid var(--border); border-radius: var(--radius-md); cursor: pointer; text-align: center; transition: border-color var(--transition), background var(--transition), box-shadow var(--transition); background: #fff; }
+    .payment-option label:hover { border-color: var(--primary); background: rgba(0,82,204,.03); }
+    .payment-option input:checked + label { border-color: var(--primary); background: rgba(0,82,204,.06); box-shadow: 0 0 0 3px rgba(0,82,204,.12); }
+    .payment-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: var(--light); }
+    .payment-icon.bkash  { background: #E2136E22; color: #E2136E; }
+    .payment-icon.nagad  { background: #F7941D22; color: #F7941D; }
+    .payment-icon.card   { background: #0052CC22; color: var(--primary); }
+    .payment-icon.cod    { background: #22C55E22; color: var(--success); }
+    .payment-icon.bank   { background: #8B5CF622; color: #8B5CF6; }
+    .payment-method-name { font-size: .8rem; font-weight: 600; font-family: 'Poppins', sans-serif; color: var(--dark); }
+    .payment-method-desc { font-size: .7rem; color: var(--text-muted); }
+
+    /* Dynamic payment fields */
+    .payment-fields { display: none; padding: 1.25rem; background: var(--light); border-radius: var(--radius-md); border: 1px solid var(--border); }
+    .payment-fields.active { display: block; }
+    .card-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: .75rem; }
+    .card-icons { display: flex; gap: .4rem; align-items: center; margin-bottom: .6rem; }
+    .card-icon-badge { padding: .2rem .5rem; border: 1px solid var(--border); border-radius: 4px; font-size: .72rem; font-weight: 700; letter-spacing: .03em; }
+    .card-icon-badge.visa { color: #1A1F71; }
+    .card-icon-badge.mc   { color: #EB001B; }
+
+    /* ── Order Review — Item List ──────────────────────────── */
+    .review-items { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.5rem; }
+    .review-item { display: flex; gap: 1rem; align-items: center; padding: .75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; }
+    .review-item-img { width: 64px; height: 64px; border-radius: var(--radius-sm); object-fit: cover; background: var(--light); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1px solid var(--border); overflow: hidden; }
+    .review-item-img img { width: 100%; height: 100%; object-fit: cover; }
+    .review-item-details { flex: 1; }
+    .review-item-name { font-size: .9rem; font-weight: 600; font-family: 'Poppins', sans-serif; }
+    .review-item-meta { font-size: .78rem; color: var(--text-muted); margin-top: .1rem; }
+    .review-item-price { font-size: .95rem; font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+    /* Shipping Methods */
+    .shipping-methods { display: flex; flex-direction: column; gap: .6rem; }
+    .shipping-option { display: flex; align-items: center; gap: .85rem; padding: .85rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-md); cursor: pointer; transition: border-color var(--transition), background var(--transition); }
+    .shipping-option:hover { border-color: var(--primary); background: rgba(0,82,204,.03); }
+    .shipping-option.selected { border-color: var(--primary); background: rgba(0,82,204,.05); }
+    .shipping-option input[type="radio"] { accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
+    .shipping-option-body { flex: 1; }
+    .shipping-option-name { font-size: .875rem; font-weight: 600; }
+    .shipping-option-eta  { font-size: .77rem; color: var(--text-muted); }
+    .shipping-option-price { font-size: .9rem; font-weight: 700; color: var(--primary); white-space: nowrap; }
+    .shipping-option-price.free { color: var(--success); }
+
+    /* ── Confirmation Panel ─────────────────────────────────── */
+    .confirmation-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 3rem 2rem; text-align: center; box-shadow: var(--shadow-md); }
+    .confirm-animation { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--success)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.2rem; color: #fff; animation: popIn .55s cubic-bezier(.22,1,.36,1) forwards; }
+    @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
+    .confirm-title { font-size: 1.6rem; font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--dark); margin-bottom: .5rem; }
+    .confirm-subtitle { font-size: .95rem; color: var(--text-muted); margin-bottom: 1.75rem; }
+    .confirm-details { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 2rem; max-width: 340px; margin-left: auto; margin-right: auto; }
+    .confirm-row { display: flex; justify-content: space-between; font-size: .875rem; padding: .5rem .75rem; background: var(--light); border-radius: var(--radius-sm); }
+    .confirm-row span:last-child { font-weight: 600; color: var(--primary); }
+    .confirm-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Order Summary Sidebar ─────────────────────────────── */
+    .order-summary { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; box-shadow: var(--shadow-sm); position: sticky; top: 88px; }
+    .order-summary h3 { font-size: 1.05rem; font-family: 'Poppins', sans-serif; margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); }
+    .summary-items { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1rem; }
+    .summary-item { display: flex; gap: .65rem; align-items: center; }
+    .summary-item-thumb { position: relative; flex-shrink: 0; width: 44px; height: 44px; }
+    .summary-item-thumb .thumb-img { width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--border); background: var(--light); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; overflow: hidden; }
+    .summary-item-thumb .thumb-img img { width: 100%; height: 100%; object-fit: cover; }
+    .qty-badge { position: absolute; top: -6px; right: -6px; background: var(--primary); color: #fff; width: 18px; height: 18px; border-radius: 50%; font-size: .65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; }
+    .summary-item-info { flex: 1; min-width: 0; }
+    .summary-item-name { font-size: .8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .summary-item-price { font-size: .8rem; color: var(--text-muted); }
+    .summary-divider { height: 1px; background: var(--border); margin: .9rem 0; }
+    .summary-line { display: flex; justify-content: space-between; font-size: .875rem; margin-bottom: .5rem; }
+    .summary-line.total { font-weight: 700; font-size: 1rem; margin-top: .4rem; color: var(--dark); }
+    .summary-line .discount { color: var(--success); }
+    .summary-line .free-ship { color: var(--success); font-weight: 500; }
+    .btn-place-order { display: block; width: 100%; padding: .85rem; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: .95rem; font-weight: 600; cursor: pointer; margin-top: 1.1rem; transition: background var(--transition), transform var(--transition); }
+    .btn-place-order:hover { background: #0042A8; transform: translateY(-1px); }
+    .btn-place-order:disabled { background: #B0B8CC; cursor: not-allowed; transform: none; }
+    .ssl-badge { display: flex; align-items: center; justify-content: center; gap: .45rem; font-size: .75rem; color: var(--text-muted); margin-top: .9rem; }
+    .ssl-badge i { color: var(--success); }
+
+    /* ── Navigation Buttons ────────────────────────────────── */
+    .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; }
+    .btn-primary { display: inline-flex; align-items: center; gap: .45rem; padding: .65rem 1.4rem; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: .875rem; font-weight: 600; cursor: pointer; transition: background var(--transition), transform var(--transition); }
+    .btn-primary:hover { background: #0042A8; transform: translateY(-1px); }
+    .btn-secondary { display: inline-flex; align-items: center; gap: .45rem; padding: .65rem 1.4rem; background: transparent; color: var(--primary); border: 1.5px solid var(--primary); border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: .875rem; font-weight: 600; cursor: pointer; transition: background var(--transition); }
+    .btn-secondary:hover { background: rgba(0,82,204,.06); }
+    .btn-accent { display: inline-flex; align-items: center; gap: .45rem; padding: .65rem 1.4rem; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: .875rem; font-weight: 600; cursor: pointer; transition: background var(--transition), transform var(--transition); }
+    .btn-accent:hover { background: #00a88a; transform: translateY(-1px); }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    .site-footer { background: var(--dark); color: #fff; margin-top: auto; }
+    .footer-bottom { padding: 1.2rem 0; border-top: 1px solid rgba(255,255,255,.08); }
+    .footer-bottom-inner { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; justify-content: space-between; }
+    .footer-copyright { font-size: .8rem; color: rgba(255,255,255,.55); }
+    .footer-legal-links { display: flex; gap: 1.25rem; }
+    .footer-legal-links a { font-size: .8rem; color: rgba(255,255,255,.55); transition: color var(--transition); }
+    .footer-legal-links a:hover { color: #fff; text-decoration: none; }
+
+    /* ── Promo Code Row ────────────────────────────────────── */
+    .promo-row { display: flex; gap: .5rem; margin-top: .85rem; }
+    .promo-row .form-control { flex: 1; }
+    .btn-promo { padding: .6rem 1rem; background: var(--secondary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: .8rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background var(--transition); }
+    .btn-promo:hover { background: #e0551e; }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .checkout-wrapper { grid-template-columns: 1fr; }
+      .steps-bar { grid-column: 1; }
+      .order-summary { position: static; }
+    }
+    @media (max-width: 600px) {
+      .checkout-wrapper { padding: 1rem 1rem 2rem; gap: 1.25rem; }
+      .panel-card { padding: 1.25rem 1rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .card-row { grid-template-columns: 1fr; }
+      .payment-methods-grid { grid-template-columns: repeat(3, 1fr); }
+      .step-label { display: none; }
+      .step-connector { margin: 0 .25rem; }
+      .confirm-actions { flex-direction: column; }
+    }
+
+    /* ── Utilities ─────────────────────────────────────────── */
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .text-muted { color: var(--text-muted); }
+    .mt-sm { margin-top: .5rem; }
+    .mt-md { margin-top: 1rem; }
+    .badge-default { font-size: .7rem; background: var(--light); border: 1px solid var(--border); border-radius: 20px; padding: .15rem .55rem; color: var(--text-muted); }
+  </style>
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     HEADER
+═════════════════════════════════════════════════════════════ -->
+<header class="site-header" role="banner">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo" aria-label="Globex Sky Home">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain" />
+      </a>
+      <div class="nav-controls">
+        <a href="../cart/index.html" class="btn-nav btn-login">
+          <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+          <span data-i18n="checkout.backToCart">Back to Cart</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     MAIN
+═════════════════════════════════════════════════════════════ -->
+<main id="main-content" role="main">
+  <div class="checkout-wrapper">
+
+    <!-- ── Step Indicator ────────────────────────────────── -->
+    <nav class="steps-bar" aria-label="Checkout steps" role="list">
+      <!-- Step 1 -->
+      <div class="step-item active" id="step-indicator-1" role="listitem" aria-current="step">
+        <div class="step-bubble" aria-hidden="true">1</div>
+        <span class="step-label" data-i18n="checkout.step1Label">Shipping</span>
+      </div>
+      <div class="step-connector" aria-hidden="true"></div>
+      <!-- Step 2 -->
+      <div class="step-item" id="step-indicator-2" role="listitem">
+        <div class="step-bubble" aria-hidden="true">2</div>
+        <span class="step-label" data-i18n="checkout.step2Label">Payment</span>
+      </div>
+      <div class="step-connector" aria-hidden="true"></div>
+      <!-- Step 3 -->
+      <div class="step-item" id="step-indicator-3" role="listitem">
+        <div class="step-bubble" aria-hidden="true">3</div>
+        <span class="step-label" data-i18n="checkout.step3Label">Review</span>
+      </div>
+      <div class="step-connector" aria-hidden="true"></div>
+      <!-- Step 4 -->
+      <div class="step-item" id="step-indicator-4" role="listitem">
+        <div class="step-bubble" aria-hidden="true">4</div>
+        <span class="step-label" data-i18n="checkout.step4Label">Confirmation</span>
+      </div>
+    </nav><!-- /steps-bar -->
+
+
+    <!-- ══════════════════════════════════════════════════════
+         LEFT COLUMN — Step Panels
+    ═══════════════════════════════════════════════════════ -->
+    <div class="checkout-steps" aria-live="polite">
+
+      <!-- ── STEP 1: SHIPPING ─────────────────────────────── -->
+      <section id="step-panel-1" class="step-panel active" aria-labelledby="step1-heading" role="tabpanel">
+        <div class="panel-card">
+          <h2 id="step1-heading">
+            <span class="icon" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></span>
+            <span data-i18n="checkout.shippingTitle">Shipping Address</span>
+          </h2>
+
+          <!-- Saved Addresses -->
+          <fieldset>
+            <legend class="visually-hidden" data-i18n="checkout.savedAddresses">Choose a saved address</legend>
+            <div class="address-list" role="list">
+
+              <!-- Address 1 -->
+              <label class="address-card selected" for="addr-1" role="listitem">
+                <input type="radio" id="addr-1" name="saved-address" value="addr-1" checked aria-describedby="addr-1-text" />
+                <div class="address-card-body" id="addr-1-text">
+                  <strong data-i18n="checkout.addr1Name">Ahmed Rahman
+                    <span class="address-card-badge" data-i18n="checkout.addrDefaultBadge">Default</span>
+                  </strong>
+                  <p>House 12, Road 7, Block-C, Bashundhara R/A<br />
+                     Dhaka 1229, Bangladesh<br />
+                     <abbr title="Phone">📞</abbr> +880 1712-345678
+                  </p>
+                </div>
+              </label>
+
+              <!-- Address 2 -->
+              <label class="address-card" for="addr-2" role="listitem">
+                <input type="radio" id="addr-2" name="saved-address" value="addr-2" aria-describedby="addr-2-text" />
+                <div class="address-card-body" id="addr-2-text">
+                  <strong data-i18n="checkout.addr2Name">Ahmed Rahman <span class="badge-default" data-i18n="checkout.addrOfficeBadge">Office</span></strong>
+                  <p>Level 4, Rupayan Trade Centre<br />
+                     114 Kazi Nazrul Islam Ave, Dhaka 1000<br />
+                     <abbr title="Phone">📞</abbr> +880 1812-987654
+                  </p>
+                </div>
+              </label>
+
+            </div><!-- /address-list -->
+          </fieldset>
+
+          <!-- Add New Address Accordion -->
+          <button type="button" class="add-address-toggle" id="toggle-new-address" aria-expanded="false" aria-controls="new-address-form">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+            <span data-i18n="checkout.addNewAddress">Add New Address</span>
+          </button>
+
+          <div class="new-address-form" id="new-address-form" aria-hidden="true">
+            <h3 style="font-size:.9rem;margin-bottom:1rem;" data-i18n="checkout.newAddressHeading">Enter New Delivery Address</h3>
+            <form id="form-new-address" novalidate autocomplete="on">
+              <div class="form-grid">
+
+                <div class="form-group">
+                  <label for="fn">
+                    <span data-i18n="checkout.firstName">First Name</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <input type="text" id="fn" name="firstName" class="form-control" placeholder="Ahmed" autocomplete="given-name" required minlength="2" maxlength="60" data-i18n-placeholder="checkout.firstNamePH" />
+                  <span class="form-error" id="fn-error" role="alert" data-i18n="checkout.firstNameErr">Please enter your first name.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="ln">
+                    <span data-i18n="checkout.lastName">Last Name</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <input type="text" id="ln" name="lastName" class="form-control" placeholder="Rahman" autocomplete="family-name" required minlength="2" maxlength="60" data-i18n-placeholder="checkout.lastNamePH" />
+                  <span class="form-error" id="ln-error" role="alert" data-i18n="checkout.lastNameErr">Please enter your last name.</span>
+                </div>
+
+                <div class="form-group col-full">
+                  <label for="phone">
+                    <span data-i18n="checkout.phone">Phone Number</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <input type="tel" id="phone" name="phone" class="form-control" placeholder="+880 1X00-000000" autocomplete="tel" required pattern="^\+?[\d\s\-()]{7,20}$" data-i18n-placeholder="checkout.phonePH" />
+                  <span class="form-error" id="phone-error" role="alert" data-i18n="checkout.phoneErr">Please enter a valid phone number.</span>
+                </div>
+
+                <div class="form-group col-full">
+                  <label for="addr1">
+                    <span data-i18n="checkout.addressLine1">Address Line 1</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <input type="text" id="addr1" name="address1" class="form-control" placeholder="House / Flat No., Road, Street" autocomplete="address-line1" required maxlength="120" data-i18n-placeholder="checkout.addr1PH" />
+                  <span class="form-error" id="addr1-error" role="alert" data-i18n="checkout.addr1Err">Address line 1 is required.</span>
+                </div>
+
+                <div class="form-group col-full">
+                  <label for="addr2">
+                    <span data-i18n="checkout.addressLine2">Address Line 2</span>
+                    <span class="text-muted" style="font-weight:400;font-size:.75rem;" data-i18n="checkout.optional">(Optional)</span>
+                  </label>
+                  <input type="text" id="addr2" name="address2" class="form-control" placeholder="Apartment, Floor, Block" autocomplete="address-line2" maxlength="120" data-i18n-placeholder="checkout.addr2PH" />
+                </div>
+
+                <div class="form-group">
+                  <label for="city">
+                    <span data-i18n="checkout.city">City</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <input type="text" id="city" name="city" class="form-control" placeholder="Dhaka" autocomplete="address-level2" required maxlength="80" data-i18n-placeholder="checkout.cityPH" />
+                  <span class="form-error" id="city-error" role="alert" data-i18n="checkout.cityErr">City is required.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="district">
+                    <span data-i18n="checkout.district">District / State</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <input type="text" id="district" name="district" class="form-control" placeholder="Dhaka District" autocomplete="address-level1" required maxlength="80" data-i18n-placeholder="checkout.districtPH" />
+                  <span class="form-error" id="district-error" role="alert" data-i18n="checkout.districtErr">District / State is required.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="postal">
+                    <span data-i18n="checkout.postalCode">Postal Code</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <input type="text" id="postal" name="postalCode" class="form-control" placeholder="1229" autocomplete="postal-code" required pattern="[\d\w\s\-]{3,12}" data-i18n-placeholder="checkout.postalPH" />
+                  <span class="form-error" id="postal-error" role="alert" data-i18n="checkout.postalErr">Please enter a valid postal code.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="country">
+                    <span data-i18n="checkout.country">Country</span><span class="required-star" aria-hidden="true">*</span>
+                  </label>
+                  <select id="country" name="country" class="form-control" autocomplete="country-name" required>
+                    <option value="" disabled selected data-i18n="checkout.selectCountry">Select Country</option>
+                    <option value="BD">Bangladesh</option>
+                    <option value="CN">China</option>
+                    <option value="IN">India</option>
+                    <option value="PK">Pakistan</option>
+                    <option value="SG">Singapore</option>
+                    <option value="MY">Malaysia</option>
+                    <option value="TH">Thailand</option>
+                    <option value="VN">Vietnam</option>
+                    <option value="ID">Indonesia</option>
+                    <option value="PH">Philippines</option>
+                    <option value="AE">United Arab Emirates</option>
+                    <option value="SA">Saudi Arabia</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                    <option value="AU">Australia</option>
+                    <option value="CA">Canada</option>
+                    <option value="JP">Japan</option>
+                    <option value="KR">South Korea</option>
+                  </select>
+                  <span class="form-error" id="country-error" role="alert" data-i18n="checkout.countryErr">Please select a country.</span>
+                </div>
+
+              </div><!-- /form-grid -->
+
+              <div class="mt-md" style="display:flex;gap:.6rem;flex-wrap:wrap;">
+                <button type="submit" class="btn-primary" data-i18n="checkout.saveAddress">
+                  <i class="fas fa-check" aria-hidden="true"></i> Save Address
+                </button>
+                <button type="button" class="btn-secondary" id="cancel-new-address" data-i18n="checkout.cancel">Cancel</button>
+              </div>
+            </form>
+          </div><!-- /new-address-form -->
+        </div><!-- /panel-card -->
+
+        <div class="step-nav">
+          <span></span>
+          <button type="button" class="btn-primary" id="btn-step1-next" data-next="2">
+            <span data-i18n="checkout.continueToPayment">Continue to Payment</span>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section><!-- /step-panel-1 -->
+
+
+      <!-- ── STEP 2: PAYMENT ──────────────────────────────── -->
+      <section id="step-panel-2" class="step-panel" aria-labelledby="step2-heading" role="tabpanel" hidden>
+        <div class="panel-card">
+          <h2 id="step2-heading">
+            <span class="icon" aria-hidden="true"><i class="fas fa-credit-card"></i></span>
+            <span data-i18n="checkout.paymentTitle">Payment Method</span>
+          </h2>
+
+          <fieldset>
+            <legend class="visually-hidden" data-i18n="checkout.selectPayment">Select a payment method</legend>
+            <div class="payment-methods-grid" role="list">
+
+              <!-- bKash -->
+              <div class="payment-option" role="listitem">
+                <input type="radio" id="pay-bkash" name="payment-method" value="bkash" aria-describedby="bkash-desc" />
+                <label for="pay-bkash">
+                  <span class="payment-icon bkash" aria-hidden="true"><i class="fas fa-mobile-alt"></i></span>
+                  <span class="payment-method-name">bKash</span>
+                  <span class="payment-method-desc" id="bkash-desc" data-i18n="checkout.bkashDesc">Mobile banking</span>
+                </label>
+              </div>
+
+              <!-- Nagad -->
+              <div class="payment-option" role="listitem">
+                <input type="radio" id="pay-nagad" name="payment-method" value="nagad" aria-describedby="nagad-desc" />
+                <label for="pay-nagad">
+                  <span class="payment-icon nagad" aria-hidden="true"><i class="fas fa-wallet"></i></span>
+                  <span class="payment-method-name">Nagad</span>
+                  <span class="payment-method-desc" id="nagad-desc" data-i18n="checkout.nagadDesc">Digital wallet</span>
+                </label>
+              </div>
+
+              <!-- Card -->
+              <div class="payment-option" role="listitem">
+                <input type="radio" id="pay-card" name="payment-method" value="card" aria-describedby="card-desc" checked />
+                <label for="pay-card">
+                  <span class="payment-icon card" aria-hidden="true"><i class="fas fa-credit-card"></i></span>
+                  <span class="payment-method-name" data-i18n="checkout.cardLabel">Card</span>
+                  <span class="payment-method-desc" id="card-desc" data-i18n="checkout.cardDesc">Visa / MasterCard</span>
+                </label>
+              </div>
+
+              <!-- Cash on Delivery -->
+              <div class="payment-option" role="listitem">
+                <input type="radio" id="pay-cod" name="payment-method" value="cod" aria-describedby="cod-desc" />
+                <label for="pay-cod">
+                  <span class="payment-icon cod" aria-hidden="true"><i class="fas fa-hand-holding-usd"></i></span>
+                  <span class="payment-method-name" data-i18n="checkout.codLabel">Cash on Delivery</span>
+                  <span class="payment-method-desc" id="cod-desc" data-i18n="checkout.codDesc">Pay at door</span>
+                </label>
+              </div>
+
+              <!-- Bank Transfer -->
+              <div class="payment-option" role="listitem">
+                <input type="radio" id="pay-bank" name="payment-method" value="bank" aria-describedby="bank-desc" />
+                <label for="pay-bank">
+                  <span class="payment-icon bank" aria-hidden="true"><i class="fas fa-university"></i></span>
+                  <span class="payment-method-name" data-i18n="checkout.bankLabel">Bank Transfer</span>
+                  <span class="payment-method-desc" id="bank-desc" data-i18n="checkout.bankDesc">SWIFT / Wire</span>
+                </label>
+              </div>
+
+            </div><!-- /payment-methods-grid -->
+          </fieldset>
+
+          <!-- Dynamic: Card Fields -->
+          <div class="payment-fields active" id="fields-card" aria-live="polite">
+            <div class="card-icons" aria-label="Accepted cards">
+              <span class="card-icon-badge visa" aria-label="Visa">VISA</span>
+              <span class="card-icon-badge mc" aria-label="MasterCard">MC</span>
+            </div>
+            <div class="form-group" style="margin-bottom:.75rem;">
+              <label for="card-number">
+                <span data-i18n="checkout.cardNumber">Card Number</span><span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <input type="text" id="card-number" name="cardNumber" class="form-control" placeholder="1234 5678 9012 3456" autocomplete="cc-number" inputmode="numeric" required pattern="[\d\s]{13,19}" maxlength="19" data-i18n-placeholder="checkout.cardNumberPH" />
+              <span class="form-error" id="card-number-error" role="alert" data-i18n="checkout.cardNumberErr">Please enter a valid card number.</span>
+            </div>
+            <div class="card-row">
+              <div class="form-group">
+                <label for="card-expiry">
+                  <span data-i18n="checkout.cardExpiry">Expiry MM/YY</span><span class="required-star" aria-hidden="true">*</span>
+                </label>
+                <input type="text" id="card-expiry" name="cardExpiry" class="form-control" placeholder="MM / YY" autocomplete="cc-exp" inputmode="numeric" required pattern="(0[1-9]|1[0-2])\s*\/\s*\d{2}" maxlength="7" data-i18n-placeholder="checkout.cardExpiryPH" />
+                <span class="form-error" id="card-expiry-error" role="alert" data-i18n="checkout.cardExpiryErr">Invalid expiry date.</span>
+              </div>
+              <div class="form-group">
+                <label for="card-cvv">
+                  <span data-i18n="checkout.cardCVV">CVV</span><span class="required-star" aria-hidden="true">*</span>
+                </label>
+                <input type="password" id="card-cvv" name="cardCVV" class="form-control" placeholder="•••" autocomplete="cc-csc" inputmode="numeric" required pattern="\d{3,4}" maxlength="4" data-i18n-placeholder="checkout.cardCVVPH" />
+                <span class="form-error" id="card-cvv-error" role="alert" data-i18n="checkout.cardCVVErr">Invalid CVV.</span>
+              </div>
+            </div>
+            <div class="form-group mt-sm">
+              <label for="card-name">
+                <span data-i18n="checkout.cardholderName">Cardholder Name</span><span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <input type="text" id="card-name" name="cardName" class="form-control" placeholder="AHMED RAHMAN" autocomplete="cc-name" required maxlength="80" style="text-transform:uppercase;" data-i18n-placeholder="checkout.cardNamePH" />
+              <span class="form-error" id="card-name-error" role="alert" data-i18n="checkout.cardNameErr">Cardholder name is required.</span>
+            </div>
+          </div><!-- /fields-card -->
+
+          <!-- Dynamic: bKash Fields -->
+          <div class="payment-fields" id="fields-bkash">
+            <div class="form-group">
+              <label for="bkash-phone">
+                <span data-i18n="checkout.bkashPhone">bKash Account Number</span><span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <input type="tel" id="bkash-phone" name="bkashPhone" class="form-control" placeholder="+880 1XXXXXXXXX" autocomplete="tel" required pattern="^\+?880\s?1[3-9]\d{8}$" data-i18n-placeholder="checkout.bkashPhonePH" />
+              <span class="form-error" id="bkash-phone-error" role="alert" data-i18n="checkout.bkashPhoneErr">Please enter a valid bKash number.</span>
+            </div>
+            <p class="mt-sm" style="font-size:.8rem;color:var(--text-muted);" data-i18n="checkout.bkashNote">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+              You will receive a confirmation SMS to complete the payment.
+            </p>
+          </div><!-- /fields-bkash -->
+
+          <!-- Dynamic: Nagad Fields -->
+          <div class="payment-fields" id="fields-nagad">
+            <div class="form-group">
+              <label for="nagad-phone">
+                <span data-i18n="checkout.nagadPhone">Nagad Account Number</span><span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <input type="tel" id="nagad-phone" name="nagadPhone" class="form-control" placeholder="+880 1XXXXXXXXX" autocomplete="tel" required pattern="^\+?880\s?1[3-9]\d{8}$" data-i18n-placeholder="checkout.nagadPhonePH" />
+              <span class="form-error" id="nagad-phone-error" role="alert" data-i18n="checkout.nagadPhoneErr">Please enter a valid Nagad number.</span>
+            </div>
+            <p class="mt-sm" style="font-size:.8rem;color:var(--text-muted);" data-i18n="checkout.nagadNote">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+              You will receive a payment prompt via Nagad app.
+            </p>
+          </div><!-- /fields-nagad -->
+
+          <!-- Dynamic: Bank Transfer Info -->
+          <div class="payment-fields" id="fields-bank">
+            <dl style="font-size:.85rem;display:grid;grid-template-columns:auto 1fr;gap:.35rem .85rem;">
+              <dt style="color:var(--text-muted);font-weight:600;" data-i18n="checkout.bankName">Bank</dt>
+              <dd>Dutch-Bangla Bank Ltd (DBBL)</dd>
+              <dt style="color:var(--text-muted);font-weight:600;" data-i18n="checkout.bankAccountName">Account Name</dt>
+              <dd>Globex International Trade Co., Ltd</dd>
+              <dt style="color:var(--text-muted);font-weight:600;" data-i18n="checkout.bankAccountNo">Account No.</dt>
+              <dd>1047-102-44567-8</dd>
+              <dt style="color:var(--text-muted);font-weight:600;" data-i18n="checkout.bankSwift">SWIFT</dt>
+              <dd>DBBLBDDH</dd>
+            </dl>
+            <p class="mt-sm" style="font-size:.8rem;color:var(--text-muted);" data-i18n="checkout.bankNote">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+              Upload your payment confirmation in My Orders after placing the order.
+            </p>
+          </div><!-- /fields-bank -->
+
+          <!-- Dynamic: Cash on Delivery info -->
+          <div class="payment-fields" id="fields-cod">
+            <p style="font-size:.875rem;" data-i18n="checkout.codInfo">
+              <i class="fas fa-truck" aria-hidden="true" style="color:var(--success);margin-right:.4rem;"></i>
+              Pay with cash when your order is delivered. A small COD handling fee of <strong>$1.50</strong> may apply.
+            </p>
+          </div><!-- /fields-cod -->
+
+        </div><!-- /panel-card -->
+
+        <div class="step-nav">
+          <button type="button" class="btn-secondary" id="btn-step2-back" data-prev="1">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            <span data-i18n="checkout.back">Back</span>
+          </button>
+          <button type="button" class="btn-primary" id="btn-step2-next" data-next="3">
+            <span data-i18n="checkout.continueToReview">Review Order</span>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section><!-- /step-panel-2 -->
+
+
+      <!-- ── STEP 3: ORDER REVIEW ─────────────────────────── -->
+      <section id="step-panel-3" class="step-panel" aria-labelledby="step3-heading" role="tabpanel" hidden>
+
+        <!-- Items -->
+        <div class="panel-card">
+          <h2 id="step3-heading">
+            <span class="icon" aria-hidden="true"><i class="fas fa-box-open"></i></span>
+            <span data-i18n="checkout.reviewTitle">Order Items</span>
+          </h2>
+          <div class="review-items" role="list">
+
+            <!-- Item 1 -->
+            <article class="review-item" role="listitem" aria-label="Industrial Safety Gloves">
+              <div class="review-item-img" aria-hidden="true">
+                <img src="../../assets/images/products/safety-gloves.jpg" alt="Industrial Safety Gloves" loading="lazy"
+                     onerror="this.style.display='none';this.parentElement.textContent='🧤'" />
+              </div>
+              <div class="review-item-details">
+                <div class="review-item-name" data-i18n="checkout.item1Name">Industrial Safety Gloves — Cut-Resistant L</div>
+                <div class="review-item-meta">
+                  <span data-i18n="checkout.qty">Qty:</span> <strong>3</strong> &nbsp;·&nbsp;
+                  <span data-i18n="checkout.sku">SKU:</span> GLV-CR-L-001
+                </div>
+              </div>
+              <div class="review-item-price" aria-label="Price $38.97">$38.97</div>
+            </article>
+
+            <!-- Item 2 -->
+            <article class="review-item" role="listitem" aria-label="Hydraulic Pipe Fittings">
+              <div class="review-item-img" aria-hidden="true">
+                <img src="../../assets/images/products/pipe-fittings.jpg" alt="Hydraulic Pipe Fittings" loading="lazy"
+                     onerror="this.style.display='none';this.parentElement.textContent='🔩'" />
+              </div>
+              <div class="review-item-details">
+                <div class="review-item-name" data-i18n="checkout.item2Name">Hydraulic Pipe Fittings — SS 304 1/2″</div>
+                <div class="review-item-meta">
+                  <span data-i18n="checkout.qty">Qty:</span> <strong>10</strong> &nbsp;·&nbsp;
+                  <span data-i18n="checkout.sku">SKU:</span> PF-SS304-12-010
+                </div>
+              </div>
+              <div class="review-item-price" aria-label="Price $74.90">$74.90</div>
+            </article>
+
+            <!-- Item 3 -->
+            <article class="review-item" role="listitem" aria-label="LED Work Light 50W">
+              <div class="review-item-img" aria-hidden="true">
+                <img src="../../assets/images/products/led-work-light.jpg" alt="LED Work Light 50W" loading="lazy"
+                     onerror="this.style.display='none';this.parentElement.textContent='💡'" />
+              </div>
+              <div class="review-item-details">
+                <div class="review-item-name" data-i18n="checkout.item3Name">LED Work Light — 50W Waterproof IP66</div>
+                <div class="review-item-meta">
+                  <span data-i18n="checkout.qty">Qty:</span> <strong>2</strong> &nbsp;·&nbsp;
+                  <span data-i18n="checkout.sku">SKU:</span> LWL-50W-IP66
+                </div>
+              </div>
+              <div class="review-item-price" aria-label="Price $59.98">$59.98</div>
+            </article>
+
+          </div><!-- /review-items -->
+        </div><!-- /panel-card items -->
+
+        <!-- Shipping Method -->
+        <div class="panel-card">
+          <h2>
+            <span class="icon" aria-hidden="true"><i class="fas fa-shipping-fast"></i></span>
+            <span data-i18n="checkout.shippingMethod">Shipping Method</span>
+          </h2>
+          <fieldset>
+            <legend class="visually-hidden" data-i18n="checkout.selectShipping">Select a shipping method</legend>
+            <div class="shipping-methods" role="list">
+
+              <!-- Economy -->
+              <label class="shipping-option" for="ship-economy" role="listitem">
+                <input type="radio" id="ship-economy" name="shipping-method" value="economy" data-price="0" />
+                <div class="shipping-option-body">
+                  <div class="shipping-option-name" data-i18n="checkout.shipEconomy">Economy Shipping</div>
+                  <div class="shipping-option-eta" data-i18n="checkout.shipEconomyEta">Estimated 10–14 business days</div>
+                </div>
+                <div class="shipping-option-price free" data-i18n="checkout.shipFree">FREE</div>
+              </label>
+
+              <!-- Standard -->
+              <label class="shipping-option selected" for="ship-standard" role="listitem">
+                <input type="radio" id="ship-standard" name="shipping-method" value="standard" data-price="5.99" checked />
+                <div class="shipping-option-body">
+                  <div class="shipping-option-name" data-i18n="checkout.shipStandard">Standard Shipping</div>
+                  <div class="shipping-option-eta" data-i18n="checkout.shipStandardEta">Estimated 5–7 business days</div>
+                </div>
+                <div class="shipping-option-price">$5.99</div>
+              </label>
+
+              <!-- Express -->
+              <label class="shipping-option" for="ship-express" role="listitem">
+                <input type="radio" id="ship-express" name="shipping-method" value="express" data-price="12.99" />
+                <div class="shipping-option-body">
+                  <div class="shipping-option-name" data-i18n="checkout.shipExpress">Express Shipping</div>
+                  <div class="shipping-option-eta" data-i18n="checkout.shipExpressEta">Estimated 2–3 business days</div>
+                </div>
+                <div class="shipping-option-price">$12.99</div>
+              </label>
+
+            </div><!-- /shipping-methods -->
+          </fieldset>
+        </div><!-- /panel-card shipping -->
+
+        <!-- Terms acknowledgement -->
+        <div class="panel-card" style="padding:1rem 1.25rem;">
+          <label style="display:flex;align-items:flex-start;gap:.65rem;cursor:pointer;font-size:.85rem;">
+            <input type="checkbox" id="agree-terms" name="agreeTerms" required style="margin-top:.2rem;accent-color:var(--primary);" />
+            <span data-i18n="checkout.agreeTerms">
+              I agree to the <a href="../legal/terms.html" target="_blank" rel="noopener">Terms of Service</a> and
+              <a href="../legal/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. I confirm that all order details above are correct.
+            </span>
+          </label>
+          <span class="form-error" id="agree-error" role="alert" data-i18n="checkout.agreeErr">You must agree to the terms to continue.</span>
+        </div>
+
+        <div class="step-nav">
+          <button type="button" class="btn-secondary" id="btn-step3-back" data-prev="2">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            <span data-i18n="checkout.back">Back</span>
+          </button>
+          <button type="button" class="btn-primary" id="btn-place-order">
+            <i class="fas fa-lock" aria-hidden="true"></i>
+            <span data-i18n="checkout.placeOrder">Place Order</span>
+          </button>
+        </div>
+      </section><!-- /step-panel-3 -->
+
+
+      <!-- ── STEP 4: CONFIRMATION ────────────────────────── -->
+      <section id="step-panel-4" class="step-panel" aria-labelledby="step4-heading" role="tabpanel" hidden>
+        <div class="confirmation-card">
+          <div class="confirm-animation" role="img" aria-label="Order confirmed checkmark">
+            <i class="fas fa-check" aria-hidden="true"></i>
+          </div>
+          <h2 id="step4-heading" class="confirm-title" data-i18n="checkout.confirmTitle">Order Confirmed!</h2>
+          <p class="confirm-subtitle" data-i18n="checkout.confirmSubtitle">
+            Thank you for your purchase. We have received your order and are processing it.
+          </p>
+          <div class="confirm-details" aria-label="Order details summary">
+            <div class="confirm-row">
+              <span data-i18n="checkout.orderNumber">Order Number</span>
+              <span id="confirm-order-no" aria-live="polite">#GS-20250001</span>
+            </div>
+            <div class="confirm-row">
+              <span data-i18n="checkout.estimatedDelivery">Estimated Delivery</span>
+              <span id="confirm-delivery-date" aria-live="polite">Jan 25 – Jan 29, 2025</span>
+            </div>
+            <div class="confirm-row">
+              <span data-i18n="checkout.paymentMethod">Payment Method</span>
+              <span id="confirm-payment-method" aria-live="polite">Visa Card</span>
+            </div>
+            <div class="confirm-row">
+              <span data-i18n="checkout.totalPaid">Total Paid</span>
+              <span id="confirm-total" aria-live="polite">$179.84</span>
+            </div>
+          </div>
+          <div class="confirm-actions">
+            <a href="../orders/index.html" class="btn-accent" data-i18n="checkout.trackOrder">
+              <i class="fas fa-map-marked-alt" aria-hidden="true"></i> Track Order
+            </a>
+            <a href="../../index.html" class="btn-secondary" style="text-decoration:none;" data-i18n="checkout.continueShopping">
+              <i class="fas fa-store" aria-hidden="true"></i> Continue Shopping
+            </a>
+          </div>
+        </div>
+      </section><!-- /step-panel-4 -->
+
+    </div><!-- /checkout-steps -->
+
+
+    <!-- ══════════════════════════════════════════════════════
+         RIGHT COLUMN — Order Summary Sidebar
+    ═══════════════════════════════════════════════════════ -->
+    <aside class="order-summary" aria-label="Order summary" aria-live="polite">
+      <h3 data-i18n="checkout.orderSummary">Order Summary</h3>
+
+      <!-- Thumbnail Items -->
+      <ul class="summary-items" aria-label="Items in your order">
+        <li class="summary-item">
+          <div class="summary-item-thumb" aria-hidden="true">
+            <div class="thumb-img">
+              <img src="../../assets/images/products/safety-gloves.jpg" alt="" loading="lazy"
+                   onerror="this.style.display='none';this.parentElement.textContent='🧤'" />
+            </div>
+            <span class="qty-badge" aria-label="Quantity 3">3</span>
+          </div>
+          <div class="summary-item-info">
+            <div class="summary-item-name" data-i18n="checkout.item1NameShort">Safety Gloves Cut-Resistant L</div>
+            <div class="summary-item-price">$38.97</div>
+          </div>
+        </li>
+        <li class="summary-item">
+          <div class="summary-item-thumb" aria-hidden="true">
+            <div class="thumb-img">
+              <img src="../../assets/images/products/pipe-fittings.jpg" alt="" loading="lazy"
+                   onerror="this.style.display='none';this.parentElement.textContent='🔩'" />
+            </div>
+            <span class="qty-badge" aria-label="Quantity 10">10</span>
+          </div>
+          <div class="summary-item-info">
+            <div class="summary-item-name" data-i18n="checkout.item2NameShort">Hydraulic Pipe Fittings SS 304</div>
+            <div class="summary-item-price">$74.90</div>
+          </div>
+        </li>
+        <li class="summary-item">
+          <div class="summary-item-thumb" aria-hidden="true">
+            <div class="thumb-img">
+              <img src="../../assets/images/products/led-work-light.jpg" alt="" loading="lazy"
+                   onerror="this.style.display='none';this.parentElement.textContent='💡'" />
+            </div>
+            <span class="qty-badge" aria-label="Quantity 2">2</span>
+          </div>
+          <div class="summary-item-info">
+            <div class="summary-item-name" data-i18n="checkout.item3NameShort">LED Work Light 50W IP66</div>
+            <div class="summary-item-price">$59.98</div>
+          </div>
+        </li>
+      </ul><!-- /summary-items -->
+
+      <!-- Promo Code -->
+      <div class="promo-row" role="form" aria-label="Apply promo code">
+        <input type="text" class="form-control" id="promo-code" name="promoCode" placeholder="Promo code" aria-label="Promo or coupon code" data-i18n-placeholder="checkout.promoPH" maxlength="30" />
+        <button type="button" class="btn-promo" id="btn-apply-promo" data-i18n="checkout.applyPromo">Apply</button>
+      </div>
+      <span class="form-error mt-sm" id="promo-error" role="alert" style="font-size:.75rem;"></span>
+      <span id="promo-success" style="display:none;color:var(--success);font-size:.75rem;margin-top:.35rem;" role="status" data-i18n="checkout.promoApplied">Promo applied! –$10.00</span>
+
+      <div class="summary-divider" aria-hidden="true"></div>
+
+      <!-- Price breakdown -->
+      <div class="summary-lines" aria-label="Price breakdown">
+        <div class="summary-line">
+          <span data-i18n="checkout.subtotal">Subtotal</span>
+          <span id="summary-subtotal">$173.85</span>
+        </div>
+        <div class="summary-line">
+          <span data-i18n="checkout.shipping">Shipping</span>
+          <span id="summary-shipping" class="free-ship">$5.99</span>
+        </div>
+        <div class="summary-line" id="discount-line" style="display:none;">
+          <span data-i18n="checkout.discount">Discount</span>
+          <span id="summary-discount" class="discount">–$10.00</span>
+        </div>
+        <div class="summary-line" id="cod-fee-line" style="display:none;">
+          <span data-i18n="checkout.codFee">COD Fee</span>
+          <span id="summary-cod-fee">$1.50</span>
+        </div>
+      </div>
+
+      <div class="summary-divider" aria-hidden="true"></div>
+
+      <div class="summary-line total" aria-label="Order total">
+        <span data-i18n="checkout.total">Total</span>
+        <span id="summary-total">$179.84</span>
+      </div>
+
+      <!-- Place Order button (visible on step 3 only) -->
+      <button type="button" class="btn-place-order" id="sidebar-place-order" style="display:none;" aria-label="Place order securely">
+        <i class="fas fa-lock" aria-hidden="true"></i>
+        <span data-i18n="checkout.placeOrderSecure">Place Order Securely</span>
+      </button>
+
+      <!-- SSL Badge -->
+      <div class="ssl-badge" role="note" aria-label="Secure payment information">
+        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+        <span data-i18n="checkout.sslBadge">SSL Encrypted · PCI DSS Compliant</span>
+      </div>
+    </aside><!-- /order-summary -->
+
+  </div><!-- /checkout-wrapper -->
+</main>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     FOOTER
+═════════════════════════════════════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">
+          &copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.
+        </p>
+        <nav class="footer-legal-links" aria-label="Legal links">
+          <a href="../legal/privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+          <a href="../legal/terms.html" data-i18n="footer.terms">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SCRIPTS
+═════════════════════════════════════════════════════════════ -->
+<script src="../../assets/js/i18n.js" defer></script>
+<script src="../../assets/js/navbar.js" defer></script>
+<script src="../../assets/js/main.js" defer></script>
+<script src="../../assets/js/payment-gateways.js" defer></script>
+<script src="../../assets/js/checkout.js" defer></script>
+
+<script>
+/* ──────────────────────────────────────────────────────────────
+   Inline Checkout Controller
+   Handles: step navigation, form validation, payment field
+   toggling, shipping cost updates, promo code, order placement.
+────────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+
+  /* ── Pricing constants ───────────────────────────────────── */
+  var SUBTOTAL    = 173.85;
+  var COD_FEE     = 1.50;
+  var PROMO_CODE  = 'GLOBEX10';
+  var PROMO_AMT   = 10.00;
+
+  var currentStep   = 1;
+  var promoApplied  = false;
+  var selectedShip  = 5.99;
+
+  /* ── Step helpers ────────────────────────────────────────── */
+  function goToStep(n) {
+    var panels     = document.querySelectorAll('.step-panel');
+    var indicators = document.querySelectorAll('.step-item');
+
+    panels.forEach(function (p) {
+      p.classList.remove('active');
+      p.hidden = true;
+    });
+
+    indicators.forEach(function (ind, i) {
+      ind.classList.remove('active', 'done');
+      if (i + 1 < n)  ind.classList.add('done');
+      if (i + 1 === n) ind.classList.add('active');
+      ind.setAttribute('aria-current', i + 1 === n ? 'step' : false);
+    });
+
+    var target = document.getElementById('step-panel-' + n);
+    if (target) {
+      target.classList.add('active');
+      target.hidden = false;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* Sidebar place-order button only on step 3 */
+    var sideBtn = document.getElementById('sidebar-place-order');
+    if (sideBtn) sideBtn.style.display = (n === 3) ? 'block' : 'none';
+
+    currentStep = n;
+  }
+
+  /* ── Address cards ───────────────────────────────────────── */
+  document.querySelectorAll('.address-card input[type="radio"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      document.querySelectorAll('.address-card').forEach(function (c) { c.classList.remove('selected'); });
+      if (radio.checked) radio.closest('.address-card').classList.add('selected');
+    });
+  });
+
+  /* ── Add-new-address accordion ───────────────────────────── */
+  var toggleBtn  = document.getElementById('toggle-new-address');
+  var addrForm   = document.getElementById('new-address-form');
+  var cancelBtn  = document.getElementById('cancel-new-address');
+
+  function openNewAddressForm() {
+    addrForm.classList.add('open');
+    addrForm.removeAttribute('aria-hidden');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+    toggleBtn.querySelector('i').className = 'fas fa-minus';
+  }
+  function closeNewAddressForm() {
+    addrForm.classList.remove('open');
+    addrForm.setAttribute('aria-hidden', 'true');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+    toggleBtn.querySelector('i').className = 'fas fa-plus';
+  }
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function () {
+      if (addrForm.classList.contains('open')) {
+        closeNewAddressForm();
+      } else {
+        openNewAddressForm();
+      }
+    });
+  }
+  if (cancelBtn) cancelBtn.addEventListener('click', closeNewAddressForm);
+
+  /* New address form save (client-side only) */
+  var formNewAddr = document.getElementById('form-new-address');
+  if (formNewAddr) {
+    formNewAddr.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (validateNewAddressForm()) {
+        closeNewAddressForm();
+        formNewAddr.reset();
+      }
+    });
+  }
+
+  function validateNewAddressForm() {
+    var valid = true;
+    var fields = [
+      { id: 'fn',       err: 'fn-error' },
+      { id: 'ln',       err: 'ln-error' },
+      { id: 'phone',    err: 'phone-error' },
+      { id: 'addr1',    err: 'addr1-error' },
+      { id: 'city',     err: 'city-error' },
+      { id: 'district', err: 'district-error' },
+      { id: 'postal',   err: 'postal-error' },
+      { id: 'country',  err: 'country-error' }
+    ];
+    fields.forEach(function (f) {
+      var input = document.getElementById(f.id);
+      var errEl = document.getElementById(f.err);
+      if (!input || !errEl) return;
+      var ok = input.checkValidity();
+      input.classList.toggle('error', !ok);
+      errEl.classList.toggle('show', !ok);
+      if (!ok) valid = false;
+    });
+    return valid;
+  }
+
+  /* Inline field validation on blur */
+  document.querySelectorAll('#form-new-address .form-control').forEach(function (inp) {
+    inp.addEventListener('blur', function () {
+      var errId = inp.id + '-error';
+      var errEl = document.getElementById(errId);
+      if (!errEl) return;
+      var ok = inp.checkValidity();
+      inp.classList.toggle('error', !ok);
+      errEl.classList.toggle('show', !ok);
+    });
+    inp.addEventListener('input', function () {
+      if (inp.classList.contains('error')) {
+        var errId = inp.id + '-error';
+        var errEl = document.getElementById(errId);
+        if (inp.checkValidity()) {
+          inp.classList.remove('error');
+          if (errEl) errEl.classList.remove('show');
+        }
+      }
+    });
+  });
+
+  /* ── Payment method toggling ─────────────────────────────── */
+  function showPaymentFields(method) {
+    var allFields = document.querySelectorAll('.payment-fields');
+    allFields.forEach(function (f) { f.classList.remove('active'); });
+    var target = document.getElementById('fields-' + method);
+    if (target) target.classList.add('active');
+  }
+
+  document.querySelectorAll('input[name="payment-method"]').forEach(function (radio) {
+    if (radio.checked) showPaymentFields(radio.value);
+    radio.addEventListener('change', function () {
+      if (radio.checked) {
+        showPaymentFields(radio.value);
+        updateCODFee(radio.value);
+        updateSummary();
+      }
+    });
+  });
+
+  /* ── Shipping method selection ───────────────────────────── */
+  document.querySelectorAll('input[name="shipping-method"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      document.querySelectorAll('.shipping-option').forEach(function (opt) { opt.classList.remove('selected'); });
+      if (radio.checked) {
+        radio.closest('.shipping-option').classList.add('selected');
+        selectedShip = parseFloat(radio.getAttribute('data-price')) || 0;
+        updateSummary();
+      }
+    });
+  });
+
+  /* ── COD Fee ─────────────────────────────────────────────── */
+  function updateCODFee(method) {
+    var codLine = document.getElementById('cod-fee-line');
+    if (codLine) codLine.style.display = (method === 'cod') ? 'flex' : 'none';
+  }
+
+  /* ── Summary recalculation ───────────────────────────────── */
+  function updateSummary() {
+    var selectedPayment = document.querySelector('input[name="payment-method"]:checked');
+    var isCOD = selectedPayment && selectedPayment.value === 'cod';
+    var discount = promoApplied ? PROMO_AMT : 0;
+    var total    = SUBTOTAL + selectedShip - discount + (isCOD ? COD_FEE : 0);
+
+    var shipEl = document.getElementById('summary-shipping');
+    if (shipEl) {
+      if (selectedShip === 0) {
+        shipEl.textContent = 'FREE';
+        shipEl.className   = 'free-ship';
+      } else {
+        shipEl.textContent = '$' + selectedShip.toFixed(2);
+        shipEl.className   = '';
+      }
+    }
+
+    var totalEl = document.getElementById('summary-total');
+    if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
+  }
+
+  /* ── Promo code ──────────────────────────────────────────── */
+  var btnPromo    = document.getElementById('btn-apply-promo');
+  var promoInput  = document.getElementById('promo-code');
+  var promoErr    = document.getElementById('promo-error');
+  var promoSuc    = document.getElementById('promo-success');
+  var discLine    = document.getElementById('discount-line');
+
+  if (btnPromo) {
+    btnPromo.addEventListener('click', function () {
+      var code = promoInput ? promoInput.value.trim().toUpperCase() : '';
+      if (!code) {
+        if (promoErr) { promoErr.textContent = 'Please enter a promo code.'; promoErr.classList.add('show'); }
+        return;
+      }
+      if (code === PROMO_CODE) {
+        promoApplied = true;
+        if (promoErr)  { promoErr.classList.remove('show'); }
+        if (promoSuc)  { promoSuc.style.display = 'block'; }
+        if (discLine)  { discLine.style.display = 'flex'; }
+        if (promoInput){ promoInput.disabled = true; }
+        btnPromo.disabled = true;
+        updateSummary();
+      } else {
+        if (promoErr) { promoErr.textContent = 'Invalid promo code.'; promoErr.classList.add('show'); }
+        if (promoSuc) { promoSuc.style.display = 'none'; }
+      }
+    });
+  }
+
+  /* ── Card number formatting ──────────────────────────────── */
+  var cardNum = document.getElementById('card-number');
+  if (cardNum) {
+    cardNum.addEventListener('input', function () {
+      var val = cardNum.value.replace(/\D/g, '').substring(0, 16);
+      cardNum.value = val.replace(/(.{4})/g, '$1 ').trim();
+    });
+  }
+
+  /* Expiry formatting */
+  var cardExp = document.getElementById('card-expiry');
+  if (cardExp) {
+    cardExp.addEventListener('input', function () {
+      var val = cardExp.value.replace(/\D/g, '').substring(0, 4);
+      if (val.length >= 3) {
+        cardExp.value = val.substring(0, 2) + ' / ' + val.substring(2);
+      } else {
+        cardExp.value = val;
+      }
+    });
+  }
+
+  /* ── Step navigation buttons ─────────────────────────────── */
+  function wireNavBtn(id, target, validate) {
+    var btn = document.getElementById(id);
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      if (validate && !validate()) return;
+      goToStep(target);
+    });
+  }
+
+  wireNavBtn('btn-step1-next', 2);
+  wireNavBtn('btn-step2-back', 1);
+  wireNavBtn('btn-step2-next', 3, validatePaymentStep);
+  wireNavBtn('btn-step3-back', 2);
+
+  /* Place Order from step-nav */
+  var btnPlaceOrder = document.getElementById('btn-place-order');
+  if (btnPlaceOrder) btnPlaceOrder.addEventListener('click', placeOrder);
+
+  /* Place Order from sidebar */
+  var btnSidebar = document.getElementById('sidebar-place-order');
+  if (btnSidebar) btnSidebar.addEventListener('click', placeOrder);
+
+  /* ── Payment step validation ─────────────────────────────── */
+  function validatePaymentStep() {
+    var selected = document.querySelector('input[name="payment-method"]:checked');
+    if (!selected) return false;
+    var method = selected.value;
+
+    if (method === 'card') {
+      var fields = ['card-number', 'card-expiry', 'card-cvv', 'card-name'];
+      var ok = true;
+      fields.forEach(function (fid) {
+        var inp = document.getElementById(fid);
+        var errEl = document.getElementById(fid + '-error');
+        if (!inp) return;
+        var valid = inp.checkValidity();
+        inp.classList.toggle('error', !valid);
+        if (errEl) errEl.classList.toggle('show', !valid);
+        if (!valid) ok = false;
+      });
+      return ok;
+    }
+    if (method === 'bkash') {
+      var bp = document.getElementById('bkash-phone');
+      var bpErr = document.getElementById('bkash-phone-error');
+      var ok = bp && bp.checkValidity();
+      if (bp) bp.classList.toggle('error', !ok);
+      if (bpErr) bpErr.classList.toggle('show', !ok);
+      return !!ok;
+    }
+    if (method === 'nagad') {
+      var np = document.getElementById('nagad-phone');
+      var npErr = document.getElementById('nagad-phone-error');
+      var ok = np && np.checkValidity();
+      if (np) np.classList.toggle('error', !ok);
+      if (npErr) npErr.classList.toggle('show', !ok);
+      return !!ok;
+    }
+    return true; // cod, bank
+  }
+
+  /* ── Place Order ─────────────────────────────────────────── */
+  function placeOrder() {
+    var agree = document.getElementById('agree-terms');
+    var agreeErr = document.getElementById('agree-error');
+    if (agree && !agree.checked) {
+      if (agreeErr) agreeErr.classList.add('show');
+      agree.focus();
+      return;
+    }
+    if (agreeErr) agreeErr.classList.remove('show');
+
+    /* Generate order number and delivery estimate */
+    var orderNo = '#GS-' + (Math.floor(Math.random() * 90000) + 10000);
+    var today   = new Date();
+    var methods = { economy: 14, standard: 7, express: 3 };
+    var selectedShipEl = document.querySelector('input[name="shipping-method"]:checked');
+    var days = methods[selectedShipEl ? selectedShipEl.value : 'standard'] || 7;
+    var minDate = new Date(today); minDate.setDate(today.getDate() + days - 2);
+    var maxDate = new Date(today); maxDate.setDate(today.getDate() + days);
+    var fmtOpts = { month: 'short', day: 'numeric', year: 'numeric' };
+
+    var orderNoEl   = document.getElementById('confirm-order-no');
+    var deliveryEl  = document.getElementById('confirm-delivery-date');
+    var totalEl2    = document.getElementById('confirm-total');
+    var payMethodEl = document.getElementById('confirm-payment-method');
+    var selPay      = document.querySelector('input[name="payment-method"]:checked');
+
+    if (orderNoEl)   orderNoEl.textContent   = orderNo;
+    if (deliveryEl)  deliveryEl.textContent  = minDate.toLocaleDateString('en-US', fmtOpts) + ' – ' + maxDate.toLocaleDateString('en-US', fmtOpts);
+    if (totalEl2)    totalEl2.textContent    = document.getElementById('summary-total') ? document.getElementById('summary-total').textContent : '';
+    if (payMethodEl && selPay) {
+      var labels = { card: 'Visa / MasterCard', bkash: 'bKash', nagad: 'Nagad', cod: 'Cash on Delivery', bank: 'Bank Transfer' };
+      payMethodEl.textContent = labels[selPay.value] || selPay.value;
+    }
+
+    goToStep(4);
+  }
+
+  /* ── Init ────────────────────────────────────────────────── */
+  goToStep(1);
+  updateSummary();
+})();
+</script>
+
+</body>
+</html>
