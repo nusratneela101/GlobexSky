@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn08JUzONNMVEKglsAEY+PA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="../../assets/css/main.css" />
@@ -1289,11 +1289,12 @@
     /* Generate order number and delivery estimate */
     var orderNo = '#GS-' + (Math.floor(Math.random() * 90000) + 10000);
     var today   = new Date();
-    var methods = { economy: 14, standard: 7, express: 3 };
+    /* min/max business-day offsets per method: economy 10-14, standard 5-7, express 2-3 */
+    var ranges = { economy: [10, 14], standard: [5, 7], express: [2, 3] };
     var selectedShipEl = document.querySelector('input[name="shipping-method"]:checked');
-    var days = methods[selectedShipEl ? selectedShipEl.value : 'standard'] || 7;
-    var minDate = new Date(today); minDate.setDate(today.getDate() + days - 2);
-    var maxDate = new Date(today); maxDate.setDate(today.getDate() + days);
+    var range = ranges[selectedShipEl ? selectedShipEl.value : 'standard'] || ranges.standard;
+    var minDate = new Date(today); minDate.setDate(today.getDate() + range[0]);
+    var maxDate = new Date(today); maxDate.setDate(today.getDate() + range[1]);
     var fmtOpts = { month: 'short', day: 'numeric', year: 'numeric' };
 
     var orderNoEl   = document.getElementById('confirm-order-no');
