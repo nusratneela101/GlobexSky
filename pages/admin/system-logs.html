@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>System Logs &amp; Monitoring | Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/admin/system-logs.css"/>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="160" height="48" style="object-fit:contain"/>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-bullhorn"></i> <span>Campaigns</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="system-logs.html" class="active"><i class="fas fa-clipboard-list"></i> <span>System Logs</span></a></li>
+        <li><a href="audit-log.html"><i class="fas fa-shield-alt"></i> <span>Audit Trail</span></a></li>
+        <li><a href="seo.html"><i class="fas fa-search-plus"></i> <span>SEO</span></a></li>
+        <li><a href="feature-toggles.html"><i class="fas fa-toggle-on"></i> <span>Feature Toggles</span></a></li>
+        <li><a href="backup.html"><i class="fas fa-database"></i> <span>Backup</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ═══════════════════ MAIN ═══════════════════ -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title"><i class="fas fa-clipboard-list" style="color:#0052CC;margin-right:8px"></i>System Logs &amp; Monitoring</span>
+      <div class="admin-topbar-right">
+        <div class="refresh-indicator">
+          <span class="refresh-dot"></span>
+          <span id="refreshCountdown">Auto-refresh in 30s</span>
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="window.SysLogs && window.SysLogs.refresh()">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="admin-content">
+      <div class="page-heading">
+        <h1><i class="fas fa-server" style="color:#0052CC;margin-right:10px"></i>System Logs &amp; Monitoring</h1>
+        <p>Monitor server health, error logs, user activity, audit trail, and API performance in real time.</p>
+      </div>
+
+      <!-- Alert Banners (populated by JS) -->
+      <div id="healthAlerts"></div>
+
+      <!-- ─── Tab Navigation ─── -->
+      <div class="admin-card" style="padding-bottom:0">
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="health"><i class="fas fa-heartbeat"></i> System Health</button>
+          <button class="tab-btn" data-tab="errors"><i class="fas fa-exclamation-triangle"></i> Error Logs <span class="badge-pill badge-error" id="errorCount" style="margin-left:4px">0</span></button>
+          <button class="tab-btn" data-tab="activity"><i class="fas fa-stream"></i> Activity Logs <span class="badge-pill badge-info" id="activityCount" style="margin-left:4px">0</span></button>
+          <button class="tab-btn" data-tab="audit"><i class="fas fa-shield-alt"></i> Audit Trail <span class="badge-pill badge-gray" id="auditCount" style="margin-left:4px">0</span></button>
+          <button class="tab-btn" data-tab="perf"><i class="fas fa-tachometer-alt"></i> Performance</button>
+        </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════
+           TAB: System Health
+      ══════════════════════════════════════════ -->
+      <div class="tab-panel active" id="health">
+
+        <!-- Health metric cards -->
+        <div class="health-grid">
+          <!-- Server Status -->
+          <div class="health-card">
+            <div class="health-card-label"><i class="fas fa-server" style="margin-right:5px"></i>Server</div>
+            <div class="health-card-value">
+              <span class="status-dot online pulse" id="serverStatusDot"></span>
+              <span id="serverStatus">Online</span>
+            </div>
+            <div style="font-size:.78rem;color:#64748b" id="serverOs">—</div>
+            <div style="font-size:.72rem;color:#94a3b8" id="nodeVersion">—</div>
+          </div>
+
+          <!-- Database -->
+          <div class="health-card">
+            <div class="health-card-label"><i class="fas fa-database" style="margin-right:5px"></i>Database</div>
+            <div class="health-card-value">
+              <span class="status-dot unknown" id="dbStatusDot"></span>
+              <span id="dbStatus">Checking…</span>
+            </div>
+            <div style="font-size:.78rem;color:#64748b">Latency: <span id="dbLatency">—</span></div>
+          </div>
+
+          <!-- Memory Usage -->
+          <div class="health-card">
+            <div class="health-card-label"><i class="fas fa-memory" style="margin-right:5px"></i>Memory Usage</div>
+            <div class="health-card-value" id="memPct">—</div>
+            <div class="progress-wrap"><div class="progress-bar green" id="memBar" style="width:0%"></div></div>
+            <div class="progress-pct"><span id="memUsed">—</span> / <span id="memTotal">—</span></div>
+          </div>
+
+          <!-- CPU Usage -->
+          <div class="health-card">
+            <div class="health-card-label"><i class="fas fa-microchip" style="margin-right:5px"></i>CPU Usage</div>
+            <div class="health-card-value" id="cpuPct">—</div>
+            <div class="progress-wrap"><div class="progress-bar blue" id="cpuBar" style="width:0%"></div></div>
+            <div class="progress-pct"><span id="cpuCores">—</span> core(s)</div>
+          </div>
+
+          <!-- Heap Memory -->
+          <div class="health-card">
+            <div class="health-card-label"><i class="fas fa-code" style="margin-right:5px"></i>Heap Memory</div>
+            <div class="health-card-value" id="heapPct">—</div>
+            <div class="progress-wrap"><div class="progress-bar green" id="heapBar" style="width:0%"></div></div>
+            <div class="progress-pct"><span id="heapUsed">—</span> / <span id="heapTotal">—</span></div>
+          </div>
+
+          <!-- Uptime -->
+          <div class="health-card">
+            <div class="health-card-label"><i class="fas fa-clock" style="margin-right:5px"></i>App Uptime</div>
+            <div class="uptime-val" id="uptimeDisplay">—</div>
+          </div>
+        </div>
+
+        <!-- Services status -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-network-wired" style="color:#0052CC;margin-right:8px"></i>Services Status</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+              <span style="font-size:.85rem;font-weight:500"><i class="fas fa-database" style="color:#3b82f6;margin-right:8px"></i>PostgreSQL (Supabase)</span>
+              <span class="status-badge online">Online</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+              <span style="font-size:.85rem;font-weight:500"><i class="fas fa-cloud" style="color:#0d9488;margin-right:8px"></i>Cloudinary CDN</span>
+              <span class="status-badge online">Online</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+              <span style="font-size:.85rem;font-weight:500"><i class="fas fa-envelope" style="color:#7c3aed;margin-right:8px"></i>SMTP (Email)</span>
+              <span class="status-badge online">Online</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+              <span style="font-size:.85rem;font-weight:500"><i class="fas fa-plug" style="color:#f97316;margin-right:8px"></i>WebSocket</span>
+              <span class="status-badge online">Online</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+              <span style="font-size:.85rem;font-weight:500"><i class="fas fa-credit-card" style="color:#10b981;margin-right:8px"></i>Payment Gateway</span>
+              <span class="status-badge online">Online</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8faff;border-radius:8px">
+              <span style="font-size:.85rem;font-weight:500"><i class="fas fa-robot" style="color:#0052CC;margin-right:8px"></i>AI / OpenAI</span>
+              <span class="status-badge online">Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════
+           TAB: Error Logs
+      ══════════════════════════════════════════ -->
+      <div class="tab-panel" id="errors">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-exclamation-triangle" style="color:#ef4444;margin-right:8px"></i>Error Logs</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm btn-secondary" onclick="window.SysLogs && window.SysLogs.exportLogs('errors','csv')">
+                <i class="fas fa-file-csv"></i> CSV
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="window.SysLogs && window.SysLogs.exportLogs('errors','json')">
+                <i class="fas fa-file-code"></i> JSON
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filter-bar">
+            <div class="sev-filters">
+              <button class="sev-btn active" data-sev="all">All</button>
+              <button class="sev-btn" data-sev="critical">Critical</button>
+              <button class="sev-btn" data-sev="error">Error</button>
+              <button class="sev-btn" data-sev="warning">Warning</button>
+              <button class="sev-btn" data-sev="info">Info</button>
+            </div>
+            <input type="search" class="filter-input" id="errorSearch" placeholder="Search messages, components…"/>
+            <input type="date" class="filter-input" id="errorDateFrom" title="From date" style="width:150px"/>
+            <input type="date" class="filter-input" id="errorDateTo"   title="To date"   style="width:150px"/>
+          </div>
+
+          <div class="table-wrap">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Level</th>
+                  <th>Component</th>
+                  <th>Message</th>
+                  <th>File</th>
+                  <th>Stack</th>
+                </tr>
+              </thead>
+              <tbody id="errorTableBody">
+                <tr><td colspan="6" class="empty-state"><i class="fas fa-check-circle"></i><p>No errors logged.</p></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="errorPagination"></div>
+        </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════
+           TAB: Activity Logs
+      ══════════════════════════════════════════ -->
+      <div class="tab-panel" id="activity">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-stream" style="color:#3b82f6;margin-right:8px"></i>Activity Logs</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm btn-secondary" onclick="window.SysLogs && window.SysLogs.exportLogs('activity','csv')">
+                <i class="fas fa-file-csv"></i> CSV
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="window.SysLogs && window.SysLogs.exportLogs('activity','json')">
+                <i class="fas fa-file-code"></i> JSON
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filter-bar">
+            <input type="search" class="filter-input" id="activitySearch" placeholder="Search user, action, entity…"/>
+            <select class="filter-select" id="activityAction">
+              <option value="">All Actions</option>
+              <option value="login">Login</option>
+              <option value="logout">Logout</option>
+              <option value="register">Register</option>
+              <option value="view">Page View</option>
+              <option value="create">Create</option>
+              <option value="update">Update</option>
+              <option value="delete">Delete</option>
+              <option value="export">Export</option>
+              <option value="payment">Payment</option>
+            </select>
+            <input type="date" class="filter-input" id="activityDateFrom" title="From date" style="width:150px"/>
+            <input type="date" class="filter-input" id="activityDateTo"   title="To date"   style="width:150px"/>
+          </div>
+
+          <div class="table-wrap">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Entity</th>
+                  <th>Entity ID</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody id="activityTableBody">
+                <tr><td colspan="6" class="empty-state"><i class="fas fa-stream"></i><p>No activity recorded yet.</p></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="activityPagination"></div>
+        </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════
+           TAB: Audit Trail
+      ══════════════════════════════════════════ -->
+      <div class="tab-panel" id="audit">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-shield-alt" style="color:#7c3aed;margin-right:8px"></i>Audit Trail</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm btn-secondary" onclick="window.SysLogs && window.SysLogs.exportLogs('audit','csv')">
+                <i class="fas fa-file-csv"></i> CSV
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="window.SysLogs && window.SysLogs.exportLogs('audit','json')">
+                <i class="fas fa-file-code"></i> JSON
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filter-bar">
+            <input type="search" class="filter-input" id="auditSearch" placeholder="Search admin, action, entity…"/>
+            <select class="filter-select" id="auditEntity">
+              <option value="">All Entities</option>
+              <option value="user">User</option>
+              <option value="product">Product</option>
+              <option value="order">Order</option>
+              <option value="payment">Payment</option>
+              <option value="supplier">Supplier</option>
+              <option value="setting">Setting</option>
+              <option value="other">Other</option>
+            </select>
+            <input type="date" class="filter-input" id="auditDateFrom" title="From date" style="width:150px"/>
+            <input type="date" class="filter-input" id="auditDateTo"   title="To date"   style="width:150px"/>
+          </div>
+
+          <div class="table-wrap">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Entity</th>
+                  <th>Entity ID</th>
+                  <th>Before / After</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody">
+                <tr><td colspan="6" class="empty-state"><i class="fas fa-shield-alt"></i><p>No audit records found.</p></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="auditPagination"></div>
+        </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════
+           TAB: Performance
+      ══════════════════════════════════════════ -->
+      <div class="tab-panel" id="perf">
+        <div id="perfContent">
+
+          <!-- Performance summary cards -->
+          <div class="perf-grid">
+            <div class="perf-card">
+              <div class="perf-icon blue"><i class="fas fa-stopwatch"></i></div>
+              <div>
+                <div class="perf-val" id="avgResponseMs">—</div>
+                <div class="perf-lbl">Avg Response Time</div>
+              </div>
+            </div>
+            <div class="perf-card">
+              <div class="perf-icon orange"><i class="fas fa-tachometer-alt"></i></div>
+              <div>
+                <div class="perf-val" id="p95Ms">—</div>
+                <div class="perf-lbl">P95 Response Time</div>
+              </div>
+            </div>
+            <div class="perf-card">
+              <div class="perf-icon purple"><i class="fas fa-snooze"></i></div>
+              <div>
+                <div class="perf-val" id="slowQueryCount">0</div>
+                <div class="perf-lbl">Slow Requests (&gt;1s)</div>
+              </div>
+            </div>
+            <div class="perf-card">
+              <div class="perf-icon green"><i class="fas fa-check-circle"></i></div>
+              <div>
+                <div class="perf-val" style="color:#10b981">Live</div>
+                <div class="perf-lbl">Monitoring Status</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Route stats table -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title"><i class="fas fa-route" style="color:#0052CC;margin-right:8px"></i>API Route Performance</div>
+            </div>
+            <div class="table-wrap">
+              <table class="log-table">
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th>Requests</th>
+                    <th>Avg Time</th>
+                    <th>Max Time</th>
+                  </tr>
+                </thead>
+                <tbody id="routeStatsBody">
+                  <tr><td colspan="5" class="empty-state"><i class="fas fa-tachometer-alt"></i><p>No timing data yet. Make some API calls.</p></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Slow queries table -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title"><i class="fas fa-snooze" style="color:#ef4444;margin-right:8px"></i>Slow Requests (&gt; 1 second)</div>
+            </div>
+            <div class="table-wrap">
+              <table class="log-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th>Duration</th>
+                  </tr>
+                </thead>
+                <tbody id="slowQueriesBody">
+                  <tr><td colspan="4" class="empty-state"><i class="fas fa-check-circle"></i><p>No slow requests detected.</p></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end admin-content -->
+  </div><!-- end admin-main -->
+</div><!-- end admin-wrapper -->
+
+<!-- ═══ JSON Diff Modal ═══ -->
+<div class="modal-overlay" id="diffModal" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:800px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27"><i class="fas fa-code-branch" style="color:#7c3aed;margin-right:8px"></i>Before / After Diff</span>
+      <button onclick="window.SysLogs && window.SysLogs.closeModal('diffModal')" style="border:none;background:none;cursor:pointer;font-size:1.1rem;color:#64748b"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="diffContent" style="overflow-y:auto;flex:1;padding:0"></div>
+  </div>
+</div>
+
+<!-- ═══ Stack Trace Modal ═══ -->
+<div class="modal-overlay" id="stackModal" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:760px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27"><i class="fas fa-bug" style="color:#ef4444;margin-right:8px"></i>Stack Trace</span>
+      <button onclick="window.SysLogs && window.SysLogs.closeModal('stackModal')" style="border:none;background:none;cursor:pointer;font-size:1.1rem;color:#64748b"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="stackContent" style="overflow-y:auto;flex:1;background:#1e1e2e;color:#f8f8f2"></div>
+  </div>
+</div>
+
+<script>
+  // Open modals with flex display
+  (function () {
+    ['diffModal', 'stackModal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const orig = el.classList.add.bind(el);
+      el.classList.add = function (cls) {
+        orig(cls);
+        if (cls === 'open') el.style.display = 'flex';
+      };
+      el.classList.remove = function (cls) {
+        HTMLElement.prototype.classList.remove.call(el, cls);
+        if (cls === 'open') el.style.display = 'none';
+      };
+      el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+    });
+  })();
+</script>
+<script src="../../assets/js/admin/system-logs.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

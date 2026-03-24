@@ -65,6 +65,7 @@ import webhookRoutes from './routes/webhook.routes.js';
 import pushNotificationRoutes from './routes/pushNotification.routes.js';
 import advancedSearchRoutes from './routes/advancedSearch.routes.js';
 import backupRoutes from './routes/backup.routes.js';
+import systemLogsRoutes from './routes/systemLogs.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
 import integrationRoutes from './routes/integration.routes.js';
@@ -131,8 +132,7 @@ app.use(`${API}/admin/products`, adminProductsRoutes);
 app.use(`${API}/admin/settings`, adminSettingsRoutes);
 app.use(`${API}/admin/roles`, adminRolesRoutes);
 app.use(`${API}/admin/cms`, adminCmsRoutes);
-app.use(`${API}/admin/tickets`, supportTicketRouter);
-app.use(`${API}/admin/kb`, adminKbRouter);
+
 app.use(`${API}/admin`, adminRoutes);
 app.use(`${API}/pricing`, pricingRoutes);
 app.use(`${API}/inspections`, inspectionRoutes);
