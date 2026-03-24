@@ -75,6 +75,7 @@ import adminProductsRoutes from './routes/adminProducts.js';
 import adminSettingsRoutes from './routes/settings.js';
 import adminRolesRoutes from './routes/adminRoles.js';
 import adminCmsRoutes from './routes/cms.js';
+import { ticketRouter as supportTicketRouter, kbRouter as adminKbRouter } from './routes/supportTicket.routes.js';
 import vrRoutes from './routes/vr.routes.js';
 import verificationRoutes from './routes/verification.routes.js';
 import paymentsRoutes from './routes/payments.js';
@@ -131,8 +132,7 @@ app.use(`${API}/admin/products`, adminProductsRoutes);
 app.use(`${API}/admin/settings`, adminSettingsRoutes);
 app.use(`${API}/admin/roles`, adminRolesRoutes);
 app.use(`${API}/admin/cms`, adminCmsRoutes);
-app.use(`${API}/admin/logs`, systemLogsRoutes);
-app.use(`${API}/admin/system`, systemLogsRoutes);
+
 app.use(`${API}/admin`, adminRoutes);
 app.use(`${API}/pricing`, pricingRoutes);
 app.use(`${API}/inspections`, inspectionRoutes);
