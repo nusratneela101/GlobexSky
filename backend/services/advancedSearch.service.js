@@ -16,8 +16,7 @@ export async function fullTextSearch(query, filters = {}, page = 1, limit = 20) 
   let q = supabase
     .from('products')
     .select('*, supplier:supplier_profiles(company_name, verified)', { count: 'exact' })
-    .eq('status', 'active')
-    .range(from, to);
+    .eq('status', 'active');
 
   if (query) {
     q = q.textSearch('title', query, { type: 'websearch' });
@@ -28,8 +27,8 @@ export async function fullTextSearch(query, filters = {}, page = 1, limit = 20) 
   if (minRating !== undefined) q = q.gte('average_rating', minRating);
   if (supplierId) q = q.eq('supplier_id', supplierId);
 
-  const { data, error, count } = await q;
-  if (error) throw error;
+  const { data, error, count } = await q.range(from, to);
+  if (error) throw new Error(error.message ?? String(error));
 
   // Track analytics
   _trackQuery(query, count);
@@ -275,6 +274,22 @@ export async function getSearchAnalytics() {
     .slice(0, 20);
 
   return { topQueries, zeroResultQueries };
+}
+
+/**
+ * Alias for getAutocompleteSuggestions that returns a plain array of suggestion strings.
+ */
+export async function getSuggestions(prefix, limit = 10) {
+  const result = await getAutocompleteSuggestions(prefix, limit);
+  return result.suggestions || [];
+}
+
+/**
+ * Record a click-through event (user clicked a product from search results).
+ */
+export async function recordClickThrough(query, productId) {
+  const key = `${query}__${productId}`;
+  searchAnalytics.clickThrough[key] = (searchAnalytics.clickThrough[key] || 0) + 1;
 }
 
 // ─── Private helpers ──────────────────────────────────────────────────────────

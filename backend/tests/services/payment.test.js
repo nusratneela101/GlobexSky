@@ -23,7 +23,7 @@ const mockStripe = {
 };
 
 jest.mock('stripe', () => {
-  return { default: jest.fn().mockImplementation(() => mockStripe) };
+  return jest.fn().mockImplementation(() => mockStripe);
 });
 
 jest.mock('../../config/supabase.js', () => ({
@@ -46,6 +46,7 @@ jest.mock('../../config/integrations.js', () => ({
     webhookSecret: 'whsec_mock',
     connectWebhookSecret: 'whsec_connect_mock',
     apiVersion: '2024-06-20',
+    currency: 'usd',
   },
 }));
 
@@ -211,7 +212,7 @@ describe('Stripe Payment Service', () => {
   });
 
   describe('constructWebhookEvent', () => {
-    it('should construct a valid webhook event', () => {
+    it('should construct a valid webhook event', async () => {
       const mockEvent = {
         id: 'evt_test_123',
         type: 'payment_intent.succeeded',
@@ -219,7 +220,7 @@ describe('Stripe Payment Service', () => {
       };
       mockStripe.webhooks.constructEvent.mockReturnValue(mockEvent);
 
-      const result = constructWebhookEvent(
+      const result = await constructWebhookEvent(
         Buffer.from('{}'),
         'mock_signature'
       );
@@ -227,12 +228,12 @@ describe('Stripe Payment Service', () => {
       expect(result.type).toBe('payment_intent.succeeded');
     });
 
-    it('should throw on invalid webhook signature', () => {
+    it('should throw on invalid webhook signature', async () => {
       mockStripe.webhooks.constructEvent.mockImplementation(() => {
         throw new Error('Webhook signature verification failed');
       });
 
-      expect(() => constructWebhookEvent(Buffer.from('{}'), 'bad_sig')).toThrow(
+      await expect(constructWebhookEvent(Buffer.from('{}'), 'bad_sig')).rejects.toThrow(
         'Webhook signature verification failed'
       );
     });

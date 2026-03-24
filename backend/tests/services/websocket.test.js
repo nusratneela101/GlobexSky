@@ -94,7 +94,7 @@ describe('WebSocket Service', () => {
   describe('initializeWebSocket', () => {
     it('should register a connection handler on io', () => {
       initializeWebSocket(io);
-      expect(io.on).toHaveBeenCalledWith('connection', expect.any(Function));
+      expect(io._mockNs.on).toHaveBeenCalledWith('connection', expect.any(Function));
     });
 
     it('should not throw when called with a valid io instance', () => {

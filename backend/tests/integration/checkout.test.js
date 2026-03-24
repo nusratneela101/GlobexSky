@@ -6,7 +6,7 @@
 import request from 'supertest';
 
 // ─── Supabase mock ──────────────────────────────────────────────────────────
-const mockSingle = jest.fn();
+const mockSingle = jest.fn().mockResolvedValue({ data: { role: 'buyer' }, error: null });
 const mockInsert = jest.fn();
 const mockUpdate = jest.fn();
 const mockSelect = jest.fn();
@@ -69,6 +69,10 @@ jest.mock('../../controllers/checkout.controller.js', () => ({
   getOrderSummary: jest.fn((req, res) => res.json({
     success: true,
     order: { id: req.params.id, status: 'confirmed', total: 150 },
+  })),
+  getOrderConfirmation: jest.fn((req, res) => res.json({
+    success: true,
+    order: { id: req.params.orderId, status: 'confirmed', total: 150 },
   })),
   applyCoupon: jest.fn((req, res) => {
     if (req.body.code === 'INVALID') {

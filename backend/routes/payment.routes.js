@@ -132,6 +132,14 @@ router.post(
 );
 
 // All payments for an order (must be before /:paymentId to avoid conflict)
+// ─── Legacy endpoints (must be before /:paymentId wildcard) ──────────────────
+
+router.get('/transactions',        ctrl.listTransactions);
+router.get('/transactions/:id',    [param('id').isUUID()], validate, ctrl.getTransaction);
+router.post('/checkout',           [body('order_id').isUUID(), body('payment_method').notEmpty()], validate, ctrl.processPayment);
+router.post('/refund',             [body('transaction_id').isUUID(), body('reason').notEmpty()], validate, ctrl.requestRefund);
+router.get('/methods',             ctrl.getPaymentMethods);
+
 router.get(
   '/order/:orderId',
   [param('orderId').isUUID()],
@@ -158,13 +166,5 @@ router.post(
   validate,
   ctrl.refundPayment,
 );
-
-// ─── Legacy endpoints ─────────────────────────────────────────────────────────
-
-router.get('/transactions',        ctrl.listTransactions);
-router.get('/transactions/:id',    [param('id').isUUID()], validate, ctrl.getTransaction);
-router.post('/checkout',           [body('order_id').isUUID(), body('payment_method').notEmpty()], validate, ctrl.processPayment);
-router.post('/refund',             [body('transaction_id').isUUID(), body('reason').notEmpty()], validate, ctrl.requestRefund);
-router.get('/methods',             ctrl.getPaymentMethods);
 
 export default router;
