@@ -1,0 +1,450 @@
+/* ==========================================================================
+   GlobexSky – Trade Shows Stylesheet
+   Covers: 3D booth, trade show directory, meeting scheduler, map, responsive
+   ========================================================================== */
+
+/* ── Reset & Base ──────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── CSS Variables ─────────────────────────────────────────────────────────── */
+:root{
+  --ts-primary:#0052CC;
+  --ts-primary-dark:#003d99;
+  --ts-secondary:#7c3aed;
+  --ts-accent:#00C9A7;
+  --ts-dark:#0A0E27;
+  --ts-surface:#ffffff;
+  --ts-bg:#f4f6fa;
+  --ts-border:#e2e8f0;
+  --ts-text:#1a1a2e;
+  --ts-muted:#64748b;
+  --ts-success:#059669;
+  --ts-warning:#f59e0b;
+  --ts-error:#dc2626;
+  --ts-radius:12px;
+  --ts-shadow:0 4px 16px rgba(0,0,0,.08);
+  --ts-transition:.2s ease;
+}
+
+/* ── Typography helpers ────────────────────────────────────────────────────── */
+.ts-font-heading{font-family:'Poppins',sans-serif}
+.ts-font-body{font-family:'Inter',sans-serif}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   1. SHARED PAGE CHROME
+══════════════════════════════════════════════════════════════════════════════ */
+.ts-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+.ts-nav{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;padding:14px 24px}
+.ts-nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.ts-nav-controls{display:flex;align-items:center;gap:10px}
+.ts-btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all var(--ts-transition)}
+.ts-btn-nav.login{color:var(--ts-primary);border:1.5px solid var(--ts-primary)}
+.ts-btn-nav.login:hover{background:var(--ts-primary);color:#fff}
+.ts-btn-nav.register{background:var(--ts-primary);color:#fff}
+.ts-btn-nav.register:hover{background:var(--ts-primary-dark)}
+
+.ts-page-hero{background:linear-gradient(135deg,var(--ts-primary) 0%,var(--ts-dark) 100%);padding:72px 24px 56px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.ts-page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(0,201,167,.12) 0%,transparent 60%);pointer-events:none}
+.ts-page-hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+.ts-page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:12px}
+.ts-page-hero p{font-size:.95rem;opacity:.85;line-height:1.7;margin-bottom:28px}
+.ts-hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.ts-hero-stat{text-align:center}
+.ts-hero-stat-num{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700}
+.ts-hero-stat-label{font-size:.78rem;opacity:.75;text-transform:uppercase;letter-spacing:.5px}
+
+.ts-footer{background:var(--ts-dark);color:#fff;padding:32px 24px}
+.ts-footer-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.ts-footer-copy{color:rgba(255,255,255,.5);font-size:.8rem}
+.ts-footer-links{display:flex;gap:20px;list-style:none}
+.ts-footer-links a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+.ts-footer-links a:hover{color:var(--ts-accent)}
+
+/* ── Shared Containers ─────────────────────────────────────────────────────── */
+.ts-section{padding:56px 24px}
+.ts-section.ts-section-alt{background:#f8faff}
+.ts-container{max-width:1280px;margin:0 auto}
+.ts-section-header{text-align:center;margin-bottom:48px}
+.ts-section-header h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:var(--ts-dark);margin-bottom:10px}
+.ts-section-header p{color:var(--ts-muted);font-size:.95rem;max-width:520px;margin:0 auto;line-height:1.7}
+.ts-breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:var(--ts-muted);margin-bottom:24px;flex-wrap:wrap}
+.ts-breadcrumb a{color:var(--ts-primary);text-decoration:none}
+.ts-breadcrumb span{color:var(--ts-muted)}
+
+/* ── Shared Buttons ────────────────────────────────────────────────────────── */
+.ts-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:10px;font-size:.9rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;border:none;transition:all var(--ts-transition);text-decoration:none;white-space:nowrap}
+.ts-btn-primary{background:var(--ts-primary);color:#fff}
+.ts-btn-primary:hover{background:var(--ts-primary-dark)}
+.ts-btn-secondary{background:#f1f5f9;color:#374151;border:1px solid var(--ts-border)}
+.ts-btn-secondary:hover{background:var(--ts-border)}
+.ts-btn-success{background:var(--ts-success);color:#fff}
+.ts-btn-success:hover{background:#047857}
+.ts-btn-outline{background:transparent;color:var(--ts-primary);border:1.5px solid var(--ts-primary)}
+.ts-btn-outline:hover{background:var(--ts-primary);color:#fff}
+.ts-btn-danger{background:#fee2e2;color:var(--ts-error);border:1px solid #fca5a5}
+.ts-btn-danger:hover{background:var(--ts-error);color:#fff}
+.ts-btn-lg{padding:14px 32px;font-size:1rem}
+.ts-btn-sm{padding:6px 14px;font-size:.8rem;border-radius:8px}
+.ts-btn-xs{padding:4px 10px;font-size:.74rem;border-radius:6px}
+.ts-btn[disabled]{opacity:.55;cursor:not-allowed;pointer-events:none}
+
+/* ── Shared Cards ──────────────────────────────────────────────────────────── */
+.ts-card{background:#fff;border-radius:16px;padding:24px;box-shadow:var(--ts-shadow);border:1px solid transparent}
+.ts-card:hover{border-color:var(--ts-border)}
+.ts-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--ts-dark);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.ts-card-title i{color:var(--ts-primary)}
+
+/* ── Shared Badges ─────────────────────────────────────────────────────────── */
+.ts-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.73rem;font-weight:600}
+.ts-badge-blue{background:#dbeafe;color:#2563eb}
+.ts-badge-green{background:#d1fae5;color:var(--ts-success)}
+.ts-badge-orange{background:#ffedd5;color:#f97316}
+.ts-badge-red{background:#fee2e2;color:var(--ts-error)}
+.ts-badge-purple{background:#ede9fe;color:var(--ts-secondary)}
+.ts-badge-gray{background:#f1f5f9;color:#64748b}
+.ts-badge-live{background:#fee2e2;color:var(--ts-error);animation:ts-pulse 1.5s infinite}
+
+@keyframes ts-pulse{0%,100%{opacity:1}50%{opacity:.65}}
+
+/* ── Form Controls ─────────────────────────────────────────────────────────── */
+.ts-form-group{margin-bottom:18px}
+.ts-form-row{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+.ts-form-row-3{display:grid;gap:16px;grid-template-columns:1fr 1fr 1fr}
+.ts-label{display:block;font-size:.87rem;font-weight:500;color:#374151;margin-bottom:6px}
+.ts-label .req{color:var(--ts-error)}
+.ts-input,.ts-select,.ts-textarea{width:100%;padding:10px 14px;border:1.5px solid var(--ts-border);border-radius:8px;font-size:.9rem;font-family:'Inter',sans-serif;color:var(--ts-text);background:#fff;outline:none;transition:border-color var(--ts-transition);-webkit-appearance:none}
+.ts-input:focus,.ts-select:focus,.ts-textarea:focus{border-color:var(--ts-primary);box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+.ts-textarea{resize:vertical;min-height:100px}
+.ts-input.error,.ts-select.error,.ts-textarea.error{border-color:var(--ts-error);box-shadow:0 0 0 3px rgba(220,38,38,.08)}
+.ts-field-error{font-size:.78rem;color:var(--ts-error);margin-top:4px;display:none}
+.ts-field-error.show{display:block}
+.ts-help-text{font-size:.78rem;color:var(--ts-muted);margin-top:4px}
+
+/* ── Toast Notification ────────────────────────────────────────────────────── */
+.ts-toast{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:14px 18px;box-shadow:0 8px 32px rgba(0,0,0,.15);border-left:4px solid var(--ts-primary);min-width:280px;max-width:400px;transform:translateY(120%);transition:transform .3s ease;font-size:.88rem;color:var(--ts-text)}
+.ts-toast.show{transform:translateY(0)}
+.ts-toast.success{border-left-color:var(--ts-success)}
+.ts-toast.error{border-left-color:var(--ts-error)}
+.ts-toast.warning{border-left-color:var(--ts-warning)}
+.ts-toast i{font-size:1.1rem}
+.ts-toast.success i{color:var(--ts-success)}
+.ts-toast.error i{color:var(--ts-error)}
+.ts-toast.warning i{color:var(--ts-warning)}
+
+/* ── Modal Overlay ─────────────────────────────────────────────────────────── */
+.ts-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:16px}
+.ts-modal-overlay.open{display:flex}
+.ts-modal{background:#fff;border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.ts-modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--ts-border)}
+.ts-modal-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:var(--ts-dark)}
+.ts-modal-close{background:none;border:none;color:var(--ts-muted);cursor:pointer;font-size:1.2rem;padding:4px;border-radius:6px;transition:all var(--ts-transition)}
+.ts-modal-close:hover{background:#f1f5f9;color:var(--ts-text)}
+.ts-modal-body{padding:24px}
+.ts-modal-footer{padding:16px 24px;border-top:1px solid var(--ts-border);display:flex;justify-content:flex-end;gap:10px}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   2. TRADE SHOW DIRECTORY (index.html)
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Filter Bar ────────────────────────────────────────────────────────────── */
+.ts-filter-bar{background:#fff;border-radius:16px;padding:20px 24px;box-shadow:var(--ts-shadow);margin-bottom:32px;display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.ts-filter-bar .ts-form-group{margin-bottom:0;flex:1;min-width:140px}
+.ts-filter-bar .ts-btn{align-self:flex-end;flex-shrink:0}
+.ts-search-wrap{position:relative;flex:2;min-width:200px}
+.ts-search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ts-muted);font-size:.9rem}
+.ts-search-wrap .ts-input{padding-left:36px}
+
+/* ── Tab Strip ─────────────────────────────────────────────────────────────── */
+.ts-tab-strip{display:flex;gap:4px;background:#f1f5f9;border-radius:12px;padding:4px;margin-bottom:32px;flex-wrap:wrap}
+.ts-tab-btn{flex:1;padding:10px 16px;background:transparent;border:none;border-radius:9px;font-size:.87rem;font-weight:600;color:var(--ts-muted);cursor:pointer;transition:all var(--ts-transition);white-space:nowrap;text-align:center}
+.ts-tab-btn.active{background:#fff;color:var(--ts-primary);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+/* ── Featured Banner ───────────────────────────────────────────────────────── */
+.ts-featured-banner{background:linear-gradient(135deg,#0052CC 0%,#7c3aed 100%);border-radius:20px;padding:40px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:40px;position:relative;overflow:hidden}
+.ts-featured-banner::before{content:'';position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05)}
+.ts-featured-banner-info{flex:1}
+.ts-featured-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:.75;margin-bottom:10px}
+.ts-featured-title{font-family:'Poppins',sans-serif;font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:700;margin-bottom:8px}
+.ts-featured-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.85rem;opacity:.85;margin-bottom:20px}
+.ts-featured-meta span{display:flex;align-items:center;gap:5px}
+.ts-featured-actions{display:flex;gap:10px;flex-wrap:wrap}
+.ts-featured-actions .ts-btn-white{background:#fff;color:var(--ts-primary)}
+.ts-featured-actions .ts-btn-white:hover{background:#f0f5ff}
+.ts-featured-actions .ts-btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.ts-featured-actions .ts-btn-ghost:hover{background:rgba(255,255,255,.25)}
+
+/* ── Show Cards ────────────────────────────────────────────────────────────── */
+.ts-shows-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.ts-show-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--ts-shadow);transition:transform var(--ts-transition),box-shadow var(--ts-transition);border:1px solid transparent}
+.ts-show-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12);border-color:var(--ts-border)}
+.ts-show-card-header{padding:24px;color:#fff;position:relative}
+.ts-show-card-type{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.8;margin-bottom:8px}
+.ts-show-card-name{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:4px;line-height:1.3}
+.ts-show-card-date{font-size:.82rem;opacity:.8}
+.ts-show-card-badge{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:50px;font-size:.7rem;font-weight:700;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.ts-show-card-body{padding:18px 20px}
+.ts-show-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ts-show-stat{background:#f8faff;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:6px;font-size:.8rem;color:#374151}
+.ts-show-stat i{color:var(--ts-primary);font-size:.85rem}
+.ts-show-card-desc{font-size:.83rem;color:var(--ts-muted);line-height:1.6;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ts-show-card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.ts-show-card-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── Physical Show Table ───────────────────────────────────────────────────── */
+.ts-physical-section{background:#fff;border-radius:16px;padding:24px;box-shadow:var(--ts-shadow);margin-top:40px}
+.ts-table-wrap{overflow-x:auto}
+.ts-table{width:100%;border-collapse:collapse;font-size:.87rem}
+.ts-table th{padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid var(--ts-border);background:#f8faff;white-space:nowrap}
+.ts-table td{padding:12px 14px;border-bottom:1px solid #f1f5f9;color:var(--ts-text);vertical-align:middle}
+.ts-table tr:hover td{background:#f8faff}
+.ts-table .ts-venue{font-size:.78rem;color:var(--ts-muted);display:block;margin-top:1px}
+
+/* ── Map Container ─────────────────────────────────────────────────────────── */
+.ts-map-section{margin-top:40px}
+.ts-map-container{border-radius:16px;overflow:hidden;box-shadow:var(--ts-shadow);height:420px;background:#e2e8f0;position:relative}
+#ts-map{width:100%;height:100%}
+.ts-map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ts-muted);gap:12px}
+.ts-map-placeholder i{font-size:2.5rem;color:var(--ts-primary);opacity:.5}
+
+/* ── Register Interest Form ────────────────────────────────────────────────── */
+.ts-register-form{background:linear-gradient(135deg,#f0f5ff,#ede9fe);border-radius:20px;padding:40px;margin-top:40px}
+.ts-register-form h3{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:var(--ts-dark);margin-bottom:6px}
+.ts-register-form p{color:var(--ts-muted);font-size:.9rem;margin-bottom:24px}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   3. VIRTUAL BOOTH (virtual-booth.html)
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 3D Booth Canvas ───────────────────────────────────────────────────────── */
+.vb-canvas-wrap{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#1e1b4b 0%,#0f172a 100%);margin-bottom:20px}
+.vb-canvas{width:100%;height:420px;position:relative;cursor:grab;user-select:none}
+.vb-canvas:active{cursor:grabbing}
+
+/* ── CSS 3D environment ── */
+.vb-scene{width:100%;height:100%;position:relative;perspective:900px;overflow:hidden}
+.vb-scene-inner{width:100%;height:100%;transform-style:preserve-3d;position:relative;transform:rotateX(8deg)}
+.vb-floor{position:absolute;bottom:0;left:0;right:0;height:58%;background:linear-gradient(180deg,#1e3a5f 0%,#0f2744 100%);transform-origin:bottom center}
+.vb-floor-grid{position:absolute;bottom:0;left:0;right:0;height:58%;background-image:linear-gradient(rgba(0,82,204,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(0,82,204,.25) 1px,transparent 1px);background-size:44px 44px}
+.vb-back-wall{position:absolute;top:0;left:0;right:0;height:48%;background:linear-gradient(180deg,#1a237e 0%,#0d1b6b 100%)}
+.vb-side-left{position:absolute;left:0;top:0;bottom:0;width:10%;background:linear-gradient(90deg,#0d1b6b 0%,transparent 100%);opacity:.8}
+.vb-side-right{position:absolute;right:0;top:0;bottom:0;width:10%;background:linear-gradient(-90deg,#0d1b6b 0%,transparent 100%);opacity:.8}
+.vb-ceiling-light{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:2px;height:40%;background:linear-gradient(180deg,rgba(255,255,255,.6),transparent);filter:blur(1px)}
+.vb-ceiling-light::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:4px;border-radius:50%;background:rgba(255,255,255,.4);filter:blur(3px)}
+
+.vb-banner{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--ts-primary),var(--ts-secondary));border-radius:10px;padding:10px 28px;color:#fff;text-align:center;min-width:200px;max-width:55%;border:2px solid rgba(255,255,255,.2);box-shadow:0 4px 20px rgba(0,82,204,.4)}
+.vb-banner-company{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700}
+.vb-banner-tagline{font-size:.68rem;opacity:.8;margin-top:2px}
+
+.vb-display-shelf{position:absolute;bottom:42%;left:50%;transform:translateX(-50%);display:flex;gap:18px;align-items:flex-end}
+.vb-product-item{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;width:80px;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;backdrop-filter:blur(6px);position:relative}
+.vb-product-item:hover{background:rgba(0,82,204,.45);border-color:#60a5fa;transform:translateY(-6px) scale(1.06);box-shadow:0 8px 24px rgba(0,82,204,.4)}
+.vb-product-item i{font-size:1.5rem;color:rgba(255,255,255,.9);margin-bottom:4px}
+.vb-product-item span{font-size:.6rem;color:rgba(255,255,255,.75);text-align:center;line-height:1.2}
+.vb-product-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;font-size:.7rem;white-space:nowrap;padding:4px 10px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .2s}
+.vb-product-item:hover .vb-product-tooltip{opacity:1}
+
+.vb-info-desk{position:absolute;bottom:20%;right:9%;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:10px 14px;backdrop-filter:blur(6px)}
+.vb-info-desk-label{font-size:.65rem;color:rgba(255,255,255,.65);margin-bottom:2px}
+.vb-info-desk-title{font-size:.8rem;font-weight:700;color:#fff}
+.vb-rep-avatar{position:absolute;bottom:24%;left:13%;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ef4444);border:2.5px solid rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;transition:transform .2s}
+.vb-rep-avatar:hover{transform:scale(1.1)}
+.vb-rep-avatar::after{content:'Chat';position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;font-size:.65rem;white-space:nowrap;padding:3px 8px;border-radius:5px;opacity:0;transition:opacity .2s;pointer-events:none}
+.vb-rep-avatar:hover::after{opacity:1}
+
+/* ── Booth Controls ────────────────────────────────────────────────────────── */
+.vb-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 16px;background:#f8faff;border-top:1px solid var(--ts-border)}
+.vb-ctrl-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;border:1.5px solid var(--ts-border);background:#fff;font-size:.8rem;font-weight:600;cursor:pointer;color:#374151;transition:all var(--ts-transition)}
+.vb-ctrl-btn:hover,.vb-ctrl-btn.active{border-color:var(--ts-primary);color:var(--ts-primary);background:#f0f5ff}
+.vb-view-label{margin-left:auto;font-size:.75rem;color:var(--ts-muted);display:flex;align-items:center;gap:4px}
+
+/* ── Product Showcase ──────────────────────────────────────────────────────── */
+.vb-products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}
+.vb-product-card{background:#f8faff;border:1.5px solid var(--ts-border);border-radius:14px;overflow:hidden;transition:all var(--ts-transition);cursor:pointer}
+.vb-product-card:hover{border-color:var(--ts-primary);box-shadow:0 6px 20px rgba(0,82,204,.12);transform:translateY(-3px)}
+.vb-product-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;overflow:hidden}
+.vb-product-badge{position:absolute;top:8px;left:8px;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:50px}
+.vb-product-body{padding:12px}
+.vb-product-name{font-weight:600;font-size:.87rem;color:var(--ts-dark);margin-bottom:3px;line-height:1.3}
+.vb-product-cat{font-size:.75rem;color:var(--ts-muted);margin-bottom:6px}
+.vb-product-price{font-family:'Poppins',sans-serif;font-weight:700;color:var(--ts-primary);font-size:.92rem}
+.vb-product-moq{font-size:.72rem;color:#94a3b8;margin-top:1px}
+.vb-product-actions{display:flex;gap:6px;margin-top:10px}
+
+/* ── Brochure Materials ────────────────────────────────────────────────────── */
+.vb-material-list{display:flex;flex-direction:column;gap:10px}
+.vb-material-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#f8faff;border:1.5px solid var(--ts-border);border-radius:12px;transition:all var(--ts-transition)}
+.vb-material-item:hover{border-color:var(--ts-primary);background:#f0f5ff}
+.vb-material-icon{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.vb-material-name{font-weight:600;font-size:.88rem;color:var(--ts-dark)}
+.vb-material-meta{font-size:.75rem;color:#94a3b8;margin-top:2px}
+
+/* ── Live Chat ─────────────────────────────────────────────────────────────── */
+.vb-chat-fab{position:fixed;bottom:24px;right:24px;z-index:900;width:56px;height:56px;border-radius:50%;background:var(--ts-primary);color:#fff;border:none;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,82,204,.4);transition:all var(--ts-transition);display:flex;align-items:center;justify-content:center}
+.vb-chat-fab:hover{background:var(--ts-primary-dark);transform:scale(1.05)}
+.vb-chat-fab .vb-chat-badge{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--ts-error);border-radius:50%;border:2px solid #fff;font-size:.58rem;display:flex;align-items:center;justify-content:center}
+.vb-chat-panel{position:fixed;bottom:90px;right:24px;z-index:900;width:340px;background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.2);display:none;flex-direction:column;overflow:hidden;max-height:500px}
+.vb-chat-panel.open{display:flex}
+.vb-chat-header{background:linear-gradient(135deg,var(--ts-primary),var(--ts-secondary));padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.vb-chat-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;flex-shrink:0}
+.vb-chat-rep{flex:1}
+.vb-chat-rep-name{font-weight:700;color:#fff;font-size:.88rem}
+.vb-chat-status{font-size:.72rem;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:4px}
+.vb-chat-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block}
+.vb-chat-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:6px;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.vb-chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:220px}
+.vb-msg{max-width:80%;padding:9px 13px;border-radius:14px;font-size:.83rem;line-height:1.5;position:relative}
+.vb-msg-time{font-size:.65rem;opacity:.6;margin-top:3px}
+.vb-msg.rep{background:#f1f5f9;color:var(--ts-text);align-self:flex-start;border-bottom-left-radius:4px}
+.vb-msg.user{background:var(--ts-primary);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.vb-chat-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--ts-border);flex-shrink:0}
+.vb-chat-input{flex:1;border:1.5px solid var(--ts-border);border-radius:8px;padding:8px 12px;font-size:.85rem;outline:none;transition:border-color var(--ts-transition)}
+.vb-chat-input:focus{border-color:var(--ts-primary)}
+.vb-chat-send{background:var(--ts-primary);color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:.85rem;transition:background var(--ts-transition)}
+.vb-chat-send:hover{background:var(--ts-primary-dark)}
+
+/* ── Lead Collection ───────────────────────────────────────────────────────── */
+.vb-lead-form{background:linear-gradient(135deg,#f0f5ff,#ede9fe);border-radius:16px;padding:24px}
+.vb-lead-form h3{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--ts-dark);margin-bottom:6px}
+.vb-lead-form p{font-size:.83rem;color:var(--ts-muted);margin-bottom:18px}
+
+/* ── Booth Analytics ───────────────────────────────────────────────────────── */
+.vb-analytics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
+.vb-analytics-item{background:#f8faff;border-radius:10px;padding:14px;text-align:center;border:1px solid var(--ts-border)}
+.vb-analytics-num{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:var(--ts-dark)}
+.vb-analytics-label{font-size:.7rem;color:var(--ts-muted);margin-top:3px}
+.vb-analytics-trend{font-size:.7rem;margin-top:4px;font-weight:600}
+.vb-analytics-trend.up{color:var(--ts-success)}
+.vb-analytics-trend.down{color:var(--ts-error)}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   4. MEETING SCHEDULER (meeting-scheduler.html)
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Page Layout ───────────────────────────────────────────────────────────── */
+.ms-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
+.ms-full-width{max-width:820px;margin:0 auto}
+
+/* ── Calendar ──────────────────────────────────────────────────────────────── */
+.ms-calendar-card{background:#fff;border-radius:16px;padding:24px;box-shadow:var(--ts-shadow)}
+.ms-cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.ms-cal-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--ts-dark)}
+.ms-cal-nav{display:flex;gap:6px}
+.ms-cal-nav-btn{background:#f1f5f9;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;color:#374151;transition:all var(--ts-transition);display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.ms-cal-nav-btn:hover{background:var(--ts-primary);color:#fff}
+.ms-cal-view-toggle{display:flex;gap:4px;background:#f1f5f9;border-radius:8px;padding:3px}
+.ms-cal-view-btn{padding:5px 12px;border:none;border-radius:6px;font-size:.78rem;font-weight:600;color:var(--ts-muted);cursor:pointer;background:transparent;transition:all var(--ts-transition)}
+.ms-cal-view-btn.active{background:#fff;color:var(--ts-primary);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* Week Grid */
+.ms-week-grid{display:grid;grid-template-columns:60px repeat(7,1fr);gap:0;border:1px solid var(--ts-border);border-radius:10px;overflow:hidden}
+.ms-week-time-col{display:flex;flex-direction:column}
+.ms-week-time-cell{height:48px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.7rem;color:var(--ts-muted);border-bottom:1px solid #f1f5f9;background:#f8faff;flex-shrink:0}
+.ms-week-day-col{display:flex;flex-direction:column;border-left:1px solid var(--ts-border)}
+.ms-week-day-header{padding:8px 6px;text-align:center;background:#f8faff;border-bottom:1px solid var(--ts-border);flex-shrink:0}
+.ms-week-day-name{font-size:.72rem;color:var(--ts-muted);font-weight:600;text-transform:uppercase}
+.ms-week-day-num{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--ts-dark);margin-top:2px}
+.ms-week-day-num.today{background:var(--ts-primary);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto 0}
+.ms-week-cell{height:48px;border-bottom:1px solid #f1f5f9;position:relative;cursor:pointer;transition:background var(--ts-transition)}
+.ms-week-cell:hover{background:#f0f5ff}
+.ms-week-cell.unavailable{background:#fef2f2;cursor:not-allowed}
+.ms-week-cell.available{background:#f0fdf4}
+.ms-meeting-block{position:absolute;left:2px;right:2px;top:2px;bottom:2px;border-radius:6px;padding:2px 6px;font-size:.65rem;font-weight:600;line-height:1.3;overflow:hidden;cursor:pointer}
+.ms-meeting-block.confirmed{background:#dbeafe;color:#1d4ed8;border-left:3px solid #2563eb}
+.ms-meeting-block.pending{background:#fef3c7;color:#b45309;border-left:3px solid #f59e0b}
+.ms-meeting-block.cancelled{background:#fee2e2;color:#b91c1c;border-left:3px solid #ef4444;text-decoration:line-through}
+
+/* Day View */
+.ms-day-grid{display:flex;gap:0;border:1px solid var(--ts-border);border-radius:10px;overflow:hidden}
+.ms-day-time-col{width:64px;flex-shrink:0;display:flex;flex-direction:column;background:#f8faff;border-right:1px solid var(--ts-border)}
+.ms-day-time-cell{height:64px;display:flex;align-items:flex-start;justify-content:flex-end;padding:4px 10px 0 0;font-size:.72rem;color:var(--ts-muted);border-bottom:1px solid #f1f5f9;flex-shrink:0}
+.ms-day-events-col{flex:1;display:flex;flex-direction:column;position:relative}
+.ms-day-cell{height:64px;border-bottom:1px solid #f1f5f9;cursor:pointer;position:relative;transition:background var(--ts-transition)}
+.ms-day-cell:hover{background:#f0f5ff}
+.ms-day-cell.available{background:#f0fdf4}
+.ms-day-meeting{position:absolute;left:6px;right:6px;border-radius:8px;padding:4px 10px;font-size:.75rem;font-weight:600;cursor:pointer;overflow:hidden;z-index:1}
+
+/* ── Time Slot Picker ──────────────────────────────────────────────────────── */
+.ms-slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.ms-slot{padding:10px 8px;border-radius:9px;border:1.5px solid var(--ts-border);background:#fff;font-size:.83rem;font-weight:600;color:#374151;cursor:pointer;text-align:center;transition:all var(--ts-transition)}
+.ms-slot:hover{border-color:var(--ts-primary);color:var(--ts-primary);background:#f0f5ff}
+.ms-slot.selected{background:var(--ts-primary);color:#fff;border-color:var(--ts-primary)}
+.ms-slot.booked{background:#f1f5f9;color:#94a3b8;border-color:var(--ts-border);cursor:not-allowed;text-decoration:line-through}
+.ms-slot.busy{background:#fef2f2;color:#ef4444;border-color:#fca5a5;cursor:not-allowed}
+
+/* ── Booking Form ──────────────────────────────────────────────────────────── */
+.ms-booking-form{background:#fff;border-radius:16px;padding:24px;box-shadow:var(--ts-shadow)}
+.ms-step-indicator{display:flex;align-items:center;gap:0;margin-bottom:28px;overflow:hidden}
+.ms-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.ms-step::after{content:'';position:absolute;top:16px;left:50%;width:100%;height:2px;background:var(--ts-border);z-index:0}
+.ms-step:last-child::after{display:none}
+.ms-step-circle{width:32px;height:32px;border-radius:50%;border:2.5px solid var(--ts-border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--ts-muted);z-index:1;position:relative;transition:all var(--ts-transition)}
+.ms-step.active .ms-step-circle{border-color:var(--ts-primary);color:var(--ts-primary)}
+.ms-step.done .ms-step-circle{background:var(--ts-primary);border-color:var(--ts-primary);color:#fff}
+.ms-step::after{background:var(--ts-border)}
+.ms-step.done::after{background:var(--ts-primary)}
+.ms-step-label{font-size:.7rem;font-weight:600;color:var(--ts-muted);margin-top:5px;text-align:center}
+.ms-step.active .ms-step-label,.ms-step.done .ms-step-label{color:var(--ts-primary)}
+
+/* Duration Chips */
+.ms-duration-chips{display:flex;gap:8px;flex-wrap:wrap}
+.ms-duration-chip{padding:8px 18px;border-radius:20px;border:1.5px solid var(--ts-border);background:#fff;font-size:.85rem;font-weight:600;color:#374151;cursor:pointer;transition:all var(--ts-transition)}
+.ms-duration-chip:hover{border-color:var(--ts-primary);color:var(--ts-primary)}
+.ms-duration-chip.selected{background:var(--ts-primary);color:#fff;border-color:var(--ts-primary)}
+
+/* ── Meeting Summary Card ──────────────────────────────────────────────────── */
+.ms-summary-card{background:#fff;border-radius:16px;padding:24px;box-shadow:var(--ts-shadow);position:sticky;top:80px}
+.ms-summary-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:var(--ts-dark);margin-bottom:16px}
+.ms-summary-row{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+.ms-summary-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+.ms-summary-key{font-size:.78rem;color:var(--ts-muted);margin-bottom:2px}
+.ms-summary-val{font-size:.88rem;font-weight:600;color:var(--ts-dark)}
+.ms-video-banner{background:linear-gradient(135deg,#0052CC,#7c3aed);border-radius:12px;padding:14px 16px;color:#fff;display:flex;align-items:center;gap:10px;font-size:.83rem;margin-top:16px}
+.ms-video-banner i{font-size:1.2rem}
+
+/* ── My Meetings List ──────────────────────────────────────────────────────── */
+.ms-meetings-list{display:flex;flex-direction:column;gap:12px}
+.ms-meeting-item{background:#fff;border-radius:14px;padding:16px 20px;box-shadow:var(--ts-shadow);display:flex;align-items:center;gap:16px;transition:transform var(--ts-transition)}
+.ms-meeting-item:hover{transform:translateX(3px)}
+.ms-meeting-date-badge{width:50px;height:56px;border-radius:10px;background:var(--ts-primary);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.ms-meeting-date-day{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;line-height:1}
+.ms-meeting-date-mon{font-size:.65rem;font-weight:600;text-transform:uppercase;opacity:.85}
+.ms-meeting-info{flex:1}
+.ms-meeting-title{font-weight:700;font-size:.9rem;color:var(--ts-dark);margin-bottom:3px}
+.ms-meeting-meta{font-size:.78rem;color:var(--ts-muted);display:flex;gap:12px;flex-wrap:wrap}
+.ms-meeting-meta span{display:flex;align-items:center;gap:4px}
+.ms-meeting-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* Reminder banner */
+.ms-reminder-strip{background:linear-gradient(90deg,#fff7ed,#fef3c7);border:1.5px solid #fde68a;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:.82rem;color:#92400e;margin-bottom:16px}
+.ms-reminder-strip i{color:#f59e0b;font-size:1rem}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   5. RESPONSIVE
+══════════════════════════════════════════════════════════════════════════════ */
+@media(max-width:1024px){
+  .ms-layout{grid-template-columns:1fr}
+  .ms-summary-card{position:static}
+}
+
+@media(max-width:768px){
+  .ts-page-hero{padding:48px 16px 40px}
+  .ts-section{padding:40px 16px}
+  .ts-shows-grid{grid-template-columns:1fr}
+  .ts-filter-bar{flex-direction:column}
+  .ts-tab-strip{flex-direction:column}
+  .vb-display-shelf{gap:10px}
+  .vb-product-item{width:64px;height:64px}
+  .vb-canvas{height:300px}
+  .ms-week-grid{grid-template-columns:44px repeat(5,1fr)}
+  .ts-form-row,.ts-form-row-3{grid-template-columns:1fr}
+  .vb-chat-panel{width:calc(100vw - 32px);right:16px}
+  .ts-featured-banner{padding:24px}
+  .ts-table{font-size:.8rem}
+}
+
+@media(max-width:480px){
+  .ts-hero-stats{gap:16px}
+  .vb-products-grid{grid-template-columns:1fr 1fr}
+  .ms-slots-grid{grid-template-columns:repeat(3,1fr)}
+  .ms-step-label{display:none}
+}
