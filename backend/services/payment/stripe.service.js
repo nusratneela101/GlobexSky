@@ -14,6 +14,7 @@
  */
 
 import supabase from '../../config/supabase.js';
+import Stripe from 'stripe';
 import { stripeConfig } from '../../config/integrations.js';
 
 // ─── Lazy Stripe client ───────────────────────────────────────────────────────
@@ -23,7 +24,6 @@ let _stripe = null;
 async function getStripe() {
   if (_stripe) return _stripe;
   if (!stripeConfig.secretKey) throw new Error('STRIPE_SECRET_KEY is not set.');
-  const { default: Stripe } = await import('stripe');
   _stripe = new Stripe(stripeConfig.secretKey, { apiVersion: stripeConfig.apiVersion });
   return _stripe;
 }

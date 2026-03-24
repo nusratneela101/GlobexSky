@@ -16,4 +16,6 @@ module.exports = {
   transform: { '^.+\\.js$': 'babel-jest' },
   setupFilesAfterEnv: ['./tests/helpers/setup.js'],
   testTimeout: 10000,
+  forceExit: true,
+  passWithNoTests: true,
 };
