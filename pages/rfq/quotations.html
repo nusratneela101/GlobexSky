@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RFQ Quotations | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --primary-light: #e6f0ff;
+      --accent: #00C9A7;
+      --accent-light: #e0faf5;
+      --secondary: #FF6B35;
+      --secondary-light: #fff1ec;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --text: #2d3748;
+      --muted: #718096;
+      --card: #fff;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,.08);
+      --shadow-hover: 0 6px 24px rgba(0,82,204,.14);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --panel-width: 380px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+
+    /* ── HEADER ── */
+    .site-header { position: sticky; top: 0; z-index: 900; background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    nav.navbar { max-width: 1280px; margin: 0 auto; }
+    .nav-container { display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 66px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; white-space: nowrap; }
+    .nav-logo span { color: var(--accent); }
+    .nav-search { flex: 1; max-width: 480px; position: relative; }
+    .nav-search input { width: 100%; padding: 9px 18px 9px 42px; border: 2px solid var(--border); border-radius: 25px; font-family: 'Inter', sans-serif; font-size: .9rem; transition: border-color .2s, box-shadow .2s; outline: none; background: var(--bg); }
+    .nav-search input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); background: #fff; }
+    .nav-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .nav-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .nav-link { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: .88rem; font-weight: 500; color: var(--text); text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+    .nav-link:hover { background: var(--primary-light); color: var(--primary); }
+    .nav-link.btn-primary { background: var(--primary); color: #fff; }
+    .nav-link.btn-primary:hover { background: var(--primary-dark); }
+    .cart-btn { position: relative; padding: 8px 12px; }
+    .cart-badge { position: absolute; top: 2px; right: 2px; background: var(--secondary); color: #fff; font-size: .65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ── LAYOUT ── */
+    .layout-wrapper { display: flex; min-height: calc(100vh - 66px); position: relative; }
+    .main-area { flex: 1; min-width: 0; transition: margin-right .35s ease; }
+    .main-area.panel-open { margin-right: var(--panel-width); }
+
+    /* ── SUB-HEADER ── */
+    .sub-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 24px; }
+    .sub-header-inner { max-width: 1200px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--primary); text-decoration: none; font-size: .88rem; font-weight: 500; margin-bottom: 16px; transition: gap .2s; }
+    .back-link:hover { gap: 12px; }
+
+    /* ── RFQ SUMMARY BAR ── */
+    .rfq-summary { background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%); border: 1px solid #c3d9f7; border-radius: var(--radius); padding: 18px 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .rfq-summary-id { font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--primary); font-size: 1rem; white-space: nowrap; }
+    .rfq-summary-divider { width: 1px; height: 32px; background: #c3d9f7; }
+    .rfq-summary-name { font-weight: 600; color: var(--dark); font-size: 1.05rem; }
+    .rfq-summary-meta { display: flex; align-items: center; gap: 16px; margin-left: auto; flex-wrap: wrap; }
+    .meta-item { display: flex; align-items: center; gap: 7px; font-size: .85rem; color: var(--muted); }
+    .meta-item i { color: var(--primary); }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: .78rem; font-weight: 700; }
+    .badge-open { background: #d4edda; color: #155724; }
+    .badge-open::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #28a745; display: inline-block; }
+
+    /* ── MAIN CONTENT ── */
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 28px 24px 80px; }
+
+    /* ── PAGE TITLE ROW ── */
+    .title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .title-row h2 { font-size: 1.4rem; color: var(--dark); display: flex; align-items: center; gap: 10px; }
+    .title-row h2 span { font-size: .9rem; color: var(--muted); font-weight: 500; }
+    .btn-negotiate-all { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-sm); border: 2px solid var(--primary); background: transparent; color: var(--primary); font-family: 'Inter', sans-serif; font-size: .88rem; font-weight: 500; cursor: pointer; transition: all .2s; }
+    .btn-negotiate-all:hover { background: var(--primary-light); }
+
+    /* ── SORT TOOLBAR ── */
+    .sort-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .sort-toolbar span { font-size: .82rem; color: var(--muted); font-weight: 500; }
+    .sort-btn { padding: 6px 14px; border-radius: 20px; border: 2px solid var(--border); background: var(--card); font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 6px; }
+    .sort-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .sort-btn.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+    .sort-btn i { font-size: .75rem; }
+
+    /* ── COMPARISON TABLE ── */
+    .table-wrapper { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--bg); }
+    thead th {
+      padding: 13px 20px; text-align: left; font-size: .78rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .05em; border-bottom: 2px solid var(--border);
+      cursor: pointer; user-select: none; white-space: nowrap; transition: color .2s;
+    }
+    thead th:hover { color: var(--primary); }
+    thead th .sort-icon { margin-left: 5px; opacity: .4; font-size: .7rem; }
+    thead th.sorted .sort-icon { opacity: 1; color: var(--primary); }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafbff; }
+    tbody tr.best-row { background: linear-gradient(90deg, rgba(0,201,167,.05) 0%, rgba(0,201,167,.02) 100%); border-left: 4px solid var(--accent); }
+    tbody tr.best-row:hover { background: rgba(0,201,167,.08); }
+    tbody td { padding: 16px 20px; font-size: .9rem; vertical-align: middle; }
+
+    .supplier-cell { display: flex; align-items: center; gap: 12px; }
+    .supplier-avatar { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: .95rem; color: #fff; flex-shrink: 0; }
+    .supplier-info .name { font-weight: 600; color: var(--dark); font-size: .9rem; }
+    .supplier-info .country { font-size: .75rem; color: var(--muted); display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+    .best-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-light); color: #00856e; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-top: 3px; }
+
+    .price-cell .unit-price { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--dark); }
+    .price-cell .unit-price.best { color: var(--accent); }
+    .price-cell .total-price { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+    .moq-cell { font-weight: 500; color: var(--text); }
+    .lead-cell { display: flex; align-items: center; gap: 6px; color: var(--text); font-weight: 500; }
+    .lead-cell i { color: var(--muted); font-size: .85rem; }
+
+    .stars { color: #f6c90e; font-size: .85rem; display: flex; align-items: center; gap: 3px; }
+    .stars .star-value { color: var(--text); font-size: .82rem; font-weight: 600; margin-left: 4px; }
+    .stars .review-count { color: var(--muted); font-size: .72rem; }
+
+    .action-cell { display: flex; gap: 7px; flex-wrap: wrap; }
+    .btn-sm { padding: 7px 13px; border-radius: var(--radius-sm); border: none; font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 500; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .btn-accept { background: var(--accent-light); color: #00856e; border: 1px solid #a8f0e4; }
+    .btn-accept:hover { background: #c0f4ec; }
+    .btn-reject { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+    .btn-reject:hover { background: #fee2e2; }
+    .btn-negotiate { background: var(--primary-light); color: var(--primary); border: 1px solid #c3d9f7; }
+    .btn-negotiate:hover { background: #d6e8ff; }
+    .btn-award { background: var(--accent); color: #fff; border: none; padding: 8px 16px; font-size: .82rem; font-weight: 600; }
+    .btn-award:hover { background: #00a88a; transform: translateY(-1px); }
+    .btn-awarded-done { background: #e2e8f0; color: var(--muted); cursor: default; border: none; }
+
+    .status-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; }
+    .chip-accepted { background: var(--accent-light); color: #00856e; }
+    .chip-rejected { background: #fff5f5; color: #c53030; }
+    .chip-awarded { background: var(--primary-light); color: var(--primary); }
+    .chip-pending { background: #fff3cd; color: #856404; }
+
+    /* ── SIDE PANEL ── */
+    .chat-panel {
+      position: fixed; top: 66px; right: 0; bottom: 0; width: var(--panel-width);
+      background: var(--card); border-left: 1px solid var(--border); box-shadow: -4px 0 24px rgba(0,0,0,.08);
+      display: flex; flex-direction: column; z-index: 800;
+      transform: translateX(100%); transition: transform .35s ease;
+    }
+    .chat-panel.open { transform: translateX(0); }
+    .panel-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%); }
+    .panel-header h3 { font-size: 1rem; color: var(--dark); display: flex; align-items: center; gap: 8px; }
+    .panel-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,.8); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all .2s; }
+    .panel-close:hover { background: #fff; color: var(--dark); }
+    .panel-supplier-info { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .panel-supplier-info .avatar { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; color: #fff; }
+    .panel-supplier-info .info .name { font-weight: 600; color: var(--dark); font-size: .92rem; }
+    .panel-supplier-info .info .sub { font-size: .75rem; color: var(--muted); }
+    .online-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block; margin-left: 6px; }
+    .messages-area { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+    .msg { max-width: 85%; }
+    .msg.received { align-self: flex-start; }
+    .msg.sent { align-self: flex-end; }
+    .msg-bubble { padding: 10px 14px; border-radius: 12px; font-size: .88rem; line-height: 1.5; }
+    .msg.received .msg-bubble { background: var(--bg); color: var(--text); border-radius: 4px 12px 12px 12px; }
+    .msg.sent .msg-bubble { background: var(--primary); color: #fff; border-radius: 12px 4px 12px 12px; }
+    .msg-time { font-size: .72rem; color: var(--muted); margin-top: 4px; }
+    .msg.sent .msg-time { text-align: right; }
+    .msg-sender { font-size: .72rem; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+    .msg.sent .msg-sender { text-align: right; }
+    .chat-input-area { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-end; }
+    .chat-input { flex: 1; padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .88rem; outline: none; resize: none; min-height: 44px; max-height: 100px; transition: border-color .2s; }
+    .chat-input:focus { border-color: var(--primary); }
+    .btn-send { width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--primary); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; transition: background .2s; flex-shrink: 0; }
+    .btn-send:hover { background: var(--primary-dark); }
+    .attach-btn { width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--bg); border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all .2s; flex-shrink: 0; }
+    .attach-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ── CONFIRM DIALOG ── */
+    .confirm-overlay { position: fixed; inset: 0; background: rgba(10,14,39,.45); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .25s; }
+    .confirm-overlay.open { opacity: 1; pointer-events: all; }
+    .confirm-dialog { background: var(--card); border-radius: var(--radius); padding: 32px; max-width: 440px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: scale(.95); transition: transform .25s; }
+    .confirm-overlay.open .confirm-dialog { transform: scale(1); }
+    .confirm-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.6rem; }
+    .confirm-icon.danger { background: #fff5f5; color: #c53030; }
+    .confirm-icon.success { background: var(--accent-light); color: var(--accent); }
+    .confirm-icon.primary { background: var(--primary-light); color: var(--primary); }
+    .confirm-icon.warning { background: var(--secondary-light); color: var(--secondary); }
+    .confirm-dialog h3 { font-size: 1.2rem; text-align: center; color: var(--dark); margin-bottom: 10px; }
+    .confirm-dialog p { font-size: .88rem; text-align: center; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+    .confirm-btns { display: flex; gap: 10px; }
+    .btn-confirm { flex: 1; padding: 11px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 500; cursor: pointer; border: none; transition: all .2s; }
+    .btn-cancel-c { background: var(--bg); color: var(--text); border: 2px solid var(--border) !important; }
+    .btn-cancel-c:hover { border-color: var(--muted) !important; }
+    .btn-danger { background: #c53030; color: #fff; }
+    .btn-danger:hover { background: #9b2c2c; }
+    .btn-success { background: var(--accent); color: #fff; }
+    .btn-success:hover { background: #00a88a; }
+    .btn-primary-c { background: var(--primary); color: #fff; }
+    .btn-primary-c:hover { background: var(--primary-dark); }
+    .btn-warning { background: var(--secondary); color: #fff; }
+    .btn-warning:hover { background: #e55a25; }
+
+    /* ── TOAST ── */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: var(--dark); color: #fff; border-radius: var(--radius-sm); box-shadow: 0 4px 20px rgba(0,0,0,.2); font-size: .88rem; min-width: 260px; max-width: 360px; animation: slideIn .3s ease; pointer-events: all; }
+    .toast.success { border-left: 4px solid var(--accent); }
+    .toast.info { border-left: 4px solid var(--primary); }
+    .toast.warning { border-left: 4px solid var(--secondary); }
+    .toast.danger { border-left: 4px solid #c53030; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* ── FOOTER ── */
+    .site-footer { background: var(--dark); color: rgba(255,255,255,.7); padding: 32px 24px; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,.6); text-decoration: none; font-size: .85rem; transition: color .2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-size: .83rem; }
+
+    @media (max-width: 1024px) {
+      .table-wrapper { overflow-x: auto; }
+      table { min-width: 800px; }
+      .main-area.panel-open { margin-right: 0; }
+      .chat-panel { width: 100%; max-width: 400px; }
+    }
+    @media (max-width: 768px) {
+      .nav-search { display: none; }
+      .rfq-summary { flex-direction: column; align-items: flex-start; }
+      .rfq-summary-divider { display: none; }
+      .rfq-summary-meta { margin-left: 0; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">Globex<span>Sky</span></a>
+      <div class="nav-search">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search products, suppliers…" />
+      </div>
+      <div class="nav-actions">
+        <a href="../../pages/auth/login.html" class="nav-link"><i class="fas fa-user"></i> Login</a>
+        <a href="../../pages/auth/register.html" class="nav-link btn-primary"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="../../pages/cart/index.html" class="nav-link cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="layout-wrapper">
+  <div class="main-area" id="mainArea">
+
+    <!-- ── SUB-HEADER ── -->
+    <div class="sub-header">
+      <div class="sub-header-inner">
+        <a href="./list.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to My RFQs</a>
+        <div class="rfq-summary">
+          <span class="rfq-summary-id"><i class="fas fa-file-invoice"></i> RFQ-2024-001</span>
+          <div class="rfq-summary-divider"></div>
+          <span class="rfq-summary-name">Industrial Pumps — 500 units</span>
+          <div class="rfq-summary-meta">
+            <span class="badge badge-open">Open</span>
+            <div class="meta-item"><i class="fas fa-calendar-alt"></i> Deadline: Apr 15, 2024</div>
+            <div class="meta-item"><i class="fas fa-boxes"></i> 500 pcs requested</div>
+            <div class="meta-item"><i class="fas fa-dollar-sign"></i> Budget: $100–$150/unit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIN CONTENT ── -->
+    <div class="main-content">
+
+      <!-- Title Row -->
+      <div class="title-row">
+        <h2>
+          <i class="fas fa-comments" style="color:var(--primary)"></i>
+          Quotations Received
+          <span id="quoteCount">(4)</span>
+        </h2>
+        <button class="btn-negotiate-all" onclick="openPanel('TechFlow Solutions', 'TF', '#0052CC')">
+          <i class="fas fa-comments"></i> Open Negotiation Chat
+        </button>
+      </div>
+
+      <!-- Sort Toolbar -->
+      <div class="sort-toolbar">
+        <span>Sort by:</span>
+        <button class="sort-btn active" id="sort-price" onclick="sortTable('price', this)">
+          <i class="fas fa-dollar-sign"></i> Price <i class="fas fa-sort sort-icon"></i>
+        </button>
+        <button class="sort-btn" id="sort-rating" onclick="sortTable('rating', this)">
+          <i class="fas fa-star"></i> Rating <i class="fas fa-sort sort-icon"></i>
+        </button>
+        <button class="sort-btn" id="sort-lead" onclick="sortTable('lead', this)">
+          <i class="fas fa-clock"></i> Lead Time <i class="fas fa-sort sort-icon"></i>
+        </button>
+        <button class="sort-btn" id="sort-total" onclick="sortTable('total', this)">
+          <i class="fas fa-calculator"></i> Total Price <i class="fas fa-sort sort-icon"></i>
+        </button>
+      </div>
+
+      <!-- Comparison Table -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortTable('supplier', this)">Supplier <i class="fas fa-sort sort-icon"></i></th>
+              <th onclick="sortTable('price', this)">Unit Price <i class="fas fa-sort sort-icon"></i></th>
+              <th>MOQ</th>
+              <th onclick="sortTable('lead', this)">Lead Time <i class="fas fa-sort sort-icon"></i></th>
+              <th onclick="sortTable('rating', this)">Rating <i class="fas fa-sort sort-icon"></i></th>
+              <th onclick="sortTable('total', this)">Total Price <i class="fas fa-sort sort-icon"></i></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="quotationsBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- end main-content -->
+
+    <!-- ── FOOTER ── -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2024 Globex International Trade Co., Ltd.</span>
+        <div class="footer-links">
+          <a href="../../pages/about.html">About</a>
+          <a href="../../pages/help.html">Help</a>
+          <a href="../../pages/privacy.html">Privacy</a>
+          <a href="../../pages/terms.html">Terms</a>
+          <a href="../../pages/contact.html">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- end main-area -->
+
+  <!-- ── CHAT PANEL ── -->
+  <aside class="chat-panel" id="chatPanel" role="complementary" aria-label="Negotiation Chat">
+    <div class="panel-header">
+      <h3><i class="fas fa-comments"></i> Negotiation Chat</h3>
+      <button class="panel-close" onclick="closePanel()" aria-label="Close chat panel"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-supplier-info" id="panelSupplierInfo">
+      <!-- Set by JS -->
+    </div>
+    <div class="messages-area" id="messagesArea">
+      <!-- Set by JS -->
+    </div>
+    <div class="chat-input-area">
+      <button class="attach-btn" title="Attach file"><i class="fas fa-paperclip"></i></button>
+      <textarea class="chat-input" id="chatInput" placeholder="Type your message…" rows="1"
+        onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="btn-send" onclick="sendMessage()" title="Send"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </aside>
+</div>
+
+<!-- ── CONFIRM DIALOG ── -->
+<div class="confirm-overlay" id="confirmOverlay" onclick="closeConfirmOutside(event)">
+  <div class="confirm-dialog">
+    <div class="confirm-icon" id="confirmIcon"><i id="confirmIconI" class="fas fa-check"></i></div>
+    <h3 id="confirmTitle">Confirm Action</h3>
+    <p id="confirmMessage">Are you sure you want to proceed?</p>
+    <div class="confirm-btns">
+      <button class="btn-confirm btn-cancel-c" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm" id="confirmBtn" onclick="executeAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  // ── Quotation Data ──
+  const quotations = [
+    {
+      id: 1, supplier: 'TechFlow Solutions', country: 'China', avatar: 'TF', color: '#0052CC',
+      unitPrice: 124.50, moq: 200, leadDays: 21, rating: 4.8, reviews: 312, qty: 500,
+      status: 'pending', isBest: true
+    },
+    {
+      id: 2, supplier: 'PumpMaster GmbH', country: 'Germany', avatar: 'PM', color: '#3d5a80',
+      unitPrice: 138.00, moq: 100, leadDays: 14, rating: 4.9, reviews: 148, qty: 500,
+      status: 'pending', isBest: false
+    },
+    {
+      id: 3, supplier: 'Hydraulic Pro Ltd', country: 'United Kingdom', avatar: 'HP', color: '#00856e',
+      unitPrice: 142.75, moq: 250, leadDays: 18, rating: 4.5, reviews: 87, qty: 500,
+      status: 'pending', isBest: false
+    },
+    {
+      id: 4, supplier: 'Global Fluid Systems', country: 'USA', avatar: 'GF', color: '#7b2d8b',
+      unitPrice: 131.20, moq: 150, leadDays: 28, rating: 4.6, reviews: 204, qty: 500,
+      status: 'pending', isBest: false
+    },
+  ];
+
+  let sortKey = 'price';
+  let sortDir = 1; // 1=asc, -1=desc
+  let pendingAction = null;
+  let activeChatSupplier = null;
+
+  // ── Render ──
+  function renderQuotations() {
+    const sorted = [...quotations].sort((a, b) => {
+      const keyMap = { price: 'unitPrice', rating: 'rating', lead: 'leadDays', total: q => q.unitPrice * q.qty, supplier: 'supplier' };
+      let av = typeof keyMap[sortKey] === 'function' ? keyMap[sortKey](a) : a[keyMap[sortKey]];
+      let bv = typeof keyMap[sortKey] === 'function' ? keyMap[sortKey](b) : b[keyMap[sortKey]];
+      if (typeof av === 'string') return sortDir * av.localeCompare(bv);
+      return sortDir * (av - bv);
+    });
+
+    const tbody = document.getElementById('quotationsBody');
+    tbody.innerHTML = sorted.map(q => {
+      const total = (q.unitPrice * q.qty).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+      const stars = renderStars(q.rating);
+      const isBest = q.isBest;
+      const statusChip = q.status !== 'pending'
+        ? `<span class="status-chip chip-${q.status}">${capitalize(q.status)}</span>`
+        : '';
+
+      return `<tr class="${isBest ? 'best-row' : ''}" data-id="${q.id}">
+        <td>
+          <div class="supplier-cell">
+            <div class="supplier-avatar" style="background:${q.color}">${q.avatar}</div>
+            <div class="supplier-info">
+              <div class="name">${q.supplier}</div>
+              <div class="country"><i class="fas fa-map-marker-alt"></i>${q.country}</div>
+              ${isBest ? '<div class="best-badge"><i class="fas fa-star"></i> Best Price</div>' : ''}
+            </div>
+          </div>
+        </td>
+        <td class="price-cell">
+          <div class="unit-price ${isBest ? 'best' : ''}">$${q.unitPrice.toFixed(2)}</div>
+          <div class="total-price">per unit</div>
+        </td>
+        <td class="moq-cell">${q.moq.toLocaleString()} pcs</td>
+        <td class="lead-cell"><i class="fas fa-shipping-fast"></i> ${q.leadDays} days</td>
+        <td>
+          <div class="stars">
+            ${stars}
+            <span class="star-value">${q.rating}</span>
+            <span class="review-count">(${q.reviews})</span>
+          </div>
+        </td>
+        <td>
+          <strong style="font-family:'Poppins',sans-serif; color:var(--dark);">${total}</strong>
+          ${isBest ? '<div style="font-size:.72rem; color:var(--accent); margin-top:2px;"><i class="fas fa-arrow-down"></i> Lowest quote</div>' : ''}
+        </td>
+        <td>
+          ${q.status === 'pending' ? `
+            <div class="action-cell">
+              ${isBest ? `<button class="btn-sm btn-award" onclick="confirmAction('award', ${q.id})"><i class="fas fa-trophy"></i> Award</button>` : ''}
+              <button class="btn-sm btn-accept" onclick="confirmAction('accept', ${q.id})"><i class="fas fa-check"></i> Accept</button>
+              <button class="btn-sm btn-reject" onclick="confirmAction('reject', ${q.id})"><i class="fas fa-times"></i> Reject</button>
+              <button class="btn-sm btn-negotiate" onclick="openPanel('${q.supplier}', '${q.avatar}', '${q.color}')"><i class="fas fa-comments"></i></button>
+            </div>` :
+            `<div class="action-cell">
+              ${statusChip}
+              ${q.status !== 'awarded' ? `<button class="btn-sm btn-negotiate" onclick="openPanel('${q.supplier}', '${q.avatar}', '${q.color}')"><i class="fas fa-comments"></i></button>` : ''}
+            </div>`
+          }
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderStars(rating) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+      if (i <= Math.floor(rating)) html += '<i class="fas fa-star"></i>';
+      else if (i - 0.5 <= rating) html += '<i class="fas fa-star-half-alt"></i>';
+      else html += '<i class="far fa-star"></i>';
+    }
+    return html;
+  }
+
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // ── Sort ──
+  function sortTable(key, btn) {
+    if (sortKey === key) { sortDir *= -1; }
+    else { sortKey = key; sortDir = 1; }
+
+    document.querySelectorAll('.sort-btn, thead th').forEach(el => {
+      el.classList.remove('active', 'sorted');
+      const icon = el.querySelector('.sort-icon');
+      if (icon) { icon.className = 'fas fa-sort sort-icon'; icon.style.opacity = '.4'; }
+    });
+
+    if (btn) {
+      btn.classList.add('active');
+      const icon = btn.querySelector('.sort-icon');
+      if (icon) {
+        icon.className = `fas fa-sort-${sortDir === 1 ? 'up' : 'down'} sort-icon`;
+        icon.style.opacity = '1';
+      }
+    }
+
+    // Also update corresponding header if applicable
+    document.querySelectorAll('thead th').forEach(th => {
+      if (th.getAttribute('onclick') && th.getAttribute('onclick').includes(`'${key}'`)) {
+        th.classList.add('sorted');
+      }
+    });
+
+    renderQuotations();
+  }
+
+  // ── Confirm Dialog ──
+  const confirmConfigs = {
+    accept: {
+      icon: 'success', iconClass: 'fa-check-circle', title: 'Accept Quotation?',
+      msg: 'Accepting this quotation will notify the supplier and create a purchase order. You can still negotiate terms afterward.',
+      btnClass: 'btn-success', btnText: 'Accept Quotation'
+    },
+    reject: {
+      icon: 'danger', iconClass: 'fa-times-circle', title: 'Reject Quotation?',
+      msg: 'The supplier will be notified that their quotation was not selected. This action cannot be undone.',
+      btnClass: 'btn-danger', btnText: 'Reject Quotation'
+    },
+    award: {
+      icon: 'primary', iconClass: 'fa-trophy', title: 'Award This Quotation?',
+      msg: 'Awarding this quotation will designate this supplier as the winner and close the RFQ to other quotations. A purchase order will be initiated.',
+      btnClass: 'btn-primary-c', btnText: 'Award Supplier'
+    }
+  };
+
+  function confirmAction(type, quotationId) {
+    pendingAction = { type, id: quotationId };
+    const cfg = confirmConfigs[type];
+    document.getElementById('confirmIcon').className = `confirm-icon ${cfg.icon}`;
+    document.getElementById('confirmIconI').className = `fas ${cfg.iconClass}`;
+    document.getElementById('confirmTitle').textContent = cfg.title;
+    document.getElementById('confirmMessage').textContent = cfg.msg;
+    const btn = document.getElementById('confirmBtn');
+    btn.className = `btn-confirm ${cfg.btnClass}`;
+    btn.textContent = cfg.btnText;
+    document.getElementById('confirmOverlay').classList.add('open');
+  }
+
+  function executeAction() {
+    if (!pendingAction) return;
+    const { type, id } = pendingAction;
+    const q = quotations.find(x => x.id === id);
+    closeConfirm();
+
+    if (type === 'accept') {
+      q.status = 'accepted';
+      showToast(`Quotation from ${q.supplier} accepted! A purchase order has been created.`, 'success');
+    } else if (type === 'reject') {
+      q.status = 'rejected';
+      showToast(`Quotation from ${q.supplier} rejected. The supplier has been notified.`, 'danger');
+    } else if (type === 'award') {
+      q.status = 'awarded';
+      showToast(`Congratulations! ${q.supplier} has been awarded RFQ-2024-001. A PO is being generated.`, 'success');
+    }
+
+    pendingAction = null;
+    renderQuotations();
+  }
+
+  function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); }
+  function closeConfirmOutside(e) { if (e.target === document.getElementById('confirmOverlay')) closeConfirm(); }
+
+  // ── Chat Panel ──
+  const sampleMessages = {
+    default: [
+      { from: 'supplier', text: 'Hello! Thank you for your RFQ. We are very interested in this order.', time: '10:24 AM' },
+      { from: 'me', text: 'Hi! Thanks for your quick response. Could you provide a sample before the full order?', time: '10:31 AM' },
+      { from: 'supplier', text: 'Absolutely. We can ship 3 sample units within 5 business days at no extra cost. Shall I arrange that?', time: '10:35 AM' },
+      { from: 'me', text: 'Yes please! Also, is there any flexibility on the unit price for orders over 1000 pcs?', time: '10:38 AM' },
+      { from: 'supplier', text: 'For 1000+ units, we can offer $118.00/unit. For 2000+ units, $112.50/unit. These are our best volume discounts.', time: '10:42 AM' },
+    ]
+  };
+
+  function openPanel(supplierName, avatar, color) {
+    activeChatSupplier = { name: supplierName, avatar, color };
+    document.getElementById('panelSupplierInfo').innerHTML = `
+      <div class="avatar" style="background:${color}">${avatar}</div>
+      <div class="info">
+        <div class="name">${supplierName}<span class="online-dot" title="Online"></span></div>
+        <div class="sub"><i class="fas fa-circle" style="color:var(--accent); font-size:.6rem;"></i> Online now · Typically replies in &lt;1 hr</div>
+      </div>`;
+
+    const msgs = sampleMessages.default;
+    const area = document.getElementById('messagesArea');
+    area.innerHTML = msgs.map(m => `
+      <div class="msg ${m.from === 'me' ? 'sent' : 'received'}">
+        <div class="msg-sender">${m.from === 'me' ? 'You' : supplierName}</div>
+        <div class="msg-bubble">${m.text}</div>
+        <div class="msg-time">${m.time}</div>
+      </div>`).join('');
+
+    document.getElementById('chatPanel').classList.add('open');
+    document.getElementById('mainArea').classList.add('panel-open');
+    setTimeout(() => { area.scrollTop = area.scrollHeight; }, 50);
+    setTimeout(() => document.getElementById('chatInput').focus(), 300);
+  }
+
+  function closePanel() {
+    document.getElementById('chatPanel').classList.remove('open');
+    document.getElementById('mainArea').classList.remove('panel-open');
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const area = document.getElementById('messagesArea');
+    const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    area.innerHTML += `
+      <div class="msg sent">
+        <div class="msg-sender">You</div>
+        <div class="msg-bubble">${escHtml(text)}</div>
+        <div class="msg-time">${now}</div>
+      </div>`;
+    input.value = '';
+    input.style.height = 'auto';
+    area.scrollTop = area.scrollHeight;
+
+    // Simulate supplier typing
+    setTimeout(() => {
+      area.innerHTML += `
+        <div class="msg received" id="typingMsg">
+          <div class="msg-sender">${activeChatSupplier ? activeChatSupplier.name : 'Supplier'}</div>
+          <div class="msg-bubble" style="color:var(--muted); font-style:italic;"><i class="fas fa-ellipsis-h"></i> Typing…</div>
+        </div>`;
+      area.scrollTop = area.scrollHeight;
+
+      setTimeout(() => {
+        const typing = document.getElementById('typingMsg');
+        if (typing) typing.remove();
+        const replies = [
+          "Thank you for the message! I'll review this and get back to you shortly.",
+          "That's a great question. Let me check with our production team and confirm.",
+          "Noted! We can accommodate that requirement. Shall I update the quotation?",
+          "Understood. I'll prepare a revised quote within 2 hours.",
+        ];
+        const reply = replies[Math.floor(Math.random() * replies.length)];
+        const replyTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        area.innerHTML += `
+          <div class="msg received">
+            <div class="msg-sender">${activeChatSupplier ? activeChatSupplier.name : 'Supplier'}</div>
+            <div class="msg-bubble">${reply}</div>
+            <div class="msg-time">${replyTime}</div>
+          </div>`;
+        area.scrollTop = area.scrollHeight;
+      }, 2000);
+    }, 800);
+  }
+
+  function handleChatKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Toast ──
+  function showToast(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    const icons = { success: 'fa-check-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle', danger: 'fa-times-circle' };
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fas ${icons[type] || 'fa-info-circle'}"></i> ${msg}`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.transition = 'opacity .4s, transform .4s';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      setTimeout(() => toast.remove(), 400);
+    }, 4000);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeConfirm(); closePanel(); }
+  });
+
+  // ── Init ──
+  renderQuotations();
+</script>
+</body>
+</html>
