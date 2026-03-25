@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Inspection | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --accent: #00C9A7;
+      --secondary: #FF6B35;
+      --warning: #F59E0B;
+      --success: #22C55E;
+      --danger: #EF4444;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --card-bg: #fff;
+      --border: #e2e8f0;
+      --muted: #64748b;
+      --shadow: 0 2px 16px rgba(0,82,204,0.07);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky; top: 0; z-index: 999;
+      background: var(--card-bg); box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      height: 64px; display: flex; align-items: center; padding: 0 2rem; gap: 1.5rem;
+    }
+    .nav-logo {
+      font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.45rem;
+      background: linear-gradient(135deg, #0052CC 0%, #00C9A7 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: .4rem;
+    }
+    .nav-search { flex: 1; max-width: 420px; position: relative; }
+    .nav-search input {
+      width: 100%; padding: .5rem 1rem .5rem 2.6rem; border: 1.5px solid var(--border);
+      border-radius: 8px; font-family: 'Inter', sans-serif; font-size: .875rem;
+      background: var(--bg); outline: none; transition: border-color .2s;
+    }
+    .nav-search input:focus { border-color: var(--primary); background: #fff; }
+    .nav-search .si { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .8rem; }
+    .nav-actions { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
+    .nav-actions a {
+      text-decoration: none; color: var(--dark); font-size: .875rem; font-weight: 500;
+      display: flex; align-items: center; gap: .35rem; padding: .4rem .8rem;
+      border-radius: 8px; transition: all .2s;
+    }
+    .nav-actions a:hover { background: var(--bg); color: var(--primary); }
+    .nav-actions .btn-reg { background: var(--primary); color: #fff !important; }
+    .nav-actions .btn-reg:hover { background: var(--primary-dark); }
+    .cart-wrap { position: relative; }
+    .cart-dot { position: absolute; top: -3px; right: -3px; background: var(--secondary); color: #fff; font-size: .6rem; font-weight: 700; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* PAGE WRAPPER */
+    .page-wrap { max-width: 1180px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--primary); text-decoration: none; font-size: .875rem; font-weight: 500;
+      margin-bottom: 1.25rem; transition: gap .2s;
+    }
+    .back-link:hover { gap: .6rem; }
+
+    /* INSPECTION HEADER */
+    .insp-header {
+      background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow);
+      padding: 1.5rem 2rem; margin-bottom: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    .insp-header-left {}
+    .insp-id { font-size: .82rem; color: var(--muted); margin-bottom: .25rem; display: flex; align-items: center; gap: .4rem; }
+    .insp-name { font-size: 1.4rem; font-weight: 700; }
+    .insp-sub { font-size: .875rem; color: var(--muted); margin-top: .2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .35rem .9rem; border-radius: 999px;
+      font-size: .78rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+    }
+    .badge-orange { background: rgba(255,107,53,.12); color: #c2410c; border: 1px solid rgba(255,107,53,.3); }
+    .badge-green  { background: rgba(34,197,94,.1);  color: #15803d; border: 1px solid rgba(34,197,94,.3); }
+    .badge-blue   { background: rgba(0,82,204,.1);   color: var(--primary); border: 1px solid rgba(0,82,204,.3); }
+    .badge-amber  { background: rgba(245,158,11,.12); color: #92400e; border: 1px solid rgba(245,158,11,.3); }
+    .badge-red    { background: rgba(239,68,68,.1);  color: #b91c1c; border: 1px solid rgba(239,68,68,.3); }
+    @keyframes statusPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,107,53,.45)} 50%{box-shadow:0 0 0 8px rgba(255,107,53,0)} }
+    .badge-orange { animation: statusPulse 2s infinite; }
+
+    /* TWO COLUMN LAYOUT */
+    .two-col { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start; }
+
+    /* CARDS */
+    .card { background: var(--card-bg); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.5rem; }
+    .card:last-child { margin-bottom: 0; }
+    .card-head {
+      padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: .5rem; font-size: .95rem; font-weight: 600;
+    }
+    .card-head i { color: var(--primary); }
+    .card-body { padding: 1.5rem; }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-step { display: flex; gap: 1rem; position: relative; }
+    .tl-step:not(:last-child)::after {
+      content: ''; position: absolute; left: 19px; top: 38px;
+      width: 2px; height: calc(100% - 14px);
+      background: var(--border);
+    }
+    .tl-step.done::after { background: var(--success); }
+    .tl-step.active::after { background: linear-gradient(to bottom, var(--success), var(--border)); }
+    .tl-dot-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+    .tl-dot {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; border: 2px solid var(--border);
+      background: var(--bg); color: var(--muted); z-index: 1;
+    }
+    .tl-step.done .tl-dot { background: var(--success); border-color: var(--success); color: #fff; }
+    @keyframes tlPulse { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,107,53,.5)} 50%{transform:scale(1.08);box-shadow:0 0 0 10px rgba(255,107,53,0)} }
+    .tl-step.active .tl-dot { background: var(--secondary); border-color: var(--secondary); color: #fff; animation: tlPulse 2s infinite; }
+    .tl-content { padding: .4rem 0 1.75rem; flex: 1; }
+    .tl-content h4 { font-size: .92rem; font-weight: 600; margin-bottom: .2rem; }
+    .tl-content p { font-size: .8rem; color: var(--muted); }
+    .tl-content .tl-time { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+
+    /* INSPECTOR CARD */
+    .inspector-wrap { display: flex; align-items: flex-start; gap: 1.25rem; }
+    .inspector-avatar {
+      width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #0052CC, #00C9A7);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.6rem; font-weight: 700; font-family: 'Poppins', sans-serif;
+    }
+    .inspector-info { flex: 1; }
+    .inspector-info h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: .15rem; }
+    .inspector-info .company { font-size: .82rem; color: var(--muted); margin-bottom: .5rem; display: flex; align-items: center; gap: .3rem; }
+    .stars { display: flex; align-items: center; gap: .2rem; color: #fbbf24; font-size: .85rem; margin-bottom: .5rem; }
+    .stars span { color: var(--dark); font-weight: 600; font-size: .82rem; margin-left: .2rem; }
+    .contact-row { display: flex; flex-direction: column; gap: .3rem; }
+    .contact-item { display: flex; align-items: center; gap: .5rem; font-size: .82rem; color: var(--muted); }
+    .contact-item i { color: var(--primary); width: 14px; }
+    .inspector-actions { display: flex; gap: .75rem; margin-top: 1rem; }
+    .btn-sm {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .4rem .9rem; border-radius: 8px; font-size: .82rem; font-weight: 500;
+      cursor: pointer; border: 1.5px solid; transition: all .2s; text-decoration: none;
+    }
+    .btn-sm-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-sm-primary:hover { background: var(--primary-dark); }
+    .btn-sm-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+    .btn-sm-outline:hover { background: rgba(0,82,204,.06); }
+
+    /* LIVE UPDATES */
+    .update-feed { display: flex; flex-direction: column; gap: 1rem; }
+    .update-item { display: flex; gap: 1rem; }
+    .update-media {
+      width: 90px; height: 70px; flex-shrink: 0; border-radius: 8px;
+      background: linear-gradient(135deg, #e0e7ef, #c8d4e6);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 1.2rem; position: relative; overflow: hidden;
+    }
+    .update-media .play-btn {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.2); color: #fff; font-size: .9rem;
+    }
+    .update-text { flex: 1; }
+    .update-text h5 { font-size: .85rem; font-weight: 600; margin-bottom: .2rem; }
+    .update-text p { font-size: .78rem; color: var(--muted); line-height: 1.5; }
+    .update-time { font-size: .73rem; color: var(--muted); margin-top: .2rem; display: flex; align-items: center; gap: .3rem; }
+
+    .new-updates-indicator {
+      display: none; background: var(--primary); color: #fff;
+      padding: .45rem 1rem; border-radius: 8px; font-size: .8rem;
+      text-align: center; cursor: pointer; margin-bottom: .5rem;
+      animation: fadeIn .3s ease;
+    }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+
+    /* REPORT LOCKED */
+    .report-locked-wrap { position: relative; border-radius: 12px; overflow: hidden; }
+    .report-preview {
+      padding: 1.5rem; filter: blur(4px); pointer-events: none; user-select: none;
+      background: linear-gradient(135deg, #f8faff, #eef3ff);
+    }
+    .report-overlay {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: .75rem;
+      background: rgba(255,255,255,.6); backdrop-filter: blur(2px);
+      border: 2px dashed var(--border); border-radius: 12px;
+    }
+    .report-overlay i { font-size: 2.5rem; color: var(--muted); }
+    .report-overlay h4 { font-size: .95rem; font-weight: 600; color: var(--dark); }
+    .report-overlay p { font-size: .8rem; color: var(--muted); text-align: center; max-width: 220px; }
+
+    /* SIDEBAR CARDS */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .info-item {}
+    .info-item .lbl { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .25rem; }
+    .info-item .val { font-size: .875rem; font-weight: 500; }
+
+    /* RESULT CARD */
+    .result-card {
+      border-radius: 12px; padding: 1.25rem;
+      border: 2px solid rgba(245,158,11,.35);
+      background: rgba(245,158,11,.06);
+    }
+    .result-top { display: flex; align-items: center; gap: .75rem; margin-bottom: .75rem; }
+    .result-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(245,158,11,.15); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #b45309; }
+    .result-title { font-size: 1.05rem; font-weight: 700; color: #92400e; }
+    .result-type { font-size: .78rem; color: #92400e; opacity: .8; }
+    .result-points { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .result-points li { font-size: .82rem; color: var(--dark); display: flex; align-items: flex-start; gap: .4rem; }
+    .result-points li i { font-size: .75rem; margin-top: .25rem; flex-shrink: 0; }
+    .result-points .warn { color: var(--warning); }
+    .result-points .ok { color: var(--success); }
+
+    .btn-download {
+      width: 100%; padding: .7rem; border-radius: 10px; font-family: 'Poppins', sans-serif;
+      font-size: .9rem; font-weight: 600; cursor: pointer; border: none;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      transition: all .25s; margin-top: .75rem;
+      background: #e2e8f0; color: var(--muted); cursor: not-allowed;
+    }
+    .btn-download.ready { background: var(--primary); color: #fff; cursor: pointer; }
+    .btn-download.ready:hover { background: var(--primary-dark); box-shadow: 0 4px 14px rgba(0,82,204,.28); transform: translateY(-1px); }
+
+    .btn-contact {
+      width: 100%; padding: .65rem; border-radius: 10px; font-size: .875rem; font-weight: 500;
+      cursor: pointer; border: 1.5px solid var(--primary); background: transparent; color: var(--primary);
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      transition: all .2s; margin-top: .65rem; font-family: 'Inter', sans-serif;
+    }
+    .btn-contact:hover { background: rgba(0,82,204,.06); }
+
+    /* FOOTER */
+    footer { background: var(--dark); color: rgba(255,255,255,.65); text-align: center; padding: 2rem; margin-top: 3rem; font-size: .875rem; }
+    footer .fl { margin-top: .6rem; }
+    footer a { color: rgba(255,255,255,.65); text-decoration: none; margin: 0 .75rem; transition: color .2s; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 860px) {
+      .two-col { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .nav-search { display: none; }
+      .page-wrap { padding: 1rem; }
+      .insp-header { padding: 1.25rem; }
+      .inspector-wrap { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../../index.html" class="nav-logo"><i class="fa-solid fa-globe"></i> GlobexSky</a>
+  <div class="nav-search">
+    <i class="fa-solid fa-magnifying-glass si"></i>
+    <input type="text" placeholder="Search products, suppliers, orders…" />
+  </div>
+  <div class="nav-actions">
+    <a href="#"><i class="fa-regular fa-user"></i> Login</a>
+    <a href="#" class="btn-reg"><i class="fa-solid fa-user-plus"></i> Register</a>
+    <a href="#" class="cart-wrap"><i class="fa-solid fa-cart-shopping"></i> Cart<span class="cart-dot">3</span></a>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <a href="#" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Inspections</a>
+
+  <!-- INSPECTION HEADER -->
+  <div class="insp-header">
+    <div class="insp-header-left">
+      <div class="insp-id">
+        <i class="fa-solid fa-hashtag"></i> INS-2024-0042
+        <span style="color:var(--border)">|</span>
+        <i class="fa-regular fa-calendar"></i> Submitted Oct 14, 2024
+      </div>
+      <div class="insp-name">Electronic Components Batch #789</div>
+      <div class="insp-sub">
+        <span><i class="fa-solid fa-box"></i> Pre-Shipment Inspection</span>
+        <span><i class="fa-solid fa-location-dot"></i> Shenzhen, China</span>
+        <span><i class="fa-solid fa-user-tie"></i> James Chen · AQI Services</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem">
+      <span class="badge badge-orange"><i class="fa-solid fa-circle-dot"></i> In Progress</span>
+      <span style="font-size:.78rem;color:var(--muted)">Scheduled: Oct 18, 2024 · 09:00 AM</span>
+    </div>
+  </div>
+
+  <!-- TWO COLUMN -->
+  <div class="two-col">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- TIMELINE -->
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-timeline"></i> Inspection Progress</div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-step done">
+              <div class="tl-dot-wrap"><div class="tl-dot"><i class="fa-solid fa-check"></i></div></div>
+              <div class="tl-content">
+                <h4>Requested</h4>
+                <p>Inspection request submitted and payment confirmed.</p>
+                <div class="tl-time"><i class="fa-regular fa-clock"></i> Oct 14, 2024 · 10:22 AM</div>
+              </div>
+            </div>
+            <div class="tl-step done">
+              <div class="tl-dot-wrap"><div class="tl-dot"><i class="fa-solid fa-check"></i></div></div>
+              <div class="tl-content">
+                <h4>Scheduled</h4>
+                <p>Inspector assigned. Appointment confirmed with the factory.</p>
+                <div class="tl-time"><i class="fa-regular fa-clock"></i> Oct 15, 2024 · 02:45 PM</div>
+              </div>
+            </div>
+            <div class="tl-step active">
+              <div class="tl-dot-wrap"><div class="tl-dot"><i class="fa-solid fa-spinner fa-spin"></i></div></div>
+              <div class="tl-content">
+                <h4>In Progress <span class="badge badge-orange" style="font-size:.72rem;padding:.2rem .6rem">Active</span></h4>
+                <p>Inspector is currently on-site conducting the inspection.</p>
+                <div class="tl-time"><i class="fa-regular fa-clock"></i> Oct 18, 2024 · 09:05 AM</div>
+              </div>
+            </div>
+            <div class="tl-step">
+              <div class="tl-dot-wrap"><div class="tl-dot"><i class="fa-solid fa-flag-checkered"></i></div></div>
+              <div class="tl-content">
+                <h4 style="color:var(--muted)">Completed</h4>
+                <p style="color:var(--muted)">Report will be available within 24 hours of completion.</p>
+                <div class="tl-time"><i class="fa-regular fa-clock"></i> Pending</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INSPECTOR DETAILS -->
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-user-tie"></i> Inspector Details</div>
+        <div class="card-body">
+          <div class="inspector-wrap">
+            <div class="inspector-avatar">JC</div>
+            <div class="inspector-info">
+              <h4>James Chen</h4>
+              <div class="company"><i class="fa-solid fa-building"></i> AQI Services · Senior Inspector</div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half-stroke"></i>
+                <span>4.8</span> <span style="color:var(--muted);font-weight:400">(124 reviews)</span>
+              </div>
+              <div class="contact-row">
+                <div class="contact-item"><i class="fa-solid fa-phone"></i> +86 138 0013 8000</div>
+                <div class="contact-item"><i class="fa-solid fa-envelope"></i> james.chen@aqiservices.com</div>
+                <div class="contact-item"><i class="fa-solid fa-id-badge"></i> License: QI-CN-20910</div>
+              </div>
+              <div class="inspector-actions">
+                <button class="btn-sm btn-sm-primary"><i class="fa-solid fa-message"></i> Message</button>
+                <button class="btn-sm btn-sm-outline"><i class="fa-solid fa-phone"></i> Call</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE UPDATES -->
+      <div class="card">
+        <div class="card-head" style="justify-content:space-between">
+          <span><i class="fa-solid fa-rss"></i> Live Updates</span>
+          <span class="badge badge-orange" style="font-size:.72rem"><i class="fa-solid fa-circle"></i> Live</span>
+        </div>
+        <div class="card-body">
+          <div id="newUpdateIndicator" class="new-updates-indicator" onclick="loadNewUpdates()">
+            <i class="fa-solid fa-arrow-down"></i> New update available — click to load
+          </div>
+          <div class="update-feed" id="updateFeed">
+            <div class="update-item">
+              <div class="update-media"><i class="fa-solid fa-image"></i></div>
+              <div class="update-text">
+                <h5>Inspector arrived at factory</h5>
+                <p>James Chen has arrived at the production facility and commenced document verification.</p>
+                <div class="update-time"><i class="fa-regular fa-clock"></i> Oct 18, 2024 · 09:05 AM</div>
+              </div>
+            </div>
+            <div class="update-item">
+              <div class="update-media"><i class="fa-solid fa-image"></i></div>
+              <div class="update-text">
+                <h5>Document review completed</h5>
+                <p>Purchase order, product specs, and quality control certificates reviewed and verified.</p>
+                <div class="update-time"><i class="fa-regular fa-clock"></i> Oct 18, 2024 · 09:48 AM</div>
+              </div>
+            </div>
+            <div class="update-item">
+              <div class="update-media" style="background:linear-gradient(135deg,#d1e4f6,#bcd3ed)">
+                <i class="fa-solid fa-video"></i>
+                <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <div class="update-text">
+                <h5>Production line walkthrough</h5>
+                <p>Video walkthrough of PCB assembly line. Initial sampling of 80 units in progress.</p>
+                <div class="update-time"><i class="fa-regular fa-clock"></i> Oct 18, 2024 · 10:30 AM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPLETED REPORT (locked) -->
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-file-contract"></i> Inspection Report</div>
+        <div class="card-body">
+          <div class="report-locked-wrap">
+            <div class="report-preview">
+              <h4 style="margin-bottom:.75rem">INS-2024-0042 — Full Inspection Report</h4>
+              <p style="font-size:.85rem;color:var(--muted)">AQL 2.5 Standard · Pre-Shipment Inspection · Electronic Components</p>
+              <div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
+                <div style="background:#f0fdf4;padding:.75rem;border-radius:8px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:700;color:var(--success)">97.3%</div>
+                  <div style="font-size:.75rem;color:var(--muted)">Pass Rate</div>
+                </div>
+                <div style="background:#fff7ed;padding:.75rem;border-radius:8px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:700;color:var(--warning)">12</div>
+                  <div style="font-size:.75rem;color:var(--muted)">Minor Defects</div>
+                </div>
+                <div style="background:#eff6ff;padding:.75rem;border-radius:8px;text-align:center">
+                  <div style="font-size:1.4rem;font-weight:700;color:var(--primary)">320</div>
+                  <div style="font-size:.75rem;color:var(--muted)">Units Sampled</div>
+                </div>
+              </div>
+            </div>
+            <div class="report-overlay">
+              <i class="fa-solid fa-lock"></i>
+              <h4>Report Not Yet Available</h4>
+              <p>The full report will be unlocked once the inspection is marked as completed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /left col -->
+
+    <!-- RIGHT SIDEBAR -->
+    <div>
+
+      <!-- INSPECTION INFO -->
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-circle-info"></i> Inspection Info</div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="lbl">Type</div>
+              <div class="val">Pre-Shipment</div>
+            </div>
+            <div class="info-item">
+              <div class="lbl">Order</div>
+              <div class="val">ORD-2024-00789</div>
+            </div>
+            <div class="info-item">
+              <div class="lbl">Scheduled</div>
+              <div class="val">Oct 18, 2024</div>
+            </div>
+            <div class="info-item">
+              <div class="lbl">Location</div>
+              <div class="val">Shenzhen, CN</div>
+            </div>
+            <div class="info-item">
+              <div class="lbl">AQL Level</div>
+              <div class="val">2.5 Standard</div>
+            </div>
+            <div class="info-item">
+              <div class="lbl">Quantity</div>
+              <div class="val">5,000 units</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULT CARD -->
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-clipboard-list"></i> Preliminary Result</div>
+        <div class="card-body">
+          <div class="result-card">
+            <div class="result-top">
+              <div class="result-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div>
+                <div class="result-title">Conditional Pass</div>
+                <div class="result-type">Pending final verification</div>
+              </div>
+            </div>
+            <ul class="result-points">
+              <li><i class="fa-solid fa-check ok"></i> Dimensions &amp; weight within tolerance</li>
+              <li><i class="fa-solid fa-check ok"></i> CE &amp; RoHS certifications verified</li>
+              <li><i class="fa-solid fa-triangle-exclamation warn"></i> Minor surface scratches on 12 units</li>
+              <li><i class="fa-solid fa-triangle-exclamation warn"></i> Packaging label misalignment (3%)</li>
+              <li><i class="fa-solid fa-xmark" style="color:var(--danger)"></i> 2 units failed voltage tolerance test</li>
+            </ul>
+          </div>
+
+          <button class="btn-download" id="downloadBtn" disabled>
+            <i class="fa-solid fa-file-arrow-down"></i> Download PDF Report
+          </button>
+
+          <button class="btn-contact" onclick="alert('Opening secure chat with James Chen…')">
+            <i class="fa-solid fa-comment-dots"></i> Contact Inspector
+          </button>
+        </div>
+      </div>
+
+      <!-- QUICK STATS -->
+      <div class="card">
+        <div class="card-head"><i class="fa-solid fa-chart-bar"></i> Quick Stats</div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:.9rem">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem">
+                <span>Units Passed</span><span style="font-weight:600;color:var(--success)">97.3%</span>
+              </div>
+              <div style="background:#e2e8f0;border-radius:999px;height:7px">
+                <div style="background:var(--success);width:97.3%;height:100%;border-radius:999px"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem">
+                <span>Minor Defects</span><span style="font-weight:600;color:var(--warning)">2.4%</span>
+              </div>
+              <div style="background:#e2e8f0;border-radius:999px;height:7px">
+                <div style="background:var(--warning);width:2.4%;height:100%;border-radius:999px"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem">
+                <span>Critical Defects</span><span style="font-weight:600;color:var(--danger)">0.3%</span>
+              </div>
+              <div style="background:#e2e8f0;border-radius:999px;height:7px">
+                <div style="background:var(--danger);width:0.3%;height:100%;border-radius:999px"></div>
+              </div>
+            </div>
+            <div style="font-size:.78rem;color:var(--muted);padding-top:.25rem;border-top:1px solid var(--border)">
+              Based on 320 of 5,000 units sampled (AQL 2.5)
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /right sidebar -->
+
+  </div><!-- /two-col -->
+
+</div><!-- /page-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div>© 2024 Globex International Trade Co., Ltd.</div>
+  <div class="fl">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+
+<script>
+  // ── Live update simulation
+  const pendingUpdates = [
+    {
+      title: 'Sampling phase 2 started',
+      text: '240 additional units selected for electrical performance testing per IEC 61000 standard.',
+      time: 'Oct 18, 2024 · 11:15 AM',
+      type: 'image'
+    },
+    {
+      title: 'Defect log updated',
+      text: 'Inspector logged 12 units with surface micro-scratches. Photographs uploaded to report.',
+      time: 'Oct 18, 2024 · 12:02 PM',
+      type: 'image'
+    },
+    {
+      title: 'Packaging inspection complete',
+      text: 'Carton strength, labeling, and barcodes reviewed. PDF spec sheet attached.',
+      time: 'Oct 18, 2024 · 01:30 PM',
+      type: 'video'
+    }
+  ];
+  let nextUpdate = 0;
+
+  function createUpdateEl(u) {
+    const div = document.createElement('div');
+    div.className = 'update-item';
+    div.style.animation = 'fadeIn .4s ease';
+    div.innerHTML = `
+      <div class="update-media" ${u.type==='video'?'style="background:linear-gradient(135deg,#d1e4f6,#bcd3ed)"':''}>
+        <i class="fa-solid ${u.type==='video'?'fa-video':'fa-image'}"></i>
+        ${u.type==='video'?'<div class="play-btn"><i class="fa-solid fa-play"></i></div>':''}
+      </div>
+      <div class="update-text">
+        <h5>${u.title}</h5>
+        <p>${u.text}</p>
+        <div class="update-time"><i class="fa-regular fa-clock"></i> ${u.time}</div>
+      </div>`;
+    return div;
+  }
+
+  function loadNewUpdates() {
+    const indicator = document.getElementById('newUpdateIndicator');
+    const feed = document.getElementById('updateFeed');
+    if (nextUpdate < pendingUpdates.length) {
+      feed.insertBefore(createUpdateEl(pendingUpdates[nextUpdate++]), feed.firstChild);
+    }
+    indicator.style.display = 'none';
+  }
+
+  // Simulate new updates arriving every 30 seconds
+  setInterval(() => {
+    if (nextUpdate < pendingUpdates.length) {
+      document.getElementById('newUpdateIndicator').style.display = 'block';
+    }
+  }, 30000);
+
+  // Download button becomes active when inspection completes (demo: 60s)
+  setTimeout(() => {
+    const btn = document.getElementById('downloadBtn');
+    btn.disabled = false;
+    btn.classList.add('ready');
+    btn.onclick = () => alert('Downloading INS-2024-0042 PDF Report…');
+  }, 60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Future of B2B Sourcing: AI-Powered Trade in 2025 | Blog | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --accent: #00C9A7;
+      --secondary: #FF6B35;
+      --warning: #F59E0B;
+      --success: #22C55E;
+      --danger: #EF4444;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --card-bg: #fff;
+      --border: #e2e8f0;
+      --muted: #64748b;
+      --shadow: 0 2px 16px rgba(0,82,204,0.07);
+      --shadow-hover: 0 8px 32px rgba(0,82,204,0.13);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.7; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }
+    a { text-decoration: none; }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky; top: 0; z-index: 999; background: var(--card-bg);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07); height: 64px;
+      display: flex; align-items: center; padding: 0 2rem; gap: 1.5rem;
+    }
+    .nav-logo {
+      font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.45rem;
+      background: linear-gradient(135deg, #0052CC 0%, #00C9A7 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      white-space: nowrap; display: flex; align-items: center; gap: .4rem;
+    }
+    .nav-search { flex: 1; max-width: 420px; position: relative; }
+    .nav-search input {
+      width: 100%; padding: .5rem 1rem .5rem 2.6rem; border: 1.5px solid var(--border);
+      border-radius: 8px; font-family: 'Inter', sans-serif; font-size: .875rem;
+      background: var(--bg); outline: none; transition: border-color .2s;
+    }
+    .nav-search input:focus { border-color: var(--primary); background: #fff; }
+    .nav-search .si { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .8rem; }
+    .nav-actions { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
+    .nav-actions a {
+      color: var(--dark); font-size: .875rem; font-weight: 500;
+      display: flex; align-items: center; gap: .35rem; padding: .4rem .8rem;
+      border-radius: 8px; transition: all .2s;
+    }
+    .nav-actions a:hover { background: var(--bg); color: var(--primary); }
+    .nav-actions .btn-reg { background: var(--primary); color: #fff !important; }
+    .nav-actions .btn-reg:hover { background: var(--primary-dark); }
+    .cart-wrap { position: relative; }
+    .cart-dot { position: absolute; top: -3px; right: -3px; background: var(--secondary); color: #fff; font-size: .6rem; font-weight: 700; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      background: var(--card-bg); border-bottom: 1px solid var(--border);
+      padding: .65rem 2rem; display: flex; align-items: center; gap: .45rem;
+      font-size: .82rem; color: var(--muted); max-width: 100%;
+    }
+    .breadcrumb a { color: var(--primary); }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: .45rem; width: 100%; }
+
+    /* PAGE LAYOUT */
+    .page-wrap { max-width: 1180px; margin: 2rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 300px; gap: 2.5rem; align-items: start; }
+
+    /* ARTICLE */
+    .article-wrap { min-width: 0; }
+
+    /* CATEGORY + META */
+    .article-top { margin-bottom: 1.25rem; }
+    .cat-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .3rem .8rem; border-radius: 999px; font-size: .75rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      background: rgba(0,201,167,.12); color: #059669; border: 1px solid rgba(0,201,167,.3);
+      margin-bottom: .9rem;
+    }
+    .article-title { font-size: 2rem; font-weight: 800; line-height: 1.25; color: var(--dark); margin-bottom: 1rem; }
+    .article-meta {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      font-size: .82rem; color: var(--muted); padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .meta-item { display: flex; align-items: center; gap: .3rem; }
+    .author-row { display: flex; align-items: center; gap: .5rem; }
+    .avatar-sm {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #0052CC, #00C9A7);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .75rem; font-weight: 700;
+    }
+    .author-link { font-weight: 600; color: var(--dark); font-size: .875rem; }
+    .author-link:hover { color: var(--primary); }
+
+    /* HERO IMAGE */
+    .hero-image {
+      width: 100%; height: 400px; border-radius: 16px; overflow: hidden;
+      margin: 1.5rem 0;
+      background: linear-gradient(135deg, #0052CC 0%, #003d99 40%, #00C9A7 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.3); font-size: 4rem; position: relative;
+    }
+    .hero-image-label {
+      position: absolute; bottom: 1rem; left: 1rem;
+      background: rgba(0,0,0,.55); color: rgba(255,255,255,.7);
+      padding: .3rem .8rem; border-radius: 6px; font-size: .75rem;
+    }
+
+    /* ARTICLE BODY TYPOGRAPHY */
+    .article-body { color: #1e293b; }
+    .article-body p { margin-bottom: 1.4rem; font-size: 1rem; line-height: 1.85; }
+    .article-body h2 {
+      font-size: 1.5rem; font-weight: 700; margin: 2.25rem 0 .9rem;
+      color: var(--dark); padding-bottom: .5rem; border-bottom: 2px solid var(--border);
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .article-body h2 i { color: var(--primary); font-size: 1.2rem; }
+    .article-body h3 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 .7rem; color: var(--dark); }
+    .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.4rem; }
+    .article-body li { margin-bottom: .5rem; font-size: 1rem; line-height: 1.75; }
+
+    blockquote {
+      border-left: 4px solid var(--primary); background: #eff6ff;
+      padding: 1.25rem 1.5rem; border-radius: 0 12px 12px 0; margin: 1.75rem 0;
+      position: relative;
+    }
+    blockquote::before {
+      content: '\201C'; font-size: 4rem; color: rgba(0,82,204,.2);
+      font-family: Georgia, serif; line-height: 1; position: absolute; top: .1rem; left: 1rem;
+    }
+    blockquote p { font-size: 1.05rem; font-style: italic; color: var(--primary-dark); margin: 0; padding-left: 1.5rem; }
+    blockquote cite { display: block; font-size: .82rem; color: var(--muted); margin-top: .6rem; padding-left: 1.5rem; font-style: normal; }
+
+    .inline-image {
+      width: 100%; max-width: 500px; height: 280px;
+      background: linear-gradient(135deg, #f0f4ff, #e0e8f8);
+      border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--muted); margin: 1.5rem auto; gap: .5rem;
+      border: 1px solid var(--border);
+    }
+    .inline-image i { font-size: 2.5rem; }
+    .inline-image span { font-size: .8rem; }
+
+    .callout-box {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid #bfdbfe; border-radius: 12px; padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0; display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .callout-box i { color: var(--primary); font-size: 1.3rem; margin-top: .15rem; flex-shrink: 0; }
+    .callout-box p { margin: 0; font-size: .9rem; color: #1e40af; }
+
+    /* SHARE BUTTONS */
+    .share-section { padding: 1.5rem 0; border-top: 1px solid var(--border); margin-top: 1.5rem; }
+    .share-section h4 { font-size: .9rem; font-weight: 600; margin-bottom: .85rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .share-buttons { display: flex; gap: .65rem; flex-wrap: wrap; }
+    .share-btn {
+      display: inline-flex; align-items: center; gap: .45rem; padding: .5rem 1.1rem;
+      border-radius: 8px; font-size: .84rem; font-weight: 500; cursor: pointer;
+      border: none; transition: all .2s; font-family: 'Inter', sans-serif;
+    }
+    .share-fb { background: #1877f2; color: #fff; }
+    .share-fb:hover { background: #1565d4; }
+    .share-tw { background: #000; color: #fff; }
+    .share-tw:hover { background: #333; }
+    .share-li { background: #0077b5; color: #fff; }
+    .share-li:hover { background: #005f8e; }
+    .share-copy { background: var(--bg); color: var(--dark); border: 1.5px solid var(--border); position: relative; }
+    .share-copy:hover { border-color: var(--primary); color: var(--primary); }
+    .copy-tooltip {
+      position: absolute; top: -36px; left: 50%; transform: translateX(-50%);
+      background: var(--dark); color: #fff; padding: .3rem .65rem;
+      border-radius: 6px; font-size: .73rem; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity .2s;
+    }
+    .copy-tooltip.show { opacity: 1; }
+
+    /* AUTHOR BIO */
+    .author-bio {
+      margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #f8faff, #eef3ff);
+      border: 1px solid var(--border); border-radius: 16px;
+      display: flex; gap: 1.25rem; align-items: flex-start;
+    }
+    .author-bio-avatar {
+      width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #0052CC, #00C9A7);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.8rem; font-weight: 700; font-family: 'Poppins', sans-serif;
+    }
+    .bio-content { flex: 1; }
+    .bio-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .25rem; }
+    .bio-name { font-size: 1.1rem; font-weight: 700; margin-bottom: .3rem; }
+    .bio-title { font-size: .82rem; color: var(--muted); margin-bottom: .6rem; }
+    .bio-text { font-size: .875rem; color: #374151; line-height: 1.65; margin-bottom: .85rem; }
+    .bio-actions { display: flex; gap: .65rem; }
+    .btn-follow {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .42rem 1rem; background: var(--primary); color: #fff;
+      border: none; border-radius: 8px; font-size: .82rem; font-weight: 600;
+      cursor: pointer; transition: background .2s; font-family: 'Inter', sans-serif;
+    }
+    .btn-follow:hover { background: var(--primary-dark); }
+    .btn-follow.following { background: var(--bg); color: var(--primary); border: 1.5px solid var(--primary); }
+
+    /* COMMENTS */
+    .comments-section { margin-top: 2.5rem; }
+    .comments-section h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .6rem; }
+    .comments-section h3 i { color: var(--primary); }
+    .comment-list { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 2rem; }
+    .comment-card {
+      background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); padding: 1.25rem;
+    }
+    .comment-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .75rem; }
+    .comment-author { display: flex; align-items: center; gap: .7rem; }
+    .comment-avatar {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .85rem; font-weight: 700;
+    }
+    .comment-info {}
+    .comment-name { font-size: .9rem; font-weight: 600; }
+    .comment-date { font-size: .73rem; color: var(--muted); }
+    .comment-text { font-size: .875rem; color: #374151; line-height: 1.65; margin-bottom: .75rem; }
+    .comment-actions { display: flex; gap: .75rem; }
+    .comment-action-btn {
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .78rem; color: var(--muted); cursor: pointer; border: none; background: transparent;
+      padding: .25rem .5rem; border-radius: 6px; transition: all .2s; font-family: 'Inter', sans-serif;
+    }
+    .comment-action-btn:hover { background: var(--bg); color: var(--primary); }
+    .comment-action-btn.liked { color: var(--danger); }
+
+    /* COMMENT FORM */
+    .comment-form-wrap {
+      background: var(--card-bg); border-radius: 14px; box-shadow: var(--shadow); padding: 1.5rem;
+    }
+    .comment-form-wrap h4 { font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; display: flex; align-items: center; gap: .5rem; }
+    .comment-form-wrap h4 i { color: var(--primary); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .fg { margin-bottom: 1rem; }
+    .fg label { display: block; font-size: .82rem; font-weight: 500; margin-bottom: .4rem; }
+    .fg input, .fg textarea {
+      width: 100%; padding: .6rem .9rem; border: 1.5px solid var(--border);
+      border-radius: 8px; font-family: 'Inter', sans-serif; font-size: .875rem;
+      color: var(--dark); background: #fafbfd; outline: none; transition: all .2s; resize: vertical;
+    }
+    .fg input:focus, .fg textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(0,82,204,.07); }
+    .btn-submit {
+      padding: .65rem 1.75rem; background: var(--primary); color: #fff;
+      border: none; border-radius: 10px; font-family: 'Poppins', sans-serif;
+      font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .25s;
+      display: inline-flex; align-items: center; gap: .45rem;
+    }
+    .btn-submit:hover { background: var(--primary-dark); box-shadow: 0 4px 14px rgba(0,82,204,.28); transform: translateY(-1px); }
+
+    /* SUCCESS MESSAGE */
+    .comment-success {
+      display: none; padding: 1rem; background: #f0fdf4; border: 1px solid #bbf7d0;
+      border-radius: 10px; color: #166534; font-size: .875rem; margin-top: 1rem;
+      align-items: center; gap: .5rem;
+    }
+    .comment-success.show { display: flex; }
+
+    /* PREV/NEXT NAV */
+    .post-nav {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem;
+      padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    .post-nav-item {
+      background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow);
+      padding: 1.1rem 1.25rem; cursor: pointer; transition: all .25s; border: 1.5px solid var(--border);
+    }
+    .post-nav-item:hover { border-color: var(--primary); box-shadow: var(--shadow-hover); }
+    .post-nav-item.next { text-align: right; }
+    .nav-label { font-size: .73rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem; display: flex; align-items: center; gap: .3rem; }
+    .post-nav-item.next .nav-label { justify-content: flex-end; }
+    .nav-title { font-size: .875rem; font-weight: 600; color: var(--dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* SIDEBAR */
+    .sidebar { position: sticky; top: 80px; display: flex; flex-direction: column; gap: 1.5rem; }
+    .sb-card { background: var(--card-bg); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+    .sb-card-head { padding: .9rem 1.25rem; border-bottom: 1px solid var(--border); font-size: .9rem; font-weight: 600; display: flex; align-items: center; gap: .5rem; }
+    .sb-card-head i { color: var(--primary); }
+    .sb-card-body { padding: 1.25rem; }
+
+    /* RELATED POSTS */
+    .rel-list { display: flex; flex-direction: column; gap: 1rem; }
+    .rel-item { display: flex; gap: .75rem; align-items: flex-start; }
+    .rel-thumb {
+      width: 68px; height: 52px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.45); font-size: 1rem;
+    }
+    .thumb-1 { background: linear-gradient(135deg, #0052CC, #00C9A7); }
+    .thumb-2 { background: linear-gradient(135deg, #FF6B35, #F59E0B); }
+    .thumb-3 { background: linear-gradient(135deg, #7C3AED, #0052CC); }
+    .rel-info {}
+    .rel-title { font-size: .82rem; font-weight: 600; color: var(--dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color .2s; }
+    .rel-title:hover { color: var(--primary); }
+    .rel-date { font-size: .72rem; color: var(--muted); margin-top: .2rem; }
+
+    /* NEWSLETTER */
+    .newsletter-card { background: linear-gradient(135deg, #0052CC, #003d99); border-radius: 14px; padding: 1.5rem; text-align: center; }
+    .newsletter-card h4 { color: #fff; font-size: .95rem; margin-bottom: .4rem; }
+    .newsletter-card p { color: rgba(255,255,255,.75); font-size: .8rem; margin-bottom: 1rem; }
+    .nl-input { width: 100%; padding: .55rem .9rem; border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: .85rem; outline: none; margin-bottom: .6rem; }
+    .nl-btn { width: 100%; padding: .6rem; background: var(--accent); color: var(--dark); border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: .875rem; font-weight: 600; cursor: pointer; transition: background .2s; }
+    .nl-btn:hover { background: #00b396; }
+
+    /* TAG CLOUD */
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tc-tag { padding: .28rem .65rem; border-radius: 6px; font-size: .73rem; font-weight: 500; cursor: pointer; transition: all .2s; border: 1px solid transparent; }
+
+    /* FOOTER */
+    footer { background: var(--dark); color: rgba(255,255,255,.65); text-align: center; padding: 2rem; margin-top: 3rem; font-size: .875rem; }
+    footer .fl { margin-top: .6rem; }
+    footer a { color: rgba(255,255,255,.65); margin: 0 .75rem; transition: color .2s; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+    @media (max-width: 600px) {
+      .nav-search { display: none; }
+      .article-title { font-size: 1.5rem; }
+      .hero-image { height: 240px; }
+      .post-nav { grid-template-columns: 1fr; }
+      .form-row-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../../index.html" class="nav-logo"><i class="fa-solid fa-globe"></i> GlobexSky</a>
+  <div class="nav-search">
+    <i class="fa-solid fa-magnifying-glass si"></i>
+    <input type="text" placeholder="Search products, suppliers, orders…" />
+  </div>
+  <div class="nav-actions">
+    <a href="#"><i class="fa-regular fa-user"></i> Login</a>
+    <a href="#" class="btn-reg"><i class="fa-solid fa-user-plus"></i> Register</a>
+    <a href="#" class="cart-wrap"><i class="fa-solid fa-cart-shopping"></i> Cart<span class="cart-dot">3</span></a>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="../../index.html"><i class="fa-solid fa-house"></i> Home</a>
+    <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+    <a href="index.html">Blog</a>
+    <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+    <span>The Future of B2B Sourcing: AI-Powered Trade in 2025</span>
+  </div>
+</div>
+
+<!-- PAGE LAYOUT -->
+<div class="page-wrap">
+
+  <!-- ARTICLE -->
+  <article class="article-wrap">
+
+    <!-- TOP -->
+    <div class="article-top">
+      <span class="cat-badge"><i class="fa-solid fa-microchip"></i> AI &amp; Technology</span>
+      <h1 class="article-title">The Future of B2B Sourcing: AI-Powered Trade in 2025</h1>
+      <div class="article-meta">
+        <div class="author-row">
+          <div class="avatar-sm">SC</div>
+          <a href="#" class="author-link">Sarah Chen</a>
+          <span style="color:var(--muted)">· Senior Trade Analyst</span>
+        </div>
+        <span class="meta-item"><i class="fa-regular fa-calendar"></i> November 12, 2024</span>
+        <span class="meta-item"><i class="fa-regular fa-clock"></i> 8 min read</span>
+        <span class="meta-item"><i class="fa-regular fa-eye"></i> 4,820 views</span>
+        <span class="meta-item"><i class="fa-regular fa-comment"></i> 18 comments</span>
+      </div>
+    </div>
+
+    <!-- HERO IMAGE -->
+    <div class="hero-image">
+      <i class="fa-solid fa-robot"></i>
+      <div class="hero-image-label"><i class="fa-solid fa-image"></i> Article hero image placeholder</div>
+    </div>
+
+    <!-- ARTICLE BODY -->
+    <div class="article-body">
+      <p>
+        The global B2B trade landscape is undergoing a profound transformation. For decades, the process of
+        sourcing goods internationally relied on personal relationships, trade fairs, and costly intermediaries.
+        Today, <strong>artificial intelligence is dismantling these old gatekeepers</strong> — making it possible
+        for a first-time importer in Cleveland to connect with a verified manufacturer in Chengdu within minutes.
+      </p>
+
+      <h2><i class="fa-solid fa-brain"></i> How AI Is Reshaping Supplier Discovery</h2>
+      <p>
+        Traditional sourcing meant browsing thousands of supplier listings, sending inquiry emails, and waiting
+        days for responses — only to discover that half the suppliers couldn't meet your requirements. AI-powered
+        platforms are replacing this frustrating workflow with intelligent matchmaking engines.
+      </p>
+      <p>
+        These systems analyze over 200 data points per supplier — including production capacity, on-time delivery
+        rates, certification status, defect history, and buyer reviews — to surface the best matches for a given
+        product specification in seconds. What once took weeks of research can now be accomplished in an afternoon.
+      </p>
+      <h3>Key Technologies Driving Change</h3>
+      <ul>
+        <li><strong>Natural Language Processing (NLP)</strong> — translating buyer RFQs (Requests for Quotation) into structured supplier queries across multiple languages simultaneously.</li>
+        <li><strong>Computer Vision</strong> — enabling automatic product specification extraction from photos and technical drawings without human data entry.</li>
+        <li><strong>Predictive Analytics</strong> — forecasting lead times, price fluctuations, and supply disruptions before they impact your orders.</li>
+        <li><strong>Behavioral AI</strong> — learning from every buyer interaction to continuously improve recommendation quality.</li>
+      </ul>
+
+      <blockquote>
+        <p>AI doesn't just make sourcing faster — it makes it fundamentally smarter. We're shifting from a market of information scarcity to information abundance, where the competitive advantage goes to those who can act on insights, not just collect them.</p>
+        <cite>— Dr. Mei Lin, Head of Trade Technology, World Commerce Institute</cite>
+      </blockquote>
+
+      <h2><i class="fa-solid fa-shield-halved"></i> AI-Powered Risk Management</h2>
+      <p>
+        Supply chain disruptions cost the global economy over <strong>$1.5 trillion annually</strong>. The
+        COVID-19 pandemic exposed just how fragile over-reliance on single-source supply chains could be. In
+        response, a new generation of AI risk tools has emerged.
+      </p>
+      <p>
+        These platforms monitor over 10,000 real-time data feeds — from port congestion metrics and factory
+        audits to political risk indices and weather event predictions — to give buyers a live risk dashboard
+        for every supplier in their chain.
+      </p>
+
+      <div class="inline-image">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Chart: AI-driven supply chain risk reduction metrics, 2022–2024</span>
+      </div>
+
+      <h3>Practical Risk Assessment Features</h3>
+      <p>
+        Modern AI risk tools now provide granular, actionable intelligence rather than generic country-level
+        ratings. A buyer sourcing electronic components from Shenzhen can receive:
+      </p>
+      <ol>
+        <li>A real-time "factory health score" updated daily from satellite imagery and shipping data</li>
+        <li>Financial stress indicators derived from regulatory filings and payment history</li>
+        <li>Environmental compliance flags triggered by government inspection records</li>
+        <li>Alternative supplier recommendations automatically suggested when risk thresholds are breached</li>
+      </ol>
+
+      <div class="callout-box">
+        <i class="fa-solid fa-lightbulb"></i>
+        <p><strong>Pro Tip:</strong> When evaluating AI sourcing platforms, look for systems that integrate with customs and logistics data — not just supplier directories. Real predictive power comes from cross-referencing trade flows with supplier profiles.</p>
+      </div>
+
+      <h2><i class="fa-solid fa-robot"></i> Autonomous Negotiation and Smart Contracts</h2>
+      <p>
+        Perhaps the most disruptive frontier in B2B AI is autonomous negotiation. Large language models (LLMs)
+        trained on millions of successful trade contracts can now draft, negotiate, and finalize purchase agreements
+        with minimal human intervention — a task that traditionally required experienced procurement teams.
+      </p>
+      <p>
+        Smart contracts built on blockchain infrastructure then automate payment release upon verified delivery
+        milestones, eliminating the letter-of-credit delays that have frustrated traders for generations. Early
+        adopters report <strong>payment cycle times reduced by 60–80%</strong>.
+      </p>
+
+      <h2><i class="fa-solid fa-globe"></i> What This Means for Small and Mid-Sized Businesses</h2>
+      <p>
+        The democratization of AI sourcing tools is perhaps their most significant long-term impact. Enterprise
+        buyers have always had sophisticated procurement teams and trade intelligence subscriptions. Now, a small
+        business owner can access the same quality of supplier intelligence, risk data, and negotiation assistance
+        that was previously available only to multinational corporations.
+      </p>
+      <p>
+        GlobexSky's platform is purpose-built for this new era — combining real-time supplier verification,
+        AI-powered RFQ matching, integrated inspection services, and automated compliance checks into a single
+        workflow accessible to any buyer, anywhere.
+      </p>
+
+      <h3>Looking Ahead to 2025 and Beyond</h3>
+      <p>
+        As generative AI matures and multimodal models become more capable, expect the sourcing experience to
+        become increasingly conversational. Buyers will simply describe what they need in plain language — and AI
+        agents will handle the entire procurement workflow: finding suppliers, requesting samples, coordinating
+        inspections, arranging logistics, and processing payments — entirely on autopilot.
+      </p>
+      <p>
+        The companies that invest in AI literacy and platform adoption now will hold a structural competitive
+        advantage as this shift accelerates. The question is no longer <em>whether</em> AI will transform global
+        trade — it's <em>whether your business will be ready</em> when it does.
+      </p>
+    </div><!-- /article-body -->
+
+    <!-- SHARE BUTTONS -->
+    <div class="share-section">
+      <h4><i class="fa-solid fa-share-nodes"></i> Share this article</h4>
+      <div class="share-buttons">
+        <button class="share-btn share-fb" onclick="shareLink('facebook')"><i class="fa-brands fa-facebook-f"></i> Facebook</button>
+        <button class="share-btn share-tw" onclick="shareLink('twitter')"><i class="fa-brands fa-x-twitter"></i> Twitter</button>
+        <button class="share-btn share-li" onclick="shareLink('linkedin')"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</button>
+        <button class="share-btn share-copy" id="copyBtn" onclick="copyLink()">
+          <i class="fa-regular fa-copy"></i> Copy Link
+          <span class="copy-tooltip" id="copyTooltip">Copied!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- AUTHOR BIO -->
+    <div class="author-bio">
+      <div class="author-bio-avatar">SC</div>
+      <div class="bio-content">
+        <div class="bio-label">Written by</div>
+        <div class="bio-name">Sarah Chen</div>
+        <div class="bio-title">Senior Trade Analyst · GlobexSky Editorial Team</div>
+        <p class="bio-text">
+          Sarah is a trade technology strategist with 12 years of experience in global supply chain management.
+          She has advised Fortune 500 companies on sourcing digitization and regularly speaks at international
+          trade forums. She holds an MBA from INSEAD and a BSc in International Economics from Peking University.
+        </p>
+        <div class="bio-actions">
+          <button class="btn-follow" id="followBtn" onclick="toggleFollow()">
+            <i class="fa-solid fa-user-plus"></i> Follow
+          </button>
+          <button class="share-btn share-tw" style="padding:.42rem .9rem;font-size:.78rem" onclick="shareLink('twitter')">
+            <i class="fa-brands fa-x-twitter"></i> Twitter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="comments-section">
+      <h3><i class="fa-solid fa-comments"></i> Comments <span id="commentCount" style="color:var(--muted);font-weight:400;font-size:.9rem">(3)</span></h3>
+
+      <div class="comment-list" id="commentList">
+
+        <!-- Comment 1 -->
+        <div class="comment-card">
+          <div class="comment-head">
+            <div class="comment-author">
+              <div class="comment-avatar" style="background:linear-gradient(135deg,#0052CC,#7C3AED)">TN</div>
+              <div class="comment-info">
+                <div class="comment-name">Thomas N.</div>
+                <div class="comment-date">November 13, 2024 · 10:42 AM</div>
+              </div>
+            </div>
+          </div>
+          <p class="comment-text">
+            Excellent breakdown of where things are heading. I've been using an AI sourcing tool for the past year
+            and the improvement in supplier quality scores has been dramatic. The risk monitoring features alone
+            saved us from a bad sourcing decision last quarter — flagged a supplier two weeks before they went dark.
+          </p>
+          <div class="comment-actions">
+            <button class="comment-action-btn" onclick="toggleLike(this)"><i class="fa-regular fa-thumbs-up"></i> <span class="like-count">14</span></button>
+            <button class="comment-action-btn" onclick="showReply(this)"><i class="fa-regular fa-comment"></i> Reply</button>
+            <button class="comment-action-btn"><i class="fa-solid fa-flag"></i> Report</button>
+          </div>
+        </div>
+
+        <!-- Comment 2 -->
+        <div class="comment-card">
+          <div class="comment-head">
+            <div class="comment-author">
+              <div class="comment-avatar" style="background:linear-gradient(135deg,#F59E0B,#FF6B35)">PK</div>
+              <div class="comment-info">
+                <div class="comment-name">Priya K.</div>
+                <div class="comment-date">November 13, 2024 · 2:18 PM</div>
+              </div>
+            </div>
+          </div>
+          <p class="comment-text">
+            The autonomous negotiation section is fascinating but I'd love to hear more about how these systems
+            handle edge cases — what happens when both buyer and seller are using AI negotiation agents? Does it
+            become a game theory arms race? I'd imagine there are some interesting failure modes to watch for.
+          </p>
+          <div class="comment-actions">
+            <button class="comment-action-btn" onclick="toggleLike(this)"><i class="fa-regular fa-thumbs-up"></i> <span class="like-count">8</span></button>
+            <button class="comment-action-btn" onclick="showReply(this)"><i class="fa-regular fa-comment"></i> Reply</button>
+            <button class="comment-action-btn"><i class="fa-solid fa-flag"></i> Report</button>
+          </div>
+        </div>
+
+        <!-- Comment 3 -->
+        <div class="comment-card">
+          <div class="comment-head">
+            <div class="comment-author">
+              <div class="comment-avatar" style="background:linear-gradient(135deg,#00C9A7,#22C55E)">JR</div>
+              <div class="comment-info">
+                <div class="comment-name">James R.</div>
+                <div class="comment-date">November 14, 2024 · 8:55 AM</div>
+              </div>
+            </div>
+          </div>
+          <p class="comment-text">
+            As a small business owner who imports from Vietnam, this hits close to home. I used to spend 3+ weeks
+            just vetting suppliers before even getting a sample. Now with AI tools I can go from idea to first sample
+            order in under a week. The ROI is insane. Sarah — great article as always, looking forward to the follow-up
+            on smart contracts!
+          </p>
+          <div class="comment-actions">
+            <button class="comment-action-btn" onclick="toggleLike(this)"><i class="fa-regular fa-thumbs-up"></i> <span class="like-count">21</span></button>
+            <button class="comment-action-btn" onclick="showReply(this)"><i class="fa-regular fa-comment"></i> Reply</button>
+            <button class="comment-action-btn"><i class="fa-solid fa-flag"></i> Report</button>
+          </div>
+        </div>
+
+      </div><!-- /comment-list -->
+
+      <!-- COMMENT FORM -->
+      <div class="comment-form-wrap">
+        <h4><i class="fa-solid fa-pen-to-square"></i> Leave a Comment</h4>
+        <form id="commentForm" onsubmit="submitComment(event)">
+          <div class="form-row-2">
+            <div class="fg" style="margin-bottom:0">
+              <label>Your Name <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="cName" placeholder="e.g. John Smith" required />
+            </div>
+            <div class="fg" style="margin-bottom:0">
+              <label>Email <span style="color:var(--danger)">*</span></label>
+              <input type="email" id="cEmail" placeholder="Will not be published" required />
+            </div>
+          </div>
+          <div class="fg" style="margin-top:1rem">
+            <label>Comment <span style="color:var(--danger)">*</span></label>
+            <textarea id="cText" rows="4" placeholder="Share your thoughts, questions, or experience…" required></textarea>
+          </div>
+          <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Post Comment</button>
+        </form>
+        <div class="comment-success" id="commentSuccess">
+          <i class="fa-solid fa-circle-check" style="color:var(--success);font-size:1.1rem"></i>
+          Your comment has been submitted and is awaiting moderation. Thank you!
+        </div>
+      </div>
+
+    </div><!-- /comments-section -->
+
+    <!-- PREV / NEXT -->
+    <div class="post-nav">
+      <a href="index.html" class="post-nav-item">
+        <div class="nav-label"><i class="fa-solid fa-arrow-left"></i> Previous Post</div>
+        <div class="nav-title">Navigating US-China Trade Tariffs: A 2025 Guide for Importers</div>
+      </a>
+      <a href="index.html" class="post-nav-item next">
+        <div class="nav-label">Next Post <i class="fa-solid fa-arrow-right"></i></div>
+        <div class="nav-title">Top 10 Electronics Suppliers in China for 2024</div>
+      </a>
+    </div>
+
+  </article><!-- /article-wrap -->
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- RELATED POSTS -->
+    <div class="sb-card">
+      <div class="sb-card-head"><i class="fa-solid fa-link"></i> Related Articles</div>
+      <div class="sb-card-body">
+        <div class="rel-list">
+          <div class="rel-item">
+            <div class="rel-thumb thumb-2"><i class="fa-solid fa-scale-balanced" style="color:rgba(255,255,255,.5)"></i></div>
+            <div class="rel-info">
+              <a href="index.html" class="rel-title">Navigating US-China Trade Tariffs: A 2025 Guide for Importers</a>
+              <div class="rel-date"><i class="fa-regular fa-calendar"></i> Oct 22, 2024</div>
+            </div>
+          </div>
+          <div class="rel-item">
+            <div class="rel-thumb thumb-3"><i class="fa-solid fa-magnifying-glass-chart" style="color:rgba(255,255,255,.5)"></i></div>
+            <div class="rel-info">
+              <a href="index.html" class="rel-title">How to Vet Suppliers: Alibaba vs Direct Factory — Pros &amp; Cons</a>
+              <div class="rel-date"><i class="fa-regular fa-calendar"></i> Oct 15, 2024</div>
+            </div>
+          </div>
+          <div class="rel-item">
+            <div class="rel-thumb thumb-1"><i class="fa-solid fa-gear" style="color:rgba(255,255,255,.5)"></i></div>
+            <div class="rel-info">
+              <a href="index.html" class="rel-title">MOQ Negotiation: How to Lower Minimum Order Quantities Without Losing the Deal</a>
+              <div class="rel-date"><i class="fa-regular fa-calendar"></i> Sep 30, 2024</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="newsletter-card">
+      <h4><i class="fa-solid fa-envelope-open-text"></i> Trade Intelligence Weekly</h4>
+      <p>Get AI-curated sourcing insights, supplier alerts, and policy updates delivered every Tuesday.</p>
+      <input type="email" class="nl-input" placeholder="your@email.com" />
+      <button class="nl-btn" onclick="handleNewsletterSignup(this)"><i class="fa-solid fa-bolt"></i> Subscribe Free</button>
+    </div>
+
+    <!-- TAG CLOUD -->
+    <div class="sb-card">
+      <div class="sb-card-head"><i class="fa-solid fa-tags"></i> Tags</div>
+      <div class="sb-card-body">
+        <div class="tag-cloud">
+          <span class="tc-tag" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe">AI</span>
+          <span class="tc-tag" style="background:#fff7ed;color:#c2410c;border-color:#fed7aa">B2B Trade</span>
+          <span class="tc-tag" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0">Sourcing</span>
+          <span class="tc-tag" style="background:#fdf4ff;color:#7e22ce;border-color:#e9d5ff">Technology</span>
+          <span class="tc-tag" style="background:#fefce8;color:#854d0e;border-color:#fde68a">China</span>
+          <span class="tc-tag" style="background:#fff1f2;color:#be123c;border-color:#fecdd3">Supply Chain</span>
+          <span class="tc-tag" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe">Smart Contracts</span>
+          <span class="tc-tag" style="background:#f0fdfa;color:#0f766e;border-color:#99f6e4">Risk Management</span>
+          <span class="tc-tag" style="background:#fefce8;color:#713f12;border-color:#fde68a">2025 Trends</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="sb-card">
+      <div class="sb-card-head"><i class="fa-solid fa-list-ul"></i> In This Article</div>
+      <div class="sb-card-body" style="padding:.75rem">
+        <div style="display:flex;flex-direction:column;gap:.15rem">
+          <a href="#" style="display:flex;align-items:center;gap:.5rem;padding:.45rem .6rem;border-radius:7px;font-size:.82rem;color:var(--muted);transition:all .2s" onmouseover="this.style.background='#eff6ff';this.style.color='#1d4ed8'" onmouseout="this.style.background='';this.style.color='var(--muted)'"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i> How AI Is Reshaping Supplier Discovery</a>
+          <a href="#" style="display:flex;align-items:center;gap:.5rem;padding:.45rem .6rem;border-radius:7px;font-size:.82rem;color:var(--muted);transition:all .2s" onmouseover="this.style.background='#eff6ff';this.style.color='#1d4ed8'" onmouseout="this.style.background='';this.style.color='var(--muted)'"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i> AI-Powered Risk Management</a>
+          <a href="#" style="display:flex;align-items:center;gap:.5rem;padding:.45rem .6rem;border-radius:7px;font-size:.82rem;color:var(--muted);transition:all .2s" onmouseover="this.style.background='#eff6ff';this.style.color='#1d4ed8'" onmouseout="this.style.background='';this.style.color='var(--muted)'"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i> Autonomous Negotiation &amp; Smart Contracts</a>
+          <a href="#" style="display:flex;align-items:center;gap:.5rem;padding:.45rem .6rem;border-radius:7px;font-size:.82rem;color:var(--muted);transition:all .2s" onmouseover="this.style.background='#eff6ff';this.style.color='#1d4ed8'" onmouseout="this.style.background='';this.style.color='var(--muted)'"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i> What This Means for SMBs</a>
+        </div>
+      </div>
+    </div>
+
+  </aside><!-- /sidebar -->
+
+</div><!-- /page-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div>© 2024 Globex International Trade Co., Ltd.</div>
+  <div class="fl">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+
+<script>
+  // ── SHARE
+  function shareLink(network) {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent('The Future of B2B Sourcing: AI-Powered Trade in 2025');
+    const map = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      twitter:  `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`
+    };
+    if (map[network]) window.open(map[network], '_blank', 'width=600,height=400');
+  }
+
+  function copyLink() {
+    const text = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(showCopied);
+    } else {
+      const el = document.createElement('textarea');
+      el.value = text; document.body.appendChild(el);
+      el.select(); document.execCommand('copy');
+      document.body.removeChild(el);
+      showCopied();
+    }
+  }
+
+  function showCopied() {
+    const tip = document.getElementById('copyTooltip');
+    tip.classList.add('show');
+    setTimeout(() => tip.classList.remove('show'), 2200);
+  }
+
+  // ── FOLLOW
+  let following = false;
+  function toggleFollow() {
+    following = !following;
+    const btn = document.getElementById('followBtn');
+    btn.innerHTML = following
+      ? '<i class="fa-solid fa-user-check"></i> Following'
+      : '<i class="fa-solid fa-user-plus"></i> Follow';
+    btn.classList.toggle('following', following);
+  }
+
+  // ── LIKE COMMENTS
+  function toggleLike(btn) {
+    const countEl = btn.querySelector('.like-count');
+    const icon = btn.querySelector('i');
+    const isLiked = btn.classList.contains('liked');
+    btn.classList.toggle('liked', !isLiked);
+    icon.className = isLiked ? 'fa-regular fa-thumbs-up' : 'fa-solid fa-thumbs-up';
+    countEl.textContent = parseInt(countEl.textContent) + (isLiked ? -1 : 1);
+  }
+
+  // ── REPLY
+  function showReply(btn) {
+    const card = btn.closest('.comment-card');
+    if (card.querySelector('.reply-form')) return;
+    const form = document.createElement('div');
+    form.className = 'reply-form';
+    form.style.cssText = 'margin-top:.75rem;padding:.75rem;background:#f8faff;border-radius:8px;border:1px solid var(--border)';
+    form.innerHTML = `<textarea style="width:100%;padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:7px;font-family:Inter,sans-serif;font-size:.82rem;resize:vertical;outline:none" rows="2" placeholder="Write a reply…"></textarea><div style="display:flex;gap:.5rem;margin-top:.5rem"><button onclick="submitReply(this)" style="padding:.35rem .9rem;background:var(--primary);color:#fff;border:none;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Reply</button><button onclick="this.closest('.reply-form').remove()" style="padding:.35rem .75rem;background:transparent;border:1.5px solid var(--border);border-radius:7px;font-size:.8rem;cursor:pointer;font-family:Inter,sans-serif">Cancel</button></div>`;
+    card.appendChild(form);
+    form.querySelector('textarea').focus();
+  }
+
+  function submitReply(btn) {
+    btn.closest('.reply-form').remove();
+  }
+
+  // ── SUBMIT COMMENT
+  function submitComment(e) {
+    e.preventDefault();
+    const name = document.getElementById('cName').value.trim();
+    const text = document.getElementById('cText').value.trim();
+    if (!name || !text) return;
+
+    const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    const colors = ['#0052CC,#00C9A7','#FF6B35,#F59E0B','#7C3AED,#0052CC','#00C9A7,#22C55E'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const now = new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }) + ' · ' + new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+
+    const card = document.createElement('div');
+    card.className = 'comment-card';
+    card.style.animation = 'fadeIn .4s ease';
+    card.innerHTML = `
+      <div class="comment-head">
+        <div class="comment-author">
+          <div class="comment-avatar" style="background:linear-gradient(135deg,${color})">${initials}</div>
+          <div class="comment-info">
+            <div class="comment-name">${name}</div>
+            <div class="comment-date">${now}</div>
+          </div>
+        </div>
+      </div>
+      <p class="comment-text">${text}</p>
+      <div class="comment-actions">
+        <button class="comment-action-btn" onclick="toggleLike(this)"><i class="fa-regular fa-thumbs-up"></i> <span class="like-count">0</span></button>
+        <button class="comment-action-btn" onclick="showReply(this)"><i class="fa-regular fa-comment"></i> Reply</button>
+      </div>`;
+
+    const list = document.getElementById('commentList');
+    list.appendChild(card);
+    const count = list.querySelectorAll('.comment-card').length;
+    document.getElementById('commentCount').textContent = `(${count})`;
+
+    document.getElementById('commentForm').reset();
+    document.getElementById('commentSuccess').classList.add('show');
+    setTimeout(() => document.getElementById('commentSuccess').classList.remove('show'), 4000);
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── NEWSLETTER
+  function handleNewsletterSignup(btn) {
+    const input = btn.previousElementSibling;
+    if (!input.value || !input.value.includes('@')) { input.style.border = '2px solid var(--danger)'; return; }
+    input.style.border = '';
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Subscribed!';
+    btn.style.background = '#22C55E';
+    btn.disabled = true;
+  }
+
+  // ── Fade-in animation for dynamically added elements
+  const styleTag = document.createElement('style');
+  styleTag.textContent = '@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}';
+  document.head.appendChild(styleTag);
+</script>
+</body>
+</html>

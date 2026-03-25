@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request Inspection | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --accent: #00C9A7;
+      --secondary: #FF6B35;
+      --warning: #F59E0B;
+      --success: #22C55E;
+      --danger: #EF4444;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --card-bg: #fff;
+      --border: #e2e8f0;
+      --muted: #64748b;
+      --shadow: 0 2px 16px rgba(0,82,204,0.07);
+      --shadow-hover: 0 8px 32px rgba(0,82,204,0.13);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: sticky; top: 0; z-index: 999;
+      background: var(--card-bg);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      height: 64px; display: flex; align-items: center;
+      padding: 0 2rem; gap: 1.5rem;
+    }
+    .nav-logo {
+      font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.45rem;
+      background: linear-gradient(135deg, #0052CC 0%, #00C9A7 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .nav-search {
+      flex: 1; max-width: 420px; position: relative;
+    }
+    .nav-search input {
+      width: 100%; padding: 0.5rem 1rem 0.5rem 2.6rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 0.875rem;
+      background: var(--bg); outline: none; transition: border-color .2s;
+    }
+    .nav-search input:focus { border-color: var(--primary); background: #fff; }
+    .nav-search .si { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .8rem; }
+    .nav-actions { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
+    .nav-actions a {
+      text-decoration: none; color: var(--dark); font-size: .875rem; font-weight: 500;
+      display: flex; align-items: center; gap: .35rem; padding: .4rem .8rem;
+      border-radius: 8px; transition: all .2s; white-space: nowrap;
+    }
+    .nav-actions a:hover { background: var(--bg); color: var(--primary); }
+    .nav-actions .btn-reg { background: var(--primary); color: #fff !important; }
+    .nav-actions .btn-reg:hover { background: var(--primary-dark); box-shadow: 0 3px 10px rgba(0,82,204,.3); }
+    .nav-actions .cart-wrap { position: relative; }
+    .cart-dot {
+      position: absolute; top: -3px; right: -3px; background: var(--secondary);
+      color: #fff; font-size: .6rem; font-weight: 700;
+      width: 15px; height: 15px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb {
+      background: var(--card-bg); border-bottom: 1px solid var(--border);
+      padding: .65rem 2rem; display: flex; align-items: center; gap: .45rem;
+      font-size: .82rem; color: var(--muted);
+    }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0052CC 0%, #003d99 55%, #006b5e 100%);
+      color: #fff; text-align: center; padding: 3rem 2rem;
+    }
+    .hero-icon { font-size: 3rem; margin-bottom: 1rem; opacity: .9; }
+    .hero h1 { font-size: 2.1rem; font-weight: 700; margin-bottom: .4rem; }
+    .hero p { font-size: .98rem; opacity: .85; max-width: 520px; margin: 0 auto; }
+
+    /* ── LAYOUT ── */
+    .layout {
+      max-width: 1180px; margin: 2rem auto; padding: 0 2rem;
+      display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start;
+    }
+
+    /* ── FORM CARD ── */
+    .form-card { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+    .fsec { padding: 1.75rem; border-bottom: 1px solid var(--border); }
+    .fsec:last-child { border-bottom: none; }
+    .sec-title {
+      font-size: 1rem; font-weight: 600; color: var(--dark);
+      margin-bottom: 1.25rem; display: flex; align-items: center; gap: .6rem;
+    }
+    .step-num {
+      background: var(--primary); color: #fff; width: 24px; height: 24px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; font-weight: 700; flex-shrink: 0;
+    }
+
+    /* ── INSPECTION TYPE CARDS ── */
+    .itype-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .itype-card {
+      border: 2px solid var(--border); border-radius: 12px; padding: 1.2rem;
+      cursor: pointer; transition: all .25s; background: #fafbfd; position: relative;
+    }
+    .itype-card:hover { border-color: var(--primary); box-shadow: 0 4px 14px rgba(0,82,204,.1); }
+    .itype-card.selected {
+      border-color: var(--primary); background: rgba(0,82,204,.04);
+      box-shadow: 0 4px 14px rgba(0,82,204,.13);
+    }
+    .itype-card input[type="radio"] {
+      position: absolute; top: .9rem; right: .9rem;
+      width: 17px; height: 17px; accent-color: var(--primary); cursor: pointer;
+    }
+    .itype-icon { font-size: 1.7rem; color: var(--primary); margin-bottom: .65rem; }
+    .itype-card h4 { font-size: .875rem; font-weight: 600; margin-bottom: .3rem; }
+    .itype-card p { font-size: .775rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── FORM CONTROLS ── */
+    .fg { margin-bottom: 1.2rem; }
+    .fg:last-child { margin-bottom: 0; }
+    .flabel { display: block; font-size: .85rem; font-weight: 500; margin-bottom: .45rem; }
+    .flabel .req { color: var(--danger); margin-left: 2px; }
+    .fctrl {
+      width: 100%; padding: .6rem 1rem; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--dark);
+      background: #fafbfd; outline: none; transition: all .2s; resize: vertical;
+    }
+    .fctrl:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,82,204,.08); background: #fff; }
+    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .hint { font-size: .775rem; color: var(--muted); margin-top: .35rem; display: flex; align-items: center; gap: .3rem; }
+
+    /* ── FILE UPLOAD ── */
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: 12px; padding: 2rem;
+      text-align: center; cursor: pointer; transition: all .25s; background: #fafbfd;
+    }
+    .drop-zone:hover, .drop-zone.over { border-color: var(--primary); background: rgba(0,82,204,.04); }
+    .drop-icon { font-size: 2.4rem; color: var(--primary); margin-bottom: .65rem; opacity: .75; }
+    .drop-zone h4 { font-size: .9rem; color: var(--dark); margin-bottom: .3rem; }
+    .drop-zone p { font-size: .78rem; color: var(--muted); }
+    .drop-zone .bl { color: var(--primary); font-weight: 500; }
+    #fileInput { display: none; }
+    .file-list { margin-top: .9rem; display: flex; flex-direction: column; gap: .45rem; }
+    .file-item {
+      display: flex; align-items: center; gap: .65rem; padding: .5rem .8rem;
+      background: #eff6ff; border-radius: 8px; font-size: .82rem;
+    }
+    .file-item i { color: var(--primary); }
+    .file-sz { color: var(--muted); font-size: .73rem; }
+    .file-rm { margin-left: auto; color: var(--danger); cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background .2s; }
+    .file-rm:hover { background: rgba(239,68,68,.1); }
+
+    /* ── SIDEBAR ── */
+    .sidebar-card { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; position: sticky; top: 80px; }
+    .sb-head { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; padding: 1.25rem 1.5rem; }
+    .sb-head h3 { font-size: 1rem; font-weight: 600; margin-bottom: .2rem; display: flex; align-items: center; gap: .5rem; }
+    .sb-head p { font-size: .8rem; opacity: .8; }
+    .sb-body { padding: 1.5rem; }
+    .price-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .6rem 0; font-size: .875rem; border-bottom: 1px solid var(--border);
+    }
+    .price-row:last-of-type { border-bottom: none; }
+    .price-row .pl { color: var(--muted); display: flex; align-items: center; gap: .4rem; }
+    .price-row .pv { font-weight: 500; }
+    .price-row.rush .pv { color: var(--warning); }
+    .price-total {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: .75rem; padding: 1rem; background: #eff6ff; border-radius: 10px;
+      border: 1.5px solid rgba(0,82,204,.15);
+    }
+    .price-total .pl { font-weight: 700; font-size: 1rem; color: var(--dark); }
+    .price-total .pv { font-weight: 800; font-size: 1.35rem; color: var(--primary); }
+    .rush-notice {
+      margin-top: .75rem; padding: .55rem .8rem;
+      background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.3);
+      border-radius: 8px; font-size: .78rem; color: #92400e;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .rush-notice.hidden { display: none; }
+    .btn-pay {
+      width: 100%; margin-top: 1rem; padding: .875rem;
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: .975rem; font-weight: 600;
+      cursor: pointer; transition: all .25s; display: flex; align-items: center; justify-content: center; gap: .5rem;
+    }
+    .btn-pay:hover { background: var(--primary-dark); box-shadow: 0 5px 18px rgba(0,82,204,.32); transform: translateY(-1px); }
+    .btn-pay:active { transform: translateY(0); }
+    .trust-row { display: flex; justify-content: space-around; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .trust-item { display: flex; flex-direction: column; align-items: center; gap: .25rem; font-size: .73rem; color: var(--muted); text-align: center; }
+    .trust-item i { font-size: 1.1rem; color: var(--success); }
+    .guarantee-box {
+      margin-top: 1rem; padding: .75rem; background: #f0fdf4;
+      border: 1px solid #bbf7d0; border-radius: 8px;
+      font-size: .78rem; color: #166534; line-height: 1.5;
+    }
+    .guarantee-box i { margin-right: .25rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,.65);
+      text-align: center; padding: 2rem; margin-top: 3rem; font-size: .875rem;
+    }
+    footer .fl { margin-top: .6rem; }
+    footer a { color: rgba(255,255,255,.65); text-decoration: none; margin: 0 .75rem; transition: color .2s; }
+    footer a:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar-card { position: static; }
+    }
+    @media (max-width: 600px) {
+      .itype-grid, .frow { grid-template-columns: 1fr; }
+      .nav-search { display: none; }
+      .layout { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../../index.html" class="nav-logo">
+    <i class="fa-solid fa-globe"></i> GlobexSky
+  </a>
+  <div class="nav-search">
+    <i class="fa-solid fa-magnifying-glass si"></i>
+    <input type="text" placeholder="Search products, suppliers, orders…" />
+  </div>
+  <div class="nav-actions">
+    <a href="#"><i class="fa-regular fa-user"></i> Login</a>
+    <a href="#" class="btn-reg"><i class="fa-solid fa-user-plus"></i> Register</a>
+    <a href="#" class="cart-wrap">
+      <i class="fa-solid fa-cart-shopping"></i> Cart
+      <span class="cart-dot">3</span>
+    </a>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="../../index.html"><i class="fa-solid fa-house"></i> Home</a>
+  <i class="fa-solid fa-chevron-right" style="font-size:.68rem"></i>
+  <a href="#">Inspection Services</a>
+  <i class="fa-solid fa-chevron-right" style="font-size:.68rem"></i>
+  <span>Request Inspection</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-icon"><i class="fa-solid fa-shield-halved"></i></div>
+  <h1>Request Quality Inspection</h1>
+  <p>Certified third-party inspectors worldwide — transparent pricing, fast results</p>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- ── FORM ── -->
+  <div class="form-card">
+
+    <!-- STEP 1 -->
+    <div class="fsec">
+      <h3 class="sec-title"><span class="step-num">1</span> Select Inspection Type</h3>
+      <div class="itype-grid" id="itypeGrid">
+        <label class="itype-card selected" onclick="selectCard(this)">
+          <input type="radio" name="itype" value="pre-shipment" checked />
+          <div class="itype-icon"><i class="fa-solid fa-box-open"></i></div>
+          <h4>Pre-Shipment</h4>
+          <p>Inspect goods after production is 80%+ complete, before goods leave the factory.</p>
+        </label>
+        <label class="itype-card" onclick="selectCard(this)">
+          <input type="radio" name="itype" value="during-production" />
+          <div class="itype-icon"><i class="fa-solid fa-industry"></i></div>
+          <h4>During Production</h4>
+          <p>Monitor quality actively during the manufacturing process to catch issues early.</p>
+        </label>
+        <label class="itype-card" onclick="selectCard(this)">
+          <input type="radio" name="itype" value="final-random" />
+          <div class="itype-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          <h4>Final Random Inspection</h4>
+          <p>Random AQL sampling of finished goods against international defect standards.</p>
+        </label>
+        <label class="itype-card" onclick="selectCard(this)">
+          <input type="radio" name="itype" value="container-loading" />
+          <div class="itype-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
+          <h4>Container Loading</h4>
+          <p>Supervise container loading, verify cargo count, condition, and seal integrity.</p>
+        </label>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="fsec">
+      <h3 class="sec-title"><span class="step-num">2</span> Order &amp; Product Details</h3>
+      <div class="fg">
+        <label class="flabel">Product / Order Name <span class="req">*</span></label>
+        <input class="fctrl" type="text" placeholder="e.g. Electronic Components Batch #789" list="order-hints" />
+        <datalist id="order-hints">
+          <option value="Electronic Components Batch #789" />
+          <option value="Textile Order #1023" />
+          <option value="Furniture Shipment #456" />
+          <option value="Machinery Parts Order #321" />
+        </datalist>
+      </div>
+      <div class="frow">
+        <div class="fg" style="margin-bottom:0">
+          <label class="flabel">Order Number <span class="req">*</span></label>
+          <input class="fctrl" type="text" placeholder="e.g. ORD-2024-00789" />
+        </div>
+        <div class="fg" style="margin-bottom:0">
+          <label class="flabel">Quantity to Inspect</label>
+          <input class="fctrl" type="number" placeholder="e.g. 5000 units" min="1" />
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="fsec">
+      <h3 class="sec-title"><span class="step-num">3</span> Preferred Inspection Date</h3>
+      <div class="fg">
+        <label class="flabel">Inspection Date <span class="req">*</span></label>
+        <input class="fctrl" type="date" id="inspDate" onchange="checkRush(this.value)" />
+        <p class="hint"><i class="fa-solid fa-circle-info"></i> Rush fee of $99 applies for dates within 5 business days from today.</p>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="fsec">
+      <h3 class="sec-title"><span class="step-num">4</span> Inspection Location</h3>
+      <div class="frow">
+        <div class="fg" style="margin-bottom:0">
+          <label class="flabel">Country <span class="req">*</span></label>
+          <select class="fctrl" id="countrySelect" onchange="updateSurcharge()">
+            <option value="">Select Country</option>
+            <option value="0">China (+$0)</option>
+            <option value="0">India (+$0)</option>
+            <option value="50">Vietnam (+$50)</option>
+            <option value="50">Bangladesh (+$50)</option>
+            <option value="75">Indonesia (+$75)</option>
+            <option value="75">Mexico (+$75)</option>
+            <option value="100">Turkey (+$100)</option>
+            <option value="100">Other (+$100)</option>
+          </select>
+        </div>
+        <div class="fg" style="margin-bottom:0">
+          <label class="flabel">City / Region</label>
+          <input class="fctrl" type="text" placeholder="e.g. Shenzhen, Guangdong" />
+        </div>
+      </div>
+      <div class="fg" style="margin-top:1rem">
+        <label class="flabel">Factory / Supplier Address</label>
+        <input class="fctrl" type="text" placeholder="Full address of inspection location" />
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="fsec">
+      <h3 class="sec-title"><span class="step-num">5</span> Reference Documents</h3>
+      <div class="drop-zone" id="dropZone"
+           onclick="document.getElementById('fileInput').click()"
+           ondragover="doDragOver(event)"
+           ondragleave="doDragLeave()"
+           ondrop="doDrop(event)">
+        <div class="drop-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+        <h4>Drag &amp; drop files here</h4>
+        <p>or <span class="bl">browse to upload</span></p>
+        <p style="margin-top:.4rem;font-size:.73rem">PDF, DOC, XLS, JPG, PNG — max 10 MB each</p>
+      </div>
+      <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" onchange="handleFiles(this.files)" />
+      <div class="file-list" id="fileList"></div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="fsec">
+      <h3 class="sec-title"><span class="step-num">6</span> Special Instructions</h3>
+      <div class="fg">
+        <label class="flabel">AQL Level</label>
+        <select class="fctrl">
+          <option value="">Select AQL Level (optional)</option>
+          <option value="0.65">AQL 0.65 — Critical defects</option>
+          <option value="1.0">AQL 1.0 — Major defects</option>
+          <option value="2.5" selected>AQL 2.5 — Standard (recommended)</option>
+          <option value="4.0">AQL 4.0 — Minor defects</option>
+          <option value="6.5">AQL 6.5 — Lenient</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flabel">Additional Requirements</label>
+        <textarea class="fctrl" rows="4" placeholder="Describe any specific inspection criteria, quality standards, packaging requirements, or other special instructions…"></textarea>
+      </div>
+    </div>
+
+  </div><!-- /form-card -->
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar-card">
+    <div class="sb-head">
+      <h3><i class="fa-solid fa-receipt"></i> Pricing Breakdown</h3>
+      <p>Transparent, all-inclusive pricing — no hidden fees</p>
+    </div>
+    <div class="sb-body">
+      <div class="price-row">
+        <span class="pl"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> Base Inspection Fee</span>
+        <span class="pv">$299.00</span>
+      </div>
+      <div class="price-row rush">
+        <span class="pl"><i class="fa-solid fa-bolt" style="color:var(--warning)"></i> Rush Fee</span>
+        <span class="pv" id="rushVal">$0.00</span>
+      </div>
+      <div class="price-row">
+        <span class="pl"><i class="fa-solid fa-location-dot" style="color:var(--secondary)"></i> Location Surcharge</span>
+        <span class="pv" id="surchargeVal">$50.00</span>
+      </div>
+      <div class="price-total">
+        <span class="pl">Total</span>
+        <span class="pv" id="totalVal">$349.00</span>
+      </div>
+
+      <div class="rush-notice hidden" id="rushNotice">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Rush fee applied — inspection scheduled within 5 days.
+      </div>
+
+      <button class="btn-pay" id="payBtn" onclick="handlePay()">
+        <i class="fa-solid fa-lock"></i> Confirm &amp; Pay
+      </button>
+
+      <div class="trust-row">
+        <div class="trust-item"><i class="fa-solid fa-shield-halved"></i><span>Secure<br>Payment</span></div>
+        <div class="trust-item"><i class="fa-solid fa-certificate"></i><span>ISO<br>Certified</span></div>
+        <div class="trust-item"><i class="fa-solid fa-headset"></i><span>24/7<br>Support</span></div>
+        <div class="trust-item"><i class="fa-solid fa-rotate-left"></i><span>Money-back<br>Guarantee</span></div>
+      </div>
+
+      <div class="guarantee-box">
+        <i class="fa-solid fa-circle-check"></i>
+        <strong>Money-back guarantee:</strong> Full refund if inspection isn't completed within 48 hours of your scheduled date.
+      </div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /layout -->
+
+<!-- FOOTER -->
+<footer>
+  <div>© 2024 Globex International Trade Co., Ltd.</div>
+  <div class="fl">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+
+<script>
+  // ── Pricing state
+  let rushFee = 0;
+  let surcharge = 50;
+  const BASE = 299;
+
+  // Set min date = today
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.getElementById('inspDate').min = todayStr;
+
+  function selectCard(label) {
+    document.querySelectorAll('.itype-card').forEach(c => c.classList.remove('selected'));
+    label.classList.add('selected');
+    label.querySelector('input[type="radio"]').checked = true;
+  }
+
+  function checkRush(val) {
+    if (!val) return;
+    const diff = Math.ceil((new Date(val) - new Date()) / 864e5);
+    if (diff >= 0 && diff < 5) {
+      rushFee = 99;
+      document.getElementById('rushVal').textContent = '$99.00';
+      document.getElementById('rushNotice').classList.remove('hidden');
+    } else {
+      rushFee = 0;
+      document.getElementById('rushVal').textContent = '$0.00';
+      document.getElementById('rushNotice').classList.add('hidden');
+    }
+    recalc();
+  }
+
+  function updateSurcharge() {
+    const sel = document.getElementById('countrySelect');
+    surcharge = sel.value === '' ? 50 : parseInt(sel.value, 10);
+    document.getElementById('surchargeVal').textContent = '$' + surcharge.toFixed(2);
+    recalc();
+  }
+
+  function recalc() {
+    document.getElementById('totalVal').textContent = '$' + (BASE + rushFee + surcharge).toFixed(2);
+  }
+
+  // ── File upload
+  function doDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('over'); }
+  function doDragLeave() { document.getElementById('dropZone').classList.remove('over'); }
+  function doDrop(e) { e.preventDefault(); doDragLeave(); handleFiles(e.dataTransfer.files); }
+
+  function handleFiles(files) {
+    const list = document.getElementById('fileList');
+    const icons = { pdf:'fa-file-pdf', doc:'fa-file-word', docx:'fa-file-word', xls:'fa-file-excel', xlsx:'fa-file-excel', jpg:'fa-file-image', jpeg:'fa-file-image', png:'fa-file-image' };
+    Array.from(files).forEach(f => {
+      const ext = f.name.split('.').pop().toLowerCase();
+      const ic = icons[ext] || 'fa-file';
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.innerHTML = `<i class="fa-solid ${ic}"></i><span>${f.name}</span><span class="file-sz">${(f.size/1024).toFixed(1)} KB</span><span class="file-rm" title="Remove"><i class="fa-solid fa-xmark"></i></span>`;
+      item.querySelector('.file-rm').addEventListener('click', () => item.remove());
+      list.appendChild(item);
+    });
+  }
+
+  // ── Pay button
+  function handlePay() {
+    const btn = document.getElementById('payBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing…';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Request Submitted!';
+      btn.style.background = 'var(--success)';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-solid fa-lock"></i> Confirm &amp; Pay';
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 3200);
+    }, 1600);
+  }
+</script>
+</body>
+</html>

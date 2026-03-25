@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Wishlists | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --primary-light: #e6f0ff;
+      --accent: #00C9A7;
+      --accent-light: #e0faf5;
+      --secondary: #FF6B35;
+      --secondary-light: #fff1ec;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --text: #2d3748;
+      --muted: #718096;
+      --card: #fff;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,.08);
+      --shadow-hover: 0 8px 30px rgba(0,82,204,.18);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+
+    /* ── HEADER ── */
+    .site-header { position: sticky; top: 0; z-index: 1000; background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    nav.navbar { max-width: 1280px; margin: 0 auto; }
+    .nav-container { display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 66px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; white-space: nowrap; }
+    .nav-logo span { color: var(--accent); }
+    .nav-search { flex: 1; max-width: 480px; position: relative; }
+    .nav-search input { width: 100%; padding: 9px 18px 9px 42px; border: 2px solid var(--border); border-radius: 25px; font-family: 'Inter', sans-serif; font-size: .9rem; transition: border-color .2s, box-shadow .2s; outline: none; background: var(--bg); }
+    .nav-search input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); background: #fff; }
+    .nav-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .nav-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .nav-link { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: .88rem; font-weight: 500; color: var(--text); text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+    .nav-link:hover { background: var(--primary-light); color: var(--primary); }
+    .nav-link.btn-primary { background: var(--primary); color: #fff; }
+    .nav-link.btn-primary:hover { background: var(--primary-dark); }
+    .cart-btn { position: relative; padding: 8px 12px; }
+    .cart-badge { position: absolute; top: 2px; right: 2px; background: var(--secondary); color: #fff; font-size: .65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ── HERO ── */
+    .page-hero { background: linear-gradient(135deg, var(--primary) 0%, #1a6bde 60%, var(--accent) 100%); color: #fff; padding: 52px 24px 44px; text-align: center; }
+    .page-hero h1 { font-size: 2.1rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .page-hero h1 i { color: #ff8fab; }
+    .page-hero p { font-size: 1.05rem; opacity: .9; max-width: 480px; margin: 0 auto; }
+
+    /* ── MAIN CONTENT ── */
+    .main-content { max-width: 1280px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    /* ── TABS ── */
+    .tabs-row { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .tab-btn { display: flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 30px; border: 2px solid var(--border); background: var(--card); font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .2s; }
+    .tab-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .tab-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .tab-btn .tab-count { background: rgba(255,255,255,.3); padding: 1px 7px; border-radius: 12px; font-size: .78rem; }
+    .tab-btn.active .tab-count { background: rgba(255,255,255,.35); }
+    .tab-btn:not(.active) .tab-count { background: var(--bg); color: var(--muted); }
+    .add-list-btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 30px; border: 2px dashed var(--primary); background: transparent; color: var(--primary); font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 500; cursor: pointer; transition: all .2s; margin-left: 4px; }
+    .add-list-btn:hover { background: var(--primary-light); }
+
+    /* ── SORT BAR ── */
+    .sort-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; padding: 14px 20px; background: var(--card); border-radius: var(--radius-sm); border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .sort-bar label { font-size: .88rem; font-weight: 500; color: var(--muted); white-space: nowrap; }
+    .sort-bar select { padding: 8px 32px 8px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .88rem; background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 10px center; appearance: none; outline: none; cursor: pointer; }
+    .sort-bar select:focus { border-color: var(--primary); }
+    .sort-bar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .share-toggle { display: flex; align-items: center; gap: 8px; font-size: .88rem; font-weight: 500; }
+    .toggle-switch { position: relative; width: 44px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #cbd5e0; border-radius: 24px; transition: .3s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .3s; }
+    .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+    .share-label { font-size: .82rem; color: var(--muted); min-width: 44px; }
+
+    /* ── COMPARE BAR ── */
+    .compare-bar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: var(--primary-light); border: 1px solid #c3d9f7; border-radius: var(--radius-sm); margin-bottom: 20px; }
+    .compare-bar span { font-size: .88rem; color: var(--primary); font-weight: 500; }
+    .compare-btn { padding: 8px 20px; border-radius: var(--radius-sm); background: var(--primary); color: #fff; border: none; font-family: 'Inter', sans-serif; font-size: .88rem; font-weight: 500; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 7px; }
+    .compare-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+    .compare-btn:not(:disabled):hover { background: var(--primary-dark); }
+
+    /* ── PRODUCT GRID ── */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+
+    .product-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); transition: box-shadow .25s, transform .25s; position: relative; }
+    .product-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .product-card.selected { border: 2px solid var(--primary); }
+
+    .card-select { position: absolute; top: 12px; left: 12px; z-index: 2; }
+    .card-select input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+
+    .card-remove { position: absolute; top: 10px; right: 10px; z-index: 2; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all .2s; font-size: .85rem; backdrop-filter: blur(4px); }
+    .card-remove:hover { background: #fff1ec; color: var(--secondary); }
+
+    .card-img { width: 100%; height: 200px; background: linear-gradient(135deg, #e8edf5 0%, #d1daea 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .card-img i { font-size: 3.5rem; color: #b0bed0; }
+    .discount-badge { position: absolute; top: 10px; left: 44px; background: var(--secondary); color: #fff; font-size: .72rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+
+    .card-body { padding: 16px; }
+    .card-body h3 { font-size: .95rem; font-weight: 600; color: var(--dark); margin-bottom: 4px; line-height: 1.4; }
+    .card-body .category-tag { font-size: .75rem; color: var(--muted); margin-bottom: 10px; }
+
+    .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+    .price-current { font-size: 1.2rem; font-weight: 700; color: var(--primary); font-family: 'Poppins', sans-serif; }
+    .price-original { font-size: .88rem; color: var(--muted); text-decoration: line-through; }
+
+    .card-actions { display: flex; flex-direction: column; gap: 8px; }
+    .card-bottom-row { display: flex; gap: 8px; align-items: center; }
+
+    .btn-move-cart { flex: 1; padding: 9px 14px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 500; cursor: pointer; transition: background .2s; display: flex; align-items: center; justify-content: center; gap: 7px; }
+    .btn-move-cart:hover { background: var(--primary-dark); }
+
+    .btn-alert { width: 38px; height: 38px; border-radius: var(--radius-sm); border: 2px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .95rem; transition: all .2s; flex-shrink: 0; }
+    .btn-alert.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+    .btn-alert:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+    .alert-label { font-size: .72rem; text-align: center; margin-top: 2px; }
+    .alert-label.on { color: var(--accent); }
+    .alert-label.off { color: var(--muted); }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(10,14,39,.45); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .25s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--card); border-radius: var(--radius); padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: translateY(20px); transition: transform .25s; }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .modal-header h2 { font-size: 1.2rem; color: var(--dark); }
+    .modal-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 1rem; transition: all .2s; }
+    .modal-close:hover { background: #ffe4e4; color: #e53e3e; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: .85rem; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .9rem; outline: none; transition: border-color .2s; background: var(--bg); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); background: #fff; }
+    .modal-footer { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-cancel { flex: 1; padding: 10px; border-radius: var(--radius-sm); border: 2px solid var(--border); background: var(--bg); font-family: 'Inter', sans-serif; font-size: .9rem; cursor: pointer; transition: all .2s; }
+    .btn-cancel:hover { border-color: var(--muted); }
+    .btn-create { flex: 1; padding: 10px; border-radius: var(--radius-sm); border: none; background: var(--primary); color: #fff; font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 500; cursor: pointer; transition: background .2s; }
+    .btn-create:hover { background: var(--primary-dark); }
+
+    /* ── TOAST ── */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; }
+    .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: var(--dark); color: #fff; border-radius: var(--radius-sm); box-shadow: 0 4px 20px rgba(0,0,0,.2); font-size: .88rem; min-width: 260px; max-width: 360px; animation: slideIn .3s ease; }
+    .toast.success { border-left: 4px solid var(--accent); }
+    .toast.info { border-left: 4px solid var(--primary); }
+    .toast.warning { border-left: 4px solid var(--secondary); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* ── FOOTER ── */
+    .site-footer { background: var(--dark); color: rgba(255,255,255,.7); padding: 32px 24px; margin-top: 60px; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,.6); text-decoration: none; font-size: .85rem; transition: color .2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-size: .83rem; }
+
+    @media (max-width: 768px) {
+      .nav-search { display: none; }
+      .product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+      .sort-bar { flex-direction: column; align-items: flex-start; }
+      .sort-bar-right { margin-left: 0; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">Globex<span>Sky</span></a>
+      <div class="nav-search">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search products, suppliers…" />
+      </div>
+      <div class="nav-actions">
+        <a href="../../pages/auth/login.html" class="nav-link"><i class="fas fa-user"></i> Login</a>
+        <a href="../../pages/auth/register.html" class="nav-link btn-primary"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="../../pages/cart/index.html" class="nav-link cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── HERO ── -->
+<section class="page-hero">
+  <h1><i class="fas fa-heart"></i> My Wishlists</h1>
+  <p>Save products you love and get notified when prices drop — never miss a deal.</p>
+</section>
+
+<!-- ── MAIN ── -->
+<main class="main-content">
+
+  <!-- Tabs -->
+  <div class="tabs-row" id="tabsRow">
+    <button class="tab-btn active" data-tab="electronics" onclick="switchTab(this)">
+      <i class="fas fa-microchip"></i> Electronics <span class="tab-count">5</span>
+    </button>
+    <button class="tab-btn" data-tab="clothing" onclick="switchTab(this)">
+      <i class="fas fa-tshirt"></i> Clothing <span class="tab-count">3</span>
+    </button>
+    <button class="tab-btn" data-tab="homedecor" onclick="switchTab(this)">
+      <i class="fas fa-couch"></i> Home Decor <span class="tab-count">8</span>
+    </button>
+    <button class="add-list-btn" onclick="openModal()">
+      <i class="fas fa-plus"></i> New List
+    </button>
+  </div>
+
+  <!-- Sort Bar -->
+  <div class="sort-bar">
+    <label><i class="fas fa-sort"></i> Sort by:</label>
+    <select id="sortSelect" onchange="sortProducts()">
+      <option value="date">Date Added</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+    </select>
+    <div class="sort-bar-right">
+      <div class="share-toggle">
+        <i class="fas fa-share-alt" style="color: var(--primary)"></i>
+        <span style="font-size:.88rem; font-weight:500;">Share List</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="shareToggle" onchange="toggleShare()" />
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="share-label" id="shareLabel">Private</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare Bar -->
+  <div class="compare-bar">
+    <i class="fas fa-columns" style="color: var(--primary)"></i>
+    <span id="compareCount">Select 2 or more items to compare</span>
+    <button class="compare-btn" id="compareBtn" disabled onclick="compareItems()">
+      <i class="fas fa-balance-scale"></i> Compare Selected
+    </button>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="product-grid" id="productGrid">
+
+    <!-- Card 1 -->
+    <div class="product-card" data-id="1" data-price="149.99" data-date="2024-01-15">
+      <div class="card-select"><input type="checkbox" onchange="toggleSelect(1, this)" /></div>
+      <button class="card-remove" onclick="removeItem(1)" title="Remove"><i class="fas fa-times"></i></button>
+      <div class="card-img">
+        <i class="fas fa-laptop"></i>
+        <span class="discount-badge">-22%</span>
+      </div>
+      <div class="card-body">
+        <h3>Wireless Noise-Cancelling Headphones Pro</h3>
+        <div class="category-tag"><i class="fas fa-tag"></i> Audio Equipment</div>
+        <div class="price-row">
+          <span class="price-current">$149.99</span>
+          <span class="price-original">$192.00</span>
+        </div>
+        <div class="card-actions">
+          <div class="card-bottom-row">
+            <button class="btn-move-cart" onclick="moveToCart(1)"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <button class="btn-alert active" id="alert-1" onclick="toggleAlert(1)" title="Price Alert">
+                <i class="fas fa-bell"></i>
+              </button>
+              <span class="alert-label on" id="alertLabel-1">Alert On</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="product-card" data-id="2" data-price="89.50" data-date="2024-01-20">
+      <div class="card-select"><input type="checkbox" onchange="toggleSelect(2, this)" /></div>
+      <button class="card-remove" onclick="removeItem(2)" title="Remove"><i class="fas fa-times"></i></button>
+      <div class="card-img" style="background: linear-gradient(135deg, #e8f4f8 0%, #c8e6f0 100%);">
+        <i class="fas fa-mobile-alt" style="color:#9bbfd4;"></i>
+        <span class="discount-badge">-15%</span>
+      </div>
+      <div class="card-body">
+        <h3>Smart Watch Series 8 — GPS + Health Monitoring</h3>
+        <div class="category-tag"><i class="fas fa-tag"></i> Wearables</div>
+        <div class="price-row">
+          <span class="price-current">$89.50</span>
+          <span class="price-original">$105.00</span>
+        </div>
+        <div class="card-actions">
+          <div class="card-bottom-row">
+            <button class="btn-move-cart" onclick="moveToCart(2)"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <button class="btn-alert" id="alert-2" onclick="toggleAlert(2)" title="Price Alert">
+                <i class="fas fa-bell"></i>
+              </button>
+              <span class="alert-label off" id="alertLabel-2">Alert Off</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="product-card" data-id="3" data-price="319.00" data-date="2024-02-03">
+      <div class="card-select"><input type="checkbox" onchange="toggleSelect(3, this)" /></div>
+      <button class="card-remove" onclick="removeItem(3)" title="Remove"><i class="fas fa-times"></i></button>
+      <div class="card-img" style="background: linear-gradient(135deg, #f0ece8 0%, #ddd5c8 100%);">
+        <i class="fas fa-tablet-alt" style="color:#b8a898;"></i>
+        <span class="discount-badge">-30%</span>
+      </div>
+      <div class="card-body">
+        <h3>4K Portable Monitor 15.6" USB-C</h3>
+        <div class="category-tag"><i class="fas fa-tag"></i> Displays</div>
+        <div class="price-row">
+          <span class="price-current">$319.00</span>
+          <span class="price-original">$455.00</span>
+        </div>
+        <div class="card-actions">
+          <div class="card-bottom-row">
+            <button class="btn-move-cart" onclick="moveToCart(3)"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <button class="btn-alert active" id="alert-3" onclick="toggleAlert(3)" title="Price Alert">
+                <i class="fas fa-bell"></i>
+              </button>
+              <span class="alert-label on" id="alertLabel-3">Alert On</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="product-card" data-id="4" data-price="55.99" data-date="2024-02-10">
+      <div class="card-select"><input type="checkbox" onchange="toggleSelect(4, this)" /></div>
+      <button class="card-remove" onclick="removeItem(4)" title="Remove"><i class="fas fa-times"></i></button>
+      <div class="card-img" style="background: linear-gradient(135deg, #edf2e8 0%, #d0dcc8 100%);">
+        <i class="fas fa-keyboard" style="color:#a0b890;"></i>
+        <span class="discount-badge">-10%</span>
+      </div>
+      <div class="card-body">
+        <h3>Mechanical Keyboard TKL — Tactile Switches</h3>
+        <div class="category-tag"><i class="fas fa-tag"></i> Peripherals</div>
+        <div class="price-row">
+          <span class="price-current">$55.99</span>
+          <span class="price-original">$62.00</span>
+        </div>
+        <div class="card-actions">
+          <div class="card-bottom-row">
+            <button class="btn-move-cart" onclick="moveToCart(4)"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <button class="btn-alert" id="alert-4" onclick="toggleAlert(4)" title="Price Alert">
+                <i class="fas fa-bell"></i>
+              </button>
+              <span class="alert-label off" id="alertLabel-4">Alert Off</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="product-card" data-id="5" data-price="239.00" data-date="2024-02-18">
+      <div class="card-select"><input type="checkbox" onchange="toggleSelect(5, this)" /></div>
+      <button class="card-remove" onclick="removeItem(5)" title="Remove"><i class="fas fa-times"></i></button>
+      <div class="card-img" style="background: linear-gradient(135deg, #f4edf8 0%, #dfc8e8 100%);">
+        <i class="fas fa-headset" style="color:#b898cc;"></i>
+        <span class="discount-badge">-18%</span>
+      </div>
+      <div class="card-body">
+        <h3>Gaming Headset 7.1 Surround Sound RGB</h3>
+        <div class="category-tag"><i class="fas fa-tag"></i> Gaming</div>
+        <div class="price-row">
+          <span class="price-current">$239.00</span>
+          <span class="price-original">$291.00</span>
+        </div>
+        <div class="card-actions">
+          <div class="card-bottom-row">
+            <button class="btn-move-cart" onclick="moveToCart(5)"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <button class="btn-alert active" id="alert-5" onclick="toggleAlert(5)" title="Price Alert">
+                <i class="fas fa-bell"></i>
+              </button>
+              <span class="alert-label on" id="alertLabel-5">Alert On</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="product-card" data-id="6" data-price="74.00" data-date="2024-03-01">
+      <div class="card-select"><input type="checkbox" onchange="toggleSelect(6, this)" /></div>
+      <button class="card-remove" onclick="removeItem(6)" title="Remove"><i class="fas fa-times"></i></button>
+      <div class="card-img" style="background: linear-gradient(135deg, #fff3e8 0%, #f0d8b8 100%);">
+        <i class="fas fa-camera" style="color:#c8a878;"></i>
+        <span class="discount-badge">-25%</span>
+      </div>
+      <div class="card-body">
+        <h3>Action Camera 4K60fps Waterproof Bundle</h3>
+        <div class="category-tag"><i class="fas fa-tag"></i> Cameras</div>
+        <div class="price-row">
+          <span class="price-current">$74.00</span>
+          <span class="price-original">$98.50</span>
+        </div>
+        <div class="card-actions">
+          <div class="card-bottom-row">
+            <button class="btn-move-cart" onclick="moveToCart(6)"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <button class="btn-alert" id="alert-6" onclick="toggleAlert(6)" title="Price Alert">
+                <i class="fas fa-bell"></i>
+              </button>
+              <span class="alert-label off" id="alertLabel-6">Alert Off</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end product-grid -->
+</main>
+
+<!-- ── CREATE WISHLIST MODAL ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+    <div class="modal-header">
+      <h2 id="modalTitle"><i class="fas fa-heart" style="color:#ff8fab"></i> Create New Wishlist</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="form-group">
+      <label for="listName">Wishlist Name *</label>
+      <input type="text" id="listName" placeholder="e.g., Summer Collection" />
+    </div>
+    <div class="form-group">
+      <label for="listCategory">Category</label>
+      <select id="listCategory">
+        <option value="">Select a category</option>
+        <option>Electronics</option><option>Clothing</option><option>Home Decor</option>
+        <option>Industrial</option><option>Food & Beverage</option><option>Sports</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="listDesc">Description (optional)</label>
+      <textarea id="listDesc" rows="3" placeholder="What's this list for?"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-create" onclick="createWishlist()"><i class="fas fa-plus"></i> Create List</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST CONTAINER ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2024 Globex International Trade Co., Ltd.</span>
+    <div class="footer-links">
+      <a href="../../pages/about.html">About</a>
+      <a href="../../pages/help.html">Help</a>
+      <a href="../../pages/privacy.html">Privacy</a>
+      <a href="../../pages/terms.html">Terms</a>
+      <a href="../../pages/contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── State ──
+  let selectedItems = new Set();
+  let alertStates = { 1: true, 2: false, 3: true, 4: false, 5: true, 6: false };
+
+  // ── Tab Switching ──
+  function switchTab(btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    showToast(`Switched to ${btn.textContent.trim().split('\n')[0].trim()} list`, 'info');
+  }
+
+  // ── Sort Products ──
+  function sortProducts() {
+    const val = document.getElementById('sortSelect').value;
+    const grid = document.getElementById('productGrid');
+    const cards = Array.from(grid.querySelectorAll('.product-card'));
+
+    cards.sort((a, b) => {
+      if (val === 'price-asc') return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+      if (val === 'price-desc') return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+      return new Date(b.dataset.date) - new Date(a.dataset.date);
+    });
+
+    cards.forEach(c => grid.appendChild(c));
+  }
+
+  // ── Share Toggle ──
+  function toggleShare() {
+    const checked = document.getElementById('shareToggle').checked;
+    document.getElementById('shareLabel').textContent = checked ? 'Public' : 'Private';
+    showToast(checked ? 'Wishlist is now Public — anyone with the link can view it.' : 'Wishlist set to Private.', checked ? 'info' : 'warning');
+  }
+
+  // ── Select / Compare ──
+  function toggleSelect(id, cb) {
+    const card = cb.closest('.product-card');
+    if (cb.checked) { selectedItems.add(id); card.classList.add('selected'); }
+    else { selectedItems.delete(id); card.classList.remove('selected'); }
+    updateCompareBar();
+  }
+
+  function updateCompareBar() {
+    const n = selectedItems.size;
+    const btn = document.getElementById('compareBtn');
+    const msg = document.getElementById('compareCount');
+    if (n < 2) {
+      btn.disabled = true;
+      msg.textContent = n === 0 ? 'Select 2 or more items to compare' : 'Select 1 more item to compare';
+    } else {
+      btn.disabled = false;
+      msg.textContent = `${n} items selected for comparison`;
+    }
+  }
+
+  function compareItems() {
+    showToast(`Comparing ${selectedItems.size} items — opening comparison view…`, 'info');
+  }
+
+  // ── Alert Toggle ──
+  function toggleAlert(id) {
+    alertStates[id] = !alertStates[id];
+    const btn = document.getElementById(`alert-${id}`);
+    const lbl = document.getElementById(`alertLabel-${id}`);
+    if (alertStates[id]) {
+      btn.classList.add('active'); lbl.className = 'alert-label on'; lbl.textContent = 'Alert On';
+      showToast('Price drop alert enabled! We\'ll notify you when the price drops.', 'success');
+    } else {
+      btn.classList.remove('active'); lbl.className = 'alert-label off'; lbl.textContent = 'Alert Off';
+      showToast('Price alert disabled for this item.', 'info');
+    }
+  }
+
+  // ── Move to Cart ──
+  function moveToCart(id) {
+    showToast('Item moved to cart successfully!', 'success');
+  }
+
+  // ── Remove Item ──
+  function removeItem(id) {
+    const card = document.querySelector(`.product-card[data-id="${id}"]`);
+    if (!card) return;
+    card.style.transition = 'opacity .3s, transform .3s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      card.remove();
+      selectedItems.delete(id);
+      updateCompareBar();
+    }, 300);
+    showToast('Item removed from wishlist.', 'warning');
+  }
+
+  // ── Modal ──
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('listName').focus(), 100);
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.getElementById('listName').value = '';
+    document.getElementById('listDesc').value = '';
+  }
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+  function createWishlist() {
+    const name = document.getElementById('listName').value.trim();
+    if (!name) { document.getElementById('listName').style.borderColor = 'red'; return; }
+    document.getElementById('listName').style.borderColor = '';
+    // Add a new tab
+    const tabs = document.getElementById('tabsRow');
+    const addBtn = tabs.querySelector('.add-list-btn');
+    const newTab = document.createElement('button');
+    newTab.className = 'tab-btn';
+    newTab.dataset.tab = name.toLowerCase().replace(/\s+/g, '-');
+    newTab.innerHTML = `<i class="fas fa-heart"></i> ${name} <span class="tab-count">0</span>`;
+    newTab.onclick = function() { switchTab(this); };
+    tabs.insertBefore(newTab, addBtn);
+    closeModal();
+    showToast(`Wishlist "${name}" created successfully!`, 'success');
+  }
+
+  // ── Toast ──
+  function showToast(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    const icons = { success: 'fa-check-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fas ${icons[type] || 'fa-info-circle'}"></i> ${msg}`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.transition = 'opacity .4s, transform .4s';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      setTimeout(() => toast.remove(), 400);
+    }, 3200);
+  }
+
+  // Keyboard: close modal on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

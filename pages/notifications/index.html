@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --primary-light: #e6f0ff;
+      --accent: #00C9A7;
+      --accent-light: #e0faf5;
+      --secondary: #FF6B35;
+      --secondary-light: #fff1ec;
+      --warning: #F59E0B;
+      --warning-light: #fffbeb;
+      --success: #22C55E;
+      --success-light: #f0fdf4;
+      --danger: #EF4444;
+      --danger-light: #fef2f2;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --text: #2d3748;
+      --muted: #718096;
+      --card: #fff;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,.08);
+      --shadow-hover: 0 8px 30px rgba(0,82,204,.15);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── HEADER ── */
+    .site-header { position: sticky; top: 0; z-index: 1000; background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .nav-container { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 66px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; text-decoration: none; white-space: nowrap; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-search { flex: 1; max-width: 480px; position: relative; }
+    .nav-search input { width: 100%; padding: 9px 18px 9px 42px; border: 2px solid var(--border); border-radius: 25px; font-family: 'Inter', sans-serif; font-size: .9rem; transition: border-color .2s, box-shadow .2s; outline: none; background: var(--bg); }
+    .nav-search input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); background: #fff; }
+    .nav-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    .nav-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .nav-link { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: .88rem; font-weight: 500; color: var(--text); text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+    .nav-link:hover { background: var(--primary-light); color: var(--primary); }
+    .nav-link.btn-outline { border: 2px solid var(--border); }
+    .nav-link.btn-outline:hover { border-color: var(--primary); }
+    .nav-link.btn-primary { background: var(--primary); color: #fff; }
+    .nav-link.btn-primary:hover { background: var(--primary-dark); }
+    .cart-btn { position: relative; padding: 8px 12px; }
+    .cart-badge { position: absolute; top: 2px; right: 2px; background: var(--secondary); color: #fff; font-size: .65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ── PAGE HEADER ── */
+    .page-hero { background: linear-gradient(135deg, var(--primary) 0%, #1a6bde 60%, var(--accent) 100%); color: #fff; padding: 40px 24px 36px; }
+    .page-hero-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .page-hero-left { display: flex; align-items: center; gap: 14px; }
+    .page-hero h1 { font-size: 1.9rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+    .unread-badge { background: var(--secondary); color: #fff; font-size: .8rem; font-weight: 700; padding: 3px 10px; border-radius: 30px; font-family: 'Inter', sans-serif; }
+    .page-hero-actions { display: flex; align-items: center; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .88rem; font-weight: 500; cursor: pointer; transition: all .2s; border: none; }
+    .btn-white { background: rgba(255,255,255,.15); color: #fff; border: 2px solid rgba(255,255,255,.4); backdrop-filter: blur(4px); }
+    .btn-white:hover { background: rgba(255,255,255,.25); border-color: rgba(255,255,255,.7); }
+    .btn-ghost-white { background: transparent; color: rgba(255,255,255,.85); border: 2px solid rgba(255,255,255,.3); }
+    .btn-ghost-white:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+    /* ── MAIN ── */
+    .main-content { max-width: 1280px; margin: 0 auto; padding: 28px 24px 60px; }
+
+    /* ── TABS ── */
+    .tabs-row { display: flex; align-items: center; gap: 6px; margin-bottom: 0; flex-wrap: wrap; background: var(--card); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; padding: 16px 20px 0; }
+    .tab-btn { display: flex; align-items: center; gap: 7px; padding: 10px 18px; border-radius: var(--radius-sm) var(--radius-sm) 0 0; border: 2px solid transparent; border-bottom: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: .875rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .2s; position: relative; bottom: -1px; }
+    .tab-btn:hover { color: var(--primary); background: var(--primary-light); }
+    .tab-btn.active { background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); color: var(--primary); }
+    .tab-count { background: var(--bg); color: var(--muted); padding: 1px 7px; border-radius: 12px; font-size: .75rem; font-weight: 600; }
+    .tab-btn.active .tab-count { background: var(--primary); color: #fff; }
+
+    /* ── BULK ACTIONS BAR ── */
+    .bulk-bar { display: none; align-items: center; gap: 12px; padding: 12px 20px; background: linear-gradient(90deg, #e6f0ff 0%, #f0fdf4 100%); border: 1px solid #c3d9f7; border-top: none; flex-wrap: wrap; }
+    .bulk-bar.visible { display: flex; }
+    .bulk-info { font-size: .88rem; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+    .bulk-actions { display: flex; align-items: center; gap: 8px; }
+    .btn-bulk { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .83rem; font-weight: 500; cursor: pointer; border: 2px solid; transition: all .2s; }
+    .btn-bulk-read { border-color: var(--primary); color: var(--primary); background: #fff; }
+    .btn-bulk-read:hover { background: var(--primary); color: #fff; }
+    .btn-bulk-delete { border-color: var(--danger); color: var(--danger); background: #fff; }
+    .btn-bulk-delete:hover { background: var(--danger); color: #fff; }
+    .bulk-bar .clear-sel { margin-left: auto; font-size: .82rem; color: var(--muted); cursor: pointer; }
+    .bulk-bar .clear-sel:hover { color: var(--text); }
+
+    /* ── NOTIFICATIONS PANEL ── */
+    .notif-panel { background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
+
+    /* ── SELECT ALL BAR ── */
+    .select-all-bar { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--bg); }
+    .select-all-bar label { display: flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 500; color: var(--muted); cursor: pointer; user-select: none; }
+    .notif-count-info { margin-left: auto; font-size: .82rem; color: var(--muted); }
+
+    /* ── CUSTOM CHECKBOX ── */
+    .custom-cb { position: relative; width: 18px; height: 18px; flex-shrink: 0; }
+    .custom-cb input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .custom-cb .checkmark { position: absolute; inset: 0; border: 2px solid var(--border); border-radius: 4px; background: #fff; cursor: pointer; transition: all .15s; }
+    .custom-cb input:checked + .checkmark { background: var(--primary); border-color: var(--primary); }
+    .custom-cb input:checked + .checkmark::after { content: ''; position: absolute; left: 4px; top: 1px; width: 6px; height: 10px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg); }
+    .custom-cb:hover .checkmark { border-color: var(--primary); }
+
+    /* ── NOTIFICATION ITEM ── */
+    .notif-item { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--border); position: relative; transition: background .15s; cursor: pointer; }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: #f8faff; }
+    .notif-item.unread { background: #f0f4ff; }
+    .notif-item.unread:hover { background: #e8efff; }
+    .notif-item.selected { background: #eef4ff; }
+
+    /* Unread indicator dot */
+    .unread-dot { position: absolute; left: 7px; top: 50%; transform: translateY(-50%); width: 7px; height: 7px; border-radius: 50%; background: var(--primary); flex-shrink: 0; transition: opacity .2s; }
+    .notif-item:not(.unread) .unread-dot { opacity: 0; }
+
+    .notif-checkbox-wrap { padding-top: 2px; }
+    .notif-icon-wrap { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+    .icon-order { background: var(--primary-light); color: var(--primary); }
+    .icon-message { background: var(--success-light); color: var(--success); }
+    .icon-promo { background: var(--secondary-light); color: var(--secondary); }
+    .icon-rfq { background: var(--accent-light); color: var(--accent); }
+    .icon-inspection { background: var(--warning-light); color: var(--warning); }
+    .icon-system { background: var(--danger-light); color: var(--danger); }
+
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-title { font-family: 'Poppins', sans-serif; font-size: .9rem; font-weight: 600; color: var(--dark); margin-bottom: 3px; }
+    .notif-item:not(.unread) .notif-title { font-weight: 500; color: var(--text); }
+    .notif-msg { font-size: .85rem; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
+    .notif-time { font-size: .78rem; color: #a0aec0; display: flex; align-items: center; gap: 5px; }
+    .notif-time i { font-size: .72rem; }
+
+    .notif-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+    .notif-action-link { font-size: .82rem; font-weight: 500; color: var(--primary); white-space: nowrap; padding: 4px 10px; border-radius: 6px; transition: background .15s; }
+    .notif-action-link:hover { background: var(--primary-light); }
+    .notif-delete-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .78rem; transition: all .15s; opacity: 0; }
+    .notif-item:hover .notif-delete-btn { opacity: 1; }
+    .notif-delete-btn:hover { background: var(--danger-light); color: var(--danger); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 70px 24px; text-align: center; }
+    .empty-state.visible { display: flex; }
+    .empty-state-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary); margin-bottom: 20px; }
+    .empty-state h3 { font-size: 1.15rem; font-weight: 600; color: var(--dark); margin-bottom: 8px; }
+    .empty-state p { font-size: .9rem; color: var(--muted); max-width: 300px; }
+
+    /* ── LOAD MORE ── */
+    .load-more-wrap { padding: 20px; text-align: center; border-top: 1px solid var(--border); }
+    .btn-load-more { display: inline-flex; align-items: center; gap: 8px; padding: 10px 28px; border-radius: 30px; border: 2px solid var(--primary); background: transparent; color: var(--primary); font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 500; cursor: pointer; transition: all .2s; }
+    .btn-load-more:hover { background: var(--primary); color: #fff; }
+    .btn-load-more:disabled { border-color: var(--border); color: var(--muted); cursor: not-allowed; }
+    .btn-load-more:disabled:hover { background: transparent; color: var(--muted); }
+    .btn-load-more .spinner { display: none; width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin .6s linear infinite; }
+    .btn-load-more.loading .spinner { display: block; }
+    .btn-load-more.loading .load-more-text { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--dark); color: #fff; padding: 14px 20px; border-radius: var(--radius-sm); font-size: .88rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.2); transform: translateY(80px); opacity: 0; transition: all .3s cubic-bezier(.34,1.56,.64,1); z-index: 9999; max-width: 340px; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.toast-success { background: var(--success); }
+    .toast.toast-info { background: var(--primary); }
+    .toast.toast-warning { background: var(--warning); }
+
+    /* ── FOOTER ── */
+    .site-footer { background: var(--dark); color: #a0aec0; padding: 28px 24px; margin-top: auto; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-copy { font-size: .85rem; }
+    .footer-links { display: flex; align-items: center; gap: 20px; }
+    .footer-links a { font-size: .85rem; color: #a0aec0; transition: color .2s; }
+    .footer-links a:hover { color: #fff; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-search { display: none; }
+      .nav-link span { display: none; }
+      .page-hero-inner { flex-direction: column; align-items: flex-start; }
+      .notif-actions { flex-direction: row; align-items: center; }
+      .notif-action-link { font-size: .78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo">GlobexSky</a>
+    <div class="nav-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search products, suppliers…" />
+    </div>
+    <nav class="nav-actions">
+      <a href="../auth/login.html" class="nav-link btn-outline"><i class="fa-regular fa-user"></i><span>Login</span></a>
+      <a href="../auth/register.html" class="nav-link btn-primary"><i class="fa-solid fa-user-plus"></i><span>Register</span></a>
+      <a href="../cart/index.html" class="nav-link cart-btn">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-badge">3</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── PAGE HERO ── -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-left">
+      <h1><i class="fa-solid fa-bell"></i> Notifications <span class="unread-badge">12 unread</span></h1>
+    </div>
+    <div class="page-hero-actions">
+      <button class="btn btn-white" id="markAllReadBtn">
+        <i class="fa-solid fa-check-double"></i> Mark All as Read
+      </button>
+      <a href="preferences.html" class="btn btn-ghost-white">
+        <i class="fa-solid fa-sliders"></i> Preferences
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main class="main-content">
+
+  <!-- TABS -->
+  <div class="tabs-row" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true" data-tab="all">
+      <i class="fa-solid fa-layer-group"></i> All <span class="tab-count">12</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="order">
+      <i class="fa-solid fa-box"></i> Orders <span class="tab-count">5</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="message">
+      <i class="fa-solid fa-envelope"></i> Messages <span class="tab-count">3</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="promo">
+      <i class="fa-solid fa-tag"></i> Promotions <span class="tab-count">2</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="system">
+      <i class="fa-solid fa-gear"></i> System <span class="tab-count">2</span>
+    </button>
+  </div>
+
+  <!-- BULK ACTIONS BAR -->
+  <div class="bulk-bar" id="bulkBar">
+    <span class="bulk-info"><i class="fa-solid fa-circle-check"></i> <span id="selectedCount">0</span> selected</span>
+    <div class="bulk-actions">
+      <button class="btn-bulk btn-bulk-read" id="bulkMarkReadBtn">
+        <i class="fa-solid fa-check"></i> Mark as Read
+      </button>
+      <button class="btn-bulk btn-bulk-delete" id="bulkDeleteBtn">
+        <i class="fa-solid fa-trash"></i> Delete Selected
+      </button>
+    </div>
+    <span class="clear-sel" id="clearSelBtn"><i class="fa-solid fa-xmark"></i> Clear selection</span>
+  </div>
+
+  <!-- NOTIFICATIONS PANEL -->
+  <div class="notif-panel">
+
+    <!-- SELECT ALL BAR -->
+    <div class="select-all-bar">
+      <label>
+        <div class="custom-cb">
+          <input type="checkbox" id="selectAllCb" />
+          <span class="checkmark"></span>
+        </div>
+        Select all
+      </label>
+      <span class="notif-count-info" id="countInfo">Showing <strong id="visibleCount">15</strong> notifications</span>
+    </div>
+
+    <!-- NOTIFICATION LIST -->
+    <div id="notifList">
+
+      <!-- 1: Order Shipped (unread) -->
+      <div class="notif-item unread" data-type="order" data-id="1">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-order"><i class="fa-solid fa-truck-fast"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Order #GS-789 Has Been Shipped</div>
+          <div class="notif-msg">Your order for "Wireless Bluetooth Headphones (x2)" has been dispatched and is on its way. Expected delivery: Dec 18.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 2 hours ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> View Order</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 2: New Message (unread) -->
+      <div class="notif-item unread" data-type="message" data-id="2">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-message"><i class="fa-solid fa-comment-dots"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">New Message from Shenzhen Electronics Co.</div>
+          <div class="notif-msg">Hi, we have reviewed your RFQ and are pleased to offer competitive pricing for your bulk order. Please check our updated catalogue…</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 3 hours ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> Read Message</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 3: Price Drop (read) -->
+      <div class="notif-item" data-type="promo" data-id="3">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-promo"><i class="fa-solid fa-arrow-trend-down"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Price Drop on Your Saved Item</div>
+          <div class="notif-msg">Good news! "Industrial LED Flood Light 200W" on your wishlist has dropped 18% — now $42.50/unit (was $51.90).</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 5 hours ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> View Offer</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 4: RFQ Quotation (unread) -->
+      <div class="notif-item unread" data-type="rfq" data-id="4">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-rfq"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">RFQ Quotation Received</div>
+          <div class="notif-msg">You have received 3 new quotations for RFQ #RFQ-2024-0441 "Stainless Steel Bolts M8 (10,000 pcs)". Best offer: $0.08/unit.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 6 hours ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> View Quotes</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 5: Inspection Scheduled (read) -->
+      <div class="notif-item" data-type="inspection" data-id="5">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-inspection"><i class="fa-solid fa-clipboard-check"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Inspection Scheduled — Order #GS-744</div>
+          <div class="notif-msg">Your pre-shipment inspection for Order #GS-744 has been scheduled for December 20, 2024 at the supplier facility in Guangzhou.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 1 day ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> View Details</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 6: Promotional Offer 30% (unread) -->
+      <div class="notif-item unread" data-type="promo" data-id="6">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-promo"><i class="fa-solid fa-percent"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">🎉 New Promotional Offer — 30% Off Electronics</div>
+          <div class="notif-msg">Flash sale alert! Get up to 30% off on all consumer electronics this weekend only. Over 2,000 products included. Use code: FLASH30.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 1 day ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> Shop Now</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 7: Order Delivered (read) -->
+      <div class="notif-item" data-type="order" data-id="7">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-order"><i class="fa-solid fa-box-open"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Order #GS-756 Successfully Delivered</div>
+          <div class="notif-msg">Your order has been delivered successfully. Please leave a review for the supplier to help other buyers make informed decisions.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 2 days ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-star"></i> Leave Review</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 8: Message (unread) -->
+      <div class="notif-item unread" data-type="message" data-id="8">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-message"><i class="fa-solid fa-comment"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Supplier Replied to Your Inquiry</div>
+          <div class="notif-msg">Foshan Home Furnishings Co. has replied to your product inquiry about "Modern Sofa Set L-Shaped". They've sent updated pricing and MOQ details.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 2 days ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> Read Message</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 9: System - Security Alert (read) -->
+      <div class="notif-item" data-type="system" data-id="9">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-system"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Security Alert: New Device Login</div>
+          <div class="notif-msg">A new login was detected from Chrome on Windows — IP: 203.0.113.42, Singapore. If this wasn't you, please secure your account immediately.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 3 days ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-lock"></i> Secure Account</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 10: Order Update (unread) -->
+      <div class="notif-item unread" data-type="order" data-id="10">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-order"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Payment Confirmed — Order #GS-801</div>
+          <div class="notif-msg">Your payment of $1,240.00 via Trade Finance for Order #GS-801 has been confirmed. The supplier has been notified to proceed with production.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 3 days ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> View Order</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 11: Message (read) -->
+      <div class="notif-item" data-type="message" data-id="11">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-message"><i class="fa-solid fa-headset"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Support Ticket #4821 Updated</div>
+          <div class="notif-msg">A GlobexSky support agent has responded to your ticket regarding delayed shipment for Order #GS-733. Please check the response.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 4 days ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> View Ticket</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 12: Order Cancelled (read) -->
+      <div class="notif-item" data-type="order" data-id="12">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-system"><i class="fa-solid fa-ban"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Order #GS-712 Cancelled by Supplier</div>
+          <div class="notif-msg">Unfortunately, the supplier has cancelled your order due to stock unavailability. A full refund of $320.00 has been initiated (3–5 business days).</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 5 days ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> View Details</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 13: RFQ Expired (read) -->
+      <div class="notif-item" data-type="rfq" data-id="13">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-rfq"><i class="fa-solid fa-hourglass-end"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">RFQ #RFQ-2024-0388 Has Expired</div>
+          <div class="notif-msg">Your Request for Quotation for "Aluminium Extrusion Profiles" has expired. You received 5 quotes in total. You can repost the RFQ if still interested.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 6 days ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-rotate-right"></i> Repost RFQ</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 14: System Update (read) -->
+      <div class="notif-item" data-type="system" data-id="14">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-system"><i class="fa-solid fa-circle-info"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Platform Maintenance Scheduled</div>
+          <div class="notif-msg">GlobexSky will undergo scheduled maintenance on December 22 from 02:00–04:00 UTC. Services may be temporarily unavailable during this window.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 1 week ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> Learn More</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- 15: Order In Production (unread) -->
+      <div class="notif-item unread" data-type="order" data-id="15">
+        <div class="unread-dot"></div>
+        <div class="notif-checkbox-wrap">
+          <div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div>
+        </div>
+        <div class="notif-icon-wrap icon-order"><i class="fa-solid fa-industry"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">Order #GS-815 Now in Production</div>
+          <div class="notif-msg">Great news! Your order for "Custom Logo Tote Bags (500 pcs)" has entered production. Estimated completion: December 28, 2024.</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i> 1 week ago</div>
+        </div>
+        <div class="notif-actions">
+          <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> Track Order</a>
+          <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+    </div><!-- /notifList -->
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-state-icon"><i class="fa-regular fa-bell-slash"></i></div>
+      <h3>No notifications here</h3>
+      <p>You're all caught up! Check back later for updates in this category.</p>
+    </div>
+
+    <!-- LOAD MORE -->
+    <div class="load-more-wrap" id="loadMoreWrap">
+      <button class="btn-load-more" id="loadMoreBtn">
+        <span class="load-more-text"><i class="fa-solid fa-chevron-down"></i> Load More Notifications</span>
+        <span class="spinner"></span>
+      </button>
+    </div>
+
+  </div><!-- /notif-panel -->
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fa-solid fa-check-circle"></i> <span id="toastMsg"></span></div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2024 Globex International Trade Co., Ltd.</span>
+    <div class="footer-links">
+      <a href="../../pages/privacy.html">Privacy Policy</a>
+      <a href="../../pages/terms.html">Terms of Service</a>
+      <a href="../../pages/contact.html">Contact Us</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── STATE ── */
+  const state = {
+    activeTab: 'all',
+    selected: new Set(),
+    loadedExtra: false,
+  };
+
+  /* ── ELEMENTS ── */
+  const tabBtns       = document.querySelectorAll('.tab-btn');
+  const notifItems    = Array.from(document.querySelectorAll('.notif-item'));
+  const selectAllCb   = document.getElementById('selectAllCb');
+  const bulkBar       = document.getElementById('bulkBar');
+  const selectedCount = document.getElementById('selectedCount');
+  const bulkMarkBtn   = document.getElementById('bulkMarkReadBtn');
+  const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+  const clearSelBtn   = document.getElementById('clearSelBtn');
+  const markAllBtn    = document.getElementById('markAllReadBtn');
+  const loadMoreBtn   = document.getElementById('loadMoreBtn');
+  const loadMoreWrap  = document.getElementById('loadMoreWrap');
+  const emptyState    = document.getElementById('emptyState');
+  const notifList     = document.getElementById('notifList');
+  const visibleCountEl= document.getElementById('visibleCount');
+  const unreadBadge   = document.querySelector('.unread-badge');
+  const toast         = document.getElementById('toast');
+  const toastMsg      = document.getElementById('toastMsg');
+  let toastTimer;
+
+  /* ── TAB COUNTS ── */
+  const TAB_MAP = {
+    all:        { types: null },
+    order:      { types: ['order'] },
+    message:    { types: ['message'] },
+    promo:      { types: ['promo'] },
+    system:     { types: ['system'] },
+  };
+
+  /* ── HELPERS ── */
+  function getVisibleItems() {
+    return notifItems.filter(el => el.style.display !== 'none');
+  }
+
+  function countUnread() {
+    return notifItems.filter(el => el.classList.contains('unread') && el.style.display !== 'none').length;
+  }
+
+  function updateUnreadBadge() {
+    const total = notifItems.filter(el => el.classList.contains('unread')).length;
+    unreadBadge.textContent = total > 0 ? `${total} unread` : 'All read';
+  }
+
+  function updateTabCounts() {
+    tabBtns.forEach(btn => {
+      const tab = btn.dataset.tab;
+      const info = TAB_MAP[tab];
+      let count;
+      if (!info.types) {
+        count = notifItems.filter(el => el.classList.contains('unread')).length;
+      } else {
+        count = notifItems.filter(el =>
+          info.types.includes(el.dataset.type) && el.classList.contains('unread')
+        ).length;
+      }
+      const countEl = btn.querySelector('.tab-count');
+      if (countEl) countEl.textContent = tab === 'all'
+        ? notifItems.filter(el => el.classList.contains('unread')).length
+        : notifItems.filter(el => info.types && info.types.includes(el.dataset.type)).length;
+    });
+  }
+
+  function updateVisibleCount() {
+    const v = getVisibleItems().length;
+    visibleCountEl.textContent = v;
+  }
+
+  function showToast(msg, type = 'info') {
+    clearTimeout(toastTimer);
+    toast.className = `toast toast-${type}`;
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  /* ── TAB FILTERING ── */
+  function applyTab(tab) {
+    state.activeTab = tab;
+    const info = TAB_MAP[tab];
+
+    notifItems.forEach(item => {
+      const show = !info.types || info.types.includes(item.dataset.type);
+      item.style.display = show ? '' : 'none';
+    });
+
+    const visible = getVisibleItems();
+    emptyState.classList.toggle('visible', visible.length === 0);
+    loadMoreWrap.style.display = visible.length === 0 ? 'none' : '';
+    updateVisibleCount();
+    clearSelection();
+  }
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      applyTab(btn.dataset.tab);
+    });
+  });
+
+  /* ── CHECKBOX LOGIC ── */
+  function updateBulkBar() {
+    const visibleSelected = getVisibleItems().filter(el => state.selected.has(el.dataset.id));
+    const count = visibleSelected.length;
+    selectedCount.textContent = count;
+    bulkBar.classList.toggle('visible', count > 0);
+  }
+
+  function clearSelection() {
+    state.selected.clear();
+    document.querySelectorAll('.notif-cb').forEach(cb => cb.checked = false);
+    selectAllCb.checked = false;
+    selectAllCb.indeterminate = false;
+    updateBulkBar();
+  }
+
+  selectAllCb.addEventListener('change', () => {
+    const visible = getVisibleItems();
+    visible.forEach(item => {
+      const cb = item.querySelector('.notif-cb');
+      if (cb) cb.checked = selectAllCb.checked;
+      if (selectAllCb.checked) state.selected.add(item.dataset.id);
+      else state.selected.delete(item.dataset.id);
+    });
+    updateBulkBar();
+  });
+
+  document.querySelectorAll('.notif-cb').forEach(cb => {
+    cb.addEventListener('change', e => {
+      e.stopPropagation();
+      const item = cb.closest('.notif-item');
+      if (cb.checked) state.selected.add(item.dataset.id);
+      else state.selected.delete(item.dataset.id);
+      const visible = getVisibleItems();
+      const selectedVisible = visible.filter(el => state.selected.has(el.dataset.id));
+      if (selectedVisible.length === 0) { selectAllCb.checked = false; selectAllCb.indeterminate = false; }
+      else if (selectedVisible.length === visible.length) { selectAllCb.checked = true; selectAllCb.indeterminate = false; }
+      else { selectAllCb.checked = false; selectAllCb.indeterminate = true; }
+      updateBulkBar();
+    });
+  });
+
+  clearSelBtn.addEventListener('click', clearSelection);
+
+  /* ── INDIVIDUAL MARK AS READ ON CLICK ── */
+  notifItems.forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target.closest('.notif-cb') || e.target.closest('.notif-delete-btn') || e.target.closest('.notif-action-link') || e.target.closest('.custom-cb')) return;
+      if (item.classList.contains('unread')) {
+        item.classList.remove('unread');
+        updateUnreadBadge();
+        updateTabCounts();
+      }
+    });
+  });
+
+  /* ── INDIVIDUAL DELETE ── */
+  document.querySelectorAll('.notif-delete-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const item = btn.closest('.notif-item');
+      item.style.transition = 'opacity .3s, transform .3s';
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(20px)';
+      setTimeout(() => {
+        const idx = notifItems.indexOf(item);
+        if (idx > -1) notifItems.splice(idx, 1);
+        item.remove();
+        updateUnreadBadge();
+        updateTabCounts();
+        updateVisibleCount();
+        const visible = getVisibleItems();
+        emptyState.classList.toggle('visible', visible.length === 0);
+        showToast('Notification deleted.', 'info');
+      }, 300);
+    });
+  });
+
+  /* ── BULK MARK AS READ ── */
+  bulkMarkBtn.addEventListener('click', () => {
+    const visibleSelected = getVisibleItems().filter(el => state.selected.has(el.dataset.id));
+    visibleSelected.forEach(item => item.classList.remove('unread'));
+    clearSelection();
+    updateUnreadBadge();
+    updateTabCounts();
+    showToast(`${visibleSelected.length} notification${visibleSelected.length !== 1 ? 's' : ''} marked as read.`, 'success');
+  });
+
+  /* ── BULK DELETE ── */
+  bulkDeleteBtn.addEventListener('click', () => {
+    const visibleSelected = getVisibleItems().filter(el => state.selected.has(el.dataset.id));
+    const cnt = visibleSelected.length;
+    visibleSelected.forEach(item => {
+      const idx = notifItems.indexOf(item);
+      if (idx > -1) notifItems.splice(idx, 1);
+      item.remove();
+    });
+    clearSelection();
+    updateUnreadBadge();
+    updateTabCounts();
+    updateVisibleCount();
+    const visible = getVisibleItems();
+    emptyState.classList.toggle('visible', visible.length === 0);
+    showToast(`${cnt} notification${cnt !== 1 ? 's' : ''} deleted.`, 'info');
+  });
+
+  /* ── MARK ALL AS READ ── */
+  markAllBtn.addEventListener('click', () => {
+    notifItems.forEach(item => item.classList.remove('unread'));
+    updateUnreadBadge();
+    updateTabCounts();
+    showToast('All notifications marked as read.', 'success');
+  });
+
+  /* ── LOAD MORE ── */
+  const extraNotifs = [
+    { type:'order',   icon:'fa-receipt',           iconClass:'icon-order',   title:'Order #GS-699 Awaiting Payment', msg:'Your order is pending payment. Please complete the payment within 24 hours to avoid auto-cancellation.', time:'2 weeks ago', link:'View Order' },
+    { type:'rfq',     icon:'fa-handshake',          iconClass:'icon-rfq',     title:'Supplier Accepted Your Counter-Offer', msg:'Yiwu Craft Gifts has accepted your counter-offer of $0.65/unit for Ceramic Coffee Mugs. Proceed to confirm order.', time:'2 weeks ago', link:'Confirm Order' },
+    { type:'message', icon:'fa-star',               iconClass:'icon-message', title:'Your Review Was Published', msg:'Your 5-star review for "Ningbo Auto Parts Co." has been published. Thank you for helping the community!', time:'3 weeks ago', link:'View Review' },
+  ];
+
+  loadMoreBtn.addEventListener('click', () => {
+    if (state.loadedExtra) { loadMoreBtn.disabled = true; loadMoreBtn.querySelector('.load-more-text').innerHTML = '<i class="fa-solid fa-check"></i> All notifications loaded'; return; }
+    loadMoreBtn.classList.add('loading');
+    setTimeout(() => {
+      loadMoreBtn.classList.remove('loading');
+      extraNotifs.forEach(n => {
+        const div = document.createElement('div');
+        div.className = `notif-item`;
+        div.dataset.type = n.type;
+        div.dataset.id = `extra-${Date.now()}-${Math.random()}`;
+        div.innerHTML = `
+          <div class="unread-dot"></div>
+          <div class="notif-checkbox-wrap"><div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div></div>
+          <div class="notif-icon-wrap ${n.iconClass}"><i class="fa-solid ${n.icon}"></i></div>
+          <div class="notif-body">
+            <div class="notif-title">${n.title}</div>
+            <div class="notif-msg">${n.msg}</div>
+            <div class="notif-time"><i class="fa-regular fa-clock"></i> ${n.time}</div>
+          </div>
+          <div class="notif-actions">
+            <a href="#" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> ${n.link}</a>
+            <button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+          </div>`;
+        notifList.insertBefore(div, document.getElementById('emptyState'));
+        notifItems.push(div);
+
+        // Wire up new item events
+        div.querySelector('.notif-cb').addEventListener('change', e => { e.stopPropagation(); const cb = e.target; if (cb.checked) state.selected.add(div.dataset.id); else state.selected.delete(div.dataset.id); updateBulkBar(); });
+        div.querySelector('.notif-delete-btn').addEventListener('click', e => { e.stopPropagation(); div.style.transition = 'opacity .3s'; div.style.opacity = '0'; setTimeout(() => { const idx = notifItems.indexOf(div); if (idx > -1) notifItems.splice(idx, 1); div.remove(); updateVisibleCount(); showToast('Notification deleted.', 'info'); }, 300); });
+        div.addEventListener('click', e => { if (e.target.closest('.notif-cb,.notif-delete-btn,.notif-action-link,.custom-cb')) return; if (div.classList.contains('unread')) { div.classList.remove('unread'); updateUnreadBadge(); } });
+
+        if (state.activeTab !== 'all') {
+          const info = TAB_MAP[state.activeTab];
+          if (info.types && !info.types.includes(n.type)) div.style.display = 'none';
+        }
+      });
+      state.loadedExtra = true;
+      updateVisibleCount();
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.querySelector('.load-more-text').innerHTML = '<i class="fa-solid fa-check"></i> All notifications loaded';
+      showToast('3 more notifications loaded.', 'info');
+    }, 1200);
+  });
+
+  /* ── INIT ── */
+  updateUnreadBadge();
+  updateTabCounts();
+  updateVisibleCount();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View full order details, items, shipping address, payment info and timeline on Globex Sky." />
+  <title>Order Details | Globex Sky</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6.5.0 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    /* ===========================
+       CSS RESET & VARIABLES
+    =========================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --primary-light: #e8f0fe;
+      --accent: #00C9A7;
+      --secondary: #FF6B35;
+      --secondary-light: #fff0eb;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --text: #374151;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --white: #ffffff;
+      --success: #10b981;
+      --success-light: #dcfce7;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 16px rgba(0,82,204,0.08);
+      --shadow-md: 0 4px 24px rgba(0,82,204,0.12);
+      --transition: 0.2s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      color: var(--dark);
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul, ol { list-style: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ===========================
+       UTILITY
+    =========================== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ===========================
+       NAVBAR
+    =========================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--white);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .navbar { width: 100%; }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+
+    .nav-logo-text {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--dark);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-logo-text span { color: var(--primary); }
+
+    .nav-search {
+      flex: 1;
+      max-width: 480px;
+    }
+
+    .nav-search-inner {
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      overflow: hidden;
+      transition: border-color var(--transition);
+    }
+
+    .nav-search-inner:focus-within {
+      border-color: var(--primary);
+      background: white;
+    }
+
+    .nav-search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 9px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--dark);
+      outline: none;
+    }
+
+    .nav-search-btn {
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 9px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background var(--transition);
+    }
+
+    .nav-search-btn:hover { background: var(--primary-dark); }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .btn-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-login {
+      background: transparent;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+    }
+
+    .btn-login:hover { background: var(--primary-light); }
+
+    .btn-register {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-register:hover { background: var(--primary-dark); }
+
+    .nav-cart {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--dark);
+      font-size: 18px;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+
+    .nav-cart:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--secondary);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===========================
+       MAIN
+    =========================== */
+    main { flex: 1; padding: 32px 0 60px; }
+
+    /* ===========================
+       BREADCRUMB
+    =========================== */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb a {
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+
+    .breadcrumb a:hover { color: var(--primary); }
+
+    .breadcrumb-sep { color: var(--border); }
+
+    .breadcrumb-current {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    /* ===========================
+       ORDER HEADER CARD
+    =========================== */
+    .order-header-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .order-header-left { display: flex; flex-direction: column; gap: 6px; }
+
+    .order-header-left h1 {
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .order-header-left h1 i { color: var(--primary); }
+
+    .order-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .order-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .order-meta-item i { color: var(--primary); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .status-badge.processing {
+      background: var(--secondary-light);
+      color: var(--secondary);
+      border: 1.5px solid rgba(255,107,53,0.25);
+    }
+
+    .status-badge.delivered {
+      background: var(--success-light);
+      color: var(--success);
+      border: 1.5px solid rgba(16,185,129,0.25);
+    }
+
+    .status-badge.shipped {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1.5px solid rgba(0,82,204,0.2);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .order-header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ===========================
+       TWO-COLUMN LAYOUT
+    =========================== */
+    .order-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ===========================
+       CARD COMPONENT
+    =========================== */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #fafbff 0%, #f4f6fa 100%);
+    }
+
+    .card-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .card-header h2 i { color: var(--primary); }
+
+    .card-body { padding: 24px; }
+
+    .card-body-sm { padding: 20px; }
+
+    /* ===========================
+       ORDER ITEMS
+    =========================== */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .items-table th {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+      padding: 0 12px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .items-table th:last-child { text-align: right; }
+
+    .item-row {
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+
+    .item-row:last-child { border-bottom: none; }
+
+    .item-row:hover { background: #fafbff; }
+
+    .item-row td { padding: 18px 12px; vertical-align: middle; }
+
+    .item-cell-product {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .item-img {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 24px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    .item-info-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .item-info-sku {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .item-qty-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .item-price {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .item-subtotal {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      font-family: 'Poppins', sans-serif;
+      text-align: right;
+    }
+
+    /* ===========================
+       SHIPPING ADDRESS
+    =========================== */
+    .address-block { display: flex; gap: 16px; align-items: flex-start; }
+
+    .address-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .address-detail p {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .address-name {
+      font-weight: 700;
+      color: var(--dark) !important;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px !important;
+      margin-bottom: 2px;
+    }
+
+    /* ===========================
+       PAYMENT INFO
+    =========================== */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .payment-item {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+      transition: border-color var(--transition);
+    }
+
+    .payment-item:hover { border-color: var(--primary); }
+
+    .payment-item-icon {
+      font-size: 22px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .payment-item-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 4px;
+    }
+
+    .payment-item-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--dark);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .payment-item-value.paid { color: var(--success); }
+
+    /* ===========================
+       ORDER TIMELINE
+    =========================== */
+    .order-timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .ot-entry {
+      display: flex;
+      gap: 18px;
+      padding-bottom: 24px;
+      position: relative;
+    }
+
+    .ot-entry:last-child { padding-bottom: 0; }
+
+    .ot-entry:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 44px;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--border) 100%);
+    }
+
+    .ot-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ot-icon.done {
+      background: var(--success-light);
+      color: var(--success);
+      border: 2px solid var(--success);
+    }
+
+    .ot-icon.pending {
+      background: var(--warning-light);
+      color: var(--warning);
+      border: 2px dashed var(--warning);
+    }
+
+    .ot-content { flex: 1; }
+
+    .ot-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+
+    .ot-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .ot-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ===========================
+       SIDEBAR
+    =========================== */
+    .sidebar { position: sticky; top: 92px; }
+
+    .summary-rows { display: flex; flex-direction: column; gap: 0; }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .summary-row:last-child { border-bottom: none; }
+
+    .summary-row-label { color: var(--text-muted); }
+
+    .summary-row-value {
+      font-weight: 600;
+      color: var(--dark);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .summary-row.total {
+      padding-top: 16px;
+      margin-top: 4px;
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+    }
+
+    .summary-row.total .summary-row-label {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 15px;
+    }
+
+    .summary-row.total .summary-row-value {
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    .summary-row.discount .summary-row-value { color: var(--success); }
+
+    /* ===========================
+       ACTION BUTTONS
+    =========================== */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
+      text-decoration: none;
+      width: 100%;
+    }
+
+    .btn + .btn { margin-top: 10px; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,82,204,0.28);
+    }
+
+    .btn-outline-secondary {
+      background: transparent;
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+
+    .btn-outline-secondary:hover {
+      background: var(--secondary-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-accent {
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+
+    .btn-outline-accent:hover {
+      background: rgba(0,201,167,0.08);
+      transform: translateY(-1px);
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-inline {
+      display: inline-flex;
+      width: auto;
+    }
+
+    /* Hidden by default (review button) */
+    .btn-hidden { display: none !important; }
+
+    /* ===========================
+       DIVIDER
+    =========================== */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    /* ===========================
+       TAGS / CHIPS
+    =========================== */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .tag-success { background: var(--success-light); color: var(--success); }
+    .tag-primary { background: var(--primary-light); color: var(--primary); }
+
+    /* ===========================
+       FOOTER
+    =========================== */
+    .site-footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.7);
+      padding: 28px 0;
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy { font-size: 13px; }
+
+    .footer-copy a {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .footer-links-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .footer-links-row a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      transition: color var(--transition);
+    }
+
+    .footer-links-row a:hover { color: var(--accent); }
+
+    /* ===========================
+       RESPONSIVE
+    =========================== */
+    @media (max-width: 960px) {
+      .order-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar { position: static; }
+      .payment-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-search { display: none; }
+      .btn-login span, .btn-register span { display: none; }
+      .btn-login, .btn-register { padding: 8px 12px; }
+      .order-header-card { flex-direction: column; align-items: flex-start; }
+      .items-table th:nth-child(3),
+      .item-row td:nth-child(3) { display: none; }
+      .payment-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links-row { justify-content: center; }
+    }
+
+    @media (max-width: 520px) {
+      .items-table th:nth-child(2),
+      .item-row td:nth-child(2) { display: none; }
+      .card-body { padding: 16px; }
+      .card-body-sm { padding: 14px; }
+      .order-header-card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER / NAVBAR
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="nav-container">
+
+        <!-- Logo -->
+        <a href="../../index.html" class="nav-logo" aria-label="Globex Sky Home">
+          <div class="nav-logo-icon" aria-hidden="true">
+            <i class="fas fa-globe"></i>
+          </div>
+          <span class="nav-logo-text">Globex <span>Sky</span></span>
+        </a>
+
+        <!-- Search -->
+        <div class="nav-search" role="search">
+          <div class="nav-search-inner">
+            <input
+              type="search"
+              class="nav-search-input"
+              placeholder="Search products, suppliers..."
+              aria-label="Search products and suppliers"
+            />
+            <button class="nav-search-btn" aria-label="Submit search">
+              <i class="fas fa-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="nav-controls">
+          <a href="../../pages/auth/login.html" class="btn-nav btn-login">
+            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+            <span>Login</span>
+          </a>
+          <a href="../../pages/auth/register.html" class="btn-nav btn-register">
+            <i class="fas fa-user-plus" aria-hidden="true"></i>
+            <span>Register</span>
+          </a>
+          <a href="../../pages/cart/index.html" class="nav-cart" aria-label="Shopping cart, 3 items">
+            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+            <span class="cart-badge">3</span>
+          </a>
+        </div>
+
+      </div>
+    </nav>
+  </header>
+
+  <!-- ============================================================
+       MAIN
+  ============================================================ -->
+  <main>
+    <div class="container">
+
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../../index.html"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
+        <span class="breadcrumb-sep" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+        <a href="../../pages/account/orders.html">My Orders</a>
+        <span class="breadcrumb-sep" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+        <span class="breadcrumb-current" aria-current="page">Order Details</span>
+      </nav>
+
+      <!-- Order Header Card -->
+      <div class="order-header-card" role="region" aria-label="Order summary header">
+        <div class="order-header-left">
+          <h1>
+            <i class="fas fa-receipt" aria-hidden="true"></i>
+            Order #GS-2024-789456
+          </h1>
+          <div class="order-meta-row">
+            <span class="order-meta-item">
+              <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+              December 15, 2024
+            </span>
+            <span class="order-meta-item">
+              <i class="fas fa-store" aria-hidden="true"></i>
+              TechSource Global
+            </span>
+            <span class="order-meta-item">
+              <i class="fas fa-cubes" aria-hidden="true"></i>
+              2 items
+            </span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <span class="status-badge processing" aria-label="Order status: Processing" id="order-status-badge">
+            <span class="status-dot" aria-hidden="true"></span>
+            Processing
+          </span>
+          <a href="tracking.html" class="btn btn-sm btn-inline btn-primary" style="width:auto;padding:8px 16px;">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+            Track Order
+          </a>
+        </div>
+      </div>
+
+      <!-- Two-Column Layout -->
+      <div class="order-layout">
+
+        <!-- ==================
+             MAIN CONTENT (LEFT)
+        ================== -->
+        <div class="order-main">
+
+          <!-- Order Items -->
+          <div class="card" role="region" aria-label="Order items">
+            <div class="card-header">
+              <h2><i class="fas fa-box-open" aria-hidden="true"></i>Order Items</h2>
+              <span class="tag tag-primary"><i class="fas fa-cubes" aria-hidden="true"></i> 2 items</span>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <table class="items-table" aria-label="List of ordered items">
+                <thead>
+                  <tr>
+                    <th scope="col" style="padding-left:24px;">Product</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="item-row">
+                    <td style="padding-left:24px;">
+                      <div class="item-cell-product">
+                        <div class="item-img" aria-hidden="true">
+                          <i class="fas fa-microchip"></i>
+                        </div>
+                        <div>
+                          <div class="item-info-name">Arduino Mega 2560 R3 Microcontroller Board</div>
+                          <div class="item-info-sku">SKU: ARD-MEGA-2560 &bull; <span class="tag tag-success" style="padding:2px 8px;font-size:11px;">In Stock</span></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="item-qty-badge">
+                        <i class="fas fa-times" aria-hidden="true"></i>2
+                      </span>
+                    </td>
+                    <td class="item-price">$18.50</td>
+                    <td class="item-subtotal">$37.00</td>
+                  </tr>
+                  <tr class="item-row">
+                    <td style="padding-left:24px;">
+                      <div class="item-cell-product">
+                        <div class="item-img" aria-hidden="true">
+                          <i class="fas fa-wifi"></i>
+                        </div>
+                        <div>
+                          <div class="item-info-name">ESP32-WROOM-32 Wi-Fi &amp; Bluetooth Module</div>
+                          <div class="item-info-sku">SKU: ESP32-WROOM &bull; <span class="tag tag-success" style="padding:2px 8px;font-size:11px;">In Stock</span></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="item-qty-badge">
+                        <i class="fas fa-times" aria-hidden="true"></i>5
+                      </span>
+                    </td>
+                    <td class="item-price">$6.20</td>
+                    <td class="item-subtotal">$31.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Shipping Address -->
+          <div class="card" role="region" aria-label="Shipping address">
+            <div class="card-header">
+              <h2><i class="fas fa-map-marker-alt" aria-hidden="true"></i>Shipping Address</h2>
+            </div>
+            <div class="card-body">
+              <div class="address-block">
+                <div class="address-icon" aria-hidden="true">
+                  <i class="fas fa-location-dot"></i>
+                </div>
+                <address class="address-detail" aria-label="Delivery address">
+                  <p class="address-name">James A. Mitchell</p>
+                  <p>47 Westbrook Avenue, Apartment 3B</p>
+                  <p>Manchester, M14 5PQ</p>
+                  <p>United Kingdom</p>
+                  <p style="margin-top:8px;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-phone" style="color:var(--primary);" aria-hidden="true"></i>
+                    <strong>+44 7911 123456</strong>
+                  </p>
+                </address>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Info -->
+          <div class="card" role="region" aria-label="Payment information">
+            <div class="card-header">
+              <h2><i class="fas fa-credit-card" aria-hidden="true"></i>Payment Information</h2>
+            </div>
+            <div class="card-body">
+              <div class="payment-grid">
+                <div class="payment-item">
+                  <div class="payment-item-icon" aria-hidden="true"><i class="fab fa-paypal"></i></div>
+                  <div class="payment-item-label">Method</div>
+                  <div class="payment-item-value">PayPal</div>
+                </div>
+                <div class="payment-item">
+                  <div class="payment-item-icon" style="color:var(--success);" aria-hidden="true"><i class="fas fa-circle-check"></i></div>
+                  <div class="payment-item-label">Status</div>
+                  <div class="payment-item-value paid">Paid</div>
+                </div>
+                <div class="payment-item">
+                  <div class="payment-item-icon" aria-hidden="true"><i class="fas fa-dollar-sign"></i></div>
+                  <div class="payment-item-label">Amount Paid</div>
+                  <div class="payment-item-value">$78.80</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Timeline -->
+          <div class="card" role="region" aria-label="Order activity timeline">
+            <div class="card-header">
+              <h2><i class="fas fa-timeline" aria-hidden="true"></i>Order Timeline</h2>
+            </div>
+            <div class="card-body">
+              <ol class="order-timeline" aria-label="Order status history">
+
+                <li class="ot-entry">
+                  <div class="ot-icon done" aria-label="Completed">
+                    <i class="fas fa-circle-check" aria-hidden="true"></i>
+                  </div>
+                  <div class="ot-content">
+                    <div class="ot-title">Order Placed Successfully</div>
+                    <div class="ot-desc">Your order #GS-2024-789456 was received and is being reviewed by the seller.</div>
+                    <div class="ot-date"><i class="fas fa-calendar" aria-hidden="true"></i>December 15, 2024 &bull; 10:24 AM</div>
+                  </div>
+                </li>
+
+                <li class="ot-entry">
+                  <div class="ot-icon done" aria-label="Completed">
+                    <i class="fas fa-circle-check" aria-hidden="true"></i>
+                  </div>
+                  <div class="ot-content">
+                    <div class="ot-title">Payment Confirmed</div>
+                    <div class="ot-desc">Payment of $78.80 via PayPal was successfully processed and confirmed.</div>
+                    <div class="ot-date"><i class="fas fa-calendar" aria-hidden="true"></i>December 15, 2024 &bull; 10:26 AM</div>
+                  </div>
+                </li>
+
+                <li class="ot-entry">
+                  <div class="ot-icon done" aria-label="Completed">
+                    <i class="fas fa-circle-check" aria-hidden="true"></i>
+                  </div>
+                  <div class="ot-content">
+                    <div class="ot-title">Order Confirmed by Seller</div>
+                    <div class="ot-desc">TechSource Global has confirmed your order and started picking and packing.</div>
+                    <div class="ot-date"><i class="fas fa-calendar" aria-hidden="true"></i>December 15, 2024 &bull; 02:15 PM</div>
+                  </div>
+                </li>
+
+                <li class="ot-entry">
+                  <div class="ot-icon pending" aria-label="In progress">
+                    <i class="fas fa-clock" aria-hidden="true"></i>
+                  </div>
+                  <div class="ot-content">
+                    <div class="ot-title">Processing &mdash; Estimated Dispatch Dec 18</div>
+                    <div class="ot-desc">Your items are currently being packed and prepared for collection by DHL Express.</div>
+                    <div class="ot-date"><i class="fas fa-calendar" aria-hidden="true"></i>December 17, 2024 &bull; 09:00 AM</div>
+                  </div>
+                </li>
+
+              </ol>
+            </div>
+          </div>
+
+        </div><!-- /.order-main -->
+
+        <!-- ==================
+             SIDEBAR (RIGHT)
+        ================== -->
+        <aside class="sidebar" aria-label="Order summary and actions">
+
+          <!-- Order Summary Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i>Order Summary</h2>
+            </div>
+            <div class="card-body">
+              <div class="summary-rows">
+                <div class="summary-row">
+                  <span class="summary-row-label">Subtotal (7 units)</span>
+                  <span class="summary-row-value">$68.00</span>
+                </div>
+                <div class="summary-row">
+                  <span class="summary-row-label"><i class="fas fa-truck" style="margin-right:5px;color:var(--primary);" aria-hidden="true"></i>Shipping</span>
+                  <span class="summary-row-value">$8.50</span>
+                </div>
+                <div class="summary-row">
+                  <span class="summary-row-label"><i class="fas fa-percent" style="margin-right:5px;color:var(--primary);" aria-hidden="true"></i>Tax (VAT 5%)</span>
+                  <span class="summary-row-value">$2.30</span>
+                </div>
+                <div class="summary-row discount">
+                  <span class="summary-row-label"><i class="fas fa-tag" style="margin-right:5px;color:var(--success);" aria-hidden="true"></i>Discount</span>
+                  <span class="summary-row-value">&minus;$0.00</span>
+                </div>
+                <div class="summary-row total">
+                  <span class="summary-row-label">Total</span>
+                  <span class="summary-row-value">$78.80</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fas fa-bolt" aria-hidden="true"></i>Actions</h2>
+            </div>
+            <div class="card-body-sm" style="padding:20px;">
+
+              <button class="btn btn-primary" id="download-invoice-btn">
+                <i class="fas fa-file-arrow-down" aria-hidden="true"></i>
+                Download Invoice
+              </button>
+
+              <button class="btn btn-outline-secondary" id="return-refund-btn" style="margin-top:10px;">
+                <i class="fas fa-rotate-left" aria-hidden="true"></i>
+                Request Return / Refund
+              </button>
+
+              <!-- Review button: only visible when order is "delivered" -->
+              <button
+                class="btn btn-outline-accent btn-hidden"
+                id="review-btn"
+                aria-hidden="true"
+                style="margin-top:10px;"
+              >
+                <i class="fas fa-star" aria-hidden="true"></i>
+                Leave a Review
+              </button>
+
+              <div class="divider" aria-hidden="true"></div>
+
+              <p style="font-size:12px;color:var(--text-muted);text-align:center;line-height:1.5;">
+                <i class="fas fa-shield-halved" style="color:var(--primary);margin-right:4px;" aria-hidden="true"></i>
+                Buyer protection active &bull;
+                <a href="../../pages/help.html" style="color:var(--primary);font-weight:600;">Need help?</a>
+              </p>
+            </div>
+          </div>
+
+          <!-- Seller Info Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fas fa-store" aria-hidden="true"></i>Seller</h2>
+            </div>
+            <div class="card-body-sm" style="padding:20px;">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:700;font-family:'Poppins',sans-serif;flex-shrink:0;" aria-hidden="true">T</div>
+                <div>
+                  <div style="font-weight:700;font-size:14px;color:var(--dark);font-family:'Poppins',sans-serif;">TechSource Global</div>
+                  <div style="font-size:12px;color:var(--text-muted);">
+                    <i class="fas fa-star" style="color:#f59e0b;" aria-hidden="true"></i>
+                    4.8 &bull; 2,340 reviews
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-outline-secondary btn-sm btn-inline" id="contact-seller-btn" style="width:100%;margin-top:0;">
+                <i class="fas fa-comments" aria-hidden="true"></i>
+                Contact Seller
+              </button>
+            </div>
+          </div>
+
+        </aside><!-- /.sidebar -->
+      </div><!-- /.order-layout -->
+
+    </div><!-- /.container -->
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <p class="footer-copy">
+          &copy; 2024 <a href="../../index.html">Globex Sky</a>. All rights reserved.
+        </p>
+        <nav class="footer-links-row" aria-label="Footer legal links">
+          <a href="../../pages/privacy.html">Privacy Policy</a>
+          <a href="../../pages/terms.html">Terms of Service</a>
+          <a href="../../pages/contact.html">Contact Us</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       INLINE JAVASCRIPT
+  ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ===========================
+         ORDER STATE
+         Change ORDER_STATUS to 'delivered' to reveal the review button.
+      =========================== */
+      var ORDER_STATUS = 'processing'; // 'processing' | 'shipped' | 'delivered'
+
+      /* ---- Review button visibility ---- */
+      function initReviewButton() {
+        var reviewBtn = document.getElementById('review-btn');
+        if (!reviewBtn) return;
+
+        if (ORDER_STATUS === 'delivered') {
+          reviewBtn.classList.remove('btn-hidden');
+          reviewBtn.removeAttribute('aria-hidden');
+        }
+      }
+
+      /* ---- Update status badge dynamically ---- */
+      function syncStatusBadge() {
+        var badge = document.getElementById('order-status-badge');
+        if (!badge) return;
+
+        var configs = {
+          processing: { cls: 'processing', label: 'Processing' },
+          shipped:    { cls: 'shipped',    label: 'Shipped'    },
+          delivered:  { cls: 'delivered',  label: 'Delivered'  }
+        };
+
+        var cfg = configs[ORDER_STATUS] || configs.processing;
+        badge.className = 'status-badge ' + cfg.cls;
+        badge.setAttribute('aria-label', 'Order status: ' + cfg.label);
+        badge.innerHTML = '<span class="status-dot" aria-hidden="true"></span>' + cfg.label;
+      }
+
+      /* ---- Download Invoice ---- */
+      function initDownloadInvoice() {
+        var btn = document.getElementById('download-invoice-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function () {
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Preparing...';
+          btn.disabled = true;
+
+          setTimeout(function () {
+            btn.innerHTML = '<i class="fas fa-file-arrow-down" aria-hidden="true"></i> Download Invoice';
+            btn.disabled = false;
+            showToast('Invoice for order #GS-2024-789456 downloaded successfully.', 'success');
+          }, 1500);
+        });
+      }
+
+      /* ---- Return / Refund ---- */
+      function initReturnRefund() {
+        var btn = document.getElementById('return-refund-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function () {
+          showToast('Return & refund request form is opening...', 'info');
+        });
+      }
+
+      /* ---- Leave a Review ---- */
+      function initReviewAction() {
+        var btn = document.getElementById('review-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function () {
+          showToast('Opening review form for your order...', 'info');
+        });
+      }
+
+      /* ---- Contact Seller ---- */
+      function initContactSeller() {
+        var btn = document.getElementById('contact-seller-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function () {
+          showToast('Opening chat with TechSource Global...', 'info');
+        });
+      }
+
+      /* ---- Toast helper ---- */
+      var toastTimer;
+      function showToast(message, type) {
+        var existing = document.getElementById('gs-toast');
+        if (existing) existing.remove();
+        clearTimeout(toastTimer);
+
+        var colors = {
+          success: { bg: '#dcfce7', border: '#10b981', text: '#065f46', icon: 'fa-circle-check'  },
+          error:   { bg: '#fee2e2', border: '#ef4444', text: '#7f1d1d', icon: 'fa-circle-xmark'  },
+          info:    { bg: '#e8f0fe', border: '#0052CC', text: '#1e3a8a', icon: 'fa-circle-info'   }
+        };
+        var c = colors[type] || colors.info;
+
+        var toast = document.createElement('div');
+        toast.id = 'gs-toast';
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'polite');
+        toast.style.cssText = [
+          'position:fixed', 'bottom:28px', 'right:24px', 'z-index:9999',
+          'background:' + c.bg, 'border:1.5px solid ' + c.border,
+          'color:' + c.text, 'padding:14px 20px',
+          'border-radius:10px', 'font-size:14px', 'font-weight:500',
+          'box-shadow:0 4px 20px rgba(0,0,0,0.12)',
+          'display:flex', 'align-items:center', 'gap:10px',
+          'max-width:360px', 'animation:slideInToast 0.3s ease',
+          'font-family:Inter,sans-serif'
+        ].join(';');
+
+        toast.innerHTML = '<i class="fas ' + c.icon + '" aria-hidden="true"></i><span>' + message + '</span>';
+
+        var style = document.createElement('style');
+        style.textContent = '@keyframes slideInToast{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}';
+        document.head.appendChild(style);
+
+        document.body.appendChild(toast);
+        toastTimer = setTimeout(function () {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.3s ease';
+          setTimeout(function () { toast.remove(); }, 320);
+        }, 4000);
+      }
+
+      /* ---- Init on DOM ready ---- */
+      document.addEventListener('DOMContentLoaded', function () {
+        syncStatusBadge();
+        initReviewButton();
+        initDownloadInvoice();
+        initReturnRefund();
+        initReviewAction();
+        initContactSeller();
+      });
+
+    }());
+  </script>
+</body>
+</html>

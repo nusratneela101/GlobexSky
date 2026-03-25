@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My RFQs | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --primary-light: #e6f0ff;
+      --accent: #00C9A7;
+      --accent-light: #e0faf5;
+      --secondary: #FF6B35;
+      --secondary-light: #fff1ec;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --text: #2d3748;
+      --muted: #718096;
+      --card: #fff;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,.08);
+      --shadow-hover: 0 6px 24px rgba(0,82,204,.14);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+
+    /* ── HEADER ── */
+    .site-header { position: sticky; top: 0; z-index: 1000; background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    nav.navbar { max-width: 1280px; margin: 0 auto; }
+    .nav-container { display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 66px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; white-space: nowrap; }
+    .nav-logo span { color: var(--accent); }
+    .nav-search { flex: 1; max-width: 480px; position: relative; }
+    .nav-search input { width: 100%; padding: 9px 18px 9px 42px; border: 2px solid var(--border); border-radius: 25px; font-family: 'Inter', sans-serif; font-size: .9rem; transition: border-color .2s, box-shadow .2s; outline: none; background: var(--bg); }
+    .nav-search input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); background: #fff; }
+    .nav-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .nav-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .nav-link { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: .88rem; font-weight: 500; color: var(--text); text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+    .nav-link:hover { background: var(--primary-light); color: var(--primary); }
+    .nav-link.btn-primary { background: var(--primary); color: #fff; }
+    .nav-link.btn-primary:hover { background: var(--primary-dark); }
+    .cart-btn { position: relative; padding: 8px 12px; }
+    .cart-badge { position: absolute; top: 2px; right: 2px; background: var(--secondary); color: #fff; font-size: .65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ── PAGE HEADER ── */
+    .page-header { background: var(--card); border-bottom: 1px solid var(--border); }
+    .page-header-inner { max-width: 1280px; margin: 0 auto; padding: 28px 24px 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .page-header h1 { font-size: 1.75rem; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+    .page-header h1 i { color: var(--primary); }
+    .page-header p { color: var(--muted); font-size: .92rem; }
+    .btn-create-rfq { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; background: var(--primary); color: #fff; text-decoration: none; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 600; transition: background .2s, transform .15s; white-space: nowrap; border: none; cursor: pointer; }
+    .btn-create-rfq:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+    /* ── STATS BAR ── */
+    .stats-bar { max-width: 1280px; margin: 0 auto; padding: 0 24px; display: flex; gap: 16px; margin-top: 24px; margin-bottom: 0; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 140px; background: var(--card); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 16px 20px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 14px; }
+    .stat-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .stat-icon.blue { background: var(--primary-light); color: var(--primary); }
+    .stat-icon.green { background: var(--accent-light); color: var(--accent); }
+    .stat-icon.orange { background: var(--secondary-light); color: var(--secondary); }
+    .stat-icon.gray { background: var(--bg); color: var(--muted); }
+    .stat-value { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--dark); line-height: 1; }
+    .stat-label { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── MAIN ── */
+    .main-content { max-width: 1280px; margin: 24px auto 80px; padding: 0 24px; }
+
+    /* ── FILTER ROW ── */
+    .filter-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 24px; }
+    .filter-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .filter-card-header h3 { font-size: .95rem; font-weight: 600; color: var(--text); }
+    .filter-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
+    .filter-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+    .filter-group label { font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .filter-control { padding: 9px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .88rem; background: var(--bg); outline: none; transition: border-color .2s; }
+    .filter-control:focus { border-color: var(--primary); background: #fff; }
+    .btn-filter { padding: 9px 22px; border-radius: var(--radius-sm); background: var(--primary); color: #fff; border: none; font-family: 'Inter', sans-serif; font-size: .88rem; font-weight: 500; cursor: pointer; transition: background .2s; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+    .btn-filter:hover { background: var(--primary-dark); }
+    .btn-clear { padding: 9px 18px; border-radius: var(--radius-sm); border: 2px solid var(--border); background: var(--bg); font-family: 'Inter', sans-serif; font-size: .88rem; cursor: pointer; color: var(--muted); transition: all .2s; white-space: nowrap; }
+    .btn-clear:hover { border-color: var(--muted); color: var(--text); }
+
+    /* ── STATUS TABS ── */
+    .status-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+    .status-tab { padding: 10px 22px; font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: color .2s, border-color .2s; background: none; border-top: none; border-left: none; border-right: none; }
+    .status-tab:hover { color: var(--primary); }
+    .status-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-count-pill { display: inline-flex; align-items: center; justify-content: center; background: var(--bg); color: var(--muted); font-size: .72rem; font-weight: 700; padding: 2px 7px; border-radius: 12px; margin-left: 6px; }
+    .status-tab.active .tab-count-pill { background: var(--primary-light); color: var(--primary); }
+
+    /* ── RFQ TABLE ── */
+    .table-wrapper { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--bg); }
+    thead th { padding: 13px 16px; text-align: left; font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; border-bottom: 2px solid var(--border); white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafbff; }
+    tbody td { padding: 16px; font-size: .88rem; vertical-align: middle; }
+    .rfq-id { font-family: 'Poppins', sans-serif; font-weight: 600; color: var(--primary); font-size: .85rem; }
+    .rfq-name { font-weight: 600; color: var(--dark); max-width: 220px; }
+    .rfq-name small { display: block; font-size: .75rem; color: var(--muted); font-weight: 400; margin-top: 2px; }
+    .category-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: var(--primary-light); color: var(--primary); font-size: .75rem; font-weight: 600; border-radius: 20px; white-space: nowrap; }
+
+    /* ── STATUS BADGES ── */
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+    .badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+    .badge-open { background: #d4edda; color: #155724; }
+    .badge-open::before { background: #28a745; }
+    .badge-closed { background: #e9ecef; color: #495057; }
+    .badge-closed::before { background: #6c757d; }
+    .badge-awarded { background: var(--primary-light); color: var(--primary); }
+    .badge-awarded::before { background: var(--primary); }
+    .badge-pending { background: #fff3cd; color: #856404; }
+    .badge-pending::before { background: #ffc107; }
+
+    .quotes-count { text-align: center; }
+    .quotes-num { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--dark); }
+    .quotes-label { font-size: .72rem; color: var(--muted); }
+    .best-price { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: .95rem; color: var(--accent); }
+    .best-price.none { color: var(--muted); font-weight: 400; font-size: .85rem; font-family: 'Inter', sans-serif; }
+    .date-col { color: var(--muted); font-size: .82rem; white-space: nowrap; }
+
+    /* ── ACTION BUTTONS ── */
+    .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 500; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; text-decoration: none; }
+    .btn-sm-primary { background: var(--primary); color: #fff; }
+    .btn-sm-primary:hover { background: var(--primary-dark); }
+    .btn-sm-danger { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+    .btn-sm-danger:hover { background: #fee2e2; }
+    .btn-sm-success { background: var(--accent-light); color: #00856e; border: 1px solid #a8f0e4; }
+    .btn-sm-success:hover { background: #c0f4ec; }
+    .btn-sm-gray { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+    .btn-sm-gray:hover { background: var(--border); color: var(--text); }
+
+    /* ── PAGINATION ── */
+    .pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
+    .pagination-info { font-size: .85rem; color: var(--muted); }
+    .pagination { display: flex; gap: 4px; align-items: center; }
+    .page-btn { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 2px solid var(--border); background: var(--card); font-family: 'Poppins', sans-serif; font-size: .85rem; font-weight: 500; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+    .page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .page-ellipsis { color: var(--muted); padding: 0 4px; font-size: .9rem; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 80px 32px; display: none; }
+    .empty-state.show { display: block; }
+    .empty-illustration { width: 120px; height: 120px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+    .empty-illustration i { font-size: 3rem; color: var(--primary); }
+    .empty-state h3 { font-size: 1.2rem; color: var(--dark); margin-bottom: 10px; }
+    .empty-state p { color: var(--muted); max-width: 340px; margin: 0 auto 24px; font-size: .9rem; }
+
+    /* ── CONFIRM DIALOG ── */
+    .confirm-overlay { position: fixed; inset: 0; background: rgba(10,14,39,.45); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .25s; }
+    .confirm-overlay.open { opacity: 1; pointer-events: all; }
+    .confirm-dialog { background: var(--card); border-radius: var(--radius); padding: 32px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: scale(.95); transition: transform .25s; }
+    .confirm-overlay.open .confirm-dialog { transform: scale(1); }
+    .confirm-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .confirm-icon.danger { background: #fff5f5; color: #c53030; font-size: 1.5rem; }
+    .confirm-icon.award { background: var(--accent-light); color: var(--accent); font-size: 1.5rem; }
+    .confirm-dialog h3 { font-size: 1.15rem; text-align: center; color: var(--dark); margin-bottom: 10px; }
+    .confirm-dialog p { font-size: .88rem; text-align: center; color: var(--muted); margin-bottom: 24px; }
+    .confirm-btns { display: flex; gap: 10px; }
+    .btn-confirm { flex: 1; padding: 11px; border-radius: var(--radius-sm); border: none; font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 500; cursor: pointer; transition: all .2s; }
+    .btn-confirm-cancel { background: var(--bg); color: var(--text); border: 2px solid var(--border); }
+    .btn-confirm-cancel:hover { border-color: var(--muted); }
+    .btn-confirm-danger { background: #c53030; color: #fff; }
+    .btn-confirm-danger:hover { background: #9b2c2c; }
+    .btn-confirm-success { background: var(--accent); color: #fff; }
+    .btn-confirm-success:hover { background: #00a88a; }
+
+    /* ── TOAST ── */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; }
+    .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: var(--dark); color: #fff; border-radius: var(--radius-sm); box-shadow: 0 4px 20px rgba(0,0,0,.2); font-size: .88rem; min-width: 260px; max-width: 360px; animation: slideIn .3s ease; }
+    .toast.success { border-left: 4px solid var(--accent); }
+    .toast.info { border-left: 4px solid var(--primary); }
+    .toast.warning { border-left: 4px solid var(--secondary); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* ── FOOTER ── */
+    .site-footer { background: var(--dark); color: rgba(255,255,255,.7); padding: 32px 24px; margin-top: 60px; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,.6); text-decoration: none; font-size: .85rem; transition: color .2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-size: .83rem; }
+
+    @media (max-width: 1024px) {
+      .table-wrapper { overflow-x: auto; }
+      table { min-width: 900px; }
+    }
+    @media (max-width: 768px) {
+      .nav-search { display: none; }
+      .stats-bar { gap: 10px; }
+      .stat-card { min-width: 120px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">Globex<span>Sky</span></a>
+      <div class="nav-search">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search products, suppliers…" />
+      </div>
+      <div class="nav-actions">
+        <a href="../../pages/auth/login.html" class="nav-link"><i class="fas fa-user"></i> Login</a>
+        <a href="../../pages/auth/register.html" class="nav-link btn-primary"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="../../pages/cart/index.html" class="nav-link cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── PAGE HEADER ── -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div>
+      <h1><i class="fas fa-file-invoice"></i> My RFQs</h1>
+      <p>Manage your requests for quotation and track supplier responses.</p>
+    </div>
+    <a href="./create.html" class="btn-create-rfq"><i class="fas fa-plus"></i> Create New RFQ</a>
+  </div>
+</div>
+
+<!-- ── STATS ── -->
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="fas fa-file-invoice"></i></div>
+    <div><div class="stat-value">12</div><div class="stat-label">Total RFQs</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green"><i class="fas fa-lock-open"></i></div>
+    <div><div class="stat-value">5</div><div class="stat-label">Open</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon orange"><i class="fas fa-trophy"></i></div>
+    <div><div class="stat-value">4</div><div class="stat-label">Awarded</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon gray"><i class="fas fa-lock"></i></div>
+    <div><div class="stat-value">3</div><div class="stat-label">Closed</div></div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main class="main-content">
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="filter-card-header">
+      <i class="fas fa-filter" style="color:var(--primary)"></i>
+      <h3>Filter RFQs</h3>
+    </div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Status</label>
+        <select class="filter-control" id="filterStatus">
+          <option value="">All Statuses</option>
+          <option value="open">Open</option>
+          <option value="closed">Closed</option>
+          <option value="awarded">Awarded</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Category</label>
+        <select class="filter-control" id="filterCategory">
+          <option value="">All Categories</option>
+          <option>Electronics &amp; Components</option>
+          <option>Industrial Machinery</option>
+          <option>Clothing &amp; Textiles</option>
+          <option>Food &amp; Beverage</option>
+          <option>Medical Equipment</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>From Date</label>
+        <input type="date" class="filter-control" id="filterFrom" />
+      </div>
+      <div class="filter-group">
+        <label>To Date</label>
+        <input type="date" class="filter-control" id="filterTo" />
+      </div>
+      <div style="display:flex; gap:8px; align-self:flex-end;">
+        <button class="btn-filter" onclick="applyFilters()"><i class="fas fa-search"></i> Apply</button>
+        <button class="btn-clear" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Tabs -->
+  <div class="status-tabs">
+    <button class="status-tab active" onclick="filterByStatus('all', this)">All RFQs <span class="tab-count-pill">12</span></button>
+    <button class="status-tab" onclick="filterByStatus('open', this)">Open <span class="tab-count-pill">5</span></button>
+    <button class="status-tab" onclick="filterByStatus('awarded', this)">Awarded <span class="tab-count-pill">4</span></button>
+    <button class="status-tab" onclick="filterByStatus('closed', this)">Closed <span class="tab-count-pill">3</span></button>
+  </div>
+
+  <!-- RFQ Table -->
+  <div class="table-wrapper">
+    <table id="rfqTable">
+      <thead>
+        <tr>
+          <th>RFQ ID</th>
+          <th>Product / Category</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th style="text-align:center;">Quotations</th>
+          <th>Best Price</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="rfqTableBody">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+
+    <!-- Empty State (inside table wrapper, hidden by default) -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-illustration"><i class="fas fa-inbox"></i></div>
+      <h3>No RFQs Found</h3>
+      <p>No requests for quotation match your current filters. Try adjusting your search criteria or create a new RFQ.</p>
+      <a href="./create.html" class="btn-create-rfq"><i class="fas fa-plus"></i> Create Your First RFQ</a>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-row" id="paginationRow">
+      <span class="pagination-info" id="paginationInfo">Showing 1–5 of 12 RFQs</span>
+      <div class="pagination">
+        <button class="page-btn" id="btnPrev" onclick="changePage(-1)" disabled><i class="fas fa-chevron-left"></i></button>
+        <button class="page-btn active" onclick="goToPage(1, this)">1</button>
+        <button class="page-btn" onclick="goToPage(2, this)">2</button>
+        <button class="page-btn" onclick="goToPage(3, this)">3</button>
+        <span class="page-ellipsis">…</span>
+        <button class="page-btn" onclick="goToPage(10, this)">10</button>
+        <button class="page-btn" id="btnNext" onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── CONFIRM DIALOG ── -->
+<div class="confirm-overlay" id="confirmOverlay" onclick="closeConfirm(event)">
+  <div class="confirm-dialog" id="confirmDialog">
+    <div class="confirm-icon" id="confirmIcon"><i id="confirmIconI" class="fas fa-times-circle"></i></div>
+    <h3 id="confirmTitle">Close This RFQ?</h3>
+    <p id="confirmMessage">This will stop accepting new quotations. Existing quotations will remain visible. This action cannot be undone.</p>
+    <div class="confirm-btns">
+      <button class="btn-confirm btn-confirm-cancel" onclick="closeConfirmDialog()">Cancel</button>
+      <button class="btn-confirm" id="confirmActionBtn" onclick="executeConfirmAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2024 Globex International Trade Co., Ltd.</span>
+    <div class="footer-links">
+      <a href="../../pages/about.html">About</a>
+      <a href="../../pages/help.html">Help</a>
+      <a href="../../pages/privacy.html">Privacy</a>
+      <a href="../../pages/terms.html">Terms</a>
+      <a href="../../pages/contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Sample Data ──
+  const rfqData = [
+    { id: 'RFQ-2024-001', name: 'Industrial Water Pumps', category: 'Industrial Machinery', qty: '500 pcs', status: 'open', quotes: 4, bestPrice: '$124.50', date: '2024-03-01' },
+    { id: 'RFQ-2024-002', name: 'USB-C Charging Cables 2m', category: 'Electronics & Components', qty: '10,000 pcs', status: 'awarded', quotes: 7, bestPrice: '$0.85', date: '2024-02-20' },
+    { id: 'RFQ-2024-003', name: 'Cotton T-Shirts (Bulk Order)', category: 'Clothing & Textiles', qty: '2,000 pcs', status: 'open', quotes: 3, bestPrice: '$3.20', date: '2024-02-15' },
+    { id: 'RFQ-2024-004', name: 'Stainless Steel Bolts M8x50', category: 'Industrial Machinery', qty: '50,000 pcs', status: 'closed', quotes: 6, bestPrice: '$0.12', date: '2024-01-30' },
+    { id: 'RFQ-2024-005', name: 'Organic Green Tea Leaves', category: 'Food & Beverage', qty: '500 kg', status: 'open', quotes: 2, bestPrice: null, date: '2024-03-05' },
+  ];
+
+  let currentPage = 1;
+  let activeStatus = 'all';
+  let pendingAction = null;
+
+  // ── Render Table ──
+  function renderTable(data) {
+    const tbody = document.getElementById('rfqTableBody');
+    const empty = document.getElementById('emptyState');
+    const pagination = document.getElementById('paginationRow');
+
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '';
+      empty.classList.add('show');
+      pagination.style.display = 'none';
+      return;
+    }
+
+    empty.classList.remove('show');
+    pagination.style.display = 'flex';
+
+    tbody.innerHTML = data.map(r => `
+      <tr data-status="${r.status}">
+        <td><span class="rfq-id">${r.id}</span></td>
+        <td>
+          <div class="rfq-name">${r.name}<small>${r.category}</small></div>
+        </td>
+        <td>${r.qty}</td>
+        <td><span class="badge badge-${r.status}">${capitalize(r.status)}</span></td>
+        <td class="quotes-count">
+          <div class="quotes-num">${r.quotes}</div>
+          <div class="quotes-label">received</div>
+        </td>
+        <td>
+          ${r.bestPrice
+            ? `<span class="best-price">${r.bestPrice}</span>`
+            : `<span class="best-price none">Awaiting</span>`}
+        </td>
+        <td class="date-col">${formatDate(r.date)}</td>
+        <td>
+          <div class="action-btns">
+            <a href="./quotations.html" class="btn-sm btn-sm-primary"><i class="fas fa-eye"></i> Quotations</a>
+            ${r.status === 'open' ? `<button class="btn-sm btn-sm-danger" onclick="confirmClose('${r.id}')"><i class="fas fa-lock"></i> Close</button>` : ''}
+            ${r.status === 'open' && r.quotes > 0 ? `<button class="btn-sm btn-sm-success" onclick="confirmAward('${r.id}')"><i class="fas fa-trophy"></i> Award</button>` : ''}
+            ${r.status === 'closed' || r.status === 'awarded' ? `<button class="btn-sm btn-sm-gray" onclick="showToast('RFQ archived.', 'info')"><i class="fas fa-archive"></i> Archive</button>` : ''}
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function formatDate(d) {
+    return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  // ── Status Filter ──
+  function filterByStatus(status, btn) {
+    document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeStatus = status;
+    const filtered = status === 'all' ? rfqData : rfqData.filter(r => r.status === status);
+    renderTable(filtered);
+    updatePaginationInfo(filtered.length);
+  }
+
+  // ── Apply Filters ──
+  function applyFilters() {
+    const status = document.getElementById('filterStatus').value;
+    const category = document.getElementById('filterCategory').value;
+    const from = document.getElementById('filterFrom').value;
+    const to = document.getElementById('filterTo').value;
+
+    let filtered = rfqData.filter(r => {
+      if (status && r.status !== status) return false;
+      if (category && r.category !== category) return false;
+      if (from && r.date < from) return false;
+      if (to && r.date > to) return false;
+      return true;
+    });
+
+    renderTable(filtered);
+    updatePaginationInfo(filtered.length);
+    showToast(`Found ${filtered.length} matching RFQ${filtered.length !== 1 ? 's' : ''}.`, 'info');
+  }
+
+  function clearFilters() {
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterCategory').value = '';
+    document.getElementById('filterFrom').value = '';
+    document.getElementById('filterTo').value = '';
+    renderTable(rfqData);
+    updatePaginationInfo(rfqData.length);
+    showToast('Filters cleared.', 'info');
+  }
+
+  function updatePaginationInfo(total) {
+    document.getElementById('paginationInfo').textContent = `Showing 1–${Math.min(5, total)} of ${total} RFQs`;
+  }
+
+  // ── Pagination ──
+  function goToPage(page, btn) {
+    currentPage = page;
+    document.querySelectorAll('.page-btn:not(#btnPrev):not(#btnNext)').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.getElementById('btnPrev').disabled = page === 1;
+    document.getElementById('btnNext').disabled = page === 10;
+    showToast(`Navigated to page ${page}.`, 'info');
+  }
+
+  function changePage(dir) {
+    const newPage = currentPage + dir;
+    if (newPage < 1 || newPage > 10) return;
+    const btns = document.querySelectorAll('.page-btn:not(#btnPrev):not(#btnNext)');
+    const target = Array.from(btns).find(b => b.textContent.trim() === String(newPage));
+    goToPage(newPage, target);
+  }
+
+  // ── Confirm Dialogs ──
+  function confirmClose(id) {
+    pendingAction = { type: 'close', id };
+    document.getElementById('confirmIcon').className = 'confirm-icon danger';
+    document.getElementById('confirmIconI').className = 'fas fa-lock';
+    document.getElementById('confirmTitle').textContent = `Close RFQ ${id}?`;
+    document.getElementById('confirmMessage').textContent = 'This will stop accepting new quotations. Existing quotations will remain visible. This action cannot be undone.';
+    const btn = document.getElementById('confirmActionBtn');
+    btn.textContent = 'Close RFQ';
+    btn.className = 'btn-confirm btn-confirm-danger';
+    document.getElementById('confirmOverlay').classList.add('open');
+  }
+
+  function confirmAward(id) {
+    pendingAction = { type: 'award', id };
+    document.getElementById('confirmIcon').className = 'confirm-icon award';
+    document.getElementById('confirmIconI').className = 'fas fa-trophy';
+    document.getElementById('confirmTitle').textContent = `Award RFQ ${id}?`;
+    document.getElementById('confirmMessage').textContent = 'Awarding this RFQ will notify the winning supplier and close the RFQ to new quotations. Please ensure you have selected the best quotation first.';
+    const btn = document.getElementById('confirmActionBtn');
+    btn.textContent = 'Award RFQ';
+    btn.className = 'btn-confirm btn-confirm-success';
+    document.getElementById('confirmOverlay').classList.add('open');
+  }
+
+  function executeConfirmAction() {
+    if (!pendingAction) return;
+    closeConfirmDialog();
+    if (pendingAction.type === 'close') {
+      const row = rfqData.find(r => r.id === pendingAction.id);
+      if (row) row.status = 'closed';
+      renderTable(activeStatus === 'all' ? rfqData : rfqData.filter(r => r.status === activeStatus));
+      showToast(`RFQ ${pendingAction.id} has been closed.`, 'warning');
+    } else if (pendingAction.type === 'award') {
+      const row = rfqData.find(r => r.id === pendingAction.id);
+      if (row) row.status = 'awarded';
+      renderTable(activeStatus === 'all' ? rfqData : rfqData.filter(r => r.status === activeStatus));
+      showToast(`RFQ ${pendingAction.id} has been awarded successfully!`, 'success');
+    }
+    pendingAction = null;
+  }
+
+  function closeConfirmDialog() { document.getElementById('confirmOverlay').classList.remove('open'); }
+  function closeConfirm(e) { if (e.target === document.getElementById('confirmOverlay')) closeConfirmDialog(); }
+
+  // ── Toast ──
+  function showToast(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    const icons = { success: 'fa-check-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fas ${icons[type] || 'fa-info-circle'}"></i> ${msg}`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.transition = 'opacity .4s, transform .4s';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      setTimeout(() => toast.remove(), 400);
+    }, 3200);
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeConfirmDialog(); });
+
+  // ── Init ──
+  renderTable(rfqData);
+</script>
+</body>
+</html>
