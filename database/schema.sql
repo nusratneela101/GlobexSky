@@ -803,3 +803,38 @@ CREATE POLICY "Admins manage all refunds"
   ON refunds USING (
     EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = auth.uid() AND p.role = 'admin')
   );
+
+-- ─── Platform Settings (API Key / Service Configuration) ──────────────────────
+-- Stores API keys and service config managed from the Admin Panel.
+-- Supports Test/Live mode per service category.
+
+CREATE TABLE IF NOT EXISTS platform_settings (
+  id            SERIAL PRIMARY KEY,
+  category      VARCHAR(50)  NOT NULL,
+  setting_key   VARCHAR(100) NOT NULL,
+  setting_value TEXT,
+  mode          VARCHAR(10)  DEFAULT 'test'
+                             CHECK (mode IN ('test', 'live')),
+  is_active     BOOLEAN      DEFAULT TRUE,
+  is_sensitive  BOOLEAN      DEFAULT FALSE,
+  created_at    TIMESTAMPTZ  DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ  DEFAULT NOW(),
+  UNIQUE(category, setting_key, mode)
+);
+
+CREATE INDEX IF NOT EXISTS idx_platform_settings_category ON platform_settings(category);
+CREATE INDEX IF NOT EXISTS idx_platform_settings_mode     ON platform_settings(mode);
+CREATE INDEX IF NOT EXISTS idx_platform_settings_key      ON platform_settings(setting_key);
+
+ALTER TABLE platform_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Only admins can read settings"   ON platform_settings;
+DROP POLICY IF EXISTS "Only admins can modify settings" ON platform_settings;
+
+CREATE POLICY "Only admins can read settings"
+  ON platform_settings FOR SELECT
+  USING (auth.jwt() ->> 'role' = 'admin');
+
+CREATE POLICY "Only admins can modify settings"
+  ON platform_settings FOR ALL
+  USING (auth.jwt() ->> 'role' = 'admin');

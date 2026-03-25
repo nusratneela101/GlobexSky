@@ -3,10 +3,18 @@
  * Loads and saves system settings grouped by tab.
  */
 
-const API_BASE = window.API_BASE || '/api/v1';
+const API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || window.API_BASE || '/api/v1';
 
 async function authHeaders() {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  // Support both the new globexSession format (ApiClient) and legacy token keys
+  let token = null;
+  try {
+    const session = JSON.parse(localStorage.getItem('globexSession') || 'null');
+    token = (session && session.token) || null;
+  } catch (_) {}
+  if (!token) {
+    token = localStorage.getItem('token') || sessionStorage.getItem('token') || null;
+  }
   return { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
 }
 
