@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notification Preferences | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --primary-light: #e6f0ff;
+      --accent: #00C9A7;
+      --accent-light: #e0faf5;
+      --secondary: #FF6B35;
+      --secondary-light: #fff1ec;
+      --warning: #F59E0B;
+      --success: #22C55E;
+      --success-light: #f0fdf4;
+      --danger: #EF4444;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --text: #2d3748;
+      --muted: #718096;
+      --card: #fff;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,.08);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── HEADER ── */
+    .site-header { position: sticky; top: 0; z-index: 1000; background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .nav-container { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 66px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; text-decoration: none; white-space: nowrap; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-search { flex: 1; max-width: 480px; position: relative; }
+    .nav-search input { width: 100%; padding: 9px 18px 9px 42px; border: 2px solid var(--border); border-radius: 25px; font-family: 'Inter', sans-serif; font-size: .9rem; transition: border-color .2s, box-shadow .2s; outline: none; background: var(--bg); }
+    .nav-search input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); background: #fff; }
+    .nav-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    .nav-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .nav-link { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: .88rem; font-weight: 500; color: var(--text); text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+    .nav-link:hover { background: var(--primary-light); color: var(--primary); }
+    .nav-link.btn-outline { border: 2px solid var(--border); }
+    .nav-link.btn-outline:hover { border-color: var(--primary); }
+    .nav-link.btn-primary { background: var(--primary); color: #fff; }
+    .nav-link.btn-primary:hover { background: var(--primary-dark); }
+    .cart-btn { position: relative; padding: 8px 12px; }
+    .cart-badge { position: absolute; top: 2px; right: 2px; background: var(--secondary); color: #fff; font-size: .65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ── PAGE HERO ── */
+    .page-hero { background: linear-gradient(135deg, var(--primary) 0%, #1a6bde 60%, var(--accent) 100%); color: #fff; padding: 36px 24px 32px; }
+    .page-hero-inner { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 7px; color: rgba(255,255,255,.8); font-size: .88rem; font-weight: 500; margin-bottom: 16px; transition: color .2s; }
+    .back-link:hover { color: #fff; }
+    .back-link i { font-size: .8rem; }
+    .page-hero h1 { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .page-hero h1 i { background: rgba(255,255,255,.18); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .page-hero p { font-size: .95rem; opacity: .88; max-width: 460px; }
+
+    /* ── MAIN ── */
+    main { flex: 1; }
+    .main-content { max-width: 900px; margin: 0 auto; padding: 28px 24px 60px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* ── CARD ── */
+    .pref-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .pref-card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
+    .pref-card-title { font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--dark); display: flex; align-items: center; gap: 9px; }
+    .pref-card-title i { color: var(--primary); }
+    .pref-card-subtitle { font-size: .83rem; color: var(--muted); font-family: 'Inter', sans-serif; font-weight: 400; margin-top: 2px; }
+
+    /* ── PREFERENCES TABLE ── */
+    .pref-table { width: 100%; border-collapse: collapse; }
+    .pref-table thead th { padding: 12px 20px; background: var(--bg); font-family: 'Poppins', sans-serif; font-size: .82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); text-align: center; }
+    .pref-table thead th:first-child { text-align: left; padding-left: 24px; }
+    .pref-table thead .col-channel { min-width: 90px; }
+
+    .pref-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    .pref-table tbody tr:last-child { border-bottom: none; }
+    .pref-table tbody tr:hover { background: #f8faff; }
+    .pref-table tbody tr.locked-row { background: #fafafa; }
+    .pref-table tbody tr.locked-row:hover { background: #f5f5f5; }
+
+    .pref-table td { padding: 18px 20px; vertical-align: middle; }
+    .pref-table td:first-child { padding-left: 24px; }
+    .pref-table td.col-toggle { text-align: center; }
+
+    .pref-type-name { font-family: 'Poppins', sans-serif; font-size: .92rem; font-weight: 600; color: var(--dark); margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+    .pref-type-name .type-icon { width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: .78rem; flex-shrink: 0; }
+    .icon-order  { background: var(--primary-light); color: var(--primary); }
+    .icon-price  { background: #fff1ec; color: var(--secondary); }
+    .icon-msg    { background: #f0fdf4; color: var(--success); }
+    .icon-promo  { background: #fff1ec; color: var(--secondary); }
+    .icon-rfq    { background: var(--accent-light); color: var(--accent); }
+    .icon-insp   { background: #fffbeb; color: var(--warning); }
+    .icon-sec    { background: #fef2f2; color: var(--danger); }
+
+    .pref-type-desc { font-size: .82rem; color: var(--muted); }
+    .locked-badge { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; font-weight: 600; color: #9ca3af; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 20px; padding: 2px 8px; margin-left: 6px; }
+
+    /* ── TOGGLE SWITCH ── */
+    .toggle-wrap { display: flex; align-items: center; justify-content: center; }
+    .toggle-switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #cbd5e0; border-radius: 26px; transition: .25s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .25s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+    .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+    .toggle-switch input:disabled + .toggle-slider { background: #e9ecef; cursor: not-allowed; }
+    .toggle-switch input:disabled + .toggle-slider::before { background: #c9cdd2; }
+
+    /* Locked toggle container with tooltip */
+    .locked-toggle-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+    .locked-toggle-wrap .lock-icon { position: absolute; top: -7px; right: -7px; width: 16px; height: 16px; border-radius: 50%; background: #e5e7eb; color: #9ca3af; display: flex; align-items: center; justify-content: center; font-size: .58rem; z-index: 1; }
+    .locked-toggle-wrap .tooltip { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: var(--dark); color: #fff; font-size: .75rem; white-space: nowrap; padding: 6px 10px; border-radius: 6px; pointer-events: none; opacity: 0; transition: opacity .2s; z-index: 100; }
+    .locked-toggle-wrap .tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--dark); }
+    .locked-toggle-wrap:hover .tooltip { opacity: 1; }
+
+    /* ── ACTIONS BAR ── */
+    .actions-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 24px; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 500; cursor: pointer; transition: all .2s; border: 2px solid transparent; white-space: nowrap; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+    .btn-primary:disabled { background: #a0aec0; border-color: #a0aec0; cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+    .btn-outline:hover { background: var(--primary-light); }
+
+    /* ── TEST NOTIFICATION DROPDOWN ── */
+    .test-btn-wrap { position: relative; }
+    .test-dropdown { position: absolute; bottom: calc(100% + 8px); right: 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 8px 30px rgba(0,0,0,.12); min-width: 160px; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity .2s, transform .2s; z-index: 200; }
+    .test-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .test-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: .88rem; font-weight: 500; cursor: pointer; transition: background .15s; color: var(--text); }
+    .test-dropdown-item:hover { background: var(--primary-light); color: var(--primary); }
+    .test-dropdown-item i { width: 16px; text-align: center; color: var(--primary); }
+    .test-dropdown label { font-size: .72rem; color: var(--muted); padding: 8px 16px 4px; display: block; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; border-top: 1px solid var(--border); }
+
+    /* ── LOADING SPINNER ── */
+    .btn .spinner { display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+    .btn.loading .spinner { display: inline-block; }
+    .btn.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── INFO BOX ── */
+    .info-box { display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; background: var(--primary-light); border: 1px solid #c3d9f7; border-radius: var(--radius-sm); font-size: .85rem; color: #2563eb; }
+    .info-box i { margin-top: 2px; flex-shrink: 0; }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--dark); color: #fff; padding: 14px 20px; border-radius: var(--radius-sm); font-size: .88rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.2); transform: translateY(80px); opacity: 0; transition: all .3s cubic-bezier(.34,1.56,.64,1); z-index: 9999; max-width: 360px; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.toast-success { background: var(--success); }
+    .toast.toast-info { background: var(--primary); }
+    .toast.toast-warning { background: var(--warning); }
+    .toast-icon { font-size: 1.1rem; }
+
+    /* ── UNSAVED BADGE ── */
+    .unsaved-badge { display: none; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 30px; background: var(--warning); color: #fff; font-size: .82rem; font-weight: 600; }
+    .unsaved-badge.visible { display: inline-flex; }
+
+    /* ── FOOTER ── */
+    .site-footer { background: var(--dark); color: #a0aec0; padding: 28px 24px; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-copy { font-size: .85rem; }
+    .footer-links { display: flex; align-items: center; gap: 20px; }
+    .footer-links a { font-size: .85rem; color: #a0aec0; transition: color .2s; }
+    .footer-links a:hover { color: #fff; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .nav-search { display: none; }
+      .nav-link span { display: none; }
+      .pref-table thead .col-channel { min-width: 70px; }
+      .pref-table { font-size: .85rem; }
+      .pref-table td { padding: 14px 12px; }
+      .pref-table td:first-child { padding-left: 14px; }
+      .pref-table thead th:first-child { padding-left: 14px; }
+      .pref-type-name { font-size: .85rem; }
+      .pref-type-desc { display: none; }
+      .page-hero h1 { font-size: 1.4rem; }
+      .actions-bar { justify-content: stretch; }
+      .actions-bar .btn { flex: 1; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .pref-table thead th:not(:first-child) .col-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo">GlobexSky</a>
+    <div class="nav-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search products, suppliers…" />
+    </div>
+    <nav class="nav-actions">
+      <a href="../auth/login.html" class="nav-link btn-outline"><i class="fa-regular fa-user"></i><span>Login</span></a>
+      <a href="../auth/register.html" class="nav-link btn-primary"><i class="fa-solid fa-user-plus"></i><span>Register</span></a>
+      <a href="../cart/index.html" class="nav-link cart-btn">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-badge">3</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── PAGE HERO ── -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Notifications</a>
+    <h1>
+      <i class="fa-solid fa-sliders"></i>
+      Notification Preferences
+    </h1>
+    <p>Choose how and when you receive notifications across all channels.</p>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main>
+  <div class="main-content">
+
+    <!-- INFO BOX -->
+    <div class="info-box">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Changes are saved per-session. Security Alerts are always enabled to keep your account safe and cannot be disabled.</span>
+    </div>
+
+    <!-- PREFERENCES CARD -->
+    <div class="pref-card">
+      <div class="pref-card-header">
+        <div>
+          <div class="pref-card-title"><i class="fa-solid fa-bell"></i> Notification Channels</div>
+          <div class="pref-card-subtitle">Manage which notifications you receive and via which channel</div>
+        </div>
+        <span class="unsaved-badge" id="unsavedBadge"><i class="fa-solid fa-circle-exclamation"></i> Unsaved changes</span>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="pref-table" id="prefTable">
+          <thead>
+            <tr>
+              <th>Notification Type</th>
+              <th class="col-channel"><span class="col-label"><i class="fa-solid fa-envelope" style="margin-right:5px;"></i>Email</span></th>
+              <th class="col-channel"><span class="col-label"><i class="fa-solid fa-mobile-screen" style="margin-right:5px;"></i>Push</span></th>
+              <th class="col-channel"><span class="col-label"><i class="fa-solid fa-comment-sms" style="margin-right:5px;"></i>SMS</span></th>
+            </tr>
+          </thead>
+          <tbody id="prefTbody">
+
+            <!-- 1: Order Updates -->
+            <tr>
+              <td>
+                <div class="pref-type-name">
+                  <span class="type-icon icon-order"><i class="fa-solid fa-box"></i></span>
+                  Order Updates
+                </div>
+                <div class="pref-type-desc">Get notified about order status changes</div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="order-email" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="order-push" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="order-sms" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 2: Price Drop Alerts -->
+            <tr>
+              <td>
+                <div class="pref-type-name">
+                  <span class="type-icon icon-price"><i class="fa-solid fa-arrow-trend-down"></i></span>
+                  Price Drop Alerts
+                </div>
+                <div class="pref-type-desc">When saved items drop in price</div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="price-email" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="price-push" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="price-sms" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 3: New Messages -->
+            <tr>
+              <td>
+                <div class="pref-type-name">
+                  <span class="type-icon icon-msg"><i class="fa-solid fa-envelope"></i></span>
+                  New Messages
+                </div>
+                <div class="pref-type-desc">When you receive a new message</div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="msg-email" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="msg-push" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="msg-sms" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 4: Promotional Offers -->
+            <tr>
+              <td>
+                <div class="pref-type-name">
+                  <span class="type-icon icon-promo"><i class="fa-solid fa-tag"></i></span>
+                  Promotional Offers
+                </div>
+                <div class="pref-type-desc">Special deals and discount codes</div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="promo-email" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="promo-push" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="promo-sms" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 5: RFQ Quotation Received -->
+            <tr>
+              <td>
+                <div class="pref-type-name">
+                  <span class="type-icon icon-rfq"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+                  RFQ Quotation Received
+                </div>
+                <div class="pref-type-desc">When suppliers send quotations</div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="rfq-email" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="rfq-push" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="rfq-sms" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 6: Inspection Updates -->
+            <tr>
+              <td>
+                <div class="pref-type-name">
+                  <span class="type-icon icon-insp"><i class="fa-solid fa-clipboard-check"></i></span>
+                  Inspection Updates
+                </div>
+                <div class="pref-type-desc">Updates on your inspection requests</div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="insp-email" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="insp-push" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="pref-toggle" data-pref="insp-sms" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 7: Security Alerts (LOCKED) -->
+            <tr class="locked-row">
+              <td>
+                <div class="pref-type-name">
+                  <span class="type-icon icon-sec"><i class="fa-solid fa-shield-halved"></i></span>
+                  Security Alerts
+                  <span class="locked-badge"><i class="fa-solid fa-lock"></i> Always On</span>
+                </div>
+                <div class="pref-type-desc">Login attempts, password changes, account activity</div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <div class="locked-toggle-wrap">
+                    <label class="toggle-switch">
+                      <input type="checkbox" disabled checked />
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span class="lock-icon"><i class="fa-solid fa-lock"></i></span>
+                    <span class="tooltip">Security alerts cannot be disabled</span>
+                  </div>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <div class="locked-toggle-wrap">
+                    <label class="toggle-switch">
+                      <input type="checkbox" disabled checked />
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span class="lock-icon"><i class="fa-solid fa-lock"></i></span>
+                    <span class="tooltip">Security alerts cannot be disabled</span>
+                  </div>
+                </div>
+              </td>
+              <td class="col-toggle">
+                <div class="toggle-wrap">
+                  <div class="locked-toggle-wrap">
+                    <label class="toggle-switch">
+                      <input type="checkbox" disabled checked />
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span class="lock-icon"><i class="fa-solid fa-lock"></i></span>
+                    <span class="tooltip">Security alerts cannot be disabled</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ACTIONS BAR -->
+    <div class="actions-bar">
+      <div class="test-btn-wrap">
+        <button class="btn btn-outline" id="testBtn">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span class="btn-text">Send Test Notification</span>
+          <span class="spinner"></span>
+          <i class="fa-solid fa-chevron-up" style="margin-left:2px;font-size:.75rem;" id="testChevron"></i>
+        </button>
+        <div class="test-dropdown" id="testDropdown">
+          <label>Send via</label>
+          <div class="test-dropdown-item" data-channel="email">
+            <i class="fa-solid fa-envelope"></i> Email
+          </div>
+          <div class="test-dropdown-item" data-channel="push">
+            <i class="fa-solid fa-mobile-screen"></i> Push Notification
+          </div>
+          <div class="test-dropdown-item" data-channel="sms">
+            <i class="fa-solid fa-comment-sms"></i> SMS
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="saveBtn">
+        <i class="fa-solid fa-floppy-disk"></i>
+        <span class="btn-text">Save Preferences</span>
+        <span class="spinner"></span>
+      </button>
+    </div>
+
+  </div>
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2024 Globex International Trade Co., Ltd.</span>
+    <div class="footer-links">
+      <a href="../../pages/privacy.html">Privacy Policy</a>
+      <a href="../../pages/terms.html">Terms of Service</a>
+      <a href="../../pages/contact.html">Contact Us</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── ELEMENTS ── */
+  const saveBtn       = document.getElementById('saveBtn');
+  const testBtn       = document.getElementById('testBtn');
+  const testDropdown  = document.getElementById('testDropdown');
+  const testChevron   = document.getElementById('testChevron');
+  const unsavedBadge  = document.getElementById('unsavedBadge');
+  const toast         = document.getElementById('toast');
+  const toastMsg      = document.getElementById('toastMsg');
+  const toastIcon     = document.getElementById('toastIcon');
+  const allToggles    = document.querySelectorAll('.pref-toggle');
+  let toastTimer;
+  let hasUnsaved = false;
+
+  /* ── SNAPSHOT initial state ── */
+  function getSnapshot() {
+    const snap = {};
+    allToggles.forEach(t => { snap[t.dataset.pref] = t.checked; });
+    return snap;
+  }
+  let savedSnapshot = getSnapshot();
+
+  /* ── TOAST HELPER ── */
+  function showToast(msg, type = 'info', icon = '') {
+    clearTimeout(toastTimer);
+    toast.className = `toast toast-${type}`;
+    toastMsg.textContent = msg;
+    toastIcon.innerHTML = icon || (type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : type === 'warning' ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-circle-info"></i>');
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  /* ── UNSAVED CHANGES TRACKING ── */
+  function checkUnsaved() {
+    const current = getSnapshot();
+    hasUnsaved = Object.keys(current).some(k => current[k] !== savedSnapshot[k]);
+    unsavedBadge.classList.toggle('visible', hasUnsaved);
+  }
+
+  allToggles.forEach(toggle => {
+    toggle.addEventListener('change', checkUnsaved);
+  });
+
+  /* ── SAVE PREFERENCES ── */
+  saveBtn.addEventListener('click', () => {
+    if (saveBtn.classList.contains('loading')) return;
+    saveBtn.classList.add('loading');
+    saveBtn.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+      saveBtn.classList.remove('loading');
+      saveBtn.disabled = false;
+      savedSnapshot = getSnapshot();
+      hasUnsaved = false;
+      unsavedBadge.classList.remove('visible');
+      showToast('Preferences saved successfully!', 'success');
+    }, 1400);
+  });
+
+  /* ── TEST NOTIFICATION DROPDOWN ── */
+  testBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = testDropdown.classList.contains('open');
+    testDropdown.classList.toggle('open', !isOpen);
+    testChevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  });
+
+  document.addEventListener('click', () => {
+    testDropdown.classList.remove('open');
+    testChevron.style.transform = '';
+  });
+
+  testDropdown.addEventListener('click', e => {
+    const item = e.target.closest('.test-dropdown-item');
+    if (!item) return;
+    e.stopPropagation();
+    testDropdown.classList.remove('open');
+    testChevron.style.transform = '';
+
+    const channel = item.dataset.channel;
+    const channelLabels = { email: 'Email', push: 'Push Notification', sms: 'SMS' };
+    const channelIcons  = { email: '<i class="fa-solid fa-envelope"></i>', push: '<i class="fa-solid fa-mobile-screen"></i>', sms: '<i class="fa-solid fa-comment-sms"></i>' };
+
+    // Show loading state on button
+    testBtn.classList.add('loading');
+    testBtn.disabled = true;
+
+    setTimeout(() => {
+      testBtn.classList.remove('loading');
+      testBtn.disabled = false;
+      showToast(`Test ${channelLabels[channel]} notification sent!`, 'info', channelIcons[channel]);
+    }, 900);
+  });
+
+  /* ── UNSAVED CHANGES WARNING ON LEAVE ── */
+  window.addEventListener('beforeunload', (e) => {
+    if (hasUnsaved) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  /* ── KEYBOARD ACCESSIBILITY: toggle on Space/Enter ── */
+  allToggles.forEach(toggle => {
+    toggle.addEventListener('keydown', e => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        toggle.checked = !toggle.checked;
+        toggle.dispatchEvent(new Event('change'));
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

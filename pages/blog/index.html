@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --accent: #00C9A7;
+      --secondary: #FF6B35;
+      --warning: #F59E0B;
+      --success: #22C55E;
+      --danger: #EF4444;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --card-bg: #fff;
+      --border: #e2e8f0;
+      --muted: #64748b;
+      --shadow: 0 2px 16px rgba(0,82,204,0.07);
+      --shadow-hover: 0 8px 32px rgba(0,82,204,0.13);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }
+    a { text-decoration: none; }
+    img { max-width: 100%; }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky; top: 0; z-index: 999; background: var(--card-bg);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07); height: 64px;
+      display: flex; align-items: center; padding: 0 2rem; gap: 1.5rem;
+    }
+    .nav-logo {
+      font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.45rem;
+      background: linear-gradient(135deg, #0052CC 0%, #00C9A7 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      white-space: nowrap; display: flex; align-items: center; gap: .4rem;
+    }
+    .nav-search { flex: 1; max-width: 420px; position: relative; }
+    .nav-search input {
+      width: 100%; padding: .5rem 1rem .5rem 2.6rem; border: 1.5px solid var(--border);
+      border-radius: 8px; font-family: 'Inter', sans-serif; font-size: .875rem;
+      background: var(--bg); outline: none; transition: border-color .2s;
+    }
+    .nav-search input:focus { border-color: var(--primary); background: #fff; }
+    .nav-search .si { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .8rem; }
+    .nav-actions { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
+    .nav-actions a {
+      color: var(--dark); font-size: .875rem; font-weight: 500;
+      display: flex; align-items: center; gap: .35rem; padding: .4rem .8rem;
+      border-radius: 8px; transition: all .2s;
+    }
+    .nav-actions a:hover { background: var(--bg); color: var(--primary); }
+    .nav-actions .btn-reg { background: var(--primary); color: #fff !important; }
+    .nav-actions .btn-reg:hover { background: var(--primary-dark); }
+    .cart-wrap { position: relative; }
+    .cart-dot { position: absolute; top: -3px; right: -3px; background: var(--secondary); color: #fff; font-size: .6rem; font-weight: 700; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* PAGE HERO / FEATURED POST */
+    .featured-hero {
+      position: relative; overflow: hidden; min-height: 440px;
+      display: flex; align-items: flex-end;
+      background: linear-gradient(135deg, #0a0e27 0%, #0052CC 60%, #00C9A7 100%);
+    }
+    .featured-bg-img {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #0a1628 0%, #0b2d6e 50%, #0e4d5e 100%);
+      opacity: .95;
+    }
+    /* abstract pattern overlay */
+    .featured-bg-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 70% 30%, rgba(0,201,167,.18) 0%, transparent 55%),
+                        radial-gradient(circle at 20% 80%, rgba(0,82,204,.25) 0%, transparent 50%);
+    }
+    .featured-content {
+      position: relative; z-index: 1; padding: 3rem 2rem; max-width: 1180px; margin: 0 auto; width: 100%;
+    }
+    .cat-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .3rem .8rem; border-radius: 999px; font-size: .75rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; margin-bottom: .85rem;
+    }
+    .cat-ai    { background: rgba(0,201,167,.2); color: #00C9A7; border: 1px solid rgba(0,201,167,.4); }
+    .cat-trade { background: rgba(0,82,204,.25); color: #6ea8fe; border: 1px solid rgba(0,82,204,.4); }
+    .cat-src   { background: rgba(245,158,11,.2); color: #fbbf24; border: 1px solid rgba(245,158,11,.4); }
+    .cat-elec  { background: rgba(239,68,68,.2);  color: #fca5a5; border: 1px solid rgba(239,68,68,.35); }
+    .cat-log   { background: rgba(34,197,94,.15); color: #86efac; border: 1px solid rgba(34,197,94,.3); }
+    .cat-dark  { background: rgba(255,255,255,.1); color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.2); }
+    .featured-title {
+      font-size: 2rem; font-weight: 800; color: #fff; line-height: 1.3;
+      max-width: 680px; margin-bottom: .75rem;
+    }
+    .featured-excerpt { font-size: .95rem; color: rgba(255,255,255,.75); max-width: 580px; margin-bottom: 1.25rem; }
+    .featured-meta {
+      display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .author-row { display: flex; align-items: center; gap: .6rem; }
+    .avatar-sm {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .75rem; font-weight: 700; flex-shrink: 0;
+    }
+    .avatar-xs {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .65rem; font-weight: 700; flex-shrink: 0;
+    }
+    .author-name { color: rgba(255,255,255,.9); font-weight: 500; font-size: .875rem; }
+    .meta-sep { color: rgba(255,255,255,.3); }
+    .meta-info { color: rgba(255,255,255,.65); font-size: .82rem; display: flex; align-items: center; gap: .3rem; }
+    .btn-read-more {
+      display: inline-flex; align-items: center; gap: .45rem;
+      background: var(--accent); color: var(--dark); font-family: 'Poppins', sans-serif;
+      font-size: .9rem; font-weight: 600; padding: .7rem 1.5rem; border-radius: 10px;
+      transition: all .2s;
+    }
+    .btn-read-more:hover { background: #00b396; box-shadow: 0 4px 16px rgba(0,201,167,.4); transform: translateY(-1px); }
+
+    /* MAIN LAYOUT */
+    .main-wrap { max-width: 1180px; margin: 2.5rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 300px; gap: 2rem; align-items: start; }
+
+    /* POSTS GRID */
+    .posts-section {}
+    .section-bar {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: .75rem;
+    }
+    .section-bar h2 { font-size: 1.15rem; font-weight: 700; }
+    .filter-tabs { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .filter-tab {
+      padding: .35rem .85rem; border-radius: 999px; font-size: .8rem; font-weight: 500;
+      cursor: pointer; border: 1.5px solid var(--border); background: var(--card-bg);
+      color: var(--muted); transition: all .2s;
+    }
+    .filter-tab.active, .filter-tab:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    .posts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+    /* POST CARD */
+    .post-card {
+      background: var(--card-bg); border-radius: 14px; box-shadow: var(--shadow);
+      overflow: hidden; transition: all .28s; display: flex; flex-direction: column;
+    }
+    .post-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+    .post-card.hidden { display: none; }
+    .post-thumb {
+      height: 170px; position: relative; overflow: hidden; flex-shrink: 0;
+    }
+    .post-thumb-inner {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.5); font-size: 2rem;
+    }
+    .thumb-1 { background: linear-gradient(135deg, #0052CC, #00C9A7); }
+    .thumb-2 { background: linear-gradient(135deg, #FF6B35, #F59E0B); }
+    .thumb-3 { background: linear-gradient(135deg, #7C3AED, #0052CC); }
+    .thumb-4 { background: linear-gradient(135deg, #0a0e27, #0052CC); }
+    .thumb-5 { background: linear-gradient(135deg, #00C9A7, #22C55E); }
+    .thumb-6 { background: linear-gradient(135deg, #EF4444, #FF6B35); }
+    .thumb-badge {
+      position: absolute; top: .75rem; left: .75rem;
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .25rem .7rem; border-radius: 999px; font-size: .73rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+    }
+    .tb-ai    { background: rgba(0,0,0,.55); color: #00C9A7; border: 1px solid rgba(0,201,167,.4); }
+    .tb-trade { background: rgba(0,0,0,.55); color: #93c5fd; border: 1px solid rgba(147,197,253,.35); }
+    .tb-src   { background: rgba(0,0,0,.55); color: #fde68a; border: 1px solid rgba(253,230,138,.35); }
+    .tb-elec  { background: rgba(0,0,0,.55); color: #fca5a5; border: 1px solid rgba(252,165,165,.35); }
+    .tb-log   { background: rgba(0,0,0,.55); color: #bbf7d0; border: 1px solid rgba(187,247,208,.35); }
+    .tb-mfg   { background: rgba(0,0,0,.55); color: #c4b5fd; border: 1px solid rgba(196,181,253,.35); }
+    .post-body { padding: 1.1rem 1.2rem; flex: 1; display: flex; flex-direction: column; gap: .5rem; }
+    .post-title {
+      font-size: .93rem; font-weight: 700; color: var(--dark); line-height: 1.4;
+      transition: color .2s;
+    }
+    .post-title:hover { color: var(--primary); }
+    .post-excerpt { font-size: .8rem; color: var(--muted); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .post-footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: .6rem; border-top: 1px solid var(--border); }
+    .post-author { display: flex; align-items: center; gap: .45rem; }
+    .post-author-name { font-size: .78rem; font-weight: 500; }
+    .post-date { font-size: .73rem; color: var(--muted); }
+    .post-read-time { font-size: .73rem; color: var(--muted); display: flex; align-items: center; gap: .25rem; }
+    .post-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .25rem; }
+    .tag-chip {
+      padding: .2rem .55rem; background: #eff6ff; color: var(--primary);
+      border-radius: 5px; font-size: .7rem; font-weight: 500; cursor: pointer;
+      transition: background .2s; border: 1px solid rgba(0,82,204,.12);
+    }
+    .tag-chip:hover { background: rgba(0,82,204,.15); }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex; align-items: center; justify-content: center; gap: .4rem;
+      margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    }
+    .pg-btn {
+      width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; border: 1.5px solid var(--border); background: var(--card-bg);
+      font-size: .85rem; font-weight: 500; color: var(--dark); cursor: pointer; transition: all .2s;
+    }
+    .pg-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .pg-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .pg-btn.arrow { color: var(--muted); }
+    .pg-dots { color: var(--muted); padding: 0 .2rem; font-size: .85rem; }
+
+    /* SIDEBAR */
+    .sidebar { position: sticky; top: 80px; display: flex; flex-direction: column; gap: 1.5rem; }
+    .sb-card { background: var(--card-bg); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+    .sb-card-head {
+      padding: .9rem 1.25rem; border-bottom: 1px solid var(--border);
+      font-size: .9rem; font-weight: 600; display: flex; align-items: center; gap: .5rem;
+    }
+    .sb-card-head i { color: var(--primary); }
+    .sb-card-body { padding: 1.25rem; }
+
+    /* SEARCH */
+    .sb-search { display: flex; gap: .5rem; }
+    .sb-search input {
+      flex: 1; padding: .55rem .9rem; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .85rem; outline: none; transition: border-color .2s;
+    }
+    .sb-search input:focus { border-color: var(--primary); }
+    .sb-search button {
+      padding: .55rem .9rem; background: var(--primary); color: #fff; border: none;
+      border-radius: 8px; cursor: pointer; transition: background .2s; font-size: .85rem;
+    }
+    .sb-search button:hover { background: var(--primary-dark); }
+
+    /* CATEGORIES */
+    .cat-list { display: flex; flex-direction: column; gap: .15rem; }
+    .cat-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .5rem .6rem; border-radius: 8px; cursor: pointer;
+      transition: all .2s; font-size: .875rem;
+    }
+    .cat-item:hover, .cat-item.active { background: #eff6ff; color: var(--primary); }
+    .cat-item.active { font-weight: 600; }
+    .cat-item .cc { background: #e2e8f0; color: var(--muted); padding: .1rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+    .cat-item.active .cc { background: rgba(0,82,204,.12); color: var(--primary); }
+    .cat-item-left { display: flex; align-items: center; gap: .5rem; }
+    .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* TAG CLOUD */
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tc-tag {
+      padding: .3rem .7rem; border-radius: 6px; font-size: .75rem; font-weight: 500;
+      cursor: pointer; transition: all .2s; border: 1px solid transparent;
+    }
+
+    /* POPULAR POSTS */
+    .pop-list { display: flex; flex-direction: column; gap: 1rem; }
+    .pop-item { display: flex; gap: .75rem; align-items: flex-start; }
+    .pop-thumb {
+      width: 58px; height: 48px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.5); font-size: 1rem;
+    }
+    .pop-info {}
+    .pop-title { font-size: .82rem; font-weight: 600; color: var(--dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color .2s; }
+    .pop-title:hover { color: var(--primary); }
+    .pop-date { font-size: .72rem; color: var(--muted); margin-top: .2rem; }
+
+    /* NO RESULTS */
+    .no-results { grid-column: 1/-1; text-align: center; padding: 3rem 1rem; color: var(--muted); }
+    .no-results i { font-size: 2.5rem; margin-bottom: .75rem; }
+    .no-results h3 { font-size: 1.1rem; margin-bottom: .35rem; color: var(--dark); }
+
+    /* FOOTER */
+    footer { background: var(--dark); color: rgba(255,255,255,.65); text-align: center; padding: 2rem; margin-top: 3rem; font-size: .875rem; }
+    footer .fl { margin-top: .6rem; }
+    footer a { color: rgba(255,255,255,.65); margin: 0 .75rem; transition: color .2s; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      .main-wrap { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+    @media (max-width: 600px) {
+      .posts-grid { grid-template-columns: 1fr; }
+      .nav-search { display: none; }
+      .featured-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../../index.html" class="nav-logo"><i class="fa-solid fa-globe"></i> GlobexSky</a>
+  <div class="nav-search">
+    <i class="fa-solid fa-magnifying-glass si"></i>
+    <input type="text" placeholder="Search products, suppliers, orders…" />
+  </div>
+  <div class="nav-actions">
+    <a href="#"><i class="fa-regular fa-user"></i> Login</a>
+    <a href="#" class="btn-reg"><i class="fa-solid fa-user-plus"></i> Register</a>
+    <a href="#" class="cart-wrap"><i class="fa-solid fa-cart-shopping"></i> Cart<span class="cart-dot">3</span></a>
+  </div>
+</nav>
+
+<!-- FEATURED HERO -->
+<div class="featured-hero">
+  <div class="featured-bg-img"></div>
+  <div class="featured-content">
+    <span class="cat-badge cat-ai"><i class="fa-solid fa-microchip"></i> AI &amp; Technology</span>
+    <h1 class="featured-title">The Future of B2B Sourcing:<br>AI-Powered Trade in 2025</h1>
+    <p class="featured-excerpt">
+      Artificial intelligence is rewriting the rules of global trade. From intelligent supplier matching
+      to real-time risk scoring, discover how AI is transforming the way businesses source, buy, and ship worldwide.
+    </p>
+    <div class="featured-meta">
+      <div class="author-row">
+        <div class="avatar-sm">SC</div>
+        <span class="author-name">Sarah Chen</span>
+      </div>
+      <span class="meta-sep">·</span>
+      <span class="meta-info"><i class="fa-regular fa-calendar"></i> Nov 12, 2024</span>
+      <span class="meta-sep">·</span>
+      <span class="meta-info"><i class="fa-regular fa-clock"></i> 8 min read</span>
+      <span class="meta-sep">·</span>
+      <span class="meta-info"><i class="fa-regular fa-eye"></i> 4,820 views</span>
+    </div>
+    <a href="post.html" class="btn-read-more"><i class="fa-solid fa-book-open"></i> Read Full Article</a>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+
+  <!-- POSTS SECTION -->
+  <div class="posts-section">
+    <div class="section-bar">
+      <h2><i class="fa-solid fa-newspaper" style="color:var(--primary)"></i> Latest Articles</h2>
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-cat="all" onclick="filterPosts('all',this)">All</button>
+        <button class="filter-tab" data-cat="Electronics" onclick="filterPosts('Electronics',this)">Electronics</button>
+        <button class="filter-tab" data-cat="Trade" onclick="filterPosts('Trade',this)">Trade</button>
+        <button class="filter-tab" data-cat="Sourcing" onclick="filterPosts('Sourcing',this)">Sourcing</button>
+        <button class="filter-tab" data-cat="Logistics" onclick="filterPosts('Logistics',this)">Logistics</button>
+        <button class="filter-tab" data-cat="Manufacturing" onclick="filterPosts('Manufacturing',this)">Manufacturing</button>
+      </div>
+    </div>
+
+    <div class="posts-grid" id="postsGrid">
+
+      <!-- Post 1 -->
+      <div class="post-card" data-cat="Electronics" data-title="top 10 electronics suppliers china 2024">
+        <div class="post-thumb">
+          <div class="post-thumb-inner thumb-1"><i class="fa-solid fa-microchip"></i></div>
+          <span class="thumb-badge tb-elec"><i class="fa-solid fa-bolt"></i> Electronics</span>
+        </div>
+        <div class="post-body">
+          <a href="post.html" class="post-title">Top 10 Electronics Suppliers in China for 2024</a>
+          <p class="post-excerpt">A curated ranking of China's most reliable electronics manufacturers based on quality, delivery, and compliance ratings across 50,000 verified orders.</p>
+          <div class="post-tags">
+            <span class="tag-chip" onclick="tagFilter('China')">China</span>
+            <span class="tag-chip" onclick="tagFilter('Electronics')">Electronics</span>
+            <span class="tag-chip" onclick="tagFilter('Suppliers')">Suppliers</span>
+          </div>
+          <div class="post-footer">
+            <div class="post-author">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#FF6B35,#F59E0B)">LW</div>
+              <span class="post-author-name">Li Wei</span>
+              <span class="post-date">· Oct 28, 2024</span>
+            </div>
+            <span class="post-read-time"><i class="fa-regular fa-clock"></i> 6 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="post-card" data-cat="Trade" data-title="navigating us china trade tariffs 2025 guide">
+        <div class="post-thumb">
+          <div class="post-thumb-inner thumb-2"><i class="fa-solid fa-scale-balanced"></i></div>
+          <span class="thumb-badge tb-trade"><i class="fa-solid fa-chart-line"></i> Trade</span>
+        </div>
+        <div class="post-body">
+          <a href="post.html" class="post-title">Navigating US-China Trade Tariffs: A 2025 Guide for Importers</a>
+          <p class="post-excerpt">With Section 301 tariffs evolving and new exemption programs emerging, here's what every B2B importer needs to know heading into 2025.</p>
+          <div class="post-tags">
+            <span class="tag-chip" onclick="tagFilter('Tariffs')">Tariffs</span>
+            <span class="tag-chip" onclick="tagFilter('US-China')">US-China</span>
+            <span class="tag-chip" onclick="tagFilter('Import')">Import</span>
+          </div>
+          <div class="post-footer">
+            <div class="post-author">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#0052CC,#7C3AED)">MJ</div>
+              <span class="post-author-name">Marcus J.</span>
+              <span class="post-date">· Oct 22, 2024</span>
+            </div>
+            <span class="post-read-time"><i class="fa-regular fa-clock"></i> 9 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 3 -->
+      <div class="post-card" data-cat="Sourcing" data-title="how to vet suppliers aliexpress vs direct factory">
+        <div class="post-thumb">
+          <div class="post-thumb-inner thumb-3"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+          <span class="thumb-badge tb-src"><i class="fa-solid fa-boxes-stacked"></i> Sourcing</span>
+        </div>
+        <div class="post-body">
+          <a href="post.html" class="post-title">How to Vet Suppliers: Alibaba vs Direct Factory — Pros & Cons</a>
+          <p class="post-excerpt">Choosing between a marketplace intermediary and a direct manufacturer affects your price, communication, and quality control significantly.</p>
+          <div class="post-tags">
+            <span class="tag-chip" onclick="tagFilter('Sourcing')">Sourcing</span>
+            <span class="tag-chip" onclick="tagFilter('Alibaba')">Alibaba</span>
+            <span class="tag-chip" onclick="tagFilter('Due Diligence')">Due Diligence</span>
+          </div>
+          <div class="post-footer">
+            <div class="post-author">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#00C9A7,#22C55E)">AP</div>
+              <span class="post-author-name">Aisha P.</span>
+              <span class="post-date">· Oct 15, 2024</span>
+            </div>
+            <span class="post-read-time"><i class="fa-regular fa-clock"></i> 7 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 4 -->
+      <div class="post-card" data-cat="Logistics" data-title="ocean freight vs air freight cost comparison 2024">
+        <div class="post-thumb">
+          <div class="post-thumb-inner thumb-4"><i class="fa-solid fa-ship"></i></div>
+          <span class="thumb-badge tb-log"><i class="fa-solid fa-truck"></i> Logistics</span>
+        </div>
+        <div class="post-body">
+          <a href="post.html" class="post-title">Ocean Freight vs Air Freight: Full Cost Comparison 2024</a>
+          <p class="post-excerpt">With global freight rates stabilizing after 2022's volatility, we break down exactly when to choose sea over air and how to calculate your landed cost.</p>
+          <div class="post-tags">
+            <span class="tag-chip" onclick="tagFilter('Shipping')">Shipping</span>
+            <span class="tag-chip" onclick="tagFilter('Freight')">Freight</span>
+            <span class="tag-chip" onclick="tagFilter('Cost')">Cost</span>
+          </div>
+          <div class="post-footer">
+            <div class="post-author">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#0a0e27,#0052CC)">DK</div>
+              <span class="post-author-name">David K.</span>
+              <span class="post-date">· Oct 9, 2024</span>
+            </div>
+            <span class="post-read-time"><i class="fa-regular fa-clock"></i> 5 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 5 -->
+      <div class="post-card" data-cat="Manufacturing" data-title="minimum order quantities negotiation tips factories">
+        <div class="post-thumb">
+          <div class="post-thumb-inner thumb-5"><i class="fa-solid fa-gear"></i></div>
+          <span class="thumb-badge tb-mfg"><i class="fa-solid fa-industry"></i> Manufacturing</span>
+        </div>
+        <div class="post-body">
+          <a href="post.html" class="post-title">MOQ Negotiation: How to Lower Minimum Order Quantities Without Losing the Deal</a>
+          <p class="post-excerpt">Factories rarely publish their true MOQ floor. Learn the proven tactics experienced sourcing agents use to negotiate lower quantities and better terms.</p>
+          <div class="post-tags">
+            <span class="tag-chip" onclick="tagFilter('MOQ')">MOQ</span>
+            <span class="tag-chip" onclick="tagFilter('Negotiation')">Negotiation</span>
+            <span class="tag-chip" onclick="tagFilter('Factory')">Factory</span>
+          </div>
+          <div class="post-footer">
+            <div class="post-author">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#00C9A7,#0052CC)">RL</div>
+              <span class="post-author-name">Ryan Liu</span>
+              <span class="post-date">· Sep 30, 2024</span>
+            </div>
+            <span class="post-read-time"><i class="fa-regular fa-clock"></i> 8 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 6 -->
+      <div class="post-card" data-cat="Trade" data-title="incoterms 2024 explained fob cif exw complete guide">
+        <div class="post-thumb">
+          <div class="post-thumb-inner thumb-6"><i class="fa-solid fa-file-contract"></i></div>
+          <span class="thumb-badge tb-trade"><i class="fa-solid fa-chart-line"></i> Trade</span>
+        </div>
+        <div class="post-body">
+          <a href="post.html" class="post-title">Incoterms 2024 Explained: FOB, CIF, EXW — A Complete Buyer's Guide</a>
+          <p class="post-excerpt">Understanding shipping terms is critical to knowing your liability, insurance obligations, and true total cost. Here's the definitive breakdown for 2024 buyers.</p>
+          <div class="post-tags">
+            <span class="tag-chip" onclick="tagFilter('Incoterms')">Incoterms</span>
+            <span class="tag-chip" onclick="tagFilter('FOB')">FOB</span>
+            <span class="tag-chip" onclick="tagFilter('Trade')">Trade</span>
+          </div>
+          <div class="post-footer">
+            <div class="post-author">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#EF4444,#FF6B35)">EM</div>
+              <span class="post-author-name">Emma M.</span>
+              <span class="post-date">· Sep 22, 2024</span>
+            </div>
+            <span class="post-read-time"><i class="fa-regular fa-clock"></i> 11 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- No results placeholder -->
+      <div class="no-results" id="noResults" style="display:none">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h3>No articles found</h3>
+        <p>Try a different search term or filter.</p>
+      </div>
+
+    </div><!-- /posts-grid -->
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <button class="pg-btn arrow" onclick="changePage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="pg-btn active" onclick="setPage(1,this)">1</button>
+      <button class="pg-btn" onclick="setPage(2,this)">2</button>
+      <button class="pg-btn" onclick="setPage(3,this)">3</button>
+      <span class="pg-dots">…</span>
+      <button class="pg-btn" onclick="setPage(10,this)">10</button>
+      <button class="pg-btn arrow" onclick="changePage(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </div><!-- /posts-section -->
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- SEARCH -->
+    <div class="sb-card">
+      <div class="sb-card-head"><i class="fa-solid fa-magnifying-glass"></i> Search</div>
+      <div class="sb-card-body">
+        <div class="sb-search">
+          <input type="text" id="sbSearch" placeholder="Search articles…" oninput="searchPosts(this.value)" />
+          <button onclick="searchPosts(document.getElementById('sbSearch').value)"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="sb-card">
+      <div class="sb-card-head"><i class="fa-solid fa-folder-open"></i> Categories</div>
+      <div class="sb-card-body" style="padding:.75rem">
+        <div class="cat-list">
+          <div class="cat-item active" onclick="sidebarCatFilter('all',this)">
+            <div class="cat-item-left"><div class="cat-dot" style="background:var(--primary)"></div> All Posts</div>
+            <span class="cc">36</span>
+          </div>
+          <div class="cat-item" onclick="sidebarCatFilter('Electronics',this)">
+            <div class="cat-item-left"><div class="cat-dot" style="background:#EF4444"></div> Electronics</div>
+            <span class="cc">12</span>
+          </div>
+          <div class="cat-item" onclick="sidebarCatFilter('Trade',this)">
+            <div class="cat-item-left"><div class="cat-dot" style="background:var(--primary)"></div> Trade</div>
+            <span class="cc">8</span>
+          </div>
+          <div class="cat-item" onclick="sidebarCatFilter('Sourcing',this)">
+            <div class="cat-item-left"><div class="cat-dot" style="background:var(--warning)"></div> Sourcing</div>
+            <span class="cc">15</span>
+          </div>
+          <div class="cat-item" onclick="sidebarCatFilter('Logistics',this)">
+            <div class="cat-item-left"><div class="cat-dot" style="background:var(--accent)"></div> Logistics</div>
+            <span class="cc">9</span>
+          </div>
+          <div class="cat-item" onclick="sidebarCatFilter('Manufacturing',this)">
+            <div class="cat-item-left"><div class="cat-dot" style="background:#7C3AED"></div> Manufacturing</div>
+            <span class="cc">7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAG CLOUD -->
+    <div class="sb-card">
+      <div class="sb-card-head"><i class="fa-solid fa-tags"></i> Popular Tags</div>
+      <div class="sb-card-body">
+        <div class="tag-cloud">
+          <span class="tc-tag" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe" onclick="tagFilter('China')">China</span>
+          <span class="tc-tag" style="background:#fff7ed;color:#c2410c;border-color:#fed7aa" onclick="tagFilter('Sourcing')">Sourcing</span>
+          <span class="tc-tag" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0" onclick="tagFilter('Logistics')">Logistics</span>
+          <span class="tc-tag" style="background:#fdf4ff;color:#7e22ce;border-color:#e9d5ff" onclick="tagFilter('AI')">AI</span>
+          <span class="tc-tag" style="background:#fefce8;color:#854d0e;border-color:#fde68a" onclick="tagFilter('Tariffs')">Tariffs</span>
+          <span class="tc-tag" style="background:#fff1f2;color:#be123c;border-color:#fecdd3" onclick="tagFilter('Import')">Import</span>
+          <span class="tc-tag" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe" onclick="tagFilter('FOB')">FOB</span>
+          <span class="tc-tag" style="background:#f0fdf4;color:#15803d;border-color:#bbf7d0" onclick="tagFilter('MOQ')">MOQ</span>
+          <span class="tc-tag" style="background:#fff7ed;color:#9a3412;border-color:#fed7aa" onclick="tagFilter('Negotiation')">Negotiation</span>
+          <span class="tc-tag" style="background:#fdf4ff;color:#6b21a8;border-color:#e9d5ff" onclick="tagFilter('B2B')">B2B</span>
+          <span class="tc-tag" style="background:#f0fdfa;color:#0f766e;border-color:#99f6e4" onclick="tagFilter('Freight')">Freight</span>
+          <span class="tc-tag" style="background:#fefce8;color:#713f12;border-color:#fde68a" onclick="tagFilter('Factory')">Factory</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- POPULAR POSTS -->
+    <div class="sb-card">
+      <div class="sb-card-head"><i class="fa-solid fa-fire"></i> Popular Posts</div>
+      <div class="sb-card-body">
+        <div class="pop-list">
+          <div class="pop-item">
+            <div class="pop-thumb thumb-1"><i class="fa-solid fa-microchip"></i></div>
+            <div class="pop-info">
+              <a href="post.html" class="pop-title">The Future of B2B Sourcing: AI-Powered Trade in 2025</a>
+              <div class="pop-date"><i class="fa-regular fa-calendar"></i> Nov 12, 2024</div>
+            </div>
+          </div>
+          <div class="pop-item">
+            <div class="pop-thumb thumb-2"><i class="fa-solid fa-scale-balanced"></i></div>
+            <div class="pop-info">
+              <a href="post.html" class="pop-title">Navigating US-China Trade Tariffs: A 2025 Guide</a>
+              <div class="pop-date"><i class="fa-regular fa-calendar"></i> Oct 22, 2024</div>
+            </div>
+          </div>
+          <div class="pop-item">
+            <div class="pop-thumb thumb-4"><i class="fa-solid fa-ship"></i></div>
+            <div class="pop-info">
+              <a href="post.html" class="pop-title">Ocean Freight vs Air Freight: Full Cost Comparison</a>
+              <div class="pop-date"><i class="fa-regular fa-calendar"></i> Oct 9, 2024</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </aside><!-- /sidebar -->
+
+</div><!-- /main-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div>© 2024 Globex International Trade Co., Ltd.</div>
+  <div class="fl">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact Us</a>
+  </div>
+</footer>
+
+<script>
+  let currentPage = 1;
+  let activeFilter = 'all';
+  let searchTerm = '';
+
+  function applyFilters() {
+    const cards = document.querySelectorAll('.post-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const cat = card.dataset.cat || '';
+      const title = card.dataset.title || '';
+      const catMatch = activeFilter === 'all' || cat === activeFilter;
+      const searchMatch = !searchTerm || title.includes(searchTerm.toLowerCase());
+      if (catMatch && searchMatch) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  function filterPosts(cat, btn) {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function sidebarCatFilter(cat, el) {
+    activeFilter = cat;
+    document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    // sync top tabs
+    document.querySelectorAll('.filter-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.cat === cat);
+    });
+    applyFilters();
+  }
+
+  function searchPosts(val) {
+    searchTerm = val.trim();
+    applyFilters();
+  }
+
+  function tagFilter(tag) {
+    // reset cat, search by tag in title data
+    activeFilter = 'all';
+    searchTerm = tag.toLowerCase();
+    document.getElementById('sbSearch').value = tag;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('[data-cat="all"]').classList.add('active');
+    applyFilters();
+  }
+
+  function setPage(num, btn) {
+    currentPage = num;
+    document.querySelectorAll('.pg-btn:not(.arrow)').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.main-wrap').offsetTop - 80, behavior: 'smooth' });
+  }
+
+  function changePage(dir) {
+    const btns = Array.from(document.querySelectorAll('.pg-btn:not(.arrow)'));
+    const active = btns.find(b => b.classList.contains('active'));
+    if (active) {
+      const idx = btns.indexOf(active);
+      const next = btns[Math.max(0, Math.min(btns.length - 1, idx + dir))];
+      if (next) { next.classList.remove('active'); setPage(parseInt(next.textContent) || idx + dir + 1, next); }
+    }
+  }
+</script>
+</body>
+</html>
