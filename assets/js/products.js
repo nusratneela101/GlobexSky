@@ -606,6 +606,134 @@ function updateCompareBar(ids, bar) {
 }
 
 /* ─────────────────────────────────────────────
+   DYNAMIC PRODUCT LISTING FROM BACKEND API
+───────────────────────────────────────────── */
+
+/** Return API base URL. */
+function _productsApiBase() {
+  return (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL)
+    ? GlobexConfig.API_BASE_URL
+    : '/api/v1';
+}
+
+/** Escape a string for safe HTML insertion. */
+function _escHtml(str) {
+  if (str == null) return '';
+  return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]));
+}
+
+/** Build a product card HTML string from an API product object. */
+function _buildListingCard(p) {
+  const id       = p.id || '';
+  const name     = _escHtml(p.name || 'Product');
+  const price    = parseFloat(p.price || p.min_price || 0).toFixed(2);
+  const image    = _escHtml(p.image_url || p.images?.[0] || p.image || `https://picsum.photos/seed/${id}/320/240`);
+  const supplier = _escHtml(p.supplier?.company_name || p.supplier_name || '');
+  const badge    = p.is_featured ? '<span class="product-badge badge-hot">HOT</span>' : '';
+
+  return `<article class="product-card" role="listitem"
+    data-product-id="${id}"
+    data-product-name="${name}"
+    data-product-price="${price}"
+    data-product-image="${image}"
+    data-supplier="${supplier}">
+    <div class="product-card-image">
+      <a href="/pages/sourcing/product-detail.html?id=${id}">
+        <img src="${image}" alt="${name}" width="320" height="240" loading="lazy" />
+      </a>
+      ${badge}
+      <button class="product-wishlist" data-wishlist-toggle aria-label="Add ${name} to wishlist">
+        <i class="far fa-heart" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="product-card-body">
+      ${supplier ? `<p class="product-supplier"><i class="fas fa-store" aria-hidden="true"></i> ${supplier}</p>` : ''}
+      <h3 class="product-name"><a href="/pages/sourcing/product-detail.html?id=${id}">${name}</a></h3>
+      <div class="product-price">$${price}</div>
+    </div>
+    <div class="product-card-footer">
+      <a href="/pages/sourcing/product-detail.html?id=${id}" class="btn btn-sm btn-secondary">
+        <i class="fas fa-eye" aria-hidden="true"></i> View
+      </a>
+      <button class="btn btn-sm btn-primary" data-add-to-cart aria-label="Add ${name} to cart">
+        <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
+      </button>
+    </div>
+  </article>`;
+}
+
+/** Render a no-results / error placeholder into a container. */
+function _renderListingEmpty(container, message) {
+  container.innerHTML = `<p class="products-empty-msg" style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8">${_escHtml(message)}</p>`;
+}
+
+/** Render pagination controls inside a `[data-products-pagination]` element. */
+function _renderListingPagination(total, page, limit) {
+  const container = document.querySelector('[data-products-pagination]');
+  if (!container) return;
+  const pages = Math.ceil(total / limit);
+  if (pages <= 1) { container.innerHTML = ''; return; }
+
+  let html = '<div class="pagination-controls">';
+  if (page > 1) html += `<a href="?${_paginatedParams(page - 1)}" class="btn btn-sm btn-secondary">&#8249; Prev</a>`;
+  for (let i = Math.max(1, page - 2); i <= Math.min(pages, page + 2); i++) {
+    html += `<a href="?${_paginatedParams(i)}" class="btn btn-sm ${i === page ? 'btn-primary' : 'btn-secondary'}">${i}</a>`;
+  }
+  if (page < pages) html += `<a href="?${_paginatedParams(page + 1)}" class="btn btn-sm btn-secondary">Next &#8250;</a>`;
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function _paginatedParams(page) {
+  const p = new URLSearchParams(window.location.search);
+  p.set('page', page);
+  return p.toString();
+}
+
+/**
+ * Load products from the backend API and populate a container with the
+ * `[data-load-products-api]` attribute.  URL query parameters are forwarded
+ * as filter/sort/page inputs so the existing filter-sidebar still works.
+ */
+async function loadProductsFromAPI() {
+  const container = document.querySelector('[data-load-products-api]');
+  if (!container) return;
+
+  const base   = _productsApiBase();
+  const params = new URLSearchParams(window.location.search);
+  // Ensure sensible defaults
+  if (!params.get('limit')) params.set('limit', '20');
+
+  container.innerHTML = '<p class="products-loading-msg" style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8">Loading products…</p>';
+
+  try {
+    const res  = await fetch(`${base}/products?${params}`);
+    if (!res.ok) {
+      _renderListingEmpty(container, 'Unable to load products. Please try again later.');
+      return;
+    }
+    const json     = await res.json();
+    const products = json.data || [];
+    const meta     = json.meta || {};
+
+    if (!products.length) {
+      _renderListingEmpty(container, 'No products found. Try adjusting your filters.');
+      return;
+    }
+
+    container.innerHTML = products.map(_buildListingCard).join('');
+    _renderListingPagination(meta.total || products.length, parseInt(params.get('page') || '1', 10), parseInt(params.get('limit') || '20', 10));
+
+    // Update result count display if present
+    const countEl = document.querySelector('[data-products-count]');
+    if (countEl) countEl.textContent = meta.total != null ? `${meta.total} products` : `${products.length} products`;
+  } catch (err) {
+    console.error('[products.js] Failed to load products from API:', err);
+    _renderListingEmpty(container, 'Failed to load products. Please refresh the page.');
+  }
+}
+
+/* ─────────────────────────────────────────────
    INIT
 ───────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
@@ -619,4 +747,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initReviewForm();
   initProductComparison();
   initAddToCompare();
+
+  // Load dynamic product listing from backend if a target container exists
+  if (document.querySelector('[data-load-products-api]')) {
+    if (typeof GlobexConfig !== 'undefined' && typeof GlobexConfig.getConfig === 'function') {
+      GlobexConfig.getConfig().then(loadProductsFromAPI);
+    } else {
+      loadProductsFromAPI();
+    }
+  }
 });
