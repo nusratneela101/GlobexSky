@@ -70,6 +70,8 @@ import seoRoutes from './routes/seo.routes.js';
 import featureToggleRoutes from './routes/featureToggle.routes.js';
 import integrationRoutes from './routes/integration.routes.js';
 import aiRoutes from './routes/ai.routes.js';
+import configRoutes from './routes/config.routes.js';
+import adminConfigRoutes from './routes/admin/config.routes.js';
 import adminUsersRoutes from './routes/adminUsers.js';
 import adminProductsRoutes from './routes/adminProducts.js';
 import adminSettingsRoutes from './routes/settings.js';
@@ -126,7 +128,10 @@ app.use(`${API}/carry`, carryRoutes);
 app.use(`${API}/parcels`, parcelRoutes);
 app.use(`${API}/payments`, paymentRoutes);
 
+app.use(`${API}/config`, configRoutes);
+
 // New detailed admin routes (registered before generic /admin to take precedence)
+app.use(`${API}/admin/config`, adminConfigRoutes);
 app.use(`${API}/admin/users`, adminUsersRoutes);
 app.use(`${API}/admin/products`, adminProductsRoutes);
 app.use(`${API}/admin/settings`, adminSettingsRoutes);
