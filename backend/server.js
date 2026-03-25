@@ -10,6 +10,7 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
+import getEnvConfig from './config/envManager.js';
 import corsConfig from './config/cors.js';
 import websocketConfig from './config/websocket.js';
 import { globalRateLimiter } from './middleware/rateLimiter.js';
@@ -82,6 +83,7 @@ import paymentsRoutes from './routes/payments.js';
 import adminPricingRoutes from './routes/pricing.js';
 import reportsRoutes from './routes/reports.js';
 import payoutsRoutes from './routes/payouts.js';
+import configRoutes from './routes/config.routes.js';
 
 import { swaggerUi, swaggerSpec } from './swagger.js';
 import { initializeWebSocket } from './services/websocket.service.js';
@@ -89,6 +91,7 @@ import { initializeWebRTC } from './services/webrtc.service.js';
 
 const app = express();
 const httpServer = createServer(app);
+const envConfig = getEnvConfig();
 const PORT = process.env.PORT || 5000;
 
 // ─── Socket.io Setup ──────────────────────────────────────────────────────────
@@ -111,7 +114,6 @@ app.use(xssSanitiser);
 app.get('/health', (_req, res) => {
   res.json({ success: true, message: 'Globex Sky API is running', timestamp: new Date().toISOString() });
 });
-
 // ─── API Routes ──────────────────────────────────────────────────────────────
 const API = '/api/v1';
 
@@ -184,6 +186,7 @@ app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
 app.use(`${API}/admin/payouts`, payoutsRoutes);
+app.use(`${API}/config`, configRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -195,7 +198,7 @@ app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────────────────────────
 httpServer.listen(PORT, () => {
-  console.log(`🚀 Globex Sky API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  console.log(`🚀 Globex Sky API running on port ${PORT} [${process.env.NODE_ENV || 'development'}] [mode: ${envConfig.mode}]`);
 });
 
 export default app;
