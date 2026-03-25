@@ -476,6 +476,7 @@
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="openai"   onclick="switchPkTab('openai')">   <i class="fas fa-robot"></i>      OpenAI</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="agora"    onclick="switchPkTab('agora')">    <i class="fas fa-video"></i>      Agora</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="smtp"     onclick="switchPkTab('smtp')">     <i class="fas fa-envelope"></i>   SMTP</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="cloudinary" onclick="switchPkTab('cloudinary')"><i class="fas fa-cloud"></i>    Cloudinary</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="general"  onclick="switchPkTab('general')">  <i class="fas fa-globe"></i>      General</button>
         </div>
 
@@ -796,6 +797,42 @@
           <div class="form-footer">
             <button class="btn-sm btn-secondary" onclick="testPlatformConnection('smtp')"><i class="fas fa-plug"></i> Test Connection</button>
             <button class="btn-sm btn-primary"   onclick="savePlatformCategory('smtp')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── Cloudinary ── -->
+        <div class="pk-pane" id="pk-pane-cloudinary" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">Cloudinary (Media Storage)</span>
+              <span id="status-icon-cloudinary" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-cloudinary" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-cloudinary" onchange="onModeToggle('cloudinary',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-cloudinary" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Cloud Name</label>
+              <input type="text" class="form-control" id="pk-cloudinary-CLOUDINARY_CLOUD_NAME" data-pk-key="CLOUDINARY_CLOUD_NAME" placeholder="your-cloud-name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">API Key</label>
+              <input type="password" class="form-control" id="pk-cloudinary-CLOUDINARY_API_KEY" data-pk-key="CLOUDINARY_API_KEY" placeholder="Cloudinary API Key"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">API Secret</label>
+              <input type="password" class="form-control" id="pk-cloudinary-CLOUDINARY_API_SECRET" data-pk-key="CLOUDINARY_API_SECRET" placeholder="Cloudinary API Secret"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('cloudinary')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('cloudinary')"><i class="fas fa-save"></i> Save</button>
           </div>
         </div>
 
