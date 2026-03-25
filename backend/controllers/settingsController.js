@@ -110,6 +110,40 @@ export async function togglePlatformMode(req, res, next) {
   } catch (err) { next(err); }
 }
 
+/** POST /api/v1/admin/settings/platform/:category/toggle-mode
+ *  Toggle the active mode for a specific service category.
+ *  Stores a per-category MODE key in the DB (mode column = 'test' as a
+ *  convention for meta/global settings that are not mode-specific). */
+export async function toggleCategoryMode(req, res, next) {
+  try {
+    const { category } = req.params;
+    if (!VALID_CATEGORIES.has(category)) {
+      return res.status(400).json({ success: false, error: `Unknown category: ${category}` });
+    }
+
+    // Read the current per-category mode, then fall back to global MODE
+    const modeKey = `${category.toUpperCase()}_MODE`;
+    const categoryModeValue = await getConfig(modeKey, category);
+    const globalMode = await getActiveMode();
+    const currentMode = categoryModeValue || globalMode;
+    const newMode = currentMode === 'live' ? 'test' : 'live';
+
+    // Persist the new per-category mode.
+    // We store it with mode='test' as a convention for meta/config settings
+    // (they need a valid mode column value but are not tied to test/live key sets).
+    await saveSettings(category, 'test', { [modeKey]: newMode }, new Set());
+    refreshConfig();
+
+    res.json({
+      success: true,
+      message: `${category} mode switched to "${newMode}".`,
+      category,
+      previousMode: currentMode,
+      currentMode: newMode,
+    });
+  } catch (err) { next(err); }
+}
+
 /** POST /api/v1/admin/settings/platform/test-connection
  *  Tests connectivity for a given service using its currently stored keys.
  *  Body: { category: 'stripe'|'paypal'|'supabase'|'openai'|'smtp'|'agora', mode: 'test'|'live' } */

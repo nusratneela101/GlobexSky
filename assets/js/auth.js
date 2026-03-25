@@ -235,17 +235,18 @@ function validateRegisterForm(form) {
  */
 async function mockLogin(email, password) {
   // Try real API if available
-  if (window.API) {
+  const api = window.ApiClient || window.API;
+  if (api) {
     try {
-      const res = await window.API.auth.login(email, password);
-      const { token, refresh_token, user } = res.data;
-      const profile = user.profile || {};
+      const res = await api.auth.login(email, password);
+      const { token, refresh_token, user } = res.data || res;
+      const profile = (user && user.profile) || {};
       const userData = {
-        name: profile.full_name || email.split('@')[0],
-        email: user.email,
+        name: profile.full_name || (user && user.email || email).split('@')[0],
+        email: (user && user.email) || email,
         avatar: profile.avatar_url || '',
         role: profile.role || 'buyer',
-        id: user.id,
+        id: user && user.id,
         loggedInAt: new Date().toISOString(),
       };
       saveSession(token, refresh_token, userData);
@@ -277,9 +278,10 @@ async function mockLogin(email, password) {
  * @param {string} role
  */
 async function mockRegister(name, email, password = '', role = 'buyer') {
-  if (window.API) {
+  const api = window.ApiClient || window.API;
+  if (api) {
     try {
-      await window.API.auth.register(name, email, password, role);
+      await api.auth.register({ name, email, password, role });
       closeRegisterModal();
       if (window.GlobexSky?.showToast) {
         window.GlobexSky.showToast('Account created! Please check your email to verify your account.', 'success');
@@ -302,8 +304,9 @@ async function mockRegister(name, email, password = '', role = 'buyer') {
 
 /** Log out the current user. */
 async function logout() {
-  if (window.API) {
-    try { await window.API.auth.logout(); } catch (_) { /* ignore */ }
+  const api = window.ApiClient || window.API;
+  if (api) {
+    try { await api.auth.logout(); } catch (_) { /* ignore */ }
   }
   clearUser();
   updateNavUI();

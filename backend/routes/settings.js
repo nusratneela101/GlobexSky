@@ -8,7 +8,6 @@ import { validate } from '../middleware/validator.js';
 import { authenticate } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/roleCheck.js';
 import * as ctrl from '../controllers/settingsController.js';
-
 const router = Router();
 router.use(authenticate, requireAdmin);
 
@@ -32,11 +31,12 @@ router.get('/backups', ctrl.listBackups);
 router.post('/restore/:id', [param('id').isUUID()], validate, ctrl.restoreBackup);
 
 // ─── Platform API-key / service settings routes ───────────────────────────────
-// GET    /platform              — get all service settings (all categories)
-// GET    /platform/:category    — get settings for one category
-// PUT    /platform/:category    — upsert settings for a category
-// POST   /platform/toggle-mode  — toggle global test / live mode
-// POST   /platform/test-connection — test connectivity for a service
+// GET    /platform                          — get all service settings (all categories)
+// GET    /platform/:category                — get settings for one category
+// PUT    /platform/:category                — upsert settings for a category
+// POST   /platform/toggle-mode              — toggle global test / live mode
+// POST   /platform/:category/toggle-mode    — toggle mode for a specific category
+// POST   /platform/test-connection          — test connectivity for a service
 
 router.get('/platform',               ctrl.getPlatformSettings);
 router.post('/platform/toggle-mode',  ctrl.togglePlatformMode);
@@ -45,6 +45,9 @@ router.post('/platform/test-connection',
   validate,
   ctrl.testPlatformConnection,
 );
+// NOTE: /platform/:category/toggle-mode must be registered before /platform/:category
+// so Express matches the specific "toggle-mode" suffix before the wildcard :category route.
+router.post('/platform/:category/toggle-mode', ctrl.toggleCategoryMode);
 router.get('/platform/:category',     ctrl.getPlatformCategory);
 router.put('/platform/:category',
   [

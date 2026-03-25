@@ -3,7 +3,17 @@
  * Buyer order management: list, filter, and view orders.
  */
 
-const API_BASE = '/api/v1';
+const API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+
+/** Get the auth token from the session store used by ApiClient. */
+function _getAuthToken() {
+  try {
+    const session = JSON.parse(localStorage.getItem('globexSession') || 'null');
+    return (session && session.token) || null;
+  } catch (_) {
+    return null;
+  }
+}
 
 let ordersState = {
   orders: [],
@@ -25,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
    DATA LOADING
 ────────────────────────────────────────────── */
 async function loadOrders(page = 1) {
-  const token = localStorage.getItem('globexToken');
+  const token = _getAuthToken();
   if (!token) {
     window.location.href = '/pages/auth/login.html?redirect=/pages/account/orders.html';
     return;
@@ -61,7 +71,7 @@ async function loadOrders(page = 1) {
 }
 
 async function loadOrderDetail(orderId) {
-  const token = localStorage.getItem('globexToken');
+  const token = _getAuthToken();
   if (!token) return;
 
   try {
@@ -228,7 +238,7 @@ function renderPagination() {
 ────────────────────────────────────────────── */
 async function cancelOrder(orderId) {
   if (!confirm('Are you sure you want to cancel this order?')) return;
-  const token = localStorage.getItem('globexToken');
+  const token = _getAuthToken();
   try {
     const res = await fetch(`${API_BASE}/orders/${orderId}/cancel`, {
       method: 'POST',
@@ -249,7 +259,7 @@ async function cancelOrder(orderId) {
 async function requestRefund(orderId) {
   const reason = prompt('Please provide a reason for your refund request:');
   if (!reason) return;
-  const token = localStorage.getItem('globexToken');
+  const token = _getAuthToken();
   try {
     const res = await fetch(`${API_BASE}/orders/${orderId}/refund`, {
       method: 'POST',
