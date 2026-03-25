@@ -170,6 +170,180 @@ function showToast(message, type = 'info') {
   setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
 }
 
+// ─── Platform Settings (API Keys / Service Configuration) ─────────────────────
+//
+//  Provides:
+//    - loadPlatformSettings()    — fetch & render all service settings
+//    - savePlatformCategory()    — save keys for one category
+//    - testPlatformConnection()  — test connectivity for a service
+//    - toggleGlobalMode()        — flip test ↔ live globally
+//
+// The active mode per category is driven by the data-mode attribute on the
+// toggle switch rendered in the HTML tab.
+
+let _platformMode = {}; // { stripe: 'test', paypal: 'live', ... }
+
+async function loadPlatformSettings() {
+  try {
+    const res  = await fetch(`${API_BASE}/admin/settings/platform`, { headers: await authHeaders() });
+    const json = await res.json();
+    if (!json.success) return;
+
+    const globalMode = json.mode || 'test';
+    updateGlobalModeIndicator(globalMode);
+
+    Object.entries(json.data || {}).forEach(([category, rows]) => {
+      // Determine the mode for this category
+      const catMode = rows.length > 0 ? rows[0].mode : globalMode;
+      _platformMode[category] = catMode;
+
+      // Update mode toggle switch if present
+      const modeToggle = document.getElementById(`mode-toggle-${category}`);
+      if (modeToggle) {
+        modeToggle.checked = catMode === 'live';
+        _updateModeLabel(category, catMode);
+      }
+
+      // Populate input fields
+      rows.forEach(({ setting_key, setting_value }) => {
+        const el = document.getElementById(`pk-${category}-${setting_key}`);
+        if (el && setting_value && setting_value !== '••••••••') {
+          el.value = setting_value;
+        }
+      });
+    });
+  } catch (err) {
+    console.error('[platform-settings] Load error:', err);
+  }
+}
+
+function _updateModeLabel(category, mode) {
+  const label = document.getElementById(`mode-label-${category}`);
+  if (!label) return;
+  if (mode === 'live') {
+    label.textContent = '🟢 Live';
+    label.style.color = '#059669';
+  } else {
+    label.textContent = '🔧 Test';
+    label.style.color = '#f97316';
+  }
+}
+
+function updateGlobalModeIndicator(mode) {
+  const el = document.getElementById('globalModeIndicator');
+  if (!el) return;
+  el.textContent  = mode === 'live' ? '🟢 Live Mode' : '🔧 Test Mode';
+  el.style.background = mode === 'live' ? '#d1fae5' : '#fff7ed';
+  el.style.color      = mode === 'live' ? '#059669'  : '#f97316';
+}
+
+/** Called when a per-category Test/Live toggle is flipped. */
+window.onModeToggle = function(category, checkbox) {
+  const mode = checkbox.checked ? 'live' : 'test';
+  _platformMode[category] = mode;
+  _updateModeLabel(category, mode);
+};
+
+/** Save API keys for one service category. */
+window.savePlatformCategory = async function(category) {
+  const form = document.getElementById(`pk-form-${category}`);
+  if (!form) return;
+
+  const mode = _platformMode[category] || 'test';
+  const settings = {};
+  form.querySelectorAll('input[data-pk-key]').forEach(el => {
+    const key = el.getAttribute('data-pk-key');
+    const val = el.value.trim();
+    if (val && val !== '••••••••') settings[key] = val;
+  });
+  form.querySelectorAll('select[data-pk-key]').forEach(el => {
+    settings[el.getAttribute('data-pk-key')] = el.value;
+  });
+
+  if (Object.keys(settings).length === 0) {
+    showToast('No values to save.', 'warning');
+    return;
+  }
+
+  _setStatusIcon(category, 'loading');
+  showToast('Saving…', 'info');
+
+  try {
+    const res  = await fetch(`${API_BASE}/admin/settings/platform/${category}`, {
+      method: 'PUT',
+      headers: await authHeaders(),
+      body: JSON.stringify({ mode, settings }),
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast(`${category} settings saved (${mode} mode).`, 'success');
+      _setStatusIcon(category, 'saved');
+    } else {
+      showToast(json.error || 'Save failed.', 'error');
+      _setStatusIcon(category, 'error');
+    }
+  } catch (err) {
+    showToast('Network error: ' + err.message, 'error');
+    _setStatusIcon(category, 'error');
+  }
+};
+
+/** Test connectivity for a service. */
+window.testPlatformConnection = async function(category) {
+  const mode = _platformMode[category] || 'test';
+  _setStatusIcon(category, 'loading');
+  showToast(`Testing ${category} connection…`, 'info');
+
+  try {
+    const res  = await fetch(`${API_BASE}/admin/settings/platform/test-connection`, {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({ category, mode }),
+    });
+    const json = await res.json();
+    const ok   = json.result?.ok;
+    const msg  = json.result?.message || (ok ? 'Connected.' : 'Failed.');
+    showToast(`${category}: ${msg}`, ok ? 'success' : 'error');
+    _setStatusIcon(category, ok ? 'ok' : 'error');
+  } catch (err) {
+    showToast('Network error: ' + err.message, 'error');
+    _setStatusIcon(category, 'error');
+  }
+};
+
+/** Toggle global test / live mode. */
+window.toggleGlobalMode = async function() {
+  try {
+    const res  = await fetch(`${API_BASE}/admin/settings/platform/toggle-mode`, {
+      method: 'POST',
+      headers: await authHeaders(),
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast(`Switched to ${json.currentMode} mode.`, 'success');
+      updateGlobalModeIndicator(json.currentMode);
+    } else {
+      showToast(json.error || 'Failed to toggle mode.', 'error');
+    }
+  } catch (err) {
+    showToast('Network error: ' + err.message, 'error');
+  }
+};
+
+function _setStatusIcon(category, state) {
+  const el = document.getElementById(`status-icon-${category}`);
+  if (!el) return;
+  const map = {
+    ok:      { icon: '✅', color: '#059669' },
+    error:   { icon: '❌', color: '#ef4444' },
+    loading: { icon: '⏳', color: '#94a3b8' },
+    saved:   { icon: '💾', color: '#0052CC' },
+  };
+  const s = map[state] || map.loading;
+  el.textContent  = s.icon;
+  el.style.color  = s.color;
+}
+
 // ─── Feature toggles ──────────────────────────────────────────────────────────
 async function loadFeatureToggles() {
   try {
@@ -209,4 +383,5 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
   loadBackups();
   loadFeatureToggles();
+  loadPlatformSettings();
 });

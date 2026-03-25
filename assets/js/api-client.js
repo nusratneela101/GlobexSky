@@ -305,6 +305,35 @@ const ApiClient = (() => {
       users:      (params={})  => _request('GET',  `/admin/users?${new URLSearchParams(params)}`),
       products:   (params={})  => _request('GET',  `/admin/products?${new URLSearchParams(params)}`),
       exportCSV:  (resource)   => _request('GET',  `/admin/export/${resource}?format=csv`),
+
+      // ── Platform API-key / service settings ───────────────────
+      settings: {
+        /** Fetch all platform settings grouped by category. */
+        getAll: ()
+          => _request('GET', '/admin/settings/platform'),
+        /** Fetch settings for a single service category. */
+        getCategory: (category, mode)
+          => _request('GET', `/admin/settings/platform/${category}${mode ? `?mode=${mode}` : ''}`),
+        /** Save settings for a service category.
+         *  @param {string} category  e.g. 'stripe'
+         *  @param {string} mode      'test' | 'live'
+         *  @param {object} settings  { KEY: value, ... }
+         */
+        saveCategory: (category, mode, settings)
+          => _request('PUT', `/admin/settings/platform/${category}`, { mode, settings }),
+        /** Toggle global test / live mode. */
+        toggleMode: ()
+          => _request('POST', '/admin/settings/platform/toggle-mode'),
+        /** Test connectivity for a service.
+         *  @param {string} category  e.g. 'stripe'
+         *  @param {string} mode      'test' | 'live'
+         */
+        testConnection: (category, mode)
+          => _request('POST', '/admin/settings/platform/test-connection', { category, mode }),
+        /** Fetch the current global mode from the public config endpoint. */
+        getMode: ()
+          => _request('GET', '/config/public').then(r => r?.data?.mode || 'test'),
+      },
     },
   };
 })();
