@@ -327,6 +327,119 @@ function initLazyProductImages() {
 }
 
 /* ─────────────────────────────────────────────
+   DYNAMIC DATA LOADING FROM BACKEND API
+───────────────────────────────────────────── */
+
+/** Return the configured API base URL. */
+function _apiBase() {
+  return (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL)
+    ? GlobexConfig.API_BASE_URL
+    : '/api/v1';
+}
+
+/** Render a product card HTML string from an API product object. */
+function _buildProductCardHTML(p) {
+  const id       = p.id || '';
+  const name     = (p.name || 'Product').replace(/[<>"'&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', '&': '&amp;' }[c]));
+  const price    = parseFloat(p.price || p.min_price || 0).toFixed(2);
+  const image    = p.image_url || p.images?.[0] || p.image || 'https://picsum.photos/seed/' + id + '/320/240';
+  const supplier = (p.supplier?.company_name || p.supplier_name || '').replace(/[<>"'&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', '&': '&amp;' }[c]));
+  const rating   = parseFloat(p.rating || 0).toFixed(1);
+
+  return `<article class="product-card" role="listitem"
+    data-product-id="${id}"
+    data-product-name="${name}"
+    data-product-price="${price}"
+    data-product-image="${image}"
+    data-supplier="${supplier}">
+    <div class="product-card-image">
+      <a href="pages/sourcing/product-detail.html?id=${id}">
+        <img src="${image}" alt="${name}" width="320" height="240" loading="lazy" />
+      </a>
+      <button class="product-wishlist" data-wishlist-toggle aria-label="Add ${name} to wishlist">
+        <i class="far fa-heart" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="product-card-body">
+      ${supplier ? `<p class="product-supplier"><i class="fas fa-store" aria-hidden="true"></i> ${supplier}</p>` : ''}
+      <h3 class="product-name">
+        <a href="pages/sourcing/product-detail.html?id=${id}">${name}</a>
+      </h3>
+      ${rating > 0 ? `<div class="product-rating" aria-label="Rating: ${rating}"><span class="rating-value">${rating}</span></div>` : ''}
+      <div class="product-price">$${price}</div>
+    </div>
+    <div class="product-card-footer">
+      <button class="btn btn-primary btn-sm" data-add-to-cart aria-label="Add ${name} to cart">
+        <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
+      </button>
+    </div>
+  </article>`;
+}
+
+/** Render a category card HTML string from an API category object. */
+function _buildCategoryCardHTML(cat) {
+  const name  = (cat.name || 'Category').replace(/[<>"'&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', '&': '&amp;' }[c]));
+  const icon  = cat.icon || 'fas fa-tag';
+  const slug  = cat.slug || cat.id || '';
+  return `<a href="pages/sourcing/products.html?category=${encodeURIComponent(slug)}" class="category-item" data-category-id="${cat.id || ''}">
+    <div class="category-icon"><i class="${icon}" aria-hidden="true"></i></div>
+    <span class="category-name">${name}</span>
+  </a>`;
+}
+
+/**
+ * Load featured / trending products from the backend and populate
+ * containers that have the `data-load-products="featured"` or
+ * `data-load-products="trending"` attribute.
+ * Falls back silently if the API is unavailable.
+ */
+async function loadFeaturedProductsFromAPI() {
+  const containers = document.querySelectorAll('[data-load-products]');
+  if (!containers.length) return;
+
+  const base = _apiBase();
+
+  for (const container of containers) {
+    const source = container.dataset.loadProducts || 'featured';
+    const path   = source === 'trending' ? '/products/trending' : '/products/featured';
+    try {
+      const res  = await fetch(`${base}${path}`);
+      if (!res.ok) continue;
+      const json = await res.json();
+      const products = (json.data || []).slice(0, 12);
+      if (!products.length) continue;
+      container.innerHTML = products.map(_buildProductCardHTML).join('');
+    } catch (err) {
+      console.warn('[home.js] Failed to load products from API:', err.message);
+      // API unavailable — keep whatever static content is present
+    }
+  }
+}
+
+/**
+ * Load product categories from the backend and populate containers
+ * with the `data-load-categories` attribute.
+ */
+async function loadCategoriesFromAPI() {
+  const containers = document.querySelectorAll('[data-load-categories]');
+  if (!containers.length) return;
+
+  const base = _apiBase();
+  try {
+    const res  = await fetch(`${base}/products/categories`);
+    if (!res.ok) return;
+    const json = await res.json();
+    const categories = (json.data || []).slice(0, 16);
+    if (!categories.length) return;
+    const html = categories.map(_buildCategoryCardHTML).join('');
+    containers.forEach((c) => { c.innerHTML = html; });
+  } catch (err) {
+    console.warn('[home.js] Failed to load categories from API:', err.message);
+    // API unavailable — keep whatever static content is present
+  }
+}
+
+/* ─────────────────────────────────────────────
    INIT
 ───────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
@@ -340,4 +453,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initStatsCounters();
   initPopularSearchTags();
   initLazyProductImages();
+
+  // Load dynamic data from backend (no-op when containers are absent or API unavailable)
+  if (typeof GlobexConfig !== 'undefined' && typeof GlobexConfig.getConfig === 'function') {
+    GlobexConfig.getConfig().then(() => {
+      loadFeaturedProductsFromAPI();
+      loadCategoriesFromAPI();
+    });
+  } else {
+    loadFeaturedProductsFromAPI();
+    loadCategoriesFromAPI();
+  }
 });

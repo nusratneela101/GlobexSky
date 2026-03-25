@@ -64,6 +64,9 @@ function addToCart(product) {
   saveCart(cart);
   updateCartBadge();
 
+  // Sync with backend if user is authenticated (fire-and-forget)
+  _syncCartAction('add', null, { product_id: product.id, quantity: Number(product.quantity) || 1 });
+
   if (window.GlobexSky?.showToast) {
     window.GlobexSky.showToast(`"${product.name || 'Item'}" added to cart`, 'success');
   }
@@ -78,6 +81,9 @@ function removeFromCart(id) {
   saveCart(cart);
   updateCartBadge();
   renderCart();
+  // Note: backend sync for remove requires the backend cart-item UUID, not the
+  // product ID.  The authoritative cart sync happens in loadCartFromBackend()
+  // on the next page load and in checkout.js during the checkout flow.
 }
 
 /**
@@ -103,6 +109,8 @@ function updateQuantity(id, quantity) {
     saveCart(cart);
     updateCartBadge();
     renderCart();
+    // Note: backend sync for update requires the backend cart-item UUID.
+    // Quantity changes are reconciled via loadCartFromBackend() on next page load.
   }
 }
 
@@ -286,6 +294,107 @@ function initCartEvents() {
 }
 
 /* ─────────────────────────────────────────────
+   BACKEND CART SYNC
+   When the user is authenticated, the cart is kept in sync with the backend
+   so it is consistent across devices / sessions.
+───────────────────────────────────────────── */
+
+/** Return the stored JWT token (null when not logged in). */
+function _getAuthToken() {
+  try {
+    const session = JSON.parse(localStorage.getItem('globexSession') || 'null');
+    return session?.token || null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/** Return the API base URL. */
+function _cartApiBase() {
+  return (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL)
+    ? GlobexConfig.API_BASE_URL
+    : '/api/v1';
+}
+
+/**
+ * Fetch the backend cart and merge it into localStorage.
+ * Backend cart takes precedence for items that already exist there.
+ * Local-only items (added while offline / logged out) are preserved.
+ */
+async function loadCartFromBackend() {
+  const token = _getAuthToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${_cartApiBase()}/cart`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+    const json = await res.json();
+    const backendItems = (json.data?.items || json.data || []);
+    if (!Array.isArray(backendItems) || backendItems.length === 0) return;
+
+    const local = getCart();
+    // Build a map of backend items for quick lookup
+    const backendMap = new Map(backendItems.map((i) => [String(i.product_id || i.id), i]));
+
+    // Merge: update existing local items with backend quantities; add new ones
+    local.forEach((item) => {
+      const bItem = backendMap.get(String(item.id));
+      if (bItem) {
+        item.quantity = bItem.quantity;
+        backendMap.delete(String(item.id));
+      }
+    });
+
+    // Add items that exist on backend but not locally
+    backendMap.forEach((bItem) => {
+      local.push({
+        id:       bItem.product_id || bItem.id,
+        name:     bItem.product?.name || bItem.name || 'Product',
+        image:    bItem.product?.image_url || bItem.image || '',
+        price:    parseFloat(bItem.price || bItem.product?.price || 0),
+        quantity: bItem.quantity,
+        supplier: bItem.product?.supplier?.company_name || bItem.supplier || '',
+        minOrder: 1,
+      });
+    });
+
+    saveCart(local);
+    updateCartBadge();
+    renderCart();
+  } catch (err) {
+    console.warn('[cart.js] Backend cart sync failed:', err.message);
+    // API unavailable — continue with localStorage cart
+  }
+}
+
+/**
+ * Push an "add to cart" action to the backend (fire-and-forget).
+ * Only the add operation is supported here since remove/update require the
+ * backend cart-item UUID which is not stored in the local cart.
+ * Errors are silently ignored so the local cart always reflects the user's intent.
+ *
+ * @param {'add'} action
+ * @param {null}  itemId  (unused — reserved for future use)
+ * @param {object|null} body  { product_id, quantity }
+ */
+function _syncCartAction(action, itemId = null, body = null) {
+  const token = _getAuthToken();
+  if (!token || action !== 'add' || !body) return;
+
+  const base = _cartApiBase();
+  fetch(`${base}/cart/add`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  }).catch(() => { /* ignore network errors */ });
+}
+
+/* ─────────────────────────────────────────────
    UTILITY
 ───────────────────────────────────────────── */
 function escapeHtml(str) {
@@ -309,6 +418,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Wire up event delegation
   initCartEvents();
+
+  // Sync with backend cart when user is authenticated
+  loadCartFromBackend();
 });
 
 /* ─────────────────────────────────────────────
@@ -325,4 +437,5 @@ Object.assign(window.GlobexSky, {
   clearCart,
   renderCart,
   updateCartBadge,
+  loadCartFromBackend,
 });
