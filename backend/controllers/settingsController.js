@@ -15,20 +15,31 @@ import {
 
 // ─── Sensitive keys per service (encrypted at rest) ──────────────────────────
 const SENSITIVE = {
-  stripe:   new Set(['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE_CONNECT_WEBHOOK_SECRET']),
-  paypal:   new Set(['PAYPAL_CLIENT_SECRET']),
-  bkash:    new Set(['BKASH_APP_SECRET', 'BKASH_PASSWORD']),
-  nagad:    new Set(['NAGAD_MERCHANT_PRIVATE_KEY']),
-  supabase: new Set(['SUPABASE_SERVICE_ROLE_KEY']),
-  openai:   new Set(['OPENAI_API_KEY']),
-  agora:    new Set(['AGORA_APP_CERTIFICATE']),
-  smtp:     new Set(['SMTP_PASS']),
-  general:  new Set([]),
+  stripe:     new Set(['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE_CONNECT_WEBHOOK_SECRET']),
+  paypal:     new Set(['PAYPAL_CLIENT_SECRET']),
+  bkash:      new Set(['BKASH_APP_SECRET', 'BKASH_PASSWORD']),
+  nagad:      new Set(['NAGAD_MERCHANT_PRIVATE_KEY']),
+  supabase:   new Set(['SUPABASE_SERVICE_ROLE_KEY']),
+  openai:     new Set(['OPENAI_API_KEY']),
+  agora:      new Set(['AGORA_APP_CERTIFICATE']),
+  smtp:       new Set(['SMTP_PASS']),
+  cloudinary: new Set(['CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']),
+  general:    new Set([]),
 };
 
 const VALID_CATEGORIES = new Set(Object.keys(SENSITIVE));
 
 // ─── Platform Settings CRUD ───────────────────────────────────────────────────
+
+/** GET /api/v1/admin/settings/platform/mode
+ *  Returns the current global active mode ('test' | 'live').
+ *  Also accessible via the admin/settings.routes.js mount point. */
+export async function getPlatformMode(req, res, next) {
+  try {
+    const mode = await getActiveMode();
+    res.json({ success: true, mode });
+  } catch (err) { next(err); }
+}
 
 /** GET /api/v1/admin/settings/platform
  *  Returns all platform settings grouped by category (sensitive values masked). */
@@ -172,6 +183,9 @@ export async function testPlatformConnection(req, res, next) {
       case 'agora':
         result = await _testAgora(mode);
         break;
+      case 'cloudinary':
+        result = await _testCloudinary(mode);
+        break;
       default:
         result = { ok: true, message: `No automated test for ${category}. Keys saved successfully.` };
     }
@@ -248,6 +262,23 @@ async function _testAgora(mode) {
   if (!appId || !cert) return { ok: false, message: 'Agora App ID or Certificate not configured.' };
   // Agora has no lightweight REST ping — confirm credentials are present
   return { ok: true, message: 'Agora credentials present. Token generation will validate on first use.' };
+}
+
+async function _testCloudinary(mode) {
+  try {
+    const { v2: cloudinary } = await import('cloudinary');
+    const cloudName = await getConfig('CLOUDINARY_CLOUD_NAME', 'cloudinary', mode) || process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey    = await getConfig('CLOUDINARY_API_KEY',    'cloudinary', mode) || process.env.CLOUDINARY_API_KEY;
+    const apiSecret = await getConfig('CLOUDINARY_API_SECRET', 'cloudinary', mode) || process.env.CLOUDINARY_API_SECRET;
+    if (!cloudName || !apiKey || !apiSecret) {
+      return { ok: false, message: 'Cloudinary cloud name, API key, or API secret not configured.' };
+    }
+    cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret });
+    await cloudinary.api.ping();
+    return { ok: true, message: `Cloudinary connected (cloud: ${cloudName}).` };
+  } catch (err) {
+    return { ok: false, message: err.message };
+  }
 }
 
 // Helper: get settings by group

@@ -32,6 +32,7 @@ router.post('/restore/:id', [param('id').isUUID()], validate, ctrl.restoreBackup
 
 // ─── Platform API-key / service settings routes ───────────────────────────────
 // GET    /platform                          — get all service settings (all categories)
+// GET    /platform/mode                     — get current global mode (test/live)
 // GET    /platform/:category                — get settings for one category
 // PUT    /platform/:category                — upsert settings for a category
 // POST   /platform/toggle-mode              — toggle global test / live mode
@@ -39,6 +40,7 @@ router.post('/restore/:id', [param('id').isUUID()], validate, ctrl.restoreBackup
 // POST   /platform/test-connection          — test connectivity for a service
 
 router.get('/platform',               ctrl.getPlatformSettings);
+router.get('/platform/mode',          ctrl.getPlatformMode);
 router.post('/platform/toggle-mode',  ctrl.togglePlatformMode);
 router.post('/platform/test-connection',
   [body('category').notEmpty().withMessage('category is required')],

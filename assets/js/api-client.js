@@ -330,9 +330,9 @@ const ApiClient = (() => {
          */
         testConnection: (category, mode)
           => _request('POST', '/admin/settings/platform/test-connection', { category, mode }),
-        /** Fetch the current global mode from the public config endpoint. */
+        /** Fetch the current global mode from the dedicated mode endpoint. */
         getMode: ()
-          => _request('GET', '/config/public').then(r => r?.data?.mode || 'test'),
+          => _request('GET', '/admin/settings/platform/mode').then(r => r?.mode || 'test'),
       },
     },
   };
