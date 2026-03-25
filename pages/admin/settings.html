@@ -448,9 +448,411 @@
         </div>
       </div>
 
+      <!-- ═══════════════════════════════════════════════════════════════════
+           API Keys & Service Configuration
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="admin-card" id="api-keys-section">
+        <div class="admin-card-header" style="justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="settings-section-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-key"></i></div>
+            <span class="admin-card-title">API Keys &amp; Service Configuration</span>
+          </div>
+          <!-- Global mode indicator + toggle -->
+          <div style="display:flex;align-items:center;gap:12px">
+            <span id="globalModeIndicator" style="padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;background:#fff7ed;color:#f97316">🔧 Test Mode</span>
+            <button class="btn-sm btn-secondary" onclick="toggleGlobalMode()" title="Toggle global Test/Live mode">
+              <i class="fas fa-exchange-alt"></i> Toggle Mode
+            </button>
+          </div>
+        </div>
+
+        <!-- Service tabs -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;border-bottom:2px solid #f1f5f9;padding-bottom:12px" id="pkTabs">
+          <button class="btn-sm btn-primary pk-tab active" data-pk-tab="stripe"   onclick="switchPkTab('stripe')">   <i class="fab fa-stripe-s"></i>   Stripe</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="paypal"   onclick="switchPkTab('paypal')">   <i class="fab fa-paypal"></i>    PayPal</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="bkash"    onclick="switchPkTab('bkash')">    <i class="fas fa-mobile-alt"></i> bKash</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="nagad"    onclick="switchPkTab('nagad')">    <i class="fas fa-wallet"></i>     Nagad</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="supabase" onclick="switchPkTab('supabase')"> <i class="fas fa-database"></i>   Supabase</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="openai"   onclick="switchPkTab('openai')">   <i class="fas fa-robot"></i>      OpenAI</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="agora"    onclick="switchPkTab('agora')">    <i class="fas fa-video"></i>      Agora</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="smtp"     onclick="switchPkTab('smtp')">     <i class="fas fa-envelope"></i>   SMTP</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="general"  onclick="switchPkTab('general')">  <i class="fas fa-globe"></i>      General</button>
+        </div>
+
+        <!-- ── Stripe ── -->
+        <div class="pk-pane" id="pk-pane-stripe">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">Stripe</span>
+              <span id="status-icon-stripe" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-stripe" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch" title="Toggle Test/Live">
+                <input type="checkbox" id="mode-toggle-stripe" onchange="onModeToggle('stripe',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-stripe" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Secret Key</label>
+              <input type="password" class="form-control" id="pk-stripe-STRIPE_SECRET_KEY" data-pk-key="STRIPE_SECRET_KEY" placeholder="sk_test_… or sk_live_…"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Publishable Key</label>
+              <input type="text" class="form-control" id="pk-stripe-STRIPE_PUBLISHABLE_KEY" data-pk-key="STRIPE_PUBLISHABLE_KEY" placeholder="pk_test_… or pk_live_…"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Webhook Secret</label>
+              <input type="password" class="form-control" id="pk-stripe-STRIPE_WEBHOOK_SECRET" data-pk-key="STRIPE_WEBHOOK_SECRET" placeholder="whsec_…"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Connect Webhook Secret</label>
+              <input type="password" class="form-control" id="pk-stripe-STRIPE_CONNECT_WEBHOOK_SECRET" data-pk-key="STRIPE_CONNECT_WEBHOOK_SECRET" placeholder="whsec_…"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Default Currency</label>
+              <input type="text" class="form-control" id="pk-stripe-STRIPE_DEFAULT_CURRENCY" data-pk-key="STRIPE_DEFAULT_CURRENCY" placeholder="usd"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('stripe')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('stripe')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── PayPal ── -->
+        <div class="pk-pane" id="pk-pane-paypal" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">PayPal</span>
+              <span id="status-icon-paypal" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-paypal" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch" title="Toggle Sandbox/Live">
+                <input type="checkbox" id="mode-toggle-paypal" onchange="onModeToggle('paypal',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-paypal" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Client ID</label>
+              <input type="text" class="form-control" id="pk-paypal-PAYPAL_CLIENT_ID" data-pk-key="PAYPAL_CLIENT_ID" placeholder="PayPal Client ID"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Client Secret</label>
+              <input type="password" class="form-control" id="pk-paypal-PAYPAL_CLIENT_SECRET" data-pk-key="PAYPAL_CLIENT_SECRET" placeholder="PayPal Client Secret"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Webhook ID</label>
+              <input type="text" class="form-control" id="pk-paypal-PAYPAL_WEBHOOK_ID" data-pk-key="PAYPAL_WEBHOOK_ID" placeholder="PayPal Webhook ID"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('paypal')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('paypal')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── bKash ── -->
+        <div class="pk-pane" id="pk-pane-bkash" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">bKash</span>
+              <span id="status-icon-bkash" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-bkash" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-bkash" onchange="onModeToggle('bkash',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-bkash" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">App Key</label>
+              <input type="password" class="form-control" id="pk-bkash-BKASH_APP_KEY" data-pk-key="BKASH_APP_KEY" placeholder="bKash App Key"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">App Secret</label>
+              <input type="password" class="form-control" id="pk-bkash-BKASH_APP_SECRET" data-pk-key="BKASH_APP_SECRET" placeholder="bKash App Secret"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input type="text" class="form-control" id="pk-bkash-BKASH_USERNAME" data-pk-key="BKASH_USERNAME" placeholder="bKash Username"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control" id="pk-bkash-BKASH_PASSWORD" data-pk-key="BKASH_PASSWORD" placeholder="bKash Password"/>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Callback URL</label>
+              <input type="url" class="form-control" id="pk-bkash-BKASH_CALLBACK_URL" data-pk-key="BKASH_CALLBACK_URL" placeholder="https://your-domain.com/api/v1/payments/bkash/callback"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('bkash')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('bkash')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── Nagad ── -->
+        <div class="pk-pane" id="pk-pane-nagad" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">Nagad</span>
+              <span id="status-icon-nagad" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-nagad" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-nagad" onchange="onModeToggle('nagad',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-nagad" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Merchant ID</label>
+              <input type="text" class="form-control" id="pk-nagad-NAGAD_MERCHANT_ID" data-pk-key="NAGAD_MERCHANT_ID" placeholder="Nagad Merchant ID"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Merchant Mobile No.</label>
+              <input type="text" class="form-control" id="pk-nagad-NAGAD_MERCHANT_MOBILE_NO" data-pk-key="NAGAD_MERCHANT_MOBILE_NO" placeholder="01XXXXXXXXX"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Public Key</label>
+              <input type="text" class="form-control" id="pk-nagad-NAGAD_PUBLIC_KEY" data-pk-key="NAGAD_PUBLIC_KEY" placeholder="Nagad Public Key"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Merchant Private Key</label>
+              <input type="password" class="form-control" id="pk-nagad-NAGAD_MERCHANT_PRIVATE_KEY" data-pk-key="NAGAD_MERCHANT_PRIVATE_KEY" placeholder="Nagad Private Key"/>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Callback URL</label>
+              <input type="url" class="form-control" id="pk-nagad-NAGAD_CALLBACK_URL" data-pk-key="NAGAD_CALLBACK_URL" placeholder="https://your-domain.com/api/v1/payments/nagad/callback"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('nagad')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('nagad')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── Supabase ── -->
+        <div class="pk-pane" id="pk-pane-supabase" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">Supabase</span>
+              <span id="status-icon-supabase" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-supabase" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-supabase" onchange="onModeToggle('supabase',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-supabase" class="settings-form">
+            <div class="form-group full-width">
+              <label class="form-label">Supabase URL</label>
+              <input type="url" class="form-control" id="pk-supabase-SUPABASE_URL" data-pk-key="SUPABASE_URL" placeholder="https://xxxx.supabase.co"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Anon Key (public)</label>
+              <input type="text" class="form-control" id="pk-supabase-SUPABASE_ANON_KEY" data-pk-key="SUPABASE_ANON_KEY" placeholder="eyJ…"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Service Role Key (secret)</label>
+              <input type="password" class="form-control" id="pk-supabase-SUPABASE_SERVICE_ROLE_KEY" data-pk-key="SUPABASE_SERVICE_ROLE_KEY" placeholder="eyJ…"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('supabase')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('supabase')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── OpenAI ── -->
+        <div class="pk-pane" id="pk-pane-openai" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">OpenAI</span>
+              <span id="status-icon-openai" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-openai" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-openai" onchange="onModeToggle('openai',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-openai" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">API Key</label>
+              <input type="password" class="form-control" id="pk-openai-OPENAI_API_KEY" data-pk-key="OPENAI_API_KEY" placeholder="sk-…"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Model</label>
+              <select class="form-control" id="pk-openai-OPENAI_MODEL" data-pk-key="OPENAI_MODEL">
+                <option value="gpt-4">GPT-4</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+              </select>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('openai')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('openai')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── Agora ── -->
+        <div class="pk-pane" id="pk-pane-agora" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">Agora (Video/Livestream)</span>
+              <span id="status-icon-agora" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-agora" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-agora" onchange="onModeToggle('agora',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-agora" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">App ID</label>
+              <input type="text" class="form-control" id="pk-agora-AGORA_APP_ID" data-pk-key="AGORA_APP_ID" placeholder="Agora App ID"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">App Certificate</label>
+              <input type="password" class="form-control" id="pk-agora-AGORA_APP_CERTIFICATE" data-pk-key="AGORA_APP_CERTIFICATE" placeholder="Agora App Certificate"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('agora')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('agora')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── SMTP ── -->
+        <div class="pk-pane" id="pk-pane-smtp" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">SMTP (Email)</span>
+              <span id="status-icon-smtp" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-smtp" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-smtp" onchange="onModeToggle('smtp',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-smtp" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">SMTP Host</label>
+              <input type="text" class="form-control" id="pk-smtp-SMTP_HOST" data-pk-key="SMTP_HOST" placeholder="smtp.gmail.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">SMTP Port</label>
+              <input type="number" class="form-control" id="pk-smtp-SMTP_PORT" data-pk-key="SMTP_PORT" placeholder="587"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">SMTP User</label>
+              <input type="email" class="form-control" id="pk-smtp-SMTP_USER" data-pk-key="SMTP_USER" placeholder="you@gmail.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">SMTP Password</label>
+              <input type="password" class="form-control" id="pk-smtp-SMTP_PASS" data-pk-key="SMTP_PASS" placeholder="App password or SMTP password"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">From Email</label>
+              <input type="email" class="form-control" id="pk-smtp-SMTP_FROM_EMAIL" data-pk-key="SMTP_FROM_EMAIL" placeholder="noreply@globexsky.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">From Name</label>
+              <input type="text" class="form-control" id="pk-smtp-SMTP_FROM_NAME" data-pk-key="SMTP_FROM_NAME" placeholder="Globex Sky"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('smtp')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('smtp')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── General URLs ── -->
+        <div class="pk-pane" id="pk-pane-general" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">General</span>
+              <span id="status-icon-general" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-general" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-general" onchange="onModeToggle('general',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-general" class="settings-form">
+            <div class="form-group full-width">
+              <label class="form-label">Frontend URL</label>
+              <input type="url" class="form-control" id="pk-general-FRONTEND_URL" data-pk-key="FRONTEND_URL" placeholder="https://globexsky.com"/>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Backend / API Base URL</label>
+              <input type="url" class="form-control" id="pk-general-API_BASE_URL" data-pk-key="API_BASE_URL" placeholder="https://globexsky-backend.up.railway.app/api/v1"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-primary" onclick="savePlatformCategory('general')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+      </div><!-- /#api-keys-section -->
+
     </main>
   </div>
 </div>
+<script>
+// ─── Platform tab switcher (inline, runs before admin-settings.js) ─────────────
+function switchPkTab(cat) {
+  document.querySelectorAll('.pk-pane').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.pk-tab').forEach(t => {
+    t.className = 'btn-sm ' + (t.dataset.pkTab === cat ? 'btn-primary' : 'btn-secondary') + ' pk-tab';
+  });
+  const pane = document.getElementById('pk-pane-' + cat);
+  if (pane) pane.style.display = '';
+}
+</script>
+<style>
+  .pk-service-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0;margin-bottom:16px;border-bottom:1px solid #f1f5f9}
+  .pk-pane .settings-form{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;margin-bottom:16px}
+  .pk-pane .settings-form .full-width{grid-column:1/-1}
+  @media(max-width:600px){.pk-pane .settings-form{grid-template-columns:1fr}}
+</style>
+<script src="../../assets/js/admin-settings.js"></script>
 <script src="../../assets/js/navbar.js"></script>
 </body>
 </html>

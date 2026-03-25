@@ -3,8 +3,9 @@
  * Environment/API URL configuration.
  *
  * - Detects dev vs. production automatically from window.location.
- * - Public runtime config (Supabase URL/anon key, etc.) is fetched from the
- *   backend at /api/v1/config/public so that no secrets are hardcoded here.
+ * - Public runtime config (Supabase URL/anon key, Stripe publishable key,
+ *   Agora App ID, etc.) is fetched from the backend at /api/v1/config/public
+ *   so that no secrets are hardcoded here.
  * - Call `GlobexConfig.getConfig()` once on page load to hydrate the config.
  */
 
@@ -21,11 +22,15 @@ const GlobexConfig = (() => {
     API_BASE_URL,
     SUPABASE_URL: null,
     SUPABASE_ANON_KEY: null,
+    STRIPE_PUBLISHABLE_KEY: null,
+    AGORA_APP_ID: null,
     CLOUDINARY_CLOUD_NAME: null,
     DEFAULT_CURRENCY: 'USD',
     DEFAULT_LANGUAGE: 'en',
     MODE: 'test',
   };
+
+  let _fetchPromise = null;
 
   /**
    * Fetch public (non-sensitive) configuration from the backend.
@@ -37,27 +42,35 @@ const GlobexConfig = (() => {
     // Return cached config if already fetched.
     if (_config.SUPABASE_URL) return _config;
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/config/public`);
-      if (!response.ok) {
-        throw new Error(`Config endpoint returned ${response.status}`);
+    // Deduplicate concurrent calls.
+    if (_fetchPromise) return _fetchPromise;
+
+    _fetchPromise = (async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/config/public`);
+        if (!response.ok) {
+          throw new Error(`Config endpoint returned ${response.status}`);
+        }
+        const { data } = await response.json();
+
+        _config = {
+          ..._config,
+          SUPABASE_URL:           data.supabaseUrl           || null,
+          SUPABASE_ANON_KEY:      data.supabaseAnonKey       || null,
+          STRIPE_PUBLISHABLE_KEY: data.stripePublishableKey  || null,
+          AGORA_APP_ID:           data.agoraAppId            || null,
+          CLOUDINARY_CLOUD_NAME:  data.cloudinaryCloudName   || null,
+          DEFAULT_CURRENCY:       data.defaultCurrency       || 'USD',
+          DEFAULT_LANGUAGE:       data.defaultLanguage       || 'en',
+          MODE:                   data.mode                  || 'test',
+        };
+      } catch (err) {
+        console.warn('[GlobexConfig] Failed to load public config from backend:', err.message);
       }
-      const { data } = await response.json();
+      return _config;
+    })();
 
-      _config = {
-        ..._config,
-        SUPABASE_URL: data.supabaseUrl || null,
-        SUPABASE_ANON_KEY: data.supabaseAnonKey || null,
-        CLOUDINARY_CLOUD_NAME: data.cloudinaryCloudName || null,
-        DEFAULT_CURRENCY: data.defaultCurrency || 'USD',
-        DEFAULT_LANGUAGE: data.defaultLanguage || 'en',
-        MODE: data.mode || 'test',
-      };
-    } catch (err) {
-      console.warn('[GlobexConfig] Failed to load public config from backend:', err.message);
-    }
-
-    return _config;
+    return _fetchPromise;
   }
 
   return {
@@ -69,6 +82,12 @@ const GlobexConfig = (() => {
 
     /** Returns current Supabase anon key (null until getConfig() resolves). */
     get SUPABASE_ANON_KEY() { return _config.SUPABASE_ANON_KEY; },
+
+    /** Returns Stripe publishable key (null until getConfig() resolves). */
+    get STRIPE_PUBLISHABLE_KEY() { return _config.STRIPE_PUBLISHABLE_KEY; },
+
+    /** Returns Agora App ID (null until getConfig() resolves). */
+    get AGORA_APP_ID() { return _config.AGORA_APP_ID; },
 
     /** Returns Cloudinary cloud name (null until getConfig() resolves). */
     get CLOUDINARY_CLOUD_NAME() { return _config.CLOUDINARY_CLOUD_NAME; },
