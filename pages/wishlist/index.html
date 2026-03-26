@@ -253,7 +253,7 @@
   </div>
 
   <!-- Product Grid -->
-  <div class="product-grid" id="productGrid">
+  <div class="product-grid" id="productGrid" data-dynamic="true">
 
     <!-- Card 1 -->
     <div class="product-card" data-id="1" data-price="149.99" data-date="2024-01-15">
@@ -622,5 +622,94 @@
   // Keyboard: close modal on Escape
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
+
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
+<script>
+  (function () {
+    'use strict';
+
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+
+    function _esc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function buildWishlistCardHTML(item) {
+      var id      = _esc(item.id || item._id || item.productId || '');
+      var name    = _esc(item.name || item.productName || 'Product');
+      var price   = parseFloat(item.price || 0).toFixed(2);
+      var origPrice = item.originalPrice ? parseFloat(item.originalPrice).toFixed(2) : null;
+      var img     = _esc(item.image || item.imageUrl || 'https://placehold.co/280x200?text=IMG');
+      var rating  = parseFloat(item.rating || 0).toFixed(1);
+      var reviews = parseInt(item.reviewCount || item.reviews || 0, 10);
+      var dateAdded = _esc(item.addedAt || item.createdAt || '');
+      var supplier = _esc(item.supplier || item.vendorName || '');
+      var hasAlert = item.priceAlert || false;
+
+      return '<div class="product-card" data-id="' + id + '" data-price="' + parseFloat(item.price || 0) + '" data-date="' + dateAdded + '">' +
+        '<div class="card-select"><input type="checkbox" onchange="toggleSelect(\'' + id + '\', this)" /></div>' +
+        '<button class="card-remove" onclick="removeItem(\'' + id + '\')" title="Remove"><i class="fas fa-times"></i></button>' +
+        '<div class="card-img"><img src="' + img + '" alt="' + name + '" loading="lazy" /></div>' +
+        '<div class="card-body">' +
+          '<div class="card-title">' + name + '</div>' +
+          (supplier ? '<div class="card-supplier"><i class="fas fa-store"></i> ' + supplier + '</div>' : '') +
+          '<div class="card-price">$' + price +
+            (origPrice ? ' <span class="price-original">$' + origPrice + '</span>' : '') +
+          '</div>' +
+          (rating > 0 ? '<div class="card-rating"><i class="fas fa-star"></i> ' + rating + (reviews > 0 ? ' (' + reviews + ')' : '') + '</div>' : '') +
+        '</div>' +
+        '<div class="card-footer">' +
+          '<button class="btn-cart" onclick="showToast(\'Added to cart!\', \'success\')"><i class="fas fa-cart-plus"></i> Add to Cart</button>' +
+          '<button class="btn-alert' + (hasAlert ? ' active' : '') + '" title="Price Alert" onclick="toggleAlert(\'' + id + '\')">' +
+            '<i class="fas fa-bell"></i>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    window.initWishlistPage = function () {
+      if (!window.ApiService) return;
+
+      var grid = document.getElementById('productGrid');
+      if (!grid) return;
+
+      // Show loading state
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#64748b;">' +
+        '<i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top:1rem">Loading your wishlist…</p></div>';
+
+      window.ApiService.get('/wishlist')
+        .then(function (data) {
+          var items = (data && (data.items || data.data || data)) || [];
+          if (!Array.isArray(items) || items.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#64748b;">' +
+              '<i class="fas fa-heart fa-3x" style="color:#fda4af;margin-bottom:1rem;display:block"></i>' +
+              '<h3>Your wishlist is empty</h3>' +
+              '<p>Save products you love and come back to them anytime.</p>' +
+              '<a href="../../index.html" class="btn-cart" style="display:inline-flex;margin-top:1rem;width:auto;padding:.6rem 1.5rem;">' +
+                '<i class="fas fa-search"></i> Browse Products</a></div>';
+            return;
+          }
+          grid.innerHTML = items.map(buildWishlistCardHTML).join('');
+        })
+        .catch(function (err) {
+          if (err && err.status === 401) {
+            window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
+            return;
+          }
+          // Restore static fallback on error by reloading; for now show message
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#ef4444;">' +
+            '<i class="fas fa-exclamation-circle"></i> Unable to load wishlist. Please refresh the page.</div>';
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      window.initWishlistPage();
+    });
+  }());
+</script>
+
 </body>
 </html>

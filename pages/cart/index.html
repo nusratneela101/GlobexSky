@@ -747,6 +747,9 @@
               <span class="cart-item-count" data-i18n="cart.item_count">5 items in cart</span>
             </div>
 
+            <!-- ===== CART ITEMS CONTAINER (dynamic) ===== -->
+            <div id="cart-items-container" data-dynamic="true">
+
             <!-- ===== VENDOR GROUP 1: TechnoSource Electronics ===== -->
             <div class="vendor-group" data-vendor-id="vendor-001" role="region" aria-label="TechnoSource Electronics items">
               <div class="vendor-group-header">
@@ -767,7 +770,7 @@
               </div>
 
               <!-- Item 1 -->
-              <article class="cart-item" data-item-id="item-001" aria-label="Product: Wireless Noise-Cancelling Headphones">
+              <article class="cart-item" data-item-id="item-001" data-cart-item-id="item-001" aria-label="Product: Wireless Noise-Cancelling Headphones">
                 <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
                 <img
                   src="https://via.placeholder.com/80x80/0052CC/ffffff?text=HP"
@@ -808,7 +811,7 @@
               </article>
 
               <!-- Item 2 -->
-              <article class="cart-item" data-item-id="item-002" aria-label="Product: 4K Ultra HD Smart Security Camera">
+              <article class="cart-item" data-item-id="item-002" data-cart-item-id="item-002" aria-label="Product: 4K Ultra HD Smart Security Camera">
                 <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
                 <img
                   src="https://via.placeholder.com/80x80/00C9A7/ffffff?text=CAM"
@@ -849,7 +852,7 @@
               </article>
 
               <!-- Item 3 -->
-              <article class="cart-item" data-item-id="item-003" aria-label="Product: USB-C 65W GaN Fast Charger">
+              <article class="cart-item" data-item-id="item-003" data-cart-item-id="item-003" aria-label="Product: USB-C 65W GaN Fast Charger">
                 <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
                 <img
                   src="https://via.placeholder.com/80x80/FF6B35/ffffff?text=CHG"
@@ -910,7 +913,7 @@
               </div>
 
               <!-- Item 4 -->
-              <article class="cart-item" data-item-id="item-004" aria-label="Product: Men's Premium Slim-Fit Business Shirt">
+              <article class="cart-item" data-item-id="item-004" data-cart-item-id="item-004" aria-label="Product: Men's Premium Slim-Fit Business Shirt">
                 <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
                 <img
                   src="https://via.placeholder.com/80x80/6366f1/ffffff?text=SHIRT"
@@ -951,7 +954,7 @@
               </article>
 
               <!-- Item 5 -->
-              <article class="cart-item" data-item-id="item-005" aria-label="Product: Women's Athletic Running Leggings">
+              <article class="cart-item" data-item-id="item-005" data-cart-item-id="item-005" aria-label="Product: Women's Athletic Running Leggings">
                 <input type="checkbox" class="item-select mt-2" checked aria-label="Select this item" />
                 <img
                   src="https://via.placeholder.com/80x80/ec4899/ffffff?text=LEG"
@@ -991,6 +994,8 @@
                 </div>
               </article>
             </div>
+
+            </div><!-- /#cart-items-container -->
 
             <!-- ===== EMPTY CART STATE ===== -->
             <div class="empty-cart-state" id="empty-cart-state" role="status" aria-live="polite">
@@ -1355,7 +1360,134 @@
   <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/main.js"></script>
   <script src="../../assets/js/navbar.js"></script>
+  <script src="../../assets/js/api-service.js"></script>
+  <script src="../../assets/js/dynamic-loader.js"></script>
   <script src="../../assets/js/cart.js"></script>
+
+  <!-- API integration: cart page -->
+  <script>
+    (function () {
+      'use strict';
+
+      var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+
+      function _esc(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function buildItemHTML(item) {
+        var id       = _esc(item.id || item._id || '');
+        var name     = _esc(item.name || item.productName || 'Product');
+        var vendor   = _esc(item.vendorName || item.supplier || '');
+        var price    = parseFloat(item.price || item.unitPrice || 0).toFixed(2);
+        var qty      = parseInt(item.quantity || 1, 10);
+        var min      = parseInt(item.minOrderQty || item.moq || 1, 10);
+        var img      = _esc(item.image || item.imageUrl || 'https://placehold.co/96x96?text=IMG');
+        var variant  = _esc(item.variant || item.sku || '');
+        var total    = (parseFloat(price) * qty).toFixed(2);
+
+        return '<article class="cart-item" data-item-id="' + id + '" data-cart-item-id="' + id + '" aria-label="Product: ' + name + '">' +
+          '<label class="item-select-wrap"><input type="checkbox" class="item-select" checked /></label>' +
+          '<img class="cart-item-img" src="' + img + '" alt="' + name + '" loading="lazy" />' +
+          '<div class="cart-item-body">' +
+            '<div class="cart-item-name">' + name + '</div>' +
+            (vendor ? '<div class="cart-item-variant"><span>' + vendor + '</span></div>' : '') +
+            (variant ? '<div class="cart-item-variant"><span>' + variant + '</span></div>' : '') +
+            '<div class="cart-item-price">$' + price + '</div>' +
+            (min > 1 ? '<div class="cart-item-moq">Min. order: ' + min + ' units</div>' : '') +
+          '</div>' +
+          '<div class="cart-item-controls">' +
+            '<div class="qty-control">' +
+              '<button class="qty-btn" data-action="decrease" data-item="' + id + '" aria-label="Decrease quantity">−</button>' +
+              '<input class="qty-input" type="number" value="' + qty + '" min="' + min + '" step="' + min + '" data-item="' + id + '" aria-label="Quantity" />' +
+              '<button class="qty-btn" data-action="increase" data-item="' + id + '" aria-label="Increase quantity">+</button>' +
+            '</div>' +
+            '<div class="cart-item-total">$' + total + '</div>' +
+            '<button class="remove-btn" data-remove="' + id + '" aria-label="Remove item"><i class="fas fa-trash-alt"></i></button>' +
+          '</div>' +
+        '</article>';
+      }
+
+      function buildVendorGroupHTML(vendorId, vendorName, itemsHTML) {
+        var vid = _esc(vendorId);
+        var vname = _esc(vendorName);
+        return '<div class="vendor-group" data-vendor-id="' + vid + '" role="region" aria-label="' + vname + ' items">' +
+          '<div class="vendor-group-header">' +
+            '<span class="vendor-badge"><i class="fas fa-store" aria-hidden="true"></i> Verified Supplier</span>' +
+            '<span class="vendor-name">' + vname + '</span>' +
+          '</div>' +
+          itemsHTML +
+        '</div>';
+      }
+
+      function updateSummary(items) {
+        var subtotal = items.reduce(function (sum, item) {
+          return sum + parseFloat(item.price || item.unitPrice || 0) * parseInt(item.quantity || 1, 10);
+        }, 0);
+        var subtotalEl = document.getElementById('summary-subtotal');
+        if (subtotalEl) subtotalEl.textContent = '$' + subtotal.toFixed(2);
+      }
+
+      window.initCartPage = function () {
+        if (!window.ApiService) return;
+
+        var container = document.getElementById('cart-items-container');
+        if (!container) return;
+
+        window.ApiService.get('/cart')
+          .then(function (data) {
+            var items = (data && (data.items || data.data || data)) || [];
+            if (!Array.isArray(items) || items.length === 0) {
+              container.innerHTML = '';
+              var emptyState = document.getElementById('empty-cart-state');
+              if (emptyState) emptyState.classList.add('visible');
+              var actionsBar = document.querySelector('.cart-actions-bar');
+              if (actionsBar) actionsBar.style.display = 'none';
+              var countEl = document.querySelector('.cart-item-count');
+              if (countEl) countEl.textContent = '0 items in cart';
+              return;
+            }
+
+            // Group items by vendor
+            var vendors = {};
+            items.forEach(function (item) {
+              var vid = item.vendorId || item.sellerId || 'vendor-default';
+              var vname = item.vendorName || item.sellerName || 'Supplier';
+              if (!vendors[vid]) vendors[vid] = { name: vname, items: [] };
+              vendors[vid].items.push(item);
+            });
+
+            var html = '';
+            Object.keys(vendors).forEach(function (vid) {
+              var itemsHTML = vendors[vid].items.map(buildItemHTML).join('');
+              html += buildVendorGroupHTML(vid, vendors[vid].name, itemsHTML);
+            });
+
+            container.setAttribute('data-dynamic', 'true');
+            container.innerHTML = html;
+
+            var countEl = document.querySelector('.cart-item-count');
+            if (countEl) countEl.textContent = items.length + ' item' + (items.length !== 1 ? 's' : '') + ' in cart';
+            var cartBadge = document.getElementById('cart-count');
+            if (cartBadge) cartBadge.textContent = items.length;
+
+            updateSummary(items);
+          })
+          .catch(function (err) {
+            if (err && err.status === 401) {
+              window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
+            }
+            // On error, keep static fallback content visible
+          });
+      };
+
+      document.addEventListener('DOMContentLoaded', function () {
+        window.initCartPage();
+      });
+    }());
+  </script>
 
   <!-- Inline cart interaction bootstrap (gracefully no-ops if cart.js covers it) -->
   <script>
@@ -1380,6 +1512,10 @@
             input.value = Math.max(min, val - (min > 1 ? min : 1));
           }
           input.dispatchEvent(new Event('change'));
+          if (window.ApiService) {
+            window.ApiService.put('/cart/items/' + itemId, { quantity: parseInt(input.value, 10) })
+              .catch(function () {});
+          }
         });
       });
 
@@ -1387,6 +1523,9 @@
       document.querySelectorAll('.remove-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var itemId = btn.dataset.remove;
+          if (window.ApiService) {
+            window.ApiService.del('/cart/items/' + itemId).catch(function () {});
+          }
           var row = document.querySelector('.cart-item[data-item-id="' + itemId + '"]');
           if (row) {
             row.style.transition = 'opacity 0.3s, max-height 0.3s';
