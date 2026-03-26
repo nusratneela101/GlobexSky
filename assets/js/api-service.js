@@ -127,22 +127,28 @@ const ApiService = (() => {
 
     return fetch(url, fetchOptions)
       .then(function (res) {
-        return res.json().then(function (data) {
-          if (!res.ok) {
-            // Normalise server error into the standard shape
-            return {
-              success: false,
-              data: null,
-              message: data.error || data.message || ('HTTP ' + res.status),
-            };
-          }
-          // Server already returns { success, data, message } — pass through;
-          // otherwise wrap bare payloads for consistency.
-          if (Object.prototype.hasOwnProperty.call(data, 'success')) {
-            return data;
-          }
-          return { success: true, data: data, message: '' };
-        });
+        // Attempt to parse JSON; gracefully handle non-JSON responses (HTML error pages, etc.)
+        return res.json()
+          .catch(function () { return null; })
+          .then(function (data) {
+            if (!res.ok) {
+              var msg = (data && (data.error || data.message)) || ('HTTP ' + res.status);
+              return { success: false, data: null, message: msg };
+            }
+            if (!data) {
+              return { success: true, data: null, message: '' };
+            }
+            // Pass through when server already uses the standard envelope;
+            // fill in missing fields so callers can always rely on all three.
+            if (Object.prototype.hasOwnProperty.call(data, 'success')) {
+              return {
+                success: !!data.success,
+                data:    Object.prototype.hasOwnProperty.call(data, 'data')    ? data.data    : null,
+                message: Object.prototype.hasOwnProperty.call(data, 'message') ? data.message : '',
+              };
+            }
+            return { success: true, data: data, message: '' };
+          });
       })
       .catch(function (err) {
         return {
@@ -206,7 +212,7 @@ const ApiService = (() => {
   function showLoader(elementId) {
     var el = document.getElementById(elementId);
     if (!el) return;
-    if (el.dataset.originalHtml !== undefined) return; // already loading
+    if ('originalHtml' in el.dataset) return; // already loading
     el.dataset.originalHtml = el.innerHTML;
     el.innerHTML =
       '<div class="api-loader" role="status" aria-live="polite">' +
@@ -232,7 +238,7 @@ const ApiService = (() => {
 
   /** Alias kept for backwards-compat with callers using the page-level names. */
   function showPageLoader() {
-    showLoader('page-loader') ||
+    showLoader('page-loader');
     document.body.classList.add('page-loading');
   }
 
