@@ -31,7 +31,7 @@
 
   const ZXING_CDN = 'https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js';
   const RECENT_SCANS_KEY = 'globexsky_recent_scans';
-  const MAX_RECENT_SCANS = 20;
+  const MAX_RECENT_SCANS = 10;
 
   /* ── Helpers ────────────────────────────────────────────────────── */
 
