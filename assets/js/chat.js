@@ -128,8 +128,11 @@
       });
 
       socket.on('conversation:joined', ({ conversationId }) => {
-        // Request online status for conversation partner
-        if (socket) socket.emit('user:status', { userIds: getConvPartnerIds(conversationId) });
+        // Request online status for conversation partner (only if conversations loaded)
+        const partnerIds = getConvPartnerIds(conversationId);
+        if (socket && partnerIds.length > 0) {
+          socket.emit('user:status', { userIds: partnerIds });
+        }
       });
 
     } catch (e) {
@@ -231,6 +234,16 @@
         conversationId: activeConversationId,
         content: content.trim(),
         type,
+      }, (ack) => {
+        // If server returns an error acknowledgment, fall back to REST API
+        if (ack && ack.error) {
+          console.warn('Chat: Socket.IO send failed, retrying via REST', ack.error);
+          fetch(API + '/chat/conversations/' + activeConversationId + '/messages', {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({ content: content.trim(), type }),
+          }).then(() => fetchMessages(activeConversationId)).catch(() => {});
+        }
       });
       // Refresh conversations list to update preview
       fetchConversations();
@@ -360,7 +373,7 @@
   function renderMessages(messages) {
     if (!messagesEl) return;
     if (!messages.length) {
-      messagesEl.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:.85rem;padding:40px;">No messages yet. Say hello!</div>';
+      messagesEl.innerHTML = '<div class="msg-empty-placeholder" style="text-align:center;color:#94a3b8;font-size:.85rem;padding:40px;">No messages yet. Say hello!</div>';
       return;
     }
 
@@ -411,7 +424,7 @@
   function appendNewMessage(msg) {
     if (!messagesEl) return;
     // Remove "no messages" placeholder if present
-    const placeholder = messagesEl.querySelector('div[style*="text-align:center"]');
+    const placeholder = messagesEl.querySelector('.msg-empty-placeholder');
     if (placeholder) placeholder.remove();
 
     const userId = getCurrentUserId();
