@@ -85,7 +85,7 @@
   <div class="container">
     <div class="card">
       <div class="card-title"><i class="fas fa-bolt"></i> Active Flash Sales</div>
-      <div class="grid-2">
+      <div class="grid-2" id="flashSalesGrid">
         <div style="background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:14px;padding:24px;color:#fff;cursor:pointer">
           <div style="font-size:.8rem;font-weight:600;opacity:.8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Flash Sale</div>
           <div style="font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:8px">Electronics Mega Deal</div>
@@ -116,7 +116,7 @@
     </div>
     <div class="card">
       <div class="card-title"><i class="fas fa-tag"></i> Category Discounts</div>
-      <div class="grid-3">
+      <div class="grid-3" id="categoryDiscountsGrid">
         <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='#0052CC'" onmouseout="this.style.borderColor='#e2e8f0'">
           <div style="font-size:2rem;margin-bottom:8px">📱</div>
           <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0A0E27;margin-bottom:4px">Electronics</div>
@@ -157,6 +157,69 @@
   </div>
 </footer>
 <script src="../../assets/js/main.js" defer></script>
-  <script src="../../assets/js/campaigns.js"></script>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
+<script>
+(function() {
+  var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+  function getToken() {
+    try { var s = JSON.parse(localStorage.getItem('globexSession') || 'null'); return (s && s.token) || localStorage.getItem('globexToken') || localStorage.getItem('token') || null; } catch(e) { return null; }
+  }
+  function esc(v) { var d = document.createElement('div'); d.textContent = String(v || ''); return d.innerHTML; }
+  async function apiFetch(path, opts) {
+    var token = getToken();
+    var res = await fetch(API_BASE + path, Object.assign({ headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'Authorization': 'Bearer ' + token } : {}) }, opts || {}));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+  var COLORS = ['linear-gradient(135deg,#ef4444,#dc2626)','linear-gradient(135deg,#8b5cf6,#7c3aed)','linear-gradient(135deg,#0052CC,#0A0E27)','linear-gradient(135deg,#059669,#047857)'];
+  function renderFlash(campaigns) {
+    var grid = document.getElementById('flashSalesGrid');
+    if (!grid || !campaigns || !campaigns.length) return;
+    var flash = campaigns.filter(function(c){ return c.type === 'flash' || c.campaign_type === 'flash'; });
+    if (!flash.length) flash = campaigns.slice(0, 4);
+    grid.innerHTML = flash.map(function(c, i) {
+      var color = COLORS[i % COLORS.length];
+      var discount = c.discount || c.discount_value || '';
+      var title = c.name || c.title || 'Campaign';
+      var desc = c.description || '';
+      var end = c.end_date || c.ends_at || '';
+      return '<div style="background:' + color + ';border-radius:14px;padding:24px;color:#fff">' +
+        '<div style="font-size:.8rem;font-weight:600;opacity:.8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">' + esc(c.type || 'Campaign') + '</div>' +
+        '<div style="font-family:\'Poppins\',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:8px">' + esc(title) + '</div>' +
+        '<div style="font-size:.85rem;opacity:.8;margin-bottom:12px">' + esc(desc) + '</div>' +
+        (end ? '<div style="font-size:.8rem;opacity:.7;margin-bottom:12px">Ends: ' + esc(end) + '</div>' : '') +
+        (discount ? '<div style="font-size:1rem;font-weight:700;margin-bottom:12px">' + esc(discount) + '% OFF</div>' : '') +
+        '<a href="flash-sales.html" style="background:#fff;color:#dc2626;border-radius:8px;padding:8px 20px;font-weight:600;font-size:.85rem;text-decoration:none;display:inline-block">Shop Now →</a>' +
+        '</div>';
+    }).join('');
+  }
+  function renderCategories(campaigns) {
+    var grid = document.getElementById('categoryDiscountsGrid');
+    if (!grid || !campaigns || !campaigns.length) return;
+    var cats = campaigns.filter(function(c){ return c.type === 'category' || c.campaign_type === 'category'; });
+    if (!cats.length) cats = campaigns.filter(function(c){ return c.category; });
+    if (!cats.length) return;
+    grid.innerHTML = cats.map(function(c) {
+      var icon = c.icon || '🏷️';
+      var name = c.category || c.name || 'Category';
+      var discount = c.discount || c.discount_value || '';
+      return '<div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;text-align:center">' +
+        '<div style="font-size:2rem;margin-bottom:8px">' + esc(icon) + '</div>' +
+        '<div style="font-family:\'Poppins\',sans-serif;font-size:.9rem;font-weight:600;color:#0A0E27;margin-bottom:4px">' + esc(name) + '</div>' +
+        (discount ? '<div style="font-size:.8rem;color:#059669;font-weight:600">' + esc(discount) + '% OFF</div>' : '') +
+        '</div>';
+    }).join('');
+  }
+  document.addEventListener('DOMContentLoaded', async function() {
+    try {
+      var data = await apiFetch('/campaigns');
+      var campaigns = Array.isArray(data) ? data : (data.campaigns || data.data || []);
+      renderFlash(campaigns);
+      renderCategories(campaigns);
+    } catch(e) { /* keep static content on error */ }
+  });
+})();
+</script>
 </body>
 </html>
