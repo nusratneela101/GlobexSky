@@ -477,6 +477,8 @@
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="agora"    onclick="switchPkTab('agora')">    <i class="fas fa-video"></i>      Agora</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="smtp"     onclick="switchPkTab('smtp')">     <i class="fas fa-envelope"></i>   SMTP</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="cloudinary" onclick="switchPkTab('cloudinary')"><i class="fas fa-cloud"></i>    Cloudinary</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="dhl"       onclick="switchPkTab('dhl')">       <i class="fas fa-shipping-fast"></i> DHL</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="fedex"     onclick="switchPkTab('fedex')">     <i class="fas fa-box"></i>        FedEx</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="general"  onclick="switchPkTab('general')">  <i class="fas fa-globe"></i>      General</button>
         </div>
 
@@ -833,6 +835,86 @@
           <div class="form-footer">
             <button class="btn-sm btn-secondary" onclick="testPlatformConnection('cloudinary')"><i class="fas fa-plug"></i> Test Connection</button>
             <button class="btn-sm btn-primary"   onclick="savePlatformCategory('cloudinary')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── DHL ── -->
+        <div class="pk-pane" id="pk-pane-dhl" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">DHL</span>
+              <span id="status-icon-dhl" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-dhl" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-dhl" onchange="onModeToggle('dhl',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-dhl" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">DHL API Key</label>
+              <input type="password" class="form-control" id="pk-dhl-DHL_API_KEY" data-pk-key="DHL_API_KEY" placeholder="DHL API Key"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DHL API Secret</label>
+              <input type="password" class="form-control" id="pk-dhl-DHL_API_SECRET" data-pk-key="DHL_API_SECRET" placeholder="DHL API Secret"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DHL Account Number</label>
+              <input type="text" class="form-control" id="pk-dhl-DHL_ACCOUNT_NUMBER" data-pk-key="DHL_ACCOUNT_NUMBER" placeholder="DHL Account Number"/>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">DHL Base URL</label>
+              <input type="url" class="form-control" id="pk-dhl-DHL_BASE_URL" data-pk-key="DHL_BASE_URL" placeholder="https://api-mock.dhl.com/mydhlapi"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('dhl')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('dhl')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── FedEx ── -->
+        <div class="pk-pane" id="pk-pane-fedex" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">FedEx</span>
+              <span id="status-icon-fedex" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-fedex" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-fedex" onchange="onModeToggle('fedex',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-fedex" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">FedEx Client ID</label>
+              <input type="password" class="form-control" id="pk-fedex-FEDEX_CLIENT_ID" data-pk-key="FEDEX_CLIENT_ID" placeholder="FedEx Client ID"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">FedEx Client Secret</label>
+              <input type="password" class="form-control" id="pk-fedex-FEDEX_CLIENT_SECRET" data-pk-key="FEDEX_CLIENT_SECRET" placeholder="FedEx Client Secret"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">FedEx Account Number</label>
+              <input type="text" class="form-control" id="pk-fedex-FEDEX_ACCOUNT_NUMBER" data-pk-key="FEDEX_ACCOUNT_NUMBER" placeholder="FedEx Account Number"/>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">FedEx Base URL</label>
+              <input type="url" class="form-control" id="pk-fedex-FEDEX_BASE_URL" data-pk-key="FEDEX_BASE_URL" placeholder="https://apis-sandbox.fedex.com"/>
+            </div>
+          </form>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testPlatformConnection('fedex')"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="savePlatformCategory('fedex')"><i class="fas fa-save"></i> Save</button>
           </div>
         </div>
 
