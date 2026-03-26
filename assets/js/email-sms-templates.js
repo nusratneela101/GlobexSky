@@ -1,30 +1,14 @@
 /**
  * email-sms-templates.js
- * Email/SMS Template Management — CRUD operations and page logic
+ * Email/SMS Template Management — localStorage-based CRUD and page logic
  * for pages/admin/email-sms-templates.html
  */
 
-const TEMPLATES_API = '/api/v1/templates';
-const getToken = () => localStorage.getItem('token') || '';
+// ─── Storage key ──────────────────────────────────────────────────────────────
+const LS_KEY = 'globexsky_email_sms_templates';
 
-// ─── Supported template categories ───────────────────────────────────────────
-const TEMPLATE_CATEGORIES = [
-  'Order Confirmation',
-  'Shipping',
-  'Delivery',
-  'Welcome',
-  'Password Reset',
-  'Account Verification',
-  'Promotion',
-  'Newsletter',
-  'Payment',
-  'Refund',
-  'Support',
-  'Other',
-];
-
-// ─── Available template variables ────────────────────────────────────────────
-const TEMPLATE_VARIABLES = [
+// ─── Registered template variables ───────────────────────────────────────────
+const ALL_VARIABLES = [
   { name: 'customer_name',      desc: 'Full name of the customer' },
   { name: 'first_name',         desc: 'Customer first name' },
   { name: 'last_name',          desc: 'Customer last name' },
@@ -40,621 +24,716 @@ const TEMPLATE_VARIABLES = [
   { name: 'reset_url',          desc: 'Password reset link' },
   { name: 'verification_url',   desc: 'Account verification link' },
   { name: 'unsubscribe_url',    desc: 'Unsubscribe link' },
-  { name: 'platform_name',      desc: 'Platform / brand name' },
+  { name: 'platform_name',      desc: 'Platform/brand name' },
   { name: 'support_url',        desc: 'Support page link' },
   { name: 'year',               desc: 'Current year' },
 ];
 
-// ─── Page state ───────────────────────────────────────────────────────────────
-let _templates   = [];
-let _currentPage = 1;
-let _totalCount  = 0;
-let _editingId   = null;
-let _activeTab   = 'email';
-let _filter      = { search: '', category: '' };
-let _previewTimer = null;
+// ─── Sample data for first-load initialization ────────────────────────────────
+const DEFAULT_TEMPLATES = [
+  {
+    id: 'tpl-default-1',
+    name: 'Order Confirmation',
+    type: 'email',
+    category: 'order_confirmation',
+    subject: 'Your order {{order_id}} has been confirmed!',
+    body: '<p>Hi {{customer_name}},</p><p>Thank you for your order! Your order <strong>{{order_id}}</strong> placed on {{order_date}} has been confirmed.</p><p><strong>Total:</strong> {{currency}} {{amount}}</p><p>We will send you a shipping update once your order is on its way.</p><p>Best regards,<br/>{{platform_name}} Team</p><p style="font-size:.8rem;color:#94a3b8"><a href="{{unsubscribe_url}}">Unsubscribe</a></p>',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    versions: [],
+  },
+  {
+    id: 'tpl-default-2',
+    name: 'Shipping Update',
+    type: 'email',
+    category: 'shipping_update',
+    subject: 'Your order {{order_id}} has shipped!',
+    body: '<p>Hi {{customer_name}},</p><p>Great news! Your order <strong>{{order_id}}</strong> is on its way.</p><p><strong>Tracking number:</strong> {{tracking_number}}</p><p><strong>Estimated delivery:</strong> {{estimated_delivery}}</p><p><strong>Shipping to:</strong> {{shipping_address}}</p><p>Best regards,<br/>{{platform_name}} Team</p>',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    versions: [],
+  },
+  {
+    id: 'tpl-default-3',
+    name: 'Welcome Email',
+    type: 'email',
+    category: 'welcome',
+    subject: 'Welcome to {{platform_name}}, {{first_name}}!',
+    body: '<p>Hi {{first_name}},</p><p>Welcome to <strong>{{platform_name}}</strong>! We are thrilled to have you on board.</p><p>Start exploring our catalog and place your first order today.</p><p>If you have any questions, visit our <a href="{{support_url}}">support center</a>.</p><p>Best regards,<br/>The {{platform_name}} Team</p><p style="font-size:.8rem;color:#94a3b8">© {{year}} {{platform_name}} | <a href="{{unsubscribe_url}}">Unsubscribe</a></p>',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    versions: [],
+  },
+  {
+    id: 'tpl-default-4',
+    name: 'Password Reset',
+    type: 'email',
+    category: 'password_reset',
+    subject: 'Reset your {{platform_name}} password',
+    body: '<p>Hi {{first_name}},</p><p>We received a request to reset your password. Click the button below to create a new password:</p><p><a href="{{reset_url}}" style="background:#0052CC;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;display:inline-block">Reset Password</a></p><p>This link expires in 24 hours. If you did not request this, please ignore this email.</p><p>The {{platform_name}} Team</p>',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    versions: [],
+  },
+  {
+    id: 'tpl-default-5',
+    name: 'Order Confirmation SMS',
+    type: 'sms',
+    category: 'order_confirmation',
+    subject: null,
+    body: 'Hi {{first_name}}, your order {{order_id}} is confirmed! Total: {{currency}} {{amount}}. Track it at {{support_url}}. - {{platform_name}}',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    versions: [],
+  },
+  {
+    id: 'tpl-default-6',
+    name: 'Shipping Update SMS',
+    type: 'sms',
+    category: 'shipping_update',
+    subject: null,
+    body: 'Hi {{first_name}}, your order {{order_id}} has shipped! Tracking: {{tracking_number}}. Estimated delivery: {{estimated_delivery}}. - {{platform_name}}',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    versions: [],
+  },
+  {
+    id: 'tpl-default-7',
+    name: 'Password Reset SMS',
+    type: 'sms',
+    category: 'password_reset',
+    subject: null,
+    body: 'Your {{platform_name}} password reset code is: {{reset_url}}. This code expires in 10 minutes. Do not share it with anyone.',
+    is_active: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    versions: [],
+  },
+];
 
-// ─── Low-level API fetch helper ───────────────────────────────────────────────
+// ─── Sample preview data ──────────────────────────────────────────────────────
+const SAMPLE_DATA = {
+  customer_name:      'Jane Smith',
+  first_name:         'Jane',
+  last_name:          'Smith',
+  email:              'jane@example.com',
+  order_id:           'ORD-20240315',
+  order_date:         'March 15, 2024',
+  amount:             '1,250.00',
+  currency:           'USD',
+  product_name:       'Industrial Widget Pro',
+  tracking_number:    'TRK-9876543210',
+  shipping_address:   '123 Business Ave, New York, NY 10001',
+  estimated_delivery: 'March 20, 2024',
+  reset_url:          'https://globexsky.com/reset?token=abc123',
+  verification_url:   'https://globexsky.com/verify?token=xyz789',
+  unsubscribe_url:    'https://globexsky.com/unsubscribe',
+  platform_name:      'Globex Sky',
+  support_url:        'https://globexsky.com/support',
+  year:               new Date().getFullYear().toString(),
+};
 
-async function apiFetch(path, opts = {}) {
-  const res = await fetch(path, {
-    ...opts,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`,
-      ...opts.headers,
-    },
-  });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.error || json.message || `HTTP ${res.status}`);
-  return json;
+// ─── State ────────────────────────────────────────────────────────────────────
+let templates = [];
+let currentPage = 1;
+let totalTemplates = 0;
+let editingId = null;
+let activeFilter = { type: '', category: '', search: '' };
+let previewDebounceTimer = null;
+
+// ─── UUID generator ───────────────────────────────────────────────────────────
+function generateId() {
+  return 'tpl-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
 }
 
-// ─── Toast helper ─────────────────────────────────────────────────────────────
+// ─── localStorage helpers ─────────────────────────────────────────────────────
+function getAllTemplates() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  } catch (_) {
+    return [];
+  }
+}
 
+function saveAllTemplates(all) {
+  localStorage.setItem(LS_KEY, JSON.stringify(all));
+}
+
+function initDefaultTemplates() {
+  if (localStorage.getItem(LS_KEY) !== null) return;
+  saveAllTemplates(DEFAULT_TEMPLATES);
+}
+
+// ─── Toast notifications ──────────────────────────────────────────────────────
 function showToast(msg, type = 'info') {
-  const el = document.getElementById('est-toast');
+  const el = document.getElementById('te-toast');
   if (!el) return;
-  el.className = `tpl-toast ${type}`;
-  const icon = { success: 'check-circle', error: 'times-circle', warning: 'exclamation-triangle', info: 'info-circle' }[type] || 'info-circle';
-  el.innerHTML = `<i class="fa fa-${icon}"></i> ${escHtml(msg)}`;
+  const icons = { success: 'check-circle', error: 'times-circle', warning: 'exclamation-triangle', info: 'info-circle' };
+  el.className = `te-toast ${type}`;
+  el.innerHTML = `<i class="fa fa-${icons[type] || 'info-circle'}"></i> ${escHtml(msg)}`;
   el.classList.remove('hidden');
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.add('hidden'), 3500);
 }
 
-// ─── Escape HTML (XSS guard) ──────────────────────────────────────────────────
-
+// ─── Escape HTML ──────────────────────────────────────────────────────────────
 function escHtml(str) {
   return String(str)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
-// ─── Friendly date ────────────────────────────────────────────────────────────
-
-function fmtDate(iso) {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+// ─── Apply sample data to template body ──────────────────────────────────────
+function applyVariables(text) {
+  return text.replace(/\{\{(\w+)\}\}/g, (_, key) => SAMPLE_DATA[key] || `{{${key}}}`);
 }
 
 // ─── Load & render template list ─────────────────────────────────────────────
+function loadTemplates(page = 1) {
+  currentPage = page;
+  const PAGE_SIZE = 15;
 
-async function loadTemplates(page = 1) {
-  _currentPage = page;
-  const params = new URLSearchParams({ page, limit: 12, type: _activeTab });
-  if (_filter.search)   params.set('search', _filter.search);
-  if (_filter.category) params.set('category', _filter.category);
+  let all = getAllTemplates();
 
-  try {
-    const data = await apiFetch(`${TEMPLATES_API}?${params}`);
-    _templates  = data.data  ?? [];
-    _totalCount = data.total ?? 0;
-    renderCards();
-    renderPagination(data.total, data.page, data.limit);
-    updateMetrics();
-  } catch (e) {
-    showToast(e.message, 'error');
+  // Apply filters
+  if (activeFilter.type) all = all.filter(t => t.type === activeFilter.type);
+  if (activeFilter.category) all = all.filter(t => t.category === activeFilter.category);
+  if (activeFilter.search) {
+    const q = activeFilter.search.toLowerCase();
+    all = all.filter(t =>
+      t.name.toLowerCase().includes(q) ||
+      (t.subject || '').toLowerCase().includes(q) ||
+      (t.body || '').toLowerCase().includes(q)
+    );
   }
+
+  totalTemplates = all.length;
+  templates = all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  renderTemplateList();
+  renderPagination(totalTemplates, page, PAGE_SIZE);
+
+  // Update metric counters
+  const allForMetrics = getAllTemplates();
+  const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setEl('total-count',  allForMetrics.length);
+  setEl('email-count',  allForMetrics.filter(t => t.type === 'email').length);
+  setEl('sms-count',    allForMetrics.filter(t => t.type === 'sms').length);
+  setEl('active-count', allForMetrics.filter(t => t.is_active).length);
 }
 
-// ─── Render template cards ────────────────────────────────────────────────────
+function renderTemplateList() {
+  const tbody = document.getElementById('template-tbody');
+  if (!tbody) return;
 
-function renderCards() {
-  const grid = document.getElementById('est-grid');
-  if (!grid) return;
-
-  if (_templates.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state" style="grid-column:1/-1">
-        <i class="fas fa-${_activeTab === 'email' ? 'envelope' : 'sms'}"></i>
-        <h3>No ${_activeTab === 'email' ? 'email' : 'SMS'} templates found</h3>
-        <p>Create your first template using the button above.</p>
-      </div>`;
+  if (!templates.length) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="empty-state"><i class="fa fa-envelope-open-text"></i><p>No templates found.</p></div>
+    </td></tr>`;
     return;
   }
 
-  grid.innerHTML = _templates.map((t) => `
-    <div class="template-card" data-id="${t.id}">
-      <div class="template-card-header">
-        <span class="template-card-title">${escHtml(t.name)}</span>
-        <span class="status-dot ${t.is_active ? 'active' : 'inactive'}" title="${t.is_active ? 'Active' : 'Inactive'}"></span>
-      </div>
-      <div class="template-card-meta">
-        <i class="fas fa-tag"></i> ${escHtml(t.category)}
-        ${t.subject ? `<span>·</span><i class="fas fa-heading"></i> ${escHtml(t.subject)}` : ''}
-      </div>
-      <div class="template-card-meta">
-        <i class="fas fa-clock"></i> ${fmtDate(t.updated_at || t.created_at)}
-        ${Array.isArray(t.variables) && t.variables.length ? `<span>·</span><i class="fas fa-code"></i> ${t.variables.length} var${t.variables.length !== 1 ? 's' : ''}` : ''}
-      </div>
-      <div class="template-card-body">${escHtml(stripHtml(t.body || ''))}</div>
-      <div class="template-card-actions">
-        <button class="btn btn-secondary btn-sm" onclick="openEditModal('${t.id}')"><i class="fas fa-edit"></i> Edit</button>
-        <button class="btn btn-secondary btn-sm" onclick="openPreviewModal('${t.id}')"><i class="fas fa-eye"></i> Preview</button>
-        <button class="btn btn-secondary btn-sm" onclick="cloneTemplate('${t.id}')"><i class="fas fa-copy"></i></button>
-        <button class="btn btn-secondary btn-sm" onclick="toggleTemplate('${t.id}', ${!t.is_active})" title="${t.is_active ? 'Disable' : 'Enable'}">
-          <i class="fas fa-${t.is_active ? 'toggle-on' : 'toggle-off'}"></i>
-        </button>
-        <button class="btn btn-danger btn-sm" onclick="deleteTemplate('${t.id}')"><i class="fas fa-trash"></i></button>
-      </div>
-    </div>`).join('');
+  tbody.innerHTML = templates.map((t) => `
+    <tr>
+      <td>
+        <div class="template-name-cell">
+          <span class="template-name">${escHtml(t.name)}</span>
+          <span class="template-category">${escHtml(t.category || '')}</span>
+        </div>
+      </td>
+      <td><span class="badge badge-${t.type}">${t.type === 'email' ? '✉ Email' : '💬 SMS'}</span></td>
+      <td>${escHtml(t.subject || '—')}</td>
+      <td>
+        <span class="badge ${t.is_active ? 'badge-green' : 'badge-gray'}">
+          ${t.is_active ? 'Active' : 'Inactive'}
+        </span>
+      </td>
+      <td>${t.updated_at ? new Date(t.updated_at).toLocaleDateString() : '—'}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-secondary" onclick="openEditModal('${t.id}')"><i class="fa fa-pen"></i></button>
+          <button class="btn btn-sm btn-secondary" onclick="openPreviewModal('${t.id}')"><i class="fa fa-eye"></i></button>
+          <button class="btn btn-sm btn-secondary" onclick="cloneTemplate('${t.id}')"><i class="fa fa-copy"></i></button>
+          <button class="btn btn-sm btn-secondary" onclick="toggleTemplate('${t.id}', ${t.is_active})" title="${t.is_active ? 'Disable' : 'Enable'}">
+            <i class="fa fa-${t.is_active ? 'toggle-on' : 'toggle-off'}"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteTemplate('${t.id}')"><i class="fa fa-trash"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
 }
-
-function stripHtml(html) {
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  return div.textContent || div.innerText || '';
-}
-
-// ─── Pagination ───────────────────────────────────────────────────────────────
 
 function renderPagination(total, page, limit) {
-  const wrap = document.getElementById('est-pagination');
-  if (!wrap) return;
-  const pages = Math.ceil(total / limit) || 1;
-  if (pages <= 1) { wrap.innerHTML = ''; return; }
+  const el = document.getElementById('pagination');
+  if (!el) return;
+  const pages = Math.ceil(total / limit);
+  if (pages <= 1) { el.innerHTML = ''; return; }
 
-  const btns = [];
-  btns.push(`<button class="page-btn" onclick="loadTemplates(${page - 1})" ${page === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`);
+  let html = '';
   for (let i = 1; i <= pages; i++) {
-    btns.push(`<button class="page-btn ${i === page ? 'active' : ''}" onclick="loadTemplates(${i})">${i}</button>`);
+    html += `<button class="btn btn-sm ${i === page ? 'btn-primary' : 'btn-secondary'}" onclick="loadTemplates(${i})">${i}</button>`;
   }
-  btns.push(`<button class="page-btn" onclick="loadTemplates(${page + 1})" ${page === pages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`);
-  wrap.innerHTML = btns.join('');
-}
-
-// ─── Metrics update ───────────────────────────────────────────────────────────
-
-async function updateMetrics() {
-  try {
-    const [emailData, smsData] = await Promise.all([
-      apiFetch(`${TEMPLATES_API}?type=email&limit=1`),
-      apiFetch(`${TEMPLATES_API}?type=sms&limit=1`),
-    ]);
-    const [activeEmail] = await Promise.all([
-      apiFetch(`${TEMPLATES_API}?type=email&is_active=true&limit=1`),
-    ]);
-
-    setMetric('metric-email', emailData.total ?? 0);
-    setMetric('metric-sms', smsData.total ?? 0);
-    setMetric('metric-active', (activeEmail.total ?? 0));
-    setMetric('metric-total', (emailData.total ?? 0) + (smsData.total ?? 0));
-  } catch (_) { /* metrics are non-critical */ }
-}
-
-function setMetric(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
-
-// ─── Tab switching ────────────────────────────────────────────────────────────
-
-function switchTab(type) {
-  _activeTab = type;
-  _currentPage = 1;
-  document.querySelectorAll('.tpl-tab-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === type));
-  loadTemplates(1);
+  el.innerHTML = html;
 }
 
 // ─── Create / Edit modal ──────────────────────────────────────────────────────
-
 function openCreateModal() {
-  _editingId = null;
-  resetForm();
-  setTypeView(_activeTab);
-  document.getElementById('est-modal-title').textContent = `New ${_activeTab === 'email' ? 'Email' : 'SMS'} Template`;
-  showModal('est-editor-modal');
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'New Template';
+  resetEditorForm();
+  document.getElementById('editor-modal').classList.remove('hidden');
 }
 
-async function openEditModal(id) {
-  try {
-    const { data } = await apiFetch(`${TEMPLATES_API}/${id}`);
-    _editingId = id;
-    fillForm(data);
-    setTypeView(data.type);
-    document.getElementById('est-modal-title').textContent = 'Edit Template';
-    showModal('est-editor-modal');
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
-}
+function openEditModal(id) {
+  const all = getAllTemplates();
+  const t = all.find(x => x.id === id);
+  if (!t) { showToast('Template not found', 'error'); return; }
 
-function resetForm() {
-  document.getElementById('est-form')?.reset();
-  const richEditor = document.getElementById('est-rich-editor');
-  if (richEditor) richEditor.innerHTML = '';
-  const counter = document.getElementById('est-sms-counter');
-  if (counter) { counter.querySelector('.char-count').textContent = '0 chars'; counter.querySelector('.segment-count').textContent = '1 segment'; counter.className = 'sms-counter'; }
-  clearPreview();
-}
-
-function fillForm(t) {
-  setVal('est-name', t.name);
-  setVal('est-category', t.category);
-  setVal('est-type', t.type);
-  setVal('est-subject', t.subject || '');
-  setVal('est-active', t.is_active);
-
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit Template';
+  document.getElementById('tpl-name').value = t.name;
+  document.getElementById('tpl-type').value = t.type;
+  document.getElementById('tpl-category').value = t.category || '';
+  document.getElementById('tpl-subject').value = t.subject || '';
+  document.getElementById('tpl-change-note').value = '';
+  onTypeChange(t.type);
   if (t.type === 'sms') {
-    setVal('est-sms-body', t.body || '');
+    document.getElementById('tpl-sms-body').value = t.body || '';
     updateSmsCounter();
   } else {
-    const editor = document.getElementById('est-rich-editor');
-    if (editor) editor.innerHTML = t.body || '';
+    document.getElementById('tpl-rich-editor').innerHTML = t.body || '';
   }
   schedulePreview();
+  document.getElementById('editor-modal').classList.remove('hidden');
 }
 
-function setVal(id, val) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if (el.type === 'checkbox') el.checked = !!val;
-  else el.value = val ?? '';
+function closeEditorModal() {
+  document.getElementById('editor-modal').classList.add('hidden');
+  editingId = null;
 }
 
-function setTypeView(type) {
-  const emailSection = document.getElementById('est-email-section');
-  const smsSection   = document.getElementById('est-sms-section');
-  if (emailSection) emailSection.style.display = type === 'email' ? '' : 'none';
-  if (smsSection)   smsSection.style.display   = type === 'sms'   ? '' : 'none';
-  setVal('est-type', type);
+function resetEditorForm() {
+  document.getElementById('tpl-name').value = '';
+  document.getElementById('tpl-type').value = 'email';
+  document.getElementById('tpl-category').value = '';
+  document.getElementById('tpl-subject').value = '';
+  document.getElementById('tpl-change-note').value = '';
+  document.getElementById('tpl-rich-editor').innerHTML = '';
+  document.getElementById('tpl-sms-body').value = '';
+  onTypeChange('email');
+  const previewEl = document.getElementById('inline-preview');
+  if (previewEl) previewEl.innerHTML = '<div class="preview-body" style="color:#94a3b8;text-align:center;padding-top:60px"><i class="fas fa-eye" style="font-size:2rem;display:block;margin-bottom:8px"></i>Preview will appear here as you type…</div>';
 }
 
-// ─── Save template (create or update) ────────────────────────────────────────
+function onTypeChange(typeVal) {
+  const type = typeVal || document.getElementById('tpl-type').value;
+  document.getElementById('subject-row').style.display = type === 'email' ? '' : 'none';
+  document.getElementById('email-editor-wrap').style.display = type === 'email' ? '' : 'none';
+  document.getElementById('sms-editor-wrap').style.display = type === 'sms' ? '' : 'none';
+}
 
-async function saveTemplate() {
-  const type     = document.getElementById('est-type')?.value || _activeTab;
-  const name     = document.getElementById('est-name')?.value?.trim();
-  const category = document.getElementById('est-category')?.value?.trim();
-  const subject  = document.getElementById('est-subject')?.value?.trim();
-  const isActive = document.getElementById('est-active')?.checked ?? true;
+function saveTemplate() {
+  const type = document.getElementById('tpl-type').value;
+  const body = type === 'sms'
+    ? document.getElementById('tpl-sms-body').value
+    : document.getElementById('tpl-rich-editor').innerHTML;
 
-  let body = '';
-  if (type === 'sms') {
-    body = document.getElementById('est-sms-body')?.value || '';
+  const payload = {
+    name: document.getElementById('tpl-name').value.trim(),
+    type,
+    category: document.getElementById('tpl-category').value.trim(),
+    subject: document.getElementById('tpl-subject').value.trim() || null,
+    body,
+    change_note: document.getElementById('tpl-change-note').value.trim(),
+  };
+
+  if (!payload.name || !payload.category || !payload.body) {
+    showToast('Please fill in all required fields.', 'error');
+    return;
+  }
+  if (type === 'email' && !payload.subject) {
+    showToast('Subject is required for email templates.', 'error');
+    return;
+  }
+
+  const all = getAllTemplates();
+  const now = new Date().toISOString();
+
+  if (editingId) {
+    const idx = all.findIndex(x => x.id === editingId);
+    if (idx === -1) { showToast('Template not found.', 'error'); return; }
+    const existing = all[idx];
+    // Save current state as a version before overwriting
+    const versions = existing.versions || [];
+    versions.push({
+      version_number: versions.length + 1,
+      body: existing.body,
+      subject: existing.subject,
+      changed_at: existing.updated_at,
+      change_note: payload.change_note || '',
+    });
+    all[idx] = { ...existing, ...payload, versions, updated_at: now };
+    showToast('Template updated successfully!', 'success');
   } else {
-    body = document.getElementById('est-rich-editor')?.innerHTML || '';
+    const newTpl = {
+      id: generateId(),
+      name: payload.name,
+      type: payload.type,
+      category: payload.category,
+      subject: payload.subject,
+      body: payload.body,
+      is_active: true,
+      created_at: now,
+      updated_at: now,
+      versions: [],
+    };
+    all.unshift(newTpl);
+    showToast('Template created successfully!', 'success');
   }
 
-  if (!name) { showToast('Template name is required', 'error'); return; }
-  if (!category) { showToast('Category is required', 'error'); return; }
-  if (!body) { showToast('Template body is required', 'error'); return; }
-  if (type === 'email' && !subject) { showToast('Subject is required for email templates', 'error'); return; }
-
-  const payload = { name, type, category, body, is_active: isActive, ...(type === 'email' && { subject }) };
-
-  try {
-    if (_editingId) {
-      await apiFetch(`${TEMPLATES_API}/${_editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
-      showToast('Template updated', 'success');
-    } else {
-      await apiFetch(TEMPLATES_API, { method: 'POST', body: JSON.stringify(payload) });
-      showToast('Template created', 'success');
-    }
-    closeModal('est-editor-modal');
-    loadTemplates(_currentPage);
-    updateMetrics();
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
-}
-
-// ─── Delete template ──────────────────────────────────────────────────────────
-
-async function deleteTemplate(id) {
-  if (!confirm('Delete this template? This cannot be undone.')) return;
-  try {
-    await apiFetch(`${TEMPLATES_API}/${id}`, { method: 'DELETE' });
-    showToast('Template deleted', 'success');
-    loadTemplates(_currentPage);
-    updateMetrics();
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
-}
-
-// ─── Toggle active state ──────────────────────────────────────────────────────
-
-async function toggleTemplate(id) {
-  try {
-    await apiFetch(`${TEMPLATES_API}/${id}/toggle`, { method: 'PATCH' });
-    showToast('Status updated', 'success');
-    loadTemplates(_currentPage);
-    updateMetrics();
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
-}
-
-// ─── Clone template ───────────────────────────────────────────────────────────
-
-async function cloneTemplate(id) {
-  try {
-    await apiFetch(`${TEMPLATES_API}/${id}/clone`, { method: 'POST' });
-    showToast('Template duplicated', 'success');
-    loadTemplates(_currentPage);
-    updateMetrics();
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
+  saveAllTemplates(all);
+  closeEditorModal();
+  loadTemplates(currentPage);
 }
 
 // ─── Preview modal ────────────────────────────────────────────────────────────
+function openPreviewModal(id) {
+  const all = getAllTemplates();
+  const t = all.find(x => x.id === id);
+  if (!t) { showToast('Template not found.', 'error'); return; }
 
-async function openPreviewModal(id) {
-  try {
-    const [{ data: tpl }, { data: rendered }] = await Promise.all([
-      apiFetch(`${TEMPLATES_API}/${id}`),
-      apiFetch(`${TEMPLATES_API}/${id}/preview`, { method: 'POST', body: '{}' }),
-    ]);
-    const container = document.getElementById('est-preview-content');
-    if (!container) return;
+  document.getElementById('preview-template-name').textContent = t.name;
+  const renderedBody = applyVariables(t.body || '');
+  const renderedSubject = applyVariables(t.subject || '');
 
-    if (tpl.type === 'email') {
-      container.innerHTML = `
-        ${rendered.subject ? `<div class="preview-subject"><strong>Subject:</strong> ${escHtml(rendered.subject)}</div>` : ''}
-        <div class="preview-body">${rendered.body}</div>`;
-    } else {
-      container.innerHTML = `<div class="preview-body" style="font-family:monospace;white-space:pre-wrap;padding:12px">${escHtml(rendered.body)}</div>`;
-    }
-
-    document.getElementById('est-preview-title').textContent = `Preview: ${tpl.name}`;
-    showModal('est-preview-modal');
-  } catch (e) {
-    showToast(e.message, 'error');
+  if (t.type === 'email') {
+    document.getElementById('preview-content').innerHTML = `
+      ${renderedSubject ? `<div class="preview-subject"><strong>Subject:</strong> ${escHtml(renderedSubject)}</div>` : ''}
+      <div class="preview-body">${renderedBody}</div>
+    `;
+  } else {
+    document.getElementById('preview-content').innerHTML = `
+      <div class="preview-body" style="font-family:monospace;white-space:pre-wrap">${escHtml(renderedBody)}</div>
+    `;
   }
+
+  document.getElementById('preview-test-btn').onclick = () => openTestSendModal(id, t.type);
+  document.getElementById('preview-versions-btn').onclick = () => openVersionsModal(id);
+  document.getElementById('preview-modal').classList.remove('hidden');
+}
+
+function closePreviewModal() {
+  document.getElementById('preview-modal').classList.add('hidden');
 }
 
 // ─── Test send modal ──────────────────────────────────────────────────────────
-
-function openTestSendModal(id) {
-  document.getElementById('est-test-send-id').value = id || _editingId || '';
-  document.getElementById('est-test-to').value = '';
-  showModal('est-test-modal');
+function openTestSendModal(id, type) {
+  document.getElementById('test-template-id').value = id;
+  document.getElementById('test-to-label').textContent = type === 'sms' ? 'Phone Number (E.164)' : 'Email Address';
+  document.getElementById('test-to').value = '';
+  document.getElementById('test-modal').classList.remove('hidden');
 }
 
-async function sendTestMessage() {
-  const id = document.getElementById('est-test-send-id')?.value;
-  const to = document.getElementById('est-test-to')?.value?.trim();
-  if (!id || !to) { showToast('Recipient address/number is required', 'error'); return; }
-
-  try {
-    const { message } = await apiFetch(`${TEMPLATES_API}/${id}/test-send`, {
-      method: 'POST',
-      body: JSON.stringify({ to }),
-    });
-    showToast(message || 'Test message sent', 'success');
-    closeModal('est-test-modal');
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
+function closeTestModal() {
+  document.getElementById('test-modal').classList.add('hidden');
 }
 
-// ─── Version history ──────────────────────────────────────────────────────────
+function sendTestMessage() {
+  const id = document.getElementById('test-template-id').value;
+  const to = document.getElementById('test-to').value.trim();
+  if (!to) { showToast('Please enter a recipient.', 'error'); return; }
 
-async function openVersionsModal(id) {
-  try {
-    const vId = id || _editingId;
-    if (!vId) return;
-    const { data: versions } = await apiFetch(`${TEMPLATES_API}/${vId}/versions`);
-    const list = document.getElementById('est-versions-list');
-    if (!list) return;
+  const all = getAllTemplates();
+  const t = all.find(x => x.id === id);
+  if (!t) { showToast('Template not found.', 'error'); return; }
 
-    if (!versions.length) {
-      list.innerHTML = '<p style="color:#64748b;font-size:.85rem">No version history yet.</p>';
-    } else {
-      list.innerHTML = versions.map((v) => `
-        <div class="version-item">
-          <div>
-            <span class="version-badge">v${v.version_number}</span>
-            <span style="margin-left:8px;font-size:.82rem;color:#374151">${escHtml(v.change_note || 'No note')}</span>
-            <div style="font-size:.75rem;color:#94a3b8;margin-top:3px">${fmtDate(v.created_at)}</div>
-          </div>
-          <button class="btn btn-secondary btn-sm" onclick="restoreVersion('${vId}', ${v.version_number})">
-            <i class="fas fa-undo"></i> Restore
-          </button>
-        </div>`).join('');
-    }
-
-    document.getElementById('est-versions-tpl-id').value = vId;
-    showModal('est-versions-modal');
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
+  // Simulate sending (localStorage demo — no actual send)
+  showToast(`Test ${t.type === 'sms' ? 'SMS' : 'email'} sent to ${to} (demo mode)`, 'success');
+  closeTestModal();
 }
 
-async function restoreVersion(templateId, version) {
-  if (!confirm(`Restore template to version ${version}?`)) return;
-  try {
-    await apiFetch(`${TEMPLATES_API}/${templateId}/versions/${version}/restore`, { method: 'POST' });
-    showToast(`Restored to version ${version}`, 'success');
-    closeModal('est-versions-modal');
-    loadTemplates(_currentPage);
-  } catch (e) {
-    showToast(e.message, 'error');
+// ─── Version history modal ────────────────────────────────────────────────────
+function openVersionsModal(id) {
+  const all = getAllTemplates();
+  const t = all.find(x => x.id === id);
+  if (!t) { showToast('Template not found.', 'error'); return; }
+
+  document.getElementById('versions-modal').classList.remove('hidden');
+  document.getElementById('versions-template-id').value = id;
+
+  const versions = t.versions || [];
+  if (!versions.length) {
+    document.getElementById('versions-list').innerHTML = '<li style="padding:20px;color:#94a3b8;text-align:center">No version history yet.</li>';
+    return;
   }
+
+  document.getElementById('versions-list').innerHTML = versions.slice().reverse().map((v) => `
+    <li class="version-item">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <span class="version-number">v${v.version_number}</span>
+        <button class="btn btn-sm btn-secondary" onclick="restoreVersion('${id}', ${v.version_number})">
+          <i class="fa fa-history"></i> Restore
+        </button>
+      </div>
+      <div class="version-meta">${v.changed_at ? new Date(v.changed_at).toLocaleString() : ''}</div>
+      ${v.change_note ? `<div class="version-note">"${escHtml(v.change_note)}"</div>` : ''}
+    </li>
+  `).join('');
+}
+
+function closeVersionsModal() {
+  document.getElementById('versions-modal').classList.add('hidden');
+}
+
+function restoreVersion(templateId, versionNumber) {
+  if (!confirm(`Restore version ${versionNumber}? The current content will be saved as a new version.`)) return;
+
+  const all = getAllTemplates();
+  const idx = all.findIndex(x => x.id === templateId);
+  if (idx === -1) { showToast('Template not found.', 'error'); return; }
+
+  const t = all[idx];
+  const version = (t.versions || []).find(v => v.version_number === versionNumber);
+  if (!version) { showToast('Version not found.', 'error'); return; }
+
+  // Save current state as new version
+  const versions = t.versions || [];
+  versions.push({
+    version_number: versions.length + 1,
+    body: t.body,
+    subject: t.subject,
+    changed_at: t.updated_at,
+    change_note: `Restored from v${versionNumber}`,
+  });
+
+  all[idx] = { ...t, body: version.body, subject: version.subject, versions, updated_at: new Date().toISOString() };
+  saveAllTemplates(all);
+  showToast(`Restored to version ${versionNumber}`, 'success');
+  closeVersionsModal();
+  loadTemplates(currentPage);
+}
+
+// ─── Clone ────────────────────────────────────────────────────────────────────
+function cloneTemplate(id) {
+  if (!confirm('Create a copy of this template?')) return;
+  const all = getAllTemplates();
+  const t = all.find(x => x.id === id);
+  if (!t) { showToast('Template not found.', 'error'); return; }
+
+  const now = new Date().toISOString();
+  const clone = {
+    ...t,
+    id: generateId(),
+    name: `Copy of ${t.name}`,
+    is_active: false,
+    versions: [],
+    created_at: now,
+    updated_at: now,
+  };
+  all.unshift(clone);
+  saveAllTemplates(all);
+  showToast('Template cloned!', 'success');
+  loadTemplates(currentPage);
+}
+
+// ─── Toggle active ────────────────────────────────────────────────────────────
+function toggleTemplate(id, currentActive) {
+  const all = getAllTemplates();
+  const idx = all.findIndex(x => x.id === id);
+  if (idx === -1) { showToast('Template not found.', 'error'); return; }
+  all[idx].is_active = !currentActive;
+  all[idx].updated_at = new Date().toISOString();
+  saveAllTemplates(all);
+  showToast(`Template ${currentActive ? 'disabled' : 'enabled'}`, 'success');
+  loadTemplates(currentPage);
+}
+
+// ─── Delete ───────────────────────────────────────────────────────────────────
+function deleteTemplate(id) {
+  if (!confirm('Delete this template? This action cannot be undone.')) return;
+  const all = getAllTemplates().filter(x => x.id !== id);
+  saveAllTemplates(all);
+  showToast('Template deleted.', 'success');
+  loadTemplates(currentPage);
+}
+
+// ─── Export templates as JSON ─────────────────────────────────────────────────
+function exportTemplates() {
+  const all = getAllTemplates();
+  const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `globexsky-templates-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast(`Exported ${all.length} templates`, 'success');
+}
+
+// ─── Import templates from JSON ───────────────────────────────────────────────
+function importTemplates() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (!Array.isArray(imported)) throw new Error('Invalid format: expected an array');
+        const all = getAllTemplates();
+        let added = 0;
+        imported.forEach(t => {
+          if (!t.id || !t.name || !t.type || !t.body) return;
+          if (!all.find(x => x.id === t.id)) {
+            all.push({ ...t, versions: t.versions || [] });
+            added++;
+          }
+        });
+        saveAllTemplates(all);
+        showToast(`Imported ${added} new template(s)`, 'success');
+        loadTemplates(1);
+      } catch (err) {
+        showToast('Import failed: ' + err.message, 'error');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 }
 
 // ─── Rich text toolbar commands ───────────────────────────────────────────────
-
-function execCmd(cmd, val = null) {
-  document.getElementById('est-rich-editor')?.focus();
-  document.execCommand(cmd, false, val);
+function execFormat(cmd, value = null) {
+  document.execCommand(cmd, false, value);
+  document.getElementById('tpl-rich-editor').focus();
   schedulePreview();
 }
 
-function insertLink() {
-  const url = prompt('Enter URL:', 'https://');
-  if (url) execCmd('createLink', url);
-}
-
-function insertImage() {
-  const url = prompt('Enter image URL:', 'https://');
-  if (url) execCmd('insertImage', url);
-}
-
 // ─── Variable insertion ───────────────────────────────────────────────────────
-
-function insertVariable(name) {
-  const type = document.getElementById('est-type')?.value || _activeTab;
-  const tag  = `{{${name}}}`;
-
+function insertVariable(varName) {
+  const tag = `{{${varName}}}`;
+  const type = document.getElementById('tpl-type').value;
   if (type === 'sms') {
-    const ta = document.getElementById('est-sms-body');
-    if (!ta) return;
-    const pos = ta.selectionStart ?? ta.value.length;
-    ta.value = ta.value.slice(0, pos) + tag + ta.value.slice(pos);
-    ta.selectionStart = ta.selectionEnd = pos + tag.length;
+    const ta = document.getElementById('tpl-sms-body');
+    const start = ta.selectionStart;
+    ta.value = ta.value.slice(0, start) + tag + ta.value.slice(ta.selectionEnd);
+    ta.selectionStart = ta.selectionEnd = start + tag.length;
     ta.focus();
     updateSmsCounter();
   } else {
-    const ed = document.getElementById('est-rich-editor');
-    if (!ed) return;
-    ed.focus();
-    document.execCommand('insertText', false, tag);
+    const editor = document.getElementById('tpl-rich-editor');
+    editor.focus();
+    document.execCommand('insertHTML', false,
+      `<span class="variable-tag" contenteditable="false">${escHtml(tag)}</span>&nbsp;`);
   }
   schedulePreview();
 }
 
-// ─── SMS character / segment counter ─────────────────────────────────────────
-
+// ─── SMS character counter ────────────────────────────────────────────────────
 function updateSmsCounter() {
-  const body = document.getElementById('est-sms-body')?.value || '';
-  const len  = body.length;
+  const text = document.getElementById('tpl-sms-body')?.value || '';
+  const len = text.length;
   const charsPerSeg = len <= 160 ? 160 : 153;
-  const segments    = len === 0 ? 1 : Math.ceil(len / charsPerSeg);
+  const segments = len === 0 ? 1 : Math.ceil(len / charsPerSeg);
 
-  const counter = document.getElementById('est-sms-counter');
+  const counter = document.getElementById('sms-counter');
   if (!counter) return;
-  counter.querySelector('.char-count').textContent    = `${len} chars`;
-  counter.querySelector('.segment-count').textContent = `${segments} segment${segments !== 1 ? 's' : ''}`;
-  counter.className = `sms-counter${len > 306 ? ' danger' : len > 160 ? ' warn' : ''}`;
+  counter.querySelector('.char-count').textContent = `${len} chars`;
+  counter.querySelector('.segment-count').textContent = `${segments} segment${segments > 1 ? 's' : ''}`;
+  counter.className = `sms-counter ${len > 306 ? 'danger' : len > 160 ? 'warn' : ''}`;
 }
 
-// ─── Live preview (debounced) ─────────────────────────────────────────────────
-
+// ─── Live preview (debounced, local rendering) ────────────────────────────────
 function schedulePreview() {
-  clearTimeout(_previewTimer);
-  _previewTimer = setTimeout(updateInlinePreview, 600);
+  clearTimeout(previewDebounceTimer);
+  previewDebounceTimer = setTimeout(updateInlinePreview, 400);
 }
 
-async function updateInlinePreview() {
-  const type    = document.getElementById('est-type')?.value || _activeTab;
-  const subject = document.getElementById('est-subject')?.value || '';
-  const body    = type === 'sms'
-    ? document.getElementById('est-sms-body')?.value
-    : document.getElementById('est-rich-editor')?.innerHTML;
-  if (!body) { clearPreview(); return; }
+function updateInlinePreview() {
+  const type = document.getElementById('tpl-type')?.value;
+  const body = type === 'sms'
+    ? document.getElementById('tpl-sms-body')?.value
+    : document.getElementById('tpl-rich-editor')?.innerHTML;
+  const subject = document.getElementById('tpl-subject')?.value;
+  const previewEl = document.getElementById('inline-preview');
+  if (!previewEl) return;
 
-  try {
-    const { data } = await apiFetch(`${TEMPLATES_API}/preview-raw`, {
-      method: 'POST',
-      body: JSON.stringify({ body, subject }),
-    });
-    const panel = document.getElementById('est-inline-preview');
-    if (!panel) return;
+  if (!body) {
+    previewEl.innerHTML = '<div class="preview-body" style="color:#94a3b8;text-align:center;padding-top:60px"><i class="fas fa-eye" style="font-size:2rem;display:block;margin-bottom:8px"></i>Preview will appear here as you type…</div>';
+    return;
+  }
 
-    if (type === 'email') {
-      panel.innerHTML = `
-        ${data.subject ? `<div class="preview-subject"><strong>Subject:</strong> ${escHtml(data.subject)}</div>` : ''}
-        <div class="preview-body">${data.body}</div>`;
-    } else {
-      panel.innerHTML = `<div class="preview-body" style="font-family:monospace;white-space:pre-wrap">${escHtml(data.body)}</div>`;
-    }
-  } catch (_) { /* ignore preview errors */ }
+  const renderedBody = applyVariables(body);
+  const renderedSubject = applyVariables(subject || '');
+
+  if (type === 'email') {
+    previewEl.innerHTML = `
+      ${renderedSubject ? `<div class="preview-subject"><strong>Subject:</strong> ${escHtml(renderedSubject)}</div>` : ''}
+      <div class="preview-body">${renderedBody}</div>
+    `;
+  } else {
+    previewEl.innerHTML = `<div class="preview-body" style="font-family:monospace;white-space:pre-wrap;padding:16px">${escHtml(renderedBody)}</div>`;
+  }
 }
 
-function clearPreview() {
-  const panel = document.getElementById('est-inline-preview');
-  if (panel) panel.innerHTML = '';
-}
-
-// ─── Modal helpers ────────────────────────────────────────────────────────────
-
-function showModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = 'flex';
-}
-
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = 'none';
-}
-
-// ─── Build category options ───────────────────────────────────────────────────
-
-function buildCategoryOptions(selectId, includeAll = false) {
-  const el = document.getElementById(selectId);
-  if (!el) return;
-  const allOpt = includeAll ? '<option value="">All Categories</option>' : '<option value="">Select category…</option>';
-  el.innerHTML = allOpt + TEMPLATE_CATEGORIES.map((c) => `<option value="${escHtml(c)}">${escHtml(c)}</option>`).join('');
+// ─── Filter/search handlers ───────────────────────────────────────────────────
+function applyFilters() {
+  activeFilter.type = document.getElementById('filter-type')?.value || '';
+  activeFilter.category = document.getElementById('filter-category')?.value || '';
+  activeFilter.search = document.getElementById('filter-search')?.value || '';
+  loadTemplates(1);
 }
 
 // ─── Build variable chips ─────────────────────────────────────────────────────
-
 function buildVariableChips() {
-  const wrap = document.getElementById('est-variable-chips');
-  if (!wrap) return;
-  wrap.innerHTML = TEMPLATE_VARIABLES.map((v) =>
-    `<button class="variable-chip" title="${escHtml(v.desc)}" onclick="insertVariable('${v.name}')">{{${v.name}}}</button>`
+  const container = document.getElementById('variable-chips');
+  if (!container) return;
+  container.innerHTML = ALL_VARIABLES.map((v) =>
+    `<button class="variable-tag-chip" title="${escHtml(v.desc)}" onclick="insertVariable('${v.name}')">
+      <i class="fa fa-at"></i> ${v.name}
+    </button>`
   ).join('');
 }
 
-// ─── Filters ──────────────────────────────────────────────────────────────────
-
-function applyFilters() {
-  _filter.search   = document.getElementById('est-search')?.value  || '';
-  _filter.category = document.getElementById('est-filter-cat')?.value || '';
-  loadTemplates(1);
-}
-
-// ─── Initialisation ───────────────────────────────────────────────────────────
-
+// ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Populate dynamic dropdowns
-  buildCategoryOptions('est-category');
-  buildCategoryOptions('est-filter-cat', true);
+  initDefaultTemplates();
   buildVariableChips();
-
-  // Load initial data
   loadTemplates(1);
-  updateMetrics();
 
-  // Tab buttons
-  document.querySelectorAll('.tpl-tab-btn').forEach((btn) => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-  });
-
-  // Filter events
-  let searchTimer;
-  document.getElementById('est-search')?.addEventListener('input', () => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(applyFilters, 400);
-  });
-  document.getElementById('est-filter-cat')?.addEventListener('change', applyFilters);
-
-  // Type switcher inside form
-  document.getElementById('est-type')?.addEventListener('change', (e) => setTypeView(e.target.value));
-
-  // SMS counter + live preview
-  document.getElementById('est-sms-body')?.addEventListener('input', () => {
+  // SMS counter
+  document.getElementById('tpl-sms-body')?.addEventListener('input', () => {
     updateSmsCounter();
     schedulePreview();
   });
 
   // Rich editor live preview
-  document.getElementById('est-rich-editor')?.addEventListener('input', schedulePreview);
+  document.getElementById('tpl-rich-editor')?.addEventListener('input', schedulePreview);
+
+  // Type switcher
+  document.getElementById('tpl-type')?.addEventListener('change', (e) => onTypeChange(e.target.value));
 
   // Subject live preview
-  document.getElementById('est-subject')?.addEventListener('input', schedulePreview);
+  document.getElementById('tpl-subject')?.addEventListener('input', schedulePreview);
 
-  // Modal close on overlay click
-  document.querySelectorAll('.tpl-modal-overlay').forEach((overlay) => {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.style.display = 'none';
-    });
+  // Search input debounce
+  let searchTimer;
+  document.getElementById('filter-search')?.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilters, 400);
   });
-});
 
-// ─── Global exports (called by inline HTML event handlers) ───────────────────
-window.ESTPage = {
-  loadTemplates,
-  openCreateModal,
-  openEditModal,
-  saveTemplate,
-  deleteTemplate,
-  toggleTemplate,
-  cloneTemplate,
-  openPreviewModal,
-  openTestSendModal,
-  sendTestMessage,
-  openVersionsModal,
-  restoreVersion,
-  insertVariable,
-  execCmd,
-  insertLink,
-  insertImage,
-  switchTab,
-  applyFilters,
-  closeModal,
-};
+  // Filter dropdowns
+  document.getElementById('filter-type')?.addEventListener('change', applyFilters);
+  document.getElementById('filter-category')?.addEventListener('change', applyFilters);
+});

@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="../../assets/css/main.css"/>
-  <link rel="stylesheet" href="../../assets/css/template-editor.css"/>
+  <link rel="stylesheet" href="../../assets/css/email-sms-templates.css"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
@@ -163,6 +163,12 @@
           <span class="admin-card-title">All Templates</span>
           <button class="btn btn-primary" onclick="openCreateModal()">
             <i class="fas fa-plus"></i> New Template
+          </button>
+          <button class="btn btn-secondary" onclick="exportTemplates()" title="Export all templates as JSON">
+            <i class="fas fa-file-export"></i> Export
+          </button>
+          <button class="btn btn-secondary" onclick="importTemplates()" title="Import templates from JSON">
+            <i class="fas fa-file-import"></i> Import
           </button>
         </div>
 
@@ -402,21 +408,8 @@
 <!-- Toast -->
 <div class="te-toast hidden" id="te-toast"></div>
 
-<script src="../../assets/js/template-editor.js"></script>
+<script src="../../assets/js/email-sms-templates.js"></script>
 <script>
-  // Update sidebar metrics once templates are loaded
-  const _origLoad = loadTemplates;
-  async function loadTemplates(page) {
-    await _origLoad(page);
-    updateMetricCounts();
-  }
-
-  function updateMetricCounts() {
-    document.getElementById('email-count').textContent = templates.filter(t => t.type === 'email').length;
-    document.getElementById('sms-count').textContent = templates.filter(t => t.type === 'sms').length;
-    document.getElementById('active-count').textContent = templates.filter(t => t.is_active).length;
-  }
-
   function insertLink() {
     const url = prompt('Enter URL:');
     if (url) execFormat('createLink', url);
