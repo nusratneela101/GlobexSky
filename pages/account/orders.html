@@ -153,7 +153,7 @@
       </div>
 
       <!-- Orders List -->
-      <div id="orders-list">
+      <div id="orders-list" data-dynamic="true">
 
         <!-- Order 1 -->
         <div class="order-row" data-status="shipped">
@@ -354,6 +354,8 @@
 </footer>
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
 <script>
   document.getElementById('copyright-year').textContent = new Date().getFullYear();
 
@@ -377,5 +379,90 @@
 </script>
 <script src="../../assets/js/navbar.js"></script>
   <script src="../../assets/js/account.js"></script>
+<script>
+  (function () {
+    'use strict';
+
+    function _esc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    var STATUS_BADGE = {
+      shipped:    '<span class="badge-pill badge-blue"><i class="fas fa-truck" style="margin-right:4px"></i>Shipped</span>',
+      delivered:  '<span class="badge-pill badge-green"><i class="fas fa-check-circle" style="margin-right:4px"></i>Delivered</span>',
+      processing: '<span class="badge-pill badge-yellow"><i class="fas fa-spinner fa-spin" style="margin-right:4px"></i>Processing</span>',
+      pending:    '<span class="badge-pill badge-yellow"><i class="fas fa-clock" style="margin-right:4px"></i>Pending</span>',
+      cancelled:  '<span class="badge-pill badge-red"><i class="fas fa-times-circle" style="margin-right:4px"></i>Cancelled</span>',
+    };
+
+    function buildOrderRowHTML(order) {
+      var id       = _esc(order.id || order._id || order.orderNumber || '');
+      var num      = _esc(order.orderNumber || order.number || ('#GS-' + id));
+      var supplier = _esc(order.supplierName || order.vendorName || order.seller || '');
+      var date     = _esc(order.date || order.createdAt || order.orderDate || '');
+      var total    = parseFloat(order.total || order.totalAmount || 0).toFixed(2);
+      var status   = (order.status || 'pending').toLowerCase();
+      var itemCount = parseInt(order.itemCount || (order.items && order.items.length) || 1, 10);
+      var badge    = STATUS_BADGE[status] || STATUS_BADGE.pending;
+      var detailHref = '../../pages/order/details.html?id=' + encodeURIComponent(id);
+
+      return '<div class="order-row" data-status="' + _esc(status) + '">' +
+        '<div class="order-row-header" onclick="toggleDetails(this)">' +
+          '<div class="order-num"><a href="' + detailHref + '">' + num + '</a>' +
+            (supplier ? '<div style="font-size:.72rem;color:#64748b;margin-top:2px">' + supplier + '</div>' : '') +
+          '</div>' +
+          '<div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>' + date + '</div>' +
+          '<div class="order-items"><div class="item-count">' + itemCount + ' item' + (itemCount !== 1 ? 's' : '') + '</div></div>' +
+          '<div class="order-total">$' + total + '</div>' +
+          '<div>' + badge + '</div>' +
+          '<div class="order-actions">' +
+            '<button class="btn btn-sm btn-secondary" onclick="event.stopPropagation()"><i class="fas fa-redo" style="margin-right:4px"></i>Reorder</button>' +
+            '<button class="expand-btn"><i class="fas fa-chevron-down"></i></button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="order-details-panel">' +
+          '<p style="color:#64748b;font-size:.85rem">Loading order details…</p>' +
+        '</div>' +
+      '</div>';
+    }
+
+    window.initOrdersPage = function () {
+      if (!window.ApiService) return;
+
+      var list = document.getElementById('orders-list');
+      if (!list) return;
+
+      list.innerHTML = '<div style="text-align:center;padding:3rem;color:#64748b;">' +
+        '<i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top:1rem">Loading your orders…</p></div>';
+
+      window.ApiService.get('/orders')
+        .then(function (data) {
+          var orders = (data && (data.orders || data.data || data)) || [];
+          if (!Array.isArray(orders) || orders.length === 0) {
+            list.innerHTML = '<div style="text-align:center;padding:3rem;color:#64748b;">' +
+              '<i class="fas fa-box-open fa-3x" style="margin-bottom:1rem;display:block"></i>' +
+              '<h3>No orders yet</h3>' +
+              '<p>Your order history will appear here once you place an order.</p></div>';
+            return;
+          }
+          list.innerHTML = orders.map(buildOrderRowHTML).join('');
+        })
+        .catch(function (err) {
+          if (err && err.status === 401) {
+            window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
+            return;
+          }
+          list.innerHTML = '<div style="text-align:center;padding:2rem;color:#ef4444;">' +
+            '<i class="fas fa-exclamation-circle"></i> Unable to load orders. Please refresh the page.</div>';
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      window.initOrdersPage();
+    });
+  }());
+</script>
 </body>
 </html>
