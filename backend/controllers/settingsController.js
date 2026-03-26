@@ -24,8 +24,8 @@ const SENSITIVE = {
   agora:      new Set(['AGORA_APP_CERTIFICATE']),
   smtp:       new Set(['SMTP_PASS']),
   cloudinary: new Set(['CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']),
-  dhl:        new Set(['DHL_API_SECRET', 'DHL_WEBHOOK_TOKEN']),
-  fedex:      new Set(['FEDEX_CLIENT_SECRET', 'FEDEX_WEBHOOK_SECRET']),
+  dhl:        new Set(['DHL_API_KEY', 'DHL_API_SECRET', 'DHL_WEBHOOK_TOKEN']),
+  fedex:      new Set(['FEDEX_CLIENT_ID', 'FEDEX_CLIENT_SECRET', 'FEDEX_WEBHOOK_SECRET']),
   general:    new Set([]),
 };
 
@@ -290,12 +290,14 @@ async function _testCloudinary(mode) {
 }
 
 async function _testDhl(mode) {
+  // A dummy tracking number used only for connectivity validation.
+  const DUMMY_TRACKING_NUMBER = '1234567890';
   try {
     const apiKey = await getConfig('DHL_API_KEY', 'dhl', mode) || process.env.DHL_API_KEY;
     const baseUrl = await getConfig('DHL_BASE_URL', 'dhl', mode) || process.env.DHL_BASE_URL || 'https://api-mock.dhl.com/mydhlapi';
     if (!apiKey) return { ok: false, message: 'DHL API key not configured.' };
     // Use DHL tracking endpoint as a lightweight connectivity check
-    const response = await fetch(`${baseUrl}/tracking?shipmentTrackingNumber=1234567890`, {
+    const response = await fetch(`${baseUrl}/tracking?shipmentTrackingNumber=${DUMMY_TRACKING_NUMBER}`, {
       headers: { 'DHL-API-Key': apiKey },
     });
     // 200 or 404 both indicate the API is reachable and the key is accepted
