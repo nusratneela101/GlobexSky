@@ -17,10 +17,9 @@
  *   initGateways({ orderId, amount, currency, containerId });
  */
 
-import { API_BASE } from './config.js';
-
 /* ─── Constants ───────────────────────────────────────────────────────── */
-const STRIPE_PUBLISHABLE_KEY = window.GLOBEX_CONFIG?.stripe_publishable_key || '';
+const API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+const STRIPE_PUBLISHABLE_KEY = (window.GlobexConfig && window.GlobexConfig.STRIPE_PUBLISHABLE_KEY) || window.GLOBEX_CONFIG?.stripe_publishable_key || '';
 const PAYPAL_CLIENT_ID       = window.GLOBEX_CONFIG?.paypal_client_id       || '';
 const MAX_RETRY_ATTEMPTS     = 3;
 
