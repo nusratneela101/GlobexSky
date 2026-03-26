@@ -3,6 +3,8 @@
  * AI section: chatbot interface, product recommendations, fraud detection dashboard.
  */
 
+const _AI_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+
 /* ─────────────────────────────────────────────
    CHATBOT
 ───────────────────────────────────────────── */
@@ -69,7 +71,7 @@ function initAIChatbot() {
 
     try {
       const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');
-      const res = await fetch('/api/v1/ai/chat', {
+      const res = await fetch(`${_AI_BASE}/ai/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +124,7 @@ async function initAIRecommendations() {
 
   try {
     const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');
-    const res  = await fetch('/api/v1/ai/recommendations', {
+    const res  = await fetch(`${_AI_BASE}/ai/recommendations`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     const data  = await res.json();
@@ -177,7 +179,7 @@ async function initFraudDetectionDashboard() {
 
   try {
     const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');
-    const res  = await fetch('/api/v1/ai/fraud/dashboard', {
+    const res  = await fetch(`${_AI_BASE}/ai/fraud/dashboard`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     const data = await res.json();
