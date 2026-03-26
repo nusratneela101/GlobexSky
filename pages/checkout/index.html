@@ -630,11 +630,64 @@
             </p>
           </div><!-- /fields-bank -->
 
-          <!-- Dynamic: Cash on Delivery info -->
+          <!-- Dynamic: Cash on Delivery info + Phone Verification -->
           <div class="payment-fields" id="fields-cod">
-            <p style="font-size:.875rem;" data-i18n="checkout.codInfo">
+            <!-- COD availability notice (hidden by default, shown when unavailable) -->
+            <div id="cod-unavailable-notice" style="display:none;background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:.85rem;color:#92400E;">
+              <i class="fas fa-exclamation-triangle" aria-hidden="true" style="margin-right:6px;"></i>
+              <span id="cod-unavailable-msg">COD is not available for this order.</span>
+            </div>
+
+            <!-- COD info banner -->
+            <div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:.875rem;color:#166534;">
               <i class="fas fa-truck" aria-hidden="true" style="color:var(--success);margin-right:.4rem;"></i>
-              Pay with cash when your order is delivered. A small COD handling fee of <strong>$1.50</strong> may apply.
+              Pay with cash when your order is delivered.
+              <span id="cod-surcharge-info"> A COD handling fee of <strong id="cod-fee-display">$1.50</strong> will be added.</span>
+            </div>
+
+            <!-- Phone verification for COD -->
+            <div class="form-group">
+              <label for="cod-phone">
+                <span>Phone Number for COD Verification</span><span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <div style="display:flex;gap:8px;">
+                <input type="tel" id="cod-phone" name="codPhone" class="form-control"
+                  placeholder="+880 1XXXXXXXXX" autocomplete="tel"
+                  pattern="^\+?[0-9\s\-]{7,20}$" style="flex:1;" />
+                <button type="button" id="cod-send-otp" class="btn-secondary" style="white-space:nowrap;padding:0 14px;font-size:.85rem;">
+                  <i class="fas fa-paper-plane" aria-hidden="true"></i> Send OTP
+                </button>
+              </div>
+              <span class="form-error" id="cod-phone-error" role="alert">Please enter a valid phone number.</span>
+            </div>
+
+            <!-- OTP input (shown after OTP is sent) -->
+            <div class="form-group" id="cod-otp-group" style="display:none;">
+              <label for="cod-otp">Enter OTP</label>
+              <div style="display:flex;gap:8px;">
+                <input type="text" id="cod-otp" name="codOtp" class="form-control"
+                  placeholder="6-digit code" inputmode="numeric" pattern="\d{6}" maxlength="6" style="flex:1;letter-spacing:.25em;font-size:1.2rem;text-align:center;" />
+                <button type="button" id="cod-verify-otp" class="btn-primary" style="white-space:nowrap;padding:0 14px;font-size:.85rem;">
+                  <i class="fas fa-check" aria-hidden="true"></i> Verify
+                </button>
+              </div>
+              <p style="font-size:.775rem;color:var(--text-muted);margin-top:4px;">
+                OTP sent to <span id="cod-phone-display"></span>.
+                <button type="button" id="cod-resend-otp" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:.775rem;padding:0;margin-left:4px;">Resend</button>
+              </p>
+              <span class="form-error" id="cod-otp-error" role="alert">Invalid OTP. Please try again.</span>
+            </div>
+
+            <!-- Verified indicator (shown after OTP verified) -->
+            <div id="cod-verified-indicator" style="display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:.875rem;color:#166534;">
+              <i class="fas fa-check-circle" style="margin-right:6px;"></i>
+              Phone verified: <strong id="cod-verified-phone"></strong>
+            </div>
+
+            <!-- COD delivery instructions -->
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:12px;">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+              Please have the exact amount ready at the time of delivery. Our agent will provide a receipt.
             </p>
           </div><!-- /fields-cod -->
 
@@ -1318,6 +1371,183 @@
   /* ── Init ────────────────────────────────────────────────── */
   goToStep(1);
   updateSummary();
+})();
+
+/* ── COD Phone Verification & Availability ─────────────────
+   Handles: OTP send/verify, surcharge display from settings,
+   availability check based on order amount & location.
+   ─────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+
+  var COD_VERIFIED     = false;
+  var COD_OTP_SENT     = false;
+  var COD_MOCK_OTP     = ''; // Stores mock OTP for demo (replace with real API call)
+  var COD_SETTINGS     = { enabled: true, surcharge_fixed: 1.50, surcharge_pct: 2.5, min_order_amount: 0, max_order_amount: 5000 };
+
+  /* Load COD settings from API (non-blocking) */
+  (function loadCodSettings() {
+    var apiBase = (window.API_BASE || '/api/v1') + '/cod/settings';
+    fetch(apiBase)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (json) {
+        if (json && json.success && json.data) {
+          COD_SETTINGS = json.data;
+          updateCodFeeDisplay();
+        }
+      })
+      .catch(function () { /* use defaults */ });
+  })();
+
+  function updateCodFeeDisplay() {
+    var feeEl = document.getElementById('cod-fee-display');
+    var summaryFeeEl = document.getElementById('summary-cod-fee');
+    var fee = (COD_SETTINGS.surcharge_fixed || 1.50);
+    if (feeEl) feeEl.textContent = '$' + fee.toFixed(2);
+    if (summaryFeeEl) summaryFeeEl.textContent = '$' + fee.toFixed(2);
+    // Update global COD_FEE if accessible
+    if (typeof window !== 'undefined') window._COD_FEE = fee;
+  }
+
+  function checkCodAvailability(amount) {
+    if (!COD_SETTINGS.enabled) return { ok: false, msg: 'Cash on Delivery is currently unavailable.' };
+    if (amount < (COD_SETTINGS.min_order_amount || 0)) {
+      return { ok: false, msg: 'COD is not available for orders below $' + COD_SETTINGS.min_order_amount.toFixed(2) + '.' };
+    }
+    if ((COD_SETTINGS.max_order_amount || 0) > 0 && amount > COD_SETTINGS.max_order_amount) {
+      return { ok: false, msg: 'COD is not available for orders above $' + COD_SETTINGS.max_order_amount.toFixed(2) + '.' };
+    }
+    return { ok: true };
+  }
+
+  /* Watch for COD payment method selection */
+  document.addEventListener('change', function (e) {
+    if (e.target && e.target.name === 'payment-method') {
+      if (e.target.value === 'cod') {
+        var subtotalEl = document.getElementById('summary-subtotal');
+      var subtotal = subtotalEl ? parseFloat((subtotalEl.textContent || '0').replace(/[^0-9.]/g, '')) || 0 : 0;
+        var availability = checkCodAvailability(subtotal);
+        var notice = document.getElementById('cod-unavailable-notice');
+        var msg = document.getElementById('cod-unavailable-msg');
+        if (notice && msg) {
+          if (!availability.ok) {
+            notice.style.display = 'block';
+            msg.textContent = availability.msg;
+          } else {
+            notice.style.display = 'none';
+          }
+        }
+        updateCodFeeDisplay();
+      }
+    }
+  });
+
+  /* Send OTP */
+  var sendOtpBtn = document.getElementById('cod-send-otp');
+  if (sendOtpBtn) {
+    sendOtpBtn.addEventListener('click', function () {
+      var phoneInput = document.getElementById('cod-phone');
+      var phoneError = document.getElementById('cod-phone-error');
+      var phone = phoneInput ? phoneInput.value.trim() : '';
+
+      if (!phone || !/^\+?[0-9\s\-]{7,20}$/.test(phone)) {
+        if (phoneError) { phoneError.style.display = 'block'; }
+        return;
+      }
+      if (phoneError) phoneError.style.display = 'none';
+
+      /* Generate a mock 6-digit OTP (replace with real API call) */
+      COD_MOCK_OTP = String(Math.floor(100000 + Math.random() * 900000));
+      COD_OTP_SENT = true;
+
+      var otpGroup = document.getElementById('cod-otp-group');
+      var phoneDisplay = document.getElementById('cod-phone-display');
+      if (otpGroup) otpGroup.style.display = 'block';
+      if (phoneDisplay) phoneDisplay.textContent = phone;
+
+      sendOtpBtn.disabled = true;
+      sendOtpBtn.innerHTML = '<i class="fas fa-check"></i> OTP Sent';
+
+      /* Auto-enable resend after 30s */
+      setTimeout(function () {
+        sendOtpBtn.disabled = false;
+        sendOtpBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Resend OTP';
+      }, 30000);
+
+      /* In a real implementation, the OTP is sent via SMS API and never exposed client-side */
+    });
+  }
+
+  /* Verify OTP */
+  var verifyOtpBtn = document.getElementById('cod-verify-otp');
+  if (verifyOtpBtn) {
+    verifyOtpBtn.addEventListener('click', function () {
+      var otpInput = document.getElementById('cod-otp');
+      var otpError = document.getElementById('cod-otp-error');
+      var enteredOtp = otpInput ? otpInput.value.trim() : '';
+
+      if (!COD_OTP_SENT) return;
+
+      /* Demo: accept mock OTP only (replace with real server-side validation) */
+      var valid = (enteredOtp === COD_MOCK_OTP);
+
+      if (!valid) {
+        if (otpError) otpError.style.display = 'block';
+        if (otpInput) { otpInput.value = ''; otpInput.focus(); }
+        return;
+      }
+
+      if (otpError) otpError.style.display = 'none';
+      COD_VERIFIED = true;
+
+      var otpGroup = document.getElementById('cod-otp-group');
+      var verifiedIndicator = document.getElementById('cod-verified-indicator');
+      var verifiedPhone = document.getElementById('cod-verified-phone');
+      var phoneInput = document.getElementById('cod-phone');
+
+      if (otpGroup) otpGroup.style.display = 'none';
+      if (verifiedIndicator) verifiedIndicator.style.display = 'block';
+      if (verifiedPhone && phoneInput) verifiedPhone.textContent = phoneInput.value.trim();
+    });
+  }
+
+  /* Resend OTP */
+  var resendOtpBtn = document.getElementById('cod-resend-otp');
+  if (resendOtpBtn) {
+    resendOtpBtn.addEventListener('click', function () {
+      if (sendOtpBtn && !sendOtpBtn.disabled) sendOtpBtn.click();
+    });
+  }
+
+  /* Block order placement if COD is selected but phone not verified */
+  var placeOrderBtn = document.getElementById('sidebar-place-order');
+  var btnStep2Next = document.getElementById('btn-step2-next');
+
+  function guardCodVerification(e) {
+    var selectedPayment = document.querySelector('input[name="payment-method"]:checked');
+    if (selectedPayment && selectedPayment.value === 'cod' && !COD_VERIFIED) {
+      e.preventDefault();
+      e.stopPropagation();
+      var otpGroup = document.getElementById('cod-otp-group');
+      if (!COD_OTP_SENT) {
+        var phoneInput = document.getElementById('cod-phone');
+        if (phoneInput) phoneInput.focus();
+        if (sendOtpBtn) sendOtpBtn.classList.add('btn-primary');
+      } else if (otpGroup) {
+        otpGroup.style.display = 'block';
+        var otpInput = document.getElementById('cod-otp');
+        if (otpInput) otpInput.focus();
+      }
+      return false;
+    }
+  }
+
+  if (placeOrderBtn) placeOrderBtn.addEventListener('click', guardCodVerification, true);
+  if (btnStep2Next) btnStep2Next.addEventListener('click', function (e) {
+    var selectedPayment = document.querySelector('input[name="payment-method"]:checked');
+    if (selectedPayment && selectedPayment.value === 'cod') guardCodVerification(e);
+  }, true);
+
 })();
 </script>
 

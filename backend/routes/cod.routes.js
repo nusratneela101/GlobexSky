@@ -27,13 +27,31 @@ router.post(
 router.get(
   '/',
   [
-    query('status').optional().isIn(['pending', 'delivered', 'collected', 'returned', 'flagged']),
+    query('status').optional().isIn(['pending', 'delivered', 'collected', 'returned', 'flagged', 'undelivered', 'redelivery_scheduled']),
     query('flagged').optional().isIn(['true', 'false']),
     query('page').optional().isInt({ min: 1 }),
     query('limit').optional().isInt({ min: 1, max: 100 }),
   ],
   validate,
   ctrl.getCodOrders,
+);
+
+// COD settings — admin only (GET and PUT, defined before /:id routes)
+router.get('/settings', requireAdmin, ctrl.getCodSettings);
+router.put(
+  '/settings',
+  requireAdmin,
+  [
+    body('enabled').optional().isBoolean(),
+    body('surcharge_pct').optional().isFloat({ min: 0, max: 100 }),
+    body('surcharge_fixed').optional().isFloat({ min: 0 }),
+    body('min_order_amount').optional().isFloat({ min: 0 }),
+    body('max_order_amount').optional().isFloat({ min: 0 }),
+    body('allowed_regions').optional().isArray(),
+    body('blocked_regions').optional().isArray(),
+  ],
+  validate,
+  ctrl.updateCodSettings,
 );
 
 // Reconciliation report — admin only
@@ -60,6 +78,32 @@ router.get(
   ctrl.getCodAnalytics,
 );
 
+// Export COD report as CSV — admin only
+router.get(
+  '/export',
+  requireAdmin,
+  [
+    query('start').optional().isISO8601(),
+    query('end').optional().isISO8601(),
+    query('status').optional().isIn(['pending', 'delivered', 'collected', 'returned', 'flagged', 'undelivered']),
+  ],
+  validate,
+  ctrl.exportCodReport,
+);
+
+// Bulk status update — admin only
+router.post(
+  '/bulk-status',
+  requireAdmin,
+  [
+    body('ids').isArray({ min: 1 }).withMessage('ids must be a non-empty array'),
+    body('ids.*').isUUID().withMessage('Each id must be a valid UUID'),
+    body('status').isIn(['pending', 'delivered', 'collected', 'returned', 'flagged', 'undelivered']).withMessage('Invalid status'),
+  ],
+  validate,
+  ctrl.bulkUpdateStatus,
+);
+
 // Confirm delivery — carrier or admin
 router.patch(
   '/:id/confirm-delivery',
@@ -76,6 +120,19 @@ router.patch(
   [param('id').isUUID()],
   validate,
   ctrl.confirmCodCollection,
+);
+
+// Update COD order status — admin only
+router.patch(
+  '/:id/status',
+  requireAdmin,
+  [
+    param('id').isUUID(),
+    body('status').isIn(['pending', 'delivered', 'collected', 'returned', 'flagged', 'undelivered', 'redelivery_scheduled']).withMessage('Invalid status'),
+    body('notes').optional().isString(),
+  ],
+  validate,
+  ctrl.updateCodStatus,
 );
 
 // Flag as fraudulent — admin only
