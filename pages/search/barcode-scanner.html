@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Barcode Scanner | Globex Sky</title>
+  <meta name="description" content="Scan product barcodes or QR codes to instantly search millions of B2B products on Globex Sky."/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/barcode-scanner.css"/>
+</head>
+<body class="barcode-scanner-page">
+
+<!-- ══════════════════════════════════════════
+     PAGE HEADER
+══════════════════════════════════════════ -->
+<header class="bsp-header" role="banner">
+  <button class="bsp-back-btn" id="bsp-back" aria-label="Go back">
+    <i class="fas fa-arrow-left" aria-hidden="true"></i> Back
+  </button>
+  <h1 class="bsp-title">
+    <i class="fas fa-barcode" aria-hidden="true"></i>Barcode Scanner
+  </h1>
+</header>
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════ -->
+<main class="bsp-content" id="bsp-main">
+
+  <!-- Camera scanner area -->
+  <div id="bsp-scanner-container" aria-label="Camera scanner"></div>
+
+  <!-- First-use instructions -->
+  <section class="bsp-instructions" aria-label="How to scan">
+    <h3><i class="fas fa-info-circle" aria-hidden="true"></i> How to scan</h3>
+    <ol>
+      <li><strong>Allow camera access</strong> when the browser prompts you.</li>
+      <li>Hold the barcode or QR code <strong>inside the green frame</strong>.</li>
+      <li>Keep the code <strong>steady and well-lit</strong>; use the torch button in dark environments.</li>
+      <li>The app will <strong>auto-detect</strong> and search the code instantly.</li>
+      <li>Can't scan? Use the <strong>manual entry</strong> field or upload a photo from your gallery.</li>
+    </ol>
+  </section>
+
+  <!-- Recent scans history -->
+  <section class="bsp-recent" aria-label="Recent scans">
+    <div class="bsp-recent-header">
+      <h3><i class="fas fa-history" aria-hidden="true"></i> Recent Scans</h3>
+      <button class="bsp-clear-btn" id="bsp-clear-recent" aria-label="Clear scan history">Clear all</button>
+    </div>
+    <div class="bsp-recent-list" id="bsp-recent-list" role="list">
+      <p class="bsp-recent-empty" id="bsp-recent-empty">No recent scans yet.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/barcode-scanner.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Back button ──────────────────────────────────────────────── */
+  document.getElementById('bsp-back').addEventListener('click', function () {
+    if (history.length > 1) { history.back(); }
+    else { location.href = '../../index.html'; }
+  });
+
+  /* ── Init scanner ─────────────────────────────────────────────── */
+  const scanner = GlobexSky.BarcodeScanner.init('bsp-scanner-container', {
+    autoRedirect: true,
+    searchBasePath: '/pages/search/index.html',
+    vibrate: true,
+    beep: true,
+  });
+
+  scanner.start();
+
+  /* ── Recent scans list ────────────────────────────────────────── */
+  function timeAgo(ts) {
+    const diffMs = Date.now() - ts;
+    const diffMin = Math.round(diffMs / 60000);
+    if (diffMin < 1)  return 'just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffH = Math.round(diffMin / 60);
+    if (diffH < 24)   return `${diffH}h ago`;
+    const diffD = Math.round(diffH / 24);
+    return `${diffD}d ago`;
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderRecentScans() {
+    const listEl  = document.getElementById('bsp-recent-list');
+    const emptyEl = document.getElementById('bsp-recent-empty');
+    const scans   = GlobexSky.BarcodeScanner.recentScans.get();
+
+    if (!scans.length) {
+      if (emptyEl) emptyEl.style.display = '';
+      // Remove any previously rendered items
+      listEl.querySelectorAll('.bsp-recent-item').forEach(el => el.remove());
+      return;
+    }
+
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    // Rebuild list
+    listEl.querySelectorAll('.bsp-recent-item').forEach(el => el.remove());
+    const fragment = document.createDocumentFragment();
+    scans.forEach(function (scan) {
+      const searchUrl = '/pages/search/index.html?q=' + encodeURIComponent(scan.code) + '&source=barcode';
+      const item = document.createElement('a');
+      item.href = searchUrl;
+      item.className = 'bsp-recent-item';
+      item.setAttribute('role', 'listitem');
+      item.setAttribute('aria-label', 'Search for ' + scan.code);
+      item.innerHTML =
+        '<span class="bsp-recent-icon"><i class="fas fa-barcode" aria-hidden="true"></i></span>' +
+        '<span class="bsp-recent-code">' + escHtml(scan.code) + '</span>' +
+        '<span class="bsp-recent-time">' + timeAgo(scan.time) + '</span>';
+      fragment.appendChild(item);
+    });
+    listEl.appendChild(fragment);
+  }
+
+  renderRecentScans();
+
+  /* ── Clear history ────────────────────────────────────────────── */
+  document.getElementById('bsp-clear-recent').addEventListener('click', function () {
+    GlobexSky.BarcodeScanner.recentScans.clear();
+    renderRecentScans();
+  });
+
+  /* ── Clean up camera on page unload ──────────────────────────── */
+  window.addEventListener('beforeunload', function () { scanner.stop(); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { scanner.stop(); } else { scanner.start(); }
+  });
+
+}());
+</script>
+</body>
+</html>
