@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Bulk Import / Export | Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/bulk-import-export.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- ── Sidebar ── -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <i class="fas fa-globe" style="font-size:1.3rem;color:#4da6ff"></i>
+        <span>Globex Sky</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="products.html"><i class="fas fa-boxes"></i><span>Products</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="suppliers.html"><i class="fas fa-building"></i><span>Suppliers</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+        <li><a href="bulk-import-export.html" class="active"><i class="fas fa-file-csv"></i><span>Bulk Import/Export</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        <li><a href="feature-toggles.html"><i class="fas fa-toggle-on"></i><span>Feature Toggles</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="admin-main">
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <span class="admin-page-title">Bulk Import / Export</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">A</div>
+          <span>Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="admin-content">
+      <div class="page-heading">
+        <h1><i class="fas fa-file-csv" style="color:#0052CC;margin-right:8px"></i>Bulk Import / Export (CSV)</h1>
+        <p>Import data from CSV files or export your platform data for backup and analysis.</p>
+      </div>
+
+      <!-- ── Tab navigation ── -->
+      <div class="bie-tabs">
+        <button class="bie-tab-btn active" data-tab="import" onclick="GlobexSky.BulkImportExport.switchTab('import')">
+          <i class="fas fa-file-import"></i> Import
+        </button>
+        <button class="bie-tab-btn" data-tab="export" onclick="GlobexSky.BulkImportExport.switchTab('export')">
+          <i class="fas fa-file-export"></i> Export
+        </button>
+        <button class="bie-tab-btn" data-tab="history" onclick="GlobexSky.BulkImportExport.switchTab('history')">
+          <i class="fas fa-history"></i> History
+        </button>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- ── IMPORT TAB ── -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <div class="bie-tab-content active" id="tab-import">
+
+        <!-- Step 1: Select entity type -->
+        <div class="bie-card">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-layer-group" style="color:#0052CC;margin-right:6px"></i>Step 1 — Select Data Type</span>
+          </div>
+          <div class="entity-selector" id="importEntityBtns">
+            <button class="entity-btn" data-entity="products" onclick="GlobexSky.BulkImportExport.selectImportEntity('products')">
+              <i class="fas fa-box"></i> Products
+            </button>
+            <button class="entity-btn" data-entity="suppliers" onclick="GlobexSky.BulkImportExport.selectImportEntity('suppliers')">
+              <i class="fas fa-building"></i> Suppliers
+            </button>
+            <button class="entity-btn" data-entity="orders" onclick="GlobexSky.BulkImportExport.selectImportEntity('orders')">
+              <i class="fas fa-shopping-bag"></i> Orders
+            </button>
+            <button class="entity-btn" data-entity="customers" onclick="GlobexSky.BulkImportExport.selectImportEntity('customers')">
+              <i class="fas fa-users"></i> Customers
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Upload CSV -->
+        <div class="bie-card">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-cloud-upload-alt" style="color:#0052CC;margin-right:6px"></i>Step 2 — Upload CSV File</span>
+          </div>
+          <div class="drop-zone" id="dropZone">
+            <input type="file" id="csvFileInput" accept=".csv,text/csv"/>
+            <div class="drop-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <div class="drop-zone-title">Drag &amp; drop your CSV file here</div>
+            <div class="drop-zone-hint">or click to browse &nbsp;·&nbsp; Max 10 MB &nbsp;·&nbsp; .csv format</div>
+            <div class="drop-zone-file-name" id="dropZoneFileName"></div>
+          </div>
+        </div>
+
+        <!-- Step 3: Column mapping (hidden until file loaded) -->
+        <div class="bie-card" id="mappingSection" style="display:none">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-columns" style="color:#0052CC;margin-right:6px"></i>Step 3 — Map Columns</span>
+          </div>
+          <p style="font-size:.83rem;color:#64748b;margin-bottom:14px">Match each CSV column to the corresponding system field. Required fields are marked with <strong>*</strong>.</p>
+          <div id="mappingContainer"></div>
+        </div>
+
+        <!-- Step 4: Data preview (hidden until file loaded) -->
+        <div class="bie-card" id="previewSection" style="display:none">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-table" style="color:#0052CC;margin-right:6px"></i>Step 4 — Data Preview</span>
+          </div>
+          <div id="previewContainer"></div>
+        </div>
+
+        <!-- Validation summary (hidden until file loaded) -->
+        <div class="bie-card" id="validationSection" style="display:none">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-clipboard-check" style="color:#0052CC;margin-right:6px"></i>Validation Summary</span>
+          </div>
+          <div class="validation-summary">
+            <div class="vs-card ready">
+              <div class="vs-icon"><i class="fas fa-check-circle"></i></div>
+              <div><div class="vs-value" id="vsReady">0</div><div class="vs-label">Ready to Import</div></div>
+            </div>
+            <div class="vs-card warning">
+              <div class="vs-icon"><i class="fas fa-exclamation-triangle"></i></div>
+              <div><div class="vs-value" id="vsWarnings">0</div><div class="vs-label">Warnings</div></div>
+            </div>
+            <div class="vs-card error">
+              <div class="vs-icon"><i class="fas fa-times-circle"></i></div>
+              <div><div class="vs-value" id="vsErrors">0</div><div class="vs-label">Errors</div></div>
+            </div>
+            <div class="vs-card info">
+              <div class="vs-icon"><i class="fas fa-list-ol"></i></div>
+              <div><div class="vs-value" id="vsTotal">0</div><div class="vs-label">Total Rows</div></div>
+            </div>
+          </div>
+          <ul class="error-list" id="validationIssueList"></ul>
+          <div style="margin-top:16px;display:flex;gap:10px">
+            <button class="btn btn-success" id="startImportBtn" disabled onclick="GlobexSky.BulkImportExport.startImport()">
+              <i class="fas fa-play-circle"></i> Start Import
+            </button>
+          </div>
+        </div>
+
+        <!-- Import progress (hidden until import starts) -->
+        <div class="bie-card" id="importProgressSection" style="display:none">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-spinner fa-spin" style="color:#0052CC;margin-right:6px"></i>Import Progress</span>
+          </div>
+          <div class="import-progress-wrap">
+            <div class="import-progress-bar" id="importProgressBar"></div>
+          </div>
+          <div class="import-progress-label" id="importProgressLabel">Waiting…</div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- ── EXPORT TAB ── -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <div class="bie-tab-content" id="tab-export">
+
+        <!-- Select entity -->
+        <div class="bie-card">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-database" style="color:#059669;margin-right:6px"></i>Select Data Type to Export</span>
+          </div>
+          <div class="entity-selector" id="exportEntityBtns">
+            <button class="entity-btn" data-entity="products" onclick="GlobexSky.BulkImportExport.selectExportEntity('products')">
+              <i class="fas fa-box"></i> Products
+            </button>
+            <button class="entity-btn" data-entity="suppliers" onclick="GlobexSky.BulkImportExport.selectExportEntity('suppliers')">
+              <i class="fas fa-building"></i> Suppliers
+            </button>
+            <button class="entity-btn" data-entity="orders" onclick="GlobexSky.BulkImportExport.selectExportEntity('orders')">
+              <i class="fas fa-shopping-bag"></i> Orders
+            </button>
+            <button class="entity-btn" data-entity="customers" onclick="GlobexSky.BulkImportExport.selectExportEntity('customers')">
+              <i class="fas fa-users"></i> Customers
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters & date range -->
+        <div class="bie-card">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-filter" style="color:#059669;margin-right:6px"></i>Filter / Date Range</span>
+          </div>
+          <div class="export-options-grid">
+            <div class="form-field">
+              <label class="form-label" for="exportDateFrom">Date From</label>
+              <input type="date" class="form-control" id="exportDateFrom"/>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="exportDateTo">Date To</label>
+              <input type="date" class="form-control" id="exportDateTo"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column selection -->
+        <div class="bie-card">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-th-list" style="color:#059669;margin-right:6px"></i>Select Columns to Export</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-secondary btn-sm" onclick="GlobexSky.BulkImportExport.toggleAllExportCols(true)">Select All</button>
+              <button class="btn btn-secondary btn-sm" onclick="GlobexSky.BulkImportExport.toggleAllExportCols(false)">Deselect All</button>
+            </div>
+          </div>
+          <div class="col-check-grid" id="exportColumnList"></div>
+        </div>
+
+        <!-- Export format & download -->
+        <div class="bie-card">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-download" style="color:#059669;margin-right:6px"></i>Export Options</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <label class="col-check-item" style="border:none;padding:0">
+              <input type="checkbox" id="excelCompatCheck" checked/>
+              Excel-compatible (UTF-8 BOM)
+            </label>
+            <button class="btn btn-success" onclick="GlobexSky.BulkImportExport.runExport()">
+              <i class="fas fa-download"></i> Export CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- ── HISTORY TAB ── -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <div class="bie-tab-content" id="tab-history">
+        <div class="bie-card">
+          <div class="bie-card-header">
+            <span class="bie-card-title"><i class="fas fa-history" style="color:#7c3aed;margin-right:6px"></i>Import / Export History</span>
+            <button class="btn btn-danger btn-sm" onclick="GlobexSky.BulkImportExport.clearHistory()">
+              <i class="fas fa-trash-alt"></i> Clear History
+            </button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Entity</th>
+                  <th>File</th>
+                  <th>Rows</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <tr><td colspan="7">
+                  <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <p>No import / export operations yet.</p>
+                  </div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="bie-toast" id="bieToast"></div>
+
+<!-- PapaParse CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<!-- Bulk Import/Export JS -->
+<script src="../../assets/js/bulk-import-export.js"></script>
+</body>
+</html>
