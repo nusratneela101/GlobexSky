@@ -43,10 +43,11 @@ export default class Meeting extends BaseModel {
   /**
    * Find upcoming meetings (scheduled in the future) for a user,
    * either as host or participant.
-   * @param {string} userId
+   * @param {string} userId - must be a valid UUID
    * @returns {Promise<object[]>}
    */
   static async findUpcoming(userId) {
+    this._assertUUID(userId);
     const now = new Date().toISOString();
     const result = await this.db
       .from(this.tableName)
@@ -56,5 +57,15 @@ export default class Meeting extends BaseModel {
       .or(`host_id.eq.${userId},participant_ids.cs.["${userId}"]`)
       .order('scheduled_at', { ascending: true });
     return this._handle(result);
+  }
+
+  /**
+   * Validate that a value is a UUID; throw if not.
+   * @param {string} value
+   */
+  static _assertUUID(value) {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
+      throw new Error(`Invalid UUID: ${value}`);
+    }
   }
 }

@@ -28,16 +28,27 @@ export default class Dispute extends BaseModel {
 
   /**
    * Find all disputes where the user is either the buyer or the seller.
-   * @param {string} userId
+   * @param {string} userId - must be a valid UUID
    * @returns {Promise<object[]>}
    */
   static async findByUser(userId) {
+    this._assertUUID(userId);
     const result = await this.db
       .from(this.tableName)
       .select('*')
       .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
       .order('created_at', { ascending: false });
     return this._handle(result);
+  }
+
+  /**
+   * Validate that a value is a UUID; throw if not.
+   * @param {string} value
+   */
+  static _assertUUID(value) {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
+      throw new Error(`Invalid UUID: ${value}`);
+    }
   }
 
   /**

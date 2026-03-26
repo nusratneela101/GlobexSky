@@ -69,7 +69,9 @@ export default class LoyaltyPoints extends BaseModel {
    */
   static async redeemPoints(userId, points, description) {
     const balance = await this.getBalance(userId);
-    if (balance < points) throw new Error('Insufficient loyalty points balance.');
+    if (balance < points) {
+      throw new Error(`Insufficient loyalty points balance. Requested: ${points}, Available: ${balance}.`);
+    }
 
     const result = await this.db
       .from(this.tableName)
