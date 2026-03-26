@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Barcode Scanner | Globex Sky</title>
+  <meta name="description" content="Scan product barcodes or QR codes to instantly find B2B products, check prices, and manage your cart on Globex Sky."/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/barcode-scanner.css"/>
+
+  <style>
+    /* ── Page layout ───────────────────────────────────────────────── */
+    body.barcode-scanner-page .bs-page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* ── Scan/Toggle controls ──────────────────────────────────────── */
+    .bs-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .bs-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: #00C9A7;
+      color: #0f172a;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .bs-toggle-btn:hover { background: #00b396; transform: scale(1.03); }
+    .bs-toggle-btn.bs-stop { background: #f87171; color: #fff; }
+    .bs-toggle-btn.bs-stop:hover { background: #ef4444; }
+
+    .bs-formats-badge {
+      font-size: 0.72rem;
+      color: #475569;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .bs-formats-badge span {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 2px 7px;
+    }
+
+    /* ── Product info card ─────────────────────────────────────────── */
+    .bs-product-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(0, 201, 167, 0.4);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: bs-card-appear 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .bs-product-card[hidden] { display: none !important; }
+
+    @keyframes bs-card-appear {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .bs-product-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .bs-product-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .bs-product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .bs-product-img-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 2rem;
+      color: #475569;
+    }
+
+    .bs-product-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bs-product-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin: 0 0 4px;
+      line-height: 1.4;
+    }
+
+    .bs-product-sku {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-family: 'Inter', monospace;
+      margin-bottom: 6px;
+    }
+
+    .bs-product-price {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #00C9A7;
+    }
+
+    .bs-product-price .bs-price-original {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: #64748b;
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+
+    .bs-product-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .bs-detail-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    .bs-detail-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+
+    .bs-detail-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .bs-product-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .bs-btn-cart {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 11px 16px;
+      background: #00C9A7;
+      color: #0f172a;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+
+    .bs-btn-cart:hover { background: #00b396; transform: scale(1.02); }
+
+    .bs-btn-view {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 11px 16px;
+      background: transparent;
+      color: #00C9A7;
+      border: 1.5px solid rgba(0, 201, 167, 0.5);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      text-decoration: none;
+    }
+
+    .bs-btn-view:hover {
+      background: rgba(0, 201, 167, 0.1);
+      border-color: #00C9A7;
+    }
+
+    .bs-product-not-found {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+    }
+
+    .bs-product-not-found[hidden] { display: none !important; }
+
+    .bs-product-not-found i {
+      font-size: 2.5rem;
+      color: #f59e0b;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .bs-product-not-found p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .bs-product-not-found .bs-scanned-raw {
+      display: inline-block;
+      font-family: 'Inter', monospace;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+      margin-top: 8px;
+    }
+
+    /* ── Scan history ──────────────────────────────────────────────── */
+    .bs-history {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bs-history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .bs-history-header h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0;
+    }
+
+    .bs-history-header h3 i { color: #475569; margin-right: 6px; }
+
+    .bs-clear-history-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #64748b;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .bs-clear-history-btn:hover { color: #f87171; border-color: #f87171; }
+
+    .bs-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .bs-history-list::-webkit-scrollbar { width: 4px; }
+    .bs-history-list::-webkit-scrollbar-track { background: transparent; }
+    .bs-history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+    .bs-history-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      text-decoration: none;
+    }
+
+    .bs-history-item:hover {
+      background: rgba(0, 201, 167, 0.08);
+      border-color: rgba(0, 201, 167, 0.3);
+    }
+
+    .bs-history-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #475569;
+      flex-shrink: 0;
+    }
+
+    .bs-history-info { flex: 1; min-width: 0; }
+
+    .bs-history-product-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bs-history-code {
+      font-size: 0.72rem;
+      color: #475569;
+      font-family: 'Inter', monospace;
+    }
+
+    .bs-history-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .bs-history-time {
+      font-size: 0.72rem;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .bs-history-price {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #00C9A7;
+    }
+
+    .bs-history-empty {
+      font-size: 0.85rem;
+      color: #475569;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    /* ── Formats section ───────────────────────────────────────────── */
+    .bs-supported-formats {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+
+    .bs-supported-formats h3 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0 0 10px;
+    }
+
+    .bs-format-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .bs-format-chip {
+      background: rgba(0, 82, 204, 0.15);
+      border: 1px solid rgba(0, 82, 204, 0.3);
+      color: #93c5fd;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    /* ── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      body.barcode-scanner-page .bs-page-wrapper { padding: 16px 12px 48px; gap: 20px; }
+      .bs-product-details { grid-template-columns: 1fr; }
+      .bs-product-actions { flex-direction: column; }
+      .bs-btn-cart, .bs-btn-view { flex: none; width: 100%; }
+      .bs-toggle-row { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (prefers-color-scheme: light) {
+      body.barcode-scanner-page { background: #f8fafc; color: #1e293b; }
+      .bsp-header { background: rgba(248, 250, 252, 0.95); border-bottom-color: rgba(0,0,0,0.08); }
+      .bsp-back-btn { color: #64748b; }
+      .bsp-back-btn:hover { background: rgba(0,0,0,0.06); color: #1e293b; }
+      .bsp-title { color: #1e293b; }
+      .bs-product-card { background: #fff; border-color: rgba(0, 201, 167, 0.4); }
+      .bs-product-name { color: #1e293b; }
+      .bs-product-sku { color: #94a3b8; }
+      .bs-detail-item { background: #f1f5f9; border-color: #e2e8f0; }
+      .bs-detail-label { color: #94a3b8; }
+      .bs-detail-value { color: #1e293b; }
+      .bs-history-item { background: #fff; border-color: #e2e8f0; }
+      .bs-history-product-name { color: #1e293b; }
+      .bs-history-code { color: #94a3b8; }
+      .bs-history-time { color: #94a3b8; }
+      .bs-history-icon { background: #f1f5f9; }
+      .bs-history-header h3 { color: #64748b; }
+      .bs-supported-formats { background: #f1f5f9; border-color: #e2e8f0; }
+      .bs-supported-formats h3 { color: #94a3b8; }
+      .bs-formats-badge span { background: #f1f5f9; border-color: #e2e8f0; color: #64748b; }
+      body.barcode-scanner-page .gs-manual-label { color: #64748b; }
+      body.barcode-scanner-page .gs-manual-input {
+        background: #fff;
+        border-color: #e2e8f0;
+        color: #1e293b;
+      }
+      body.barcode-scanner-page .gs-manual-input:focus { border-color: #0052CC; }
+      .bs-product-not-found { background: #fff; border-color: #e2e8f0; }
+      .bs-product-not-found p { color: #64748b; }
+      .bs-product-not-found .bs-scanned-raw { background: #f1f5f9; color: #1e293b; }
+      .bs-history-empty { color: #94a3b8; }
+    }
+  </style>
+</head>
+<body class="barcode-scanner-page">
+
+<!-- ══════════════════════════════════════════
+     PAGE HEADER
+══════════════════════════════════════════ -->
+<header class="bsp-header" role="banner">
+  <button class="bsp-back-btn" id="bs-back" aria-label="Go back">
+    <i class="fas fa-arrow-left" aria-hidden="true"></i> Back
+  </button>
+  <h1 class="bsp-title">
+    <i class="fas fa-barcode" aria-hidden="true"></i>Barcode Scanner
+  </h1>
+  <a href="../../index.html" class="bsp-back-btn" aria-label="Go to Globex Sky home">
+    <i class="fas fa-home" aria-hidden="true"></i>
+  </a>
+</header>
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════ -->
+<main class="bs-page-wrapper" id="bs-main">
+
+  <!-- ── Start/Stop Toggle ──────────────────────────────────────── -->
+  <div class="bs-toggle-row">
+    <button class="bs-toggle-btn" id="bs-toggle-btn" aria-pressed="false">
+      <i class="fas fa-camera" aria-hidden="true"></i>
+      <span id="bs-toggle-label">Start Scanning</span>
+    </button>
+    <div class="bs-formats-badge" aria-label="Supported formats">
+      <span>EAN-13</span><span>EAN-8</span><span>UPC-A</span>
+      <span>UPC-E</span><span>Code 128</span><span>Code 39</span><span>QR Code</span>
+    </div>
+  </div>
+
+  <!-- ── Camera Scanner Area ────────────────────────────────────── -->
+  <div id="bs-scanner-container" aria-label="Camera barcode scanner"></div>
+
+  <!-- ── Product Info Card ──────────────────────────────────────── -->
+  <div class="bs-product-card" id="bs-product-card" hidden aria-live="polite" aria-label="Scanned product information">
+    <div class="bs-product-header">
+      <div class="bs-product-img-placeholder" id="bs-product-img-wrap" aria-hidden="true">
+        <i class="fas fa-box"></i>
+      </div>
+      <div class="bs-product-meta">
+        <h2 class="bs-product-name" id="bs-product-name">—</h2>
+        <p class="bs-product-sku" id="bs-product-sku">SKU: —</p>
+        <p class="bs-product-price" id="bs-product-price">
+          <span id="bs-price-current">—</span>
+          <span class="bs-price-original" id="bs-price-original" hidden></span>
+        </p>
+      </div>
+    </div>
+    <div class="bs-product-details" id="bs-product-details">
+      <div class="bs-detail-item">
+        <div class="bs-detail-label">Supplier</div>
+        <div class="bs-detail-value" id="bs-detail-supplier">—</div>
+      </div>
+      <div class="bs-detail-item">
+        <div class="bs-detail-label">Category</div>
+        <div class="bs-detail-value" id="bs-detail-category">—</div>
+      </div>
+      <div class="bs-detail-item">
+        <div class="bs-detail-label">MOQ</div>
+        <div class="bs-detail-value" id="bs-detail-moq">—</div>
+      </div>
+      <div class="bs-detail-item">
+        <div class="bs-detail-label">In Stock</div>
+        <div class="bs-detail-value" id="bs-detail-stock">—</div>
+      </div>
+    </div>
+    <div class="bs-product-actions">
+      <button class="bs-btn-cart" id="bs-btn-cart" aria-label="Add product to cart">
+        <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
+      </button>
+      <a class="bs-btn-view" id="bs-btn-view" href="#" aria-label="View product details">
+        <i class="fas fa-external-link-alt" aria-hidden="true"></i> View Product
+      </a>
+    </div>
+  </div>
+
+  <!-- ── Not Found State ────────────────────────────────────────── -->
+  <div class="bs-product-not-found" id="bs-not-found" hidden role="alert">
+    <i class="fas fa-search" aria-hidden="true"></i>
+    <p>No product found for barcode:</p>
+    <span class="bs-scanned-raw" id="bs-not-found-code"></span>
+    <p style="margin-top:8px">
+      <a href="../../pages/search/index.html" id="bs-search-link" style="color:#00C9A7;text-decoration:none;">
+        <i class="fas fa-search" aria-hidden="true"></i> Search on Globex Sky
+      </a>
+    </p>
+  </div>
+
+  <!-- ── Scan History ───────────────────────────────────────────── -->
+  <section class="bs-history" aria-labelledby="bs-history-heading">
+    <div class="bs-history-header">
+      <h3 id="bs-history-heading">
+        <i class="fas fa-history" aria-hidden="true"></i>Scan History
+      </h3>
+      <button class="bs-clear-history-btn" id="bs-clear-history" aria-label="Clear scan history">
+        Clear all
+      </button>
+    </div>
+    <div class="bs-history-list" id="bs-history-list" role="list" aria-label="Recent scans">
+      <p class="bs-history-empty" id="bs-history-empty">No scans yet. Point the camera at a barcode to begin.</p>
+    </div>
+  </section>
+
+  <!-- ── Supported Formats ──────────────────────────────────────── -->
+  <div class="bs-supported-formats">
+    <h3><i class="fas fa-info-circle" aria-hidden="true"></i> Supported Barcode Formats</h3>
+    <div class="bs-format-chips" role="list">
+      <span class="bs-format-chip" role="listitem">EAN-13</span>
+      <span class="bs-format-chip" role="listitem">EAN-8</span>
+      <span class="bs-format-chip" role="listitem">UPC-A</span>
+      <span class="bs-format-chip" role="listitem">UPC-E</span>
+      <span class="bs-format-chip" role="listitem">Code 128</span>
+      <span class="bs-format-chip" role="listitem">Code 39</span>
+      <span class="bs-format-chip" role="listitem">QR Code</span>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/barcode-scanner.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ══════════════════════════════════════════════════
+     MOCK PRODUCT DATABASE
+     In production this would call a backend API.
+  ══════════════════════════════════════════════════ */
+  var PRODUCT_DB = {
+    // EAN-13 examples
+    '4006381333931': {
+      name: 'STABILO Boss Original Highlighter Set (6-Pack)',
+      sku: 'SKU-4006381333931',
+      price: 8.99,
+      originalPrice: 12.50,
+      currency: 'USD',
+      supplier: 'Schwan-STABILO GmbH',
+      category: 'Office Supplies',
+      moq: '50 units',
+      stock: 2400,
+      productId: 'stabilo-boss-6pk',
+    },
+    '5000159407236': {
+      name: 'Cadbury Dairy Milk Chocolate Bar 200g',
+      sku: 'SKU-5000159407236',
+      price: 3.20,
+      originalPrice: null,
+      currency: 'USD',
+      supplier: 'Mondelēz International',
+      category: 'Food & Beverages',
+      moq: '100 units',
+      stock: 5800,
+      productId: 'cadbury-dm-200g',
+    },
+    '8710847993566': {
+      name: 'Philips LED Bulb E27 10W Warm White',
+      sku: 'SKU-8710847993566',
+      price: 4.75,
+      originalPrice: 6.99,
+      currency: 'USD',
+      supplier: 'Signify (Philips Lighting)',
+      category: 'Electrical & Lighting',
+      moq: '200 units',
+      stock: 12000,
+      productId: 'philips-led-e27-10w',
+    },
+    '0012000161155': {
+      name: 'Pepsi Cola 355ml Can (Case of 24)',
+      sku: 'SKU-0012000161155',
+      price: 14.99,
+      originalPrice: 18.00,
+      currency: 'USD',
+      supplier: 'PepsiCo Inc.',
+      category: 'Food & Beverages',
+      moq: '50 cases',
+      stock: 3200,
+      productId: 'pepsi-355ml-24pk',
+    },
+    '0016000275591': {
+      name: 'General Mills Cheerios Cereal 340g',
+      sku: 'SKU-0016000275591',
+      price: 5.49,
+      originalPrice: null,
+      currency: 'USD',
+      supplier: 'General Mills Inc.',
+      category: 'Food & Beverages',
+      moq: '120 units',
+      stock: 4500,
+      productId: 'cheerios-340g',
+    },
+    // UPC-A examples
+    '036000291452': {
+      name: 'Crest 3D White Toothpaste 147g',
+      sku: 'SKU-036000291452',
+      price: 6.20,
+      originalPrice: 8.99,
+      currency: 'USD',
+      supplier: 'Procter & Gamble',
+      category: 'Health & Beauty',
+      moq: '144 units',
+      stock: 9800,
+      productId: 'crest-3dwhite-147g',
+    },
+    '049000042566': {
+      name: 'Coca-Cola Classic 330ml Can (Case of 24)',
+      sku: 'SKU-049000042566',
+      price: 13.99,
+      originalPrice: 16.50,
+      currency: 'USD',
+      supplier: 'The Coca-Cola Company',
+      category: 'Food & Beverages',
+      moq: '50 cases',
+      stock: 7600,
+      productId: 'cocacola-330ml-24pk',
+    },
+    // Code 128 / Code 39 examples
+    'GLOBEX-WIDGET-001': {
+      name: 'Globex Sky Premium Widget Set',
+      sku: 'GSW-001',
+      price: 24.99,
+      originalPrice: 34.99,
+      currency: 'USD',
+      supplier: 'Globex Sky Trading Co.',
+      category: 'Industrial Parts',
+      moq: '10 units',
+      stock: 850,
+      productId: 'globex-widget-001',
+    },
+    'GSBULK-CABLE-5M': {
+      name: 'USB-C to USB-A Cable 5m Heavy Duty',
+      sku: 'GSC-USB5M',
+      price: 3.85,
+      originalPrice: 5.50,
+      currency: 'USD',
+      supplier: 'Shenzhen CableMax Electronics',
+      category: 'Electronics & Accessories',
+      moq: '500 units',
+      stock: 22000,
+      productId: 'cable-usbc-5m',
+    },
+    // QR Code example
+    'https://globexsky.com/products/solar-panel-100w': {
+      name: '100W Monocrystalline Solar Panel',
+      sku: 'GS-SOLAR-100W',
+      price: 89.00,
+      originalPrice: 110.00,
+      currency: 'USD',
+      supplier: 'SunTech Power Co., Ltd.',
+      category: 'Renewable Energy',
+      moq: '5 units',
+      stock: 430,
+      productId: 'solar-panel-100w',
+    },
+  };
+
+  /* ══════════════════════════════════════════════════
+     SCAN HISTORY (localStorage with product names)
+  ══════════════════════════════════════════════════ */
+  var HISTORY_KEY = 'globexsky_bs_history';
+  var MAX_HISTORY = 30;
+
+  var ScanHistory = {
+    get: function () {
+      try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+      catch (_) { return []; }
+    },
+    add: function (entry) {
+      var list = this.get().filter(function (e) { return e.code !== entry.code; });
+      list.unshift(entry);
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, MAX_HISTORY))); }
+      catch (_) {}
+    },
+    clear: function () {
+      try { localStorage.removeItem(HISTORY_KEY); } catch (_) {}
+    },
+  };
+
+  /* ══════════════════════════════════════════════════
+     UTILITIES
+  ══════════════════════════════════════════════════ */
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function timeAgo(ts) {
+    var diffMs  = Date.now() - ts;
+    var diffMin = Math.round(diffMs / 60000);
+    if (diffMin < 1)  return 'just now';
+    if (diffMin < 60) return diffMin + 'm ago';
+    var diffH = Math.round(diffMin / 60);
+    if (diffH < 24)   return diffH + 'h ago';
+    var diffD = Math.round(diffH / 24);
+    return diffD + 'd ago';
+  }
+
+  function formatPrice(price, currency) {
+    try {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD' }).format(price);
+    } catch (_) {
+      return (currency || 'USD') + ' ' + price.toFixed(2);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════
+     PRODUCT LOOKUP
+  ══════════════════════════════════════════════════ */
+  function lookupProduct(code) {
+    return PRODUCT_DB[code] || null;
+  }
+
+  /* ══════════════════════════════════════════════════
+     PRODUCT CARD UI
+  ══════════════════════════════════════════════════ */
+  var productCard   = document.getElementById('bs-product-card');
+  var notFoundEl    = document.getElementById('bs-not-found');
+
+  function showProduct(product, code) {
+    notFoundEl.hidden = true;
+
+    document.getElementById('bs-product-name').textContent = product.name;
+    document.getElementById('bs-product-sku').textContent  = 'SKU: ' + product.sku;
+
+    var priceEl = document.getElementById('bs-price-current');
+    priceEl.textContent = formatPrice(product.price, product.currency);
+
+    var origEl = document.getElementById('bs-price-original');
+    if (product.originalPrice) {
+      origEl.textContent = formatPrice(product.originalPrice, product.currency);
+      origEl.hidden = false;
+    } else {
+      origEl.hidden = true;
+    }
+
+    document.getElementById('bs-detail-supplier').textContent = product.supplier;
+    document.getElementById('bs-detail-category').textContent = product.category;
+    document.getElementById('bs-detail-moq').textContent      = product.moq;
+    document.getElementById('bs-detail-stock').textContent    =
+      product.stock > 0 ? product.stock.toLocaleString() + ' units' : 'Out of stock';
+
+    var viewBtn = document.getElementById('bs-btn-view');
+    viewBtn.href = '../../pages/product/index.html?id=' + encodeURIComponent(product.productId);
+
+    productCard.hidden = false;
+    productCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function showNotFound(code) {
+    productCard.hidden = true;
+    document.getElementById('bs-not-found-code').textContent = code;
+    document.getElementById('bs-search-link').href =
+      '../../pages/search/index.html?q=' + encodeURIComponent(code) + '&source=barcode';
+    notFoundEl.hidden = false;
+    notFoundEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ── Add to Cart ─────────────────────────────────────────────── */
+  var currentProduct = null;
+
+  document.getElementById('bs-btn-cart').addEventListener('click', function () {
+    if (!currentProduct) return;
+    try {
+      var cart = JSON.parse(localStorage.getItem('globexsky_cart') || '[]');
+      var idx  = cart.findIndex(function (i) { return i.sku === currentProduct.sku; });
+      if (idx >= 0) {
+        cart[idx].qty = (cart[idx].qty || 1) + 1;
+      } else {
+        cart.push({
+          sku:      currentProduct.sku,
+          name:     currentProduct.name,
+          price:    currentProduct.price,
+          currency: currentProduct.currency,
+          qty:      1,
+        });
+      }
+      localStorage.setItem('globexsky_cart', JSON.stringify(cart));
+    } catch (_) {}
+
+    /* Visual feedback */
+    var btn = document.getElementById('bs-btn-cart');
+    var orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> Added!';
+    btn.style.background = '#059669';
+    setTimeout(function () {
+      btn.innerHTML = orig;
+      btn.style.background = '';
+    }, 1800);
+  });
+
+  /* ══════════════════════════════════════════════════
+     SCAN HISTORY UI
+  ══════════════════════════════════════════════════ */
+  function renderHistory() {
+    var list    = document.getElementById('bs-history-list');
+    var emptyEl = document.getElementById('bs-history-empty');
+    var entries = ScanHistory.get();
+
+    list.querySelectorAll('.bs-history-item').forEach(function (el) { el.remove(); });
+
+    if (!entries.length) {
+      if (emptyEl) emptyEl.style.display = '';
+      return;
+    }
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    var frag = document.createDocumentFragment();
+    entries.forEach(function (entry) {
+      var item = document.createElement('div');
+      item.className = 'bs-history-item';
+      item.setAttribute('role', 'listitem');
+      item.setAttribute('tabindex', '0');
+      item.setAttribute('aria-label', 'Re-scan ' + escHtml(entry.productName || entry.code));
+
+      item.innerHTML =
+        '<div class="bs-history-icon" aria-hidden="true"><i class="fas fa-barcode"></i></div>' +
+        '<div class="bs-history-info">' +
+          '<div class="bs-history-product-name">' + escHtml(entry.productName || 'Unknown product') + '</div>' +
+          '<div class="bs-history-code">' + escHtml(entry.code) + '</div>' +
+        '</div>' +
+        '<div class="bs-history-right">' +
+          '<span class="bs-history-time">' + timeAgo(entry.time) + '</span>' +
+          (entry.price ? '<span class="bs-history-price">' + escHtml(entry.priceFormatted || '') + '</span>' : '') +
+        '</div>';
+
+      /* Click / keyboard: re-trigger product lookup */
+      function rescan() {
+        handleScanResult(entry.code);
+      }
+      item.addEventListener('click', rescan);
+      item.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); rescan(); }
+      });
+
+      frag.appendChild(item);
+    });
+    list.appendChild(frag);
+  }
+
+  /* ══════════════════════════════════════════════════
+     SCAN RESULT HANDLER
+  ══════════════════════════════════════════════════ */
+  function handleScanResult(code) {
+    var product = lookupProduct(code);
+    currentProduct = product;
+
+    if (product) {
+      showProduct(product, code);
+      ScanHistory.add({
+        code:           code,
+        time:           Date.now(),
+        productName:    product.name,
+        price:          product.price,
+        priceFormatted: formatPrice(product.price, product.currency),
+      });
+    } else {
+      showNotFound(code);
+      ScanHistory.add({ code: code, time: Date.now(), productName: null });
+    }
+    renderHistory();
+  }
+
+  /* ══════════════════════════════════════════════════
+     SCANNER INITIALISATION & TOGGLE
+  ══════════════════════════════════════════════════ */
+  var scanner    = null;
+  var isScanning = false;
+  var toggleBtn  = document.getElementById('bs-toggle-btn');
+  var toggleLabel = document.getElementById('bs-toggle-label');
+
+  function initScanner() {
+    if (scanner) return;
+    scanner = GlobexSky.BarcodeScanner.init('bs-scanner-container', {
+      autoRedirect: false,
+      vibrate:      true,
+      beep:         true,
+      onScanCallback: function (code) {
+        handleScanResult(code);
+        /* Restart scanning after 3 s to allow user to act on result */
+        setTimeout(function () {
+          if (isScanning) scanner.start();
+        }, 3000);
+      },
+    });
+  }
+
+  function startScanning() {
+    initScanner();
+    scanner.start();
+    isScanning = true;
+    toggleBtn.classList.add('bs-stop');
+    toggleBtn.setAttribute('aria-pressed', 'true');
+    toggleLabel.textContent = 'Stop Scanning';
+    toggleBtn.querySelector('i').className = 'fas fa-stop-circle';
+  }
+
+  function stopScanning() {
+    if (scanner) scanner.stop();
+    isScanning = false;
+    toggleBtn.classList.remove('bs-stop');
+    toggleBtn.setAttribute('aria-pressed', 'false');
+    toggleLabel.textContent = 'Start Scanning';
+    toggleBtn.querySelector('i').className = 'fas fa-camera';
+  }
+
+  toggleBtn.addEventListener('click', function () {
+    if (isScanning) { stopScanning(); } else { startScanning(); }
+  });
+
+  /* ── Clear history ───────────────────────────────────────────── */
+  document.getElementById('bs-clear-history').addEventListener('click', function () {
+    ScanHistory.clear();
+    renderHistory();
+  });
+
+  /* ── Back button ─────────────────────────────────────────────── */
+  document.getElementById('bs-back').addEventListener('click', function () {
+    if (document.referrer) { history.back(); }
+    else { location.href = '../../index.html'; }
+  });
+
+  /* ── Cleanup on page leave ───────────────────────────────────── */
+  window.addEventListener('beforeunload', function () { if (scanner) scanner.stop(); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { if (scanner && isScanning) scanner.stop(); }
+    else { if (isScanning) scanner.start(); }
+  });
+
+  /* ── Initial render ──────────────────────────────────────────── */
+  renderHistory();
+
+}());
+</script>
+</body>
+</html>
