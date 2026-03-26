@@ -1,0 +1,657 @@
+/* ==========================================================================
+   GlobexSky — product-360.css
+   Styles for the 360° product viewer and AR "View in Your Space" feature.
+   ========================================================================== */
+
+/* ── Design-token fallbacks (overridden by main.css when present) ──────── */
+:root {
+  --pv360-primary:     var(--primary,      #0052CC);
+  --pv360-accent:      var(--accent,       #00C9A7);
+  --pv360-dark:        var(--dark,         #0A0E27);
+  --pv360-text:        var(--text,         #2D3748);
+  --pv360-text-muted:  var(--text-muted,   #718096);
+  --pv360-border:      var(--border,       #E2E8F0);
+  --pv360-light:       var(--light,        #F4F6FA);
+  --pv360-white:       #ffffff;
+  --pv360-shadow-sm:   0 1px 4px rgba(0, 0, 0, .08);
+  --pv360-shadow-md:   0 4px 16px rgba(0, 0, 0, .16);
+  --pv360-shadow-lg:   0 8px 32px rgba(0, 0, 0, .24);
+  --pv360-radius:      12px;
+  --pv360-transition:  .2s ease;
+  --pv360-ctrl-size:   40px;
+}
+
+/* ==========================================================================
+   360° Viewer — Container
+   ========================================================================== */
+
+.pv360-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 640px;
+  background: var(--pv360-light);
+  border: 1px solid var(--pv360-border);
+  border-radius: var(--pv360-radius);
+  overflow: hidden;
+  box-shadow: var(--pv360-shadow-sm);
+  user-select: none;
+  -webkit-user-select: none;
+  /* Isolate stacking context */
+  isolation: isolate;
+}
+
+/* Fullscreen mode */
+.pv360--fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  max-width: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  z-index: 10000;
+  background: #000 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pv360--fullscreen .pv360-canvas {
+  height: 100vh !important;
+}
+
+.pv360--fullscreen .pv360-img {
+  max-height: 100vh !important;
+}
+
+/* ==========================================================================
+   360° Viewer — Canvas (image area)
+   ========================================================================== */
+
+.pv360-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  cursor: grab;
+  background: #f8f9fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pv360-canvas:active {
+  cursor: grabbing;
+}
+
+.pv360-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center center;
+  transition: transform 0.05s linear;
+  pointer-events: none;
+  /* Prevent image drag ghost */
+  -webkit-user-drag: none;
+}
+
+/* ==========================================================================
+   360° Viewer — Loading overlay
+   ========================================================================== */
+
+.pv360-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, .92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  z-index: 10;
+  transition: opacity var(--pv360-transition);
+}
+
+.pv360-overlay--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pv360-progress-bar {
+  width: 0%;
+  height: 4px;
+  max-width: 240px;
+  background: linear-gradient(90deg, var(--pv360-primary), var(--pv360-accent));
+  border-radius: 2px;
+  transition: width .3s ease;
+}
+
+/* Track behind the bar */
+.pv360-overlay::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 1.5rem));
+  width: 240px;
+  height: 4px;
+  background: var(--pv360-border);
+  border-radius: 2px;
+}
+
+.pv360-progress-text {
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif);
+  font-size: .8125rem;
+  color: var(--pv360-text-muted);
+  margin-top: .25rem;
+}
+
+/* Loading spinner (CSS-only) */
+.pv360-overlay::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 2.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--pv360-border);
+  border-top-color: var(--pv360-primary);
+  border-radius: 50%;
+  animation: pv360-spin .7s linear infinite;
+}
+
+@keyframes pv360-spin {
+  to { transform: translateX(-50%) rotate(360deg); }
+}
+
+/* ==========================================================================
+   360° Viewer — Controls toolbar
+   ========================================================================== */
+
+.pv360-controls {
+  position: absolute;
+  bottom: .75rem;
+  right: .75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  z-index: 20;
+}
+
+.pv360-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pv360-ctrl-size);
+  height: var(--pv360-ctrl-size);
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid var(--pv360-border);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--pv360-text);
+  font-size: .9375rem;
+  box-shadow: var(--pv360-shadow-sm);
+  transition: background var(--pv360-transition), color var(--pv360-transition),
+              transform var(--pv360-transition), box-shadow var(--pv360-transition);
+  /* Accessible touch target */
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.pv360-btn:hover {
+  background: var(--pv360-primary);
+  color: #fff;
+  border-color: var(--pv360-primary);
+  box-shadow: var(--pv360-shadow-md);
+  transform: translateY(-1px);
+}
+
+.pv360-btn:focus-visible {
+  outline: 3px solid var(--pv360-accent);
+  outline-offset: 2px;
+}
+
+.pv360-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--pv360-shadow-sm);
+}
+
+/* Active state (e.g. auto-rotate playing) */
+.pv360-btn--active {
+  background: var(--pv360-primary);
+  color: #fff;
+  border-color: var(--pv360-primary);
+}
+
+/* AR button — highlighted */
+.pv360-btn-ar {
+  background: linear-gradient(135deg, var(--pv360-primary), var(--pv360-accent));
+  color: #fff;
+  border-color: transparent;
+}
+
+.pv360-btn-ar:hover {
+  opacity: .9;
+  background: linear-gradient(135deg, var(--pv360-primary), var(--pv360-accent));
+}
+
+/* ==========================================================================
+   360° Viewer — Drag hint
+   ========================================================================== */
+
+.pv360-hint {
+  position: absolute;
+  bottom: .75rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(10, 14, 39, .75);
+  color: #fff;
+  font-size: .75rem;
+  padding: .3rem .75rem;
+  border-radius: 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s ease, transform .4s ease;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.pv360-hint--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================================
+   AR Viewer — Launch button (injected into the 360 container or product page)
+   ========================================================================== */
+
+.ar-launch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .625rem 1.25rem;
+  background: linear-gradient(135deg, var(--pv360-primary), var(--pv360-accent));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif);
+  font-size: .9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--pv360-shadow-md);
+  transition: opacity var(--pv360-transition), transform var(--pv360-transition),
+              box-shadow var(--pv360-transition);
+  min-height: 44px;
+}
+
+.ar-launch-btn:hover {
+  opacity: .9;
+  transform: translateY(-2px);
+  box-shadow: var(--pv360-shadow-lg);
+}
+
+.ar-launch-btn:focus-visible {
+  outline: 3px solid var(--pv360-accent);
+  outline-offset: 3px;
+}
+
+.ar-launch-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--pv360-shadow-sm);
+}
+
+/* ==========================================================================
+   AR Viewer — Overlay / Modal
+   ========================================================================== */
+
+.ar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 39, .7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  opacity: 0;
+  transition: opacity .3s ease;
+  padding: 1rem;
+}
+
+.ar-overlay--visible {
+  opacity: 1;
+}
+
+.ar-overlay__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, .15);
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: background var(--pv360-transition);
+  z-index: 1;
+}
+
+.ar-overlay__close:hover {
+  background: rgba(255, 255, 255, .3);
+}
+
+.ar-overlay__close:focus-visible {
+  outline: 3px solid var(--pv360-accent);
+  outline-offset: 2px;
+}
+
+.ar-overlay__content {
+  position: relative;
+  background: var(--pv360-white);
+  border-radius: var(--pv360-radius);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--pv360-shadow-lg);
+}
+
+/* ==========================================================================
+   AR Viewer — model-viewer element
+   ========================================================================== */
+
+.ar-model-viewer {
+  width: 100%;
+  height: 480px;
+  max-height: 75vh;
+  background: var(--pv360-light);
+  border-radius: var(--pv360-radius);
+  display: block;
+}
+
+.ar-model-viewer__ar-btn {
+  background: linear-gradient(135deg, var(--pv360-primary), var(--pv360-accent));
+  color: #fff;
+  border: none;
+  padding: .6rem 1.25rem;
+  border-radius: 20px;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+/* ==========================================================================
+   AR Viewer — QR code popup (desktop)
+   ========================================================================== */
+
+.ar-qr-wrapper {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.ar-qr-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+
+.ar-qr-heading i {
+  font-size: 2.5rem;
+  color: var(--pv360-primary);
+}
+
+.ar-qr-heading h3 {
+  margin: 0;
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.25rem;
+  color: var(--pv360-dark);
+}
+
+.ar-qr-heading p {
+  margin: 0;
+  font-size: .9rem;
+  color: var(--pv360-text-muted);
+  max-width: 300px;
+}
+
+.ar-qr-code {
+  padding: .75rem;
+  background: #fff;
+  border: 2px solid var(--pv360-border);
+  border-radius: var(--pv360-radius);
+  box-shadow: var(--pv360-shadow-sm);
+}
+
+.ar-qr-code img {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+
+.ar-qr-hint {
+  margin: 0;
+  font-size: .8125rem;
+  color: var(--pv360-text-muted);
+}
+
+.ar-qr-badges {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background: var(--pv360-light);
+  border: 1px solid var(--pv360-border);
+  border-radius: 20px;
+  padding: .3rem .75rem;
+  font-size: .8125rem;
+  color: var(--pv360-text);
+}
+
+/* ==========================================================================
+   AR Viewer — Fallback message
+   ========================================================================== */
+
+.ar-fallback {
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.ar-fallback__icon {
+  font-size: 3rem;
+  color: var(--pv360-text-muted);
+  opacity: .5;
+}
+
+.ar-fallback__title {
+  margin: 0;
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.25rem;
+  color: var(--pv360-dark);
+}
+
+.ar-fallback__message {
+  margin: 0;
+  font-size: .9375rem;
+  color: var(--pv360-text-muted);
+  max-width: 320px;
+}
+
+.ar-fallback__download {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1.25rem;
+  background: var(--pv360-primary);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: .9rem;
+  font-weight: 600;
+  transition: opacity var(--pv360-transition);
+}
+
+.ar-fallback__download:hover {
+  opacity: .88;
+}
+
+/* ==========================================================================
+   360° Demo page — specific layout helpers
+   ========================================================================== */
+
+.pv360-demo-section {
+  padding: 2.5rem 0;
+}
+
+.pv360-demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.pv360-demo-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pv360-demo-info h2 {
+  margin: 0;
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.6rem;
+  color: var(--pv360-dark);
+}
+
+.pv360-demo-info p {
+  margin: 0;
+  color: var(--pv360-text-muted);
+  line-height: 1.65;
+}
+
+.pv360-demo-actions {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pv360-api-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+}
+
+.pv360-api-table th,
+.pv360-api-table td {
+  padding: .6rem .75rem;
+  border: 1px solid var(--pv360-border);
+  text-align: left;
+}
+
+.pv360-api-table th {
+  background: var(--pv360-light);
+  font-weight: 600;
+  color: var(--pv360-dark);
+}
+
+.pv360-api-table code {
+  background: #f0f4ff;
+  padding: .15rem .35rem;
+  border-radius: 4px;
+  font-size: .8125rem;
+}
+
+/* ==========================================================================
+   Responsive adjustments
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .pv360-demo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pv360-controls {
+    flex-direction: row;
+    bottom: .5rem;
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  /* Larger touch targets on mobile */
+  .pv360-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  .ar-overlay__content {
+    max-width: 100%;
+    border-radius: var(--pv360-radius) var(--pv360-radius) 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 92vh;
+  }
+
+  .ar-model-viewer {
+    height: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pv360-controls {
+    gap: .3rem;
+  }
+
+  .pv360-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ar-qr-wrapper {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* ==========================================================================
+   Reduced-motion preference
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .pv360-overlay,
+  .pv360-hint,
+  .ar-overlay,
+  .ar-launch-btn,
+  .pv360-btn {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .pv360-overlay::after {
+    animation: none;
+    border-top-color: var(--pv360-border);
+  }
+}
