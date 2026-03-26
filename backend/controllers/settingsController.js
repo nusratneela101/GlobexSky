@@ -24,6 +24,8 @@ const SENSITIVE = {
   agora:      new Set(['AGORA_APP_CERTIFICATE']),
   smtp:       new Set(['SMTP_PASS']),
   cloudinary: new Set(['CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']),
+  dhl:        new Set(['DHL_API_SECRET', 'DHL_WEBHOOK_TOKEN']),
+  fedex:      new Set(['FEDEX_CLIENT_SECRET', 'FEDEX_WEBHOOK_SECRET']),
   general:    new Set([]),
 };
 
@@ -186,6 +188,12 @@ export async function testPlatformConnection(req, res, next) {
       case 'cloudinary':
         result = await _testCloudinary(mode);
         break;
+      case 'dhl':
+        result = await _testDhl(mode);
+        break;
+      case 'fedex':
+        result = await _testFedex(mode);
+        break;
       default:
         result = { ok: true, message: `No automated test for ${category}. Keys saved successfully.` };
     }
@@ -281,8 +289,49 @@ async function _testCloudinary(mode) {
   }
 }
 
-// Helper: get settings by group
-async function getGroup(group) {
+async function _testDhl(mode) {
+  try {
+    const apiKey = await getConfig('DHL_API_KEY', 'dhl', mode) || process.env.DHL_API_KEY;
+    const baseUrl = await getConfig('DHL_BASE_URL', 'dhl', mode) || process.env.DHL_BASE_URL || 'https://api-mock.dhl.com/mydhlapi';
+    if (!apiKey) return { ok: false, message: 'DHL API key not configured.' };
+    // Use DHL tracking endpoint as a lightweight connectivity check
+    const response = await fetch(`${baseUrl}/tracking?shipmentTrackingNumber=1234567890`, {
+      headers: { 'DHL-API-Key': apiKey },
+    });
+    // 200 or 404 both indicate the API is reachable and the key is accepted
+    if (response.status === 401 || response.status === 403) {
+      return { ok: false, message: 'DHL API key rejected (unauthorized).' };
+    }
+    return { ok: true, message: `DHL API reachable (${mode} mode).` };
+  } catch (err) {
+    return { ok: false, message: err.message };
+  }
+}
+
+async function _testFedex(mode) {
+  try {
+    const clientId     = await getConfig('FEDEX_CLIENT_ID',     'fedex', mode) || process.env.FEDEX_CLIENT_ID;
+    const clientSecret = await getConfig('FEDEX_CLIENT_SECRET', 'fedex', mode) || process.env.FEDEX_CLIENT_SECRET;
+    const baseUrl      = await getConfig('FEDEX_BASE_URL',      'fedex', mode) || process.env.FEDEX_BASE_URL
+      || (mode === 'live' ? 'https://apis.fedex.com' : 'https://apis-sandbox.fedex.com');
+    if (!clientId || !clientSecret) return { ok: false, message: 'FedEx Client ID or Client Secret not configured.' };
+    // Request an OAuth token to verify credentials
+    const res = await fetch(`${baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `grant_type=client_credentials&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}`,
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      return { ok: false, message: `FedEx auth failed (${res.status}): ${body.slice(0, 120)}` };
+    }
+    return { ok: true, message: `FedEx credentials verified (${mode} mode).` };
+  } catch (err) {
+    return { ok: false, message: err.message };
+  }
+}
+
+
   const { data, error } = await supabase
     .from('settings')
     .select('key, value, type')
