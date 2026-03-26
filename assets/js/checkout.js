@@ -3,7 +3,7 @@
  * Multi-step checkout flow: address, shipping, payment, review, place order.
  */
 
-const API_BASE = '/api/v1';
+const API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
 const STEPS = ['address', 'shipping', 'payment', 'review'];
 
 let checkoutState = {

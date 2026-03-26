@@ -3,7 +3,7 @@
  * Handles service worker registration, push subscription, and permission requests.
  */
 
-const API_BASE = '/api/v1';
+const API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
 
 // ─── Utility: convert VAPID public key to Uint8Array ─────────────────────────
 function urlBase64ToUint8Array(base64String) {
