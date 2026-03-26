@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COD Management – GlobexSky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/cod-management.css" />
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <i class="fas fa-globe"></i>
+        <span>GlobexSky</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> <span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> <span>Orders</span></a></li>
+        <li><a href="shipments.html"><i class="fas fa-shipping-fast"></i> <span>Shipments</span></a></li>
+        <li><a href="pricing.html"><i class="fas fa-tags"></i> <span>Pricing</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="cod-management.html" class="active"><i class="fas fa-hand-holding-usd"></i> <span>COD Management</span></a></li>
+        <li><a href="cod.html"><i class="fas fa-money-bill-wave"></i> <span>COD (Legacy)</span></a></li>
+        <li><a href="inspections.html"><i class="fas fa-search"></i> <span>Inspections</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i> <span>Marketing</span></a></li>
+        <li><a href="campaigns.html"><i class="fas fa-flag"></i> <span>Campaigns</span></a></li>
+        <li><a href="live-streams.html"><i class="fas fa-video"></i> <span>Live Streams</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ── Main Area ───────────────────────────────────────────────────────── -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+      <h1 class="admin-page-title"><i class="fas fa-hand-holding-usd" style="color:#0052CC;margin-right:8px"></i>COD Management</h1>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="badge">4</span></button>
+        <div class="admin-user-pill"><div class="admin-avatar">A</div><span>Admin</span></div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <!-- ── KPI Grid ───────────────────────────────────────────────────── -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon blue"><i class="fas fa-list-ol"></i></div>
+          <div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-label">Total COD Orders</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon orange"><i class="fas fa-dollar-sign"></i></div>
+          <div><div class="kpi-value" id="kpi-amount">—</div><div class="kpi-label">Total COD Amount</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon green"><i class="fas fa-hand-holding-usd"></i></div>
+          <div><div class="kpi-value" id="kpi-collected">—</div><div class="kpi-label">Amount Collected</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon purple"><i class="fas fa-exchange-alt"></i></div>
+          <div><div class="kpi-value" id="kpi-pending-remittance">—</div><div class="kpi-label">Pending Remittance</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon cyan"><i class="fas fa-percentage"></i></div>
+          <div><div class="kpi-value" id="kpi-success-rate">—</div><div class="kpi-label">Success Rate</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+          <div><div class="kpi-value" id="kpi-flagged">—</div><div class="kpi-label">Flagged Orders</div></div>
+        </div>
+      </div>
+
+      <!-- ── Tab Bar ────────────────────────────────────────────────────── -->
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" onclick="CodAdmin.switchTab(this,'orders')" role="tab"><i class="fas fa-list"></i> Orders</button>
+        <button class="tab-btn" onclick="CodAdmin.switchTab(this,'analytics')" role="tab"><i class="fas fa-chart-pie"></i> Analytics</button>
+        <button class="tab-btn" onclick="CodAdmin.switchTab(this,'reconciliation')" role="tab"><i class="fas fa-balance-scale"></i> Reconciliation</button>
+        <button class="tab-btn" onclick="CodAdmin.switchTab(this,'settings')" role="tab"><i class="fas fa-cog"></i> Settings</button>
+      </div>
+
+      <!-- ══ ORDERS TAB ═══════════════════════════════════════════════════ -->
+      <div class="tab-content active" id="tab-orders">
+
+        <!-- Toolbar -->
+        <div class="admin-card">
+          <div class="toolbar">
+            <div class="toolbar-search">
+              <span class="search-icon"><i class="fas fa-search"></i></span>
+              <input type="text" id="order-search" placeholder="Search by order ID or address…" />
+            </div>
+            <div class="toolbar-filter">
+              <select id="status-filter" title="Filter by status">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="delivered">Delivered</option>
+                <option value="collected">Collected</option>
+                <option value="returned">Returned</option>
+                <option value="flagged">Flagged</option>
+                <option value="undelivered">Undelivered</option>
+                <option value="redelivery_scheduled">Redelivery Scheduled</option>
+              </select>
+            </div>
+            <div class="toolbar-filter">
+              <input type="date" id="date-start" title="From date" />
+            </div>
+            <div class="toolbar-filter">
+              <input type="date" id="date-end" title="To date" />
+            </div>
+            <button class="btn btn-outline" onclick="CodAdmin.exportCSV()" title="Export CSV">
+              <i class="fas fa-download"></i> Export CSV
+            </button>
+          </div>
+
+          <!-- Bulk Actions Bar -->
+          <div class="bulk-bar" id="bulk-bar">
+            <span class="bulk-count" id="bulk-count">0 orders selected</span>
+            <button class="btn btn-sm btn-success" onclick="CodAdmin.bulkAction('collected')"><i class="fas fa-check"></i> Mark Collected</button>
+            <button class="btn btn-sm btn-warning" onclick="CodAdmin.bulkAction('returned')"><i class="fas fa-undo"></i> Mark Returned</button>
+            <button class="btn btn-sm btn-danger"  onclick="CodAdmin.bulkAction('flagged')"><i class="fas fa-flag"></i> Flag</button>
+            <button class="btn btn-sm btn-ghost"   onclick="CodAdmin.bulkAction('pending')"><i class="fas fa-clock"></i> Reset to Pending</button>
+          </div>
+
+          <!-- Orders Table -->
+          <div class="table-container">
+            <table class="data-table" id="orders-table">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="select-all" title="Select all" /></th>
+                  <th>COD ID</th>
+                  <th>Order ID</th>
+                  <th>Amount</th>
+                  <th>Surcharge</th>
+                  <th>Status</th>
+                  <th>Address</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody">
+                <tr><td colspan="9" style="text-align:center;padding:32px"><span class="spinner"></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;flex-wrap:wrap;gap:8px">
+            <span style="font-size:.8rem;color:#64748b" id="orders-count"></span>
+            <div class="pagination" id="orders-pagination"></div>
+          </div>
+        </div>
+      </div><!-- /tab-orders -->
+
+      <!-- ══ ANALYTICS TAB ════════════════════════════════════════════════ -->
+      <div class="tab-content" id="tab-analytics">
+        <div class="analytics-row">
+          <div class="chart-card">
+            <h3 style="font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;margin-bottom:16px;color:#0A0E27">
+              <i class="fas fa-chart-pie" style="color:#0052CC;margin-right:6px"></i>Orders by Status
+            </h3>
+            <canvas id="status-chart" height="220"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3 style="font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;margin-bottom:16px;color:#0A0E27">
+              <i class="fas fa-chart-bar" style="color:#059669;margin-right:6px"></i>Performance Rates
+            </h3>
+            <canvas id="success-chart" height="220"></canvas>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-tachometer-alt" style="color:#7C3AED;margin-right:6px"></i>COD Metrics Summary</h2>
+          </div>
+          <div class="settings-grid">
+            <div>
+              <ul class="stat-list">
+                <li><span class="stat-label">Total Orders</span><span class="stat-value" id="kpi-total-2">—</span></li>
+                <li><span class="stat-label">Total COD Amount</span><span class="stat-value" id="kpi-amount-2">—</span></li>
+                <li><span class="stat-label">Total Surcharge Collected</span><span class="stat-value" id="kpi-surcharge">—</span></li>
+                <li><span class="stat-label">Amount Collected</span><span class="stat-value" id="kpi-collected-2">—</span></li>
+              </ul>
+            </div>
+            <div>
+              <ul class="stat-list">
+                <li><span class="stat-label">Amount Remitted</span><span class="stat-value" id="kpi-remitted">—</span></li>
+                <li><span class="stat-label">Pending Remittance</span><span class="stat-value" id="kpi-pending-2">—</span></li>
+                <li><span class="stat-label">Average Order Value</span><span class="stat-value" id="kpi-avg-value">—</span></li>
+                <li><span class="stat-label">Avg Fraud Score</span><span class="stat-value" id="kpi-fraud-score">—</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div><!-- /tab-analytics -->
+
+      <!-- ══ RECONCILIATION TAB ════════════════════════════════════════════ -->
+      <div class="tab-content" id="tab-reconciliation">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-balance-scale" style="color:#0052CC;margin-right:6px"></i>COD Reconciliation Report</h2>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <input type="date" id="reconcil-start" class="form-control" style="width:auto" title="From date" />
+              <input type="date" id="reconcil-end" class="form-control" style="width:auto" title="To date" />
+              <button class="btn btn-primary" id="reconcil-apply"><i class="fas fa-filter"></i> Apply</button>
+            </div>
+          </div>
+          <div id="reconcil-content">
+            <div style="text-align:center;padding:32px"><span class="spinner"></span></div>
+          </div>
+        </div>
+      </div><!-- /tab-reconciliation -->
+
+      <!-- ══ SETTINGS TAB ══════════════════════════════════════════════════ -->
+      <div class="tab-content" id="tab-settings">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-cog" style="color:#0052CC;margin-right:6px"></i>COD Settings</h2>
+            <button class="btn btn-primary" id="save-settings-btn"><i class="fas fa-save"></i> Save Settings</button>
+          </div>
+
+          <div class="settings-grid">
+
+            <!-- Availability -->
+            <div>
+              <h3 style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;margin-bottom:12px;color:#374151">Availability</h3>
+
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-label">Enable COD</div>
+                  <div class="toggle-desc">Allow customers to pay cash on delivery</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="setting-enabled" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="form-group" style="margin-top:16px">
+                <label class="form-label" for="setting-min-amount">Minimum Order Amount ($)</label>
+                <input type="number" id="setting-min-amount" class="form-control" min="0" step="0.01" placeholder="0.00" />
+                <span class="form-hint">COD not available for orders below this amount</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-max-amount">Maximum Order Amount ($)</label>
+                <input type="number" id="setting-max-amount" class="form-control" min="0" step="0.01" placeholder="5000.00" />
+                <span class="form-hint">COD not available for orders above this amount</span>
+              </div>
+            </div>
+
+            <!-- Surcharge -->
+            <div>
+              <h3 style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;margin-bottom:12px;color:#374151">Surcharge</h3>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-surcharge-pct">Surcharge Percentage (%)</label>
+                <input type="number" id="setting-surcharge-pct" class="form-control" min="0" max="100" step="0.1" placeholder="2.5" />
+                <span class="form-hint">Percentage-based surcharge on order total</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-surcharge-fixed">Fixed Surcharge ($)</label>
+                <input type="number" id="setting-surcharge-fixed" class="form-control" min="0" step="0.01" placeholder="1.50" />
+                <span class="form-hint">Fixed fee added to every COD order</span>
+              </div>
+            </div>
+
+            <!-- Regions -->
+            <div>
+              <h3 style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;margin-bottom:12px;color:#374151">Region Restrictions</h3>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-allowed-regions">Allowed Regions</label>
+                <textarea id="setting-allowed-regions" class="form-control" rows="4" placeholder="Dhaka&#10;Chittagong&#10;Sylhet"></textarea>
+                <span class="form-hint">One region per line. Leave empty to allow all regions.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-blocked-regions">Blocked Regions</label>
+                <textarea id="setting-blocked-regions" class="form-control" rows="4" placeholder="Remote Area X&#10;Region Y"></textarea>
+                <span class="form-hint">One region per line. COD unavailable in these regions.</span>
+              </div>
+            </div>
+
+          </div><!-- /settings-grid -->
+        </div>
+      </div><!-- /tab-settings -->
+
+    </main>
+  </div><!-- /admin-main -->
+</div><!-- /admin-wrapper -->
+
+<!-- ── Status Update Modal ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="status-modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+  <div class="modal-box">
+    <h2 class="modal-title" id="modal-heading"><i class="fas fa-edit" style="color:#0052CC;margin-right:8px"></i>Update Order Status</h2>
+    <input type="hidden" id="modal-order-id" />
+
+    <div class="form-group">
+      <label class="form-label" for="modal-status">New Status</label>
+      <select id="modal-status" class="form-control">
+        <option value="pending">Pending</option>
+        <option value="delivered">Delivered</option>
+        <option value="collected">Collected</option>
+        <option value="returned">Returned</option>
+        <option value="undelivered">Undelivered</option>
+        <option value="redelivery_scheduled">Redelivery Scheduled</option>
+        <option value="flagged">Flagged</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="modal-notes">Notes (optional)</label>
+      <textarea id="modal-notes" class="form-control" rows="3" placeholder="Add a note about this status change…"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="CodAdmin.closeStatusModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="CodAdmin.submitStatusUpdate()"><i class="fas fa-save"></i> Update Status</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast Container ───────────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- ── Scripts ───────────────────────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+<script src="../../assets/js/cod-management.js"></script>
+<script>
+  // Sync secondary KPI elements from analytics load
+  const _origLoad = window.CodAdmin;
+  document.addEventListener('DOMContentLoaded', function () {
+    // Patch analytics render to also fill the summary tab
+    const _origRenderAnalytics = window._codRenderAnalytics;
+  });
+</script>
+</body>
+</html>
