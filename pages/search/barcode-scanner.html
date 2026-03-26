@@ -66,6 +66,7 @@
 ══════════════════════════════════════════ -->
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/barcode-scanner.js"></script>
+<script src="../../assets/js/barcode-search-integration.js"></script>
 <script>
 (function () {
   'use strict';
@@ -77,12 +78,16 @@
   });
 
   /* ── Init scanner ─────────────────────────────────────────────── */
+  const scannerContainer = document.getElementById('bsp-scanner-container');
   const scanner = GlobexSky.BarcodeScanner.init('bsp-scanner-container', {
-    autoRedirect: true,
+    autoRedirect: false,
     searchBasePath: '/pages/search/index.html',
     vibrate: true,
     beep: true,
   });
+
+  /* ── Wire search integration ──────────────────────────────────── */
+  GlobexSky.BarcodeSearch.attachToScanner(scanner, scannerContainer);
 
   scanner.start();
 
