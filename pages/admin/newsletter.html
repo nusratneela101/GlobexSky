@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Newsletter Management – Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/newsletter.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto;flex:1}
+    .admin-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;border:1px solid #e8edf5}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .page-heading{margin-bottom:24px}
+    .page-heading h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .page-heading p{color:#64748b;font-size:.88rem;margin-top:4px}
+    textarea.nl-input{resize:vertical;min-height:200px}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- ── Sidebar ── -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <i class="fas fa-globe" style="font-size:1.3rem;color:#4da6ff"></i>
+        <span>Globex Sky</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="products.html"><i class="fas fa-boxes"></i><span>Products</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="suppliers.html"><i class="fas fa-building"></i><span>Suppliers</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="campaigns.html"><i class="fas fa-bullhorn"></i><span>Campaigns</span></a></li>
+        <li><a href="newsletter.html" class="active"><i class="fas fa-newspaper"></i><span>Newsletter</span></a></li>
+        <li><a href="email-sms-templates.html"><i class="fas fa-envelope-open-text"></i><span>Email/SMS Templates</span></a></li>
+        <li><a href="content.html"><i class="fas fa-file-alt"></i><span>Content</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        <li><a href="feature-toggles.html"><i class="fas fa-toggle-on"></i><span>Feature Toggles</span></a></li>
+        <div class="sidebar-divider"></div>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i><span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <span class="admin-page-title">Newsletter Management</span>
+      <div class="admin-topbar-right">
+        <a href="../newsletter/subscribe.html" target="_blank" class="nl-btn nl-btn-outline nl-btn-sm" style="text-decoration:none">
+          <i class="fas fa-external-link-alt"></i> Subscribe Page
+        </a>
+        <button class="topbar-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill">
+          <div class="admin-avatar">A</div>
+          <span>Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="admin-content">
+
+      <div class="page-heading">
+        <h1><i class="fas fa-newspaper" style="color:#0052CC"></i> Newsletter Management</h1>
+        <p>Manage subscribers, compose campaigns, view analytics, and review campaign history.</p>
+      </div>
+
+      <!-- ── Stat Cards ── -->
+      <div class="nl-stats-grid">
+        <div class="nl-stat-card">
+          <div class="nl-stat-icon blue"><i class="fas fa-users"></i></div>
+          <div>
+            <div class="nl-stat-value" id="nlStatTotal">—</div>
+            <div class="nl-stat-label">Total Subscribers</div>
+            <div class="nl-stat-trend up"><i class="fas fa-arrow-up"></i> +12 this week</div>
+          </div>
+        </div>
+        <div class="nl-stat-card">
+          <div class="nl-stat-icon green"><i class="fas fa-user-check"></i></div>
+          <div>
+            <div class="nl-stat-value" id="nlStatActive">—</div>
+            <div class="nl-stat-label">Active Subscribers</div>
+          </div>
+        </div>
+        <div class="nl-stat-card">
+          <div class="nl-stat-icon orange"><i class="fas fa-user-minus"></i></div>
+          <div>
+            <div class="nl-stat-value" id="nlStatUnsub">—</div>
+            <div class="nl-stat-label">Unsubscribed</div>
+          </div>
+        </div>
+        <div class="nl-stat-card">
+          <div class="nl-stat-icon purple"><i class="fas fa-paper-plane"></i></div>
+          <div>
+            <div class="nl-stat-value" id="nlStatCampaigns">—</div>
+            <div class="nl-stat-label">Campaigns Sent</div>
+          </div>
+        </div>
+        <div class="nl-stat-card">
+          <div class="nl-stat-icon teal"><i class="fas fa-envelope-open"></i></div>
+          <div>
+            <div class="nl-stat-value" id="nlStatOpenRate">—</div>
+            <div class="nl-stat-label">Avg. Open Rate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Admin Tabs ── -->
+      <div class="nl-admin-tabs">
+        <button class="nl-admin-tab active" data-tab="subscribers">
+          <i class="fas fa-users"></i> Subscribers
+        </button>
+        <button class="nl-admin-tab" data-tab="compose">
+          <i class="fas fa-pen-to-square"></i> Compose
+        </button>
+        <button class="nl-admin-tab" data-tab="campaigns">
+          <i class="fas fa-history"></i> Campaign History
+        </button>
+        <button class="nl-admin-tab" data-tab="analytics">
+          <i class="fas fa-chart-bar"></i> Analytics
+        </button>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           PANE: Subscribers
+           ══════════════════════════════════════════════ -->
+      <div id="nlPane_subscribers" class="nl-admin-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-users" style="color:#0052CC;margin-right:6px"></i> Subscriber List</span>
+            <div class="nl-btn-group">
+              <button id="nlExportBtn" class="nl-btn nl-btn-outline">
+                <i class="fas fa-file-csv"></i> Export CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Bulk action bar -->
+          <div class="nl-bulk-bar" id="nlBulkBar">
+            <span class="nl-bulk-info">0 selected</span>
+            <div class="nl-bulk-actions">
+              <button id="nlBulkActivate" class="nl-btn nl-btn-sm" style="background:#d1fae5;color:#059669;border:none">
+                <i class="fas fa-check"></i> Activate
+              </button>
+              <button id="nlBulkDeactivate" class="nl-btn nl-btn-sm" style="background:#ffedd5;color:#f97316;border:none">
+                <i class="fas fa-pause"></i> Deactivate
+              </button>
+              <button id="nlBulkDelete" class="nl-btn nl-btn-sm" style="background:#fee2e2;color:#ef4444;border:none">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+            <span style="margin-left:auto;font-size:.82rem;color:#64748b;cursor:pointer" onclick="_nlSelected.clear();nlRenderSubscriberTable()">✕ Clear</span>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="nl-toolbar">
+            <div class="nl-search-wrap">
+              <i class="fas fa-search"></i>
+              <input id="nlSearchInput" type="text" class="nl-search-input" placeholder="Search by name or email…"/>
+            </div>
+            <select id="nlStatusFilter" class="nl-filter-select">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="unsubscribed">Unsubscribed</option>
+              <option value="pending">Pending</option>
+              <option value="bounced">Bounced</option>
+            </select>
+            <input id="nlDateFilter" type="date" class="nl-filter-select" title="Filter from date"/>
+          </div>
+
+          <!-- Table -->
+          <div class="nl-table-wrap">
+            <table class="nl-table">
+              <thead>
+                <tr>
+                  <th style="width:36px"><input type="checkbox" id="nlSelectAll"/></th>
+                  <th>Subscriber</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Subscribed</th>
+                  <th>Preferences</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="nlSubTableBody">
+                <tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="nl-pagination" id="nlSubPagination"></div>
+        </div>
+      </div><!-- /subscribers pane -->
+
+      <!-- ══════════════════════════════════════════════
+           PANE: Compose Newsletter
+           ══════════════════════════════════════════════ -->
+      <div id="nlPane_compose" class="nl-admin-pane" style="display:none">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-pen-to-square" style="color:#0052CC;margin-right:6px"></i> Compose Newsletter</span>
+            <div class="nl-btn-group">
+              <button id="nlSaveDraftBtn" class="nl-btn nl-btn-outline">
+                <i class="fas fa-floppy-disk"></i> Save Draft
+              </button>
+              <button id="nlSendBtn" class="nl-btn nl-btn-primary">
+                <i class="fas fa-paper-plane"></i> Send Newsletter
+              </button>
+            </div>
+          </div>
+
+          <!-- Subject / Recipients -->
+          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:16px;flex-wrap:wrap" class="nl-toolbar">
+            <div>
+              <label style="display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px">Subject Line <span style="color:#ef4444">*</span></label>
+              <input id="nlComposeSubject" type="text" class="nl-search-input" style="width:100%" placeholder="e.g. Globex Sky – August Deals Roundup"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px">Send To</label>
+              <select id="nlComposeRecipients" class="nl-filter-select">
+                <option value="active">Active subscribers only</option>
+                <option value="all">All subscribers</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Template selector -->
+          <div class="nl-template-select-group">
+            <label style="font-size:.82rem;font-weight:600;color:#374151">Template:</label>
+            <select id="nlTemplateSelect" class="nl-filter-select">
+              <option value="blank">Blank</option>
+              <option value="promo">Promotional</option>
+              <option value="update">Platform Update</option>
+            </select>
+            <button class="nl-btn nl-btn-sm nl-btn-outline" onclick="nlLoadTemplate(document.getElementById('nlTemplateSelect').value)">
+              <i class="fas fa-magic"></i> Apply
+            </button>
+          </div>
+
+          <!-- Composer / Preview split -->
+          <div class="nl-composer-grid">
+            <div>
+              <label style="display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px">
+                <i class="fas fa-code"></i> HTML Body
+              </label>
+              <textarea id="nlComposeBody" class="nl-input" placeholder="Write your newsletter HTML here, or select a template above…"></textarea>
+            </div>
+            <div>
+              <label style="display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px">
+                <i class="fas fa-eye"></i> Live Preview
+              </label>
+              <div id="nlPreviewFrame" class="nl-preview-frame">
+                <p style="color:#94a3b8;text-align:center;padding:40px 0">Preview will appear here…</p>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size:.78rem;color:#94a3b8;margin-top:12px">
+            <i class="fas fa-info-circle" style="color:#0052CC"></i>
+            You can use <code>&#123;&#123;name&#125;&#125;</code> as a personalization variable — it will be replaced with each subscriber's name when sent.
+          </p>
+        </div>
+      </div><!-- /compose pane -->
+
+      <!-- ══════════════════════════════════════════════
+           PANE: Campaign History
+           ══════════════════════════════════════════════ -->
+      <div id="nlPane_campaigns" class="nl-admin-pane" style="display:none">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-history" style="color:#0052CC;margin-right:6px"></i> Campaign History</span>
+            <button class="nl-btn nl-btn-primary" onclick="nlSwitchAdminTab('compose')">
+              <i class="fas fa-plus"></i> New Campaign
+            </button>
+          </div>
+
+          <div class="nl-table-wrap">
+            <table class="nl-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Sent Date</th>
+                  <th>Recipients</th>
+                  <th>Opens</th>
+                  <th>Clicks</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="nlCampaignTableBody">
+                <tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- /campaigns pane -->
+
+      <!-- ══════════════════════════════════════════════
+           PANE: Analytics
+           ══════════════════════════════════════════════ -->
+      <div id="nlPane_analytics" class="nl-admin-pane" style="display:none">
+
+        <!-- Summary stats row -->
+        <div class="nl-stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+          <div class="nl-stat-card">
+            <div class="nl-stat-icon blue"><i class="fas fa-paper-plane"></i></div>
+            <div>
+              <div class="nl-stat-value" id="nlAnalyticsSentTotal">—</div>
+              <div class="nl-stat-label">Total Sent</div>
+            </div>
+          </div>
+          <div class="nl-stat-card">
+            <div class="nl-stat-icon green"><i class="fas fa-envelope-open"></i></div>
+            <div>
+              <div class="nl-stat-value" id="nlAnalyticsOpenRate">—</div>
+              <div class="nl-stat-label">Avg. Open Rate</div>
+            </div>
+          </div>
+          <div class="nl-stat-card">
+            <div class="nl-stat-icon purple"><i class="fas fa-mouse-pointer"></i></div>
+            <div>
+              <div class="nl-stat-value" id="nlAnalyticsClickRate">—</div>
+              <div class="nl-stat-label">Avg. Click Rate</div>
+            </div>
+          </div>
+          <div class="nl-stat-card">
+            <div class="nl-stat-icon orange"><i class="fas fa-user-minus"></i></div>
+            <div>
+              <div class="nl-stat-value" id="nlAnalyticsUnsubRate">—</div>
+              <div class="nl-stat-label">Unsub Rate</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bar chart card -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-chart-bar" style="color:#0052CC;margin-right:6px"></i> Engagement Rates (All Campaigns)</span>
+            <span style="font-size:.78rem;color:#94a3b8"><i class="fas fa-info-circle"></i> Based on cumulative campaign data</span>
+          </div>
+          <div class="nl-analytics-row" id="nlAnalyticsRows">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Subscriber growth mock chart -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-chart-line" style="color:#0052CC;margin-right:6px"></i> Subscriber Growth (Mock)</span>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:6px;height:120px;padding:0 4px">
+            <div style="flex:1;background:linear-gradient(to top,#0052CC,#4da6ff);border-radius:4px 4px 0 0;height:55%" title="Jan: 800"></div>
+            <div style="flex:1;background:linear-gradient(to top,#0052CC,#4da6ff);border-radius:4px 4px 0 0;height:62%" title="Feb: 900"></div>
+            <div style="flex:1;background:linear-gradient(to top,#0052CC,#4da6ff);border-radius:4px 4px 0 0;height:70%" title="Mar: 1020"></div>
+            <div style="flex:1;background:linear-gradient(to top,#0052CC,#4da6ff);border-radius:4px 4px 0 0;height:76%" title="Apr: 1105"></div>
+            <div style="flex:1;background:linear-gradient(to top,#0052CC,#4da6ff);border-radius:4px 4px 0 0;height:80%" title="May: 1160"></div>
+            <div style="flex:1;background:linear-gradient(to top,#0052CC,#4da6ff);border-radius:4px 4px 0 0;height:88%" title="Jun: 1280"></div>
+            <div style="flex:1;background:linear-gradient(to top,#00C9A7,#80e8d8);border-radius:4px 4px 0 0;height:100%" title="Jul: 1450"></div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <div style="flex:1;text-align:center;font-size:.7rem;color:#94a3b8">Jan</div>
+            <div style="flex:1;text-align:center;font-size:.7rem;color:#94a3b8">Feb</div>
+            <div style="flex:1;text-align:center;font-size:.7rem;color:#94a3b8">Mar</div>
+            <div style="flex:1;text-align:center;font-size:.7rem;color:#94a3b8">Apr</div>
+            <div style="flex:1;text-align:center;font-size:.7rem;color:#94a3b8">May</div>
+            <div style="flex:1;text-align:center;font-size:.7rem;color:#94a3b8">Jun</div>
+            <div style="flex:1;text-align:center;font-size:.7rem;color:#94a3b8">Jul</div>
+          </div>
+          <p style="font-size:.78rem;color:#94a3b8;margin-top:12px"><i class="fas fa-info-circle"></i> Subscriber count by month — demo data only.</p>
+        </div>
+
+        <!-- Top preferences breakdown -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title"><i class="fas fa-tags" style="color:#0052CC;margin-right:6px"></i> Top Content Preferences</span>
+          </div>
+          <div id="nlPrefBreakdown" class="nl-analytics-row">
+            <!-- populated by nlRenderPrefBreakdown() -->
+          </div>
+        </div>
+
+      </div><!-- /analytics pane -->
+
+    </main>
+  </div><!-- /admin-main -->
+</div><!-- /admin-wrapper -->
+
+<!-- Toast -->
+<div id="nlToast" class="nl-toast" role="status" aria-live="polite"></div>
+
+<script src="../../assets/js/newsletter.js"></script>
+<script>
+  // Render preference breakdown in analytics pane
+  document.addEventListener('DOMContentLoaded', function() {
+    var prefEl = document.getElementById('nlPrefBreakdown');
+    if (!prefEl) return;
+    var subs  = JSON.parse(localStorage.getItem('globexsky_newsletter_subscribers') || '[]');
+    var counts = {};
+    subs.forEach(function(s) {
+      (s.prefs || []).forEach(function(p) {
+        counts[p] = (counts[p] || 0) + 1;
+      });
+    });
+    var labels = { deals: 'Deals', products: 'Products', suppliers: 'Suppliers', logistics: 'Logistics', finance: 'Finance', insights: 'Insights' };
+    var max = Math.max(...Object.values(counts), 1);
+    var colorClasses = ['blue', 'green', 'orange', 'blue', 'green', 'orange'];
+    var keys = Object.keys(labels);
+    prefEl.innerHTML = keys.map(function(k, i) {
+      var count = counts[k] || 0;
+      var pct   = Math.round(count / Math.max(max, 1) * 100);
+      return '<div class="nl-analytics-item">'
+        + '<span class="nl-analytics-label">' + labels[k] + '</span>'
+        + '<div class="nl-analytics-bar-wrap"><div class="nl-analytics-bar ' + colorClasses[i] + '" style="width:' + pct + '%"></div></div>'
+        + '<span class="nl-analytics-pct">' + count + '</span>'
+        + '</div>';
+    }).join('');
+  });
+</script>
+</body>
+</html>
