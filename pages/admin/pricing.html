@@ -445,13 +445,13 @@
   async function loadPricing() {
     try {
       var [commRes, supplierRes, inspectRes, dropRes, carryRes, parcelRes, apiRes] = await Promise.all([
-        fetch(API_BASE + '/admin/pricing/commissions',    { headers: authHdr() }).then(r => r.json()).catch(() => ({})),
-        fetch(API_BASE + '/admin/pricing/supplier-plans', { headers: authHdr() }).then(r => r.json()).catch(() => ({})),
-        fetch(API_BASE + '/admin/pricing/inspection',     { headers: authHdr() }).then(r => r.json()).catch(() => ({})),
-        fetch(API_BASE + '/admin/pricing/dropshipping',   { headers: authHdr() }).then(r => r.json()).catch(() => ({})),
-        fetch(API_BASE + '/admin/pricing/carry-service',  { headers: authHdr() }).then(r => r.json()).catch(() => ({})),
-        fetch(API_BASE + '/admin/pricing/parcel-service', { headers: authHdr() }).then(r => r.json()).catch(() => ({})),
-        fetch(API_BASE + '/admin/pricing/api-plans',      { headers: authHdr() }).then(r => r.json()).catch(() => ({})),
+        fetch(API_BASE + '/admin/pricing/commissions',    { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] commissions:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/supplier-plans', { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] supplier-plans:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/inspection',     { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] inspection:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/dropshipping',   { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] dropshipping:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/carry-service',  { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] carry-service:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/parcel-service', { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] parcel-service:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/api-plans',      { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] api-plans:', e); return {}; }),
       ]);
 
       // Commissions
@@ -469,8 +469,9 @@
         var tbody = document.getElementById('supplierPlansBody');
         if (tbody) {
           tbody.innerHTML = supplierRes.data.map(function(p) {
+            var fee = p.monthly_fee != null ? '$' + p.monthly_fee : '';
             return '<tr><td><strong>' + (p.name || '') + '</strong></td>' +
-              '<td><input type="text" class="pricing-input" value="' + (p.monthly_fee != null ? '$' + p.monthly_fee : '') + '" data-plan-id="' + (p.id || '') + '" style="width:80px"/></td>' +
+              '<td><input type="text" class="pricing-input" value="' + fee + '" data-plan-id="' + (p.id || '') + '" style="width:80px"/></td>' +
               '<td><input type="number" class="pricing-input" value="' + (p.commission_rate || '') + '" style="width:70px"/></td>' +
               '<td><span class="badge-pill badge-blue">' + (p.features || '') + '</span></td>' +
               '<td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>';
@@ -492,18 +493,16 @@
 
       // Dropshipping markup — default & by category
       if (dropRes.success && dropRes.data) {
-        var data = dropRes.data;
-        var defaultMarkup = Array.isArray(data) ? data.find(function(d) { return d.type === 'default' || d.category === 'default'; }) : data;
+        var dropData = dropRes.data;
+        var defaultMarkup = Array.isArray(dropData) ? dropData.find(function(d) { return d.type === 'default' || d.category === 'default'; }) : dropData;
         if (defaultMarkup) { var dm = document.getElementById('defaultMarkup'); if (dm) dm.value = defaultMarkup.markup_percentage || defaultMarkup.markup || ''; }
-        if (Array.isArray(data)) {
-          data.filter(function(d) { return d.type !== 'default' && d.category && d.category !== 'default'; }).forEach(function(d) {
-            var inp = document.querySelector('[data-commission-category="' + d.category + '"]');
-            // Also search dropshipping tbody
-            var dropBody = document.getElementById('dropshippingCategoryBody');
+        if (Array.isArray(dropData)) {
+          var dropBody = document.getElementById('dropshippingCategoryBody');
+          dropData.filter(function(d) { return d.type !== 'default' && d.category && d.category !== 'default'; }).forEach(function(d) {
             if (dropBody) {
               dropBody.querySelectorAll('tr').forEach(function(row) {
                 var label = row.querySelector('td:first-child');
-                if (label && label.textContent.toLowerCase().includes((d.category || '').toLowerCase())) {
+                if (label && label.textContent.trim() === d.category) {
                   var input = row.querySelector('input');
                   if (input) input.value = d.markup_percentage || d.markup || '';
                 }
@@ -548,9 +547,13 @@
         var tbody5 = document.getElementById('apiPricingBody');
         if (tbody5) {
           tbody5.innerHTML = apiRes.data.map(function(p) {
+            var monthlyFee = p.monthly_fee != null ? (p.monthly_fee === 0 ? '$0' : '$' + p.monthly_fee) : '';
+            var monthlyReqs = (p.monthly_requests != null && typeof p.monthly_requests === 'number')
+              ? p.monthly_requests.toLocaleString()
+              : (p.monthly_requests || '');
             return '<tr><td><strong>' + (p.tier_name || p.name || '') + '</strong></td>' +
-              '<td><input type="text" class="pricing-input" value="' + (p.monthly_fee != null ? (p.monthly_fee === 0 ? '$0' : '$' + p.monthly_fee) : '') + '" style="width:80px"/></td>' +
-              '<td><input type="text" class="pricing-input" value="' + (p.monthly_requests != null ? p.monthly_requests.toLocaleString() : '') + '" style="width:90px"/></td>' +
+              '<td><input type="text" class="pricing-input" value="' + monthlyFee + '" style="width:80px"/></td>' +
+              '<td><input type="text" class="pricing-input" value="' + monthlyReqs + '" style="width:90px"/></td>' +
               '<td><input type="number" class="pricing-input" value="' + (p.rate_limit_per_second || '') + '" style="width:70px"/></td>' +
               '<td><span class="badge-pill ' + (p.webhooks_enabled ? 'badge-green">Yes' : 'badge-gray">No') + '</span></td>' +
               '<td>' + (p.support_type || '') + '</td>' +

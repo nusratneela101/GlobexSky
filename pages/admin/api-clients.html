@@ -396,6 +396,18 @@
     return 'badge-orange';
   }
 
+  function formatRequestLimit(limit) {
+    if (!limit) return '—';
+    if (limit >= 1000000) return (limit / 1000000) + 'M';
+    if (limit >= 1000) return (limit / 1000) + 'K';
+    return String(limit);
+  }
+
+  function maskApiKey(key) {
+    if (!key || key.length < 4) return key || '—';
+    return 'sk_live_••••••••' + key.slice(-4);
+  }
+
   function renderClients() {
     var tbody = document.getElementById('clientBody');
     if (!clients.length) {
@@ -405,27 +417,36 @@
     tbody.innerHTML = clients.map(function(c, idx) {
       var usagePct = c.request_limit ? Math.min(100, Math.round((c.requests_used / c.request_limit) * 100)) : 0;
       var usageColor = usagePct >= 90 ? '#ef4444' : usagePct >= 70 ? '#f97316' : '#0052CC';
-      var maskedKey = c.api_key ? ('sk_live_••••••••' + c.api_key.slice(-4)) : '—';
       var keyHtml = c.api_key
-        ? '<span class="api-key-display">' + maskedKey + '<button class="copy-btn" onclick="copyKey(event,\'' + c.api_key + '\')" title="Copy"><i class="fas fa-copy"></i></button></span>'
+        ? '<span class="api-key-display">' + maskApiKey(c.api_key) + '<button class="copy-btn" data-key="' + idx + '" title="Copy" onclick="copyClientKey(event,' + idx + ')"><i class="fas fa-copy"></i></button></span>'
         : '<span class="api-key-display" style="color:#94a3b8">—</span>';
       var statusLabel = c.status ? (c.status.charAt(0).toUpperCase() + c.status.slice(1)) : 'Unknown';
       var planLabel = c.plan || 'Basic';
+      var clientName = (c.company_name || c.name || '').replace(/'/g, '&#39;');
       var actions = statusLabel === 'Active'
-        ? '<button class="btn-sm btn-secondary" onclick="viewClient(' + idx + ')"><i class="fas fa-eye"></i></button><button class="btn-sm btn-danger" onclick="suspendClient(this,\'' + (c.company_name || c.name || '') + '\')">Suspend</button>'
+        ? '<button class="btn-sm btn-secondary" onclick="viewClient(' + idx + ')"><i class="fas fa-eye"></i></button><button class="btn-sm btn-danger" onclick="suspendClient(this,\'' + clientName + '\')">Suspend</button>'
         : statusLabel === 'Pending'
-          ? '<button class="btn-sm btn-success" onclick="approveClient(this,\'' + (c.company_name || c.name || '') + '\')">Approve</button><button class="btn-sm btn-secondary" onclick="viewClient(' + idx + ')"><i class="fas fa-eye"></i></button>'
-          : '<button class="btn-sm btn-secondary" onclick="viewClient(' + idx + ')"><i class="fas fa-eye"></i></button><button class="btn-sm btn-success" onclick="reactivateClient(this,\'' + (c.company_name || c.name || '') + '\')">Reactivate</button>';
+          ? '<button class="btn-sm btn-success" onclick="approveClient(this,\'' + clientName + '\')">Approve</button><button class="btn-sm btn-secondary" onclick="viewClient(' + idx + ')"><i class="fas fa-eye"></i></button>'
+          : '<button class="btn-sm btn-secondary" onclick="viewClient(' + idx + ')"><i class="fas fa-eye"></i></button><button class="btn-sm btn-success" onclick="reactivateClient(this,\'' + clientName + '\')">Reactivate</button>';
       return '<tr data-status="' + statusLabel + '" data-plan="' + planLabel + '">' +
         '<td><div style="font-weight:700;color:#0a0e27">' + (c.company_name || c.name || '—') + '</div><div style="font-size:.78rem;color:#64748b">' + (c.contact_name || c.full_name || '') + '</div></td>' +
         '<td>' + (c.email || '—') + '</td>' +
         '<td><span class="badge-pill ' + planBadgeClass(planLabel) + '">' + planLabel + '</span></td>' +
-        '<td><div class="usage-bar-wrap"><div class="usage-bar"><div class="usage-bar-fill" style="width:' + usagePct + '%;background:' + usageColor + '"></div></div><span class="usage-label">' + (c.requests_used || 0).toLocaleString() + '/' + (c.request_limit ? (c.request_limit >= 1000000 ? (c.request_limit / 1000000) + 'M' : (c.request_limit / 1000) + 'K') : '—') + '</span></div></td>' +
+        '<td><div class="usage-bar-wrap"><div class="usage-bar"><div class="usage-bar-fill" style="width:' + usagePct + '%;background:' + usageColor + '"></div></div><span class="usage-label">' + (c.requests_used || 0).toLocaleString() + '/' + formatRequestLimit(c.request_limit) + '</span></div></td>' +
         '<td><span class="badge-pill ' + statusBadgeClass(statusLabel) + '">' + statusLabel + '</span></td>' +
         '<td>' + keyHtml + '</td>' +
         '<td><div class="btn-action-group">' + actions + '</div></td>' +
         '</tr>';
     }).join('');
+  }
+
+  function copyClientKey(e, idx) {
+    e.stopPropagation();
+    var c = clients[idx];
+    if (c && c.api_key) {
+      navigator.clipboard && navigator.clipboard.writeText(c.api_key);
+      showToast('API key copied to clipboard');
+    }
   }
 
   function viewClient(idx) {
@@ -467,7 +488,8 @@
   function suspendClient(btn, name) {
     var row = btn.closest('tr');
     row.dataset.status = 'Suspended';
-    var statusCell = row.querySelectorAll('td')[4] && row.querySelectorAll('td')[4].querySelector('.badge-pill');
+    var cells = row.querySelectorAll('td');
+    var statusCell = cells[4] ? cells[4].querySelector('.badge-pill') : null;
     if (statusCell) { statusCell.className = 'badge-pill badge-red'; statusCell.textContent = 'Suspended'; }
     btn.textContent = 'Reactivate';
     btn.className = 'btn-sm btn-success';
@@ -478,7 +500,8 @@
   function reactivateClient(btn, name) {
     var row = btn.closest('tr');
     row.dataset.status = 'Active';
-    var statusCell = row.querySelectorAll('td')[4] && row.querySelectorAll('td')[4].querySelector('.badge-pill');
+    var cells = row.querySelectorAll('td');
+    var statusCell = cells[4] ? cells[4].querySelector('.badge-pill') : null;
     if (statusCell) { statusCell.className = 'badge-pill badge-green'; statusCell.textContent = 'Active'; }
     btn.textContent = 'Suspend';
     btn.className = 'btn-sm btn-danger';
