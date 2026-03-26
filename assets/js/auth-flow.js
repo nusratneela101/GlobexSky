@@ -106,11 +106,24 @@
       e.preventDefault();
       hideAlert(alertBox);
 
-      const name = form.querySelector('[name="name"]')?.value.trim() || '';
+      // Support multiple naming conventions used across register form variants
+      const name = (
+        form.querySelector('[name="name"]') ||
+        form.querySelector('[name="full-name"]') ||
+        form.querySelector('[name="fullName"]')
+      )?.value.trim() || '';
       const email = form.querySelector('[name="email"]')?.value.trim() || '';
       const password = form.querySelector('[name="password"]')?.value || '';
-      const confirmPassword = form.querySelector('[name="confirm_password"], [name="confirmPassword"]')?.value || '';
-      const role = form.querySelector('[name="role"]')?.value || 'buyer';
+      const confirmPassword = (
+        form.querySelector('[name="confirm_password"]') ||
+        form.querySelector('[name="confirmPassword"]') ||
+        form.querySelector('[name="confirm-password"]')
+      )?.value || '';
+      // Radio group "account-type" is used in the register page; fall back to "role" select
+      const roleRadio = form.querySelector('[name="account-type"]:checked');
+      const role = roleRadio?.value ||
+        form.querySelector('[name="role"]')?.value ||
+        'buyer';
 
       // Client-side validation
       if (!name || name.length < 2) {
@@ -159,18 +172,35 @@
   /* ─── Forgot Password Page ────────────────────────────────────────────── */
 
   function initForgotPasswordPage() {
-    const form = document.getElementById('forgot-password-form');
+    // Support both id="forgot-password-form" (preferred) and id="forgotForm" (legacy)
+    const form = document.getElementById('forgot-password-form') ||
+      document.getElementById('forgotForm');
     if (!form) return;
 
-    const alertBox = form.querySelector('.auth-alert') ||
+    // Inject an alert container if one doesn't already exist
+    let alertBox = form.querySelector('.auth-alert') ||
       document.getElementById('forgot-alert');
+    if (!alertBox) {
+      alertBox = document.createElement('div');
+      alertBox.id = 'forgot-alert';
+      alertBox.style.display = 'none';
+      form.insertBefore(alertBox, form.firstChild);
+    }
+
     const submitBtn = form.querySelector('[type="submit"]');
+
+    // Prevent the legacy inline onsubmit from running
+    form.removeAttribute('onsubmit');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertBox);
 
-      const email = form.querySelector('[name="email"]')?.value.trim() || '';
+      // Support both name="email" and name="identifier" (legacy forgot-password form)
+      const emailInput = form.querySelector('[name="email"]') ||
+        form.querySelector('[name="identifier"]');
+      const email = emailInput?.value.trim() || '';
+
       if (!email) {
         showAlert(alertBox, 'Please enter your email address.', 'error');
         return;
@@ -181,12 +211,94 @@
       try {
         if (!window.API) throw new Error('API client not loaded.');
         await window.API.auth.forgotPassword(email);
-        showAlert(alertBox, 'Password reset link sent! Check your inbox.', 'success');
+        showAlert(alertBox, 'If that email is registered, a password reset link has been sent. Please check your inbox.', 'success');
         form.reset();
       } catch (err) {
         const msg = (err && err.message) || 'Failed to send reset email. Please try again.';
         showAlert(alertBox, msg, 'error');
       } finally {
+        setLoading(submitBtn, false);
+      }
+    });
+  }
+
+  /* ─── Reset Password Page ─────────────────────────────────────────────── */
+
+  function initResetPasswordPage() {
+    // Support both id="reset-password-form" (preferred) and id="resetForm" (legacy)
+    const form = document.getElementById('reset-password-form') ||
+      document.getElementById('resetForm');
+    if (!form) return;
+
+    // Inject an alert container if one doesn't already exist
+    let alertBox = form.querySelector('.auth-alert') ||
+      document.getElementById('reset-alert');
+    if (!alertBox) {
+      alertBox = document.createElement('div');
+      alertBox.id = 'reset-alert';
+      alertBox.style.display = 'none';
+      form.insertBefore(alertBox, form.firstChild);
+    }
+
+    const submitBtn = form.querySelector('[type="submit"]');
+
+    // Prevent the legacy inline onsubmit from running
+    form.removeAttribute('onsubmit');
+
+    // Extract the recovery token from the URL
+    // Supabase may provide it as ?token_hash=… or in the hash fragment as #access_token=…
+    function getResetToken() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('token_hash')) return params.get('token_hash');
+      if (params.get('token')) return params.get('token');
+      // Hash fragment fallback: #access_token=…&type=recovery
+      const hash = new URLSearchParams(window.location.hash.substring(1));
+      return hash.get('access_token') || null;
+    }
+
+    const token = getResetToken();
+    if (!token) {
+      showAlert(alertBox, 'Invalid or missing reset token. Please request a new password reset link.', 'error');
+      if (submitBtn) submitBtn.disabled = true;
+      return;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert(alertBox);
+
+      const password = (
+        form.querySelector('[name="newpw"]') ||
+        form.querySelector('[name="password"]') ||
+        form.querySelector('[name="new_password"]')
+      )?.value || '';
+      const confirmPassword = (
+        form.querySelector('[name="confirmpw"]') ||
+        form.querySelector('[name="confirm_password"]') ||
+        form.querySelector('[name="confirmPassword"]')
+      )?.value || '';
+
+      if (password.length < 8) {
+        showAlert(alertBox, 'Password must be at least 8 characters.', 'error');
+        return;
+      }
+      if (confirmPassword && confirmPassword !== password) {
+        showAlert(alertBox, 'Passwords do not match.', 'error');
+        return;
+      }
+
+      setLoading(submitBtn, true);
+
+      try {
+        if (!window.API) throw new Error('API client not loaded.');
+        await window.API.auth.resetPassword(token, password);
+        showAlert(alertBox, 'Password reset successful! Redirecting to login…', 'success');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1500);
+      } catch (err) {
+        const msg = (err && err.message) || 'Password reset failed. The link may have expired.';
+        showAlert(alertBox, msg, 'error');
         setLoading(submitBtn, false);
       }
     });
@@ -209,6 +321,7 @@
     initLoginPage();
     initRegisterPage();
     initForgotPasswordPage();
+    initResetPasswordPage();
     checkRegisteredParam();
   });
 })();
