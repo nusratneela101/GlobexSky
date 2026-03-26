@@ -202,5 +202,25 @@
   <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
 </footer>
 <script src="../../assets/js/navbar.js"></script>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
+<script>
+(function(){
+  var API_BASE=(window.GlobexConfig&&window.GlobexConfig.API_BASE_URL)||'/api/v1';
+  function getToken(){try{var s=JSON.parse(localStorage.getItem('globexSession')||'null');return(s&&s.token)||localStorage.getItem('globexToken')||localStorage.getItem('token')||null;}catch(e){return null;}}
+  function esc(v){var d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML;}
+  async function apiFetch(path,opts){var token=getToken();var res=await fetch(API_BASE+path,Object.assign({headers:Object.assign({'Content-Type':'application/json'},token?{'Authorization':'Bearer '+token}:{})},opts||{}));if(!res.ok)throw new Error('HTTP '+res.status);return res.json();}
+  document.addEventListener('DOMContentLoaded',function(){initPage();});
+  async function initPage(){
+    try{
+      var r=await apiFetch('/trade-finance/applications');
+      var items=(r&&r.data)||[];
+      if(!Array.isArray(items))return;
+      var c=document.querySelector("table tbody");
+      if(c&&items.length){c.innerHTML=items.map(function(a){return'<tr><td>'+esc(a.applicationId||a.id||'')+'</td><td>'+esc(a.type||'')+'</td><td>'+esc(a.amount||'')+'</td><td>'+esc(a.counterparty||'')+'</td><td>'+esc(a.dueDate||'')+'</td><td>'+esc(a.status||'')+'</td></tr>';}).join('');}
+    }catch(e){console.warn('API load failed, using static content',e);}
+  }
+})();
+</script>
 </body>
 </html>

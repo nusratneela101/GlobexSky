@@ -284,6 +284,8 @@
 ══════════════════════════════════════════ -->
 <!-- QuaggaJS is loaded dynamically by search.js when barcode scanner is opened -->
 
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/i18n.js"></script>
@@ -315,6 +317,73 @@
       if (q) GlobexSky.SearchHistory.addToHistory(q);
       return origSearch.call(this, q, page, filters);
     };
+  })();
+</script>
+
+<script>
+  /* ── Search results: API initialisation ──────────────────────────────── */
+  (function () {
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    function getToken() {
+      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+    }
+    async function apiFetch(path, options) {
+      var token = getToken();
+      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var q = new URLSearchParams(window.location.search).get('q') || '';
+      if (!q) return;
+
+      /* Pre-populate the search input if present */
+      var input = document.getElementById('main-search-input');
+      if (input && !input.value) input.value = q;
+
+      /* Let GlobexSearch handle the query if available, otherwise use API directly */
+      if (window.GlobexSearch && typeof GlobexSearch.search === 'function') {
+        GlobexSearch.search(q);
+        return;
+      }
+
+      /* Fallback: call /api/v1/search directly */
+      var grid = document.getElementById('products-grid');
+      if (!grid) return;
+      grid.innerHTML = '<p style="color:#64748b;padding:1rem 0">Searching for <strong>' + esc(q) + '</strong>…</p>';
+
+      apiFetch('/search?q=' + encodeURIComponent(q)).then(function (data) {
+        var items = (data && (data.data || data.products || data.items || data.results)) || [];
+        var count = document.getElementById('results-count');
+        if (count) count.textContent = items.length + ' result' + (items.length !== 1 ? 's' : '') + ' for "' + q + '"';
+
+        if (!items.length) {
+          grid.innerHTML = '<p style="color:#64748b;padding:1rem 0">No results found for <strong>' + esc(q) + '</strong>.</p>';
+          return;
+        }
+        grid.innerHTML = items.map(function (p) {
+          var img  = esc(p.image || p.images?.[0] || 'https://via.placeholder.com/200x200/EBF4FF/0052CC?text=Product');
+          var name = esc(p.name || p.title || 'Product');
+          var price = p.price != null ? esc(p.price) : '';
+          var href  = p.id ? ('../product/index.html?id=' + encodeURIComponent(p.id)) : '#';
+          return '<article class="product-card" role="listitem">' +
+            '<a href="' + href + '" aria-label="View ' + name + '">' +
+              '<div class="product-img-wrap"><img src="' + img + '" alt="' + name + '" loading="lazy" /></div>' +
+            '</a>' +
+            '<div class="product-body">' +
+              '<div class="product-name">' + name + '</div>' +
+              (price ? '<div class="product-price">' + price + '</div>' : '') +
+            '</div>' +
+          '</article>';
+        }).join('');
+      }).catch(function () {
+        /* API unavailable — search.js already showing its own state */
+      });
+    });
   })();
 </script>
 

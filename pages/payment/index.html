@@ -89,7 +89,7 @@
         </div>
         <div class="card">
           <div class="card-title"><i class="fas fa-credit-card"></i> Payment Method</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">
+          <div id="payment-methods-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">
             <label style="border:2px solid #0052CC;border-radius:10px;padding:16px;cursor:pointer;text-align:center;background:#f0f4ff"><input type="radio" name="pay" value="bkash" checked style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">📱</div><strong style="font-size:.85rem">bKash</strong></label>
             <label style="border:2px solid #e2e8f0;border-radius:10px;padding:16px;cursor:pointer;text-align:center"><input type="radio" name="pay" value="nagad" style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">💳</div><strong style="font-size:.85rem">Nagad</strong></label>
             <label style="border:2px solid #e2e8f0;border-radius:10px;padding:16px;cursor:pointer;text-align:center"><input type="radio" name="pay" value="card" style="display:none"><div style="font-size:1.5rem;margin-bottom:6px">🏦</div><strong style="font-size:.85rem">Card</strong></label>
@@ -131,8 +131,53 @@
     </ul>
   </div>
 </footer>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/config.js" defer></script>
 <script src="../../assets/js/main.js" defer></script>
 <script src="../../assets/js/payment.js" defer></script>
+<script>
+  /* ── Payment methods: dynamic API loader ─────────────────────────────── */
+  (function () {
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    function getToken() {
+      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+    }
+    async function apiFetch(path, options) {
+      var token = getToken();
+      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var grid = document.getElementById('payment-methods-grid');
+      if (!grid) return;
+
+      apiFetch('/payments/methods').then(function (data) {
+        var methods = (data && (data.data || data.methods || data.items)) || [];
+        if (!methods.length) return; /* keep static fallback */
+        grid.innerHTML = methods.map(function (m, i) {
+          var val   = esc(m.id   || m.code  || m.type  || ('method-' + i));
+          var label = esc(m.name || m.label || m.title || val);
+          var icon  = esc(m.icon || m.emoji || '💳');
+          var checked = i === 0 ? ' checked' : '';
+          var border  = i === 0 ? '#0052CC' : '#e2e8f0';
+          var bg      = i === 0 ? '#f0f4ff' : 'transparent';
+          return '<label style="border:2px solid ' + border + ';border-radius:10px;padding:16px;cursor:pointer;text-align:center;background:' + bg + '">' +
+            '<input type="radio" name="pay" value="' + val + '"' + checked + ' style="display:none">' +
+            '<div style="font-size:1.5rem;margin-bottom:6px">' + icon + '</div>' +
+            '<strong style="font-size:.85rem">' + label + '</strong>' +
+          '</label>';
+        }).join('');
+      }).catch(function () {
+        /* API unavailable — keep static payment methods */
+      });
+    });
+  })();
+</script>
 </body>
 </html>

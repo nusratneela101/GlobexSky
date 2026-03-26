@@ -200,7 +200,25 @@
   loadActiveSales();
   loadUpcomingSales();
 </script>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/navbar.js"></script>
   <script src="../../assets/js/campaigns.js"></script>
+<script>
+  /* ── Flash sales: standard API helpers (used by inline and campaigns.js) */
+  (function () {
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    function getToken() {
+      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+    }
+    async function apiFetch(path, options) {
+      var token = getToken();
+      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    window.GlobexApiHelpers = { API_BASE: API_BASE, getToken: getToken, apiFetch: apiFetch };
+  })();
+</script>
 </body>
 </html>

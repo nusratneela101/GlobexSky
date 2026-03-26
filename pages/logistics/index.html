@@ -144,5 +144,25 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function(){
 });
 </script>
   <script src="../../assets/js/logistics.js"></script>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
+<script>
+(function(){
+  var API_BASE=(window.GlobexConfig&&window.GlobexConfig.API_BASE_URL)||'/api/v1';
+  function getToken(){try{var s=JSON.parse(localStorage.getItem('globexSession')||'null');return(s&&s.token)||localStorage.getItem('globexToken')||localStorage.getItem('token')||null;}catch(e){return null;}}
+  function esc(v){var d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML;}
+  async function apiFetch(path,opts){var token=getToken();var res=await fetch(API_BASE+path,Object.assign({headers:Object.assign({'Content-Type':'application/json'},token?{'Authorization':'Bearer '+token}:{})},opts||{}));if(!res.ok)throw new Error('HTTP '+res.status);return res.json();}
+  document.addEventListener('DOMContentLoaded',function(){initPage();});
+  async function initPage(){
+    try{
+      var r=await apiFetch('/shipments');
+      var items=(r&&r.data)||[];
+      if(!Array.isArray(items))return;
+      var c=document.querySelector("table tbody,[class*='shipment-list']");
+      if(c&&items.length){c.innerHTML=items.map(function(s){return'<tr><td>'+esc(s.trackingNumber||s.id||'')+'</td><td>'+esc(s.status||'')+'</td><td>'+esc(s.destination||'')+'</td></tr>';}).join('');}
+    }catch(e){console.warn('API load failed, using static content',e);}
+  }
+})();
+</script>
 </body>
 </html>

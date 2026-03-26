@@ -28,7 +28,7 @@ export { default as FeatureToggle } from './FeatureToggle.js';
 export { default as TradeShow } from './TradeShow.js';
 export { default as Message } from './Message.js';
 export { default as Conversation } from './Conversation.js';
-export { default as Chat } from './Chat.js';
+
 
 import BaseModel from './BaseModel.js';
 import User from './User.js';
@@ -49,7 +49,6 @@ import FeatureToggle from './FeatureToggle.js';
 import TradeShow from './TradeShow.js';
 import Message from './Message.js';
 import Conversation from './Conversation.js';
-import Chat from './Chat.js';
 
 export default {
   BaseModel,
@@ -71,5 +70,5 @@ export default {
   TradeShow,
   Message,
   Conversation,
-  Chat,
+
 };

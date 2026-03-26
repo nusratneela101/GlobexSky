@@ -933,7 +933,7 @@
       </nav>
 
       <!-- Order Header Card -->
-      <div class="order-header-card" role="region" aria-label="Order summary header">
+      <div class="order-header-card" role="region" aria-label="Order summary header" id="order-header-card">
         <div class="order-header-left">
           <h1>
             <i class="fas fa-receipt" aria-hidden="true"></i>
@@ -1407,6 +1407,89 @@
         initContactSeller();
       });
 
+    }());
+  </script>
+
+  <script src="../../assets/js/api-service.js"></script>
+  <script src="../../assets/js/dynamic-loader.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      function _esc(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function getOrderIdFromURL() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get('id') || params.get('orderId') || params.get('order_id') || null;
+      }
+
+      function applyOrderData(order) {
+        // Update order header
+        var h1 = document.querySelector('#order-header-card h1');
+        if (h1) {
+          h1.innerHTML = '<i class="fas fa-receipt" aria-hidden="true"></i> Order ' +
+            _esc(order.orderNumber || order.number || ('#' + (order.id || order._id || '')));
+        }
+
+        // Update date
+        var metaItems = document.querySelectorAll('.order-meta-item');
+        if (metaItems[0]) {
+          metaItems[0].innerHTML = '<i class="fas fa-calendar-alt" aria-hidden="true"></i> ' +
+            _esc(order.date || order.createdAt || order.orderDate || '');
+        }
+        if (metaItems[1] && (order.supplierName || order.vendorName)) {
+          metaItems[1].innerHTML = '<i class="fas fa-store" aria-hidden="true"></i> ' +
+            _esc(order.supplierName || order.vendorName || '');
+        }
+        if (metaItems[2]) {
+          var itemCount = parseInt(order.itemCount || (order.items && order.items.length) || 0, 10);
+          metaItems[2].innerHTML = '<i class="fas fa-cubes" aria-hidden="true"></i> ' + itemCount + ' item' + (itemCount !== 1 ? 's' : '');
+        }
+
+        // Update status badge
+        var badge = document.getElementById('order-status-badge');
+        if (badge) {
+          var status = (order.status || 'processing');
+          badge.className = 'status-badge ' + status.toLowerCase();
+          badge.setAttribute('aria-label', 'Order status: ' + _esc(status));
+          badge.innerHTML = '<span class="status-dot" aria-hidden="true"></span>' + _esc(status.charAt(0).toUpperCase() + status.slice(1));
+          // Sync the IIFE's ORDER_STATUS variable if accessible
+          if (typeof window._setOrderStatus === 'function') window._setOrderStatus(status.toLowerCase());
+        }
+      }
+
+      window.initOrderDetailsPage = function () {
+        if (!window.ApiService) return;
+
+        var orderId = getOrderIdFromURL();
+        if (!orderId) return; // No ID in URL; keep static fallback
+
+        window.ApiService.get('/orders/' + orderId)
+          .then(function (data) {
+            var order = (data && (data.order || data.data || data)) || {};
+            if (order && (order.id || order._id || order.orderNumber)) {
+              applyOrderData(order);
+            }
+          })
+          .catch(function (err) {
+            if (err && err.status === 401) {
+              window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
+              return;
+            }
+            if (err && err.status === 404) {
+              showToast && showToast('Order not found.', 'error');
+            }
+            // Keep static fallback content on other errors
+          });
+      };
+
+      document.addEventListener('DOMContentLoaded', function () {
+        window.initOrderDetailsPage();
+      });
     }());
   </script>
 </body>
