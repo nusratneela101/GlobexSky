@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="../../assets/css/main.css"/>
   <link rel="stylesheet" href="../../assets/css/search.css"/>
+  <link rel="stylesheet" href="../../assets/css/search-history.css"/>
 </head>
 <body class="search-page">
 
@@ -61,6 +62,12 @@
       <!-- Search Button -->
       <button class="search-icon-btn btn-search-go" id="btn-search-go" aria-label="Search">
         <i class="fas fa-search"></i> <span data-i18n="search.searchBtn">Search</span>
+      </button>
+
+      <!-- Save Search Button (shown when query is typed) -->
+      <button class="search-icon-btn sh-save-btn" id="btn-save-search" title="Save this search"
+              aria-label="Save this search" style="display:none">
+        <i class="fas fa-bookmark"></i>
       </button>
     </div>
 
@@ -277,13 +284,39 @@
 ══════════════════════════════════════════ -->
 <!-- QuaggaJS is loaded dynamically by search.js when barcode scanner is opened -->
 
-<!-- Core modules -->
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/search-history.js"></script>
 <script src="../../assets/js/search.js"></script>
 <script src="../../assets/js/search-filters.js"></script>
 <script src="../../assets/js/search-ai.js"></script>
+<script>
+  // Wire up the Save Search button in the search bar
+  (function () {
+    const saveBtn = document.getElementById('btn-save-search');
+    const input   = document.getElementById('main-search-input');
+    if (!saveBtn || !input) return;
+
+    input.addEventListener('input', function () {
+      saveBtn.style.display = this.value.trim() ? 'flex' : 'none';
+    });
+
+    saveBtn.addEventListener('click', function () {
+      const q = input.value.trim();
+      if (!q) return;
+      const activeFilters = (window.GlobexSearch && GlobexSearch._activeFilters) || {};
+      GlobexSky.SearchHistory.showSaveModal(q, activeFilters);
+    });
+
+    // Auto-save to history on every search
+    const origSearch = GlobexSearch.search;
+    GlobexSearch.search = function (q, page, filters) {
+      if (q) GlobexSky.SearchHistory.addToHistory(q);
+      return origSearch.call(this, q, page, filters);
+    };
+  })();
+</script>
 
 </body>
 </html>

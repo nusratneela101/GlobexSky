@@ -65,7 +65,7 @@ import uploadRoutes from './routes/upload.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import pushNotificationRoutes from './routes/pushNotification.routes.js';
 import advancedSearchRoutes from './routes/advancedSearch.routes.js';
-import barcodeRoutes from './routes/barcode.routes.js';
+
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
 import seoRoutes from './routes/seo.routes.js';
@@ -180,6 +180,7 @@ app.use(`${API}/flash-sales`, flashSaleRoutes);
 app.use(`${API}/chatbot`, chatbotRoutes);
 app.use(`${API}/loyalty`, loyaltyRoutes);
 app.use(`${API}/video-meetings`, videoMeetingRoutes);
+app.use(`${API}/search`, searchRoutes);
 app.use(`${API}/search`, advancedSearchRoutes);
 app.use(`${API}/barcode`, barcodeRoutes);
 app.use(`${API}/backup`, backupRoutes);
