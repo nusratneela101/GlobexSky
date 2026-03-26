@@ -117,7 +117,7 @@ const DynamicLoader = (() => {
       var json = await _fetch(config.apiPath, config.params || {});
       var items = json.data || json.results || json || [];
 
-      if (!Array.isArray(items) ? !items : items.length === 0) {
+      if (!items || (Array.isArray(items) && items.length === 0)) {
         container.innerHTML = _emptyHtml(config.emptyMsg);
         return;
       }
@@ -279,7 +279,7 @@ const DynamicLoader = (() => {
       var json = await _fetch(config.apiPath, params);
       var items = json.data || json.results || json || [];
 
-      if (!Array.isArray(items) ? !items : items.length === 0) {
+      if (!items || (Array.isArray(items) && items.length === 0)) {
         container.innerHTML = _emptyHtml(config.emptyMsg);
         _clearPagination(config.paginationId);
         return;
@@ -310,18 +310,29 @@ const DynamicLoader = (() => {
 
     if (totalPages <= 1) { el.innerHTML = ''; return; }
 
-    var html = '<nav style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">';
+    var nav = document.createElement('nav');
+    nav.style.cssText = 'display:flex;gap:6px;align-items:center;flex-wrap:wrap';
+
     for (var p = 1; p <= totalPages; p++) {
-      var active = p === currentPage
-        ? 'background:#0052CC;color:#fff;border-color:#0052CC'
-        : 'background:#fff;color:#334155;border-color:#e2e8f0';
-      var cfg = JSON.stringify(Object.assign({}, config, { page: p }));
-      html += '<button onclick="DynamicLoader.loadPaginated(' + cfg.replace(/"/g, '&quot;') + ')" ' +
-        'style="padding:4px 10px;border:1px solid;border-radius:6px;cursor:pointer;font-size:.8rem;' + active + '">' +
-        p + '</button>';
+      var btn = document.createElement('button');
+      btn.textContent = String(p);
+      btn.style.cssText = 'padding:4px 10px;border:1px solid;border-radius:6px;cursor:pointer;font-size:.8rem;' +
+        (p === currentPage
+          ? 'background:#0052CC;color:#fff;border-color:#0052CC'
+          : 'background:#fff;color:#334155;border-color:#e2e8f0');
+
+      /* Capture page number in a closure to avoid the classic loop-variable trap. */
+      (function(pageNum) {
+        btn.addEventListener('click', function() {
+          loadPaginated(Object.assign({}, config, { page: pageNum }));
+        });
+      }(p));
+
+      nav.appendChild(btn);
     }
-    html += '</nav>';
-    el.innerHTML = html;
+
+    el.innerHTML = '';
+    el.appendChild(nav);
   }
 
   /* ─────────────────────────────────────────────

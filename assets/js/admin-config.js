@@ -23,6 +23,12 @@ const AdminConfig = (() => {
   }
 
   /* ─────────────────────────────────────────────
+     CONSTANTS
+  ───────────────────────────────────────────── */
+
+  var MASKED_VALUE = '••••••••';
+
+  /* ─────────────────────────────────────────────
      AUTH TOKEN
   ───────────────────────────────────────────── */
 
@@ -168,7 +174,7 @@ const AdminConfig = (() => {
           var el = document.querySelector(
             '[data-service="' + service + '"][data-mode="' + svcMode + '"][data-key="' + row.setting_key + '"]'
           );
-          if (el && row.setting_value && row.setting_value !== '••••••••') {
+          if (el && row.setting_value && row.setting_value !== MASKED_VALUE) {
             el.value = row.setting_value;
           }
         });
@@ -246,7 +252,7 @@ const AdminConfig = (() => {
     document.querySelectorAll(selector).forEach(function(el) {
       var key = el.getAttribute('data-key');
       var val = el.value.trim();
-      if (val && val !== '••••••••') settings[key] = val;
+      if (val && val !== MASKED_VALUE) settings[key] = val;
     });
     return settings;
   }
