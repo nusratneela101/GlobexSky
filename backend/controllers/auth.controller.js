@@ -91,9 +91,26 @@ export async function forgotPassword(req, res, next) {
 /** POST /api/v1/auth/reset-password */
 export async function resetPassword(req, res, next) {
   try {
-    const { token, password } = req.body;
-    const { error } = await supabase.auth.admin.updateUserById(token, { password });
-    if (error) return res.status(400).json({ success: false, error: error.message });
+    const { token_hash, token, password } = req.body;
+    const hash = token_hash || token;
+
+    if (!hash || !password) {
+      return res.status(400).json({ success: false, error: 'token_hash and password are required.' });
+    }
+
+    // Verify the recovery OTP to get the authenticated user, then update password
+    const { data, error: verifyError } = await supabase.auth.verifyOtp({
+      token_hash: hash,
+      type: 'recovery',
+    });
+
+    if (verifyError || !data?.user) {
+      return res.status(400).json({ success: false, error: verifyError?.message || 'Invalid or expired reset token.' });
+    }
+
+    const { error: updateError } = await supabase.auth.admin.updateUserById(data.user.id, { password });
+    if (updateError) return res.status(400).json({ success: false, error: updateError.message });
+
     res.json({ success: true, message: 'Password reset successfully.' });
   } catch (err) {
     next(err);

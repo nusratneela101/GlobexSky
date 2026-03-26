@@ -161,7 +161,11 @@ router.post('/forgot-password',
 );
 
 router.post('/reset-password',
-  [body('token').notEmpty(), body('password').isLength({ min: 6 })],
+  [
+    body('password').isLength({ min: 6 }),
+    body('token_hash').optional().notEmpty(),
+    body('token').optional().notEmpty(),
+  ],
   validate,
   ctrl.resetPassword,
 );
