@@ -1560,7 +1560,7 @@
   <section class="related-section" aria-labelledby="related-heading">
     <div class="container">
       <h2 class="section-heading" id="related-heading" data-i18n="related.heading">Related Products</h2>
-      <div class="products-grid">
+      <div class="products-grid" id="related-products-grid">
 
         <article class="product-card">
           <a href="#" aria-label="View SoundWave Over-Ear Pro H900">
@@ -1791,6 +1791,8 @@
 </footer>
 
 <!-- ═══════════════════════════════════════════════════════════ SCRIPTS ══ -->
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/config.js"    defer></script>
 <script src="../../assets/js/i18n.js"    defer></script>
 <script src="../../assets/js/navbar.js"  defer></script>
@@ -1911,6 +1913,69 @@
       if (tabsSection) { tabsSection.scrollIntoView({ behavior: 'smooth' }); }
     });
   }
+</script>
+
+<script>
+  /* ── Related Products: dynamic API loader ─────────────────────────────── */
+  (function () {
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    function getToken() {
+      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+    }
+    async function apiFetch(path, options) {
+      var token = getToken();
+      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var grid = document.getElementById('related-products-grid');
+      if (!grid) return;
+
+      var params = new URLSearchParams(window.location.search);
+      var query = '';
+      if (params.get('category')) query += '&category=' + encodeURIComponent(params.get('category'));
+      if (params.get('q'))        query += '&q='        + encodeURIComponent(params.get('q'));
+      if (params.get('page'))     query += '&page='     + encodeURIComponent(params.get('page'));
+
+      grid.innerHTML = '<p style="color:#64748b;padding:1rem">Loading products…</p>';
+
+      apiFetch('/products?' + query.replace(/^&/, '')).then(function (data) {
+        var items = (data && (data.data || data.products || data.items || data.results)) || [];
+        if (!items.length) {
+          grid.innerHTML = '<p style="color:#64748b;padding:1rem">No products found.</p>';
+          return;
+        }
+        grid.innerHTML = items.map(function (p) {
+          var img   = esc(p.image || p.images?.[0] || 'https://via.placeholder.com/200x200/EBF4FF/0052CC?text=Product');
+          var name  = esc(p.name  || p.title || 'Product');
+          var price = esc(p.price != null ? p.price : (p.sale_price != null ? p.sale_price : ''));
+          var old   = esc(p.original_price || p.compare_price || '');
+          var href  = p.id ? ('index.html?id=' + encodeURIComponent(p.id)) : '#';
+          return '<article class="product-card">' +
+            '<a href="' + href + '" aria-label="View ' + name + '">' +
+              '<div class="product-card-img-wrap">' +
+                '<img src="' + img + '" alt="' + name + '" width="200" height="200" loading="lazy" />' +
+              '</div>' +
+            '</a>' +
+            '<div class="product-card-body">' +
+              '<div class="product-card-name">' + name + '</div>' +
+              (price ? '<div class="product-card-price">' + price + '</div>' : '') +
+              (old   ? '<div class="product-card-old-price">' + old + '</div>' : '') +
+              '<button class="product-card-btn" type="button" aria-label="Add ' + name + ' to cart">Add to Cart</button>' +
+            '</div>' +
+          '</article>';
+        }).join('');
+      }).catch(function () {
+        /* API unavailable — keep existing static content */
+        grid.innerHTML = grid.innerHTML || '<p style="color:#64748b;padding:1rem">Unable to load products.</p>';
+      });
+    });
+  })();
 </script>
 
 </body>
