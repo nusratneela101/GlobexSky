@@ -100,6 +100,9 @@ const io = new SocketIOServer(httpServer, websocketConfig.options);
 initializeWebSocket(io);
 initializeWebRTC(io);
 
+// Make io accessible to route handlers via req.app.get('io')
+app.set('io', io);
+
 // ─── Core Middleware ─────────────────────────────────────────────────────────
 app.use(helmet());
 app.use(corsConfig);
