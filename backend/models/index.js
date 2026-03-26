@@ -26,6 +26,8 @@ export { default as BlogPost } from './BlogPost.js';
 export { default as CarrierProduct } from './CarrierProduct.js';
 export { default as FeatureToggle } from './FeatureToggle.js';
 export { default as TradeShow } from './TradeShow.js';
+export { default as Message } from './Message.js';
+export { default as Conversation } from './Conversation.js';
 
 import BaseModel from './BaseModel.js';
 import User from './User.js';
@@ -44,6 +46,8 @@ import BlogPost from './BlogPost.js';
 import CarrierProduct from './CarrierProduct.js';
 import FeatureToggle from './FeatureToggle.js';
 import TradeShow from './TradeShow.js';
+import Message from './Message.js';
+import Conversation from './Conversation.js';
 
 export default {
   BaseModel,
@@ -63,4 +67,6 @@ export default {
   CarrierProduct,
   FeatureToggle,
   TradeShow,
+  Message,
+  Conversation,
 };
