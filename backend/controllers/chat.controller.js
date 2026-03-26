@@ -1,4 +1,5 @@
 import supabase from '../config/supabase.js';
+import websocketConfig from '../config/websocket.js';
 
 export async function listConversations(req, res, next) {
   try {
@@ -32,8 +33,21 @@ export async function createConversation(req, res, next) {
 export async function sendMessage(req, res, next) {
   try {
     const { content, type = 'text' } = req.body;
-    const { data, error } = await supabase.from('messages').insert({ conversation_id: req.params.id, sender_id: req.user.id, content, type }).select().single();
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({ conversation_id: req.params.id, sender_id: req.user.id, content, type })
+      .select('*, sender:profiles!sender_id(full_name,avatar_url)')
+      .single();
     if (error) return res.status(400).json({ success: false, error: error.message });
+
+    // Broadcast via Socket.IO for real-time delivery to conversation participants
+    const io = req.app.get('io');
+    if (io) {
+      io.of(websocketConfig.namespaces.chat)
+        .to(`conversation:${req.params.id}`)
+        .emit('message:new', data);
+    }
+
     res.status(201).json({ success: true, data });
   } catch (err) { next(err); }
 }
