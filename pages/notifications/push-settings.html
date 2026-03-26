@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Push Notification Settings | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/push-notifications.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #003d99;
+      --primary-light: #e6f0ff;
+      --accent: #00C9A7;
+      --bg: #f4f6fa;
+      --dark: #0a0e27;
+      --text: #2d3748;
+      --muted: #718096;
+      --card: #fff;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,.08);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── HEADER ── */
+    .site-header { position: sticky; top: 0; z-index: 1000; background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .nav-container { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 66px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; text-decoration: none; white-space: nowrap; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .nav-link { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: .88rem; font-weight: 500; color: var(--text); text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+    .nav-link:hover { background: var(--primary-light); color: var(--primary); }
+    .nav-link.btn-primary { background: var(--primary); color: #fff; }
+    .nav-link.btn-primary:hover { background: var(--primary-dark); }
+
+    /* ── PAGE HERO ── */
+    .page-hero { background: linear-gradient(135deg, var(--primary) 0%, #1a6bde 60%, var(--accent) 100%); color: #fff; padding: 36px 24px 32px; }
+    .page-hero-inner { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 7px; color: rgba(255,255,255,.8); font-size: .88rem; font-weight: 500; margin-bottom: 16px; transition: color .2s; }
+    .back-link:hover { color: #fff; }
+    .page-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .page-hero h1 { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .page-hero h1 i { background: rgba(255,255,255,.18); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .page-hero p { font-size: .95rem; opacity: .88; max-width: 460px; }
+
+    /* ── MAIN ── */
+    main { flex: 1; }
+    .main-content { max-width: 900px; margin: 0 auto; padding: 28px 24px 60px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* ── CARD ── */
+    .push-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .push-card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
+    .push-card-title { font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--dark); display: flex; align-items: center; gap: 9px; }
+    .push-card-title i { color: var(--primary); }
+    .push-card-subtitle { font-size: .83rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer { background: var(--dark); color: rgba(255,255,255,.6); text-align: center; padding: 20px; font-size: .82rem; }
+    .site-footer a { color: rgba(255,255,255,.75); }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header" role="banner">
+  <div class="nav-container">
+    <a href="/index.html" class="nav-logo" aria-label="Globex Sky Home">Globex Sky</a>
+    <nav class="nav-actions" aria-label="Main navigation">
+      <a href="/pages/notifications/preferences.html" class="nav-link">
+        <i class="fa-solid fa-bell" aria-hidden="true"></i> Notifications
+      </a>
+      <a href="/pages/account/orders.html" class="nav-link">
+        <i class="fa-solid fa-box" aria-hidden="true"></i> Orders
+      </a>
+      <a href="/pages/auth/login.html" class="nav-link btn-primary">
+        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Sign In
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── PAGE HERO ── -->
+<div class="page-hero" role="region" aria-label="Page header">
+  <div class="page-hero-inner">
+    <a href="/pages/notifications/preferences.html" class="back-link">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Notifications
+    </a>
+    <div class="page-hero-top">
+      <div>
+        <h1><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i> Push Notification Settings</h1>
+        <p>Manage your mobile push notifications, quiet hours, and delivery preferences.</p>
+      </div>
+      <span id="push-permission-badge" class="push-status-badge default" aria-live="polite">
+        <i class="fa-solid fa-bell" aria-hidden="true"></i> Not Set
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main>
+  <div class="main-content">
+
+    <!-- Permission Banner -->
+    <div id="push-permission-banner" class="push-permission-banner" role="alert">
+      <span class="banner-icon" aria-hidden="true">🔔</span>
+      <div class="banner-text">
+        <strong>Enable Push Notifications</strong>
+        <span>Stay updated with order status, messages, and promotions.</span>
+      </div>
+      <div class="banner-actions">
+        <button id="btn-allow-push" class="btn-allow" type="button">Allow</button>
+        <button id="btn-dismiss-banner" class="btn-dismiss" type="button" aria-label="Dismiss banner">Dismiss</button>
+      </div>
+    </div>
+
+    <!-- Master Toggle -->
+    <section class="push-card push-master-toggle" aria-label="Push notifications master toggle">
+      <div class="toggle-info">
+        <div class="toggle-title">
+          <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          Push Notifications
+        </div>
+        <div class="toggle-desc">Receive real-time alerts on your device even when the browser is closed.</div>
+      </div>
+      <label class="push-toggle-switch" for="push-master-toggle">
+        <input type="checkbox" id="push-master-toggle" role="switch" aria-label="Enable push notifications" />
+        <span class="slider" aria-hidden="true"></span>
+      </label>
+    </section>
+
+    <!-- Category Preferences -->
+    <section class="push-card" aria-label="Notification category preferences">
+      <div class="push-card-header">
+        <div>
+          <div class="push-card-title"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Notification Categories</div>
+          <div class="push-card-subtitle">Choose which types of notifications you want to receive.</div>
+        </div>
+      </div>
+      <div class="push-categories" role="list">
+
+        <div class="push-category-item" role="listitem">
+          <div class="push-category-icon orders" aria-hidden="true"><i class="fa-solid fa-box"></i></div>
+          <div class="push-category-info">
+            <div class="cat-name">Orders</div>
+            <div class="cat-desc">Order confirmations, updates, and delivery status changes.</div>
+          </div>
+          <label class="push-toggle-switch" for="pref-orders">
+            <input type="checkbox" id="pref-orders" checked role="switch" aria-label="Orders notifications" />
+            <span class="slider" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="push-category-item" role="listitem">
+          <div class="push-category-icon messages" aria-hidden="true"><i class="fa-solid fa-message"></i></div>
+          <div class="push-category-info">
+            <div class="cat-name">Messages</div>
+            <div class="cat-desc">New messages from suppliers, buyers, and support.</div>
+          </div>
+          <label class="push-toggle-switch" for="pref-messages">
+            <input type="checkbox" id="pref-messages" checked role="switch" aria-label="Messages notifications" />
+            <span class="slider" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="push-category-item" role="listitem">
+          <div class="push-category-icon shipping" aria-hidden="true"><i class="fa-solid fa-truck"></i></div>
+          <div class="push-category-info">
+            <div class="cat-name">Shipping</div>
+            <div class="cat-desc">Tracking updates, dispatch notices, and customs alerts.</div>
+          </div>
+          <label class="push-toggle-switch" for="pref-shipping">
+            <input type="checkbox" id="pref-shipping" checked role="switch" aria-label="Shipping notifications" />
+            <span class="slider" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="push-category-item" role="listitem">
+          <div class="push-category-icon prices" aria-hidden="true"><i class="fa-solid fa-tag"></i></div>
+          <div class="push-category-info">
+            <div class="cat-name">Prices</div>
+            <div class="cat-desc">Price drop alerts for saved products and watchlists.</div>
+          </div>
+          <label class="push-toggle-switch" for="pref-prices">
+            <input type="checkbox" id="pref-prices" role="switch" aria-label="Prices notifications" />
+            <span class="slider" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="push-category-item" role="listitem">
+          <div class="push-category-icon promos" aria-hidden="true"><i class="fa-solid fa-percent"></i></div>
+          <div class="push-category-info">
+            <div class="cat-name">Promotions</div>
+            <div class="cat-desc">Flash sales, exclusive deals, and platform announcements.</div>
+          </div>
+          <label class="push-toggle-switch" for="pref-promotions">
+            <input type="checkbox" id="pref-promotions" role="switch" aria-label="Promotions notifications" />
+            <span class="slider" aria-hidden="true"></span>
+          </label>
+        </div>
+
+      </div>
+      <!-- Save bar -->
+      <div class="push-save-bar">
+        <span id="save-feedback" class="save-feedback">
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Saved
+        </span>
+        <button id="btn-save-prefs" class="btn-save-prefs" type="button">
+          <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Save Preferences
+        </button>
+      </div>
+    </section>
+
+    <!-- Quiet Hours -->
+    <section class="push-card" aria-label="Quiet hours configuration">
+      <div class="push-card-header">
+        <div>
+          <div class="push-card-title"><i class="fa-solid fa-moon" aria-hidden="true"></i> Quiet Hours</div>
+          <div class="push-card-subtitle">Suppress notifications during specific hours.</div>
+        </div>
+        <label class="push-toggle-switch" for="quiet-enabled">
+          <input type="checkbox" id="quiet-enabled" role="switch" aria-label="Enable quiet hours" />
+          <span class="slider" aria-hidden="true"></span>
+        </label>
+      </div>
+      <div id="quiet-hours-grid" class="quiet-hours-grid disabled-row">
+        <div class="quiet-field">
+          <label for="quiet-start">Start Time</label>
+          <input type="time" id="quiet-start" value="22:00" aria-label="Quiet hours start time" />
+        </div>
+        <div class="quiet-field">
+          <label for="quiet-end">End Time</label>
+          <input type="time" id="quiet-end" value="08:00" aria-label="Quiet hours end time" />
+        </div>
+        <div class="quiet-timezone">
+          <i class="fa-regular fa-clock" aria-hidden="true"></i>
+          Times are in your local timezone (<span id="tz-label">detecting…</span>).
+        </div>
+      </div>
+    </section>
+
+    <!-- Test Notification -->
+    <section class="push-card" aria-label="Test notification">
+      <div class="push-test-section">
+        <div class="push-test-info">
+          <div class="test-title">Test Push Notification</div>
+          <div class="test-desc">Send a sample notification to verify everything is working correctly.</div>
+        </div>
+        <button id="btn-test-push" class="btn-test-push" type="button">
+          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Test
+        </button>
+      </div>
+    </section>
+
+    <!-- Notification History -->
+    <section class="push-card" aria-label="Notification history">
+      <div class="push-card-header">
+        <div>
+          <div class="push-card-title"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Recent Notifications</div>
+          <div class="push-card-subtitle">The last 20 push notifications sent to your device.</div>
+        </div>
+      </div>
+      <div id="push-history-list" class="push-history-list" aria-live="polite">
+        <div class="push-history-empty">
+          <i class="fa-regular fa-bell-slash" aria-hidden="true"></i>
+          <span>Loading history…</span>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.main-content -->
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer" role="contentinfo">
+  <p>&copy; 2024 Globex International Trade Co., Ltd. |
+    <a href="/pages/gdpr/privacy.html">Privacy Policy</a> |
+    <a href="/pages/help.html">Help</a>
+  </p>
+</footer>
+
+<script>
+  // Expose timezone label
+  document.addEventListener('DOMContentLoaded', () => {
+    const tzLabel = document.getElementById('tz-label');
+    if (tzLabel) {
+      try { tzLabel.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone; }
+      catch (_) { tzLabel.textContent = 'local time'; }
+    }
+  });
+</script>
+<script src="/assets/js/push-notifications.js"></script>
+</body>
+</html>
