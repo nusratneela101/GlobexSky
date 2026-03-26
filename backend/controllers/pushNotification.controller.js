@@ -1,5 +1,6 @@
 import * as pushService from '../services/pushNotification.service.js';
 import supabase from '../config/supabase.js';
+import { sanitiseCategories, sanitiseQuietHours } from '../models/PushSubscription.js';
 
 /** GET /api/v1/push/vapid-public-key */
 export async function getVapidPublicKey(req, res) {
@@ -39,6 +40,80 @@ export async function getSubscriptions(req, res, next) {
   try {
     const subs = await pushService.getUserSubscriptions(req.user.id);
     res.json({ success: true, data: subs });
+  } catch (err) { next(err); }
+}
+
+/** GET /api/v1/push/preferences */
+export async function getPreferences(req, res, next) {
+  try {
+    const { data, error } = await supabase
+      .from('push_notification_preferences')
+      .select('categories, quiet_hours')
+      .eq('user_id', req.user.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    res.json({ success: true, data: data || { categories: {}, quiet_hours: {} } });
+  } catch (err) { next(err); }
+}
+
+/** PUT /api/v1/push/preferences */
+export async function updatePreferences(req, res, next) {
+  try {
+    const { categories, quiet_hours } = req.body;
+    const safeCategories  = sanitiseCategories(categories);
+    const safeQuietHours  = sanitiseQuietHours(quiet_hours);
+
+    const { error } = await supabase
+      .from('push_notification_preferences')
+      .upsert(
+        { user_id: req.user.id, categories: safeCategories, quiet_hours: safeQuietHours, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' },
+      );
+    if (error) throw new Error(error.message);
+    res.json({ success: true, message: 'Preferences updated.' });
+  } catch (err) { next(err); }
+}
+
+/** GET /api/v1/push/history */
+export async function getHistory(req, res, next) {
+  try {
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 50);
+    const { data, error } = await supabase
+      .from('push_notification_history')
+      .select('id, title, body, url, category, read, sent_at')
+      .eq('user_id', req.user.id)
+      .order('sent_at', { ascending: false })
+      .limit(limit);
+    if (error) throw new Error(error.message);
+    res.json({ success: true, data: data || [] });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/push/dismissed — record notification close event */
+export async function recordDismissed(req, res, next) {
+  try {
+    const { notificationId } = req.body;
+    // Mark as read in history when dismissed via the notificationclose SW event
+    const { error } = await supabase
+      .from('push_notification_history')
+      .update({ read: true })
+      .eq('id', notificationId);
+    if (error) throw new Error(error.message);
+    res.json({ success: true });
+  } catch (err) { next(err); }
+}
+
+/** POST /api/v1/push/test — send a test notification to the current user */
+export async function sendTestNotification(req, res, next) {
+  try {
+    const payload = {
+      title: 'Globex Sky — Test Notification',
+      body: 'Push notifications are working correctly! 🎉',
+      icon: '/assets/images/logo.png',
+      url: '/pages/notifications/push-settings.html',
+    };
+    await pushService.sendPushToUser(req.user.id, payload);
+    res.json({ success: true, message: 'Test notification sent.' });
   } catch (err) { next(err); }
 }
 

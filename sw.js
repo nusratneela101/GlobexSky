@@ -113,17 +113,29 @@ self.addEventListener('push', (event) => {
     body: data.body || '',
     icon: data.icon || '/assets/images/logo.png',
     badge: '/assets/images/badge.png',
-    data: { url: data.url || '/' },
+    image: data.image || undefined,
+    tag: data.tag || 'globexsky-notification',
+    data: { url: data.url || '/', notificationId: data.notificationId },
     vibrate: [200, 100, 200],
-    requireInteraction: false,
+    requireInteraction: data.requireInteraction || false,
+    silent: data.silent || false,
+    actions: data.actions || [
+      { action: 'view', title: 'View', icon: '/assets/images/icons/icon-96x96.png' },
+      { action: 'dismiss', title: 'Dismiss' },
+    ],
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const targetUrl = (event.notification.data && event.notification.data.url) || '/';
+  const action = event.action;
+  const notification = event.notification;
+  const targetUrl = (notification.data && notification.data.url) || '/';
+
+  notification.close();
+
+  if (action === 'dismiss') return;
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
@@ -133,4 +145,17 @@ self.addEventListener('notificationclick', (event) => {
       if (clients.openWindow) return clients.openWindow(targetUrl);
     })
   );
+});
+
+self.addEventListener('notificationclose', (event) => {
+  const notificationId = event.notification.data && event.notification.data.notificationId;
+  if (notificationId) {
+    // Best-effort analytics: fire-and-forget, no auth token available in SW
+    fetch('/api/v1/push/dismissed', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notificationId }),
+      keepalive: true,
+    }).catch(() => null);
+  }
 });
