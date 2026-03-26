@@ -29,6 +29,7 @@ export { default as TradeShow } from './TradeShow.js';
 export { default as Message } from './Message.js';
 export { default as Conversation } from './Conversation.js';
 
+
 import BaseModel from './BaseModel.js';
 import User from './User.js';
 import Product from './Product.js';
@@ -69,4 +70,5 @@ export default {
   TradeShow,
   Message,
   Conversation,
+
 };

@@ -97,17 +97,17 @@
     </aside>
     <section class="content-area">
       <div class="stat-grid">
-        <div class="stat-card" style="--sc:#0052CC;--se:#003d99"><div class="stat-icon"><i class="fas fa-bag-shopping"></i></div><div class="stat-val">142</div><div class="stat-lbl">Total Orders</div></div>
-        <div class="stat-card" style="--sc:#059669;--se:#047857"><div class="stat-icon"><i class="fas fa-coins"></i></div><div class="stat-val">৳2.4L</div><div class="stat-lbl">Total Earnings</div></div>
-        <div class="stat-card" style="--sc:#f97316;--se:#ea580c"><div class="stat-icon"><i class="fas fa-boxes-stacked"></i></div><div class="stat-val">89</div><div class="stat-lbl">Active Products</div></div>
-        <div class="stat-card" style="--sc:#8b5cf6;--se:#7c3aed"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-val">4.8</div><div class="stat-lbl">Store Rating</div></div>
+        <div class="stat-card" style="--sc:#0052CC;--se:#003d99"><div class="stat-icon"><i class="fas fa-bag-shopping"></i></div><div class="stat-val" id="stat-orders">142</div><div class="stat-lbl">Total Orders</div></div>
+        <div class="stat-card" style="--sc:#059669;--se:#047857"><div class="stat-icon"><i class="fas fa-coins"></i></div><div class="stat-val" id="stat-earnings">৳2.4L</div><div class="stat-lbl">Total Earnings</div></div>
+        <div class="stat-card" style="--sc:#f97316;--se:#ea580c"><div class="stat-icon"><i class="fas fa-boxes-stacked"></i></div><div class="stat-val" id="stat-products">89</div><div class="stat-lbl">Active Products</div></div>
+        <div class="stat-card" style="--sc:#8b5cf6;--se:#7c3aed"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-val" id="stat-rating">4.8</div><div class="stat-lbl">Store Rating</div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
         <div class="card">
           <div class="card-title"><i class="fas fa-clock-rotate-left"></i> Recent Orders</div>
           <table class="table">
             <thead><tr><th>Order ID</th><th>Amount</th><th>Status</th></tr></thead>
-            <tbody>
+            <tbody id="recent-orders-tbody">
               <tr><td>#ORD-5521</td><td>৳4,800</td><td><span class="badge badge-orange">Processing</span></td></tr>
               <tr><td>#ORD-5520</td><td>৳12,200</td><td><span class="badge badge-blue">Shipped</span></td></tr>
               <tr><td>#ORD-5519</td><td>৳3,600</td><td><span class="badge badge-green">Delivered</span></td></tr>
@@ -147,6 +147,61 @@
     </ul>
   </div>
 </footer>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/main.js" defer></script>
+<script>
+  /* ── Supplier dashboard: dynamic API loader ──────────────────────────── */
+  (function () {
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    function getToken() {
+      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+    }
+    async function apiFetch(path, options) {
+      var token = getToken();
+      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function badgeClass(status) {
+      var s = (status || '').toLowerCase();
+      if (s === 'delivered' || s === 'completed') return 'badge badge-green';
+      if (s === 'shipped')    return 'badge badge-blue';
+      if (s === 'processing') return 'badge badge-orange';
+      return 'badge';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      apiFetch('/suppliers').then(function (data) {
+        var supplier = (data && (data.data || data.supplier || (Array.isArray(data) ? data[0] : null))) || null;
+        if (!supplier) return;
+
+        var elOrders   = document.getElementById('stat-orders');
+        var elEarnings = document.getElementById('stat-earnings');
+        var elProducts = document.getElementById('stat-products');
+        var elRating   = document.getElementById('stat-rating');
+        if (elOrders   && supplier.total_orders   != null) elOrders.textContent   = supplier.total_orders;
+        if (elEarnings && supplier.total_earnings != null) elEarnings.textContent = supplier.total_earnings;
+        if (elProducts && supplier.active_products != null) elProducts.textContent = supplier.active_products;
+        if (elRating   && supplier.rating         != null) elRating.textContent   = supplier.rating;
+
+        var tbody = document.getElementById('recent-orders-tbody');
+        var orders = supplier.recent_orders || [];
+        if (tbody && orders.length) {
+          tbody.innerHTML = orders.map(function (o) {
+            return '<tr><td>' + esc(o.id || o.order_id || '') + '</td>' +
+              '<td>' + esc(o.amount || o.total || '') + '</td>' +
+              '<td><span class="' + esc(badgeClass(o.status)) + '">' + esc(o.status || '') + '</span></td></tr>';
+          }).join('');
+        }
+      }).catch(function () {
+        /* API unavailable — keep static dashboard content */
+      });
+    });
+  })();
+</script>
 </body>
 </html>

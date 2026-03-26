@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request for Quotation | Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0052CC; --primary-dark: #003d99; --primary-light: #e6f0ff;
+      --accent: #00C9A7; --secondary: #FF6B35; --bg: #f4f6fa;
+      --dark: #0a0e27; --text: #2d3748; --muted: #718096;
+      --card: #fff; --border: #e2e8f0; --shadow: 0 2px 12px rgba(0,0,0,.08);
+      --radius: 12px;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .page-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
+    .page-title { font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .page-sub { color: var(--muted); font-size: .9rem; margin-bottom: 32px; }
+
+    /* Cards */
+    .card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 28px; }
+    .card-title { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1rem; color: var(--dark); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+
+    /* Form */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label { display: block; font-size: .85rem; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: .9rem; font-family: 'Inter', sans-serif; color: var(--dark); background: #fff; transition: border-color .2s; }
+    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,82,204,.1); }
+    textarea.form-control { min-height: 100px; resize: vertical; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: .9rem; cursor: pointer; border: none; transition: background .2s, opacity .2s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-primary:disabled { opacity: .6; cursor: not-allowed; }
+    .btn-secondary { background: var(--primary-light); color: var(--primary); }
+    .btn-secondary:hover { background: #d0e4ff; }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    thead th { background: var(--primary-light); color: var(--primary); font-weight: 600; padding: 12px 14px; text-align: left; white-space: nowrap; }
+    tbody td { padding: 13px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafbff; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; }
+    .badge-green  { background: #d1fae5; color: #065f46; }
+    .badge-orange { background: #fef3c7; color: #92400e; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-gray   { background: #f1f5f9; color: #64748b; }
+
+    /* Loading / empty */
+    .state-msg { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .state-msg i { font-size: 2rem; margin-bottom: 12px; display: block; }
+
+    /* Alert */
+    .alert { padding: 12px 16px; border-radius: 8px; font-size: .88rem; margin-bottom: 16px; display: none; }
+    .alert-success { background: #d1fae5; color: #065f46; }
+    .alert-error   { background: #fee2e2; color: #991b1b; }
+
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="160" height="50" style="object-fit:contain">
+      </a>
+      <div class="nav-controls">
+        <a href="list.html" class="btn-nav"><i class="fas fa-list"></i> My RFQs</a>
+        <a href="create.html" class="btn-nav"><i class="fas fa-plus"></i> Create RFQ</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-wrap">
+  <h1 class="page-title"><i class="fas fa-file-invoice" style="color:#0052CC"></i> Request for Quotation</h1>
+  <p class="page-sub">Submit sourcing requests to multiple suppliers and compare quotes.</p>
+
+  <!-- ── RFQ List ─────────────────────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-list-check"></i> My RFQs</div>
+    <div id="rfq-list-area">
+      <div class="state-msg"><i class="fas fa-spinner fa-spin"></i>Loading your RFQs…</div>
+    </div>
+  </div>
+
+  <!-- ── Submit New RFQ ────────────────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-paper-plane"></i> Submit New RFQ</div>
+    <div id="rfq-form-alert" class="alert"></div>
+    <form id="rfq-form" novalidate>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="rfq-product">Product / Service *</label>
+          <input type="text" class="form-control" id="rfq-product" placeholder="e.g. Wireless Earbuds 500pcs" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="rfq-category">Category</label>
+          <select class="form-control" id="rfq-category">
+            <option value="">Select category</option>
+            <option>Electronics</option>
+            <option>Apparel &amp; Clothing</option>
+            <option>Industrial Equipment</option>
+            <option>Home &amp; Garden</option>
+            <option>Food &amp; Beverage</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="rfq-quantity">Quantity *</label>
+          <input type="number" class="form-control" id="rfq-quantity" placeholder="e.g. 500" min="1" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="rfq-unit">Unit</label>
+          <select class="form-control" id="rfq-unit">
+            <option value="pieces">Pieces</option>
+            <option value="kg">Kg</option>
+            <option value="sets">Sets</option>
+            <option value="boxes">Boxes</option>
+            <option value="meters">Meters</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="rfq-budget">Target Budget</label>
+          <input type="text" class="form-control" id="rfq-budget" placeholder="e.g. $2,000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="rfq-deadline">Deadline</label>
+          <input type="date" class="form-control" id="rfq-deadline" />
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="rfq-description">Description / Requirements *</label>
+          <textarea class="form-control" id="rfq-description" placeholder="Describe your product requirements, specifications, certifications needed, etc." required></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="rfq-submit-btn">
+        <i class="fas fa-paper-plane"></i> Submit RFQ
+      </button>
+    </form>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
+<script src="../../assets/js/main.js" defer></script>
+<script>
+  /* ── RFQ index: GET list + POST new RFQ ──────────────────────────────── */
+  (function () {
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    function getToken() {
+      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+    }
+    async function apiFetch(path, options) {
+      var token = getToken();
+      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function badgeClass(status) {
+      var s = (status || '').toLowerCase();
+      if (s === 'open')    return 'badge badge-green';
+      if (s === 'awarded') return 'badge badge-blue';
+      if (s === 'closed')  return 'badge badge-gray';
+      return 'badge badge-orange';
+    }
+
+    /* ── Load RFQ list ── */
+    async function loadRFQs() {
+      var area = document.getElementById('rfq-list-area');
+      if (!area) return;
+      try {
+        var data = await apiFetch('/rfq');
+        var items = (data && (data.data || data.rfqs || data.items)) || [];
+        if (!items.length) {
+          area.innerHTML = '<div class="state-msg"><i class="fas fa-inbox"></i>No RFQs yet. Submit one below!</div>';
+          return;
+        }
+        area.innerHTML =
+          '<div class="table-wrap"><table>' +
+            '<thead><tr>' +
+              '<th>RFQ ID</th><th>Product</th><th>Qty</th><th>Category</th><th>Submitted</th><th>Status</th><th></th>' +
+            '</tr></thead>' +
+            '<tbody>' +
+            items.map(function (r) {
+              var date = r.created_at ? new Date(r.created_at).toLocaleDateString() : '';
+              return '<tr>' +
+                '<td><strong>' + esc(r.id || r.rfq_id || '—') + '</strong></td>' +
+                '<td>' + esc(r.product || r.title || r.product_name || '—') + '</td>' +
+                '<td>' + esc((r.quantity || '') + (r.unit ? ' ' + r.unit : '')) + '</td>' +
+                '<td>' + esc(r.category || '—') + '</td>' +
+                '<td>' + esc(date) + '</td>' +
+                '<td><span class="' + esc(badgeClass(r.status)) + '">' + esc(r.status || 'open') + '</span></td>' +
+                '<td><a href="list.html" class="btn btn-secondary" style="padding:6px 14px;font-size:.8rem">Details</a></td>' +
+              '</tr>';
+            }).join('') +
+            '</tbody></table></div>';
+      } catch (err) {
+        area.innerHTML = '<div class="state-msg"><i class="fas fa-exclamation-circle" style="color:#ef4444"></i>Unable to load RFQs. <a href="list.html">View full list</a></div>';
+      }
+    }
+
+    /* ── Submit new RFQ ── */
+    document.addEventListener('DOMContentLoaded', function () {
+      loadRFQs();
+
+      var form    = document.getElementById('rfq-form');
+      var alertEl = document.getElementById('rfq-form-alert');
+      var btn     = document.getElementById('rfq-submit-btn');
+      if (!form) return;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var product     = document.getElementById('rfq-product').value.trim();
+        var category    = document.getElementById('rfq-category').value;
+        var quantity    = document.getElementById('rfq-quantity').value.trim();
+        var unit        = document.getElementById('rfq-unit').value;
+        var budget      = document.getElementById('rfq-budget').value.trim();
+        var deadline    = document.getElementById('rfq-deadline').value;
+        var description = document.getElementById('rfq-description').value.trim();
+
+        if (!product || !quantity || !description) {
+          alertEl.textContent = 'Please fill in all required fields (Product, Quantity, Description).';
+          alertEl.className = 'alert alert-error';
+          alertEl.style.display = 'block';
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+        alertEl.style.display = 'none';
+
+        try {
+          await apiFetch('/rfq', {
+            method: 'POST',
+            body: JSON.stringify({ product, category, quantity: Number(quantity), unit, budget, deadline, description })
+          });
+          alertEl.textContent = '✓ RFQ submitted successfully! Suppliers will be notified.';
+          alertEl.className = 'alert alert-success';
+          alertEl.style.display = 'block';
+          form.reset();
+          loadRFQs();
+        } catch (err) {
+          alertEl.textContent = 'Failed to submit RFQ. Please try again or use the full form.';
+          alertEl.className = 'alert alert-error';
+          alertEl.style.display = 'block';
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit RFQ';
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>

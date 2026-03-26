@@ -281,7 +281,7 @@
     </div>
 
     <!-- NOTIFICATION LIST -->
-    <div id="notifList">
+    <div id="notifList" data-dynamic="true">
 
       <!-- 1: Order Shipped (unread) -->
       <div class="notif-item unread" data-type="order" data-id="1">
@@ -813,6 +813,18 @@
     updateUnreadBadge();
     updateTabCounts();
     showToast('All notifications marked as read.', 'success');
+    if (window.ApiService) {
+      var token = '';
+      try { var s = JSON.parse(localStorage.getItem('globexSession') || 'null'); if (s && s.token) token = s.token; } catch (_) {}
+      if (!token) token = localStorage.getItem('globexToken') || localStorage.getItem('token') || '';
+      fetch('/api/v1/notifications/mark-all-read', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? 'Bearer ' + token : ''
+        }
+      }).catch(function () {});
+    }
   });
 
   /* ── LOAD MORE ── */
@@ -872,6 +884,107 @@
   updateVisibleCount();
 
 })();
+</script>
+
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
+<script>
+  (function () {
+    'use strict';
+
+    var ICON_MAP = {
+      order:    { cls: 'icon-order',   icon: 'fa-receipt'      },
+      message:  { cls: 'icon-message', icon: 'fa-envelope'     },
+      rfq:      { cls: 'icon-rfq',     icon: 'fa-handshake'    },
+      price:    { cls: 'icon-price',   icon: 'fa-tag'          },
+      system:   { cls: 'icon-system',  icon: 'fa-bell'         },
+    };
+
+    function _esc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function buildNotifItemHTML(n) {
+      var id      = _esc(n.id || n._id || '');
+      var type    = (n.type || 'system').toLowerCase();
+      var iconCfg = ICON_MAP[type] || ICON_MAP.system;
+      var title   = _esc(n.title || '');
+      var msg     = _esc(n.message || n.body || n.msg || '');
+      var time    = _esc(n.time || n.createdAt || n.timestamp || '');
+      var link    = _esc(n.actionLabel || n.link || 'View');
+      var href    = _esc(n.actionUrl || n.url || '#');
+      var unread  = n.read === false || n.unread === true;
+
+      return '<div class="notif-item' + (unread ? ' unread' : '') + '" data-type="' + _esc(type) + '" data-id="' + id + '">' +
+        '<div class="unread-dot"></div>' +
+        '<div class="notif-checkbox-wrap"><div class="custom-cb"><input type="checkbox" class="notif-cb" /><span class="checkmark"></span></div></div>' +
+        '<div class="notif-icon-wrap ' + iconCfg.cls + '"><i class="fa-solid ' + iconCfg.icon + '"></i></div>' +
+        '<div class="notif-body">' +
+          '<div class="notif-title">' + title + '</div>' +
+          '<div class="notif-msg">' + msg + '</div>' +
+          (time ? '<div class="notif-time"><i class="fa-regular fa-clock"></i> ' + time + '</div>' : '') +
+        '</div>' +
+        '<div class="notif-actions">' +
+          '<a href="' + href + '" class="notif-action-link"><i class="fa-solid fa-arrow-right"></i> ' + link + '</a>' +
+          '<button class="notif-delete-btn" title="Delete"><i class="fa-solid fa-xmark"></i></button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    window.initNotificationsPage = function () {
+      if (!window.ApiService) return;
+
+      var list = document.getElementById('notifList');
+      var emptyState = document.getElementById('emptyState');
+      var unreadBadge = document.querySelector('.unread-badge');
+      if (!list) return;
+
+      // Show loading indicator inside the list
+      list.insertAdjacentHTML('afterbegin',
+        '<div id="notif-loading-indicator" style="text-align:center;padding:2rem;color:#64748b;">' +
+        '<i class="fa-solid fa-spinner fa-spin fa-xl"></i><p style="margin-top:.75rem">Loading notifications…</p></div>');
+
+      window.ApiService.get('/notifications')
+        .then(function (data) {
+          var loadingEl = document.getElementById('notif-loading-indicator');
+          if (loadingEl) loadingEl.remove();
+
+          var items = (data && (data.notifications || data.items || data.data || data)) || [];
+          if (!Array.isArray(items) || items.length === 0) {
+            // Clear static items and show empty state
+            list.innerHTML = '';
+            if (emptyState) emptyState.classList.add('visible');
+            if (unreadBadge) unreadBadge.textContent = 'All read';
+            return;
+          }
+
+          // Replace static fallback with API data
+          list.innerHTML = items.map(buildNotifItemHTML).join('');
+          if (emptyState) emptyState.classList.remove('visible');
+
+          var unreadCount = items.filter(function (n) { return n.read === false || n.unread === true; }).length;
+          if (unreadBadge) unreadBadge.textContent = unreadCount > 0 ? unreadCount + ' unread' : 'All read';
+
+          var countEl = document.getElementById('visibleCount');
+          if (countEl) countEl.textContent = items.length;
+        })
+        .catch(function (err) {
+          var loadingEl = document.getElementById('notif-loading-indicator');
+          if (loadingEl) loadingEl.remove();
+          if (err && err.status === 401) {
+            window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
+            return;
+          }
+          // Keep static fallback on error
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      window.initNotificationsPage();
+    });
+  }());
 </script>
 </body>
 </html>

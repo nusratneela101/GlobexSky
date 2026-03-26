@@ -44,6 +44,132 @@
     return { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() };
   }
 
+  /* ── LocalStorage demo / offline cache ─────────────────────────────────── */
+  const LS_CONVS_KEY = 'globex_chat_conversations';
+  const LS_MSGS_PREFIX = 'globex_chat_messages_';
+  const DEMO_USER_ID = 'demo-user-001';
+
+  /** Seed demo conversations + messages when localStorage is empty. */
+  function seedDemoData() {
+    const now = new Date();
+    const ts = (offsetMinutes) => {
+      const d = new Date(now - offsetMinutes * 60 * 1000);
+      return d.toISOString();
+    };
+
+    const convs = [
+      {
+        id: 'demo-conv-001',
+        participant_ids: [DEMO_USER_ID, 'demo-supplier-001'],
+        type: 'buyer_supplier',
+        name: 'Sunrise Electronics',
+        last_message: 'Sure, I can arrange a sample shipment.',
+        last_message_at: ts(5),
+        unread_count: 2,
+        participants: [{ id: 'demo-supplier-001', full_name: 'Sunrise Electronics', avatar_url: null }],
+      },
+      {
+        id: 'demo-conv-002',
+        participant_ids: [DEMO_USER_ID, 'demo-supplier-002'],
+        type: 'buyer_supplier',
+        name: 'Global Parts Ltd.',
+        last_message: 'The order has been dispatched.',
+        last_message_at: ts(90),
+        unread_count: 0,
+        participants: [{ id: 'demo-supplier-002', full_name: 'Global Parts Ltd.', avatar_url: null }],
+      },
+      {
+        id: 'demo-conv-003',
+        participant_ids: [DEMO_USER_ID, 'demo-supplier-003'],
+        type: 'buyer_supplier',
+        name: 'Pacific Textiles',
+        last_message: 'Please review the attached catalogue.',
+        last_message_at: ts(1440),
+        unread_count: 1,
+        participants: [{ id: 'demo-supplier-003', full_name: 'Pacific Textiles', avatar_url: null }],
+      },
+    ];
+
+    const msgs001 = [
+      { id: 'dm-001-1', conversation_id: 'demo-conv-001', sender_id: 'demo-supplier-001', content: 'Hello! I saw your RFQ for industrial LEDs. We can supply in bulk.', type: 'text', created_at: ts(60), read_at: ts(58), sender: { full_name: 'Sunrise Electronics' } },
+      { id: 'dm-001-2', conversation_id: 'demo-conv-001', sender_id: DEMO_USER_ID, content: 'Great! What is the MOQ and lead time?', type: 'text', created_at: ts(55), read_at: ts(54), sender: { full_name: 'Me' } },
+      { id: 'dm-001-3', conversation_id: 'demo-conv-001', sender_id: 'demo-supplier-001', content: 'MOQ is 500 units. Lead time is 2 weeks for standard orders.', type: 'text', created_at: ts(50), read_at: ts(49), sender: { full_name: 'Sunrise Electronics' } },
+      { id: 'dm-001-4', conversation_id: 'demo-conv-001', sender_id: DEMO_USER_ID, content: 'Can you send a sample first?', type: 'text', created_at: ts(10), read_at: null, sender: { full_name: 'Me' } },
+      { id: 'dm-001-5', conversation_id: 'demo-conv-001', sender_id: 'demo-supplier-001', content: 'Sure, I can arrange a sample shipment.', type: 'text', created_at: ts(5), read_at: null, sender: { full_name: 'Sunrise Electronics' } },
+    ];
+
+    const msgs002 = [
+      { id: 'dm-002-1', conversation_id: 'demo-conv-002', sender_id: DEMO_USER_ID, content: 'Hi, just checking on order #PO-2024-887.', type: 'text', created_at: ts(120), read_at: ts(118), sender: { full_name: 'Me' } },
+      { id: 'dm-002-2', conversation_id: 'demo-conv-002', sender_id: 'demo-supplier-002', content: 'The order has been dispatched.', type: 'text', created_at: ts(90), read_at: ts(88), sender: { full_name: 'Global Parts Ltd.' } },
+    ];
+
+    const msgs003 = [
+      { id: 'dm-003-1', conversation_id: 'demo-conv-003', sender_id: 'demo-supplier-003', content: 'Please review the attached catalogue.', type: 'text', created_at: ts(1440), read_at: null, sender: { full_name: 'Pacific Textiles' } },
+    ];
+
+    localStorage.setItem(LS_CONVS_KEY, JSON.stringify(convs));
+    localStorage.setItem(LS_MSGS_PREFIX + 'demo-conv-001', JSON.stringify(msgs001));
+    localStorage.setItem(LS_MSGS_PREFIX + 'demo-conv-002', JSON.stringify(msgs002));
+    localStorage.setItem(LS_MSGS_PREFIX + 'demo-conv-003', JSON.stringify(msgs003));
+  }
+
+  /** Load conversations from localStorage. Seeds demo data on first run. */
+  function lsGetConversations() {
+    let raw = localStorage.getItem(LS_CONVS_KEY);
+    if (!raw) { seedDemoData(); raw = localStorage.getItem(LS_CONVS_KEY); }
+    try { return JSON.parse(raw) || []; } catch (e) { return []; }
+  }
+
+  /** Load messages for a conversation from localStorage. */
+  function lsGetMessages(convId) {
+    try { return JSON.parse(localStorage.getItem(LS_MSGS_PREFIX + convId)) || []; } catch (e) { return []; }
+  }
+
+  /** Save messages for a conversation to localStorage. */
+  function lsSaveMessages(convId, msgs) {
+    localStorage.setItem(LS_MSGS_PREFIX + convId, JSON.stringify(msgs));
+  }
+
+  /** Append a new message to localStorage and update conversation preview. */
+  function lsAppendMessage(msg) {
+    const msgs = lsGetMessages(msg.conversation_id);
+    msgs.push(msg);
+    lsSaveMessages(msg.conversation_id, msgs);
+
+    const convs = lsGetConversations();
+    const conv = convs.find(c => c.id === msg.conversation_id);
+    if (conv) {
+      conv.last_message = msg.content;
+      conv.last_message_at = msg.created_at;
+      if (msg.sender_id !== getEffectiveUserId()) {
+        conv.unread_count = (conv.unread_count || 0) + 1;
+      }
+      localStorage.setItem(LS_CONVS_KEY, JSON.stringify(convs));
+    }
+  }
+
+  /** Mark all messages in a conversation as read in localStorage. */
+  function lsMarkRead(convId) {
+    const convs = lsGetConversations();
+    const conv = convs.find(c => c.id === convId);
+    if (conv) { conv.unread_count = 0; localStorage.setItem(LS_CONVS_KEY, JSON.stringify(convs)); }
+    const msgs = lsGetMessages(convId);
+    msgs.forEach(m => { if (!m.read_at) m.read_at = new Date().toISOString(); });
+    lsSaveMessages(convId, msgs);
+  }
+
+  /** Save a new conversation to localStorage. */
+  function lsAddConversation(conv) {
+    const convs = lsGetConversations();
+    convs.unshift(conv);
+    localStorage.setItem(LS_CONVS_KEY, JSON.stringify(convs));
+  }
+
+  /** Current user ID — real from JWT or demo fallback. */
+  function getEffectiveUserId() {
+    return getCurrentUserId() || DEMO_USER_ID;
+  }
+
   /* ── Socket.IO real-time connection ─────────────────────────────────────── */
   function connectSocket() {
     if (typeof io === 'undefined') return; // Socket.IO not loaded — use polling
@@ -151,7 +277,7 @@
   function getConvPartnerIds(convId) {
     const conv = conversations.find(c => c.id === convId);
     if (!conv || !conv.participant_ids) return [];
-    const me = getCurrentUserId();
+    const me = getEffectiveUserId();
     return conv.participant_ids.filter(id => id !== me);
   }
 
@@ -182,34 +308,63 @@
     }, 2000);
   }
 
-  /* ── API calls ──────────────────────────────────────────────────────────── */
+  /* ── API calls (with localStorage demo fallback) ───────────────────────── */
   async function fetchConversations() {
+    const token = getToken();
+    // No auth token → use localStorage demo data directly
+    if (!token) {
+      conversations = lsGetConversations();
+      renderConversationList(conversations);
+      return;
+    }
     try {
       const res = await fetch(API + '/chat/conversations', { headers: authHeaders() });
-      if (!res.ok) return;
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       const json = await res.json();
       conversations = json.data || [];
       renderConversationList(conversations);
     } catch (e) {
-      console.warn('Chat: failed to load conversations', e);
+      console.warn('Chat: API unavailable, using localStorage demo data', e.message);
+      conversations = lsGetConversations();
+      renderConversationList(conversations);
     }
   }
 
   async function fetchMessages(convId) {
-    try {
-      const res = await fetch(API + '/chat/conversations/' + convId + '/messages', { headers: authHeaders() });
-      if (!res.ok) return;
-      const json = await res.json();
-      const messages = json.data || [];
+    const token = getToken();
+    // No auth token → load from localStorage demo data
+    if (!token) {
+      const messages = lsGetMessages(convId);
       renderMessages(messages);
       if (messages.length !== lastMessageCount) {
         lastMessageCount = messages.length;
         scrollToBottom();
       }
-      // mark as read
+      lsMarkRead(convId);
+      return;
+    }
+    try {
+      const res = await fetch(API + '/chat/conversations/' + convId + '/messages', { headers: authHeaders() });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      const messages = json.data || [];
+      // Persist to localStorage as cache
+      lsSaveMessages(convId, messages);
+      renderMessages(messages);
+      if (messages.length !== lastMessageCount) {
+        lastMessageCount = messages.length;
+        scrollToBottom();
+      }
       markRead(convId);
     } catch (e) {
-      console.warn('Chat: failed to load messages', e);
+      console.warn('Chat: API unavailable, loading messages from localStorage', e.message);
+      const messages = lsGetMessages(convId);
+      renderMessages(messages);
+      if (messages.length !== lastMessageCount) {
+        lastMessageCount = messages.length;
+        scrollToBottom();
+      }
+      lsMarkRead(convId);
     }
   }
 
@@ -217,19 +372,22 @@
     type = type || 'text';
     if (!activeConversationId || !content.trim()) return;
 
+    const userId = getEffectiveUserId();
+
     // If Socket.IO is connected, send via WebSocket for true real-time delivery
     if (socketConnected && socket) {
       // Optimistically show the message immediately
       const optimistic = {
         id: 'tmp_' + Date.now(),
         conversation_id: activeConversationId,
-        sender_id: getCurrentUserId(),
+        sender_id: userId,
         content: content.trim(),
         type,
         created_at: new Date().toISOString(),
         sender: null,
       };
       appendNewMessage(optimistic);
+      lsAppendMessage(optimistic);
       socket.emit('message:send', {
         conversationId: activeConversationId,
         content: content.trim(),
@@ -250,6 +408,27 @@
       return;
     }
 
+    const token = getToken();
+
+    // Demo mode (no token) → save to localStorage only
+    if (!token) {
+      const msg = {
+        id: 'local_' + Date.now(),
+        conversation_id: activeConversationId,
+        sender_id: userId,
+        content: content.trim(),
+        type,
+        created_at: new Date().toISOString(),
+        read_at: null,
+        sender: { full_name: 'Me' },
+      };
+      lsAppendMessage(msg);
+      appendNewMessage(msg);
+      conversations = lsGetConversations();
+      renderConversationList(conversations);
+      return;
+    }
+
     // Fallback: REST API
     try {
       const res = await fetch(API + '/chat/conversations/' + activeConversationId + '/messages', {
@@ -257,15 +436,30 @@
         headers: authHeaders(),
         body: JSON.stringify({ content: content.trim(), type }),
       });
-      if (!res.ok) return;
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       await fetchMessages(activeConversationId);
       await fetchConversations();
     } catch (e) {
-      console.warn('Chat: failed to send message', e);
+      console.warn('Chat: REST send failed, saving to localStorage', e.message);
+      const msg = {
+        id: 'local_' + Date.now(),
+        conversation_id: activeConversationId,
+        sender_id: userId,
+        content: content.trim(),
+        type,
+        created_at: new Date().toISOString(),
+        read_at: null,
+        sender: { full_name: 'Me' },
+      };
+      lsAppendMessage(msg);
+      appendNewMessage(msg);
+      conversations = lsGetConversations();
+      renderConversationList(conversations);
     }
   }
 
   async function markRead(convId) {
+    lsMarkRead(convId);
     try {
       await fetch(API + '/chat/conversations/' + convId + '/read', {
         method: 'PATCH',
@@ -275,17 +469,51 @@
   }
 
   async function createConversation(participantId) {
+    const token = getToken();
+
+    // Demo mode → create conversation in localStorage
+    if (!token) {
+      const existing = lsGetConversations().find(c => c.participant_ids.includes(participantId));
+      if (existing) return existing;
+      const conv = {
+        id: 'local_conv_' + Date.now(),
+        participant_ids: [DEMO_USER_ID, participantId],
+        type: 'buyer_supplier',
+        name: participantId,
+        last_message: '',
+        last_message_at: new Date().toISOString(),
+        unread_count: 0,
+        participants: [{ id: participantId, full_name: participantId, avatar_url: null }],
+      };
+      lsAddConversation(conv);
+      return conv;
+    }
+
     try {
       const res = await fetch(API + '/chat/conversations', {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({ participant_id: participantId }),
       });
-      if (!res.ok) return null;
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       const json = await res.json();
       return json.data;
     } catch (e) {
-      return null;
+      console.warn('Chat: createConversation API failed, using localStorage', e.message);
+      const existing = lsGetConversations().find(c => c.participant_ids.includes(participantId));
+      if (existing) return existing;
+      const conv = {
+        id: 'local_conv_' + Date.now(),
+        participant_ids: [getEffectiveUserId(), participantId],
+        type: 'buyer_supplier',
+        name: participantId,
+        last_message: '',
+        last_message_at: new Date().toISOString(),
+        unread_count: 0,
+        participants: [{ id: participantId, full_name: participantId, avatar_url: null }],
+      };
+      lsAddConversation(conv);
+      return conv;
     }
   }
 
@@ -377,7 +605,7 @@
       return;
     }
 
-    const userId = getCurrentUserId();
+    const userId = getEffectiveUserId();
     let lastDay = null;
     const html = messages.map(msg => {
       const isOwn = msg.sender_id === userId;
@@ -427,7 +655,7 @@
     const placeholder = messagesEl.querySelector('.msg-empty-placeholder');
     if (placeholder) placeholder.remove();
 
-    const userId = getCurrentUserId();
+    const userId = getEffectiveUserId();
     const isOwn = msg.sender_id === userId;
     const time = formatMsgTime(msg.created_at);
     const name = msg.sender ? (msg.sender.full_name || 'User') : 'User';

@@ -171,5 +171,25 @@
 <script src="../../assets/js/config.js" defer></script>
 <script src="../../assets/js/main.js" defer></script>
 
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/dynamic-loader.js"></script>
+<script>
+(function(){
+  var API_BASE=(window.GlobexConfig&&window.GlobexConfig.API_BASE_URL)||'/api/v1';
+  function getToken(){try{var s=JSON.parse(localStorage.getItem('globexSession')||'null');return(s&&s.token)||localStorage.getItem('globexToken')||localStorage.getItem('token')||null;}catch(e){return null;}}
+  function esc(v){var d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML;}
+  async function apiFetch(path,opts){var token=getToken();var res=await fetch(API_BASE+path,Object.assign({headers:Object.assign({'Content-Type':'application/json'},token?{'Authorization':'Bearer '+token}:{})},opts||{}));if(!res.ok)throw new Error('HTTP '+res.status);return res.json();}
+  document.addEventListener('DOMContentLoaded',function(){initPage();});
+  async function initPage(){
+    try{
+      var r=await apiFetch('/livestreams');
+      var items=(r&&r.data)||[];
+      if(!Array.isArray(items))return;
+      var c=document.querySelector("[class*='stream-grid'],[class*='stream-list'],table tbody");
+      if(c&&items.length){c.innerHTML=items.map(function(s){return'<div class="stream-item"><strong>'+esc(s.title||s.name||String(s.id||''))+'</strong><span>'+esc(s.status||'')+'</span></div>';}).join('');}
+    }catch(e){console.warn('API load failed, using static content',e);}
+  }
+})();
+</script>
 </body>
 </html>
