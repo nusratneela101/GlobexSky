@@ -120,7 +120,7 @@
         </div>
         <div class="pricing-field-row">
           <label>Default Commission Rate</label>
-          <input type="number" class="pricing-input" value="5" min="0" max="100" step="0.1"/>
+          <input type="number" class="pricing-input" id="defaultCommission" min="0" max="100" step="0.1" placeholder="e.g. 5"/>
           <span style="font-size:.88rem;color:#64748b">%</span>
           <button class="btn-sm btn-primary">Save</button>
         </div>
@@ -129,12 +129,12 @@
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead><tr><th>Category</th><th>Commission %</th><th>Actions</th></tr></thead>
-            <tbody>
-              <tr><td>Electronics</td><td><input type="number" class="pricing-input" value="6" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Apparel &amp; Textiles</td><td><input type="number" class="pricing-input" value="7" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Agriculture &amp; Food</td><td><input type="number" class="pricing-input" value="4" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Furniture &amp; Home</td><td><input type="number" class="pricing-input" value="5" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Health &amp; Beauty</td><td><input type="number" class="pricing-input" value="6" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+            <tbody id="commissionCategoryBody">
+              <tr><td>Electronics</td><td><input type="number" class="pricing-input" data-commission-category="Electronics" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Apparel &amp; Textiles</td><td><input type="number" class="pricing-input" data-commission-category="Apparel" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Agriculture &amp; Food</td><td><input type="number" class="pricing-input" data-commission-category="Agriculture" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Furniture &amp; Home</td><td><input type="number" class="pricing-input" data-commission-category="Furniture" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Health &amp; Beauty</td><td><input type="number" class="pricing-input" data-commission-category="Health" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -144,10 +144,10 @@
           <table class="data-table">
             <thead><tr><th>Order Value</th><th>Commission %</th><th>Actions</th></tr></thead>
             <tbody>
-              <tr><td>$0 – $500</td><td><input type="number" class="pricing-input" value="7" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>$501 – $2,000</td><td><input type="number" class="pricing-input" value="5.5" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>$2,001 – $10,000</td><td><input type="number" class="pricing-input" value="4" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>$10,001+</td><td><input type="number" class="pricing-input" value="2.5" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>$0 – $500</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>$501 – $2,000</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>$2,001 – $10,000</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>$10,001+</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -167,32 +167,32 @@
             <thead>
               <tr><th>Plan Name</th><th>Monthly Fee</th><th>Commission %</th><th>Features</th><th>Actions</th></tr>
             </thead>
-            <tbody>
+            <tbody id="supplierPlansBody">
               <tr>
                 <td><strong>Free</strong></td>
-                <td><input type="text" class="pricing-input" value="$0" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="7" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-gray">Basic listing</span></td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
               </tr>
               <tr>
                 <td><strong>Basic Pro</strong></td>
-                <td><input type="text" class="pricing-input" value="$29" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="5" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-blue">Verified badge + Analytics</span></td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
               </tr>
               <tr class="plan-highlight">
                 <td><strong>Professional Pro</strong> <span class="badge-pill badge-purple" style="margin-left:6px">Popular</span></td>
-                <td><input type="text" class="pricing-input" value="$79" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="3.5" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-purple">Priority + Storefront + RFQ</span></td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
               </tr>
               <tr>
                 <td><strong>Enterprise Pro</strong></td>
-                <td><input type="text" class="pricing-input" value="Custom" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="2" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-orange">API + Dedicated manager</span></td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
               </tr>
@@ -212,12 +212,12 @@
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead><tr><th>Inspection Type</th><th>Description</th><th>Price (USD)</th><th>Actions</th></tr></thead>
-            <tbody>
-              <tr><td>Pre-Production Check</td><td>Raw materials &amp; factory audit</td><td><input type="number" class="pricing-input" value="120" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>During Production</td><td>In-line quality monitoring</td><td><input type="number" class="pricing-input" value="150" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Pre-Shipment Inspection</td><td>Final product check before dispatch</td><td><input type="number" class="pricing-input" value="180" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Container Loading Supervision</td><td>Loading oversight at port</td><td><input type="number" class="pricing-input" value="200" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Lab Testing</td><td>Certified lab analysis report</td><td><input type="number" class="pricing-input" value="350" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+            <tbody id="inspectionPricingBody">
+              <tr><td>Pre-Production Check</td><td>Raw materials &amp; factory audit</td><td><input type="number" class="pricing-input" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>During Production</td><td>In-line quality monitoring</td><td><input type="number" class="pricing-input" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Pre-Shipment Inspection</td><td>Final product check before dispatch</td><td><input type="number" class="pricing-input" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Container Loading Supervision</td><td>Loading oversight at port</td><td><input type="number" class="pricing-input" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Lab Testing</td><td>Certified lab analysis report</td><td><input type="number" class="pricing-input" style="width:90px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -233,7 +233,7 @@
         </div>
         <div class="pricing-field-row">
           <label>Global Default Markup</label>
-          <input type="number" class="pricing-input" value="30" min="0" max="300" step="1"/>
+          <input type="number" class="pricing-input" id="defaultMarkup" min="0" max="300" step="1" placeholder="e.g. 30"/>
           <span style="font-size:.88rem;color:#64748b">%</span>
           <button class="btn-sm btn-primary">Save</button>
         </div>
@@ -242,12 +242,12 @@
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead><tr><th>Category</th><th>Markup %</th><th>Actions</th></tr></thead>
-            <tbody>
-              <tr><td>Electronics</td><td><input type="number" class="pricing-input" value="25" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Apparel &amp; Textiles</td><td><input type="number" class="pricing-input" value="40" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Agriculture &amp; Food</td><td><input type="number" class="pricing-input" value="20" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Furniture &amp; Home</td><td><input type="number" class="pricing-input" value="35" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
-              <tr><td>Health &amp; Beauty</td><td><input type="number" class="pricing-input" value="45" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+            <tbody id="dropshippingCategoryBody">
+              <tr><td>Electronics</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Apparel &amp; Textiles</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Agriculture &amp; Food</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Furniture &amp; Home</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
+              <tr><td>Health &amp; Beauty</td><td><input type="number" class="pricing-input" style="width:80px"/></td><td><button class="btn-sm btn-primary">Save</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -264,40 +264,40 @@
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead><tr><th>Product Category</th><th>Base Rate ($/kg)</th><th>Min Weight (kg)</th><th>Max Weight (kg)</th><th>Actions</th></tr></thead>
-            <tbody>
+            <tbody id="carryRatesBody">
               <tr>
                 <td>Electronics</td>
-                <td><input type="number" class="pricing-input" value="4.50" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="1" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="100" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><button class="btn-sm btn-primary">Save</button></td>
               </tr>
               <tr>
                 <td>Apparel &amp; Textiles</td>
-                <td><input type="number" class="pricing-input" value="2.80" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="5" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="500" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><button class="btn-sm btn-primary">Save</button></td>
               </tr>
               <tr>
                 <td>Heavy Machinery</td>
-                <td><input type="number" class="pricing-input" value="1.20" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="100" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="5000" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><button class="btn-sm btn-primary">Save</button></td>
               </tr>
               <tr>
                 <td>Agriculture &amp; Food</td>
-                <td><input type="number" class="pricing-input" value="1.80" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="10" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="2000" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><button class="btn-sm btn-primary">Save</button></td>
               </tr>
               <tr>
                 <td>General Goods</td>
-                <td><input type="number" class="pricing-input" value="3.00" style="width:80px"/></td>
-                <td><input type="number" class="pricing-input" value="1" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="1000" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:80px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><button class="btn-sm btn-primary">Save</button></td>
               </tr>
             </tbody>
@@ -327,50 +327,50 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="parcelPricingBody">
               <tr>
                 <td><i class="fas fa-flag" style="color:#0052CC;margin-right:6px"></i>Nigeria</td>
-                <td><input type="number" class="pricing-input" value="18" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="45" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="120" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="240" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="7" style="width:60px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:60px"/></td>
                 <td><div class="btn-action-group"><button class="btn-sm btn-primary">Save</button><button class="btn-sm btn-secondary"><i class="fas fa-trash"></i></button></div></td>
               </tr>
               <tr>
                 <td><i class="fas fa-flag" style="color:#0052CC;margin-right:6px"></i>Kenya</td>
-                <td><input type="number" class="pricing-input" value="16" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="40" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="110" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="210" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="8" style="width:60px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:60px"/></td>
                 <td><div class="btn-action-group"><button class="btn-sm btn-primary">Save</button><button class="btn-sm btn-secondary"><i class="fas fa-trash"></i></button></div></td>
               </tr>
               <tr>
                 <td><i class="fas fa-flag" style="color:#0052CC;margin-right:6px"></i>South Africa</td>
-                <td><input type="number" class="pricing-input" value="20" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="50" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="130" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="260" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="9" style="width:60px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:60px"/></td>
                 <td><div class="btn-action-group"><button class="btn-sm btn-primary">Save</button><button class="btn-sm btn-secondary"><i class="fas fa-trash"></i></button></div></td>
               </tr>
               <tr>
                 <td><i class="fas fa-flag" style="color:#0052CC;margin-right:6px"></i>United Kingdom</td>
-                <td><input type="number" class="pricing-input" value="14" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="35" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="95" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="180" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="5" style="width:60px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:60px"/></td>
                 <td><div class="btn-action-group"><button class="btn-sm btn-primary">Save</button><button class="btn-sm btn-secondary"><i class="fas fa-trash"></i></button></div></td>
               </tr>
               <tr>
                 <td><i class="fas fa-flag" style="color:#0052CC;margin-right:6px"></i>United States</td>
-                <td><input type="number" class="pricing-input" value="15" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="38" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="100" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="190" style="width:70px"/></td>
-                <td><input type="number" class="pricing-input" value="6" style="width:60px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
+                <td><input type="number" class="pricing-input" style="width:60px"/></td>
                 <td><div class="btn-action-group"><button class="btn-sm btn-primary">Save</button><button class="btn-sm btn-secondary"><i class="fas fa-trash"></i></button></div></td>
               </tr>
             </tbody>
@@ -392,39 +392,39 @@
             <thead>
               <tr><th>Tier</th><th>Monthly Fee</th><th>API Calls/mo</th><th>Rate Limit (req/s)</th><th>Webhooks</th><th>Support</th><th>Actions</th></tr>
             </thead>
-            <tbody>
+            <tbody id="apiPricingBody">
               <tr>
                 <td><strong>Starter</strong></td>
-                <td><input type="text" class="pricing-input" value="$0" style="width:80px"/></td>
-                <td><input type="text" class="pricing-input" value="1,000" style="width:90px"/></td>
-                <td><input type="number" class="pricing-input" value="2" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="text" class="pricing-input" style="width:90px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-gray">No</span></td>
                 <td>Community</td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
               </tr>
               <tr>
                 <td><strong>Growth</strong></td>
-                <td><input type="text" class="pricing-input" value="$49" style="width:80px"/></td>
-                <td><input type="text" class="pricing-input" value="50,000" style="width:90px"/></td>
-                <td><input type="number" class="pricing-input" value="10" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="text" class="pricing-input" style="width:90px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-green">Yes</span></td>
                 <td>Email</td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
               </tr>
               <tr class="plan-highlight">
                 <td><strong>Business</strong> <span class="badge-pill badge-purple" style="margin-left:6px">Popular</span></td>
-                <td><input type="text" class="pricing-input" value="$149" style="width:80px"/></td>
-                <td><input type="text" class="pricing-input" value="500,000" style="width:90px"/></td>
-                <td><input type="number" class="pricing-input" value="50" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="text" class="pricing-input" style="width:90px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-green">Yes</span></td>
                 <td>Priority</td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
               </tr>
               <tr>
                 <td><strong>Enterprise</strong></td>
-                <td><input type="text" class="pricing-input" value="Custom" style="width:80px"/></td>
-                <td><input type="text" class="pricing-input" value="Unlimited" style="width:90px"/></td>
-                <td><input type="number" class="pricing-input" value="200" style="width:70px"/></td>
+                <td><input type="text" class="pricing-input" style="width:80px"/></td>
+                <td><input type="text" class="pricing-input" style="width:90px"/></td>
+                <td><input type="number" class="pricing-input" style="width:70px"/></td>
                 <td><span class="badge-pill badge-green">Yes</span></td>
                 <td>Dedicated</td>
                 <td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td>
@@ -437,6 +437,137 @@
     </main>
   </div>
 </div>
+<script>
+  var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+  function token() { return localStorage.getItem('token') || ''; }
+  function authHdr() { return { 'Authorization': 'Bearer ' + token(), 'Content-Type': 'application/json' }; }
+
+  async function loadPricing() {
+    try {
+      var [commRes, supplierRes, inspectRes, dropRes, carryRes, parcelRes, apiRes] = await Promise.all([
+        fetch(API_BASE + '/admin/pricing/commissions',    { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] commissions:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/supplier-plans', { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] supplier-plans:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/inspection',     { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] inspection:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/dropshipping',   { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] dropshipping:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/carry-service',  { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] carry-service:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/parcel-service', { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] parcel-service:', e); return {}; }),
+        fetch(API_BASE + '/admin/pricing/api-plans',      { headers: authHdr() }).then(r => r.json()).catch(function(e) { console.error('[pricing] api-plans:', e); return {}; }),
+      ]);
+
+      // Commissions
+      if (commRes.success && commRes.data) {
+        var defaultComm = commRes.data.find(function(c) { return c.type === 'default'; });
+        if (defaultComm) { var el = document.getElementById('defaultCommission'); if (el) el.value = defaultComm.rate; }
+        commRes.data.filter(function(c) { return c.type === 'category'; }).forEach(function(c) {
+          var inp = document.querySelector('[data-commission-category="' + c.category + '"]');
+          if (inp) inp.value = c.rate;
+        });
+      }
+
+      // Supplier / Verified Pro plans
+      if (supplierRes.success && supplierRes.data && supplierRes.data.length) {
+        var tbody = document.getElementById('supplierPlansBody');
+        if (tbody) {
+          tbody.innerHTML = supplierRes.data.map(function(p) {
+            var fee = p.monthly_fee != null ? '$' + p.monthly_fee : '';
+            return '<tr><td><strong>' + (p.name || '') + '</strong></td>' +
+              '<td><input type="text" class="pricing-input" value="' + fee + '" data-plan-id="' + (p.id || '') + '" style="width:80px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (p.commission_rate || '') + '" style="width:70px"/></td>' +
+              '<td><span class="badge-pill badge-blue">' + (p.features || '') + '</span></td>' +
+              '<td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>';
+          }).join('');
+        }
+      }
+
+      // Inspection pricing
+      if (inspectRes.success && inspectRes.data && inspectRes.data.length) {
+        var tbody2 = document.getElementById('inspectionPricingBody');
+        if (tbody2) {
+          tbody2.innerHTML = inspectRes.data.map(function(item) {
+            return '<tr><td>' + (item.inspection_type || item.name || '') + '</td><td>' + (item.description || '') + '</td>' +
+              '<td><input type="number" class="pricing-input" value="' + (item.price || item.base_price || '') + '" data-inspection-id="' + (item.id || '') + '" style="width:90px"/></td>' +
+              '<td><button class="btn-sm btn-primary">Save</button></td></tr>';
+          }).join('');
+        }
+      }
+
+      // Dropshipping markup — default & by category
+      if (dropRes.success && dropRes.data) {
+        var dropData = dropRes.data;
+        var defaultMarkup = Array.isArray(dropData) ? dropData.find(function(d) { return d.type === 'default' || d.category === 'default'; }) : dropData;
+        if (defaultMarkup) { var dm = document.getElementById('defaultMarkup'); if (dm) dm.value = defaultMarkup.markup_percentage || defaultMarkup.markup || ''; }
+        if (Array.isArray(dropData)) {
+          var dropBody = document.getElementById('dropshippingCategoryBody');
+          dropData.filter(function(d) { return d.type !== 'default' && d.category && d.category !== 'default'; }).forEach(function(d) {
+            if (dropBody) {
+              dropBody.querySelectorAll('tr').forEach(function(row) {
+                var label = row.querySelector('td:first-child');
+                if (label && label.textContent.trim() === d.category) {
+                  var input = row.querySelector('input');
+                  if (input) input.value = d.markup_percentage || d.markup || '';
+                }
+              });
+            }
+          });
+        }
+      }
+
+      // Carry rates
+      if (carryRes.success && carryRes.data && carryRes.data.length) {
+        var tbody3 = document.getElementById('carryRatesBody');
+        if (tbody3) {
+          tbody3.innerHTML = carryRes.data.map(function(r) {
+            return '<tr><td>' + (r.product_category || r.category || '') + '</td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.base_rate || '') + '" style="width:80px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.min_weight || '') + '" style="width:70px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.max_weight || '') + '" style="width:70px"/></td>' +
+              '<td><button class="btn-sm btn-primary">Save</button></td></tr>';
+          }).join('');
+        }
+      }
+
+      // Parcel pricing
+      if (parcelRes.success && parcelRes.data && parcelRes.data.length) {
+        var tbody4 = document.getElementById('parcelPricingBody');
+        if (tbody4) {
+          tbody4.innerHTML = parcelRes.data.map(function(r) {
+            return '<tr><td><i class="fas fa-flag" style="color:#0052CC;margin-right:6px"></i>' + (r.destination_country || r.country || '') + '</td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.rate_0_1kg != null ? r.rate_0_1kg : '') + '" style="width:70px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.rate_1_5kg != null ? r.rate_1_5kg : '') + '" style="width:70px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.rate_5_20kg != null ? r.rate_5_20kg : '') + '" style="width:70px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.rate_20plus != null ? r.rate_20plus : '') + '" style="width:70px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (r.estimated_days || '') + '" style="width:60px"/></td>' +
+              '<td><div class="btn-action-group"><button class="btn-sm btn-primary">Save</button><button class="btn-sm btn-secondary"><i class="fas fa-trash"></i></button></div></td></tr>';
+          }).join('');
+        }
+      }
+
+      // API pricing tiers
+      if (apiRes.success && apiRes.data && apiRes.data.length) {
+        var tbody5 = document.getElementById('apiPricingBody');
+        if (tbody5) {
+          tbody5.innerHTML = apiRes.data.map(function(p) {
+            var monthlyFee = p.monthly_fee != null ? (p.monthly_fee === 0 ? '$0' : '$' + p.monthly_fee) : '';
+            var monthlyReqs = (p.monthly_requests != null && typeof p.monthly_requests === 'number')
+              ? p.monthly_requests.toLocaleString()
+              : (p.monthly_requests || '');
+            return '<tr><td><strong>' + (p.tier_name || p.name || '') + '</strong></td>' +
+              '<td><input type="text" class="pricing-input" value="' + monthlyFee + '" style="width:80px"/></td>' +
+              '<td><input type="text" class="pricing-input" value="' + monthlyReqs + '" style="width:90px"/></td>' +
+              '<td><input type="number" class="pricing-input" value="' + (p.rate_limit_per_second || '') + '" style="width:70px"/></td>' +
+              '<td><span class="badge-pill ' + (p.webhooks_enabled ? 'badge-green">Yes' : 'badge-gray">No') + '</span></td>' +
+              '<td>' + (p.support_type || '') + '</td>' +
+              '<td><button class="btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</button></td></tr>';
+          }).join('');
+        }
+      }
+    } catch (err) {
+      console.error('[pricing] Load error:', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() { loadPricing(); });
+</script>
 <script src="../../assets/js/navbar.js"></script>
 </body>
 </html>
