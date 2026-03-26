@@ -390,3 +390,257 @@
   /* ── Public API ── */
   window.ARViewer = { launchAR, stopAR, selectProduct, startMeasurement };
 })();
+
+/* ============================================================================
+   GlobexSky.ARViewer namespace
+   Exposes: init(containerId, modelUrl, options), isSupported(), launch(), close()
+   Uses the native WebXR API where available and <model-viewer> as fallback.
+   Desktop users receive a QR-code popup; unsupported browsers get a graceful
+   fallback message.
+============================================================================ */
+(function (global) {
+  'use strict';
+
+  global.GlobexSky = global.GlobexSky || {};
+
+  /* ── Feature detection ── */
+  function _isMobile() {
+    return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  function _supportsAR() {
+    return ('xr' in navigator) || ('customElements' in window);
+  }
+
+  /* ── QR code image URL via public API ── */
+  function _qrUrl(text) {
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(text);
+  }
+
+  /* ── Defaults ── */
+  var DEFAULTS = {
+    buttonLabel:       'View in Your Space',
+    productName:       'Product',
+    mobileUrl:         null,
+    posterUrl:         null,
+    injectModelViewer: true,
+    modelScale:        null,
+  };
+
+  /* ────────────────────────────────────────────────────────────────────────
+     ARInstance class
+  ──────────────────────────────────────────────────────────────────────── */
+  function ARInstance(containerId, modelUrl, options) {
+    this._opts      = Object.assign({}, DEFAULTS, options || {});
+    this._modelUrl  = modelUrl || '';
+    this._open      = false;
+    this._overlay   = null;
+
+    var root = document.getElementById(containerId);
+    if (!root) throw new Error('[GlobexSky.ARViewer] Container #' + containerId + ' not found');
+    this._root = root;
+
+    /* Inject <model-viewer> script once */
+    if (this._opts.injectModelViewer && !customElements.get('model-viewer')) {
+      _injectModelViewerScript();
+    }
+
+    this._buildLaunchButton();
+  }
+
+  function _injectModelViewerScript() {
+    if (document.querySelector('script[data-gs-ar-mv]')) return;
+    var s    = document.createElement('script');
+    s.type   = 'module';
+    s.src    = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+    s.setAttribute('data-gs-ar-mv', '1');
+    document.head.appendChild(s);
+  }
+
+  ARInstance.prototype._buildLaunchButton = function () {
+    var self = this;
+    var btn  = document.createElement('button');
+    btn.type      = 'button';
+    btn.className = 'ar-launch-btn';
+    btn.setAttribute('aria-label', this._opts.buttonLabel);
+    btn.title     = this._opts.buttonLabel;
+    btn.innerHTML = '<i class="fas fa-vr-cardboard" aria-hidden="true"></i> ' +
+                    '<span>' + _esc(this._opts.buttonLabel) + '</span>';
+    btn.addEventListener('click', function () { self.launch(); });
+    this._root.appendChild(btn);
+    this._launchBtn = btn;
+  };
+
+  ARInstance.prototype._buildOverlay = function () {
+    var self    = this;
+    var overlay = document.createElement('div');
+    overlay.className   = 'ar-overlay';
+    overlay.setAttribute('role',       'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'AR — View in Your Space');
+    overlay.setAttribute('tabindex',   '-1');
+
+    var closeBtn = document.createElement('button');
+    closeBtn.type      = 'button';
+    closeBtn.className = 'ar-overlay__close';
+    closeBtn.setAttribute('aria-label', 'Close AR viewer');
+    closeBtn.innerHTML = '<i class="fas fa-times" aria-hidden="true"></i>';
+    closeBtn.addEventListener('click', function () { self.close(); });
+
+    var content = document.createElement('div');
+    content.className = 'ar-overlay__content';
+
+    overlay.appendChild(closeBtn);
+    overlay.appendChild(content);
+    overlay.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') self.close();
+    });
+
+    this._overlay        = overlay;
+    this._overlayContent = content;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(function () { overlay.focus(); });
+  };
+
+  ARInstance.prototype._renderMobileAR = function () {
+    var mv = document.createElement('model-viewer');
+    mv.setAttribute('src',             this._modelUrl);
+    mv.setAttribute('ar',              '');
+    mv.setAttribute('ar-modes',        'webxr scene-viewer quick-look');
+    mv.setAttribute('camera-controls', '');
+    mv.setAttribute('touch-action',    'pan-y');
+    mv.setAttribute('auto-rotate',     '');
+    mv.setAttribute('alt',             this._opts.productName + ' — 3D model');
+    if (this._opts.posterUrl)  mv.setAttribute('poster', this._opts.posterUrl);
+    if (this._opts.modelScale) mv.setAttribute('scale',  this._opts.modelScale);
+    mv.className = 'ar-model-viewer';
+
+    var arBtn = document.createElement('button');
+    arBtn.slot      = 'ar-button';
+    arBtn.className = 'ar-model-viewer__ar-btn';
+    arBtn.textContent = '📱 View in Your Space';
+    mv.appendChild(arBtn);
+
+    var self = this;
+    mv.addEventListener('ar-status', function (e) {
+      if (e.detail && e.detail.status === 'failed') {
+        self._renderFallback('AR failed to launch. Please try on a supported device.');
+      }
+    });
+
+    this._overlayContent.appendChild(mv);
+  };
+
+  ARInstance.prototype._renderDesktopQR = function () {
+    var url     = this._opts.mobileUrl || window.location.href;
+    var wrapper = document.createElement('div');
+    wrapper.className = 'ar-qr-wrapper';
+    wrapper.innerHTML =
+      '<div class="ar-qr-heading">' +
+        '<i class="fas fa-vr-cardboard" aria-hidden="true"></i>' +
+        '<h3>View in Your Space</h3>' +
+        '<p>Scan with your mobile device to experience this product in AR</p>' +
+      '</div>' +
+      '<div class="ar-qr-code">' +
+        '<img src="' + _qrUrl(url) + '" alt="QR code to open AR experience on mobile" width="200" height="200" />' +
+      '</div>' +
+      '<p class="ar-qr-hint">Point your phone camera at the QR code</p>' +
+      '<div class="ar-qr-badges">' +
+        '<span class="ar-badge"><i class="fab fa-android" aria-hidden="true"></i> Android</span>' +
+        '<span class="ar-badge"><i class="fab fa-apple" aria-hidden="true"></i> iOS</span>' +
+      '</div>';
+    this._overlayContent.appendChild(wrapper);
+  };
+
+  ARInstance.prototype._renderFallback = function (msg) {
+    this._overlayContent.innerHTML =
+      '<div class="ar-fallback">' +
+        '<i class="fas fa-exclamation-circle ar-fallback__icon" aria-hidden="true"></i>' +
+        '<h3 class="ar-fallback__title">AR Not Supported</h3>' +
+        '<p class="ar-fallback__message">' + _esc(msg ||
+          'Your browser does not support AR. Try Chrome or Safari on a mobile device.') + '</p>' +
+        '<a href="' + _esc(this._modelUrl) + '" download class="ar-fallback__download">' +
+          '<i class="fas fa-download" aria-hidden="true"></i> Download 3D Model' +
+        '</a>' +
+      '</div>';
+  };
+
+  /** @returns {boolean} */
+  ARInstance.prototype.isSupported = function () { return _supportsAR(); };
+
+  /** Open the AR experience. */
+  ARInstance.prototype.launch = function () {
+    if (this._open) return;
+    this._open = true;
+    this._buildOverlay();
+
+    if (_isMobile() && _supportsAR()) {
+      this._renderMobileAR();
+    } else if (!_isMobile()) {
+      this._renderDesktopQR();
+    } else {
+      this._renderFallback();
+    }
+
+    var overlay = this._overlay;
+    requestAnimationFrame(function () { overlay.classList.add('ar-overlay--visible'); });
+    document.body.style.overflow = 'hidden';
+  };
+
+  /** Close and clean up the AR overlay. */
+  ARInstance.prototype.close = function () {
+    if (!this._open || !this._overlay) return;
+    this._open = false;
+
+    this._overlay.classList.remove('ar-overlay--visible');
+    var overlay = this._overlay;
+    setTimeout(function () {
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }, 300);
+
+    this._overlay        = null;
+    this._overlayContent = null;
+    document.body.style.overflow = '';
+    if (this._launchBtn) this._launchBtn.focus();
+  };
+
+  /* ── XSS-safe text helper ── */
+  function _esc(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ── Namespace export ── */
+  global.GlobexSky.ARViewer = {
+    _instances: {},
+
+    /**
+     * Initialise an AR viewer.
+     * @param {string} containerId
+     * @param {string} modelUrl — .glb or .gltf URL
+     * @param {object} [options]
+     * @returns {ARInstance}
+     */
+    init: function (containerId, modelUrl, options) {
+      if (this._instances[containerId]) this._instances[containerId].close();
+      var v = new ARInstance(containerId, modelUrl, options);
+      this._instances[containerId] = v;
+      return v;
+    },
+
+    /** @returns {boolean} */
+    isSupported: function () { return _supportsAR(); },
+
+    launch: function (containerId) {
+      if (this._instances[containerId]) this._instances[containerId].launch();
+    },
+
+    close: function (containerId) {
+      if (this._instances[containerId]) this._instances[containerId].close();
+    },
+  };
+
+}(window));
