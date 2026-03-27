@@ -940,6 +940,37 @@ CREATE TABLE IF NOT EXISTS supplier_badges (
 CREATE INDEX IF NOT EXISTS idx_supplier_badges_supplier_id ON supplier_badges(supplier_id);
 CREATE INDEX IF NOT EXISTS idx_supplier_badges_type        ON supplier_badges(badge_type);
 
+-- ─── Supplier Scorecards ──────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS supplier_scorecards (
+  id                    UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+  supplier_id           UUID         NOT NULL UNIQUE REFERENCES suppliers(id) ON DELETE CASCADE,
+  overall_score         NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (overall_score BETWEEN 0 AND 100),
+  quality_score         NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (quality_score BETWEEN 0 AND 100),
+  delivery_score        NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (delivery_score BETWEEN 0 AND 100),
+  communication_score   NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (communication_score BETWEEN 0 AND 100),
+  pricing_score         NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (pricing_score BETWEEN 0 AND 100),
+  badges                JSONB        NOT NULL DEFAULT '[]',
+  review_count          INTEGER      NOT NULL DEFAULT 0,
+  last_evaluated_at     TIMESTAMPTZ  DEFAULT NOW(),
+  created_at            TIMESTAMPTZ  DEFAULT NOW(),
+  updated_at            TIMESTAMPTZ  DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_supplier_scorecards_supplier_id ON supplier_scorecards(supplier_id);
+CREATE INDEX IF NOT EXISTS idx_supplier_scorecards_overall     ON supplier_scorecards(overall_score DESC);
+
+-- ─── Badge Catalog ────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS badge_catalog (
+  id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        VARCHAR(100) NOT NULL,
+  description TEXT         NOT NULL,
+  icon        VARCHAR(100) NOT NULL,
+  criteria    JSONB        NOT NULL DEFAULT '{}',
+  tier        VARCHAR(20)  NOT NULL CHECK (tier IN ('bronze', 'silver', 'gold', 'platinum')),
+  created_at  TIMESTAMPTZ  DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ  DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_badge_catalog_tier ON badge_catalog(tier);
+
 -- ─── Currency Contracts ───────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS currency_contracts (
   id               UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
