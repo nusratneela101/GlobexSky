@@ -28,6 +28,15 @@ export { default as FeatureToggle } from './FeatureToggle.js';
 export { default as TradeShow } from './TradeShow.js';
 export { default as Message } from './Message.js';
 export { default as Conversation } from './Conversation.js';
+export { default as EmailTemplate } from './EmailTemplate.js';
+export { default as SmsTemplate } from './SmsTemplate.js';
+export { default as GDPRRequest } from './GDPRRequest.js';
+export { default as VRShowroom } from './VRShowroom.js';
+export { default as Meeting } from './Meeting.js';
+export { default as Warehouse } from './Warehouse.js';
+export { default as SavedSearch } from './SavedSearch.js';
+export { default as SearchHistory } from './SearchHistory.js';
+export { default as SystemConfig } from './SystemConfig.js';
 
 
 import BaseModel from './BaseModel.js';
@@ -49,6 +58,15 @@ import FeatureToggle from './FeatureToggle.js';
 import TradeShow from './TradeShow.js';
 import Message from './Message.js';
 import Conversation from './Conversation.js';
+import EmailTemplate from './EmailTemplate.js';
+import SmsTemplate from './SmsTemplate.js';
+import GDPRRequest from './GDPRRequest.js';
+import VRShowroom from './VRShowroom.js';
+import Meeting from './Meeting.js';
+import Warehouse from './Warehouse.js';
+import SavedSearch from './SavedSearch.js';
+import SearchHistory from './SearchHistory.js';
+import SystemConfig from './SystemConfig.js';
 
 export default {
   BaseModel,
@@ -70,5 +88,13 @@ export default {
   TradeShow,
   Message,
   Conversation,
-
+  EmailTemplate,
+  SmsTemplate,
+  GDPRRequest,
+  VRShowroom,
+  Meeting,
+  Warehouse,
+  SavedSearch,
+  SearchHistory,
+  SystemConfig,
 };
