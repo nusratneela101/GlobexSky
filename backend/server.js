@@ -75,6 +75,7 @@ import badgeCatalogRoutes from './routes/badgeCatalog.routes.js';
 import currencyContractRoutes from './routes/currencyContract.routes.js';
 import containerRoutes from './routes/container.routes.js';
 import customStyleRoutes from './routes/customStyle.routes.js';
+import countriesRoutes from './routes/countries.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -221,6 +222,7 @@ app.use(`${API}/supplier-badges`, badgeCatalogRoutes);
 app.use(`${API}/currency-contracts`, currencyContractRoutes);
 app.use(`${API}/containers`, containerRoutes);
 app.use(`${API}/custom-styles`, customStyleRoutes);
+app.use('/api/countries', countriesRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

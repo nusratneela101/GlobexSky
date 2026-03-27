@@ -1,16 +1,21 @@
 import supabase from '../config/supabase.js';
 import { sendWelcomeEmail, sendPasswordResetEmail } from '../services/email.service.js';
+import { isValidCountryCode } from '../utils/countries.js';
 
 /** POST /api/v1/auth/register */
 export async function register(req, res, next) {
   try {
-    const { email, password, name, role = 'buyer' } = req.body;
+    const { email, password, name, role = 'buyer', country } = req.body;
+
+    if (!country || !isValidCountryCode(country)) {
+      return res.status(400).json({ success: false, error: 'A valid ISO 3166-1 alpha-2 country code is required.' });
+    }
 
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       password,
       email_confirm: false,
-      user_metadata: { full_name: name, role },
+      user_metadata: { full_name: name, role, country },
     });
 
     if (error) return res.status(400).json({ success: false, error: error.message });
@@ -22,6 +27,7 @@ export async function register(req, res, next) {
       user_id: data.user.id,
       full_name: name,
       role,
+      country,
       kyc_status: 'pending',
     });
 
