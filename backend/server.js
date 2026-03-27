@@ -89,6 +89,7 @@ import savedSearchRoutes from './routes/savedSearch.routes.js';
 import securityRoutes from './routes/security.routes.js';
 import websocketRoutes from './routes/websocket.routes.js';
 import languageRoutes, { adminLanguageRouter } from './routes/language.routes.js';
+import escrowRoutes from './routes/escrow.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -99,6 +100,7 @@ import integrationRoutes from './routes/integration.routes.js';
 import aiRoutes from './routes/ai.routes.js';
 import configRoutes from './routes/config.routes.js';
 import adminConfigRoutes from './routes/admin/config.routes.js';
+import productComparisonRoutes from './routes/productComparison.routes.js';
 import adminUsersRoutes from './routes/adminUsers.js';
 import adminProductsRoutes from './routes/adminProducts.js';
 import adminSettingsRoutes from './routes/settings.js';
@@ -193,6 +195,7 @@ app.use(`${API}/cart`, cartRoutes);
 app.use(`${API}/checkout`, checkoutRoutes);
 app.use(`${API}/addresses`, addressRoutes);
 app.use(`${API}/wishlist`, wishlistRoutes);
+app.use(`${API}/comparisons`, productComparisonRoutes);
 
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
@@ -250,6 +253,7 @@ app.use(`${API}/security`, securityRoutes);
 app.use(`${API}/ws`, websocketRoutes);
 app.use(`${API}/languages`, languageRoutes);
 app.use(`${API}/admin/languages`, adminLanguageRouter);
+app.use(`${API}/escrow`, escrowRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
