@@ -77,8 +77,6 @@ router.post(
         ...req.body,
         container_number: req.body.container_number.toUpperCase(),
         status: req.body.status || 'booked',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       });
       res.status(201).json({ success: true, data: container });
     } catch (err) {
@@ -155,8 +153,6 @@ router.post(
         shipper_id: req.user.id,
         status: 'pending',
         tracking_events: [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       });
       res.status(201).json({ success: true, data: booking });
     } catch (err) {

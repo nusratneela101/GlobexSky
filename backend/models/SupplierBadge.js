@@ -26,10 +26,7 @@ export default class SupplierBadge extends BaseModel {
       supplier_id: supplierId,
       badge_type: badgeType,
       badge_name: badgeName,
-      awarded_at: new Date().toISOString(),
       metadata,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
     });
   }
 }

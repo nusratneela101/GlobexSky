@@ -59,8 +59,6 @@ router.post(
         overall_score,
         review_text,
         order_id,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       });
       res.status(201).json({ success: true, data: score });
     } catch (err) {

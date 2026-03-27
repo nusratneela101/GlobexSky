@@ -12,34 +12,37 @@ export default class Newsletter extends BaseModel {
     return 'newsletter_subscribers';
   }
 
+  static normalizeEmail(email) {
+    return email.toLowerCase();
+  }
+
   static async findByEmail(email) {
     const result = await this.db
       .from(this.tableName)
       .select('*')
-      .eq('email', email.toLowerCase())
+      .eq('email', this.normalizeEmail(email))
       .maybeSingle();
     return this._handle(result);
   }
 
   static async subscribe(email, name = null, preferences = {}) {
-    const existing = await this.findByEmail(email);
+    const normalizedEmail = this.normalizeEmail(email);
+    const existing = await this.findByEmail(normalizedEmail);
     if (existing) {
       const result = await this.db
         .from(this.tableName)
         .update({ status: 'active', unsubscribed_at: null, updated_at: new Date().toISOString() })
-        .eq('email', email.toLowerCase())
+        .eq('email', normalizedEmail)
         .select()
         .single();
       return this._handle(result);
     }
     return this.create({
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       name,
       status: 'active',
       preferences,
       subscribed_at: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
     });
   }
 
@@ -47,7 +50,7 @@ export default class Newsletter extends BaseModel {
     const result = await this.db
       .from(this.tableName)
       .update({ status: 'unsubscribed', unsubscribed_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-      .eq('email', email.toLowerCase())
+      .eq('email', this.normalizeEmail(email))
       .select()
       .single();
     return this._handle(result);

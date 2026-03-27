@@ -58,8 +58,6 @@ router.post(
         file_url,
         status: 'pending',
         created_by: req.user.id,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       });
       res.status(201).json({ success: true, data: job });
     } catch (err) {
@@ -88,8 +86,6 @@ router.post(
         status: 'pending',
         created_by: req.user.id,
         metadata: { filters: filters || {} },
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       });
       res.status(201).json({ success: true, data: job });
     } catch (err) {

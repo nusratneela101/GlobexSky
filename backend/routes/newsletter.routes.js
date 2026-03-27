@@ -21,7 +21,8 @@ router.post(
   validate,
   async (req, res, next) => {
     try {
-      const { email, name, preferences } = req.body;
+      const email = (req.body.email || '').toLowerCase();
+      const { name, preferences } = req.body;
       const subscriber = await Newsletter.subscribe(email, name, preferences);
       res.status(201).json({ success: true, data: subscriber, message: 'Successfully subscribed' });
     } catch (err) {
@@ -40,7 +41,7 @@ router.post(
   validate,
   async (req, res, next) => {
     try {
-      const { email } = req.body;
+      const email = (req.body.email || '').toLowerCase();
       const subscriber = await Newsletter.unsubscribe(email);
       res.json({ success: true, data: subscriber, message: 'Successfully unsubscribed' });
     } catch (err) {

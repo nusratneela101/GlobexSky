@@ -75,8 +75,6 @@ router.post(
         quote_currency: req.body.quote_currency.toUpperCase(),
         user_id: req.user.id,
         status: 'pending',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       });
       res.status(201).json({ success: true, data: contract });
     } catch (err) {
