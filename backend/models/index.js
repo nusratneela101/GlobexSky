@@ -43,6 +43,7 @@ export {
   TradeAssuranceDeposit,
   TradeAssuranceConfig,
 } from './TradeAssurance.js';
+export { default as SampleOrder, SampleOrderConfig } from './SampleOrder.js';
 
 
 import BaseModel from './BaseModel.js';
@@ -79,6 +80,7 @@ import {
   TradeAssuranceDeposit,
   TradeAssuranceConfig,
 } from './TradeAssurance.js';
+import SampleOrder, { SampleOrderConfig } from './SampleOrder.js';
 
 export default {
   BaseModel,
@@ -113,4 +115,6 @@ export default {
   TradeAssuranceClaim,
   TradeAssuranceDeposit,
   TradeAssuranceConfig,
+  SampleOrder,
+  SampleOrderConfig,
 };

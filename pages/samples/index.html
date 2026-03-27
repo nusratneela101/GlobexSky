@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Sample Orders – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+
+    /* ── Navbar ── */
+    .site-header{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+    .nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:16px;height:64px}
+    .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#0052CC;flex-shrink:0}
+    .nav-logo img{height:38px;object-fit:contain}
+    .nav-links{display:flex;gap:4px;list-style:none;flex:1;justify-content:center}
+    .nav-links a{padding:8px 14px;border-radius:8px;font-size:.88rem;color:#374151;text-decoration:none;transition:all .2s;font-weight:500}
+    .nav-links a:hover,.nav-links a.active{background:#dbeafe;color:#0052CC}
+    .nav-actions{display:flex;gap:10px;align-items:center;flex-shrink:0}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}.btn-outline:hover{background:#dbeafe}
+    .btn-sm{padding:6px 14px;font-size:.78rem}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#0052CC 0%,#00C9A7 100%);color:#fff;padding:56px 20px;text-align:center}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:10px}
+    .hero p{font-size:1rem;opacity:.9;max-width:560px;margin:0 auto 24px}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    /* ── Layout ── */
+    .page-layout{max-width:1280px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
+    .sidebar-panel{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:80px}
+    .sidebar-panel h3{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#0a0e27;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .nav-menu{list-style:none}
+    .nav-menu li a,.nav-menu li button{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:.875rem;color:#374151;text-decoration:none;cursor:pointer;background:none;border:none;width:100%;font-family:'Inter',sans-serif;transition:all .2s}
+    .nav-menu li a:hover,.nav-menu li button:hover,.nav-menu li a.active,.nav-menu li button.active{background:#dbeafe;color:#0052CC;font-weight:600}
+    .main-panel{}
+
+    /* ── Card ── */
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px}
+
+    /* ── Stats strip ── */
+    .stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+    .stat-box{background:#fff;border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);border-top:3px solid}
+    .stat-box.blue{border-top-color:#0052CC}.stat-box.orange{border-top-color:#f97316}.stat-box.green{border-top-color:#22c55e}.stat-box.purple{border-top-color:#8b5cf6}
+    .stat-val{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .stat-lbl{font-size:.75rem;color:#64748b;margin-top:2px}
+
+    /* ── Form ── */
+    .form-field{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
+    .form-label{font-size:.83rem;font-weight:600;color:#374151}
+    .form-control{padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;outline:none;transition:border-color .2s;width:100%}
+    .form-control:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.08)}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+    textarea.form-control{min-height:90px;resize:vertical}
+
+    /* ── Order cards ── */
+    .order-card{background:#f8faff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:14px;transition:box-shadow .2s}
+    .order-card:hover{box-shadow:0 4px 16px rgba(0,82,204,.08)}
+    .order-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .order-id{font-size:.72rem;font-family:monospace;color:#94a3b8}
+    .order-product{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#0a0e27;margin-top:2px}
+    .order-meta{font-size:.78rem;color:#64748b;margin-top:4px}
+    .order-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .badge-pill{display:inline-flex;align-items:center;padding:4px 12px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .badge-pending{background:#fef9c3;color:#854d0e}
+    .badge-approved{background:#dbeafe;color:#0052CC}
+    .badge-rejected{background:#fee2e2;color:#ef4444}
+    .badge-shipped{background:#ede9fe;color:#7c3aed}
+    .badge-delivered{background:#d1fae5;color:#059669}
+    .badge-reviewed{background:#d1fae5;color:#065f46}
+    .tracking-box{background:#ede9fe;border-radius:8px;padding:8px 14px;font-size:.8rem;color:#5b21b6;margin-top:10px;display:inline-flex;align-items:center;gap:8px}
+
+    /* ── Rating stars ── */
+    .stars{display:flex;gap:4px;margin-bottom:8px}
+    .star{font-size:1.3rem;cursor:pointer;color:#cbd5e1;transition:color .15s}
+    .star.active{color:#f59e0b}
+
+    /* ── Section visibility ── */
+    .section{display:none}
+    .section.active{display:block}
+
+    /* ── Modal ── */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;color:#0a0e27}
+    .modal-close{border:none;background:none;cursor:pointer;font-size:1.1rem;color:#64748b;padding:4px}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid #f1f5f9}
+
+    /* ── Empty state ── */
+    .empty-state{text-align:center;padding:56px 20px;color:#94a3b8}
+    .empty-state i{font-size:2.5rem;margin-bottom:14px;opacity:.5}
+    .empty-state p{font-size:.9rem}
+
+    /* ── Toast ── */
+    #toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s;max-width:340px}
+    #toast.show{transform:translateY(0);opacity:1}
+    #toast.success{background:#059669}
+    #toast.error{background:#ef4444}
+
+    /* ── Footer ── */
+    .site-footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:28px 20px;font-size:.83rem;margin-top:40px}
+    .site-footer a{color:#00C9A7;text-decoration:none}
+
+    /* ── Responsive ── */
+    @media(max-width:900px){
+      .page-layout{grid-template-columns:1fr}
+      .sidebar-panel{position:static;display:flex;flex-wrap:wrap;gap:6px;padding:12px}
+      .sidebar-panel h3{width:100%;margin-bottom:4px}
+      .nav-menu{display:flex;flex-wrap:wrap;gap:6px}
+      .nav-menu li{width:auto}
+      .nav-links{display:none}
+    }
+    @media(max-width:600px){
+      .hero h1{font-size:1.4rem}
+      .stats-strip{grid-template-columns:repeat(2,1fr)}
+      .form-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo">
+      <img src="../../assets/images/logo.png" alt="Globex Sky"/>
+      <span>Globex Sky</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../product/index.html">Products</a></li>
+      <li><a href="../rfq/index.html">RFQ</a></li>
+      <li><a href="index.html" class="active">Samples</a></li>
+      <li><a href="../order/index.html">Orders</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="../auth/login.html" class="btn btn-outline btn-sm">Login</a>
+      <a href="../auth/register.html" class="btn btn-primary btn-sm">Register</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <h1><i class="fas fa-flask"></i> Product Sample Orders</h1>
+  <p>Request product samples from verified suppliers before committing to bulk orders. Test quality, verify specs, and buy with confidence.</p>
+  <div class="hero-actions">
+    <button class="btn btn-primary" onclick="showSection('request')"><i class="fas fa-plus-circle"></i> Request a Sample</button>
+    <button class="btn btn-secondary" onclick="showSection('my-samples')" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.4)"><i class="fas fa-list"></i> My Requests</button>
+  </div>
+</section>
+
+<div class="page-layout">
+  <!-- Sidebar navigation -->
+  <aside class="sidebar-panel">
+    <h3><i class="fas fa-flask"></i> Sample Orders</h3>
+    <ul class="nav-menu">
+      <li><button class="active" id="navMysamples" onclick="showSection('my-samples')"><i class="fas fa-inbox"></i> My Requests</button></li>
+      <li><button id="navRequest" onclick="showSection('request')"><i class="fas fa-plus-circle"></i> Request Sample</button></li>
+      <li><button id="navSupplier" onclick="showSection('supplier')"><i class="fas fa-store"></i> Supplier View</button></li>
+      <li><button id="navTracking" onclick="showSection('tracking')"><i class="fas fa-truck"></i> Track Samples</button></li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-panel">
+
+    <!-- Stats -->
+    <div class="stats-strip">
+      <div class="stat-box blue"><div class="stat-val" id="sBuyerTotal">0</div><div class="stat-lbl">Total Requests</div></div>
+      <div class="stat-box orange"><div class="stat-val" id="sPending">0</div><div class="stat-lbl">Pending</div></div>
+      <div class="stat-box purple"><div class="stat-val" id="sShipped">0</div><div class="stat-lbl">Shipped</div></div>
+      <div class="stat-box green"><div class="stat-val" id="sDelivered">0</div><div class="stat-lbl">Delivered</div></div>
+    </div>
+
+    <!-- ─── My Requests (buyer) ───────────────────────────────────── -->
+    <div class="section active" id="sectionMySamples">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-inbox"></i> My Sample Requests</span>
+          <button class="btn btn-primary btn-sm" onclick="showSection('request')"><i class="fas fa-plus"></i> New Request</button>
+        </div>
+        <div id="buyerOrdersList">
+          <div class="empty-state"><i class="fas fa-flask"></i><p>No sample requests yet. Click <strong>New Request</strong> to get started.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Request Form ──────────────────────────────────────────── -->
+    <div class="section" id="sectionRequest">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-plus-circle"></i> Request a Product Sample</span>
+        </div>
+        <form id="sampleRequestForm" onsubmit="submitSampleRequest(event)">
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label" for="rfSupplier">Supplier ID <span style="color:#ef4444">*</span></label>
+              <input class="form-control" id="rfSupplier" type="text" placeholder="e.g. uuid-of-supplier" required/>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="rfProduct">Product ID <span style="color:#ef4444">*</span></label>
+              <input class="form-control" id="rfProduct" type="text" placeholder="e.g. uuid-of-product" required/>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="rfQty">Quantity</label>
+              <input class="form-control" id="rfQty" type="number" min="1" value="1"/>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="rfAddress">Shipping Address ID</label>
+              <input class="form-control" id="rfAddress" type="text" placeholder="uuid-of-address (optional)"/>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="rfMessage">Message to Supplier</label>
+            <textarea class="form-control" id="rfMessage" placeholder="Describe the spec, colour, size, or any test requirements…"></textarea>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+            <button type="button" class="btn btn-secondary" onclick="showSection('my-samples')">Cancel</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ─── Supplier View ─────────────────────────────────────────── -->
+    <div class="section" id="sectionSupplier">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-store"></i> Incoming Sample Requests</span>
+          <button class="btn btn-secondary btn-sm" onclick="loadSupplierOrders()"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div id="supplierOrdersList">
+          <div class="empty-state"><i class="fas fa-store"></i><p>No incoming sample requests for your account.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Tracking ───────────────────────────────────────────────── -->
+    <div class="section" id="sectionTracking">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-truck"></i> Track Sample Shipments</span>
+        </div>
+        <div class="form-field" style="max-width:480px">
+          <label class="form-label">Sample Order ID</label>
+          <div style="display:flex;gap:8px">
+            <input class="form-control" id="trackingInput" placeholder="Enter sample order ID…"/>
+            <button class="btn btn-primary btn-sm" onclick="trackSample()"><i class="fas fa-search"></i> Track</button>
+          </div>
+        </div>
+        <div id="trackingResult"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ─── Feedback Modal ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-star" style="color:#f59e0b"></i> Leave Feedback</span>
+      <button class="modal-close" onclick="closeModal('feedbackModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <input type="hidden" id="fbOrderId"/>
+    <div class="form-field">
+      <label class="form-label">Rating</label>
+      <div class="stars" id="starRating">
+        <span class="star" data-v="1" onclick="setRating(1)">★</span>
+        <span class="star" data-v="2" onclick="setRating(2)">★</span>
+        <span class="star" data-v="3" onclick="setRating(3)">★</span>
+        <span class="star" data-v="4" onclick="setRating(4)">★</span>
+        <span class="star" data-v="5" onclick="setRating(5)">★</span>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="fbComment">Feedback</label>
+      <textarea class="form-control" id="fbComment" placeholder="Share your experience with this sample…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('feedbackModal')">Cancel</button>
+      <button class="btn btn-success btn-sm" onclick="submitFeedback()"><i class="fas fa-check"></i> Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Supplier Notes Modal ────────────────────────────────────────── -->
+<div class="modal-overlay" id="approveModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-check-circle" style="color:#059669"></i> Approve Sample Request</span>
+      <button class="modal-close" onclick="closeModal('approveModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <input type="hidden" id="approveOrderId"/>
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label">Cost (USD)</label>
+        <input class="form-control" id="approveCost" type="number" min="0" step="0.01" value="0"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Free Sample?</label>
+        <select class="form-control" id="approveFree">
+          <option value="false">No</option>
+          <option value="true">Yes – free</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Notes to Buyer</label>
+      <textarea class="form-control" id="approveNotes" placeholder="Any notes about the sample (lead time, packaging, etc.)…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('approveModal')">Cancel</button>
+      <button class="btn btn-success btn-sm" onclick="confirmApprove()"><i class="fas fa-check"></i> Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Ship Modal ───────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="shipModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-shipping-fast" style="color:#7c3aed"></i> Mark as Shipped</span>
+      <button class="modal-close" onclick="closeModal('shipModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <input type="hidden" id="shipOrderId"/>
+    <div class="form-field">
+      <label class="form-label">Tracking Number <span style="color:#ef4444">*</span></label>
+      <input class="form-control" id="shipTracking" placeholder="e.g. DHL1234567890" required/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('shipModal')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmShip()"><i class="fas fa-truck"></i> Confirm Shipped</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <p>© 2024 <a href="../../index.html">Globex Sky</a> — B2B Global Marketplace. All rights reserved.</p>
+</footer>
+
+<script>
+const API = '/api/v1/samples';
+let currentRating = 0;
+let demoOrders = []; // demo data for display
+
+function getToken() { return localStorage.getItem('gsky_token') || ''; }
+
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  setTimeout(() => { el.className = ''; }, 3500);
+}
+
+function statusBadge(s) {
+  return `<span class="badge-pill badge-${s}">${s.charAt(0).toUpperCase() + s.slice(1)}</span>`;
+}
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-menu button').forEach(el => el.classList.remove('active'));
+  const map = { 'my-samples': 'sectionMySamples', request: 'sectionRequest', supplier: 'sectionSupplier', tracking: 'sectionTracking' };
+  const navMap = { 'my-samples': 'navMysamples', request: 'navRequest', supplier: 'navSupplier', tracking: 'navTracking' };
+  document.getElementById(map[name])?.classList.add('active');
+  document.getElementById(navMap[name])?.classList.add('active');
+  if (name === 'my-samples') loadBuyerOrders();
+  if (name === 'supplier') loadSupplierOrders();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ─── Rating stars ──────────────────────────────────────────────────────────
+function setRating(v) {
+  currentRating = v;
+  document.querySelectorAll('#starRating .star').forEach((s, i) => {
+    s.classList.toggle('active', i < v);
+  });
+}
+
+// ─── Submit sample request ─────────────────────────────────────────────────
+async function submitSampleRequest(e) {
+  e.preventDefault();
+  const payload = {
+    supplier_id: document.getElementById('rfSupplier').value.trim(),
+    product_id:  document.getElementById('rfProduct').value.trim(),
+    quantity:    parseInt(document.getElementById('rfQty').value, 10),
+    message:     document.getElementById('rfMessage').value.trim(),
+  };
+  const addr = document.getElementById('rfAddress').value.trim();
+  if (addr) payload.shipping_address_id = addr;
+
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast('Sample request submitted successfully!', 'success');
+      document.getElementById('sampleRequestForm').reset();
+      showSection('my-samples');
+    } else {
+      showToast(json.error || 'Failed to submit request', 'error');
+    }
+  } catch { showToast('Network error – using demo mode', 'error'); addDemoOrder(payload); showSection('my-samples'); }
+}
+
+// ─── Load buyer orders ─────────────────────────────────────────────────────
+async function loadBuyerOrders() {
+  const container = document.getElementById('buyerOrdersList');
+  try {
+    const res = await fetch(API + '/buyer/my', { headers: { Authorization: 'Bearer ' + getToken() } });
+    const json = await res.json();
+    if (json.success) {
+      renderBuyerOrders(json.data || []);
+    } else {
+      renderBuyerOrders(getDemoOrders());
+    }
+  } catch { renderBuyerOrders(getDemoOrders()); }
+}
+
+function renderBuyerOrders(orders) {
+  const container = document.getElementById('buyerOrdersList');
+  updateStats(orders);
+  if (!orders.length) {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-flask"></i><p>No sample requests yet. Click <strong>New Request</strong> to get started.</p></div>';
+    return;
+  }
+  container.innerHTML = orders.map(o => `
+    <div class="order-card">
+      <div class="order-card-header">
+        <div>
+          <div class="order-id">ID: ${o.id}</div>
+          <div class="order-product">${o.product_name || 'Product Sample'}</div>
+          <div class="order-meta">Qty: ${o.quantity || 1} &bull; Cost: $${parseFloat(o.cost||0).toFixed(2)} ${o.is_free ? '(Free)' : ''} &bull; ${new Date(o.created_at).toLocaleDateString()}</div>
+        </div>
+        <div>${statusBadge(o.status)}</div>
+      </div>
+      ${o.tracking_number ? `<div class="tracking-box"><i class="fas fa-shipping-fast"></i> Tracking: <strong>${o.tracking_number}</strong></div>` : ''}
+      ${o.supplier_notes ? `<div style="margin-top:10px;font-size:.8rem;color:#64748b"><strong>Supplier note:</strong> ${o.supplier_notes}</div>` : ''}
+      <div class="order-actions">
+        ${o.status === 'shipped' ? `<button class="btn btn-success btn-sm" onclick="confirmDelivery('${o.id}')"><i class="fas fa-check"></i> Confirm Delivery</button>` : ''}
+        ${o.status === 'delivered' ? `<button class="btn btn-primary btn-sm" onclick="openFeedback('${o.id}')"><i class="fas fa-star"></i> Leave Feedback</button>` : ''}
+        ${o.buyer_rating ? `<span style="color:#f59e0b;font-size:.85rem">★ ${o.buyer_rating}/5</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function updateStats(orders) {
+  document.getElementById('sBuyerTotal').textContent = orders.length;
+  document.getElementById('sPending').textContent    = orders.filter(o => o.status === 'pending').length;
+  document.getElementById('sShipped').textContent    = orders.filter(o => o.status === 'shipped').length;
+  document.getElementById('sDelivered').textContent  = orders.filter(o => ['delivered','reviewed'].includes(o.status)).length;
+}
+
+// ─── Load supplier orders ──────────────────────────────────────────────────
+async function loadSupplierOrders() {
+  const container = document.getElementById('supplierOrdersList');
+  container.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8">Loading…</div>';
+  try {
+    const res = await fetch(API + '/supplier/my', { headers: { Authorization: 'Bearer ' + getToken() } });
+    const json = await res.json();
+    renderSupplierOrders(json.success ? (json.data || []) : getDemoSupplierOrders());
+  } catch { renderSupplierOrders(getDemoSupplierOrders()); }
+}
+
+function renderSupplierOrders(orders) {
+  const container = document.getElementById('supplierOrdersList');
+  if (!orders.length) {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-store"></i><p>No incoming sample requests.</p></div>';
+    return;
+  }
+  container.innerHTML = orders.map(o => `
+    <div class="order-card">
+      <div class="order-card-header">
+        <div>
+          <div class="order-id">ID: ${o.id}</div>
+          <div class="order-product">${o.product_name || 'Sample Request'}</div>
+          <div class="order-meta">Buyer: ${o.buyer_name || o.buyer_id} &bull; Qty: ${o.quantity||1} &bull; ${new Date(o.created_at).toLocaleDateString()}</div>
+        </div>
+        <div>${statusBadge(o.status)}</div>
+      </div>
+      ${o.message ? `<div style="margin-top:10px;font-size:.8rem;color:#475569;background:#f8faff;border-radius:8px;padding:8px 12px"><i class="fas fa-comment-dots"></i> ${o.message}</div>` : ''}
+      <div class="order-actions">
+        ${o.status === 'pending' ? `
+          <button class="btn btn-success btn-sm" onclick="openApprove('${o.id}')"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectOrder('${o.id}')"><i class="fas fa-times"></i> Reject</button>` : ''}
+        ${o.status === 'approved' ? `<button class="btn btn-primary btn-sm" onclick="openShip('${o.id}')"><i class="fas fa-truck"></i> Mark Shipped</button>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// ─── Buyer: confirm delivery ───────────────────────────────────────────────
+async function confirmDelivery(id) {
+  try {
+    const res = await fetch(`${API}/${id}/deliver`, { method: 'PUT', headers: { Authorization: 'Bearer ' + getToken() } });
+    const json = await res.json();
+    if (json.success) { showToast('Delivery confirmed!', 'success'); loadBuyerOrders(); }
+    else showToast(json.error || 'Error', 'error');
+  } catch { showToast('Network error', 'error'); }
+}
+
+// ─── Feedback ─────────────────────────────────────────────────────────────
+function openFeedback(id) {
+  document.getElementById('fbOrderId').value = id;
+  currentRating = 0;
+  document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
+  document.getElementById('fbComment').value = '';
+  openModal('feedbackModal');
+}
+
+async function submitFeedback() {
+  const id = document.getElementById('fbOrderId').value;
+  const payload = { buyer_feedback: document.getElementById('fbComment').value };
+  if (currentRating) payload.buyer_rating = currentRating;
+  try {
+    const res = await fetch(`${API}/${id}/feedback`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    closeModal('feedbackModal');
+    if (json.success) { showToast('Feedback submitted. Thank you!', 'success'); loadBuyerOrders(); }
+    else showToast(json.error || 'Error', 'error');
+  } catch { showToast('Network error', 'error'); closeModal('feedbackModal'); }
+}
+
+// ─── Supplier: approve ────────────────────────────────────────────────────
+function openApprove(id) {
+  document.getElementById('approveOrderId').value = id;
+  document.getElementById('approveCost').value = '0';
+  document.getElementById('approveFree').value = 'false';
+  document.getElementById('approveNotes').value = '';
+  openModal('approveModal');
+}
+
+async function confirmApprove() {
+  const id = document.getElementById('approveOrderId').value;
+  const payload = {
+    cost: parseFloat(document.getElementById('approveCost').value),
+    is_free: document.getElementById('approveFree').value === 'true',
+    supplier_notes: document.getElementById('approveNotes').value.trim(),
+  };
+  try {
+    const res = await fetch(`${API}/${id}/approve`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    closeModal('approveModal');
+    if (json.success) { showToast('Sample request approved!', 'success'); loadSupplierOrders(); }
+    else showToast(json.error || 'Error', 'error');
+  } catch { showToast('Network error', 'error'); closeModal('approveModal'); }
+}
+
+// ─── Supplier: reject ─────────────────────────────────────────────────────
+async function rejectOrder(id) {
+  const reason = prompt('Reason for rejection (optional):') ?? '';
+  try {
+    const res = await fetch(`${API}/${id}/reject`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify({ reason }),
+    });
+    const json = await res.json();
+    if (json.success) { showToast('Request rejected.', 'success'); loadSupplierOrders(); }
+    else showToast(json.error || 'Error', 'error');
+  } catch { showToast('Network error', 'error'); }
+}
+
+// ─── Supplier: ship ───────────────────────────────────────────────────────
+function openShip(id) {
+  document.getElementById('shipOrderId').value = id;
+  document.getElementById('shipTracking').value = '';
+  openModal('shipModal');
+}
+
+async function confirmShip() {
+  const id = document.getElementById('shipOrderId').value;
+  const tracking_number = document.getElementById('shipTracking').value.trim();
+  if (!tracking_number) { showToast('Please enter a tracking number', 'error'); return; }
+  try {
+    const res = await fetch(`${API}/${id}/ship`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify({ tracking_number }),
+    });
+    const json = await res.json();
+    closeModal('shipModal');
+    if (json.success) { showToast('Sample marked as shipped!', 'success'); loadSupplierOrders(); }
+    else showToast(json.error || 'Error', 'error');
+  } catch { showToast('Network error', 'error'); closeModal('shipModal'); }
+}
+
+// ─── Tracking ─────────────────────────────────────────────────────────────
+async function trackSample() {
+  const id = document.getElementById('trackingInput').value.trim();
+  if (!id) { showToast('Please enter a sample order ID', 'error'); return; }
+  const container = document.getElementById('trackingResult');
+  container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">Searching…</div>';
+  try {
+    const res = await fetch(`${API}/${id}`, { headers: { Authorization: 'Bearer ' + getToken() } });
+    const json = await res.json();
+    if (json.success && json.data) {
+      const o = json.data;
+      container.innerHTML = `
+        <div class="order-card">
+          <div class="order-card-header">
+            <div>
+              <div class="order-id">ID: ${o.id}</div>
+              <div class="order-product">Sample Order</div>
+              <div class="order-meta">Created: ${new Date(o.created_at).toLocaleDateString()}</div>
+            </div>
+            ${statusBadge(o.status)}
+          </div>
+          ${o.tracking_number ? `<div class="tracking-box"><i class="fas fa-shipping-fast"></i> Tracking: <strong>${o.tracking_number}</strong></div>` : '<div style="margin-top:10px;color:#94a3b8;font-size:.8rem">No tracking number yet</div>'}
+        </div>`;
+    } else {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>${json.error || 'Sample order not found'}</p></div>`;
+    }
+  } catch {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-wifi"></i><p>Network error – please try again</p></div>';
+  }
+}
+
+// ─── Demo data helpers ────────────────────────────────────────────────────
+function getDemoOrders() {
+  return [
+    { id: 'demo-001', product_name: 'USB-C Hub Pro', quantity: 2, cost: 0, is_free: true, status: 'shipped', tracking_number: 'DHL1234567', created_at: new Date().toISOString(), supplier_notes: 'Shipped via DHL Express – estimated delivery in 5-7 days.' },
+    { id: 'demo-002', product_name: 'Bamboo Fabric Roll', quantity: 1, cost: 12.50, is_free: false, status: 'pending', created_at: new Date().toISOString() },
+    { id: 'demo-003', product_name: 'Smart Sensor Kit', quantity: 1, cost: 0, is_free: true, status: 'delivered', created_at: new Date().toISOString() },
+  ];
+}
+function getDemoSupplierOrders() {
+  return [
+    { id: 'sup-001', product_name: 'Industrial Valve Set', buyer_id: 'buyer-alice', quantity: 3, status: 'pending', message: 'Need sample for spec verification before bulk order of 5,000 units.', created_at: new Date().toISOString() },
+    { id: 'sup-002', product_name: 'Cotton T-Shirt XL', buyer_id: 'buyer-bob', quantity: 5, status: 'approved', created_at: new Date().toISOString() },
+  ];
+}
+function addDemoOrder(payload) {
+  getDemoOrders().push({ id: 'demo-' + Date.now(), product_name: 'Product ' + payload.product_id.slice(0,6), quantity: payload.quantity, cost: 0, is_free: false, status: 'pending', created_at: new Date().toISOString() });
+}
+
+// Init
+loadBuyerOrders();
+</script>
+</body>
+</html>
