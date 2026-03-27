@@ -39,6 +39,7 @@ export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
 export { default as ImageSearch } from './ImageSearch.js';
 
+
 import BaseModel from './BaseModel.js';
 import User from './User.js';
 import Product from './Product.js';
@@ -68,6 +69,7 @@ import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
 import ImageSearch from './ImageSearch.js';
+
 
 export default {
   BaseModel,
