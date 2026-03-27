@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Currency Hedging &amp; Forward Contracts – Globex Sky Trade Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/currency-hedging.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}.btn-register{background:#0052CC;color:#fff}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#00C9A7 100%);padding:48px 24px;text-align:center}
+    .page-hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+    .page-hero-sub{color:rgba(255,255,255,.85);font-size:.95rem;max-width:600px;margin:0 auto}
+    .hero-stats{display:flex;justify-content:center;gap:40px;margin-top:24px;flex-wrap:wrap}
+    .stat-item{text-align:center}.stat-num{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#fff}
+    .stat-lbl{font-size:.78rem;color:rgba(255,255,255,.7);margin-top:2px}
+    .section{padding:48px 24px}
+    .container{max-width:1200px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:#0a0e27;margin-bottom:6px}
+    .section-sub{font-size:.88rem;color:#64748b;margin-bottom:20px}
+    .site-footer{background:#0a0e27;padding:24px;text-align:center}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+  </style>
+</head>
+<body>
+
+<!-- ─── Header ─────────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ─── Hero ───────────────────────────────────────────────────────────────── -->
+<div class="page-hero">
+  <h1 class="page-hero-title"><i class="fas fa-shield-alt"></i> Currency Hedging &amp; Forward Contracts</h1>
+  <p class="page-hero-sub">Manage currency risk with forward contracts, rate monitoring, and automated hedging tools.</p>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Currency Pairs</div></div>
+    <div class="stat-item"><div class="stat-num">30s</div><div class="stat-lbl">Rate Refresh</div></div>
+    <div class="stat-item"><div class="stat-num">180d</div><div class="stat-lbl">Max Tenor</div></div>
+  </div>
+</div>
+
+<!-- ─── Main Content ────────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span>/</span>
+      <a href="index.html">Trade Finance</a><span>/</span>
+      <a href="currency.html">Currency Services</a><span>/</span>
+      <span>Hedging &amp; Forward Contracts</span>
+    </nav>
+
+    <!-- ─── KPI Overview ─────────────────────────────────────────────────── -->
+    <div class="hedge-kpi-grid">
+      <div class="hedge-kpi-card">
+        <div class="hedge-kpi-icon blue"><i class="fas fa-file-contract"></i></div>
+        <div>
+          <div class="hedge-kpi-value" id="kpi-active-contracts">—</div>
+          <div class="hedge-kpi-label">Active Contracts</div>
+        </div>
+      </div>
+      <div class="hedge-kpi-card">
+        <div class="hedge-kpi-icon green"><i class="fas fa-dollar-sign"></i></div>
+        <div>
+          <div class="hedge-kpi-value" id="kpi-total-notional">—</div>
+          <div class="hedge-kpi-label">Total Notional</div>
+        </div>
+      </div>
+      <div class="hedge-kpi-card">
+        <div class="hedge-kpi-icon orange"><i class="fas fa-clock"></i></div>
+        <div>
+          <div class="hedge-kpi-value" id="kpi-avg-tenor">—</div>
+          <div class="hedge-kpi-label">Avg Tenor</div>
+        </div>
+      </div>
+      <div class="hedge-kpi-card">
+        <div class="hedge-kpi-icon purple"><i class="fas fa-history"></i></div>
+        <div>
+          <div class="hedge-kpi-value" id="kpi-total-contracts">—</div>
+          <div class="hedge-kpi-label">Total Contracts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Live Exchange Rate Dashboard ─────────────────────────────────── -->
+    <div class="section-title">Live Exchange Rates</div>
+    <p class="section-sub">Simulated rates updated every 30 seconds. All rates shown against USD.</p>
+    <div class="rate-dashboard" id="rate-dashboard">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- ─── Two Column: Calculator + Risk Assessment ─────────────────────── -->
+    <div class="hedge-two-col">
+
+      <!-- Forward Contract Calculator -->
+      <div class="calculator-card">
+        <div class="card-title"><i class="fas fa-calculator" style="color:#0052CC"></i> Forward Rate Calculator</div>
+        <div class="calc-form-grid">
+          <div class="form-group">
+            <label class="form-label" for="calc-pair">Currency Pair</label>
+            <select class="form-control" id="calc-pair">
+              <option value="EUR/USD">EUR/USD — Euro</option>
+              <option value="GBP/USD">GBP/USD — British Pound</option>
+              <option value="CNY/USD">CNY/USD — Chinese Yuan</option>
+              <option value="JPY/USD">JPY/USD — Japanese Yen</option>
+              <option value="INR/USD">INR/USD — Indian Rupee</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="calc-amount">Notional Amount</label>
+            <input type="number" class="form-control" id="calc-amount" placeholder="e.g. 100000" min="1" step="1" value="100000"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="calc-tenor">Tenor (Days)</label>
+            <select class="form-control" id="calc-tenor">
+              <option value="30">30 Days</option>
+              <option value="60">60 Days</option>
+              <option value="90" selected>90 Days</option>
+              <option value="120">120 Days</option>
+              <option value="180">180 Days</option>
+            </select>
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-end">
+            <button class="btn-hedge primary" id="calc-btn" style="width:100%">
+              <i class="fas fa-chart-line"></i> Calculate Forward Rate
+            </button>
+          </div>
+        </div>
+
+        <!-- Calculator Result -->
+        <div class="calc-result" id="calc-result" style="display:none">
+          <div class="calc-result-title">Forward Contract Quote</div>
+          <div class="calc-result-grid">
+            <div class="calc-result-item">
+              <div class="result-label">Spot Rate</div>
+              <div class="result-value" id="result-spot-rate">—</div>
+            </div>
+            <div class="calc-result-item">
+              <div class="result-label">Forward Rate</div>
+              <div class="result-value" id="result-forward-rate">—</div>
+            </div>
+            <div class="calc-result-item">
+              <div class="result-label">Premium / Discount</div>
+              <div class="result-value" id="result-premium">—</div>
+            </div>
+            <div class="calc-result-item">
+              <div class="result-label">Maturity</div>
+              <div class="result-value" id="result-maturity">—</div>
+            </div>
+          </div>
+          <div class="savings-highlight" id="result-savings">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Assessment -->
+      <div class="risk-indicator">
+        <div class="risk-title"><i class="fas fa-exclamation-triangle" style="color:#f97316"></i> Risk Assessment</div>
+        <div class="risk-meter">
+          <div class="risk-gauge low" id="risk-gauge">
+            <span id="risk-score">—</span>
+          </div>
+          <div class="risk-details">
+            <div class="risk-label" id="risk-label">Select parameters to assess risk</div>
+            <div class="risk-desc" id="risk-desc">Use the calculator to evaluate currency exposure risk for your trade.</div>
+          </div>
+        </div>
+        <div class="risk-factors" id="risk-factors">
+          <!-- Populated by JS after calculation -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Rate Trend Chart ─────────────────────────────────────────────── -->
+    <div class="chart-container">
+      <div class="chart-header">
+        <div class="chart-title"><i class="fas fa-chart-area" style="color:#0052CC"></i> 30-Day Rate Trend</div>
+        <div class="chart-tabs">
+          <button class="chart-tab active" data-currency="EUR">EUR</button>
+          <button class="chart-tab" data-currency="GBP">GBP</button>
+          <button class="chart-tab" data-currency="CNY">CNY</button>
+          <button class="chart-tab" data-currency="JPY">JPY</button>
+          <button class="chart-tab" data-currency="INR">INR</button>
+        </div>
+      </div>
+      <div class="chart-canvas-wrap">
+        <canvas id="trend-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- ─── Active Contracts Table ───────────────────────────────────────── -->
+    <div class="contracts-card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-file-contract" style="color:#059669"></i> Active Forward Contracts</div>
+        <button class="btn-hedge primary" id="btn-new-contract">
+          <i class="fas fa-plus"></i> New Contract
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table class="hedge-table">
+          <thead>
+            <tr>
+              <th>Contract ID</th>
+              <th>Pair</th>
+              <th>Side</th>
+              <th>Amount</th>
+              <th>Forward Rate</th>
+              <th>Maturity</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="active-contracts-body">
+            <tr><td colspan="8" class="hedge-empty"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── Contract History Table ───────────────────────────────────────── -->
+    <div class="contracts-card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-history" style="color:#7c3aed"></i> Contract History</div>
+      </div>
+      <div class="table-responsive">
+        <table class="hedge-table">
+          <thead>
+            <tr>
+              <th>Contract ID</th>
+              <th>Pair</th>
+              <th>Amount</th>
+              <th>Forward Rate</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Settlement Rate</th>
+            </tr>
+          </thead>
+          <tbody id="history-contracts-body">
+            <tr><td colspan="7" class="hedge-empty"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── New Contract Modal ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="new-contract-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-plus-circle" style="color:#0052CC"></i> Create Forward Contract</div>
+      <button class="modal-close" id="modal-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+    <form class="modal-form" id="new-contract-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="modal-pair">Currency Pair</label>
+          <select class="form-control" id="modal-pair" required>
+            <option value="EUR/USD">EUR/USD — Euro</option>
+            <option value="GBP/USD">GBP/USD — British Pound</option>
+            <option value="CNY/USD">CNY/USD — Chinese Yuan</option>
+            <option value="JPY/USD">JPY/USD — Japanese Yen</option>
+            <option value="INR/USD">INR/USD — Indian Rupee</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modal-buy-sell">Direction</label>
+          <select class="form-control" id="modal-buy-sell" required>
+            <option value="buy">Buy</option>
+            <option value="sell">Sell</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="modal-amount">Notional Amount</label>
+          <input type="number" class="form-control" id="modal-amount" placeholder="e.g. 100000" min="1" step="1" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modal-tenor">Tenor</label>
+          <select class="form-control" id="modal-tenor" required>
+            <option value="30">30 Days</option>
+            <option value="60">60 Days</option>
+            <option value="90" selected>90 Days</option>
+            <option value="120">120 Days</option>
+            <option value="180">180 Days</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="modal-notes">Notes (optional)</label>
+        <input type="text" class="form-control" id="modal-notes" placeholder="e.g. Q2 supplier payment hedge" maxlength="200"/>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px">
+        <button type="button" class="btn-hedge secondary" onclick="CurrencyHedging.closeNewContractModal()">Cancel</button>
+        <button type="submit" class="btn-hedge success"><i class="fas fa-check"></i> Create Contract</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ─── Footer ──────────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-copyright">© <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="../../assets/js/currency-hedging.js"></script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>
