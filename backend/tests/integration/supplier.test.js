@@ -122,6 +122,18 @@ jest.mock('../../controllers/supplier.controller.js', () => ({
       earnings: { total: 1250, pending: 200, paid: 1050 },
     });
   }),
+  getScorecard: jest.fn((req, res) => {
+    res.json({ success: true, data: { supplier_id: req.params.id, overall_score: 85, quality_score: 88, delivery_score: 82, communication_score: 87, pricing_score: 80, badges: ['gold'], review_count: 12 } });
+  }),
+  updateScorecard: jest.fn((req, res) => {
+    res.json({ success: true, data: { supplier_id: req.params.id, overall_score: 90 } });
+  }),
+  evaluateSupplier: jest.fn((req, res) => {
+    res.status(201).json({ success: true, data: { id: 'score-1', overall_score: 4.5 } });
+  }),
+  getTopRated: jest.fn((_req, res) => {
+    res.json({ success: true, data: [] });
+  }),
 }));
 
 // ─── Role check mock ─────────────────────────────────────────────────────────
@@ -130,6 +142,12 @@ jest.mock('../../middleware/roleCheck.js', () => ({
   requireSupplier: (req, res, next) => {
     if (!req.user || req.user.role !== 'supplier') {
       return res.status(403).json({ success: false, error: 'Supplier access required' });
+    }
+    next();
+  },
+  requireAdmin: (req, res, next) => {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Admin access required' });
     }
     next();
   },
