@@ -71,6 +71,26 @@ router.get(
 );
 
 /**
+ * DELETE /api/v1/newsletter/subscribers/:id  (admin)
+ * Remove a subscriber by ID.
+ */
+router.delete(
+  '/subscribers/:id',
+  authenticate,
+  requireAdmin,
+  [param('id').isUUID().withMessage('Valid subscriber ID is required')],
+  validate,
+  async (req, res, next) => {
+    try {
+      await Newsletter.delete(req.params.id);
+      res.json({ success: true, message: 'Subscriber deleted' });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+/**
  * GET /api/v1/newsletter/status/:email  (admin)
  * Check subscription status for an email.
  */
