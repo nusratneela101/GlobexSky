@@ -170,11 +170,11 @@
 
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('general')"><i class="fas fa-sliders-h"></i> General</button>
-        <button class="tab-btn" onclick="switchTab('algorithm')"><i class="fas fa-brain"></i> Algorithm</button>
-        <button class="tab-btn" onclick="switchTab('ai')"><i class="fas fa-robot"></i> AI Provider</button>
-        <button class="tab-btn" onclick="switchTab('widgets')"><i class="fas fa-th-large"></i> Widgets</button>
-        <button class="tab-btn" onclick="switchTab('generate')"><i class="fas fa-sync-alt"></i> Generate</button>
+        <button class="tab-btn active" onclick="switchTab('general', event)"><i class="fas fa-sliders-h"></i> General</button>
+        <button class="tab-btn" onclick="switchTab('algorithm', event)"><i class="fas fa-brain"></i> Algorithm</button>
+        <button class="tab-btn" onclick="switchTab('ai', event)"><i class="fas fa-robot"></i> AI Provider</button>
+        <button class="tab-btn" onclick="switchTab('widgets', event)"><i class="fas fa-th-large"></i> Widgets</button>
+        <button class="tab-btn" onclick="switchTab('generate', event)"><i class="fas fa-sync-alt"></i> Generate</button>
       </div>
 
       <!-- ── Tab: General ─────────────────────────────────────────────── -->
@@ -436,7 +436,7 @@
       btn.className    = 'btn btn-danger';
     } else {
       banner.className = 'mode-banner test';
-      text.innerHTML   = 'Status: <strong>Disabled</strong> — Recommendations are not shown to users. Click "Go Live" to activate.';
+      text.innerHTML   = '<i class="fas fa-pause-circle" style="color:#94a3b8;font-size:.6rem"></i> Status: <strong>Disabled</strong> — Recommendations are not shown to users. Click "Go Live" to activate.';
       btn.innerHTML    = '<i class="fas fa-rocket"></i> Go Live';
       btn.className    = 'btn btn-success';
     }
@@ -575,11 +575,11 @@
   }
 
   // ─── Tab switching ────────────────────────────────────────────────────────
-  function switchTab(name) {
+  function switchTab(name, evt) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
-    event.currentTarget.classList.add('active');
+    if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
   }
 
   // ─── UI helpers ───────────────────────────────────────────────────────────

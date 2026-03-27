@@ -98,7 +98,7 @@ async function collaborativeFilter(userId, limit) {
     .from('user_interactions')
     .select('product_id, interaction_type')
     .in('user_id', peerIds)
-    .not('product_id', 'in', `(${myProductIds.join(',')})`)
+    .filter('product_id', 'not.in', `(${myProductIds.map(id => `"${id}"`).join(',')})`)
     .limit(5000);
   if (e2) throw e2;
 
@@ -151,7 +151,7 @@ async function contentBasedFilter(userId, limit) {
   let query = supabase
     .from('products')
     .select('id, category_id, price')
-    .not('id', 'in', `(${myProductIds.join(',')})`)
+    .filter('id', 'not.in', `(${myProductIds.map(id => `"${id}"`).join(',')})`)
     .limit(limit * 5);
 
   if (catIds.length) {
@@ -244,11 +244,13 @@ Based on these interactions, return a JSON array of up to ${limit} product IDs t
   try {
     const { default: fetch } = await import('node-fetch').catch(() => ({ default: globalThis.fetch }));
 
+    const aiModel = cfg.ai_model ?? (provider === 'azure' ? 'gpt-4' : 'gpt-3.5-turbo');
+
     let apiUrl = 'https://api.openai.com/v1/chat/completions';
     const headers = { 'Content-Type': 'application/json' };
 
     if (provider === 'azure') {
-      apiUrl = `${endpoint}/openai/deployments/gpt-4/chat/completions?api-version=2023-03-15-preview`;
+      apiUrl = `${endpoint}/openai/deployments/${encodeURIComponent(aiModel)}/chat/completions?api-version=2023-03-15-preview`;
       headers['api-key'] = apiKey;
     } else if (provider === 'custom') {
       apiUrl = endpoint;
@@ -261,7 +263,7 @@ Based on these interactions, return a JSON array of up to ${limit} product IDs t
       method: 'POST',
       headers,
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: aiModel,
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.3,
         max_tokens: 500,
