@@ -1034,6 +1034,11 @@ body.has-bottom-nav .page-content {
     display: none;
   }
 
+  /* Show mobile cart icon beside hamburger */
+  .nav-cart-mobile {
+    display: flex !important;
+  }
+
   /* Compact nav-container on mobile */
   .nav-container {
     padding: 10px 16px;
@@ -1182,6 +1187,11 @@ body.has-bottom-nav .page-content {
     display: none;
   }
 
+  /* Hide mobile-only cart icon on desktop */
+  .nav-cart-mobile {
+    display: none !important;
+  }
+
   /* Ensure mobile-nav is always hidden unless opened on desktop */
   .mobile-nav:not(.open) {
     display: none;
@@ -1205,5 +1215,227 @@ body.has-bottom-nav .page-content {
 
   .livestream-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ==========================================================================
+   10. Sub-page Layout Responsive Overrides
+   Covers page-specific layout classes used across sub-pages under pages/
+   ========================================================================== */
+
+/* ── Admin Layout ─────────────────────────────────────────────────────────── */
+
+/* Admin wrapper: flex row → column on mobile */
+@media (max-width: 768px) {
+  .admin-wrapper {
+    flex-direction: column !important;
+  }
+
+  /* Admin sidebar: hide off-screen by default, overlay on open */
+  .admin-sidebar {
+    position: fixed !important;
+    left: -260px !important;
+    top: 0 !important;
+    width: 260px !important;
+    height: 100% !important;
+    z-index: 1000 !important;
+    transition: left 0.3s ease !important;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.open {
+    left: 0 !important;
+  }
+
+  /* Admin main: full width */
+  .admin-main {
+    width: 100% !important;
+    margin-left: 0 !important;
+    overflow-x: hidden;
+  }
+
+  /* Admin content area */
+  .admin-content {
+    padding: 16px !important;
+    margin-left: 0 !important;
+  }
+
+  /* Metrics grid: 2 columns on mobile */
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* Dashboard grid: single column */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Two/three col grids: single column */
+  .two-col,
+  .three-col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Data table: horizontal scroll */
+  .data-table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  /* Admin form row: single column */
+  .admin-form-row {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+
+  /* Admin topbar: wrap on small screens */
+  .admin-topbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Metrics grid: single column on very small screens */
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Admin card padding */
+  .admin-card {
+    padding: 14px !important;
+  }
+}
+
+/* ── Account / Supplier Page Layout ──────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Two-column sidebar + content → single column */
+  .page-layout {
+    grid-template-columns: 1fr !important;
+    padding: 16px !important;
+    gap: 16px !important;
+  }
+
+  /* Sidebar: not sticky, full width */
+  .sidebar,
+  .account-sidebar {
+    position: static !important;
+    width: 100% !important;
+  }
+
+  /* Content area: no overflow issue */
+  .content-area {
+    min-width: 0 !important;
+  }
+}
+
+/* ── Checkout / Cart Layout ───────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .checkout-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sidebar-summary {
+    position: static !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .form-grid,
+  .card-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Product Detail ───────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .product-detail-layout,
+  .product-gallery-layout {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+
+  .product-tabs .tab-list,
+  .tabs-nav {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ── Search / Filter Bar ──────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .search-filter-bar,
+  .filter-bar {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .filter-group {
+    flex-wrap: wrap;
+    gap: 8px !important;
+  }
+}
+
+/* ── Supplier / Account Stats Grid ───────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .top-products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── Table Wrappers ───────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .table-wrapper,
+  .table-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table.data-table th,
+  table.data-table td {
+    padding: 8px 10px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── Logistics / Trade Finance Pages ─────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .features-grid,
+  .services-grid,
+  .how-it-works-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat-grid,
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-grid,
+  .stats-row {
+    grid-template-columns: 1fr !important;
   }
 }

@@ -405,3 +405,112 @@
   .card:hover,
   a:hover { transform: none !important; }
 }
+
+/* ─── Navbar overflow fix (sub-pages) ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Hide heavy nav controls on mobile; use mobile drawer instead */
+  .nav-controls {
+    display: none !important;
+  }
+
+  .nav-lang-switcher,
+  .nav-select-group {
+    display: none !important;
+  }
+
+  /* Cart icon stays visible */
+  .nav-cart,
+  .nav-cart-icon {
+    display: flex !important;
+  }
+
+  /* Ensure nav-container doesn't overflow */
+  .nav-container {
+    flex-wrap: nowrap !important;
+    overflow: hidden;
+  }
+
+  /* Sub-page nav: keep logo + any icon buttons + hamburger */
+  .nav-search {
+    display: none !important;
+  }
+}
+
+/* ─── Admin sidebar toggle on mobile ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Overlay backdrop for admin sidebar */
+  .admin-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 14, 39, 0.55);
+    z-index: 999;
+  }
+
+  .admin-sidebar-overlay.active {
+    display: block;
+  }
+
+  /* Sidebar toggle button always visible on mobile */
+  .sidebar-toggle {
+    display: flex !important;
+  }
+}
+
+/* ─── Account/Supplier sidebar on mobile ────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Account sidebar: hide by default, show on toggle */
+  .account-sidebar {
+    display: none !important;
+  }
+
+  .account-sidebar.mobile-open {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 1000 !important;
+    overflow-y: auto;
+    border-radius: 0 !important;
+  }
+}
+
+/* ─── Page-specific tables: horizontal scroll ───────────────────────────────── */
+@media (max-width: 768px) {
+  .data-table-wrapper,
+  .admin-card .data-table,
+  .table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ─── Admin analytics/reports grids ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .analytics-grid,
+  .reports-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .chart-row,
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ─── Sub-page footer ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .site-footer,
+  footer.site-footer {
+    padding: 32px 16px 16px !important;
+  }
+
+  .footer-inner,
+  .footer-content {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+}
