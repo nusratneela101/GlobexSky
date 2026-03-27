@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Freight Shipment – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/container-tracking.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:56px 24px 44px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(0,201,167,.12) 0%,transparent 60%)}
+    .page-hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;margin-bottom:10px}
+    .page-hero p{font-size:.95rem;opacity:.8;max-width:580px;margin:0 auto;line-height:1.7}
+    .breadcrumb{font-size:.85rem;opacity:.75;margin-bottom:12px}
+    .breadcrumb a{color:rgba(255,255,255,.85);text-decoration:none}
+    .breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb span{margin:0 6px}
+    .main-content{max-width:900px;margin:0 auto;padding:32px 24px}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px;margin-top:40px}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none;padding:0;margin:0}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+
+    .dash-nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+    .dash-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-weight:500;font-size:.88rem;text-decoration:none;transition:all .2s;border:1.5px solid #e2e8f0;color:#374151;background:#fff}
+    .dash-nav a:hover,.dash-nav a.active{background:#0052CC;color:#fff;border-color:#0052CC}
+
+    .card{background:#fff;border-radius:14px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27;margin-bottom:22px;display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+
+    .form-section{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid #f1f5f9}
+    .form-section:last-of-type{border-bottom:none;padding-bottom:0}
+    .form-section-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#374151;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .form-section-title i{color:#0052CC;font-size:.9rem}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-grid.three{grid-template-columns:1fr 1fr 1fr}
+    @media(max-width:600px){.form-grid,.form-grid.three{grid-template-columns:1fr}}
+    .form-group{display:flex;flex-direction:column;gap:5px}
+    .form-group label{font-size:.83rem;font-weight:600;color:#374151}
+    .form-group label .req{color:#ef4444}
+    .form-group input,.form-group select,.form-group textarea{padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.87rem;outline:none;transition:border-color .2s;font-family:'Inter',sans-serif;color:#1a1a2e;background:#fff}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.08)}
+    .form-group textarea{resize:vertical;min-height:80px}
+    .form-hint{font-size:.76rem;color:#94a3b8;margin-top:2px}
+
+    .btn-submit{background:#0052CC;color:#fff;border:none;padding:13px 32px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background .2s;font-family:'Poppins',sans-serif;width:100%;justify-content:center;margin-top:8px}
+    .btn-submit:hover{background:#003d99}
+    .btn-submit:disabled{background:#94a3b8;cursor:not-allowed}
+
+    .alert{border-radius:10px;padding:14px 18px;font-size:.87rem;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .alert-success{background:#d1fae5;color:#065f46;border:1.5px solid #6ee7b7}
+    .alert-error{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5}
+
+    .freight-type-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:4px}
+    @media(max-width:600px){.freight-type-cards{grid-template-columns:1fr 1fr}}
+    .ftype-card{border:2px solid #e2e8f0;border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;background:#f8fafc}
+    .ftype-card:hover{border-color:#0052CC;background:#eff6ff}
+    .ftype-card.selected{border-color:#0052CC;background:#eff6ff}
+    .ftype-card input[type=radio]{display:none}
+    .ftype-card i{font-size:1.4rem;color:#0052CC;display:block;margin-bottom:6px}
+    .ftype-card strong{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;color:#0a0e27;display:block}
+    .ftype-card span{font-size:.72rem;color:#64748b}
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <nav><div class="nav-container">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="GlobexSky" width="160" height="50" style="object-fit:contain"></a>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+  </div></nav>
+</header>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────── -->
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="breadcrumb"><a href="../../index.html">Home</a><span>›</span><a href="index.html">Logistics</a><span>›</span>New Shipment</div>
+    <h1><i class="fa-solid fa-plus-circle"></i> Create Freight Shipment</h1>
+    <p>Book a new freight shipment for FCL, LCL, Air, or Rail cargo.</p>
+  </div>
+</div>
+
+<!-- ── Main Content ─────────────────────────────────────────────────── -->
+<main class="main-content">
+
+  <!-- Navigation -->
+  <div class="dash-nav">
+    <a href="freight-dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href="container-tracking.html"><i class="fas fa-ship"></i> Track Container</a>
+    <a href="freight-shipments.html"><i class="fas fa-list"></i> All Shipments</a>
+    <a href="freight-booking.html" class="active"><i class="fas fa-plus"></i> New Shipment</a>
+  </div>
+
+  <div id="formAlert" style="display:none"></div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-plus-circle"></i> New Freight Shipment</div>
+
+    <form id="freightForm" novalidate>
+
+      <!-- Freight Type -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-boxes"></i> Freight Type</div>
+        <div class="freight-type-cards">
+          <label class="ftype-card selected" id="ftype-FCL">
+            <input type="radio" name="freight_type" value="FCL" checked/>
+            <i class="fas fa-ship"></i>
+            <strong>FCL</strong>
+            <span>Full Container Load</span>
+          </label>
+          <label class="ftype-card" id="ftype-LCL">
+            <input type="radio" name="freight_type" value="LCL"/>
+            <i class="fas fa-boxes"></i>
+            <strong>LCL</strong>
+            <span>Less than Container</span>
+          </label>
+          <label class="ftype-card" id="ftype-air">
+            <input type="radio" name="freight_type" value="air"/>
+            <i class="fas fa-plane"></i>
+            <strong>Air</strong>
+            <span>Air Freight</span>
+          </label>
+          <label class="ftype-card" id="ftype-rail">
+            <input type="radio" name="freight_type" value="rail"/>
+            <i class="fas fa-train"></i>
+            <strong>Rail</strong>
+            <span>Rail Freight</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Carrier & Ports -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-truck"></i> Carrier & Route</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="carrier_name">Carrier Name <span class="req">*</span></label>
+            <input type="text" id="carrier_name" name="carrier_name" placeholder="e.g. MSC, Maersk, DHL" required/>
+          </div>
+          <div class="form-group">
+            <label for="container_number">Container Number</label>
+            <input type="text" id="container_number" name="container_number" placeholder="e.g. MSCU7284910"/>
+          </div>
+          <div class="form-group">
+            <label for="origin_port">Origin Port <span class="req">*</span></label>
+            <input type="text" id="origin_port" name="origin_port" placeholder="e.g. Shanghai, China" required/>
+          </div>
+          <div class="form-group">
+            <label for="destination_port">Destination Port <span class="req">*</span></label>
+            <input type="text" id="destination_port" name="destination_port" placeholder="e.g. Rotterdam, Netherlands" required/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-calendar"></i> Dates</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="departure_date">Departure Date</label>
+            <input type="date" id="departure_date" name="departure_date"/>
+          </div>
+          <div class="form-group">
+            <label for="estimated_arrival">Estimated Arrival</label>
+            <input type="date" id="estimated_arrival" name="estimated_arrival"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents & Cargo -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-file-alt"></i> Cargo & Documents</div>
+        <div class="form-grid three">
+          <div class="form-group">
+            <label for="bill_of_lading">Bill of Lading</label>
+            <input type="text" id="bill_of_lading" name="bill_of_lading" placeholder="BOL number"/>
+          </div>
+          <div class="form-group">
+            <label for="weight">Weight (kg)</label>
+            <input type="number" id="weight" name="weight" placeholder="e.g. 18400" min="0" step="0.01"/>
+          </div>
+          <div class="form-group">
+            <label for="volume">Volume (CBM)</label>
+            <input type="number" id="volume" name="volume" placeholder="e.g. 28.5" min="0" step="0.01"/>
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="form-group">
+            <label for="customs_status">Customs Status</label>
+            <select id="customs_status" name="customs_status">
+              <option value="pending">Pending</option>
+              <option value="cleared">Cleared</option>
+              <option value="held">Held</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="order_id">Order ID (optional)</label>
+            <input type="text" id="order_id" name="order_id" placeholder="Link to an existing order UUID"/>
+            <span class="form-hint">Leave blank if not linked to an order</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <i class="fas fa-plus-circle"></i> Create Shipment
+      </button>
+    </form>
+  </div>
+
+</main>
+
+<!-- ── Footer ──────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="../../assets/js/freight-shipments.js"></script>
+<script>
+  // Freight type card toggle
+  document.querySelectorAll('.ftype-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      document.querySelectorAll('.ftype-card').forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof FreightShipments !== 'undefined') {
+      FreightShipments.initBookingForm();
+    }
+  });
+</script>
+</body>
+</html>

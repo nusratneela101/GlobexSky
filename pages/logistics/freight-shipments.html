@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Freight Shipments – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/container-tracking.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:56px 24px 44px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(0,201,167,.12) 0%,transparent 60%)}
+    .page-hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;margin-bottom:10px}
+    .page-hero p{font-size:.95rem;opacity:.8;max-width:580px;margin:0 auto;line-height:1.7}
+    .breadcrumb{font-size:.85rem;opacity:.75;margin-bottom:12px}
+    .breadcrumb a{color:rgba(255,255,255,.85);text-decoration:none}
+    .breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb span{margin:0 6px}
+    .main-content{max-width:1200px;margin:0 auto;padding:32px 24px}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px;margin-top:40px}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none;padding:0;margin:0}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+
+    .dash-nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+    .dash-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-weight:500;font-size:.88rem;text-decoration:none;transition:all .2s;border:1.5px solid #e2e8f0;color:#374151;background:#fff}
+    .dash-nav a:hover,.dash-nav a.active{background:#0052CC;color:#fff;border-color:#0052CC}
+
+    .card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:8px}
+    .card-title i{color:#0052CC}
+
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+    .filter-bar input,.filter-bar select{padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.87rem;outline:none;transition:border-color .2s;font-family:'Inter',sans-serif}
+    .filter-bar input:focus,.filter-bar select:focus{border-color:#0052CC}
+    .filter-bar input{flex:1;min-width:200px}
+
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:.87rem}
+    th{padding:10px 12px;text-align:left;font-weight:600;color:#374151;background:#f8fafc;border-bottom:2px solid #e2e8f0;font-size:.8rem;text-transform:uppercase;letter-spacing:.4px}
+    td{padding:12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#f8fafc}
+
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+    .badge-booked{background:#dbeafe;color:#1d4ed8}
+    .badge-transit,.badge-in_transit{background:#fef9c3;color:#b45309}
+    .badge-port,.badge-at_port{background:#f0fdf4;color:#15803d}
+    .badge-customs{background:#fde8c0;color:#9a3412}
+    .badge-delivered{background:#d1fae5;color:#065f46}
+
+    .btn-primary{background:#0052CC;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:.87rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s;font-family:'Poppins',sans-serif}
+    .btn-primary:hover{background:#003d99}
+    .btn-sm{padding:6px 12px;border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:5px;transition:all .2s;font-family:'Poppins',sans-serif}
+    .btn-track-sm{background:#0052CC;color:#fff}.btn-track-sm:hover{background:#003d99}
+    .btn-docs-sm{background:#7c3aed;color:#fff}.btn-docs-sm:hover{background:#6d28d9}
+
+    /* Shipment Detail Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;padding:28px;width:90%;max-width:640px;max-height:85vh;overflow-y:auto;position:relative;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#64748b;transition:color .2s}
+    .modal-close:hover{color:#ef4444}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:#0a0e27;margin-bottom:20px}
+    .detail-row{display:flex;gap:8px;margin-bottom:10px;font-size:.87rem}
+    .detail-label{min-width:150px;color:#64748b;font-weight:500}
+    .detail-val{color:#1a1a2e;font-weight:600}
+    .timeline-list{list-style:none;padding:0;margin:0}
+    .timeline-item{display:flex;gap:14px;padding:10px 0;border-left:2px solid #e2e8f0;margin-left:8px;padding-left:16px;position:relative;font-size:.85rem}
+    .timeline-item::before{content:'';width:10px;height:10px;border-radius:50%;background:#0052CC;position:absolute;left:-6px;top:14px;border:2px solid #fff;box-shadow:0 0 0 2px #0052CC}
+    .timeline-date{min-width:100px;color:#64748b;font-size:.78rem}
+    .timeline-body strong{display:block;font-weight:600;color:#1a1a2e;margin-bottom:2px}
+    .doc-list-modal{list-style:none;padding:0}
+    .doc-item{display:flex;align-items:center;gap:12px;padding:9px 12px;background:#f8fafc;border-radius:8px;margin-bottom:8px;font-size:.85rem}
+    .doc-item i{color:#0052CC;font-size:1.1rem}
+    .section-subhead{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#374151;margin:18px 0 10px;border-top:1px solid #f1f5f9;padding-top:14px}
+
+    .empty-state{text-align:center;padding:40px 20px;color:#94a3b8}
+    .empty-state i{font-size:2.5rem;margin-bottom:12px;display:block}
+    .empty-state p{font-size:.9rem}
+
+    .pagination{display:flex;gap:8px;justify-content:center;padding-top:16px}
+    .page-btn{padding:6px 14px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;font-size:.85rem;color:#374151;transition:all .2s;font-family:'Poppins',sans-serif}
+    .page-btn:hover,.page-btn.active{background:#0052CC;color:#fff;border-color:#0052CC}
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <nav><div class="nav-container">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="GlobexSky" width="160" height="50" style="object-fit:contain"></a>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+  </div></nav>
+</header>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────── -->
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="breadcrumb"><a href="../../index.html">Home</a><span>›</span><a href="index.html">Logistics</a><span>›</span>Freight Shipments</div>
+    <h1><i class="fa-solid fa-boxes-stacked"></i> Freight Shipments</h1>
+    <p>Manage and track all your freight shipments — FCL, LCL, Air, and Rail.</p>
+  </div>
+</div>
+
+<!-- ── Main Content ─────────────────────────────────────────────────── -->
+<main class="main-content">
+
+  <!-- Navigation -->
+  <div class="dash-nav">
+    <a href="freight-dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href="container-tracking.html"><i class="fas fa-ship"></i> Track Container</a>
+    <a href="freight-shipments.html" class="active"><i class="fas fa-list"></i> All Shipments</a>
+    <a href="freight-booking.html"><i class="fas fa-plus"></i> New Shipment</a>
+  </div>
+
+  <!-- Shipments List -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fas fa-list-check"></i> All Freight Shipments</div>
+      <a href="freight-booking.html" class="btn-primary"><i class="fas fa-plus"></i> New Shipment</a>
+    </div>
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Search by container #, BOL, carrier, port…"/>
+      <select id="statusFilter">
+        <option value="">All Statuses</option>
+        <option value="booked">Booked</option>
+        <option value="in_transit">In Transit</option>
+        <option value="at_port">At Port</option>
+        <option value="customs">Customs</option>
+        <option value="delivered">Delivered</option>
+      </select>
+      <select id="typeFilter">
+        <option value="">All Types</option>
+        <option value="FCL">FCL</option>
+        <option value="LCL">LCL</option>
+        <option value="air">Air</option>
+        <option value="rail">Rail</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Container #</th>
+            <th>Bill of Lading</th>
+            <th>Carrier</th>
+            <th>Origin → Destination</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>ETA</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="shipmentsBody">
+          <tr><td colspan="8"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading shipments…</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+</main>
+
+<!-- ── Shipment Detail Modal ────────────────────────────────────────── -->
+<div class="modal-overlay" id="shipmentModal">
+  <div class="modal">
+    <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="modalTitle">Shipment Details</div>
+
+    <!-- Info rows -->
+    <div id="modalContent"></div>
+
+    <!-- Timeline -->
+    <div class="section-subhead"><i class="fas fa-timeline"></i> Tracking History</div>
+    <ul class="timeline-list" id="modalTimeline">
+      <li style="color:#94a3b8;font-size:.85rem;padding:8px 0">No tracking events yet.</li>
+    </ul>
+
+    <!-- Documents -->
+    <div class="section-subhead"><i class="fas fa-folder-open"></i> Documents</div>
+    <ul class="doc-list-modal" id="modalDocs">
+      <li style="color:#94a3b8;font-size:.85rem;padding:8px 0">No documents attached.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ── Footer ──────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="../../assets/js/freight-shipments.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof FreightShipments !== 'undefined') {
+      FreightShipments.initShipmentsList();
+    }
+  });
+</script>
+</body>
+</html>

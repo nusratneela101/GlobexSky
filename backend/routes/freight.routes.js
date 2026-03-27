@@ -37,18 +37,6 @@ router.post(
   ctrl.bookShipment,
 );
 
-// GET /api/v1/freight/track/:trackingNumber — Track a shipment (authenticated)
-router.get(
-  '/track/:trackingNumber',
-  authenticate,
-  [
-    param('trackingNumber').notEmpty().withMessage('trackingNumber is required'),
-    query('carrier').optional().isIn(['dhl', 'fedex', 'aramex']),
-  ],
-  validate,
-  ctrl.trackFreight,
-);
-
 // GET /api/v1/freight/analytics — Freight analytics (admin only)
 router.get(
   '/analytics',
@@ -60,6 +48,151 @@ router.get(
   ],
   validate,
   ctrl.getFreightAnalytics,
+);
+
+/* ═══════════════════════════════════════════════════════
+   FREIGHT SHIPMENT MANAGEMENT
+═══════════════════════════════════════════════════════ */
+
+// GET /api/v1/freight/dashboard — Freight dashboard summary (admin)
+router.get(
+  '/dashboard',
+  authenticate,
+  requireAdmin,
+  ctrl.getFreightDashboard,
+);
+
+// GET /api/v1/freight/containers/:containerNumber/track — Track by container number (public)
+router.get(
+  '/containers/:containerNumber/track',
+  [
+    param('containerNumber').notEmpty().withMessage('containerNumber is required'),
+  ],
+  validate,
+  ctrl.trackContainer,
+);
+
+// POST /api/v1/freight/shipments — Create freight shipment (admin)
+router.post(
+  '/shipments',
+  authenticate,
+  requireAdmin,
+  [
+    body('carrier_name').notEmpty().withMessage('carrier_name is required'),
+    body('origin_port').notEmpty().withMessage('origin_port is required'),
+    body('destination_port').notEmpty().withMessage('destination_port is required'),
+    body('freight_type').isIn(['FCL', 'LCL', 'air', 'rail']).withMessage('freight_type must be FCL, LCL, air, or rail'),
+    body('container_number').optional().isString(),
+    body('bill_of_lading').optional().isString(),
+    body('departure_date').optional().isISO8601(),
+    body('estimated_arrival').optional().isISO8601(),
+    body('weight').optional().isFloat({ min: 0 }),
+    body('volume').optional().isFloat({ min: 0 }),
+    body('customs_status').optional().isString(),
+  ],
+  validate,
+  ctrl.createFreightShipment,
+);
+
+// GET /api/v1/freight/shipments — List freight shipments (authenticated)
+router.get(
+  '/shipments',
+  authenticate,
+  [
+    query('page').optional().isInt({ min: 1 }),
+    query('limit').optional().isInt({ min: 1, max: 100 }),
+    query('status').optional().isIn(['booked', 'in_transit', 'at_port', 'customs', 'delivered']),
+  ],
+  validate,
+  ctrl.listFreightShipments,
+);
+
+// GET /api/v1/freight/shipments/:id — Get freight shipment details (authenticated)
+router.get(
+  '/shipments/:id',
+  authenticate,
+  [param('id').isUUID()],
+  validate,
+  ctrl.getFreightShipment,
+);
+
+// PUT /api/v1/freight/shipments/:id — Update freight shipment (admin)
+router.put(
+  '/shipments/:id',
+  authenticate,
+  requireAdmin,
+  [
+    param('id').isUUID(),
+    body('status').optional().isIn(['booked', 'in_transit', 'at_port', 'customs', 'delivered']),
+    body('freight_type').optional().isIn(['FCL', 'LCL', 'air', 'rail']),
+    body('carrier_name').optional().isString(),
+    body('origin_port').optional().isString(),
+    body('destination_port').optional().isString(),
+    body('departure_date').optional().isISO8601(),
+    body('estimated_arrival').optional().isISO8601(),
+    body('actual_arrival').optional().isISO8601(),
+    body('weight').optional().isFloat({ min: 0 }),
+    body('volume').optional().isFloat({ min: 0 }),
+    body('customs_status').optional().isString(),
+    body('bill_of_lading').optional().isString(),
+    body('container_number').optional().isString(),
+  ],
+  validate,
+  ctrl.updateFreightShipment,
+);
+
+// POST /api/v1/freight/shipments/:id/tracking — Add tracking update (admin)
+router.post(
+  '/shipments/:id/tracking',
+  authenticate,
+  requireAdmin,
+  [
+    param('id').isUUID(),
+    body('location').notEmpty().withMessage('location is required'),
+    body('status').notEmpty().withMessage('status is required'),
+    body('description').optional().isString(),
+    body('lat').optional().isFloat({ min: -90, max: 90 }),
+    body('lng').optional().isFloat({ min: -180, max: 180 }),
+  ],
+  validate,
+  ctrl.addTrackingUpdate,
+);
+
+// GET /api/v1/freight/shipments/:id/tracking — Get tracking history (authenticated)
+router.get(
+  '/shipments/:id/tracking',
+  authenticate,
+  [param('id').isUUID()],
+  validate,
+  ctrl.getTrackingHistory,
+);
+
+// POST /api/v1/freight/shipments/:id/documents — Add document to shipment (admin)
+router.post(
+  '/shipments/:id/documents',
+  authenticate,
+  requireAdmin,
+  [
+    param('id').isUUID(),
+    body('name').notEmpty().withMessage('name is required'),
+    body('type').notEmpty().withMessage('type is required'),
+    body('url').optional().isString(),
+    body('size').optional().isString(),
+  ],
+  validate,
+  ctrl.addShipmentDocument,
+);
+
+// GET /api/v1/freight/track/:trackingNumber — Track a shipment via carrier API (authenticated)
+router.get(
+  '/track/:trackingNumber',
+  authenticate,
+  [
+    param('trackingNumber').notEmpty().withMessage('trackingNumber is required'),
+    query('carrier').optional().isIn(['dhl', 'fedex', 'aramex']),
+  ],
+  validate,
+  ctrl.trackFreight,
 );
 
 export default router;
