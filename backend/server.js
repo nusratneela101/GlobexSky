@@ -78,6 +78,7 @@ import containerRoutes from './routes/container.routes.js';
 import customStyleRoutes from './routes/customStyle.routes.js';
 import countriesRoutes from './routes/countries.routes.js';
 import categoryRoutes from './routes/category.routes.js';
+import sampleOrderRoutes from './routes/sampleOrder.routes.js';
 import quotationRoutes from './routes/quotation.routes.js';
 import blogPostRoutes from './routes/blogPost.routes.js';
 import emailTemplateRoutes from './routes/emailTemplate.routes.js';
@@ -89,6 +90,7 @@ import securityRoutes from './routes/security.routes.js';
 import websocketRoutes from './routes/websocket.routes.js';
 import languageRoutes, { adminLanguageRouter } from './routes/language.routes.js';
 import escrowRoutes from './routes/escrow.routes.js';
+import imageSearchRoutes from './routes/imageSearch.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -242,6 +244,7 @@ app.use(`${API}/containers`, containerRoutes);
 app.use(`${API}/custom-styles`, customStyleRoutes);
 app.use('/api/countries', countriesRoutes);
 app.use(`${API}/categories`, categoryRoutes);
+app.use(`${API}/samples`, sampleOrderRoutes);
 app.use(`${API}/quotations`, quotationRoutes);
 app.use(`${API}/blog-posts`, blogPostRoutes);
 app.use(`${API}/email-templates`, emailTemplateRoutes);
@@ -254,6 +257,7 @@ app.use(`${API}/ws`, websocketRoutes);
 app.use(`${API}/languages`, languageRoutes);
 app.use(`${API}/admin/languages`, adminLanguageRouter);
 app.use(`${API}/escrow`, escrowRoutes);
+app.use(`${API}/image-search`, imageSearchRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
