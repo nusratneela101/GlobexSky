@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Compare Products – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --primary:#0052CC;--primary-dark:#003d99;--primary-light:#e6f0ff;
+      --accent:#00C9A7;--secondary:#FF6B35;
+      --bg:#f4f6fa;--dark:#0a0e27;--text:#2d3748;--muted:#718096;
+      --card:#fff;--border:#e2e8f0;
+      --shadow:0 2px 12px rgba(0,0,0,.08);--radius:12px;--radius-sm:8px;
+      --diff-bg:#fff8e1;--diff-border:#f59e0b;
+    }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    h1,h2,h3,h4{font-family:'Poppins',sans-serif}
+
+    /* ── HEADER ── */
+    .site-header{position:sticky;top:0;z-index:1000;background:var(--card);border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .nav-container{display:flex;align-items:center;gap:20px;padding:0 24px;height:66px;max-width:1280px;margin:0 auto}
+    .nav-logo{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:var(--primary);text-decoration:none;white-space:nowrap}
+    .nav-logo span{color:var(--accent)}
+    .nav-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+    .nav-link{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius-sm);font-size:.88rem;font-weight:500;color:var(--text);text-decoration:none;transition:background .2s}
+    .nav-link:hover{background:var(--primary-light);color:var(--primary)}
+    .btn-nav-cta{background:var(--primary);color:#fff;border-radius:var(--radius-sm);padding:8px 18px;font-size:.88rem;font-weight:600;border:none;cursor:pointer;transition:background .2s}
+    .btn-nav-cta:hover{background:var(--primary-dark)}
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb{max-width:1280px;margin:16px auto 0;padding:0 24px;display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted)}
+    .breadcrumb a{color:var(--muted);text-decoration:none}
+    .breadcrumb a:hover{color:var(--primary)}
+    .breadcrumb-sep{color:#cbd5e0}
+
+    /* ── PAGE ── */
+    .page-wrapper{max-width:1280px;margin:0 auto;padding:24px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-title{font-size:1.6rem;font-weight:700;color:var(--dark)}
+    .page-subtitle{font-size:.9rem;color:var(--muted);margin-top:2px}
+
+    /* ── TOOLBAR ── */
+    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--radius-sm);font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;text-decoration:none}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-dark)}
+    .btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+    .btn-secondary:hover{background:var(--primary-light);color:var(--primary)}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}
+    .btn-danger:hover{background:#ef4444;color:#fff}
+    .btn-sm{padding:6px 12px;font-size:.8rem}
+    .btn-accent{background:var(--accent);color:#fff}
+    .btn-accent:hover{background:#00a88e}
+
+    /* ── HIGHLIGHT TOGGLE ── */
+    .highlight-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#fff8e1;border:1px solid #f59e0b;border-radius:20px;font-size:.8rem;font-weight:600;color:#92400e;cursor:pointer;transition:all .2s;user-select:none}
+    .highlight-badge.off{background:#f1f5f9;border-color:#e2e8f0;color:var(--muted)}
+
+    /* ── ADD PRODUCT SLOT ── */
+    .compare-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .compare-table{border-collapse:separate;border-spacing:0;width:100%;min-width:560px}
+    .compare-table th,.compare-table td{padding:14px 18px;vertical-align:top;border-bottom:1px solid var(--border)}
+    .compare-table th{background:var(--bg);font-size:.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;text-align:left;white-space:nowrap;min-width:140px;position:sticky;left:0;z-index:2;border-right:2px solid var(--border)}
+    .compare-table td{text-align:left;min-width:200px}
+    .compare-table tr:hover td{background:#fafcff}
+
+    /* Product header cell */
+    .product-header{text-align:center;position:relative;min-width:200px}
+    .product-img{width:100%;max-width:160px;height:140px;object-fit:contain;border-radius:var(--radius);border:1px solid var(--border);margin:0 auto 10px;display:block}
+    .product-img-placeholder{width:100%;max-width:160px;height:140px;border-radius:var(--radius);border:2px dashed var(--border);background:#f8faff;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#cbd5e0;margin:0 auto 10px}
+    .product-name{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:var(--dark);margin-bottom:4px}
+    .product-price{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:10px}
+    .product-remove{position:absolute;top:-4px;right:-4px;width:24px;height:24px;border-radius:50%;background:#ef4444;color:#fff;border:none;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+    .product-remove:hover{transform:scale(1.2)}
+
+    /* Add product slot */
+    .add-slot{text-align:center;cursor:pointer;min-width:200px}
+    .add-slot-inner{border:2px dashed var(--border);border-radius:var(--radius);padding:32px 20px;transition:border-color .2s,background .2s}
+    .add-slot-inner:hover{border-color:var(--primary);background:var(--primary-light)}
+    .add-slot-icon{font-size:2rem;color:#cbd5e0;margin-bottom:8px}
+    .add-slot-text{font-size:.82rem;color:var(--muted)}
+
+    /* Diff highlight */
+    .diff{background:var(--diff-bg) !important;border-left:3px solid var(--diff-border)}
+    .diff-hidden .diff{background:inherit !important;border-left:none !important}
+
+    /* Value cells */
+    .val-cell{font-size:.88rem;color:var(--text)}
+    .val-check{color:#22c55e;font-size:1rem}
+    .val-cross{color:#ef4444;font-size:1rem}
+    .val-missing{color:#cbd5e0;font-style:italic;font-size:.82rem}
+
+    /* Share bar */
+    .share-bar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .share-label{font-size:.85rem;font-weight:600;color:var(--dark);flex:none}
+    .share-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.85rem;font-family:'Inter',sans-serif;outline:none}
+    .share-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+
+    /* Empty state */
+    .empty-state{text-align:center;padding:60px 20px}
+    .empty-icon{font-size:4rem;color:#cbd5e0;margin-bottom:16px}
+    .empty-title{font-size:1.3rem;font-weight:600;color:var(--dark);margin-bottom:8px}
+    .empty-desc{font-size:.9rem;color:var(--muted);max-width:380px;margin:0 auto 20px}
+
+    /* Loading */
+    .loading-spinner{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px;color:var(--muted);font-size:.9rem}
+
+    /* Toast */
+    .toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:10px;font-size:.875rem;font-weight:600;z-index:9999;display:none;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+    .toast.show{display:flex}
+    .toast-success{background:#059669;color:#fff}
+    .toast-error{background:#ef4444;color:#fff}
+    .toast-info{background:var(--primary);color:#fff}
+
+    /* Add product modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.show{display:flex}
+    .modal-box{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;gap:16px}
+    .modal-header{display:flex;align-items:center;justify-content:space-between}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:var(--dark)}
+    .modal-close{border:none;background:none;cursor:pointer;font-size:1.2rem;color:var(--muted)}
+    .modal-search{position:relative}
+    .modal-search input{width:100%;padding:10px 16px 10px 38px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.9rem;outline:none;font-family:'Inter',sans-serif}
+    .modal-search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+    .modal-search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+    .product-list{overflow-y:auto;flex:1}
+    .product-list-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);cursor:pointer;transition:background .2s;border-bottom:1px solid var(--border)}
+    .product-list-item:hover{background:var(--primary-light)}
+    .product-list-item:last-child{border-bottom:none}
+    .product-list-img{width:50px;height:50px;object-fit:contain;border-radius:8px;border:1px solid var(--border);flex-shrink:0}
+    .product-list-info{flex:1;min-width:0}
+    .product-list-name{font-size:.88rem;font-weight:600;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .product-list-price{font-size:.82rem;color:var(--primary);font-weight:600}
+
+    /* Footer */
+    .site-footer{background:var(--dark);color:#fff;padding:32px 24px;text-align:center;margin-top:60px}
+    .site-footer a{color:var(--accent);text-decoration:none}
+
+    /* Responsive */
+    @media(max-width:768px){
+      .page-wrapper{padding:16px}
+      .page-header{flex-direction:column;align-items:flex-start}
+      .page-title{font-size:1.3rem}
+      .share-bar{flex-direction:column;align-items:stretch}
+      .compare-table th{min-width:110px;font-size:.76rem;padding:10px 12px}
+      .compare-table td{min-width:160px;padding:10px 12px}
+    }
+    @media(max-width:480px){
+      .nav-container{padding:0 16px;gap:10px}
+      .nav-link span{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">Globex<span>Sky</span></a>
+      <div class="nav-actions">
+        <a href="../product/index.html" class="nav-link"><i class="fas fa-box"></i><span>Products</span></a>
+        <a href="../wishlist/index.html" class="nav-link"><i class="fas fa-heart"></i><span>Wishlist</span></a>
+        <a href="../cart/index.html" class="nav-link"><i class="fas fa-shopping-cart"></i><span>Cart</span></a>
+        <button class="btn-nav-cta" onclick="window.location.href='../auth/login.html'">Login</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span class="breadcrumb-sep"><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span>
+  <span>Compare Products</span>
+</div>
+
+<div class="page-wrapper">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="fas fa-columns" style="color:var(--primary);margin-right:10px"></i>Product Comparison</h1>
+      <p class="page-subtitle" id="productCount">Compare up to <span id="maxProductsLabel">5</span> products side-by-side</p>
+    </div>
+    <div class="toolbar">
+      <button id="highlightToggle" class="highlight-badge" onclick="toggleHighlight()" title="Toggle difference highlighting">
+        <i class="fas fa-highlighter"></i> Highlight Differences
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="clearAll()"><i class="fas fa-trash"></i> Clear All</button>
+      <button class="btn btn-accent btn-sm" id="shareBtn" onclick="shareComparison()" style="display:none">
+        <i class="fas fa-share-alt"></i> Share
+      </button>
+    </div>
+  </div>
+
+  <!-- Share Bar (hidden until comparison is shared) -->
+  <div class="share-bar" id="shareBar" style="display:none">
+    <span class="share-label"><i class="fas fa-link" style="margin-right:4px;color:var(--primary)"></i>Share Link:</span>
+    <input type="text" class="share-input" id="shareLink" readonly/>
+    <button class="btn btn-primary btn-sm" onclick="copyShareLink()"><i class="fas fa-copy"></i> Copy</button>
+    <button class="btn btn-secondary btn-sm" onclick="document.getElementById('shareBar').style.display='none'"><i class="fas fa-times"></i></button>
+  </div>
+
+  <!-- Comparison Table -->
+  <div id="compareWrapper">
+    <div class="loading-spinner" id="loadingSpinner">
+      <i class="fas fa-spinner fa-spin"></i> Loading comparison…
+    </div>
+    <div class="compare-container" id="compareContainer" style="display:none">
+      <table class="compare-table" id="compareTable">
+        <thead id="compareHead"></thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon"><i class="fas fa-columns"></i></div>
+      <div class="empty-title">No products to compare</div>
+      <div class="empty-desc">Add products to start comparing their features side-by-side.</div>
+      <button class="btn btn-primary" onclick="openAddModal()"><i class="fas fa-plus"></i> Add Product</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <p>&copy; 2025 <a href="../../index.html">Globex Sky</a>. All rights reserved.</p>
+</footer>
+
+<!-- Add Product Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-search" style="margin-right:6px;color:var(--primary)"></i>Add Product to Comparison</span>
+      <button class="modal-close" onclick="closeAddModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-search">
+      <i class="fas fa-search"></i>
+      <input type="text" id="productSearch" placeholder="Search products…" oninput="searchProducts(this.value)"/>
+    </div>
+    <div class="product-list" id="productSearchResults">
+      <div style="padding:20px;text-align:center;color:var(--muted);font-size:.875rem">
+        <i class="fas fa-search" style="margin-right:6px"></i>Type to search products…
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+  const API = '/api/v1';
+  const token = localStorage.getItem('gsky_token') || sessionStorage.getItem('gsky_token');
+
+  // State
+  let comparison   = null;    // Current comparison object from API
+  let products     = [];      // Enriched product details
+  let maxProducts  = 5;
+  let highlightOn  = true;
+  let comparisonId = null;
+  let searchTimer  = null;
+
+  // Read comparison ID / share token from URL
+  const params  = new URLSearchParams(location.search);
+  const urlId    = params.get('id');
+  const urlToken = params.get('token');
+
+  // ── Config ─────────────────────────────────────────────────────────────────
+
+  async function loadConfig() {
+    try {
+      const res = await fetch(`${API}/comparisons/config`);
+      if (res.ok) {
+        const { data } = await res.json();
+        maxProducts = parseInt(data.max_products ?? '5', 10) || 5;
+        if (data.comparison_enabled === 'false') {
+          showEmptyState('Product comparison is currently disabled by the administrator.');
+          return false;
+        }
+      }
+    } catch { /* offline / demo */ }
+    document.getElementById('maxProductsLabel').textContent = maxProducts;
+    return true;
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+
+  async function init() {
+    const ok = await loadConfig();
+    if (!ok) return;
+
+    if (urlToken) {
+      await loadSharedComparison(urlToken);
+    } else if (urlId) {
+      await loadComparison(urlId);
+    } else {
+      // Check localStorage for a comparison in progress
+      const savedId = localStorage.getItem('gsky_compare_id');
+      if (savedId) {
+        await loadComparison(savedId);
+      } else {
+        renderEmpty();
+      }
+    }
+  }
+
+  // ── API Calls ──────────────────────────────────────────────────────────────
+
+  async function loadComparison(id) {
+    showSpinner();
+    try {
+      const res = await fetch(`${API}/comparisons/${id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error('not found');
+      const { data } = await res.json();
+      comparison = data;
+      comparisonId = id;
+      localStorage.setItem('gsky_compare_id', id);
+      products = data.product_details ?? [];
+      renderTable();
+    } catch {
+      renderEmpty();
+    }
+  }
+
+  async function loadSharedComparison(shareToken) {
+    showSpinner();
+    try {
+      const res = await fetch(`${API}/comparisons/shared/${shareToken}`);
+      if (!res.ok) throw new Error('not found');
+      const { data } = await res.json();
+      comparison = data;
+      comparisonId = data.id;
+      products = data.product_details ?? [];
+      renderTable();
+    } catch {
+      renderEmpty();
+    }
+  }
+
+  async function createOrGetComparison() {
+    if (comparisonId) return comparisonId;
+    try {
+      const res = await fetch(`${API}/comparisons`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ products: [], is_public: false }),
+      });
+      if (!res.ok) throw new Error('create failed');
+      const { data } = await res.json();
+      comparisonId = data.id;
+      comparison   = data;
+      localStorage.setItem('gsky_compare_id', comparisonId);
+      return comparisonId;
+    } catch {
+      // Demo mode: generate a local ID
+      comparisonId = 'demo-' + Date.now();
+      localStorage.setItem('gsky_compare_id', comparisonId);
+      return comparisonId;
+    }
+  }
+
+  async function addProductToComparison(product) {
+    if (products.length >= maxProducts) {
+      showToast(`Maximum ${maxProducts} products allowed per comparison.`, 'error');
+      return;
+    }
+    if (products.find(p => p.id === product.id)) {
+      showToast('Product already in comparison.', 'error');
+      return;
+    }
+
+    const id = await createOrGetComparison();
+
+    // Optimistically add to UI
+    products = [...products, product];
+    renderTable();
+    showToast('Product added to comparison', 'success');
+    document.getElementById('shareBtn').style.display = products.length >= 2 ? '' : 'none';
+
+    if (!id.startsWith('demo-')) {
+      try {
+        await fetch(`${API}/comparisons/${id}/products`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ action: 'add', product_id: product.id }),
+        });
+      } catch { /* silent */ }
+    }
+  }
+
+  async function removeProductFromComparison(productId) {
+    products = products.filter(p => p.id !== productId);
+    renderTable();
+    showToast('Product removed from comparison', 'info');
+    document.getElementById('shareBtn').style.display = products.length >= 2 ? '' : 'none';
+
+    if (comparisonId && !comparisonId.startsWith('demo-')) {
+      try {
+        await fetch(`${API}/comparisons/${comparisonId}/products`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ action: 'remove', product_id: productId }),
+        });
+      } catch { /* silent */ }
+    }
+
+    if (!products.length) renderEmpty();
+  }
+
+  // ── Share ──────────────────────────────────────────────────────────────────
+
+  async function shareComparison() {
+    if (!comparisonId || comparisonId.startsWith('demo-')) {
+      showToast('Please log in to share comparisons.', 'info');
+      return;
+    }
+    try {
+      const res = await fetch(`${API}/comparisons/${comparisonId}/products`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ is_public: true }),
+      });
+      const url = `${location.origin}/pages/compare/index.html?id=${comparisonId}`;
+      document.getElementById('shareLink').value = url;
+      document.getElementById('shareBar').style.display = 'flex';
+    } catch {
+      const url = `${location.origin}/pages/compare/index.html?id=${comparisonId}`;
+      document.getElementById('shareLink').value = url;
+      document.getElementById('shareBar').style.display = 'flex';
+    }
+  }
+
+  function copyShareLink() {
+    const input = document.getElementById('shareLink');
+    input.select();
+    document.execCommand('copy');
+    showToast('Link copied to clipboard!', 'success');
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
+  const COMPARE_ATTRS = [
+    { key: 'price',         label: 'Price',         type: 'price'   },
+    { key: 'moq',           label: 'Min. Order Qty', type: 'text'   },
+    { key: 'description',   label: 'Description',   type: 'text'    },
+    { key: 'specifications',label: 'Specifications', type: 'specs'  },
+    { key: 'category_id',   label: 'Category',      type: 'text'    },
+    { key: 'supplier_id',   label: 'Supplier ID',   type: 'text'    },
+  ];
+
+  function renderTable() {
+    if (!products.length) { renderEmpty(); return; }
+
+    hideSpinner();
+    document.getElementById('compareContainer').style.display = '';
+    document.getElementById('emptyState').style.display = 'none';
+
+    // Head row — products
+    const canAdd = products.length < maxProducts;
+    let headHtml = '<tr><th style="background:#fff;border-bottom:2px solid var(--border)"></th>';
+    products.forEach(p => {
+      const img = (p.images && p.images[0]) ? p.images[0] : null;
+      headHtml += `
+        <td class="product-header">
+          <button class="product-remove" onclick="removeProductFromComparison('${p.id}')" title="Remove product">
+            <i class="fas fa-times"></i>
+          </button>
+          ${img
+            ? `<img src="${escHtml(img)}" alt="${escHtml(p.title)}" class="product-img" loading="lazy"/>`
+            : `<div class="product-img-placeholder"><i class="fas fa-box"></i></div>`
+          }
+          <div class="product-name">${escHtml(p.title ?? 'Unnamed Product')}</div>
+          <div class="product-price">${formatPrice(p.price)}</div>
+          <button class="btn btn-primary btn-sm" style="width:100%" onclick="addToCart('${p.id}')">
+            <i class="fas fa-cart-plus"></i> Add to Cart
+          </button>
+        </td>`;
+    });
+    if (canAdd) {
+      headHtml += `
+        <td class="add-slot" onclick="openAddModal()">
+          <div class="add-slot-inner">
+            <div class="add-slot-icon"><i class="fas fa-plus-circle"></i></div>
+            <div class="add-slot-text">Add a product<br/>to compare</div>
+          </div>
+        </td>`;
+    }
+    headHtml += '</tr>';
+    document.getElementById('compareHead').innerHTML = headHtml;
+
+    // Body rows — attributes
+    let bodyHtml = '';
+    COMPARE_ATTRS.forEach(attr => {
+      const vals = products.map(p => getVal(p, attr.key));
+      const allSame = vals.every(v => v === vals[0]);
+
+      bodyHtml += `<tr>`;
+      bodyHtml += `<th>${escHtml(attr.label)}</th>`;
+      vals.forEach(v => {
+        const diffClass = (!allSame && highlightOn) ? 'diff' : '';
+        bodyHtml += `<td class="val-cell ${diffClass}">${renderVal(v, attr.type)}</td>`;
+      });
+      if (canAdd) bodyHtml += '<td></td>';
+      bodyHtml += '</tr>';
+    });
+    document.getElementById('compareBody').innerHTML = bodyHtml;
+
+    // Show share button when there are 2+ products
+    document.getElementById('shareBtn').style.display = products.length >= 2 ? '' : 'none';
+    document.getElementById('productCount').innerHTML = `Comparing <strong>${products.length}</strong> of <strong>${maxProducts}</strong> products`;
+  }
+
+  function renderEmpty() {
+    hideSpinner();
+    document.getElementById('compareContainer').style.display = 'none';
+    document.getElementById('emptyState').style.display = '';
+  }
+
+  function showEmptyState(msg) {
+    hideSpinner();
+    document.getElementById('compareContainer').style.display = 'none';
+    const es = document.getElementById('emptyState');
+    es.style.display = '';
+    es.querySelector('.empty-desc').textContent = msg;
+    es.querySelector('button').style.display = 'none';
+  }
+
+  function showSpinner() {
+    document.getElementById('loadingSpinner').style.display = 'flex';
+    document.getElementById('compareContainer').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+  }
+
+  function hideSpinner() {
+    document.getElementById('loadingSpinner').style.display = 'none';
+  }
+
+  // ── Value Rendering ────────────────────────────────────────────────────────
+
+  function getVal(product, key) {
+    const v = product[key];
+    if (v === null || v === undefined || v === '') return null;
+    return v;
+  }
+
+  function renderVal(v, type) {
+    if (v === null || v === undefined) {
+      return '<span class="val-missing">—</span>';
+    }
+    if (type === 'price') {
+      return `<strong>${formatPrice(v)}</strong>`;
+    }
+    if (type === 'specs') {
+      if (typeof v === 'object') {
+        return Object.entries(v).map(([k, val]) =>
+          `<div style="font-size:.8rem;margin-bottom:2px"><strong>${escHtml(String(k))}:</strong> ${escHtml(String(val))}</div>`
+        ).join('') || '<span class="val-missing">—</span>';
+      }
+      return escHtml(String(v));
+    }
+    if (type === 'bool') {
+      return v ? '<i class="fas fa-check val-check"></i>' : '<i class="fas fa-times val-cross"></i>';
+    }
+    return escHtml(String(v));
+  }
+
+  function formatPrice(price) {
+    if (!price) return '—';
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(price);
+  }
+
+  // ── Highlight Toggle ───────────────────────────────────────────────────────
+
+  function toggleHighlight() {
+    highlightOn = !highlightOn;
+    const btn = document.getElementById('highlightToggle');
+    btn.classList.toggle('off', !highlightOn);
+    btn.innerHTML = `<i class="fas fa-highlighter"></i> ${highlightOn ? 'Highlight Differences' : 'Highlighting Off'}`;
+    renderTable();
+  }
+
+  // ── Clear All ──────────────────────────────────────────────────────────────
+
+  function clearAll() {
+    if (!products.length) return;
+    if (!confirm('Remove all products from comparison?')) return;
+    products = [];
+    comparison = null;
+    comparisonId = null;
+    localStorage.removeItem('gsky_compare_id');
+    renderEmpty();
+    showToast('Comparison cleared', 'info');
+    document.getElementById('shareBtn').style.display = 'none';
+    document.getElementById('shareBar').style.display = 'none';
+  }
+
+  // ── Add Product Modal ──────────────────────────────────────────────────────
+
+  function openAddModal() {
+    if (products.length >= maxProducts) {
+      showToast(`Maximum ${maxProducts} products reached.`, 'error');
+      return;
+    }
+    document.getElementById('addModal').classList.add('show');
+    document.getElementById('productSearch').focus();
+  }
+
+  function closeAddModal() {
+    document.getElementById('addModal').classList.remove('show');
+    document.getElementById('productSearch').value = '';
+    document.getElementById('productSearchResults').innerHTML =
+      '<div style="padding:20px;text-align:center;color:var(--muted);font-size:.875rem"><i class="fas fa-search" style="margin-right:6px"></i>Type to search products…</div>';
+  }
+
+  function searchProducts(q) {
+    clearTimeout(searchTimer);
+    if (!q.trim()) {
+      document.getElementById('productSearchResults').innerHTML =
+        '<div style="padding:20px;text-align:center;color:var(--muted);font-size:.875rem"><i class="fas fa-search" style="margin-right:6px"></i>Type to search products…</div>';
+      return;
+    }
+    searchTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API}/products/search?q=${encodeURIComponent(q)}&limit=10`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error('search failed');
+        const data = await res.json();
+        const items = data.data ?? data ?? [];
+        renderSearchResults(Array.isArray(items) ? items : []);
+      } catch {
+        // Fallback demo data
+        renderSearchResults(getDemoProducts().filter(p =>
+          p.title.toLowerCase().includes(q.toLowerCase())
+        ));
+      }
+    }, 300);
+  }
+
+  function renderSearchResults(items) {
+    const el = document.getElementById('productSearchResults');
+    if (!items.length) {
+      el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:.875rem">No products found.</div>';
+      return;
+    }
+    el.innerHTML = items.map(p => {
+      const img = (p.images && p.images[0]) ? p.images[0] : null;
+      const alreadyAdded = products.find(existing => existing.id === p.id);
+      return `
+        <div class="product-list-item" onclick="${alreadyAdded ? '' : `selectProduct(${JSON.stringify(JSON.stringify(p))})`}"
+             style="${alreadyAdded ? 'opacity:.5;cursor:not-allowed' : ''}">
+          ${img
+            ? `<img src="${escHtml(img)}" alt="" class="product-list-img"/>`
+            : `<div class="product-list-img" style="display:flex;align-items:center;justify-content:center;background:#f1f5f9"><i class="fas fa-box" style="color:#cbd5e0"></i></div>`
+          }
+          <div class="product-list-info">
+            <div class="product-list-name">${escHtml(p.title ?? 'Product')}</div>
+            <div class="product-list-price">${formatPrice(p.price)}</div>
+          </div>
+          ${alreadyAdded ? '<span style="font-size:.75rem;color:var(--muted);flex-shrink:0">Added</span>' : '<i class="fas fa-plus" style="color:var(--primary);flex-shrink:0"></i>'}
+        </div>`;
+    }).join('');
+  }
+
+  function selectProduct(jsonStr) {
+    const product = JSON.parse(jsonStr);
+    closeAddModal();
+    addProductToComparison(product);
+  }
+
+  // ── Add to Cart ────────────────────────────────────────────────────────────
+
+  async function addToCart(productId) {
+    if (!token) {
+      showToast('Please log in to add items to cart.', 'info');
+      return;
+    }
+    try {
+      const res = await fetch(`${API}/cart/items`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ product_id: productId, quantity: 1 }),
+      });
+      if (res.ok) {
+        showToast('Added to cart!', 'success');
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast(err.error || 'Failed to add to cart', 'error');
+      }
+    } catch {
+      showToast('Could not connect to server.', 'error');
+    }
+  }
+
+  // ── Demo Data ──────────────────────────────────────────────────────────────
+
+  function getDemoProducts() {
+    return [
+      { id: 'demo-1', title: 'Industrial Air Compressor 5HP', price: 1299.99, moq: 1, images: [], description: 'Heavy-duty 5HP compressor for industrial use.', specifications: { horsepower: '5 HP', tank: '60 Gallon', voltage: '220V' }, category_id: 'Machinery', supplier_id: 'Supplier A' },
+      { id: 'demo-2', title: 'Stainless Steel Water Pump',     price:  349.00, moq: 5, images: [], description: 'Corrosion-resistant water pump for agriculture.', specifications: { flow_rate: '120 L/min', power: '1.5 kW', material: 'SS304' }, category_id: 'Machinery', supplier_id: 'Supplier B' },
+      { id: 'demo-3', title: 'LED Flood Light 200W',           price:   89.50, moq: 10, images: [], description: 'High-luminosity outdoor flood light.', specifications: { wattage: '200W', lumens: '20000 lm', ip_rating: 'IP66' }, category_id: 'Electronics', supplier_id: 'Supplier C' },
+      { id: 'demo-4', title: 'Hydraulic Hand Pallet Truck',    price:  320.00, moq: 1, images: [], description: 'Manual hydraulic pallet mover, 2000kg capacity.', specifications: { capacity: '2000 kg', fork_length: '1150 mm', weight: '70 kg' }, category_id: 'Machinery', supplier_id: 'Supplier A' },
+      { id: 'demo-5', title: 'Digital Multimeter Pro',         price:   48.00, moq: 20, images: [], description: 'Professional-grade digital multimeter.', specifications: { accuracy: '±0.5%', display: '4.5 digit', cat_rating: 'CAT III 600V' }, category_id: 'Electronics', supplier_id: 'Supplier D' },
+    ];
+  }
+
+  // ── Utils ──────────────────────────────────────────────────────────────────
+
+  function escHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function showToast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    el.className = `toast toast-${type} show`;
+    setTimeout(() => { el.className = `toast toast-${type}`; }, 3500);
+  }
+
+  // Close modal on backdrop click
+  document.getElementById('addModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('addModal')) closeAddModal();
+  });
+
+  // ── Kick off ───────────────────────────────────────────────────────────────
+  init();
+</script>
+</body>
+</html>

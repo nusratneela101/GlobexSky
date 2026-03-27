@@ -98,6 +98,7 @@ import integrationRoutes from './routes/integration.routes.js';
 import aiRoutes from './routes/ai.routes.js';
 import configRoutes from './routes/config.routes.js';
 import adminConfigRoutes from './routes/admin/config.routes.js';
+import productComparisonRoutes from './routes/productComparison.routes.js';
 import adminUsersRoutes from './routes/adminUsers.js';
 import adminProductsRoutes from './routes/adminProducts.js';
 import adminSettingsRoutes from './routes/settings.js';
@@ -192,6 +193,7 @@ app.use(`${API}/cart`, cartRoutes);
 app.use(`${API}/checkout`, checkoutRoutes);
 app.use(`${API}/addresses`, addressRoutes);
 app.use(`${API}/wishlist`, wishlistRoutes);
+app.use(`${API}/comparisons`, productComparisonRoutes);
 
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/webhooks`, webhookRoutes);
