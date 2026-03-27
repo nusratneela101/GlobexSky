@@ -689,6 +689,10 @@
     renderContractHistory();
     renderRiskAssessment();
 
+    // Footer year
+    var footerYear = document.getElementById('footer-year');
+    if (footerYear) footerYear.textContent = new Date().getFullYear();
+
     // Chart tabs
     document.querySelectorAll('.chart-tab').forEach(function (tab) {
       tab.addEventListener('click', function () {
@@ -725,6 +729,11 @@
     var closeBtn = document.getElementById('modal-close-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', closeNewContractModal);
+    }
+
+    var cancelBtn = document.getElementById('modal-cancel-btn');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', closeNewContractModal);
     }
 
     var modalOverlay = document.getElementById('new-contract-modal');
