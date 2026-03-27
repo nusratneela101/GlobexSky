@@ -865,54 +865,12 @@ CREATE TABLE IF NOT EXISTS feature_toggles (
 );
 
 -- ─────────────────────────────────────────────────────────────────
--- FREIGHT SHIPMENTS & CONTAINER TRACKING
--- ─────────────────────────────────────────────────────────────────
 
-CREATE TABLE IF NOT EXISTS freight_shipments (
-  id                UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
-  order_id          UUID        REFERENCES orders(id) ON DELETE SET NULL,
-  container_number  TEXT,
-  bill_of_lading    TEXT,
-  carrier_name      TEXT        NOT NULL,
-  origin_port       TEXT        NOT NULL,
-  destination_port  TEXT        NOT NULL,
-  departure_date    TIMESTAMPTZ,
-  estimated_arrival TIMESTAMPTZ,
-  actual_arrival    TIMESTAMPTZ,
-  status            TEXT        NOT NULL DEFAULT 'booked'
-                      CHECK (status IN ('booked','in_transit','at_port','customs','delivered')),
-  tracking_updates  JSONB       NOT NULL DEFAULT '[]',
-  freight_type      TEXT        NOT NULL
-                      CHECK (freight_type IN ('FCL','LCL','air','rail')),
-  weight            NUMERIC,
-  volume            NUMERIC,
-  customs_status    TEXT        NOT NULL DEFAULT 'pending',
-  documents         JSONB       NOT NULL DEFAULT '[]',
   created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_freight_shipments_status           ON freight_shipments(status);
-CREATE INDEX IF NOT EXISTS idx_freight_shipments_container_number ON freight_shipments(container_number);
-CREATE INDEX IF NOT EXISTS idx_freight_shipments_bill_of_lading   ON freight_shipments(bill_of_lading);
-CREATE INDEX IF NOT EXISTS idx_freight_shipments_order_id         ON freight_shipments(order_id);
 
--- ─────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS container_tracking (
-  id          UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
-  shipment_id UUID        NOT NULL REFERENCES freight_shipments(id) ON DELETE CASCADE,
-  location    TEXT        NOT NULL,
-  status      TEXT        NOT NULL,
-  timestamp   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  description TEXT,
-  lat         NUMERIC,
-  lng         NUMERIC,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_container_tracking_shipment_id ON container_tracking(shipment_id);
-CREATE INDEX IF NOT EXISTS idx_container_tracking_timestamp   ON container_tracking(timestamp);
 
 -- ─────────────────────────────────────────────────────────────────
 -- UPDATED-AT TRIGGERS

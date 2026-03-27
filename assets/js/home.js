@@ -250,11 +250,15 @@ function initNewsletterForm() {
 
     try {
       const base = (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL) || '/api/v1';
-      await fetch(`${base}/newsletter/subscribe`, {
+      const res = await fetch(`${base}/newsletter/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || 'Subscription failed');
+      }
       if (typeof showToast === 'function') showToast('Thank you for subscribing!', 'success');
       form.reset();
     } catch (_) {

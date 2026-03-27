@@ -103,3 +103,35 @@ export async function broadcastPush(payload) {
     (data || []).map((row) => sendPushToSubscription(JSON.parse(row.subscription), payload)),
   );
 }
+
+/**
+ * Send a push notification to a list of user IDs in bulk.
+ * @param {string[]} userIds - Array of user IDs to notify.
+ * @param {object} payload - Notification payload.
+ * @returns {Promise<{sent: number, failed: number}>} Result counts.
+ */
+export async function sendBulkPush(userIds, payload) {
+  if (!userIds || userIds.length === 0) return { sent: 0, failed: 0 };
+
+  const { data, error } = await supabase
+    .from('push_subscriptions')
+    .select('subscription')
+    .in('user_id', userIds)
+    .eq('active', true);
+  if (error) throw new Error(error.message);
+
+  let sent = 0;
+  let failed = 0;
+  await Promise.all(
+    (data || []).map(async (row) => {
+      try {
+        await sendPushToSubscription(JSON.parse(row.subscription), payload);
+        sent++;
+      } catch (err) {
+        console.error('[PushNotification] sendBulkPush delivery error:', err.message);
+        failed++;
+      }
+    }),
+  );
+  return { sent, failed };
+}

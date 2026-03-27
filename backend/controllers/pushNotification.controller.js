@@ -142,3 +142,25 @@ export async function broadcastNotification(req, res, next) {
     res.json({ success: true, message: 'Push notification broadcast sent.' });
   } catch (err) { next(err); }
 }
+
+/** POST /api/v1/push/send-bulk — send to a list of users or a named segment (admin only) */
+export async function sendBulkNotification(req, res, next) {
+  try {
+    const { user_ids, title, body, icon, url, category } = req.body;
+    if (!title) {
+      return res.status(400).json({ success: false, error: 'title is required.' });
+    }
+    if (!Array.isArray(user_ids) || user_ids.length === 0) {
+      return res.status(400).json({ success: false, error: 'user_ids must be a non-empty array.' });
+    }
+    const payload = {
+      title,
+      body: body || '',
+      icon: icon || '/assets/images/logo.png',
+      url: url || '/',
+      ...(category && { tag: category }),
+    };
+    const result = await pushService.sendBulkPush(user_ids, payload);
+    res.json({ success: true, message: 'Bulk push notifications sent.', data: result });
+  } catch (err) { next(err); }
+}

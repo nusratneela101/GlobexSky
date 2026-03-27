@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Evaluate Supplier – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-subtitle{font-size:.72rem;color:#64748b;margin-left:2px}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);color:#fff;padding:36px 24px;text-align:center}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:6px}
+    .page-hero p{font-size:.95rem;opacity:.85}
+    .page-content{max-width:720px;margin:0 auto;padding:32px 24px}
+    .form-card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .form-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px;margin-bottom:24px}
+    /* Star rating */
+    .rating-group{margin-bottom:24px}
+    .rating-label{font-weight:600;font-size:.9rem;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .rating-label i{width:18px;text-align:center;color:#0052CC}
+    .stars-input{display:flex;gap:6px;flex-direction:row-reverse;justify-content:flex-end}
+    .stars-input input[type="radio"]{display:none}
+    .stars-input label{font-size:1.5rem;color:#e2e8f0;cursor:pointer;transition:color .15s}
+    .stars-input label:hover,.stars-input label:hover ~ label,
+    .stars-input input:checked ~ label{color:#f59e0b}
+    .rating-hint{font-size:.75rem;color:#94a3b8;margin-top:4px}
+    /* Text area */
+    .form-group{margin-bottom:20px}
+    .form-group label{font-weight:600;font-size:.9rem;color:#374151;display:block;margin-bottom:8px}
+    .form-group textarea,.form-group input,.form-group select{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;color:#374151;font-family:'Inter',sans-serif;outline:none;transition:border .2s;resize:vertical}
+    .form-group textarea:focus,.form-group input:focus,.form-group select:focus{border-color:#0052CC}
+    .btn-primary{width:100%;padding:12px;background:#0052CC;color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s}
+    .btn-primary:hover{background:#0041a3}
+    .btn-primary:disabled{background:#94a3b8;cursor:not-allowed}
+    .alert{padding:14px 16px;border-radius:10px;font-size:.88rem;font-weight:500;margin-bottom:16px;display:none}
+    .alert-success{background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0}
+    .alert-error{background:#fee2e2;color:#7f1d1d;border:1.5px solid #fca5a5}
+    .supplier-info-card{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:24px}
+    .supplier-avatar{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-weight:700;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .supplier-detail-name{font-weight:700;font-size:.95rem;color:#0a0e27}
+    .supplier-detail-sub{font-size:.78rem;color:#64748b;margin-top:2px}
+    .score-preview{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+    .score-preview-item{background:#f8faff;border-radius:10px;padding:12px;text-align:center;border:1.5px solid #e2e8f0}
+    .score-preview-label{font-size:.72rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+    .score-preview-val{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.2rem;color:#0052CC}
+    @media(max-width:600px){.score-preview{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain"/>
+        <div><div class="nav-subtitle">Supplier Evaluation</div></div>
+      </a>
+      <div class="nav-controls">
+        <a href="top-rated.html" style="text-decoration:none;font-size:.88rem;color:#374151;font-weight:500">Top Rated</a>
+        <a href="../auth/login.html" class="btn-primary" style="text-decoration:none;width:auto;display:inline-block;padding:8px 20px">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1><i class="fas fa-star" style="margin-right:10px;color:#f59e0b"></i>Rate This Supplier</h1>
+  <p>Share your experience to help other buyers and improve the platform.</p>
+</div>
+
+<div class="page-content">
+  <div class="alert alert-success" id="alertSuccess"><i class="fas fa-check-circle"></i> <span id="successMsg">Your evaluation has been submitted. Thank you!</span></div>
+  <div class="alert alert-error" id="alertError"><i class="fas fa-exclamation-circle"></i> <span id="errorMsg">Something went wrong. Please try again.</span></div>
+
+  <div class="form-card">
+    <div class="form-card-title"><i class="fas fa-building" style="color:#0052CC"></i> Supplier Being Evaluated</div>
+    <div class="supplier-info-card" id="supplierInfoCard">
+      <div class="supplier-avatar" id="supplierAvatar">?</div>
+      <div>
+        <div class="supplier-detail-name" id="supplierDisplayName">Loading supplier...</div>
+        <div class="supplier-detail-sub" id="supplierDisplaySub"></div>
+      </div>
+    </div>
+
+    <form id="evaluationForm" novalidate>
+      <input type="hidden" id="supplierId" name="supplier_id"/>
+      <input type="hidden" id="orderId" name="order_id"/>
+
+      <!-- Quality -->
+      <div class="rating-group">
+        <div class="rating-label"><i class="fas fa-star"></i> Product Quality</div>
+        <div class="stars-input" id="qualityStars">
+          <input type="radio" id="q5" name="quality_score" value="5"/><label for="q5" title="5 stars">★</label>
+          <input type="radio" id="q4" name="quality_score" value="4"/><label for="q4" title="4 stars">★</label>
+          <input type="radio" id="q3" name="quality_score" value="3"/><label for="q3" title="3 stars">★</label>
+          <input type="radio" id="q2" name="quality_score" value="2"/><label for="q2" title="2 stars">★</label>
+          <input type="radio" id="q1" name="quality_score" value="1"/><label for="q1" title="1 star">★</label>
+        </div>
+        <div class="rating-hint">How satisfied are you with product quality and accuracy to description?</div>
+      </div>
+
+      <!-- Delivery -->
+      <div class="rating-group">
+        <div class="rating-label"><i class="fas fa-truck"></i> Delivery &amp; Shipping</div>
+        <div class="stars-input" id="deliveryStars">
+          <input type="radio" id="d5" name="delivery_score" value="5"/><label for="d5">★</label>
+          <input type="radio" id="d4" name="delivery_score" value="4"/><label for="d4">★</label>
+          <input type="radio" id="d3" name="delivery_score" value="3"/><label for="d3">★</label>
+          <input type="radio" id="d2" name="delivery_score" value="2"/><label for="d2">★</label>
+          <input type="radio" id="d1" name="delivery_score" value="1"/><label for="d1">★</label>
+        </div>
+        <div class="rating-hint">Was the order delivered on time and in good condition?</div>
+      </div>
+
+      <!-- Communication -->
+      <div class="rating-group">
+        <div class="rating-label"><i class="fas fa-comments"></i> Communication</div>
+        <div class="stars-input" id="commStars">
+          <input type="radio" id="c5" name="communication_score" value="5"/><label for="c5">★</label>
+          <input type="radio" id="c4" name="communication_score" value="4"/><label for="c4">★</label>
+          <input type="radio" id="c3" name="communication_score" value="3"/><label for="c3">★</label>
+          <input type="radio" id="c2" name="communication_score" value="2"/><label for="c2">★</label>
+          <input type="radio" id="c1" name="communication_score" value="1"/><label for="c1">★</label>
+        </div>
+        <div class="rating-hint">How responsive and helpful was the supplier?</div>
+      </div>
+
+      <!-- Pricing -->
+      <div class="rating-group">
+        <div class="rating-label"><i class="fas fa-tag"></i> Pricing &amp; Value</div>
+        <div class="stars-input" id="pricingStars">
+          <input type="radio" id="p5" name="pricing_score" value="5"/><label for="p5">★</label>
+          <input type="radio" id="p4" name="pricing_score" value="4"/><label for="p4">★</label>
+          <input type="radio" id="p3" name="pricing_score" value="3"/><label for="p3">★</label>
+          <input type="radio" id="p2" name="pricing_score" value="2"/><label for="p2">★</label>
+          <input type="radio" id="p1" name="pricing_score" value="1"/><label for="p1">★</label>
+        </div>
+        <div class="rating-hint">Was the pricing fair and competitive?</div>
+      </div>
+
+      <!-- Score preview -->
+      <div class="score-preview" id="scorePreview" style="display:none">
+        <div class="score-preview-item"><div class="score-preview-label">Quality</div><div class="score-preview-val" id="previewQuality">-</div></div>
+        <div class="score-preview-item"><div class="score-preview-label">Delivery</div><div class="score-preview-val" id="previewDelivery">-</div></div>
+        <div class="score-preview-item"><div class="score-preview-label">Communication</div><div class="score-preview-val" id="previewComm">-</div></div>
+        <div class="score-preview-item"><div class="score-preview-label">Pricing</div><div class="score-preview-val" id="previewPricing">-</div></div>
+      </div>
+
+      <!-- Review text -->
+      <div class="form-group">
+        <label for="reviewText"><i class="fas fa-pen" style="color:#0052CC;margin-right:6px"></i>Written Review <span style="color:#94a3b8;font-weight:400">(optional)</span></label>
+        <textarea id="reviewText" name="review_text" rows="4" maxlength="2000" placeholder="Share your experience with this supplier..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn"><i class="fas fa-paper-plane" style="margin-right:6px"></i>Submit Evaluation</button>
+    </form>
+  </div>
+</div>
+
+<footer class="site-footer" style="background:#0a0e27;color:#94a3b8;padding:32px 24px;text-align:center;margin-top:24px">
+  <p style="font-size:.88rem">&copy; 2024 GlobexSky. All rights reserved.</p>
+</footer>
+
+<script src="../../assets/js/supplier-scorecard.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Parse query params
+  var params = new URLSearchParams(window.location.search);
+  var supplierId = params.get('supplier_id') || params.get('id') || '';
+  var orderId    = params.get('order_id') || '';
+
+  document.getElementById('supplierId').value = supplierId;
+  document.getElementById('orderId').value    = orderId;
+
+  // Populate supplier info
+  (function () {
+    if (!supplierId) return;
+
+    // Try API first
+    fetch('/api/v1/suppliers/' + encodeURIComponent(supplierId))
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(json) {
+        var s = json.data || {};
+        var name = s.company_name || s.name || supplierId;
+        var initials = name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+        document.getElementById('supplierAvatar').textContent = initials;
+        document.getElementById('supplierDisplayName').textContent = name;
+        document.getElementById('supplierDisplaySub').textContent = [s.country, s.business_type].filter(Boolean).join(' · ');
+      })
+      .catch(function() {
+        // Fallback to localStorage
+        var s = SupplierScorecard.getSupplier(supplierId);
+        if (s) {
+          var initials = s.name.split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+          document.getElementById('supplierAvatar').textContent = initials;
+          document.getElementById('supplierDisplayName').textContent = s.name;
+          document.getElementById('supplierDisplaySub').textContent = [s.country, s.category].filter(Boolean).join(' · ');
+        }
+      });
+  })();
+
+  // Live score preview
+  function getRadioVal(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? parseFloat(el.value) : null;
+  }
+
+  function updatePreview() {
+    var q = getRadioVal('quality_score');
+    var d = getRadioVal('delivery_score');
+    var c = getRadioVal('communication_score');
+    var p = getRadioVal('pricing_score');
+    var allSet = q && d && c && p;
+
+    document.getElementById('scorePreview').style.display = allSet ? 'grid' : 'none';
+    if (allSet) {
+      document.getElementById('previewQuality').textContent  = q + '/5';
+      document.getElementById('previewDelivery').textContent = d + '/5';
+      document.getElementById('previewComm').textContent     = c + '/5';
+      document.getElementById('previewPricing').textContent  = p + '/5';
+    }
+  }
+
+  document.getElementById('evaluationForm').addEventListener('change', updatePreview);
+
+  // Submit
+  document.getElementById('evaluationForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var quality  = getRadioVal('quality_score');
+    var delivery = getRadioVal('delivery_score');
+    var comm     = getRadioVal('communication_score');
+    var pricing  = getRadioVal('pricing_score');
+    var review   = document.getElementById('reviewText').value.trim();
+
+    if (!quality || !delivery || !comm || !pricing) {
+      showError('Please rate all four categories before submitting.');
+      return;
+    }
+
+    var sid = document.getElementById('supplierId').value;
+    if (!sid) { showError('Supplier ID is missing. Please access this page via a supplier profile.'); return; }
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Submitting...';
+
+    var payload = {
+      quality_score: quality,
+      delivery_score: delivery,
+      communication_score: comm,
+      pricing_score: pricing,
+      review_text: review || undefined,
+    };
+    var oid = document.getElementById('orderId').value;
+    if (oid) payload.order_id = oid;
+
+    fetch('/api/v1/suppliers/' + encodeURIComponent(sid) + '/evaluate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    })
+    .then(function(r) { return r.json().then(function(j) { return { ok: r.ok, body: j }; }); })
+    .then(function(result) {
+      if (result.ok) {
+        showSuccess('Your evaluation has been submitted successfully. Thank you!');
+        document.getElementById('evaluationForm').reset();
+        document.getElementById('scorePreview').style.display = 'none';
+      } else {
+        showError(result.body.error || result.body.message || 'Submission failed. Please try again.');
+      }
+    })
+    .catch(function() {
+      // Offline demo: save to localStorage
+      var all = SupplierScorecard.getSuppliers();
+      var idx = all.findIndex(function(s){ return s.id === sid; });
+      if (idx >= 0) {
+        // Average in the new scores
+        var s = all[idx];
+        s.rating = Math.round(((s.rating || 4) + (quality + delivery + comm + pricing) / 4) / 2 * 10) / 10;
+        s.scores.quality      = Math.round(((s.scores.quality || 0) + quality * 20) / 2);
+        s.scores.delivery     = Math.round(((s.scores.delivery || 0) + delivery * 20) / 2);
+        s.scores.communication = Math.round(((s.scores.communication || 0) + comm * 20) / 2);
+        s.scores.pricing      = Math.round(((s.scores.pricing || 0) + pricing * 20) / 2);
+        all[idx] = s;
+        SupplierScorecard.saveSuppliers(all);
+        SupplierScorecard.saveAwards(SupplierScorecard.computeAllAwards());
+      }
+      showSuccess('Evaluation saved locally (demo mode).');
+      document.getElementById('evaluationForm').reset();
+      document.getElementById('scorePreview').style.display = 'none';
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right:6px"></i>Submit Evaluation';
+    });
+  });
+
+  function showSuccess(msg) {
+    document.getElementById('successMsg').textContent = msg;
+    document.getElementById('alertSuccess').style.display = 'block';
+    document.getElementById('alertError').style.display   = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showError(msg) {
+    document.getElementById('errorMsg').textContent = msg;
+    document.getElementById('alertError').style.display   = 'block';
+    document.getElementById('alertSuccess').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+})();
+</script>
+<script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

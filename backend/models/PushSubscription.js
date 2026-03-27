@@ -40,6 +40,8 @@
 
 /**
  * Default notification preferences.
+ * Supported types: order updates, promotions, price alerts, new products, chat messages,
+ * shipping, rfq responses, and system alerts.
  */
 export const DEFAULT_CATEGORIES = {
   orders: true,
@@ -47,6 +49,9 @@ export const DEFAULT_CATEGORIES = {
   shipping: true,
   prices: false,
   promotions: false,
+  new_products: false,
+  rfq: true,
+  system: true,
 };
 
 export const DEFAULT_QUIET_HOURS = {
