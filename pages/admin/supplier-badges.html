@@ -503,30 +503,32 @@ var distChart = null;
 function renderDistChart() {
   var stats = SupplierScorecard.getBadgeStats();
   var ctx = document.getElementById('badgeDistChart');
-  if (!ctx) return;
-  if (distChart) distChart.destroy();
-  distChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: stats.map(function(s) { return s.name; }),
-      datasets: [{
-        label: 'Suppliers with Badge',
-        data: stats.map(function(s) { return s.count; }),
-        backgroundColor: ['#f59e0b', '#0052CC', '#059669', '#7c3aed', '#f97316', '#0d9488', '#ef4444', '#4f46e5'],
-        borderRadius: 8,
-        barPercentage: 0.6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(0,0,0,.05)' } },
-        x: { grid: { display: false } }
+  if (!ctx || typeof Chart === 'undefined') return;
+  try {
+    if (distChart) distChart.destroy();
+    distChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: stats.map(function(s) { return s.name; }),
+        datasets: [{
+          label: 'Suppliers with Badge',
+          data: stats.map(function(s) { return s.count; }),
+          backgroundColor: ['#f59e0b', '#0052CC', '#059669', '#7c3aed', '#f97316', '#0d9488', '#ef4444', '#4f46e5'],
+          borderRadius: 8,
+          barPercentage: 0.6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(0,0,0,.05)' } },
+          x: { grid: { display: false } }
+        }
       }
-    }
-  });
+    });
+  } catch (e) { /* Chart.js not loaded */ }
 }
 
 /* ── Render Badge Types Grid ── */

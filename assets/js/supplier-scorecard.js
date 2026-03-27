@@ -226,44 +226,47 @@ const SupplierScorecard = (() => {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return null;
 
-    return new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: data.labels,
-        datasets: [
-          {
-            label: 'Your Score',
-            data: data.scores,
-            borderColor: '#0052CC',
-            backgroundColor: 'rgba(0,82,204,.1)',
-            fill: true,
-            tension: 0.4,
-            pointRadius: 4,
-            pointHoverRadius: 6,
-            borderWidth: 2.5,
-          },
-          {
-            label: 'Category Average',
-            data: avgLine,
-            borderColor: '#94a3b8',
-            borderDash: [6, 4],
-            fill: false,
-            tension: 0,
-            pointRadius: 0,
-            borderWidth: 1.5,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
-        scales: {
-          y: { min: 0, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
-          x: { grid: { display: false } },
+    try {
+      if (typeof Chart === 'undefined') return null;
+      return new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: 'Your Score',
+              data: data.scores,
+              borderColor: '#0052CC',
+              backgroundColor: 'rgba(0,82,204,.1)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              borderWidth: 2.5,
+            },
+            {
+              label: 'Category Average',
+              data: avgLine,
+              borderColor: '#94a3b8',
+              borderDash: [6, 4],
+              fill: false,
+              tension: 0,
+              pointRadius: 0,
+              borderWidth: 1.5,
+            },
+          ],
         },
-      },
-    });
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
+          scales: {
+            y: { min: 0, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
+            x: { grid: { display: false } },
+          },
+        },
+      });
+    } catch (e) { return null; }
   }
 
   function renderRadarChart(canvasId, supplierId) {
@@ -276,39 +279,42 @@ const SupplierScorecard = (() => {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return null;
 
-    return new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: supplier.name,
-            data: cats.map(c => supplier.scores[c] || 0),
-            borderColor: '#0052CC',
-            backgroundColor: 'rgba(0,82,204,.15)',
-            borderWidth: 2,
-            pointRadius: 4,
-          },
-          {
-            label: 'Category Average',
-            data: cats.map(c => avgs[c]),
-            borderColor: '#94a3b8',
-            backgroundColor: 'rgba(148,163,184,.1)',
-            borderWidth: 1.5,
-            borderDash: [4, 4],
-            pointRadius: 3,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
-        scales: {
-          r: { min: 0, max: 100, ticks: { stepSize: 20, display: false }, grid: { color: 'rgba(0,0,0,.08)' }, pointLabels: { font: { size: 12, family: 'Inter' } } },
+    try {
+      if (typeof Chart === 'undefined') return null;
+      return new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: supplier.name,
+              data: cats.map(c => supplier.scores[c] || 0),
+              borderColor: '#0052CC',
+              backgroundColor: 'rgba(0,82,204,.15)',
+              borderWidth: 2,
+              pointRadius: 4,
+            },
+            {
+              label: 'Category Average',
+              data: cats.map(c => avgs[c]),
+              borderColor: '#94a3b8',
+              backgroundColor: 'rgba(148,163,184,.1)',
+              borderWidth: 1.5,
+              borderDash: [4, 4],
+              pointRadius: 3,
+            },
+          ],
         },
-      },
-    });
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
+          scales: {
+            r: { min: 0, max: 100, ticks: { stepSize: 20, display: false }, grid: { color: 'rgba(0,0,0,.08)' }, pointLabels: { font: { size: 12, family: 'Inter' } } },
+          },
+        },
+      });
+    } catch (e) { return null; }
   }
 
   function renderComparisonBar(canvasId, supplierId) {
@@ -321,37 +327,40 @@ const SupplierScorecard = (() => {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return null;
 
-    return new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Your Score',
-            data: cats.map(c => supplier.scores[c] || 0),
-            backgroundColor: '#0052CC',
-            borderRadius: 6,
-            barPercentage: 0.5,
-          },
-          {
-            label: 'Category Average',
-            data: cats.map(c => avgs[c]),
-            backgroundColor: '#e2e8f0',
-            borderRadius: 6,
-            barPercentage: 0.5,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
-        scales: {
-          y: { min: 0, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
-          x: { grid: { display: false } },
+    try {
+      if (typeof Chart === 'undefined') return null;
+      return new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Your Score',
+              data: cats.map(c => supplier.scores[c] || 0),
+              backgroundColor: '#0052CC',
+              borderRadius: 6,
+              barPercentage: 0.5,
+            },
+            {
+              label: 'Category Average',
+              data: cats.map(c => avgs[c]),
+              backgroundColor: '#e2e8f0',
+              borderRadius: 6,
+              barPercentage: 0.5,
+            },
+          ],
         },
-      },
-    });
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
+          scales: {
+            y: { min: 0, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
+            x: { grid: { display: false } },
+          },
+        },
+      });
+    } catch (e) { return null; }
   }
 
   // ── Badge Award Animation ──
