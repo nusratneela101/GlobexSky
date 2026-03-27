@@ -1,7 +1,8 @@
 /**
  * Globex Sky — Push Notifications Module
- * Handles push permission, preferences (localStorage), quiet hours,
+ * Handles push permission, preferences (localStorage + API), quiet hours,
  * notification history, in-app bell, mock notifications, and admin campaigns.
+ * Integrates with Web Push API using VAPID keys from the backend.
  */
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -15,8 +16,22 @@ const STORAGE_KEYS = {
 
 const ALL_CATEGORIES = [
   'orders', 'messages', 'shipping', 'prices',
-  'promotions', 'newproducts', 'rfq', 'system'
+  'promotions', 'new_products', 'rfq', 'system'
 ];
+
+// Map backend category keys to frontend element IDs
+const CATEGORY_ID_MAP = {
+  orders: 'pref-orders',
+  messages: 'pref-messages',
+  shipping: 'pref-shipping',
+  prices: 'pref-prices',
+  promotions: 'pref-promotions',
+  new_products: 'pref-newproducts',
+  rfq: 'pref-rfq',
+  system: 'pref-system',
+};
+
+const API_BASE = '/api/v1/push';
 
 const SAMPLE_NOTIFICATIONS = [
   { id: 's1', title: 'Order #GS-40821 Shipped', body: 'Your order is on its way! Estimated delivery: 3-5 business days.', category: 'orders', read: false, sent_at: new Date(Date.now() - 1800000).toISOString() },
@@ -69,10 +84,12 @@ function setStoredJSON(key, value) {
 
 // ─── Preferences ──────────────────────────────────────────────────────────────
 function getDefaultPrefs() {
-  const cats = {};
-  ALL_CATEGORIES.forEach(function(c) { cats[c] = (c === 'prices' || c === 'promotions' || c === 'newproducts') ? false : true; });
+  var categories = {};
+  ALL_CATEGORIES.forEach(function(c) {
+    categories[c] = (c === 'prices' || c === 'promotions' || c === 'new_products') ? false : true;
+  });
   return {
-    categories: cats,
+    categories: categories,
     quiet_hours: { enabled: false, start: '22:00', end: '08:00' },
     sound: 'default',
   };
@@ -164,7 +181,7 @@ function syncMasterToggle() {
   toggle.checked = enabled;
 }
 
-// ─── Subscribe (Browser Notification API) ────────────────────────────────────
+// ─── Subscribe (Browser Notification API + Web Push) ─────────────────────────
 function subscribe(callback) {
   if (!('Notification' in window)) {
     showToast('Push notifications are not supported in this browser.', 'error');
@@ -174,20 +191,87 @@ function subscribe(callback) {
 
   Notification.requestPermission().then(function(perm) {
     updatePermissionBadge();
-    if (perm === 'granted') {
-      setStoredJSON(STORAGE_KEYS.ENABLED, true);
-      showToast('Push notifications enabled!', 'success');
-      if (callback) callback(true);
-    } else {
+    if (perm !== 'granted') {
       showToast('Permission denied. Enable notifications in your browser settings.', 'error');
       if (callback) callback(false);
+      return;
     }
+
+    setStoredJSON(STORAGE_KEYS.ENABLED, true);
+    // Attempt to create a real Web Push subscription via PushManager
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      fetch(API_BASE + '/vapid-public-key')
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(resp) {
+          var vapidPublicKey = resp && resp.success && resp.data && resp.data.publicKey;
+          if (!vapidPublicKey) return null;
+          return navigator.serviceWorker.ready.then(function(reg) {
+            return reg.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+            });
+          });
+        })
+        .then(function(pushSub) {
+          if (!pushSub) return;
+          var token = localStorage.getItem('gsky_auth_token');
+          if (!token) return;
+          return fetch(API_BASE + '/subscribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({ subscription: pushSub.toJSON() }),
+          });
+        })
+        .catch(function(err) {
+          console.warn('[PushNotifications] Web Push subscription failed:', err);
+        });
+    }
+
+    showToast('Push notifications enabled!', 'success');
+    if (callback) callback(true);
   });
+}
+
+// ─── URL-safe base64 to Uint8Array (required for VAPID key) ──────────────────
+function urlBase64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  var rawData = atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+  for (var i = 0; i < rawData.length; i++) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
 
 // ─── Unsubscribe ──────────────────────────────────────────────────────────────
 function unsubscribe() {
   setStoredJSON(STORAGE_KEYS.ENABLED, false);
+  // Also unsubscribe from Web Push and notify backend
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.ready.then(function(reg) {
+      return reg.pushManager.getSubscription();
+    }).then(function(pushSub) {
+      if (!pushSub) return;
+      var endpoint = pushSub.endpoint;
+      // Chain backend notification after successful browser unsubscription
+      return pushSub.unsubscribe().then(function() {
+        var token = localStorage.getItem('gsky_auth_token');
+        if (!token) return;
+        return fetch(API_BASE + '/unsubscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+          body: JSON.stringify({ endpoint: endpoint }),
+        });
+      });
+    }).catch(function() { /* best-effort */ });
+  }
   showToast('Push notifications disabled.', 'info');
 }
 
@@ -217,6 +301,28 @@ function sendTestNotification() {
     return;
   }
 
+  // Call API test endpoint if authenticated
+  var token = localStorage.getItem('gsky_auth_token');
+  if (token) {
+    fetch(API_BASE + '/test', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+    })
+      .then(function(r) { return r.json(); })
+      .then(function(resp) {
+        if (resp && resp.success) {
+          showToast('Test notification sent via push!', 'success');
+        } else {
+          showFallbackTestNotification();
+        }
+      })
+      .catch(function() { showFallbackTestNotification(); });
+  } else {
+    showFallbackTestNotification();
+  }
+}
+
+function showFallbackTestNotification() {
   var testNotif = {
     id: generateId(),
     title: 'Globex Sky — Test Notification',
@@ -245,8 +351,27 @@ function renderHistory() {
   var container = document.getElementById('push-history-list');
   if (!container) return;
 
-  var hist = getHistory();
+  // Try to load from API first, fall back to localStorage
+  var token = localStorage.getItem('gsky_auth_token');
+  if (token) {
+    fetch(API_BASE + '/history?limit=20', {
+      headers: { 'Authorization': 'Bearer ' + token },
+    })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(resp) {
+        if (resp && resp.success && Array.isArray(resp.data) && resp.data.length > 0) {
+          renderHistoryItems(container, resp.data);
+        } else {
+          renderHistoryItems(container, getHistory());
+        }
+      })
+      .catch(function() { renderHistoryItems(container, getHistory()); });
+  } else {
+    renderHistoryItems(container, getHistory());
+  }
+}
 
+function renderHistoryItems(container, hist) {
   if (!hist || hist.length === 0) {
     container.innerHTML =
       '<div class="push-history-empty">' +
@@ -270,9 +395,36 @@ function renderHistory() {
 // ─── Load Preferences into UI ─────────────────────────────────────────────────
 function loadPreferencesUI() {
   var prefs = loadPrefs();
+  applyPrefsToUI(prefs);
 
+  // Also try to load from API (overrides localStorage if available)
+  var token = localStorage.getItem('gsky_auth_token');
+  if (token) {
+    fetch(API_BASE + '/preferences', {
+      headers: { 'Authorization': 'Bearer ' + token },
+    })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(resp) {
+        if (!resp || !resp.success || !resp.data) return;
+        var data = resp.data;
+        var merged = loadPrefs();
+        if (data.categories && typeof data.categories === 'object') {
+          merged.categories = Object.assign({}, merged.categories, data.categories);
+        }
+        if (data.quiet_hours && typeof data.quiet_hours === 'object') {
+          merged.quiet_hours = Object.assign({}, merged.quiet_hours, data.quiet_hours);
+        }
+        savePrefs(merged);
+        applyPrefsToUI(merged);
+      })
+      .catch(function() { /* fall back to localStorage silently */ });
+  }
+}
+
+function applyPrefsToUI(prefs) {
   ALL_CATEGORIES.forEach(function(cat) {
-    var el = document.getElementById('pref-' + cat);
+    var elId = CATEGORY_ID_MAP[cat] || ('pref-' + cat);
+    var el = document.getElementById(elId);
     if (el && prefs.categories && prefs.categories[cat] !== undefined) {
       el.checked = prefs.categories[cat];
     }
@@ -305,7 +457,8 @@ function savePreferencesUI() {
 
   var categories = {};
   ALL_CATEGORIES.forEach(function(cat) {
-    var el = document.getElementById('pref-' + cat);
+    var elId = CATEGORY_ID_MAP[cat] || ('pref-' + cat);
+    var el = document.getElementById(elId);
     if (el) categories[cat] = el.checked;
   });
 
@@ -325,6 +478,20 @@ function savePreferencesUI() {
   };
 
   savePrefs(prefs);
+
+  // Also persist to API when authenticated
+  var token = localStorage.getItem('gsky_auth_token');
+  if (token) {
+    fetch(API_BASE + '/preferences', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      body: JSON.stringify({ categories: prefs.categories, quiet_hours: prefs.quiet_hours }),
+    }).catch(function() { /* best-effort */ });
+  }
+
   showToast('Preferences saved!', 'success');
 
   if (feedback) {
@@ -574,21 +741,46 @@ function sendAdminCampaign() {
     return;
   }
 
-  var sent = Math.floor(500 + Math.random() * 9500);
-  var delivered = Math.floor(sent * (0.85 + Math.random() * 0.13));
-  var clicked = Math.floor(delivered * (0.05 + Math.random() * 0.2));
-
-  var campaign = {
+  var campaignData = {
     title: title.value.trim(),
     body: body ? body.value.trim() : '',
     audience: audience ? audience.value : 'all',
     url: url ? url.value.trim() : '',
     schedule: schedule ? schedule.value : '',
     status: (schedule && schedule.value) ? 'scheduled' : 'sent',
-    stats: { sent: sent, delivered: delivered, clicked: clicked },
   };
 
-  saveCampaign(campaign);
+  // Try to send via backend API
+  var token = localStorage.getItem('gsky_auth_token');
+  if (token && campaignData.status === 'sent') {
+    var endpoint = API_BASE + '/broadcast';
+    var payload = { title: campaignData.title, body: campaignData.body, url: campaignData.url || '/' };
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(function(r) { return r.json(); })
+      .then(function(resp) {
+        if (resp && resp.success) {
+          showToast('Campaign sent to all subscribers!', 'success');
+        } else {
+          showToast((resp && resp.error) || 'Failed to send campaign.', 'error');
+        }
+      })
+      .catch(function() { showToast('Network error — campaign saved locally.', 'error'); });
+  }
+
+  // Always save locally for history display
+  var sent = Math.floor(500 + Math.random() * 9500);
+  var delivered = Math.floor(sent * (0.85 + Math.random() * 0.13));
+  var clicked = Math.floor(delivered * (0.05 + Math.random() * 0.2));
+  campaignData.stats = { sent: sent, delivered: delivered, clicked: clicked };
+
+  saveCampaign(campaignData);
   renderAdminCampaigns();
   renderAdminMetrics();
 
@@ -597,7 +789,8 @@ function sendAdminCampaign() {
   if (url) url.value = '';
   if (schedule) schedule.value = '';
 
-  showToast('Campaign ' + (campaign.status === 'scheduled' ? 'scheduled' : 'sent') + ' successfully!', 'success');
+  if (token) return; // API feedback already shown
+  showToast('Campaign ' + (campaignData.status === 'scheduled' ? 'scheduled' : 'sent') + ' successfully!', 'success');
 }
 
 function deleteAdminCampaign(id) {

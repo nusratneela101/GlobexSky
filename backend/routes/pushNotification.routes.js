@@ -64,4 +64,11 @@ router.post(
   ctrl.broadcastNotification,
 );
 
+router.post(
+  '/send-bulk',
+  [body('user_ids').isArray({ min: 1 }), body('title').notEmpty()],
+  validate,
+  ctrl.sendBulkNotification,
+);
+
 export default router;
