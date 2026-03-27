@@ -124,6 +124,7 @@
       const role = roleRadio?.value ||
         form.querySelector('[name="role"]')?.value ||
         'buyer';
+      const country = form.querySelector('[name="country"]')?.value || '';
 
       // Client-side validation
       if (!name || name.length < 2) {
@@ -142,12 +143,16 @@
         showAlert(alertBox, 'Passwords do not match.', 'error');
         return;
       }
+      if (!country) {
+        showAlert(alertBox, 'Please select your country.', 'error');
+        return;
+      }
 
       setLoading(submitBtn, true);
 
       try {
         if (!window.API) throw new Error('API client not loaded.');
-        await window.API.auth.register(name, email, password, role);
+        await window.API.auth.register({ name, email, password, role, country });
 
         showAlert(
           alertBox,

@@ -70,7 +70,7 @@ const API = (() => {
     // ─── Auth ──────────────────────────────────────────────────
     auth: {
       login:          (email, password)      => request('POST', '/auth/login',           { email, password }),
-      register:       (name, email, password, role) => request('POST', '/auth/register', { name, email, password, role }),
+      register:       (params) => request('POST', '/auth/register', params),
       logout:         ()                     => request('POST', '/auth/logout'),
       forgotPassword: (email)                => request('POST', '/auth/forgot-password', { email }),
       resetPassword:  (token, password)      => request('POST', '/auth/reset-password',  { token, password }),

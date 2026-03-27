@@ -4,6 +4,7 @@ import { validate } from '../middleware/validator.js';
 import { authRateLimiter } from '../middleware/rateLimiter.js';
 import { authenticate } from '../middleware/auth.js';
 import * as ctrl from '../controllers/auth.controller.js';
+import { isValidCountryCode } from '../utils/countries.js';
 
 const router = Router();
 
@@ -139,6 +140,8 @@ router.post('/register',
     body('password').isLength({ min: 6 }),
     body('name').trim().isLength({ min: 2 }),
     body('role').optional().isIn(['buyer', 'supplier', 'carrier']),
+    body('country').trim().isLength({ min: 2, max: 2 }).withMessage('country must be a 2-letter ISO 3166-1 alpha-2 code')
+      .custom(isValidCountryCode).withMessage('country must be a valid ISO 3166-1 alpha-2 country code'),
   ],
   validate,
   ctrl.register,

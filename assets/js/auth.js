@@ -277,11 +277,11 @@ async function mockLogin(email, password) {
  * @param {string} password
  * @param {string} role
  */
-async function mockRegister(name, email, password = '', role = 'buyer') {
+async function mockRegister(name, email, password = '', role = 'buyer', country = '') {
   const api = window.ApiClient || window.API;
   if (api) {
     try {
-      await api.auth.register({ name, email, password, role });
+      await api.auth.register({ name, email, password, role, country });
       closeRegisterModal();
       if (window.GlobexSky?.showToast) {
         window.GlobexSky.showToast('Account created! Please check your email to verify your account.', 'success');
@@ -422,7 +422,8 @@ function initAuthEvents() {
       const email = registerForm.querySelector('[name="email"], input[type="email"]')?.value || '';
       const password = registerForm.querySelector('[name="password"]')?.value || '';
       const role = registerForm.querySelector('[name="role"]')?.value || 'buyer';
-      mockRegister(name, email, password, role);
+      const country = registerForm.querySelector('[name="country"]')?.value || '';
+      mockRegister(name, email, password, role, country);
     });
   }
 

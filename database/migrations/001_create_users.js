@@ -14,6 +14,7 @@ export async function up(executeSql) {
       avatar_url          TEXT,
       phone               TEXT,
       company_name        TEXT,
+      country             TEXT,
       role                TEXT NOT NULL DEFAULT 'buyer' CHECK (role IN ('admin','buyer','supplier','carrier','inspector')),
       verification_status TEXT NOT NULL DEFAULT 'unverified' CHECK (verification_status IN ('unverified','pending','verified')),
       language            TEXT NOT NULL DEFAULT 'en',

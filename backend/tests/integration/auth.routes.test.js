@@ -59,7 +59,7 @@ describe('Auth Routes — POST /api/v1/auth/register', () => {
   it('should register a new user with valid credentials', async () => {
     const res = await request(app)
       .post('/api/v1/auth/register')
-      .send({ email: 'newuser@test.com', password: 'Password123!', name: 'New User' });
+      .send({ email: 'newuser@test.com', password: 'Password123!', name: 'New User', country: 'US' });
 
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
@@ -98,7 +98,7 @@ describe('Auth Routes — POST /api/v1/auth/register', () => {
 
     const res = await request(app)
       .post('/api/v1/auth/register')
-      .send({ email: 'existing@test.com', password: 'Password123!', name: 'Existing User' });
+      .send({ email: 'existing@test.com', password: 'Password123!', name: 'Existing User', country: 'US' });
 
     expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
