@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Trade Assurance – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    /* ── Header ── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#0052CC 0%,#00C9A7 100%);padding:64px 24px;text-align:center}
+    .hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:#fff;margin-bottom:12px}
+    .hero-sub{color:rgba(255,255,255,.85);font-size:1.05rem;max-width:640px;margin:0 auto 28px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);color:#fff;padding:8px 20px;border-radius:50px;font-size:.88rem;font-weight:600;margin-bottom:20px}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    /* ── Buttons ── */
+    .btn{padding:12px 28px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn-white{background:#fff;color:#0052CC}.btn-white:hover{background:#f0f5ff}
+    .btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.7)}.btn-outline-white:hover{background:rgba(255,255,255,.1)}
+    .btn-sm{padding:8px 18px;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+    /* ── Layout ── */
+    .section{padding:48px 24px}
+    .container{max-width:1200px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:28px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+    .page-layout{display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start}
+    /* ── Sidebar ── */
+    .buyer-sidebar{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:sticky;top:80px}
+    .sidebar-section-title{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+    .sidebar-nav-list{list-style:none}
+    .sidebar-nav-list li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;font-size:.88rem;color:#374151;transition:all .2s}
+    .sidebar-nav-list li a:hover,.sidebar-nav-list li a.active{background:#f0f6ff;color:#0052CC;font-weight:600}
+    .coverage-card{background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:12px;padding:20px;color:#fff;margin-top:20px}
+    .coverage-pct{font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:700}
+    .coverage-label{font-size:.85rem;opacity:.85;margin-bottom:4px}
+    .coverage-detail{font-size:.78rem;opacity:.75}
+    /* ── Cards ── */
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:8px}
+    /* ── Stats ── */
+    .kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+    .kpi-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px}
+    .kpi-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .kpi-icon.blue{background:#dbeafe;color:#0052CC}
+    .kpi-icon.green{background:#d1fae5;color:#059669}
+    .kpi-icon.orange{background:#ffedd5;color:#f97316}
+    .kpi-value{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27}
+    .kpi-label{font-size:.78rem;color:#64748b}
+    /* ── Table ── */
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    /* ── Badge ── */
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-purple{background:#ede9fe;color:#7c3aed}
+    /* ── Form ── */
+    .form-group{margin-bottom:18px}
+    .form-label{display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .form-hint{font-size:.78rem;color:#64748b;margin-top:4px}
+    .form-control{width:100%;padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC}
+    textarea.form-control{resize:vertical;min-height:90px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    /* ── Alert ── */
+    .alert{padding:12px 16px;border-radius:8px;font-size:.88rem;margin-bottom:16px;display:none;align-items:center;gap:8px}
+    .alert-success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+    .alert-danger{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+    .alert-info{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
+    /* ── Steps ── */
+    .steps-list{display:flex;flex-direction:column;gap:16px}
+    .step-item{display:flex;gap:16px;align-items:flex-start}
+    .step-num{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+    .step-title{font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .step-desc{font-size:.85rem;color:#64748b}
+    /* ── Empty State ── */
+    .empty-state{text-align:center;padding:40px 20px;color:#64748b}
+    .empty-state i{font-size:2.5rem;color:#cbd5e1;margin-bottom:12px}
+    /* ── Tab ── */
+    .tab-nav{display:flex;gap:4px;border-bottom:2px solid #e2e8f0;margin-bottom:20px}
+    .tab-btn{padding:8px 18px;border:none;background:none;cursor:pointer;font-size:.88rem;font-weight:500;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+    .tab-btn.active{color:#0052CC;border-bottom-color:#0052CC;font-weight:600}
+    /* ── Policy Card ── */
+    .policy-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;transition:border-color .2s;cursor:pointer}
+    .policy-card:hover{border-color:#0052CC}
+    .policy-card.selected{border-color:#0052CC;background:#f0f6ff}
+    .policy-name{font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;margin-bottom:6px}
+    .policy-meta{font-size:.82rem;color:#64748b;display:flex;flex-wrap:wrap;gap:12px}
+    .policy-meta span{display:flex;align-items:center;gap:4px}
+    /* ── Footer ── */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+    /* ── Responsive ── */
+    @media(max-width:1024px){.page-layout{grid-template-columns:1fr}}
+    @media(max-width:768px){.kpi-row{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.buyer-sidebar{position:static}}
+    @media(max-width:480px){.kpi-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <nav>
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
+      </a>
+      <div class="nav-controls">
+        <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+        <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge"><i class="fas fa-shield-alt"></i> Globex Sky Trade Assurance</div>
+  <h1 class="hero-title">Shop with Confidence</h1>
+  <p class="hero-sub">Full buyer protection on every eligible order. Get a refund if your order doesn't arrive or doesn't match the description.</p>
+  <div class="hero-actions">
+    <a href="#file-claim" class="btn btn-white"><i class="fas fa-file-alt"></i> File a Claim</a>
+    <a href="#my-claims" class="btn btn-outline-white"><i class="fas fa-list-alt"></i> Track Claims</a>
+  </div>
+</section>
+
+<!-- Main Content -->
+<section class="section">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right" style="font-size:.7rem"></i>
+      <span>Trade Assurance</span>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-success" id="alertSuccess"><i class="fas fa-check-circle"></i> <span id="alertSuccessMsg"></span></div>
+    <div class="alert alert-danger" id="alertError"><i class="fas fa-exclamation-circle"></i> <span id="alertErrorMsg"></span></div>
+    <div class="alert alert-info" id="alertInfo"><i class="fas fa-info-circle"></i> <span id="alertInfoMsg"></span></div>
+
+    <div class="page-layout">
+
+      <!-- Left Sidebar -->
+      <aside class="buyer-sidebar">
+        <div class="sidebar-section-title">Navigation</div>
+        <ul class="sidebar-nav-list">
+          <li><a href="#overview" class="active" onclick="showTab('overview',this)"><i class="fas fa-home"></i> Overview</a></li>
+          <li><a href="#file-claim" onclick="showTab('file-claim',this)"><i class="fas fa-file-alt"></i> File a Claim</a></li>
+          <li><a href="#my-claims" onclick="showTab('my-claims',this)"><i class="fas fa-list-alt"></i> My Claims</a></li>
+          <li><a href="#policies" onclick="showTab('policies',this)"><i class="fas fa-shield-alt"></i> Coverage Policies</a></li>
+          <li><a href="#how-it-works" onclick="showTab('how-it-works',this)"><i class="fas fa-question-circle"></i> How It Works</a></li>
+        </ul>
+
+        <!-- Coverage Summary -->
+        <div class="coverage-card" id="coverageCard">
+          <div class="coverage-label">Your Coverage</div>
+          <div class="coverage-pct" id="coveragePct">100%</div>
+          <div class="coverage-detail">Up to <strong id="coverageMax">$50,000</strong> per order</div>
+          <div class="coverage-detail" style="margin-top:4px">Claim within <strong id="coverageDays">90</strong> days of delivery</div>
+        </div>
+      </aside>
+
+      <!-- Right Main Panel -->
+      <main>
+
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-icon blue"><i class="fas fa-shield-alt"></i></div>
+            <div><div class="kpi-value" id="kpiTotal">0</div><div class="kpi-label">Total Claims</div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon orange"><i class="fas fa-clock"></i></div>
+            <div><div class="kpi-value" id="kpiPending">0</div><div class="kpi-label">Pending</div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon green"><i class="fas fa-check-circle"></i></div>
+            <div><div class="kpi-value" id="kpiApproved">0</div><div class="kpi-label">Approved</div></div>
+          </div>
+        </div>
+
+        <!-- ── Overview Tab ── -->
+        <div id="tab-overview">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-star" style="color:#f59e0b"></i> What Is Trade Assurance?</div>
+            </div>
+            <p style="font-size:.9rem;color:#374151;line-height:1.7;margin-bottom:16px">
+              Globex Sky Trade Assurance is a free service that protects your payments to suppliers. Place orders under Trade Assurance and your money is safe if:
+            </p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+              <div style="background:#f0f9ff;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+                <i class="fas fa-box-open" style="color:#0052CC;margin-top:2px;font-size:1.1rem"></i>
+                <div><strong style="font-size:.9rem;color:#0a0e27">Item Not Received</strong><p style="font-size:.82rem;color:#64748b;margin-top:4px">Get a full refund if your goods never arrive.</p></div>
+              </div>
+              <div style="background:#f0fdf4;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+                <i class="fas fa-exclamation-triangle" style="color:#059669;margin-top:2px;font-size:1.1rem"></i>
+                <div><strong style="font-size:.9rem;color:#0a0e27">Item Not as Described</strong><p style="font-size:.82rem;color:#64748b;margin-top:4px">Receive compensation if the product differs from listing.</p></div>
+              </div>
+              <div style="background:#fff7ed;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+                <i class="fas fa-tools" style="color:#f97316;margin-top:2px;font-size:1.1rem"></i>
+                <div><strong style="font-size:.9rem;color:#0a0e27">Quality Issues</strong><p style="font-size:.82rem;color:#64748b;margin-top:4px">Covered if goods arrive damaged or defective.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── File Claim Tab ── -->
+        <div id="tab-file-claim" style="display:none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-file-alt"></i> File a New Claim</div>
+            </div>
+
+            <form id="claimForm" onsubmit="submitClaim(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="claimOrderId">Order ID <span style="color:#ef4444">*</span></label>
+                  <input type="text" class="form-control" id="claimOrderId" placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000" required/>
+                  <div class="form-hint">UUID of the order you are claiming against.</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="claimAmount">Claim Amount (USD) <span style="color:#ef4444">*</span></label>
+                  <input type="number" class="form-control" id="claimAmount" min="1" step="0.01" placeholder="0.00" required/>
+                  <div class="form-hint">Amount you are requesting for the claim.</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="claimReason">Reason <span style="color:#ef4444">*</span></label>
+                  <select class="form-control" id="claimReason" required>
+                    <option value="">— Select a reason —</option>
+                    <option value="Item Not Received">Item Not Received</option>
+                    <option value="Item Not as Described">Item Not as Described</option>
+                    <option value="Damaged / Defective Item">Damaged / Defective Item</option>
+                    <option value="Wrong Item Sent">Wrong Item Sent</option>
+                    <option value="Counterfeit Item">Counterfeit Item</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="claimSupplierId">Supplier ID (optional)</label>
+                  <input type="text" class="form-control" id="claimSupplierId" placeholder="Supplier UUID"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="claimDescription">Description</label>
+                <textarea class="form-control" id="claimDescription" placeholder="Describe the issue in detail…"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="claimEvidence">Evidence URLs (one per line)</label>
+                <textarea class="form-control" id="claimEvidence" placeholder="https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg" style="min-height:80px"></textarea>
+                <div class="form-hint">Photos, videos, or documents supporting your claim.</div>
+              </div>
+              <div style="display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap">
+                <button type="button" class="btn-sm btn-secondary" onclick="resetClaimForm()"><i class="fas fa-times"></i> Cancel</button>
+                <button type="submit" class="btn-sm btn-primary" id="btnSubmitClaim"><i class="fas fa-paper-plane"></i> Submit Claim</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- ── My Claims Tab ── -->
+        <div id="tab-my-claims" style="display:none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-list-alt"></i> My Claims</div>
+              <button class="btn-sm btn-secondary" onclick="loadClaims()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </div>
+            <!-- Status Filters -->
+            <div class="tab-nav">
+              <button class="tab-btn active" onclick="filterClaims('all',this)">All</button>
+              <button class="tab-btn" onclick="filterClaims('pending',this)">Pending</button>
+              <button class="tab-btn" onclick="filterClaims('under_review',this)">Under Review</button>
+              <button class="tab-btn" onclick="filterClaims('approved',this)">Approved</button>
+              <button class="tab-btn" onclick="filterClaims('rejected',this)">Rejected</button>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="data-table" id="claimsTable">
+                <thead>
+                  <tr>
+                    <th>Claim ID</th>
+                    <th>Order</th>
+                    <th>Amount</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Filed</th>
+                    <th>Resolution</th>
+                  </tr>
+                </thead>
+                <tbody id="claimsTableBody">
+                  <tr><td colspan="7" style="text-align:center;color:#64748b;padding:32px">Loading claims…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="claimsPagination" style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"></div>
+          </div>
+        </div>
+
+        <!-- ── Policies Tab ── -->
+        <div id="tab-policies" style="display:none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-shield-alt"></i> Coverage Policies</div>
+            </div>
+            <div id="policiesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+              <p style="color:#64748b;font-size:.88rem">Loading policies…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── How It Works Tab ── -->
+        <div id="tab-how-it-works" style="display:none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-question-circle"></i> How Trade Assurance Works</div>
+            </div>
+            <div class="steps-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div><div class="step-title">Place an Eligible Order</div><div class="step-desc">Buy from Trade Assurance–verified suppliers. The shield icon marks eligible listings.</div></div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div><div class="step-title">Receive Your Goods</div><div class="step-desc">Your payment is held securely. Once you confirm receipt, the supplier is paid.</div></div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div><div class="step-title">File a Claim if Needed</div><div class="step-desc">If there's a problem, file a claim within the claim window with supporting evidence.</div></div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">4</div>
+                <div><div class="step-title">Get a Refund</div><div class="step-desc">Our team reviews the claim. Approved claims are refunded within 3–5 business days.</div></div>
+              </div>
+            </div>
+            <div style="margin-top:24px;background:#f0f9ff;border-radius:10px;padding:16px">
+              <strong style="color:#0052CC;font-size:.9rem"><i class="fas fa-lock"></i> Your Payment Is Protected</strong>
+              <p style="font-size:.82rem;color:#374151;margin-top:6px;line-height:1.6">All Trade Assurance payments are held in a secure escrow-like system. Funds are only released to the supplier after you confirm satisfactory delivery — or refunded to you if a valid claim is approved.</p>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-copyright">&copy; 2025 Globex Sky. All rights reserved.</div>
+</footer>
+
+<script>
+  const API = '/api/v1/trade-assurance';
+
+  function getToken() { return localStorage.getItem('gsky_token') || ''; }
+  function authHeaders() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() }; }
+
+  // ── Tab navigation ────────────────────────────────────────────────────────
+
+  const TABS = ['overview', 'file-claim', 'my-claims', 'policies', 'how-it-works'];
+
+  function showTab(name, linkEl) {
+    TABS.forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (el) el.style.display = t === name ? 'block' : 'none';
+    });
+    document.querySelectorAll('.sidebar-nav-list li a').forEach(a => a.classList.remove('active'));
+    if (linkEl) linkEl.classList.add('active');
+    // Lazy-load tab data
+    if (name === 'my-claims') loadClaims();
+    if (name === 'policies') loadPolicies();
+  }
+
+  // ── Alerts ────────────────────────────────────────────────────────────────
+
+  function showAlert(type, msg) {
+    ['alertSuccess','alertError','alertInfo'].forEach(id => { document.getElementById(id).style.display = 'none'; });
+    const map = { success: 'alertSuccess', error: 'alertError', info: 'alertInfo' };
+    const el = document.getElementById(map[type]);
+    document.getElementById(map[type] + 'Msg').textContent = msg;
+    el.style.display = 'flex';
+    if (type !== 'error') setTimeout(() => { el.style.display = 'none'; }, 5000);
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ── Status badge helper ───────────────────────────────────────────────────
+
+  function statusBadge(status) {
+    const map = {
+      pending:      ['badge-orange', 'Pending'],
+      under_review: ['badge-blue', 'Under Review'],
+      approved:     ['badge-green', 'Approved'],
+      rejected:     ['badge-red', 'Rejected'],
+      resolved:     ['badge-green', 'Resolved'],
+      closed:       ['badge-gray', 'Closed'],
+    };
+    const [cls, label] = map[status] ?? ['badge-gray', status];
+    return `<span class="badge-pill ${cls}">${label}</span>`;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+  }
+
+  // ── Load Config (coverage sidebar) ───────────────────────────────────────
+
+  async function loadConfig() {
+    try {
+      const res = await fetch(API + '/config', { headers: authHeaders() });
+      if (!res.ok) return;
+      const { data } = await res.json();
+      if (data.coverage_pct) document.getElementById('coveragePct').textContent = data.coverage_pct + '%';
+      if (data.max_claim_amount) document.getElementById('coverageMax').textContent = '$' + Number(data.max_claim_amount).toLocaleString();
+      if (data.claim_window_days) document.getElementById('coverageDays').textContent = data.claim_window_days;
+    } catch (_) {}
+  }
+
+  // ── Load Claims ───────────────────────────────────────────────────────────
+
+  let claimsPage = 1;
+  let claimsStatusFilter = 'all';
+  let allClaims = [];
+
+  async function loadClaims(page = 1) {
+    claimsPage = page;
+    const tbody = document.getElementById('claimsTableBody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#64748b;padding:32px">Loading…</td></tr>';
+    try {
+      const params = new URLSearchParams({ page, limit: 20 });
+      if (claimsStatusFilter !== 'all') params.set('status', claimsStatusFilter);
+      const res = await fetch(`${API}/claims?${params}`, { headers: authHeaders() });
+      if (!res.ok) throw new Error('Could not load claims');
+      const result = await res.json();
+      allClaims = result.data ?? [];
+      renderClaimsTable(allClaims);
+      document.getElementById('kpiTotal').textContent = result.total ?? 0;
+      renderPagination(result.total, result.page, result.limit);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#ef4444;padding:32px">${e.message}</td></tr>`;
+    }
+  }
+
+  function renderClaimsTable(claims) {
+    const tbody = document.getElementById('claimsTableBody');
+    if (!claims.length) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i><p style="margin-top:8px">No claims found.</p><button class="btn-sm btn-primary" style="margin-top:12px" onclick="showTab(\'file-claim\',null)"><i class="fas fa-plus"></i> File a Claim</button></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = claims.map(c => `
+      <tr>
+        <td style="font-family:monospace;font-size:.78rem">${c.id.slice(0,8)}…</td>
+        <td style="font-family:monospace;font-size:.78rem">${c.order_id.slice(0,8)}…</td>
+        <td><strong>$${Number(c.claim_amount).toLocaleString()}</strong></td>
+        <td>${c.reason}</td>
+        <td>${statusBadge(c.status)}</td>
+        <td>${fmtDate(c.created_at)}</td>
+        <td style="font-size:.82rem;color:#64748b">${c.resolution || '—'}</td>
+      </tr>
+    `).join('');
+
+    // Update KPI counters
+    document.getElementById('kpiPending').textContent = claims.filter(c => c.status === 'pending').length;
+    document.getElementById('kpiApproved').textContent = claims.filter(c => c.status === 'approved' || c.status === 'resolved').length;
+  }
+
+  function filterClaims(status, btn) {
+    claimsStatusFilter = status;
+    document.querySelectorAll('.tab-nav .tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    loadClaims(1);
+  }
+
+  function renderPagination(total, page, limit) {
+    const container = document.getElementById('claimsPagination');
+    const pages = Math.ceil(total / limit);
+    if (pages <= 1) { container.innerHTML = ''; return; }
+    let html = '';
+    for (let i = 1; i <= pages; i++) {
+      html += `<button class="btn-sm ${i === page ? 'btn-primary' : 'btn-secondary'}" onclick="loadClaims(${i})">${i}</button>`;
+    }
+    container.innerHTML = html;
+  }
+
+  // ── Load Policies ─────────────────────────────────────────────────────────
+
+  async function loadPolicies() {
+    const grid = document.getElementById('policiesGrid');
+    grid.innerHTML = '<p style="color:#64748b;font-size:.88rem">Loading…</p>';
+    try {
+      const res = await fetch(API + '/policies');
+      if (!res.ok) throw new Error('Could not load policies');
+      const { data } = await res.json();
+      if (!data.length) {
+        grid.innerHTML = '<p style="color:#64748b;font-size:.88rem">No policies available at this time.</p>';
+        return;
+      }
+      grid.innerHTML = data.map(p => `
+        <div class="policy-card">
+          <div class="policy-name"><i class="fas fa-shield-alt" style="color:#0052CC;margin-right:6px"></i>${p.name}</div>
+          <div class="policy-meta" style="margin:8px 0">
+            <span><i class="fas fa-percent"></i>${p.coverage_pct}% coverage</span>
+            <span><i class="fas fa-dollar-sign"></i>Up to $${Number(p.max_amount).toLocaleString()}</span>
+            <span><i class="fas fa-calendar-alt"></i>${p.duration_days} days</span>
+          </div>
+          <p style="font-size:.82rem;color:#64748b;margin-top:8px">${p.description || ''}</p>
+          ${p.terms ? `<details style="margin-top:10px;font-size:.8rem;color:#374151"><summary style="cursor:pointer;color:#0052CC;font-weight:600">View Terms</summary><p style="margin-top:8px;line-height:1.6">${p.terms}</p></details>` : ''}
+        </div>
+      `).join('');
+    } catch (e) {
+      grid.innerHTML = `<p style="color:#ef4444;font-size:.88rem">${e.message}</p>`;
+    }
+  }
+
+  // ── Submit Claim ──────────────────────────────────────────────────────────
+
+  async function submitClaim(event) {
+    event.preventDefault();
+    const btn = document.getElementById('btnSubmitClaim');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+
+    const evidenceRaw = document.getElementById('claimEvidence').value.trim();
+    const evidence_urls = evidenceRaw ? evidenceRaw.split('\n').map(u => u.trim()).filter(Boolean) : [];
+
+    const payload = {
+      order_id: document.getElementById('claimOrderId').value.trim(),
+      claim_amount: parseFloat(document.getElementById('claimAmount').value),
+      reason: document.getElementById('claimReason').value,
+      description: document.getElementById('claimDescription').value.trim() || undefined,
+      supplier_id: document.getElementById('claimSupplierId').value.trim() || undefined,
+      evidence_urls,
+    };
+
+    try {
+      const res = await fetch(API + '/claims', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || 'Failed to file claim');
+      showAlert('success', `Claim filed successfully! Status: ${json.data.status}.`);
+      resetClaimForm();
+      showTab('my-claims', document.querySelector('.sidebar-nav-list li a[href="#my-claims"]'));
+    } catch (e) {
+      showAlert('error', e.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Claim';
+    }
+  }
+
+  function resetClaimForm() {
+    document.getElementById('claimForm').reset();
+  }
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+
+  loadConfig();
+</script>
+</body>
+</html>
