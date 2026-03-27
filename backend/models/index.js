@@ -38,6 +38,15 @@ export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
 export { default as ImageSearch } from './ImageSearch.js';
+export { default as Escrow } from './Escrow.js';
+export { default as ProductComparison } from './ProductComparison.js';
+export {
+  TradeAssurancePolicy,
+  TradeAssuranceClaim,
+  TradeAssuranceDeposit,
+  TradeAssuranceConfig,
+} from './TradeAssurance.js';
+export { default as SampleOrder, SampleOrderConfig } from './SampleOrder.js';
 
 
 import BaseModel from './BaseModel.js';
@@ -69,7 +78,15 @@ import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
 import ImageSearch from './ImageSearch.js';
-
+import Escrow from './Escrow.js';
+import ProductComparison from './ProductComparison.js';
+import {
+  TradeAssurancePolicy,
+  TradeAssuranceClaim,
+  TradeAssuranceDeposit,
+  TradeAssuranceConfig,
+} from './TradeAssurance.js';
+import SampleOrder, { SampleOrderConfig } from './SampleOrder.js';
 
 export default {
   BaseModel,
@@ -101,4 +118,12 @@ export default {
   SearchHistory,
   SystemConfig,
   ImageSearch,
+  Escrow,
+  ProductComparison,
+  TradeAssurancePolicy,
+  TradeAssuranceClaim,
+  TradeAssuranceDeposit,
+  TradeAssuranceConfig,
+  SampleOrder,
+  SampleOrderConfig,
 };
