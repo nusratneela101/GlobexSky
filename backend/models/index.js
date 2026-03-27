@@ -49,7 +49,6 @@ export {
 export { default as SampleOrder, SampleOrderConfig } from './SampleOrder.js';
 export { default as Recommendation } from './Recommendation.js';
 
-
 import BaseModel from './BaseModel.js';
 import User from './User.js';
 import Product from './Product.js';
