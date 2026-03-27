@@ -865,6 +865,24 @@ CREATE TABLE IF NOT EXISTS feature_toggles (
 );
 
 -- ─────────────────────────────────────────────────────────────────
+-- ADMIN: Custom CSS/JS Styles
+-- ─────────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS admin_custom_styles (
+  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name          TEXT NOT NULL,
+  css_content   TEXT DEFAULT '',
+  js_content    TEXT DEFAULT '',
+  is_active     BOOLEAN NOT NULL DEFAULT TRUE,
+  applied_pages TEXT DEFAULT 'all',
+  created_by    UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_custom_styles_active ON admin_custom_styles(is_active);
+
+-- ─────────────────────────────────────────────────────────────────
 -- UPDATED-AT TRIGGERS
 -- ─────────────────────────────────────────────────────────────────
 

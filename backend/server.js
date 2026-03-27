@@ -73,6 +73,7 @@ import bulkImportRoutes from './routes/bulkImport.routes.js';
 import supplierScorecardRoutes from './routes/supplierScorecard.routes.js';
 import currencyContractRoutes from './routes/currencyContract.routes.js';
 import containerRoutes from './routes/container.routes.js';
+import customStyleRoutes from './routes/customStyle.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -217,6 +218,8 @@ app.use(`${API}/bulk-import`, bulkImportRoutes);
 app.use(`${API}/supplier-scorecard`, supplierScorecardRoutes);
 app.use(`${API}/currency-contracts`, currencyContractRoutes);
 app.use(`${API}/containers`, containerRoutes);
+app.use(`${API}/custom-styles`, customStyleRoutes);
+app.use(`${API}/admin/custom-styles`, customStyleRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
