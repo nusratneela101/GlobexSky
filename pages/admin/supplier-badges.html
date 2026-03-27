@@ -333,6 +333,7 @@ function showToast(msg) {
 }
 
 /* ── Badge Modal ── */
+var esc = SupplierScorecard.escapeHtml;
 function openBadgeModal(editId) {
   document.getElementById('badgeModalTitle').textContent = editId ? 'Edit Badge' : 'Create Badge';
   document.getElementById('editBadgeId').value = editId || '';
@@ -449,8 +450,8 @@ function loadSupplierBadges() {
   sAwards.forEach(function(bid) {
     var bt = badgeTypes.find(function(b) { return b.id === bid; });
     if (bt) {
-      html += '<div class="badge-card earned"><div class="badge-icon ' + bt.color + '"><i class="fas ' + bt.icon + '"></i></div>'
-        + '<div class="badge-name">' + bt.name + '</div><div class="badge-desc">' + bt.description + '</div></div>';
+      html += '<div class="badge-card earned"><div class="badge-icon ' + esc(bt.color) + '"><i class="fas ' + esc(bt.icon) + '"></i></div>'
+        + '<div class="badge-name">' + esc(bt.name) + '</div><div class="badge-desc">' + esc(bt.description) + '</div></div>';
     }
   });
   container.innerHTML = html;
@@ -473,14 +474,14 @@ function renderRankings(filterText) {
     var badgePills = '';
     r.badges.slice(0, 3).forEach(function(bid) {
       var bt = badgeTypes.find(function(b) { return b.id === bid; });
-      if (bt) badgePills += '<i class="fas ' + bt.icon + '" title="' + bt.name + '" style="color:#0052CC;font-size:.8rem;margin-right:3px"></i>';
+      if (bt) badgePills += '<i class="fas ' + esc(bt.icon) + '" title="' + esc(bt.name) + '" style="color:#0052CC;font-size:.8rem;margin-right:3px"></i>';
     });
     if (r.badges.length > 3) badgePills += '<span style="font-size:.72rem;color:#94a3b8">+' + (r.badges.length - 3) + '</span>';
 
     var scoreClass = SupplierScorecard.getScoreClass(r.overall);
     html += '<tr>'
       + '<td><span class="rank-num ' + rankClass + '">' + (i + 1) + '</span></td>'
-      + '<td><div class="supplier-cell"><div class="supplier-cell-avatar">' + initials + '</div><div><div class="supplier-cell-name">' + r.name + '</div><div class="supplier-cell-country">' + r.country + '</div></div></div></td>'
+      + '<td><div class="supplier-cell"><div class="supplier-cell-avatar">' + esc(initials) + '</div><div><div class="supplier-cell-name">' + esc(r.name) + '</div><div class="supplier-cell-country">' + esc(r.country) + '</div></div></div></td>'
       + '<td><span class="score-pill ' + scoreClass + '">' + r.overall + '</span></td>'
       + '<td>' + (r.scores.quality || 0) + '<div class="mini-bar"><div class="mini-bar-fill" style="width:' + (r.scores.quality || 0) + '%;background:#0052CC"></div></div></td>'
       + '<td>' + (r.scores.delivery || 0) + '<div class="mini-bar"><div class="mini-bar-fill" style="width:' + (r.scores.delivery || 0) + '%;background:#f59e0b"></div></div></td>'
@@ -537,12 +538,12 @@ function renderBadgeTypesGrid() {
   var html = '';
   stats.forEach(function(bt) {
     html += '<div class="badge-stat-card">'
-      + '<div class="badge-stat-icon ' + bt.color + '"><i class="fas ' + bt.icon + '"></i></div>'
+      + '<div class="badge-stat-icon ' + esc(bt.color) + '"><i class="fas ' + esc(bt.icon) + '"></i></div>'
       + '<div class="badge-stat-count">' + bt.count + '</div>'
-      + '<div class="badge-stat-name">' + bt.name + '</div>'
+      + '<div class="badge-stat-name">' + esc(bt.name) + '</div>'
       + '<div style="margin-top:8px;display:flex;gap:4px;justify-content:center">'
-      + '<button class="btn btn-secondary btn-sm" onclick="openBadgeModal(\'' + bt.id + '\')"><i class="fas fa-edit"></i></button>'
-      + '<button class="btn btn-danger btn-sm" onclick="deleteBadge(\'' + bt.id + '\')"><i class="fas fa-trash"></i></button>'
+      + '<button class="btn btn-secondary btn-sm" onclick="openBadgeModal(\'' + esc(bt.id) + '\')"><i class="fas fa-edit"></i></button>'
+      + '<button class="btn btn-danger btn-sm" onclick="deleteBadge(\'' + esc(bt.id) + '\')"><i class="fas fa-trash"></i></button>'
       + '</div></div>';
   });
   document.getElementById('badgeTypesGrid').innerHTML = html;
@@ -564,7 +565,7 @@ function renderStatsTable() {
     if (bt.criteria.rating_min) critText.push('Rating ≥ ' + bt.criteria.rating_min);
     if (bt.criteria.verified) critText.push('Verified');
     if (bt.criteria.eco_certified) critText.push('Eco-certified');
-    html += '<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="badge-stat-icon ' + bt.color + '" style="width:32px;height:32px;font-size:.9rem;margin:0"><i class="fas ' + bt.icon + '"></i></div>' + bt.name + '</div></td>'
+    html += '<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="badge-stat-icon ' + esc(bt.color) + '" style="width:32px;height:32px;font-size:.9rem;margin:0"><i class="fas ' + esc(bt.icon) + '"></i></div>' + esc(bt.name) + '</div></td>'
       + '<td><strong>' + bt.count + '</strong></td>'
       + '<td>' + pct + '%</td>'
       + '<td style="font-size:.78rem;color:#64748b">' + (critText.join(', ') || 'Manual') + '</td></tr>';
@@ -582,12 +583,12 @@ function populateDropdowns() {
   // Keep first option
   suppSel.innerHTML = '<option value="">— Choose supplier —</option>';
   suppliers.forEach(function(s) {
-    suppSel.innerHTML += '<option value="' + s.id + '">' + s.name + ' (' + s.country + ')</option>';
+    suppSel.innerHTML += '<option value="' + esc(s.id) + '">' + esc(s.name) + ' (' + esc(s.country) + ')</option>';
   });
 
   badgeSel.innerHTML = '<option value="">— Choose badge —</option>';
   badges.forEach(function(b) {
-    badgeSel.innerHTML += '<option value="' + b.id + '">' + b.name + '</option>';
+    badgeSel.innerHTML += '<option value="' + esc(b.id) + '">' + esc(b.name) + '</option>';
   });
 }
 

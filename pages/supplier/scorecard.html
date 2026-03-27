@@ -266,9 +266,10 @@
 
   // Profile badge pills
   const profileBadgesEl = document.getElementById('profileBadges');
+  var esc = SupplierScorecard.escapeHtml;
   supplierBadges.slice(0, 4).forEach(bid => {
     const bt = badgeTypes.find(b => b.id === bid);
-    if (bt) profileBadgesEl.innerHTML += '<span class="profile-badge-pill"><i class="fas ' + bt.icon + '"></i> ' + bt.name + '</span>';
+    if (bt) profileBadgesEl.innerHTML += '<span class="profile-badge-pill"><i class="fas ' + esc(bt.icon) + '"></i> ' + esc(bt.name) + '</span>';
   });
 
   // -- Overall Score --
@@ -310,10 +311,10 @@
   var badgesHtml = '';
   badgeTypes.forEach(function(bt) {
     var earned = supplierBadges.includes(bt.id);
-    badgesHtml += '<div class="badge-card ' + (earned ? 'earned' : 'locked') + '" data-badge="' + bt.id + '">'
-      + '<div class="badge-icon ' + bt.color + '"><i class="fas ' + bt.icon + '"></i></div>'
-      + '<div class="badge-name">' + bt.name + '</div>'
-      + '<div class="badge-desc">' + bt.description + '</div>'
+    badgesHtml += '<div class="badge-card ' + (earned ? 'earned' : 'locked') + '" data-badge="' + esc(bt.id) + '">'
+      + '<div class="badge-icon ' + esc(bt.color) + '"><i class="fas ' + esc(bt.icon) + '"></i></div>'
+      + '<div class="badge-name">' + esc(bt.name) + '</div>'
+      + '<div class="badge-desc">' + esc(bt.description) + '</div>'
       + '<span class="badge-status ' + (earned ? 'earned-status' : 'locked-status') + '">'
       + '<i class="fas ' + (earned ? 'fa-check' : 'fa-lock') + '"></i> '
       + (earned ? 'Earned' : 'Locked') + '</span></div>';
@@ -382,11 +383,11 @@
     var rvStars = '';
     for (var i = 0; i < rv.rating; i++) rvStars += '<i class="fas fa-star"></i>';
     for (var j = rv.rating; j < 5; j++) rvStars += '<i class="far fa-star"></i>';
-    tlHtml += '<div class="review-item"><div class="review-avatar">' + rv.initials + '</div>'
-      + '<div class="review-body"><div class="review-header"><span class="review-name">' + rv.name + '</span>'
-      + '<span class="review-date">' + rv.date + '</span></div>'
+    tlHtml += '<div class="review-item"><div class="review-avatar">' + esc(rv.initials) + '</div>'
+      + '<div class="review-body"><div class="review-header"><span class="review-name">' + esc(rv.name) + '</span>'
+      + '<span class="review-date">' + esc(rv.date) + '</span></div>'
       + '<div class="stars">' + rvStars + '</div>'
-      + '<div class="review-text">' + rv.comment + '</div></div></div>';
+      + '<div class="review-text">' + esc(rv.comment) + '</div></div></div>';
   });
   document.getElementById('reviewTimeline').innerHTML = tlHtml;
 

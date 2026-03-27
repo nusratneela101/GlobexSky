@@ -17,6 +17,12 @@
 /* global Chart */
 
 const SupplierScorecard = (() => {
+  // ── HTML Escape Utility ──
+  function escapeHtml(str) {
+    if (typeof str !== 'string') return String(str);
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   // ── Storage Keys ──
   const KEYS = {
     suppliers: 'gsky_suppliers',
@@ -445,6 +451,7 @@ const SupplierScorecard = (() => {
   // ── Public API ──
   return {
     init,
+    escapeHtml,
     getSuppliers,
     getSupplier,
     getBadgeTypes,
