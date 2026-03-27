@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Image Search – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#0A0E27 0%,#0052CC 70%,#00C9A7 100%);padding:64px 24px 48px;text-align:center;color:#fff}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:2.2rem;font-weight:700;margin-bottom:10px}
+    .hero p{color:rgba(255,255,255,.78);font-size:.98rem;max-width:540px;margin:0 auto 32px}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:6px 16px;font-size:.78rem;font-weight:600;margin-bottom:18px}
+
+    /* ── Method tabs ── */
+    .method-tabs{display:flex;gap:0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:4px;width:fit-content;margin:0 auto 28px;flex-wrap:wrap}
+    .method-tab{padding:10px 22px;border:none;background:transparent;color:rgba(255,255,255,.7);font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;border-radius:9px;transition:all .2s;white-space:nowrap}
+    .method-tab.active{background:#fff;color:#0052CC;font-weight:700}
+
+    /* ── Upload zone ── */
+    .upload-zone{background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.35);border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .25s;max-width:520px;margin:0 auto}
+    .upload-zone:hover,.upload-zone.drag-over{background:rgba(255,255,255,.15);border-color:#fff}
+    .upload-zone.has-image{border-style:solid;border-color:#00C9A7}
+    .upload-icon{font-size:2.4rem;color:rgba(255,255,255,.6);margin-bottom:14px}
+    .upload-text{font-size:.92rem;color:rgba(255,255,255,.85);margin-bottom:6px}
+    .upload-hint{font-size:.78rem;color:rgba(255,255,255,.55)}
+    .upload-preview{max-width:200px;max-height:200px;border-radius:10px;margin:12px auto 0;display:none;border:3px solid #00C9A7}
+
+    /* ── URL input ── */
+    .url-input-wrap{display:flex;gap:10px;max-width:520px;margin:0 auto;align-items:center}
+    .url-input-wrap input{flex:1;padding:12px 16px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;border-radius:10px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none}
+    .url-input-wrap input::placeholder{color:rgba(255,255,255,.45)}
+    .url-input-wrap input:focus{border-color:#fff;background:rgba(255,255,255,.18)}
+
+    /* ── Camera ── */
+    .camera-wrap{max-width:520px;margin:0 auto;text-align:center}
+    #cameraVideo{width:100%;border-radius:12px;display:none;border:3px solid #00C9A7;max-height:320px;object-fit:cover}
+    #cameraCanvas{display:none}
+
+    /* ── CTA button ── */
+    .btn-search{background:#00C9A7;color:#fff;border:none;border-radius:12px;padding:13px 36px;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;margin-top:20px}
+    .btn-search:hover{background:#00b396;transform:translateY(-1px)}
+    .btn-search:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-outline{background:transparent;border:2px solid rgba(255,255,255,.4);color:rgba(255,255,255,.85);border-radius:10px;padding:9px 20px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-outline:hover{background:rgba(255,255,255,.12);border-color:#fff;color:#fff}
+
+    /* ── Main content ── */
+    .content{max-width:1280px;margin:0 auto;padding:28px 20px}
+
+    /* ── Feature info strip ── */
+    .info-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px}
+    .info-item{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);text-align:center}
+    .info-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin:0 auto 10px}
+    .info-icon.blue{background:#dbeafe;color:#0052CC}
+    .info-icon.green{background:#d1fae5;color:#059669}
+    .info-icon.orange{background:#ffedd5;color:#f97316}
+    .info-icon.purple{background:#ede9fe;color:#7c3aed}
+    .info-title{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;color:#0a0e27;margin-bottom:4px}
+    .info-sub{font-size:.75rem;color:#64748b}
+
+    /* ── Results ── */
+    .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+    .results-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0a0e27}
+    .results-meta{font-size:.82rem;color:#64748b;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .tag-cloud{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+    .tag{display:inline-flex;align-items:center;background:#dbeafe;color:#1e40af;border-radius:50px;padding:4px 12px;font-size:.75rem;font-weight:600}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+    .product-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;cursor:pointer;text-decoration:none;color:inherit;display:block}
+    .product-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+    .product-img{width:100%;height:180px;object-fit:cover;background:#f8faff;display:flex;align-items:center;justify-content:center;color:#cbd5e1;font-size:2rem}
+    .product-img img{width:100%;height:180px;object-fit:cover}
+    .product-body{padding:14px}
+    .product-name{font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:600;color:#0a0e27;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .product-price{font-size:.95rem;font-weight:700;color:#0052CC}
+    .product-meta{font-size:.75rem;color:#64748b;margin-top:4px}
+    .product-match{display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;border-radius:50px;padding:2px 10px;font-size:.72rem;font-weight:700;margin-top:6px}
+
+    /* ── Loading / Empty states ── */
+    .spinner-wrap{display:flex;flex-direction:column;align-items:center;padding:48px;color:#94a3b8;gap:14px}
+    .spinner{width:44px;height:44px;border:4px solid #e2e8f0;border-top-color:#0052CC;border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .empty-state{text-align:center;padding:60px 24px;color:#94a3b8}
+    .empty-state i{font-size:3rem;margin-bottom:16px;display:block}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:1.1rem;color:#64748b;margin-bottom:8px}
+
+    /* ── Alert ── */
+    .alert{padding:12px 16px;border-radius:10px;font-size:.85rem;display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+    .alert-error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+    .alert-info{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+
+    /* ── Responsive ── */
+    @media(max-width:600px){.hero h1{font-size:1.6rem}.method-tabs{width:100%;justify-content:center}.products-grid{grid-template-columns:repeat(2,1fr)}.info-strip{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:400px){.products-grid{grid-template-columns:1fr}}
+
+    /* ── Navbar placeholder ── */
+    .site-nav{background:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .nav-logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#0052CC;text-decoration:none;display:flex;align-items:center;gap:8px}
+    .nav-links{display:flex;gap:16px;list-style:none}
+    .nav-links a{color:#374151;text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+    .nav-links a:hover{color:#0052CC}
+    @media(max-width:640px){.nav-links{display:none}}
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="site-nav">
+  <a href="../../index.html" class="nav-logo"><i class="fas fa-globe-americas"></i> Globex Sky</a>
+  <ul class="nav-links">
+    <li><a href="../../index.html">Home</a></li>
+    <li><a href="index.html">Search</a></li>
+    <li><a href="advanced.html">Advanced</a></li>
+    <li><a href="../../pages/account/index.html">Account</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge"><i class="fas fa-magic"></i> Powered by AI Vision</div>
+  <h1>Search by Photo</h1>
+  <p>Upload an image, take a photo, or paste an image URL to instantly find matching products in our catalog.</p>
+
+  <!-- Method Tabs -->
+  <div class="method-tabs">
+    <button class="method-tab active" onclick="switchMethod('upload')" id="tab-upload"><i class="fas fa-upload"></i> Upload</button>
+    <button class="method-tab" onclick="switchMethod('camera')" id="tab-camera"><i class="fas fa-camera"></i> Camera</button>
+    <button class="method-tab" onclick="switchMethod('url')" id="tab-url"><i class="fas fa-link"></i> Image URL</button>
+  </div>
+
+  <!-- Upload Method -->
+  <div id="method-upload">
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+      <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+      <div class="upload-text">Click to upload or drag &amp; drop an image</div>
+      <div class="upload-hint">Supports JPG, PNG, WebP · Max 10 MB</div>
+      <img id="uploadPreview" class="upload-preview" alt="Preview"/>
+    </div>
+    <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/webp" style="display:none" onchange="handleFileSelect(event)"/>
+    <br/>
+    <button class="btn-search" id="btnSearch" onclick="doSearch()" disabled>
+      <i class="fas fa-search"></i> Find Similar Products
+    </button>
+  </div>
+
+  <!-- Camera Method -->
+  <div id="method-camera" style="display:none">
+    <div class="camera-wrap">
+      <video id="cameraVideo" autoplay playsinline></video>
+      <canvas id="cameraCanvas"></canvas>
+      <img id="cameraPreview" style="max-width:300px;border-radius:12px;display:none;margin:12px auto;border:3px solid #00C9A7" alt="Captured"/>
+    </div>
+    <br/>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-outline" id="btnStartCam" onclick="startCamera()"><i class="fas fa-video"></i> Start Camera</button>
+      <button class="btn-outline" id="btnCapture" onclick="capturePhoto()" style="display:none"><i class="fas fa-circle"></i> Capture</button>
+      <button class="btn-outline" id="btnRetake" onclick="retakePhoto()" style="display:none"><i class="fas fa-redo"></i> Retake</button>
+      <button class="btn-search" id="btnSearchCamera" onclick="doSearch()" style="display:none">
+        <i class="fas fa-search"></i> Find Similar Products
+      </button>
+    </div>
+  </div>
+
+  <!-- URL Method -->
+  <div id="method-url" style="display:none">
+    <div class="url-input-wrap">
+      <input type="url" id="imageUrlInput" placeholder="https://example.com/product-image.jpg" oninput="onUrlInput()"/>
+      <button class="btn-search" id="btnSearchUrl" onclick="doSearchByUrl()" disabled>
+        <i class="fas fa-search"></i> Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Content area -->
+<div class="content">
+
+  <!-- Feature info -->
+  <div class="info-strip" id="infoStrip">
+    <div class="info-item">
+      <div class="info-icon blue"><i class="fas fa-bolt"></i></div>
+      <div class="info-title">Instant Results</div>
+      <div class="info-sub">AI analyzes your image in seconds</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon green"><i class="fas fa-brain"></i></div>
+      <div class="info-title">Multi-Provider AI</div>
+      <div class="info-sub">OpenAI, Google Vision &amp; more</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon orange"><i class="fas fa-shield-alt"></i></div>
+      <div class="info-title">Privacy Safe</div>
+      <div class="info-sub">Images processed securely</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon purple"><i class="fas fa-layer-group"></i></div>
+      <div class="info-title">Smart Matching</div>
+      <div class="info-sub">Find products by visual similarity</div>
+    </div>
+  </div>
+
+  <!-- Error / info alerts -->
+  <div id="alertArea"></div>
+
+  <!-- Results section -->
+  <div id="resultsSection" style="display:none">
+    <div class="results-header">
+      <div class="results-title"><i class="fas fa-th" style="color:#0052CC;margin-right:8px"></i>Similar Products</div>
+      <div class="results-meta">
+        <span id="resultCount"></span>
+        <span id="resultProvider"></span>
+        <span id="resultTime"></span>
+      </div>
+    </div>
+
+    <!-- AI-detected tags -->
+    <div class="tag-cloud" id="tagCloud"></div>
+
+    <!-- Products grid -->
+    <div id="loadingState" class="spinner-wrap" style="display:none">
+      <div class="spinner"></div>
+      <span>AI is analyzing your image…</span>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+
+    <!-- Empty -->
+    <div id="emptyState" class="empty-state" style="display:none">
+      <i class="fas fa-search"></i>
+      <h3>No matching products found</h3>
+      <p>Try a different image or use text search for more results.</p>
+      <a href="index.html" style="color:#0052CC;font-weight:600;text-decoration:none">← Back to text search</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="site-footer" style="background:#0A0E27;color:rgba(255,255,255,.65);text-align:center;padding:24px;font-size:.82rem;margin-top:40px">
+  <p>© 2025 Globex Sky · <a href="../../index.html" style="color:#00C9A7;text-decoration:none">Home</a> · AI Image Search powered by OpenAI Vision &amp; Google Cloud Vision</p>
+</footer>
+
+<script>
+  const API = '/api/v1/image-search';
+  const TOKEN = localStorage.getItem('gsky_token') || '';
+
+  let currentMethod = 'upload';  // upload | camera | url
+  let currentImageData = null;   // base64 string or null
+  let cameraStream = null;
+
+  // ── Tab switching ──────────────────────────────────────────────────────────
+  function switchMethod(method) {
+    currentMethod = method;
+    currentImageData = null;
+    ['upload','camera','url'].forEach(m => {
+      document.getElementById('method-' + m).style.display = m === method ? 'block' : 'none';
+      document.getElementById('tab-' + m).classList.toggle('active', m === method);
+    });
+    clearResults();
+    if (method !== 'camera' && cameraStream) stopCamera();
+  }
+
+  // ── File upload ────────────────────────────────────────────────────────────
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    processImageFile(file);
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    handleDragLeave(e);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) processImageFile(file);
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.add('drag-over');
+  }
+
+  function handleDragLeave() {
+    document.getElementById('uploadZone').classList.remove('drag-over');
+  }
+
+  function processImageFile(file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      currentImageData = dataUrl.split(',')[1]; // base64 only
+      const preview = document.getElementById('uploadPreview');
+      preview.src = dataUrl;
+      preview.style.display = 'block';
+      document.getElementById('uploadZone').classList.add('has-image');
+      document.getElementById('btnSearch').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Camera ─────────────────────────────────────────────────────────────────
+  async function startCamera() {
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      const video = document.getElementById('cameraVideo');
+      video.srcObject = cameraStream;
+      video.style.display = 'block';
+      document.getElementById('btnStartCam').style.display = 'none';
+      document.getElementById('btnCapture').style.display = 'inline-flex';
+    } catch (e) {
+      showAlert('Camera access denied. Please allow camera permissions.', 'error');
+    }
+  }
+
+  function capturePhoto() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    currentImageData = dataUrl.split(',')[1];
+    const preview = document.getElementById('cameraPreview');
+    preview.src = dataUrl;
+    preview.style.display = 'block';
+    video.style.display = 'none';
+    stopCamera();
+    document.getElementById('btnCapture').style.display = 'none';
+    document.getElementById('btnRetake').style.display = 'inline-flex';
+    document.getElementById('btnSearchCamera').style.display = 'inline-flex';
+  }
+
+  function retakePhoto() {
+    currentImageData = null;
+    document.getElementById('cameraPreview').style.display = 'none';
+    document.getElementById('btnRetake').style.display = 'none';
+    document.getElementById('btnSearchCamera').style.display = 'none';
+    document.getElementById('btnStartCam').style.display = 'inline-flex';
+    clearResults();
+  }
+
+  function stopCamera() {
+    if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+  }
+
+  // ── URL method ─────────────────────────────────────────────────────────────
+  function onUrlInput() {
+    const val = document.getElementById('imageUrlInput').value.trim();
+    document.getElementById('btnSearchUrl').disabled = !val;
+  }
+
+  // ── Search by file upload ──────────────────────────────────────────────────
+  async function doSearch() {
+    if (!currentImageData) return;
+    setLoading(true);
+    clearResults();
+    try {
+      const blob = b64toBlob(currentImageData, 'image/jpeg');
+      const formData = new FormData();
+      formData.append('image', blob, 'image.jpg');
+
+      const res = await fetch(`${API}/upload`, {
+        method: 'POST',
+        headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {},
+        body: formData,
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Search failed');
+      renderResults(json.data, json.meta);
+    } catch (e) {
+      showAlert(e.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ── Search by URL ──────────────────────────────────────────────────────────
+  async function doSearchByUrl() {
+    const image_url = document.getElementById('imageUrlInput').value.trim();
+    if (!image_url) return;
+    setLoading(true);
+    clearResults();
+    try {
+      const res = await fetch(`${API}/url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}),
+        },
+        body: JSON.stringify({ image_url }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Search failed');
+      renderResults(json.data, json.meta);
+    } catch (e) {
+      showAlert(e.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ── Render results ─────────────────────────────────────────────────────────
+  function renderResults(products, meta) {
+    document.getElementById('resultsSection').style.display = 'block';
+    document.getElementById('infoStrip').style.display = 'none';
+
+    // Meta info
+    document.getElementById('resultCount').textContent = `${products.length} products found`;
+    document.getElementById('resultProvider').innerHTML = meta?.provider
+      ? `<span style="background:#dbeafe;color:#1e40af;border-radius:50px;padding:2px 10px;font-size:.75rem;font-weight:600">Provider: ${meta.provider}</span>` : '';
+    document.getElementById('resultTime').textContent = meta?.processing_time_ms
+      ? `⏱ ${meta.processing_time_ms}ms` : '';
+
+    // Tags
+    const tags = meta?.features?.tags || [];
+    document.getElementById('tagCloud').innerHTML = tags.map(t =>
+      `<span class="tag"><i class="fas fa-tag" style="font-size:.65rem;margin-right:4px"></i>${t}</span>`
+    ).join('');
+
+    const grid = document.getElementById('productsGrid');
+    const empty = document.getElementById('emptyState');
+
+    if (!products.length) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    grid.innerHTML = products.map(p => {
+      const img = Array.isArray(p.images) && p.images[0] ? p.images[0] : null;
+      const price = p.price ? `$${Number(p.price).toLocaleString('en', {minimumFractionDigits:2})}` : 'Contact for price';
+      return `
+        <a class="product-card" href="../../pages/product/${p.id}.html" onclick="return false">
+          <div class="product-img">${img ? `<img src="${escHtml(img)}" alt="${escHtml(p.name)}" loading="lazy"/>` : '<i class="fas fa-image"></i>'}</div>
+          <div class="product-body">
+            <div class="product-name">${escHtml(p.name)}</div>
+            <div class="product-price">${price}</div>
+            <div class="product-meta">${p.stock_quantity > 0 ? '✅ In Stock' : '⚠️ Out of Stock'}</div>
+            <div class="product-match"><i class="fas fa-check-circle"></i> Match Found</div>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function setLoading(on) {
+    document.getElementById('resultsSection').style.display = on ? 'block' : 'none';
+    document.getElementById('loadingState').style.display = on ? 'flex' : 'none';
+    document.getElementById('productsGrid').style.display = on ? 'none' : 'grid';
+    document.getElementById('tagCloud').innerHTML = '';
+    ['btnSearch','btnSearchCamera','btnSearchUrl'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = on;
+    });
+  }
+
+  function clearResults() {
+    document.getElementById('resultsSection').style.display = 'none';
+    document.getElementById('productsGrid').innerHTML = '';
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('alertArea').innerHTML = '';
+    document.getElementById('infoStrip').style.display = 'grid';
+  }
+
+  function showAlert(msg, type = 'info') {
+    document.getElementById('alertArea').innerHTML =
+      `<div class="alert alert-${type}"><i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>${escHtml(msg)}</div>`;
+  }
+
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function b64toBlob(b64, mime) {
+    const bytes = atob(b64);
+    const arr = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+    return new Blob([arr], { type: mime });
+  }
+</script>
+</body>
+</html>
