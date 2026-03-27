@@ -65,6 +65,14 @@ import uploadRoutes from './routes/upload.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import pushNotificationRoutes from './routes/pushNotification.routes.js';
 import advancedSearchRoutes from './routes/advancedSearch.routes.js';
+import searchRoutes from './routes/search.js';
+import barcodeRoutes from './routes/barcode.routes.js';
+import gdprRoutes from './routes/gdpr.routes.js';
+import newsletterRoutes from './routes/newsletter.routes.js';
+import bulkImportRoutes from './routes/bulkImport.routes.js';
+import supplierScorecardRoutes from './routes/supplierScorecard.routes.js';
+import currencyContractRoutes from './routes/currencyContract.routes.js';
+import containerRoutes from './routes/container.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -199,6 +207,16 @@ app.use(`${API}/payments/gateway`, paymentsRoutes);
 app.use(`${API}/admin/pricing`, adminPricingRoutes);
 app.use(`${API}/admin/reports`, reportsRoutes);
 app.use(`${API}/admin/payouts`, payoutsRoutes);
+
+app.use(`${API}/support`, supportTicketRouter);
+app.use(`${API}/admin/kb`, adminKbRouter);
+app.use(`${API}/system-logs`, systemLogsRoutes);
+app.use(`${API}/gdpr`, gdprRoutes);
+app.use(`${API}/newsletter`, newsletterRoutes);
+app.use(`${API}/bulk-import`, bulkImportRoutes);
+app.use(`${API}/supplier-scorecard`, supplierScorecardRoutes);
+app.use(`${API}/currency-contracts`, currencyContractRoutes);
+app.use(`${API}/containers`, containerRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
