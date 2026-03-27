@@ -865,6 +865,24 @@ CREATE TABLE IF NOT EXISTS feature_toggles (
 );
 
 -- ─────────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id                UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email             TEXT        UNIQUE NOT NULL,
+  name              TEXT,
+  status            TEXT        NOT NULL DEFAULT 'active'
+                                CHECK (status IN ('active', 'unsubscribed')),
+  preferences       JSONB       NOT NULL DEFAULT '{}',
+  subscribed_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  unsubscribed_at   TIMESTAMPTZ,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_email  ON newsletter_subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_status ON newsletter_subscribers(status);
+
+-- ─────────────────────────────────────────────────────────────────
 -- UPDATED-AT TRIGGERS
 -- ─────────────────────────────────────────────────────────────────
 
