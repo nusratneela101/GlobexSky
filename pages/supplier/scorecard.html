@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/supplier-scorecard.css"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
@@ -35,7 +36,7 @@
     .score-circle-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
     .score-circle-wrap svg{transform:rotate(-90deg)}
     .sc-bg{fill:none;stroke:#e2e8f0;stroke-width:12}
-    .sc-fill{fill:none;stroke-width:12;stroke-linecap:round;stroke-dasharray:345;stroke-dashoffset:104;transition:stroke-dashoffset .8s}
+    .sc-fill{fill:none;stroke-width:12;stroke-linecap:round;stroke-dasharray:345;stroke-dashoffset:345;transition:stroke-dashoffset .8s}
     .sc-fill.diamond{stroke:url(#diamondGrad)}
     .sc-fill.gold{stroke:#f59e0b}
     .sc-fill.silver{stroke:#94a3b8}
@@ -51,7 +52,7 @@
     .tier-badge.bronze{background:linear-gradient(135deg,#c97432,#d4956e);color:#fff}
     .tier-badge.unverified{background:#f1f5f9;color:#64748b}
     /* Category Bars */
-    .category-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .category-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
     .category-item{padding:16px;border-radius:12px;background:#f8faff;border:1.5px solid #e2e8f0}
     .category-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
     .category-name{font-weight:600;font-size:.9rem;color:#0a0e27;display:flex;align-items:center;gap:8px}
@@ -61,6 +62,7 @@
     .fill-quality{background:linear-gradient(90deg,#0052CC,#00C9A7)}
     .fill-delivery{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
     .fill-communication{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+    .fill-pricing{background:linear-gradient(90deg,#f97316,#fb923c)}
     .fill-compliance{background:linear-gradient(90deg,#059669,#34d399)}
     /* Review Timeline */
     .review-timeline{display:flex;flex-direction:column;gap:16px}
@@ -95,7 +97,7 @@
       <div class="nav-controls">
         <div style="position:relative">
           <button style="border:none;background:none;cursor:pointer;padding:4px">
-            <div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">ST</div>
+            <div style="width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700" id="userAvatar">TP</div>
           </button>
         </div>
       </div>
@@ -106,8 +108,8 @@
 <div class="page-layout">
   <aside class="account-sidebar">
     <div class="account-sidebar-avatar"><i class="fas fa-store" style="font-size:1.4rem"></i></div>
-    <div class="account-sidebar-name" id="sidebarName">Loading...</div>
-    <div class="account-sidebar-email" id="sidebarEmail">supplier@example.com</div>
+    <div class="account-sidebar-name" id="sidebarName">TechParts Global</div>
+    <div class="account-sidebar-email" id="sidebarEmail">sales@techparts.cn</div>
     <ul class="account-nav">
       <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
       <li><a href="products.html"><i class="fas fa-boxes-stacked"></i> Products</a></li>
@@ -121,6 +123,21 @@
   </aside>
 
   <main class="account-content">
+
+    <!-- Supplier Profile Info Card -->
+    <div class="supplier-profile-card" id="profileCard">
+      <div class="profile-avatar-lg" id="profileAvatar"><i class="fas fa-store"></i></div>
+      <div class="profile-info">
+        <h2 id="profileName">TechParts Global</h2>
+        <p id="profileCategory">Electronics · China</p>
+        <div class="profile-meta">
+          <span class="profile-meta-item"><i class="fas fa-calendar-alt"></i> <span id="profileJoined">Member since Mar 2022</span></span>
+          <span class="profile-meta-item"><i class="fas fa-star"></i> <span id="profileRating">4.8 rating</span></span>
+          <span class="profile-meta-item"><i class="fas fa-check-circle"></i> Verified</span>
+        </div>
+      </div>
+      <div class="profile-badges" id="profileBadges"></div>
+    </div>
 
     <!-- Overall Score -->
     <div class="page-card">
@@ -151,22 +168,54 @@
       </div>
     </div>
 
-    <!-- Category Breakdown -->
+    <!-- Category Breakdown (5 categories including Pricing) -->
     <div class="page-card">
-      <div class="page-card-title"><i class="fas fa-chart-bar" style="color:#0052CC"></i> Category Breakdown</div>
+      <div class="page-card-title"><i class="fas fa-chart-bar" style="color:#0052CC"></i> Score Breakdown</div>
       <div class="category-grid" id="categoryGrid">
         <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-star" style="color:#0052CC"></i> Quality</span><span class="category-score" id="qualityScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-quality" id="qualityBar" style="width:0%"></div></div></div>
         <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-truck" style="color:#f59e0b"></i> Delivery</span><span class="category-score" id="deliveryScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-delivery" id="deliveryBar" style="width:0%"></div></div></div>
         <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-comments" style="color:#8b5cf6"></i> Communication</span><span class="category-score" id="communicationScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-communication" id="communicationBar" style="width:0%"></div></div></div>
+        <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-tag" style="color:#f97316"></i> Pricing</span><span class="category-score" id="pricingScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-pricing" id="pricingBar" style="width:0%"></div></div></div>
         <div class="category-item"><div class="category-header"><span class="category-name"><i class="fas fa-shield-alt" style="color:#059669"></i> Compliance</span><span class="category-score" id="complianceScore">—</span></div><div class="score-bar"><div class="score-bar-fill fill-compliance" id="complianceBar" style="width:0%"></div></div></div>
       </div>
     </div>
 
-    <!-- Review History -->
+    <!-- Earned Badges -->
     <div class="page-card">
-      <div class="page-card-title"><i class="fas fa-history" style="color:#0052CC"></i> Review History</div>
+      <div class="page-card-title"><i class="fas fa-award" style="color:#7c3aed"></i> Badges</div>
+      <div class="badges-grid" id="badgesGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Charts: Trend + Radar -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-card-title"><i class="fas fa-chart-line" style="color:#0052CC"></i> Performance Trend (12 Months)</div>
+        <div class="chart-wrapper"><canvas id="trendChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title"><i class="fas fa-spider" style="color:#7c3aed"></i> Score Radar</div>
+        <div class="chart-wrapper"><canvas id="radarChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Comparison with Category Average -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-balance-scale" style="color:#059669"></i> Comparison with Category Average</div>
+      <div class="comparison-grid" id="comparisonGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Review / Feedback Summary -->
+    <div class="page-card">
+      <div class="page-card-title"><i class="fas fa-star-half-alt" style="color:#f59e0b"></i> Review Summary</div>
+      <div class="review-summary" id="reviewSummary">
+        <!-- Populated by JS -->
+      </div>
       <div class="review-timeline" id="reviewTimeline">
-        <div class="review-item"><div class="review-avatar">A</div><div class="review-body"><div class="review-header"><span class="review-name">Globex Sky Admin</span><span class="review-date">Assessment pending</span></div><div class="review-text">No assessments completed yet.</div></div></div>
+        <!-- Populated by JS -->
       </div>
     </div>
 
@@ -181,70 +230,180 @@
   </main>
 </div>
 
+<footer class="site-footer">
+  <div class="footer-bottom" style="padding:20px 0">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="../../assets/js/supplier-scorecard.js"></script>
 <script>
-const API = '/api/v1';
+(function() {
+  const supplierId = new URLSearchParams(location.search).get('id') || 'sup_001';
+  const supplier = SupplierScorecard.getSupplier(supplierId);
+  if (!supplier) return;
 
-async function loadScorecard() {
-  const supplierId = new URLSearchParams(location.search).get('id') || localStorage.getItem('supplierId');
-  if (!supplierId) {
-    setDemo();
-    return;
-  }
-  try {
-    const token = localStorage.getItem('token');
-    const res = await fetch(`${API}/supplier-assessment/${supplierId}/scorecard`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const json = await res.json();
-    if (json.success && json.data) renderScorecard(json.data);
-    else setDemo();
-  } catch (_) { setDemo(); }
-}
+  const overall = SupplierScorecard.calculateOverall(supplier.scores);
+  const tier = SupplierScorecard.getTier(overall);
+  const awards = SupplierScorecard.getAwards();
+  const badgeTypes = SupplierScorecard.getBadgeTypes();
+  const supplierBadges = awards[supplierId] || [];
+  const avgs = SupplierScorecard.getCategoryAverages();
 
-function setDemo() {
-  renderScorecard({ quality_score: 88, delivery_score: 82, communication_score: 76, compliance_score: 91, overall_score: 85, tier: 'gold', assessed_at: new Date().toISOString() });
-}
+  // -- Profile Card --
+  document.getElementById('profileName').textContent = supplier.name;
+  document.getElementById('profileCategory').textContent = supplier.category + ' · ' + supplier.country;
+  document.getElementById('profileJoined').textContent = 'Member since ' + new Date(supplier.joined).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  document.getElementById('profileRating').textContent = supplier.rating + ' rating';
+  document.getElementById('sidebarName').textContent = supplier.name;
+  document.getElementById('sidebarEmail').textContent = supplier.email;
+  document.getElementById('userAvatar').textContent = supplier.name.split(' ').map(w => w[0]).join('').slice(0, 2);
 
-function renderScorecard(data) {
-  const overall = data.overall_score || 0;
+  // Profile badge pills
+  const profileBadgesEl = document.getElementById('profileBadges');
+  var esc = SupplierScorecard.escapeHtml;
+  supplierBadges.slice(0, 4).forEach(bid => {
+    const bt = badgeTypes.find(b => b.id === bid);
+    if (bt) profileBadgesEl.innerHTML += '<span class="profile-badge-pill"><i class="fas ' + esc(bt.icon) + '"></i> ' + esc(bt.name) + '</span>';
+  });
+
+  // -- Overall Score --
   document.getElementById('overallScore').textContent = overall;
-  document.getElementById('assessedDate').textContent = data.assessed_at ? `Last assessed: ${new Date(data.assessed_at).toLocaleDateString()}` : '';
+  document.getElementById('supplierName').textContent = supplier.name;
+  document.getElementById('assessedDate').textContent = 'Last assessed: ' + new Date().toLocaleDateString();
 
-  const tier = data.tier || 'unverified';
   const tierLabels = { diamond: 'Diamond', gold: 'Gold', silver: 'Silver', bronze: 'Bronze', unverified: 'Unverified' };
   const tierIcons = { diamond: 'fa-gem', gold: 'fa-medal', silver: 'fa-award', bronze: 'fa-certificate', unverified: 'fa-circle' };
   const badge = document.getElementById('tierBadge');
-  badge.className = `tier-badge ${tier}`;
-  badge.innerHTML = `<i class="fas ${tierIcons[tier] || 'fa-medal'}"></i> ${tierLabels[tier] || tier}`;
+  badge.className = 'tier-badge ' + tier;
+  badge.innerHTML = '<i class="fas ' + (tierIcons[tier] || 'fa-medal') + '"></i> ' + (tierLabels[tier] || tier);
 
   const offset = 345 - (overall / 100) * 345;
   const fill = document.getElementById('scoreFill');
   fill.style.strokeDashoffset = offset;
-  fill.className = `sc-fill ${tier}`;
+  fill.className = 'sc-fill ' + tier;
 
-  const tierDescs = { diamond: 'Exceptional performance across all categories. You are among the top tier suppliers on Globex Sky.', gold: 'Excellent overall performance. Keep maintaining high standards to reach Diamond tier.', silver: 'Good performance. Focus on improving weaker areas to reach Gold tier.', bronze: 'Acceptable performance. There are several areas where you can improve significantly.', unverified: 'No assessment data available. Contact admin to request an assessment.' };
+  const tierDescs = {
+    diamond: 'Exceptional performance across all categories. You are among the top tier suppliers on Globex Sky.',
+    gold: 'Excellent overall performance. Keep maintaining high standards to reach Diamond tier.',
+    silver: 'Good performance. Focus on improving weaker areas to reach Gold tier.',
+    bronze: 'Acceptable performance. There are several areas where you can improve significantly.',
+    unverified: 'No assessment data available. Contact admin to request an assessment.'
+  };
   document.getElementById('scoreDesc').textContent = tierDescs[tier] || '';
 
-  const cats = ['quality', 'delivery', 'communication', 'compliance'];
-  cats.forEach(c => {
-    const s = data[`${c}_score`] || 0;
-    document.getElementById(`${c}Score`).textContent = s;
-    document.getElementById(`${c}Bar`).style.width = `${s}%`;
+  // -- Category Breakdown (5 categories) --
+  var cats = ['quality', 'delivery', 'communication', 'pricing', 'compliance'];
+  cats.forEach(function(c) {
+    var s = supplier.scores[c] || 0;
+    var el = document.getElementById(c + 'Score');
+    var bar = document.getElementById(c + 'Bar');
+    if (el) el.textContent = s;
+    if (bar) bar.style.width = s + '%';
   });
 
-  // Recommendations
-  const recs = [];
-  if ((data.quality_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-star', title: 'Improve Product Quality', text: 'Reduce defect rate and improve consistency to raise your quality score above 80.' });
-  if ((data.delivery_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-truck', title: 'Improve Delivery Performance', text: 'Work on on-time delivery rate and lead time accuracy.' });
-  if ((data.communication_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-comments', title: 'Improve Communication', text: 'Respond to buyer inquiries faster and resolve disputes promptly.' });
-  if ((data.compliance_score || 0) < 80) recs.push({ type: 'improve', icon: 'fa-shield-alt', title: 'Improve Compliance', text: 'Ensure all certifications are up to date and documentation is complete.' });
+  // -- Badges Grid --
+  var badgesHtml = '';
+  badgeTypes.forEach(function(bt) {
+    var earned = supplierBadges.includes(bt.id);
+    badgesHtml += '<div class="badge-card ' + (earned ? 'earned' : 'locked') + '" data-badge="' + esc(bt.id) + '">'
+      + '<div class="badge-icon ' + esc(bt.color) + '"><i class="fas ' + esc(bt.icon) + '"></i></div>'
+      + '<div class="badge-name">' + esc(bt.name) + '</div>'
+      + '<div class="badge-desc">' + esc(bt.description) + '</div>'
+      + '<span class="badge-status ' + (earned ? 'earned-status' : 'locked-status') + '">'
+      + '<i class="fas ' + (earned ? 'fa-check' : 'fa-lock') + '"></i> '
+      + (earned ? 'Earned' : 'Locked') + '</span></div>';
+  });
+  document.getElementById('badgesGrid').innerHTML = badgesHtml;
+
+  // Animate earned badges
+  setTimeout(function() {
+    document.querySelectorAll('.badge-card.earned').forEach(function(card, i) {
+      setTimeout(function() { SupplierScorecard.animateBadgeAward(card); }, i * 150);
+    });
+  }, 300);
+
+  // -- Charts --
+  SupplierScorecard.renderTrendChart('trendChart', supplierId);
+  SupplierScorecard.renderRadarChart('radarChart', supplierId);
+
+  // -- Comparison Grid --
+  var compCats = [
+    { key: 'quality', label: 'Quality', icon: 'fa-star' },
+    { key: 'delivery', label: 'Delivery', icon: 'fa-truck' },
+    { key: 'communication', label: 'Communication', icon: 'fa-comments' },
+    { key: 'pricing', label: 'Pricing', icon: 'fa-tag' },
+    { key: 'compliance', label: 'Compliance', icon: 'fa-shield-alt' },
+    { key: 'overall', label: 'Overall', icon: 'fa-trophy' }
+  ];
+  var compHtml = '';
+  compCats.forEach(function(cat) {
+    var yourScore = cat.key === 'overall' ? overall : (supplier.scores[cat.key] || 0);
+    var avgScore = avgs[cat.key] || 0;
+    var diff = yourScore - avgScore;
+    compHtml += '<div class="comparison-item">'
+      + '<div class="comp-label"><i class="fas ' + cat.icon + '"></i> ' + cat.label + '</div>'
+      + '<div class="comp-values">'
+      + '<span class="comp-your-score">' + yourScore + '</span>'
+      + '<span class="comp-avg-score">avg ' + avgScore + '</span>'
+      + '<span class="comp-diff ' + (diff >= 0 ? 'positive' : 'negative') + '">'
+      + (diff >= 0 ? '+' : '') + diff + '</span>'
+      + '</div></div>';
+  });
+  document.getElementById('comparisonGrid').innerHTML = compHtml;
+
+  // -- Review Summary --
+  var review = SupplierScorecard.getReviewSummary(supplierId);
+  if (review) {
+    var starsHtml = '';
+    for (var s = 1; s <= 5; s++) starsHtml += '<i class="fas fa-star"></i>';
+    var barsHtml = '';
+    for (var r = 5; r >= 1; r--) {
+      var pct = review.distribution[r] || 0;
+      barsHtml += '<div class="review-bar-row"><span class="review-bar-label">' + r + '★</span>'
+        + '<div class="review-bar-track"><div class="review-bar-fill" style="width:' + pct + '%"></div></div>'
+        + '<span class="review-bar-count">' + pct + '%</span></div>';
+    }
+    document.getElementById('reviewSummary').innerHTML =
+      '<div class="review-avg"><div class="review-avg-num">' + review.average.toFixed(1) + '</div>'
+      + '<div class="review-avg-stars">' + starsHtml + '</div>'
+      + '<div class="review-avg-count">' + review.total + ' reviews</div></div>'
+      + '<div class="review-bars">' + barsHtml + '</div>';
+  }
+
+  // -- Recent Reviews --
+  var reviews = SupplierScorecard.getRecentReviews(supplierId);
+  var tlHtml = '';
+  reviews.forEach(function(rv) {
+    var rvStars = '';
+    for (var i = 0; i < rv.rating; i++) rvStars += '<i class="fas fa-star"></i>';
+    for (var j = rv.rating; j < 5; j++) rvStars += '<i class="far fa-star"></i>';
+    tlHtml += '<div class="review-item"><div class="review-avatar">' + esc(rv.initials) + '</div>'
+      + '<div class="review-body"><div class="review-header"><span class="review-name">' + esc(rv.name) + '</span>'
+      + '<span class="review-date">' + esc(rv.date) + '</span></div>'
+      + '<div class="stars">' + rvStars + '</div>'
+      + '<div class="review-text">' + esc(rv.comment) + '</div></div></div>';
+  });
+  document.getElementById('reviewTimeline').innerHTML = tlHtml;
+
+  // -- Recommendations --
+  var recs = [];
+  if ((supplier.scores.quality || 0) < 80) recs.push({ type: 'improve', icon: 'fa-star', title: 'Improve Product Quality', text: 'Reduce defect rate and improve consistency to raise your quality score above 80.' });
+  if ((supplier.scores.delivery || 0) < 80) recs.push({ type: 'improve', icon: 'fa-truck', title: 'Improve Delivery Performance', text: 'Work on on-time delivery rate and lead time accuracy.' });
+  if ((supplier.scores.communication || 0) < 80) recs.push({ type: 'improve', icon: 'fa-comments', title: 'Improve Communication', text: 'Respond to buyer inquiries faster and resolve disputes promptly.' });
+  if ((supplier.scores.pricing || 0) < 80) recs.push({ type: 'improve', icon: 'fa-tag', title: 'Improve Pricing Competitiveness', text: 'Offer more competitive pricing or volume discounts.' });
+  if ((supplier.scores.compliance || 0) < 80) recs.push({ type: 'improve', icon: 'fa-shield-alt', title: 'Improve Compliance', text: 'Ensure all certifications are up to date and documentation is complete.' });
   if (recs.length === 0) recs.push({ type: 'maintain', icon: 'fa-check-circle', title: 'Keep up the great work!', text: 'All categories are performing well. Maintain your standards to retain your tier.' });
-
-  document.getElementById('recList').innerHTML = recs.map(r => `
-    <div class="rec-item"><div class="rec-icon ${r.type}"><i class="fas ${r.icon}"></i></div><div class="rec-text"><h5>${r.title}</h5><p>${r.text}</p></div></div>`).join('');
-}
-
-loadScorecard();
+  document.getElementById('recList').innerHTML = recs.map(function(r) {
+    return '<div class="rec-item"><div class="rec-icon ' + r.type + '"><i class="fas ' + r.icon + '"></i></div>'
+      + '<div class="rec-text"><h5>' + r.title + '</h5><p>' + r.text + '</p></div></div>';
+  }).join('');
+})();
 </script>
 <script src="../../assets/js/navbar.js"></script>
 </body>
