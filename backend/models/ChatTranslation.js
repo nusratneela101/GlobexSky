@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import BaseModel from './BaseModel.js';
 
+const MASKED_VALUE = '••••••••';
+
 /**
  * ChatTranslation model
  *
@@ -159,7 +161,7 @@ export default class ChatTranslation extends BaseModel {
     if (error) throw error;
     return (data ?? []).map((row) => ({
       ...row,
-      value: row.is_encrypted && row.value ? '••••••••' : row.value,
+      value: row.is_encrypted && row.value ? MASKED_VALUE : row.value,
     }));
   }
 

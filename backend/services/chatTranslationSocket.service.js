@@ -143,8 +143,8 @@ export function initializeChatTranslation(io) {
             cached: result.cached,
           });
         }
-      } catch {
-        // Silent fail for auto-translation
+      } catch (err) {
+        console.warn('[ChatTranslation] Auto-translate failed:', err.message);
       }
     });
 

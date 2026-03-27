@@ -8,6 +8,12 @@
 import crypto from 'crypto';
 import ChatTranslation from '../models/ChatTranslation.js';
 
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const DEFAULT_LIBRE_URL = 'https://libretranslate.de';
+const DEEPL_FREE_API_URL = 'https://api-free.deepl.com/v2/translate';
+const DEEPL_PRO_API_URL = 'https://api.deepl.com/v2/translate';
+
 // ─── Language metadata ───────────────────────────────────────────────────────
 
 const LANGUAGE_NAMES = {
@@ -93,9 +99,8 @@ async function googleTranslate(text, sourceLang, targetLang, apiKey) {
  * DeepL API.
  */
 async function deeplTranslate(text, sourceLang, targetLang, apiKey) {
-  const url = apiKey.endsWith(':fx')
-    ? 'https://api-free.deepl.com/v2/translate'
-    : 'https://api.deepl.com/v2/translate';
+  // DeepL free API keys end with ':fx'; fall back to pro endpoint otherwise
+  const url = apiKey.endsWith(':fx') ? DEEPL_FREE_API_URL : DEEPL_PRO_API_URL;
 
   const params = new URLSearchParams();
   params.append('text', text);
@@ -181,7 +186,7 @@ async function azureTranslate(text, sourceLang, targetLang, apiKey, endpoint) {
  * LibreTranslate (self-hosted or public instance).
  */
 async function libreTranslate(text, sourceLang, targetLang, _apiKey, libreUrl) {
-  const url = `${libreUrl || 'https://libretranslate.de'}/translate`;
+  const url = `${libreUrl || DEFAULT_LIBRE_URL}/translate`;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
