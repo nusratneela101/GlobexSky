@@ -10,6 +10,88 @@
   const LS_HISTORY_KEY  = 'globexsky_custom_code_history';
   const LS_ENABLED_KEY  = 'globexsky_custom_code_enabled';
   const MAX_HISTORY     = 20;
+  const API_BASE        = '/api/v1/custom-styles';
+
+  /* ── API Helper Functions ────────────────────────────────────── */
+  async function apiRequest(endpoint, options = {}) {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      };
+      
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers: { ...headers, ...options.headers }
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'API request failed');
+      }
+      
+      return data;
+    } catch (err) {
+      console.warn('API request failed, falling back to localStorage:', err.message);
+      return null;
+    }
+  }
+
+  async function saveToAPI(css, js, isActive) {
+    try {
+      // Try to get existing style first
+      const listResult = await apiRequest('/');
+      
+      if (listResult && listResult.data && listResult.data.length > 0) {
+        // Update existing style
+        const styleId = listResult.data[0].id;
+        return await apiRequest(`/${styleId}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            name: 'Admin Custom Code',
+            css_content: css,
+            js_content: js,
+            is_active: isActive
+          })
+        });
+      } else {
+        // Create new style
+        return await apiRequest('/', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: 'Admin Custom Code',
+            css_content: css,
+            js_content: js,
+            is_active: isActive,
+            applied_pages: 'all'
+          })
+        });
+      }
+    } catch (err) {
+      console.warn('Failed to save to API:', err);
+      return null;
+    }
+  }
+
+  async function loadFromAPI() {
+    try {
+      const result = await apiRequest('/');
+      if (result && result.data && result.data.length > 0) {
+        const style = result.data[0];
+        return {
+          css: style.css_content || '',
+          js: style.js_content || '',
+          is_active: style.is_active
+        };
+      }
+      return null;
+    } catch (err) {
+      console.warn('Failed to load from API:', err);
+      return null;
+    }
+  }
 
   /* ── Default snippet library ────────────────────────────────── */
   const DEFAULT_SNIPPETS = [
@@ -209,9 +291,9 @@ body, input, button, select, textarea {
   let currentSnippetId = null;
 
   /* ── Init ───────────────────────────────────────────────────── */
-  function init() {
+  async function init() {
     initEditors();
-    loadSavedCode();
+    await loadSavedCode();
     renderSnippetLibrary();
     renderVersionHistory();
     updateStatusBar();
@@ -274,8 +356,21 @@ body, input, button, select, textarea {
     } catch (e) { return { css: '', js: '' }; }
   }
 
-  function loadSavedCode() {
-    var code = getSavedCode();
+  async function loadSavedCode() {
+    // Try to load from API first
+    var apiData = await loadFromAPI();
+    var code;
+    
+    if (apiData) {
+      code = { css: apiData.css, js: apiData.js };
+      // Sync to localStorage
+      localStorage.setItem(LS_CODE_KEY, JSON.stringify(code));
+      localStorage.setItem(LS_ENABLED_KEY, apiData.is_active ? 'true' : 'false');
+    } else {
+      // Fall back to localStorage
+      code = getSavedCode();
+    }
+    
     setEditorValue(cssEditor, 'css-editor-textarea', code.css || '');
     setEditorValue(jsEditor,  'js-editor-textarea',  code.js  || '');
     var enabledToggle = document.getElementById('code-enabled-toggle');
@@ -299,13 +394,17 @@ body, input, button, select, textarea {
     return el ? el.value : '';
   }
 
-  function saveCode(label) {
+  async function saveCode(label) {
     var css = getEditorValue(cssEditor, 'css-editor-textarea');
     var js  = getEditorValue(jsEditor,  'js-editor-textarea');
     var code = { css: css, js: js };
+    var enabled = document.getElementById('code-enabled-toggle');
+    var isEnabled = !enabled || enabled.checked;
+    
+    // Save to localStorage
     localStorage.setItem(LS_CODE_KEY, JSON.stringify(code));
 
-    // Save to version history
+    // Save to version history (localStorage)
     var history = getHistory();
     history.unshift({
       id: Date.now(),
@@ -317,8 +416,15 @@ body, input, button, select, textarea {
     if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
     localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(history));
 
+    // Save to API
+    var apiResult = await saveToAPI(css, js, isEnabled);
+    
     renderVersionHistory();
-    showToast('Code saved successfully!', 'success');
+    if (apiResult) {
+      showToast('Code saved to server successfully!', 'success');
+    } else {
+      showToast('Code saved locally (API unavailable)', 'warning');
+    }
     updateStatusBar();
   }
 
@@ -522,8 +628,14 @@ body, input, button, select, textarea {
   }
 
   /* ── Enable / Disable toggle ────────────────────────────────── */
-  function onToggleEnabled(checked) {
+  async function onToggleEnabled(checked) {
     localStorage.setItem(LS_ENABLED_KEY, checked ? 'true' : 'false');
+    
+    // Update API as well
+    var css = getEditorValue(cssEditor, 'css-editor-textarea');
+    var js  = getEditorValue(jsEditor,  'js-editor-textarea');
+    await saveToAPI(css, js, checked);
+    
     schedulePreviewUpdate();
     updateStatusBar();
     showToast(checked ? 'Custom code enabled.' : 'Custom code disabled.', checked ? 'success' : 'warning');

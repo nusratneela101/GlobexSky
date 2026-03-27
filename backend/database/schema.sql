@@ -866,6 +866,7 @@ CREATE TABLE IF NOT EXISTS feature_toggles (
 
 -- ─────────────────────────────────────────────────────────────────
 
+
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   id                UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
   email             TEXT        UNIQUE NOT NULL,
