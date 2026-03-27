@@ -37,6 +37,7 @@ export { default as Warehouse } from './Warehouse.js';
 export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
+export { default as ImageSearch } from './ImageSearch.js';
 export { default as SampleOrder, SampleOrderConfig } from './SampleOrder.js';
 
 
@@ -68,6 +69,7 @@ import Warehouse from './Warehouse.js';
 import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
+import ImageSearch from './ImageSearch.js';
 import SampleOrder, { SampleOrderConfig } from './SampleOrder.js';
 
 export default {
@@ -99,6 +101,7 @@ export default {
   SavedSearch,
   SearchHistory,
   SystemConfig,
+  ImageSearch,
   SampleOrder,
   SampleOrderConfig,
 };
