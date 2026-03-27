@@ -38,6 +38,7 @@ export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
 
+
 import BaseModel from './BaseModel.js';
 import User from './User.js';
 import Product from './Product.js';
@@ -66,6 +67,7 @@ import Warehouse from './Warehouse.js';
 import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
+
 
 export default {
   BaseModel,
@@ -96,4 +98,5 @@ export default {
   SavedSearch,
   SearchHistory,
   SystemConfig,
+
 };
