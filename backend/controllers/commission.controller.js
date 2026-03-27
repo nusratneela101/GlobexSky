@@ -49,14 +49,20 @@ export async function createCommission(req, res, next) {
       rate_percent, min_cap, max_cap, is_active,
     } = req.body;
 
-    if (!name || !type || !category_id || rate_percent === undefined) {
-      return res.status(400).json({ success: false, error: 'Name, type, category_id, and rate_percent are required.' });
+    if (!name || rate_percent === undefined) {
+      return res.status(400).json({ success: false, error: 'Name and rate_percent are required.' });
+    }
+
+    const validTypes = ['percentage', 'fixed'];
+    const resolvedType = type || 'percentage';
+    if (!validTypes.includes(resolvedType)) {
+      return res.status(400).json({ success: false, error: `Type must be one of: ${validTypes.join(', ')}` });
     }
 
     const commission = await Commission.create({
       name,
-      type,
-      category_id,
+      type: resolvedType,
+      category_id: category_id || null,
       min_order_value: min_order_value || null,
       max_order_value: max_order_value || null,
       rate_percent,
