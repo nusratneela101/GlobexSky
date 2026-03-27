@@ -38,6 +38,7 @@ export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
 export { default as ImageSearch } from './ImageSearch.js';
+export { default as Team } from './Team.js';
 
 
 import BaseModel from './BaseModel.js';
@@ -69,6 +70,7 @@ import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
 import ImageSearch from './ImageSearch.js';
+import Team from './Team.js';
 
 
 export default {
@@ -101,4 +103,5 @@ export default {
   SearchHistory,
   SystemConfig,
   ImageSearch,
+  Team,
 };

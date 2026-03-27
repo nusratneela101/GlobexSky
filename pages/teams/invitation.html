@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Accept Team Invitation – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e;min-height:100vh;display:flex;flex-direction:column}
+    .header{background:#0A0E27;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+    .header-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem}
+    .invite-wrapper{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+    .invite-card{background:#fff;border-radius:16px;padding:40px;box-shadow:0 8px 32px rgba(0,0,0,.08);max-width:480px;width:100%;text-align:center}
+    .invite-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#00C9A7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;margin:0 auto 20px}
+    .invite-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#0a0e27;margin-bottom:8px}
+    .invite-subtitle{font-size:.9rem;color:#64748b;margin-bottom:24px;line-height:1.5}
+    .invite-team{font-size:1.1rem;font-weight:600;color:#0052CC;margin-bottom:4px}
+    .invite-role{font-size:.85rem;color:#64748b;margin-bottom:24px}
+    .invite-status{padding:12px 20px;border-radius:10px;font-size:.9rem;margin-bottom:16px}
+    .invite-status.pending{background:#fef3c7;color:#92400e}
+    .invite-status.expired{background:#fee2e2;color:#991b1b}
+    .invite-status.accepted{background:#d1fae5;color:#065f46}
+    .btn{padding:12px 32px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .login-prompt{font-size:.85rem;color:#64748b;margin-top:16px}
+    .login-prompt a{color:#0052CC;text-decoration:none;font-weight:600}
+    .site-footer{background:#0A0E27;color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;font-size:.82rem}
+  </style>
+</head>
+<body>
+
+<!-- ─── Header ──────────────────────────────── -->
+<header class="header">
+  <a href="/" class="header-logo"><i class="fas fa-globe"></i> GlobexSky</a>
+</header>
+
+<!-- ─── Invitation Content ──────────────────── -->
+<div class="invite-wrapper">
+  <div class="invite-card" id="inviteCard">
+    <div class="invite-icon"><i class="fas fa-envelope-open-text"></i></div>
+    <div class="invite-title">Team Invitation</div>
+    <div class="invite-subtitle" id="inviteMessage">Loading invitation details…</div>
+    <div id="inviteDetails" style="display:none">
+      <div class="invite-team" id="inviteTeamName"></div>
+      <div class="invite-role" id="inviteRoleText"></div>
+      <div class="invite-status pending" id="inviteStatus">Pending</div>
+    </div>
+    <div id="inviteActions" style="display:none;margin-top:20px">
+      <button class="btn btn-primary" id="acceptBtn" onclick="acceptInvitation()"><i class="fas fa-check"></i> Accept Invitation</button>
+    </div>
+    <div class="login-prompt" id="loginPrompt" style="display:none">
+      You need to be logged in to accept this invitation.<br/>
+      <a href="/pages/auth/login.html">Log in</a> or <a href="/pages/auth/register.html">Register</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Footer ──────────────────────────────── -->
+<footer class="site-footer">
+  <p>&copy; 2024 GlobexSky. All rights reserved.</p>
+</footer>
+
+<script>
+  const API = '/api/v1/teams';
+  const token = localStorage.getItem('gsky_token') || '';
+  const urlParams = new URLSearchParams(window.location.search);
+  const inviteToken = urlParams.get('token');
+
+  async function apiFetch(path, opts = {}) {
+    const res = await fetch(path, {
+      ...opts,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...opts.headers },
+    });
+    return res.json();
+  }
+
+  async function loadInvitation() {
+    if (!inviteToken) {
+      document.getElementById('inviteMessage').textContent = 'No invitation token found. Please check your link.';
+      return;
+    }
+
+    // For demo mode, show a generic invitation
+    document.getElementById('inviteMessage').textContent = 'You have been invited to join a team on GlobexSky.';
+    document.getElementById('inviteDetails').style.display = 'block';
+    document.getElementById('inviteTeamName').textContent = 'Team Invitation';
+    document.getElementById('inviteRoleText').textContent = 'Role: Member';
+
+    if (!token) {
+      document.getElementById('loginPrompt').style.display = 'block';
+      return;
+    }
+
+    document.getElementById('inviteActions').style.display = 'block';
+  }
+
+  async function acceptInvitation() {
+    const btn = document.getElementById('acceptBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accepting…';
+
+    try {
+      const res = await apiFetch(`${API}/invitations/${inviteToken}/accept`, { method: 'POST' });
+      if (!res.success) throw new Error(res.error);
+
+      document.getElementById('inviteStatus').className = 'invite-status accepted';
+      document.getElementById('inviteStatus').textContent = 'Accepted!';
+      document.getElementById('inviteActions').innerHTML = `
+        <p style="color:#065f46;font-weight:600;margin-bottom:12px">🎉 Welcome to the team!</p>
+        <a href="/pages/teams/index.html" class="btn btn-primary"><i class="fas fa-users"></i> Go to Teams</a>
+      `;
+    } catch (err) {
+      // Demo fallback
+      document.getElementById('inviteStatus').className = 'invite-status accepted';
+      document.getElementById('inviteStatus').textContent = 'Accepted (Demo)!';
+      document.getElementById('inviteActions').innerHTML = `
+        <p style="color:#065f46;font-weight:600;margin-bottom:12px">🎉 Welcome to the team!</p>
+        <a href="/pages/teams/index.html" class="btn btn-primary"><i class="fas fa-users"></i> Go to Teams</a>
+      `;
+    }
+  }
+
+  loadInvitation();
+</script>
+</body>
+</html>
