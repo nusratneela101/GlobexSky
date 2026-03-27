@@ -98,6 +98,7 @@ import templateRoutes from './routes/templateRoutes.js';
 import integrationRoutes from './routes/integration.routes.js';
 import aiRoutes from './routes/ai.routes.js';
 import configRoutes from './routes/config.routes.js';
+import recommendationRoutes from './routes/recommendation.routes.js';
 import adminConfigRoutes from './routes/admin/config.routes.js';
 import productComparisonRoutes from './routes/productComparison.routes.js';
 import adminUsersRoutes from './routes/adminUsers.js';
@@ -219,6 +220,7 @@ app.use(`${API}/feature-toggles`, featureToggleRoutes);
 app.use(`${API}/templates`, templateRoutes);
 app.use(`${API}/integrations`, integrationRoutes);
 app.use(`${API}/ai`, aiRoutes);
+app.use(`${API}/recommendations`, recommendationRoutes);
 app.use(`${API}/vr`, vrRoutes);
 app.use(`${API}/verification`, verificationRoutes);
 

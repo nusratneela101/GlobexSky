@@ -37,6 +37,7 @@ export { default as Warehouse } from './Warehouse.js';
 export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
+export { default as Recommendation } from './Recommendation.js';
 
 
 import BaseModel from './BaseModel.js';
@@ -67,6 +68,7 @@ import Warehouse from './Warehouse.js';
 import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
+import Recommendation from './Recommendation.js';
 
 
 export default {
@@ -98,5 +100,6 @@ export default {
   SavedSearch,
   SearchHistory,
   SystemConfig,
+  Recommendation,
 
 };
