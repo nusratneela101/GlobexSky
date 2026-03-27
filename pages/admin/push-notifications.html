@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Push Notification Management – Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/push-notifications.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-user-pill{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500}
+    .admin-content{padding:24px;overflow-y:auto}
+    .admin-card{background:#fff;border-radius:12px;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;overflow:hidden}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #e2e8f0;flex-wrap:wrap;gap:8px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:9px}
+    .admin-card-title i{color:#0052CC}
+    .admin-card-subtitle{font-size:.82rem;color:#64748b;margin-top:2px}
+    .data-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .btn{padding:7px 14px;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 10px;font-size:.78rem}
+    .tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:7px 18px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s;white-space:nowrap}
+    .tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="140" height="44" style="object-fit:contain"/>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i><span>Payments</span></a></li>
+        <li><a href="marketing.html"><i class="fas fa-bullhorn"></i><span>Marketing</span></a></li>
+        <li><a href="push-notifications.html" class="active"><i class="fas fa-bell"></i><span>Push Notifications</span></a></li>
+        <li><a href="email-sms-templates.html"><i class="fas fa-envelope"></i><span>Email &amp; SMS</span></a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i><span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')" aria-label="Toggle sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <span class="admin-page-title">Push Notification Management</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="admin-user-pill admin-avatar">A</div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <!-- KPI Analytics -->
+      <div class="push-analytics-grid">
+        <div class="push-analytics-card blue">
+          <div class="push-analytics-icon blue"><i class="fas fa-paper-plane"></i></div>
+          <div class="push-analytics-value" id="metric-campaigns">0</div>
+          <div class="push-analytics-label">Total Campaigns</div>
+        </div>
+        <div class="push-analytics-card green">
+          <div class="push-analytics-icon green"><i class="fas fa-check-circle"></i></div>
+          <div class="push-analytics-value" id="metric-sent">0</div>
+          <div class="push-analytics-label">Notifications Sent</div>
+        </div>
+        <div class="push-analytics-card orange">
+          <div class="push-analytics-icon orange"><i class="fas fa-inbox"></i></div>
+          <div class="push-analytics-value" id="metric-delivered">0</div>
+          <div class="push-analytics-label">Delivered</div>
+        </div>
+        <div class="push-analytics-card purple">
+          <div class="push-analytics-icon purple"><i class="fas fa-mouse-pointer"></i></div>
+          <div class="push-analytics-value" id="metric-clicked">0</div>
+          <div class="push-analytics-label">Clicked</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'compose')">Compose</button>
+        <button class="tab-btn" onclick="switchTab(this,'history')">Campaign History</button>
+        <button class="tab-btn" onclick="switchTab(this,'templates')">Templates</button>
+        <button class="tab-btn" onclick="switchTab(this,'audience')">Audience</button>
+      </div>
+
+      <!-- Tab: Compose -->
+      <div class="tab-content active" id="tab-compose">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <div class="admin-card-title"><i class="fas fa-pen"></i> Compose Push Notification</div>
+              <div class="admin-card-subtitle">Create and send push notifications to your users.</div>
+            </div>
+          </div>
+          <form id="admin-push-form" class="push-campaign-form" onsubmit="event.preventDefault(); sendAdminCampaign();">
+            <div class="push-form-grid">
+              <div class="push-form-field full-width">
+                <label for="camp-title">Notification Title *</label>
+                <input type="text" id="camp-title" placeholder="e.g., Flash Sale: 30% Off Electronics" required maxlength="100"/>
+              </div>
+              <div class="push-form-field full-width">
+                <label for="camp-body">Message Body</label>
+                <textarea id="camp-body" placeholder="Enter the notification message..." maxlength="500" rows="3"></textarea>
+              </div>
+              <div class="push-form-field">
+                <label for="camp-audience">Target Audience</label>
+                <select id="camp-audience">
+                  <option value="all">All Users</option>
+                  <option value="buyers">Buyers Only</option>
+                  <option value="suppliers">Suppliers Only</option>
+                  <option value="premium">Premium Members</option>
+                  <option value="inactive">Inactive Users (30+ days)</option>
+                </select>
+              </div>
+              <div class="push-form-field">
+                <label for="camp-schedule">Schedule (Optional)</label>
+                <input type="datetime-local" id="camp-schedule"/>
+              </div>
+              <div class="push-form-field full-width">
+                <label for="camp-url">Click URL (Optional)</label>
+                <input type="url" id="camp-url" placeholder="https://globexsky.com/sale"/>
+              </div>
+            </div>
+            <div class="push-form-actions">
+              <button type="submit" class="btn-send-campaign">
+                <i class="fas fa-paper-plane"></i> Send Notification
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Campaign History -->
+      <div class="tab-content" id="tab-history">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <div class="admin-card-title"><i class="fas fa-clock-rotate-left"></i> Campaign History</div>
+              <div class="admin-card-subtitle">Track performance of past notification campaigns.</div>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Campaign</th>
+                  <th>Audience</th>
+                  <th>Status</th>
+                  <th>Sent</th>
+                  <th>Delivered</th>
+                  <th>Clicked</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="campaigns-tbody">
+                <tr><td colspan="7" style="text-align:center;padding:40px;color:#64748b">No campaigns yet. Send your first push notification above.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Templates -->
+      <div class="tab-content" id="tab-templates">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <div class="admin-card-title"><i class="fas fa-file-lines"></i> Quick Templates</div>
+              <div class="admin-card-subtitle">Click a template to auto-fill the compose form.</div>
+            </div>
+          </div>
+          <div id="templates-grid" class="templates-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Audience -->
+      <div class="tab-content" id="tab-audience">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <div class="admin-card-title"><i class="fas fa-users"></i> Audience Segments</div>
+              <div class="admin-card-subtitle">Manage subscriber segments for targeted notifications.</div>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Segment</th>
+                  <th>Subscribers</th>
+                  <th>Opt-in Rate</th>
+                  <th>Last Notified</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>All Users</strong></td>
+                  <td>12,847</td>
+                  <td>74%</td>
+                  <td>2 hours ago</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Buyers Only</strong></td>
+                  <td>8,432</td>
+                  <td>81%</td>
+                  <td>1 day ago</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Suppliers Only</strong></td>
+                  <td>3,215</td>
+                  <td>68%</td>
+                  <td>3 days ago</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Premium Members</strong></td>
+                  <td>1,847</td>
+                  <td>92%</td>
+                  <td>5 hours ago</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Inactive Users (30+ days)</strong></td>
+                  <td>2,103</td>
+                  <td>45%</td>
+                  <td>2 weeks ago</td>
+                  <td><span class="badge badge-gray">Low engagement</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // Tab switching
+  function switchTab(btn, tabId) {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    var tab = document.getElementById('tab-' + tabId);
+    if (tab) tab.classList.add('active');
+
+    // Switch to compose tab when loading a template
+    if (tabId === 'templates') {
+      // Ensure templates are rendered
+      if (typeof renderAdminTemplates === 'function') renderAdminTemplates();
+    }
+  }
+
+  // Mobile sidebar toggle
+  document.querySelector('.sidebar-toggle').addEventListener('click', function() {
+    var sidebar = document.getElementById('adminSidebar');
+    if (window.innerWidth <= 768) {
+      sidebar.classList.toggle('open');
+    }
+  });
+</script>
+<script src="../../assets/js/push-notifications.js"></script>
+</body>
+</html>
