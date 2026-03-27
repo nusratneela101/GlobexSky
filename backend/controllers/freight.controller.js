@@ -338,15 +338,15 @@ export async function getFreightDashboard(req, res, next) {
     const summary = await FreightShipment.getDashboardSummary();
 
     // Also include legacy freight_bookings count for backwards compatibility
-    const { data: bookings } = await supabase
+    const { count: legacyCount } = await supabase
       .from('freight_bookings')
-      .select('status', { count: 'exact', head: true });
+      .select('*', { count: 'exact', head: true });
 
     res.json({
       success: true,
       data: {
         ...summary,
-        legacy_bookings_count: bookings ?? 0,
+        legacy_bookings_count: legacyCount ?? 0,
       },
     });
   } catch (err) { next(err); }

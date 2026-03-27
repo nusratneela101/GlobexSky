@@ -15,6 +15,7 @@ export default class FreightShipment extends BaseModel {
   }
 
   static async findByContainerNumber(containerNumber) {
+    if (!containerNumber) return null;
     const result = await this.db
       .from(this.tableName)
       .select('*')
