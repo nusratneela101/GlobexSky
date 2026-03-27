@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Escrow – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+
+    /* ── Header ─────────────────────────────────────────────────────────── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .btn-nav{padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-register{background:#0052CC;color:#fff}
+
+    /* ── Hero ────────────────────────────────────────────────────────────── */
+    .page-hero{background:linear-gradient(135deg,#059669 0%,#0052CC 100%);padding:48px 24px;text-align:center}
+    .page-hero-title{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:8px}
+    .page-hero-sub{color:rgba(255,255,255,.8);font-size:.95rem}
+
+    /* ── Layout ──────────────────────────────────────────────────────────── */
+    .section{padding:40px 24px}
+    .container{max-width:1100px;margin:0 auto}
+    .breadcrumb{display:flex;gap:6px;align-items:center;font-size:.82rem;color:#64748b;margin-bottom:24px;flex-wrap:wrap}
+    .breadcrumb a{color:#0052CC;text-decoration:none}
+
+    /* ── Cards ───────────────────────────────────────────────────────────── */
+    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px}
+    .card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+    /* ── Escrow items ────────────────────────────────────────────────────── */
+    .escrow-item{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:14px;transition:box-shadow .2s}
+    .escrow-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+    .escrow-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+    .escrow-id{font-weight:700;color:#0a0e27;font-size:.92rem}
+    .escrow-amount{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#059669}
+    .escrow-meta{font-size:.82rem;color:#64748b;margin-bottom:12px;line-height:1.6}
+    .escrow-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+    /* ── Milestones ──────────────────────────────────────────────────────── */
+    .milestone-list{list-style:none;margin-top:12px}
+    .milestone-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9;gap:12px}
+    .milestone-item:last-child{border-bottom:none}
+    .milestone-name{font-size:.88rem;font-weight:500;color:#374151}
+    .milestone-amt{font-size:.82rem;color:#059669;font-weight:600}
+    .milestone-status{font-size:.76rem}
+
+    /* ── Progress bar ────────────────────────────────────────────────────── */
+    .progress-wrap{margin:12px 0}
+    .progress-label{font-size:.78rem;color:#64748b;margin-bottom:4px}
+    .progress-bar{height:8px;background:#e2e8f0;border-radius:50px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#059669,#0052CC);border-radius:50px;transition:width .5s}
+
+    /* ── Badges ──────────────────────────────────────────────────────────── */
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-red{background:#fee2e2;color:#ef4444}
+
+    /* ── Buttons ──────────────────────────────────────────────────────────── */
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-sm{padding:5px 12px;border-radius:6px;font-size:.78rem}
+
+    /* ── Form ────────────────────────────────────────────────────────────── */
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:5px}
+    .form-control{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif;transition:border-color .2s}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+
+    /* ── Info box ────────────────────────────────────────────────────────── */
+    .info-box{background:#f0f5ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;margin-bottom:18px;font-size:.85rem;color:#374151}
+    .info-box i{color:#0052CC;margin-right:6px}
+
+    /* ── Tabs ─────────────────────────────────────────────────────────────── */
+    .tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:7px 18px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s}
+    .tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    /* ── Audit log ────────────────────────────────────────────────────────── */
+    .audit-entry{padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem}
+    .audit-entry:last-child{border-bottom:none}
+    .audit-action{font-weight:600;color:#0052CC}
+    .audit-time{color:#64748b;font-size:.76rem}
+
+    /* ── Modal ────────────────────────────────────────────────────────────── */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:#0a0e27;margin-bottom:16px}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+
+    /* ── Toast ───────────────────────────────────────────────────────────── */
+    #toast{position:fixed;bottom:24px;right:24px;background:#0052CC;color:#fff;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+    #toast.show{opacity:1}
+    #toast.error{background:#ef4444}
+
+    /* ── Footer ──────────────────────────────────────────────────────────── */
+    .site-footer{background:#0a0e27;padding:24px 0;margin-top:40px}
+    .footer-copyright{color:rgba(255,255,255,.6);font-size:.85rem;text-align:center}
+
+    @media(max-width:768px){
+      .escrow-header{flex-direction:column;gap:6px}
+      .btn{padding:8px 14px;font-size:.8rem}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-logo">
+      <img src="../../assets/images/logo.png" alt="Globex Sky" width="130" height="40" style="object-fit:contain"/>
+    </a>
+    <nav class="nav-controls">
+      <a href="../auth/login.html" class="btn-nav btn-login">Login</a>
+      <a href="../auth/register.html" class="btn-nav btn-register">Register</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="page-hero-title"><i class="fas fa-shield-alt"></i> Escrow Payments</div>
+  <div class="page-hero-sub">Secure milestone-based fund holding for buyers and suppliers.</div>
+</div>
+
+<!-- Main Content -->
+<section class="section">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="../../index.html">Home</a>
+      <i class="fas fa-chevron-right" style="font-size:.7rem"></i>
+      <span>Escrow</span>
+    </div>
+
+    <!-- Info -->
+    <div class="info-box">
+      <i class="fas fa-info-circle"></i>
+      <strong>How it works:</strong> Funds are held securely in escrow after payment. The buyer confirms delivery
+      or each milestone is completed — then funds are released to the supplier. Disputes trigger a refund review.
+    </div>
+
+    <!-- Role tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('buyer')"><i class="fas fa-user"></i> Buyer View</button>
+      <button class="tab-btn" onclick="switchView('supplier')"><i class="fas fa-store"></i> Supplier View</button>
+    </div>
+
+    <!-- ══ BUYER VIEW ════════════════════════════════════════════════════════ -->
+    <div class="tab-content active" id="view-buyer">
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-lock" style="color:#0052CC"></i> My Escrow Transactions</div>
+
+        <div id="buyerList">
+          <!-- Populated by JS -->
+          <div id="buyerLoading" style="text-align:center;padding:32px;color:#64748b">
+            <i class="fas fa-spinner fa-spin"></i> Loading your escrow transactions…
+          </div>
+        </div>
+      </div>
+
+      <!-- Lookup by escrow ID -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-search" style="color:#0052CC"></i> Look up Escrow by ID</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+          <div class="form-group" style="flex:1;min-width:220px;margin:0">
+            <label class="form-label" for="escrowIdInput">Escrow Transaction ID</label>
+            <input class="form-control" type="text" id="escrowIdInput" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"/>
+          </div>
+          <button class="btn btn-primary" onclick="lookupEscrow()"><i class="fas fa-search"></i> Look Up</button>
+        </div>
+        <div id="lookupResult" style="margin-top:16px"></div>
+      </div>
+    </div>
+
+    <!-- ══ SUPPLIER VIEW ═════════════════════════════════════════════════════ -->
+    <div class="tab-content" id="view-supplier">
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-coins" style="color:#059669"></i> Held Funds &amp; Milestone Progress</div>
+        <div id="supplierList">
+          <div style="text-align:center;padding:32px;color:#64748b">
+            <i class="fas fa-spinner fa-spin"></i> Loading held funds…
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-copyright">© 2025 Globex Sky. All rights reserved.</div>
+</footer>
+
+<!-- Confirm Delivery Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-check-circle" style="color:#059669"></i> Confirm Delivery</div>
+    <p style="font-size:.88rem;color:#374151;margin-bottom:12px">
+      Confirming delivery will release the held funds to the supplier. This action cannot be undone.
+    </p>
+    <input type="hidden" id="confirmEscrowId"/>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('confirmModal')">Cancel</button>
+      <button class="btn btn-success btn-sm" onclick="releaseEscrow()"><i class="fas fa-check"></i> Confirm &amp; Release</button>
+    </div>
+  </div>
+</div>
+
+<!-- Request Refund Modal -->
+<div class="modal-overlay" id="refundModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-undo" style="color:#ef4444"></i> Request Refund</div>
+    <div class="form-group">
+      <label class="form-label" for="refundReason">Reason for refund</label>
+      <textarea class="form-control" id="refundReason" rows="3" placeholder="Describe the issue…"></textarea>
+    </div>
+    <input type="hidden" id="refundEscrowId"/>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('refundModal')">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="submitRefund()"><i class="fas fa-undo"></i> Request Refund</button>
+    </div>
+  </div>
+</div>
+
+<!-- Audit Log Modal -->
+<div class="modal-overlay" id="auditModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title"><i class="fas fa-history" style="color:#0052CC"></i> Audit Log</div>
+    <div id="auditLogContent" style="max-height:360px;overflow-y:auto"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('auditModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const API = '/api/v1/escrow';
+
+  function getToken() { return localStorage.getItem('gsky_token') || ''; }
+
+  // ─── Toast ─────────────────────────────────────────────────────────────────
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show' + (isError ? ' error' : '');
+    setTimeout(() => { t.className = ''; }, 3500);
+  }
+
+  // ─── Tabs ──────────────────────────────────────────────────────────────────
+  function switchView(view) {
+    ['buyer','supplier'].forEach((v) => {
+      document.getElementById('view-' + v).classList.toggle('active', v === view);
+    });
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', ['buyer','supplier'][i] === view);
+    });
+    if (view === 'supplier') loadSupplierView();
+  }
+
+  // ─── Status badge ──────────────────────────────────────────────────────────
+  function statusBadge(status) {
+    const map = {
+      held:     'badge-blue',
+      released: 'badge-green',
+      refunded: 'badge-orange',
+      disputed: 'badge-red',
+    };
+    return `<span class="badge-pill ${map[status] || 'badge-gray'}">${status}</span>`;
+  }
+
+  // ─── Render escrow card ────────────────────────────────────────────────────
+  function renderEscrowCard(e, role = 'buyer') {
+    const milestones = e.milestones || [];
+    const done = milestones.filter((m) => m.status === 'completed' || m.status === 'released').length;
+    const pct  = milestones.length ? Math.round((done / milestones.length) * 100) : 0;
+
+    const milestonesHtml = milestones.length
+      ? `<ul class="milestone-list">
+          ${milestones.map((m) => `
+            <li class="milestone-item">
+              <span class="milestone-name"><i class="fas fa-flag" style="font-size:.7rem;margin-right:4px;color:#0052CC"></i>${m.name}</span>
+              <span class="milestone-amt">${Number(m.amount).toFixed(2)}</span>
+              <span class="badge-pill ${m.status === 'completed' || m.status === 'released' ? 'badge-green' : 'badge-gray'} milestone-status">${m.status}</span>
+            </li>`).join('')}
+        </ul>`
+      : '<div style="font-size:.82rem;color:#64748b;margin-top:6px">No milestones defined.</div>';
+
+    const actions = role === 'buyer'
+      ? `
+        ${e.status === 'held' ? `<button class="btn btn-success btn-sm" onclick="openConfirmModal('${e.id}')"><i class="fas fa-check"></i> Confirm Delivery</button>` : ''}
+        ${e.status === 'held' ? `<button class="btn btn-danger btn-sm" onclick="openRefundModal('${e.id}')"><i class="fas fa-undo"></i> Request Refund</button>` : ''}
+        <button class="btn btn-secondary btn-sm" onclick="openAuditModal('${e.id}')"><i class="fas fa-history"></i> Audit Log</button>`
+      : `<button class="btn btn-secondary btn-sm" onclick="openAuditModal('${e.id}')"><i class="fas fa-history"></i> Audit Log</button>`;
+
+    return `
+      <div class="escrow-item">
+        <div class="escrow-header">
+          <div>
+            <div class="escrow-id"># ${e.id.slice(0, 8)}…</div>
+            <div class="escrow-meta">Order: <strong>${e.order_id ? e.order_id.slice(0, 8) + '…' : '—'}</strong>
+              &nbsp;·&nbsp; Currency: <strong>${e.currency}</strong>
+              &nbsp;·&nbsp; Held: <strong>${e.held_at ? new Date(e.held_at).toLocaleDateString() : '—'}</strong>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="escrow-amount">${e.currency} ${Number(e.amount).toFixed(2)}</div>
+            <div style="margin-top:4px">${statusBadge(e.status)}</div>
+          </div>
+        </div>
+        ${milestones.length ? `
+          <div class="progress-wrap">
+            <div class="progress-label">Milestones: ${done} / ${milestones.length} complete</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          </div>` : ''}
+        ${milestonesHtml}
+        <div class="escrow-actions">${actions}</div>
+      </div>`;
+  }
+
+  // ─── Buyer: load transactions ──────────────────────────────────────────────
+  async function loadBuyerView() {
+    const list = document.getElementById('buyerList');
+    try {
+      // Try to load from API; if user is not authenticated show placeholder
+      const res = await fetch(API + '?role=buyer', { headers: { Authorization: `Bearer ${getToken()}` } });
+      if (res.status === 401) {
+        list.innerHTML = `<div class="info-box"><i class="fas fa-lock"></i> <a href="../auth/login.html">Log in</a> to view your escrow transactions.</div>`;
+        return;
+      }
+      const json = await res.json();
+      const data = json.data || [];
+      if (!data.length) {
+        list.innerHTML = `<div style="text-align:center;padding:32px;color:#64748b"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>No escrow transactions found.</div>`;
+        return;
+      }
+      list.innerHTML = data.map((e) => renderEscrowCard(e, 'buyer')).join('');
+    } catch {
+      list.innerHTML = `<div class="info-box" style="background:#fff3cd;border-color:#fcd34d;color:#92400e"><i class="fas fa-exclamation-triangle"></i> Could not load transactions. Please try again later.</div>`;
+    }
+  }
+
+  // ─── Supplier: load held funds ─────────────────────────────────────────────
+  async function loadSupplierView() {
+    const list = document.getElementById('supplierList');
+    try {
+      const res = await fetch(API + '?role=supplier', { headers: { Authorization: `Bearer ${getToken()}` } });
+      if (res.status === 401) {
+        list.innerHTML = `<div class="info-box"><i class="fas fa-lock"></i> <a href="../auth/login.html">Log in</a> to view your held funds.</div>`;
+        return;
+      }
+      const json = await res.json();
+      const data = json.data || [];
+      if (!data.length) {
+        list.innerHTML = `<div style="text-align:center;padding:32px;color:#64748b"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>No held funds.</div>`;
+        return;
+      }
+      list.innerHTML = data.map((e) => renderEscrowCard(e, 'supplier')).join('');
+    } catch {
+      list.innerHTML = `<div class="info-box" style="background:#fff3cd;border-color:#fcd34d;color:#92400e"><i class="fas fa-exclamation-triangle"></i> Could not load data. Please try again later.</div>`;
+    }
+  }
+
+  // ─── Lookup ────────────────────────────────────────────────────────────────
+  async function lookupEscrow() {
+    const id  = document.getElementById('escrowIdInput').value.trim();
+    const out = document.getElementById('lookupResult');
+    if (!id) { out.innerHTML = '<div style="color:#ef4444;font-size:.85rem">Please enter an escrow ID.</div>'; return; }
+    out.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Looking up…';
+    try {
+      const res  = await fetch(`${API}/${id}`, { headers: { Authorization: `Bearer ${getToken()}` } });
+      const json = await res.json();
+      if (!json.success) { out.innerHTML = `<div style="color:#ef4444;font-size:.85rem">${json.error || 'Not found.'}</div>`; return; }
+      out.innerHTML = renderEscrowCard(json.data, 'buyer');
+    } catch {
+      out.innerHTML = '<div style="color:#ef4444;font-size:.85rem">Network error.</div>';
+    }
+  }
+
+  // ─── Modals ────────────────────────────────────────────────────────────────
+  function openConfirmModal(id) {
+    document.getElementById('confirmEscrowId').value = id;
+    document.getElementById('confirmModal').classList.add('open');
+  }
+  function openRefundModal(id) {
+    document.getElementById('refundEscrowId').value = id;
+    document.getElementById('refundModal').classList.add('open');
+  }
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('open');
+  }
+
+  // ─── Release ───────────────────────────────────────────────────────────────
+  async function releaseEscrow() {
+    const id = document.getElementById('confirmEscrowId').value;
+    closeModal('confirmModal');
+    try {
+      const res  = await fetch(`${API}/${id}/release`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const json = await res.json();
+      if (json.success) { showToast('Funds released to supplier!'); loadBuyerView(); }
+      else showToast(json.error || 'Release failed.', true);
+    } catch { showToast('Network error.', true); }
+  }
+
+  // ─── Refund ────────────────────────────────────────────────────────────────
+  async function submitRefund() {
+    const id     = document.getElementById('refundEscrowId').value;
+    const reason = document.getElementById('refundReason').value.trim();
+    closeModal('refundModal');
+    try {
+      const res  = await fetch(`${API}/${id}/refund`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ reason }),
+      });
+      const json = await res.json();
+      if (json.success) { showToast('Refund requested successfully.'); loadBuyerView(); }
+      else showToast(json.error || 'Refund failed.', true);
+    } catch { showToast('Network error.', true); }
+  }
+
+  // ─── Audit log ─────────────────────────────────────────────────────────────
+  async function openAuditModal(id) {
+    const content = document.getElementById('auditLogContent');
+    content.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading…';
+    document.getElementById('auditModal').classList.add('open');
+    try {
+      const res  = await fetch(`${API}/${id}/audit`, { headers: { Authorization: `Bearer ${getToken()}` } });
+      const json = await res.json();
+      const logs = json.data || [];
+      if (!logs.length) { content.innerHTML = '<div style="color:#64748b;font-size:.85rem">No audit entries found.</div>'; return; }
+      content.innerHTML = logs.map((l) => `
+        <div class="audit-entry">
+          <span class="audit-action">${l.action}</span>
+          <span class="audit-time"> — ${new Date(l.created_at).toLocaleString()}</span>
+          ${l.details ? `<div style="font-size:.78rem;color:#64748b;margin-top:2px">${JSON.stringify(l.details)}</div>` : ''}
+        </div>`).join('');
+    } catch {
+      content.innerHTML = '<div style="color:#ef4444;font-size:.85rem">Failed to load audit log.</div>';
+    }
+  }
+
+  // ─── Close modal on overlay click ─────────────────────────────────────────
+  document.querySelectorAll('.modal-overlay').forEach((m) => {
+    m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('open'); });
+  });
+
+  // ─── Init ──────────────────────────────────────────────────────────────────
+  loadBuyerView();
+</script>
+</body>
+</html>

@@ -37,13 +37,6 @@ export { default as Warehouse } from './Warehouse.js';
 export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
-export { default as ProductComparison } from './ProductComparison.js';
-export {
-  TradeAssurancePolicy,
-  TradeAssuranceClaim,
-  TradeAssuranceDeposit,
-  TradeAssuranceConfig,
-} from './TradeAssurance.js';
 
 
 import BaseModel from './BaseModel.js';
@@ -74,13 +67,7 @@ import Warehouse from './Warehouse.js';
 import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
-import ProductComparison from './ProductComparison.js';
-import {
-  TradeAssurancePolicy,
-  TradeAssuranceClaim,
-  TradeAssuranceDeposit,
-  TradeAssuranceConfig,
-} from './TradeAssurance.js';
+
 
 export default {
   BaseModel,
@@ -111,9 +98,5 @@ export default {
   SavedSearch,
   SearchHistory,
   SystemConfig,
-  ProductComparison,
-  TradeAssurancePolicy,
-  TradeAssuranceClaim,
-  TradeAssuranceDeposit,
-  TradeAssuranceConfig,
+
 };
