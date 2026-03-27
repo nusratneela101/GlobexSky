@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>OEM Customization Config – Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .topbar-btn{position:relative;border:none;background:none;cursor:pointer;font-size:1.1rem;color:#374151;padding:8px}
+    .topbar-btn .badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-content{padding:24px;overflow-y:auto}
+    .admin-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+    .form-field{display:flex;flex-direction:column;gap:6px}
+    .form-label{font-size:.82rem;font-weight:600;color:#374151}
+    .form-hint{font-size:.76rem;color:#64748b}
+    .form-control{padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif;transition:border-color .2s;background:#fff}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1f5f9}
+    .toggle-row:last-child{border-bottom:none}
+    .toggle-info{flex:1}
+    .toggle-label{font-size:.88rem;font-weight:600;color:#1e293b}
+    .toggle-desc{font-size:.78rem;color:#64748b;margin-top:2px}
+    .toggle-switch{position:relative;width:46px;height:26px;flex-shrink:0;margin-left:16px}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:26px;transition:.3s}
+    .toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .toggle-switch input:checked+.toggle-slider{background:#0052CC}
+    .toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px)}
+    .mode-selector{display:flex;gap:8px}
+    .mode-btn{flex:1;padding:10px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;background:#fff;font-size:.82rem;font-weight:600;color:#64748b;transition:all .2s;text-align:center}
+    .mode-btn.active{border-color:#0052CC;background:#eff6ff;color:#0052CC}
+    .mode-btn:hover{border-color:#0052CC}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
+    .toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:600;z-index:9999;display:none;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+    .toast.show{display:flex}
+    .toast-success{background:#059669;color:#fff}
+    .toast-error{background:#ef4444;color:#fff}
+    .status-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:8px;font-size:.82rem;font-weight:600;margin-bottom:20px}
+    .status-bar.live{background:#dcfce7;color:#15803d}
+    .status-bar.test{background:#fef9c3;color:#854d0e}
+    .status-bar.disabled{background:#f1f5f9;color:#64748b}
+    .config-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .config-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 12px;text-align:left;border-bottom:2px solid #e2e8f0}
+    .config-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .config-table tr:hover td{background:#f8faff}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}.admin-content{padding:16px}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="140" height="44" style="object-fit:contain"/>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i><span>Payments</span></a></li>
+        <li><a href="commissions.html"><i class="fas fa-percentage"></i><span>Commissions</span></a></li>
+        <li><a href="feature-toggles.html"><i class="fas fa-toggle-on"></i><span>Feature Toggles</span></a></li>
+        <li><a href="comparison-config.html"><i class="fas fa-columns"></i><span>Comparison Config</span></a></li>
+        <li><a href="customization-config.html" class="active"><i class="fas fa-paint-brush"></i><span>OEM Config</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="../../index.html"><i class="fas fa-external-link-alt"></i><span>View Site</span></a></li>
+        <li><a href="../auth/login.html" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')" aria-label="Toggle sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <span class="admin-page-title"><i class="fas fa-paint-brush" style="color:#0052CC;margin-right:6px"></i>OEM / Product Customization Config</span>
+      <div class="admin-topbar-right">
+        <button class="topbar-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge">0</span></button>
+        <div class="admin-avatar">A</div>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <!-- Status Bar -->
+      <div class="status-bar disabled" id="statusBar">
+        <i class="fas fa-circle"></i>
+        <span id="statusText">Loading configuration…</span>
+      </div>
+
+      <!-- Feature Toggle & Mode -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title"><i class="fas fa-toggle-on" style="margin-right:6px;color:#0052CC"></i>Feature Control</span>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Enable OEM / Customization Requests</div>
+            <div class="toggle-desc">Allow buyers to submit custom product specification requests to suppliers</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-feature_enabled" onchange="updateStatusBar()"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Auto-Notify Matching Suppliers</div>
+            <div class="toggle-desc">When a request is submitted, automatically notify verified suppliers that match the product category</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-auto_notify_matching_suppliers" checked/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Limits & Quotation Settings -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title"><i class="fas fa-ruler-combined" style="margin-right:6px;color:#0052CC"></i>Limits &amp; Quotation Settings</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label" for="max_attachments">Max Attachments per Request</label>
+            <input type="number" id="max_attachments" class="form-control" value="10" min="1" max="50"/>
+            <span class="form-hint">Maximum number of files a buyer can attach (default: 10)</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="max_file_size_mb">Max File Size (MB)</label>
+            <input type="number" id="max_file_size_mb" class="form-control" value="25" min="1" max="100"/>
+            <span class="form-hint">Maximum size for each attachment in megabytes (default: 25)</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="quote_expiry_days">Quote Expiry (days)</label>
+            <input type="number" id="quote_expiry_days" class="form-control" value="14" min="1" max="365"/>
+            <span class="form-hint">Days until a submitted supplier quote expires (default: 14)</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="max_quotes_per_request">Max Quotes per Request</label>
+            <input type="number" id="max_quotes_per_request" class="form-control" value="10" min="1" max="50"/>
+            <span class="form-hint">Maximum number of quotes allowed per customization request (default: 10)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Mode -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title"><i class="fas fa-flask" style="margin-right:6px;color:#0052CC"></i>Platform Mode</span>
+        </div>
+        <p style="font-size:.85rem;color:#64748b;margin-bottom:14px">
+          In <strong>Test Mode</strong> the customization feature is visible only to admin users — use it to verify the workflow before going live.
+          Switch to <strong>Live Mode</strong> to make it available to all buyers and suppliers.
+        </p>
+        <div class="mode-selector">
+          <button class="mode-btn" id="btn-mode-live" onclick="setMode('live')">
+            <i class="fas fa-circle" style="color:#22c55e;margin-right:6px"></i>Live Mode
+          </button>
+          <button class="mode-btn active" id="btn-mode-test" onclick="setMode('test')">
+            <i class="fas fa-flask" style="color:#f59e0b;margin-right:6px"></i>Test Mode
+          </button>
+        </div>
+        <input type="hidden" id="mode-value" value="test"/>
+      </div>
+
+      <!-- Current Config Table -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title"><i class="fas fa-table" style="margin-right:6px;color:#0052CC"></i>Current Configuration</span>
+          <button class="btn btn-secondary" onclick="loadConfig()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="config-table">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Description</th>
+                <th>Last Updated</th>
+              </tr>
+            </thead>
+            <tbody id="configTableBody">
+              <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div style="display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="loadConfig()"><i class="fas fa-undo"></i> Reset</button>
+        <button class="btn btn-primary" onclick="saveConfig()" id="saveBtn"><i class="fas fa-save"></i> Save Configuration</button>
+        <button class="btn btn-success" onclick="goLive()" id="goLiveBtn"><i class="fas fa-rocket"></i> Go Live</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = '/api/v1/customization';
+
+  function getToken() {
+    return localStorage.getItem('gsky_token') || '';
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.className = `toast toast-${type} show`;
+    t.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  function updateStatusBar() {
+    const bar = document.getElementById('statusBar');
+    const text = document.getElementById('statusText');
+    const enabled = document.getElementById('toggle-feature_enabled').checked;
+    const mode = document.getElementById('mode-value').value;
+
+    if (!enabled) {
+      bar.className = 'status-bar disabled';
+      text.textContent = 'OEM Customization feature is disabled';
+    } else if (mode === 'live') {
+      bar.className = 'status-bar live';
+      text.textContent = 'Live Mode — OEM Customization is active for all users';
+    } else {
+      bar.className = 'status-bar test';
+      text.textContent = 'Test Mode — Visible to admins only';
+    }
+  }
+
+  function setMode(mode) {
+    document.getElementById('mode-value').value = mode;
+    document.getElementById('btn-mode-live').classList.toggle('active', mode === 'live');
+    document.getElementById('btn-mode-test').classList.toggle('active', mode === 'test');
+    updateStatusBar();
+  }
+
+  async function loadConfig() {
+    try {
+      const res = await fetch(`${API}/config`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      if (!res.ok) throw new Error('Failed to load config');
+      const { data } = await res.json();
+
+      // Populate UI
+      const map = Object.fromEntries(data.map((r) => [r.key, r.value]));
+
+      document.getElementById('toggle-feature_enabled').checked = map.feature_enabled === 'true';
+      document.getElementById('toggle-auto_notify_matching_suppliers').checked = map.auto_notify_matching_suppliers !== 'false';
+      document.getElementById('max_attachments').value = map.max_attachments ?? '10';
+      document.getElementById('max_file_size_mb').value = map.max_file_size_mb ?? '25';
+      document.getElementById('quote_expiry_days').value = map.quote_expiry_days ?? '14';
+      document.getElementById('max_quotes_per_request').value = map.max_quotes_per_request ?? '10';
+      setMode(map.mode ?? 'test');
+      updateStatusBar();
+
+      // Fill table
+      const tbody = document.getElementById('configTableBody');
+      tbody.innerHTML = data.map((r) => `
+        <tr>
+          <td><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:.8rem">${r.key}</code></td>
+          <td>${r.value ?? ''}</td>
+          <td style="color:#64748b;font-size:.82rem">${r.description ?? ''}</td>
+          <td style="color:#94a3b8;font-size:.78rem">${r.updated_at ? new Date(r.updated_at).toLocaleString() : '—'}</td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      document.getElementById('configTableBody').innerHTML =
+        '<tr><td colspan="4" style="text-align:center;color:#ef4444;padding:24px">Failed to load config — ensure you are logged in as admin.</td></tr>';
+    }
+  }
+
+  async function saveConfig() {
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+    const payload = {
+      feature_enabled:               String(document.getElementById('toggle-feature_enabled').checked),
+      auto_notify_matching_suppliers: String(document.getElementById('toggle-auto_notify_matching_suppliers').checked),
+      max_attachments:               document.getElementById('max_attachments').value,
+      max_file_size_mb:              document.getElementById('max_file_size_mb').value,
+      quote_expiry_days:             document.getElementById('quote_expiry_days').value,
+      max_quotes_per_request:        document.getElementById('max_quotes_per_request').value,
+      mode:                          document.getElementById('mode-value').value,
+    };
+
+    try {
+      const res = await fetch(`${API}/config`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || 'Save failed');
+      showToast('Configuration saved successfully!', 'success');
+      loadConfig();
+    } catch (e) {
+      showToast(e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save"></i> Save Configuration';
+    }
+  }
+
+  async function goLive() {
+    if (!confirm('Switch to Live Mode and enable OEM Customization for all users?')) return;
+    document.getElementById('toggle-feature_enabled').checked = true;
+    setMode('live');
+    await saveConfig();
+  }
+
+  // Init
+  loadConfig();
+</script>
+</body>
+</html>

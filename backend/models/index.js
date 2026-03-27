@@ -48,6 +48,7 @@ export {
 } from './TradeAssurance.js';
 export { default as SampleOrder, SampleOrderConfig } from './SampleOrder.js';
 export { default as Recommendation } from './Recommendation.js';
+export { default as CustomizationRequest } from './CustomizationRequest.js';
 
 import BaseModel from './BaseModel.js';
 import User from './User.js';
@@ -88,6 +89,7 @@ import {
 } from './TradeAssurance.js';
 import SampleOrder, { SampleOrderConfig } from './SampleOrder.js';
 import Recommendation from './Recommendation.js';
+import CustomizationRequest from './CustomizationRequest.js';
 
 export default {
   BaseModel,
@@ -128,4 +130,5 @@ export default {
   SampleOrder,
   SampleOrderConfig,
   Recommendation,
+  CustomizationRequest,
 };

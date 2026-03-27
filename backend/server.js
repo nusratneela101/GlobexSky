@@ -91,6 +91,7 @@ import websocketRoutes from './routes/websocket.routes.js';
 import languageRoutes, { adminLanguageRouter } from './routes/language.routes.js';
 import escrowRoutes from './routes/escrow.routes.js';
 import imageSearchRoutes from './routes/imageSearch.routes.js';
+import customizationRoutes from './routes/customization.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -258,6 +259,7 @@ app.use(`${API}/languages`, languageRoutes);
 app.use(`${API}/admin/languages`, adminLanguageRouter);
 app.use(`${API}/escrow`, escrowRoutes);
 app.use(`${API}/image-search`, imageSearchRoutes);
+app.use(`${API}/customization`, customizationRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
