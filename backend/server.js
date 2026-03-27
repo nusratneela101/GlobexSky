@@ -219,7 +219,6 @@ app.use(`${API}/supplier-scorecard`, supplierScorecardRoutes);
 app.use(`${API}/currency-contracts`, currencyContractRoutes);
 app.use(`${API}/containers`, containerRoutes);
 app.use(`${API}/custom-styles`, customStyleRoutes);
-app.use(`${API}/admin/custom-styles`, customStyleRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

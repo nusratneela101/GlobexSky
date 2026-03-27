@@ -63,9 +63,7 @@ export async function createStyle(req, res, next) {
         js_content: js_content || '',
         is_active,
         applied_pages,
-        created_by: req.user?.id || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        created_by: req.user?.id || null
       })
       .select()
       .single();
@@ -261,16 +259,16 @@ export async function serveJS(req, res, next) {
     
     if (error) {
       res.setHeader('Content-Type', 'application/javascript');
-      return res.status(500).send('/* Error loading custom scripts */');
+      return res.status(500).send('// Error loading custom scripts');
     }
     
     const js = (data || []).map(s => s.js_content || '').filter(Boolean).join('\n\n');
     
     res.setHeader('Content-Type', 'application/javascript');
     res.setHeader('Cache-Control', 'public, max-age=300'); // 5 min cache
-    res.send(js || '/* No custom JS */');
+    res.send(js || '// No custom JS');
   } catch (err) {
     res.setHeader('Content-Type', 'application/javascript');
-    res.status(500).send('/* Error loading custom scripts */');
+    res.status(500).send('// Error loading custom scripts');
   }
 }

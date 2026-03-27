@@ -75,13 +75,9 @@
       const script = document.createElement('script');
       script.id = 'globexsky-custom-js';
       script.type = 'text/javascript';
-      script.textContent = `
-        try {
-          ${js}
-        } catch (e) {
-          console.error('GlobexSky Custom JS Error:', e);
-        }
-      `;
+      // Set textContent directly to avoid template literal injection issues
+      // Wrap in IIFE with try-catch for error isolation
+      script.textContent = '(function(){try{' + js + '}catch(e){console.error("GlobexSky Custom JS Error:",e)}})();';
       document.body.appendChild(script);
     } catch (err) {
       console.error('Failed to inject custom JS:', err);

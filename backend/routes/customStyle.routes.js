@@ -38,11 +38,11 @@ router.post(
   authenticate,
   requireAdmin,
   [
-    body('name').trim().notEmpty().withMessage('Name is required'),
-    body('css_content').optional().isString(),
-    body('js_content').optional().isString(),
+    body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 255 }).withMessage('Name is too long'),
+    body('css_content').optional().isString().isLength({ max: 500000 }).withMessage('CSS content is too large (max 500KB)'),
+    body('js_content').optional().isString().isLength({ max: 500000 }).withMessage('JS content is too large (max 500KB)'),
     body('is_active').optional().isBoolean(),
-    body('applied_pages').optional().isString()
+    body('applied_pages').optional().isString().isLength({ max: 2000 }).withMessage('Applied pages list is too long')
   ],
   validate,
   ctrl.createStyle
@@ -54,11 +54,11 @@ router.put(
   requireAdmin,
   [
     param('id').isUUID().withMessage('Invalid style ID'),
-    body('name').optional().trim().notEmpty().withMessage('Name cannot be empty'),
-    body('css_content').optional().isString(),
-    body('js_content').optional().isString(),
+    body('name').optional().trim().notEmpty().withMessage('Name cannot be empty').isLength({ max: 255 }).withMessage('Name is too long'),
+    body('css_content').optional().isString().isLength({ max: 500000 }).withMessage('CSS content is too large (max 500KB)'),
+    body('js_content').optional().isString().isLength({ max: 500000 }).withMessage('JS content is too large (max 500KB)'),
     body('is_active').optional().isBoolean(),
-    body('applied_pages').optional().isString()
+    body('applied_pages').optional().isString().isLength({ max: 2000 }).withMessage('Applied pages list is too long')
   ],
   validate,
   ctrl.updateStyle

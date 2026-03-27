@@ -10,7 +10,7 @@
   const LS_HISTORY_KEY  = 'globexsky_custom_code_history';
   const LS_ENABLED_KEY  = 'globexsky_custom_code_enabled';
   const MAX_HISTORY     = 20;
-  const API_BASE        = '/api/v1/admin/custom-styles';
+  const API_BASE        = '/api/v1/custom-styles';
 
   /* ── API Helper Functions ────────────────────────────────────── */
   async function apiRequest(endpoint, options = {}) {
