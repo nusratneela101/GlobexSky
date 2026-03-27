@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Container Tracking – GlobexSky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/container-tracking.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:14px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-controls{display:flex;align-items:center;gap:10px}
+    .btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-login{color:#0052CC;border:1.5px solid #0052CC}
+    .btn-login:hover{background:#0052CC;color:#fff}
+    .btn-register{background:#0052CC;color:#fff}
+    .btn-register:hover{background:#003d99}
+    .page-hero{background:linear-gradient(135deg,#0052CC 0%,#0A0E27 100%);padding:56px 24px 44px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(0,201,167,.12) 0%,transparent 60%)}
+    .page-hero-content{position:relative;z-index:1}
+    .page-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;margin-bottom:10px}
+    .page-hero p{font-size:.95rem;opacity:.8;max-width:580px;margin:0 auto;line-height:1.7}
+    .breadcrumb{font-size:.85rem;opacity:.75;margin-bottom:12px}
+    .breadcrumb a{color:rgba(255,255,255,.85);text-decoration:none}
+    .breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb span{margin:0 6px}
+    .main-content{max-width:1200px;margin:0 auto;padding:32px 24px}
+    .site-footer{background:#0A0E27;color:#fff;padding:32px 24px;margin-top:40px}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-copyright{color:rgba(255,255,255,.5);font-size:.8rem}
+    .footer-links-row{display:flex;gap:20px;list-style:none;padding:0;margin:0}
+    .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
+    .footer-links-row a:hover{color:#00C9A7}
+    .sample-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .sample-btns button{background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 14px;font-size:.8rem;font-weight:500;color:#374151;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+    .sample-btns button:hover{border-color:#0052CC;color:#0052CC;background:#eff6ff}
+    .no-result-msg{display:none;background:#fff4f2;border:1.5px solid #fecaca;border-radius:12px;padding:20px;text-align:center;color:#dc2626;margin-bottom:24px}
+    .no-result-msg i{font-size:1.3rem;margin-bottom:8px;display:block}
+    @keyframes pulse-marker{0%,100%{box-shadow:0 2px 8px rgba(0,82,204,.5)}50%{box-shadow:0 2px 16px rgba(0,82,204,.3)}}
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <nav><div class="nav-container">
+    <a href="../../index.html" class="nav-logo"><img src="../../assets/images/logo.png" alt="GlobexSky" width="160" height="50" style="object-fit:contain"></a>
+    <div class="nav-controls">
+      <a href="../auth/login.html" class="btn-nav btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../auth/register.html" class="btn-nav btn-register"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+  </div></nav>
+</header>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────── -->
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="breadcrumb"><a href="../../index.html">Home</a><span>›</span><a href="index.html">Logistics</a><span>›</span>Container Tracking</div>
+    <h1><i class="fa-solid fa-ship"></i> Container Tracking</h1>
+    <p>Track your shipments in real-time across global shipping routes with interactive maps, live status updates, and complete document management.</p>
+  </div>
+</div>
+
+<!-- ── Main Content ─────────────────────────────────────────────────── -->
+<main class="main-content">
+
+  <!-- Status Cards -->
+  <div class="status-grid">
+    <div class="status-card">
+      <div class="status-icon transit"><i class="fa-solid fa-ship"></i></div>
+      <div><div class="status-value" id="countTransit">0</div><div class="status-label">In Transit</div></div>
+    </div>
+    <div class="status-card">
+      <div class="status-icon port"><i class="fa-solid fa-anchor"></i></div>
+      <div><div class="status-value" id="countPort">0</div><div class="status-label">At Port</div></div>
+    </div>
+    <div class="status-card">
+      <div class="status-icon customs"><i class="fa-solid fa-file-shield"></i></div>
+      <div><div class="status-value" id="countCustoms">0</div><div class="status-label">Customs</div></div>
+    </div>
+    <div class="status-card">
+      <div class="status-icon delivered"><i class="fa-solid fa-circle-check"></i></div>
+      <div><div class="status-value" id="countDelivered">0</div><div class="status-label">Delivered</div></div>
+    </div>
+  </div>
+
+  <!-- Tracking Search -->
+  <div class="tracking-search">
+    <div class="ct-section-title"><i class="fa-solid fa-magnifying-glass"></i> Track a Container</div>
+    <div class="tracking-search-inner">
+      <input type="text" id="trackingInput" placeholder="Enter tracking ID or container number (e.g. GSKY-CTR-88201)"/>
+      <button class="btn-track" id="trackingSearchBtn"><i class="fa-solid fa-location-dot"></i> Track</button>
+    </div>
+    <div class="sample-btns">
+      <span style="font-size:.8rem;color:#64748b;align-self:center">Try:</span>
+      <button data-sample-track="GSKY-CTR-88201">GSKY-CTR-88201</button>
+      <button data-sample-track="GSKY-CTR-77340">GSKY-CTR-77340</button>
+      <button data-sample-track="GSKY-CTR-55912">GSKY-CTR-55912</button>
+      <button data-sample-track="GSKY-CTR-44087">GSKY-CTR-44087</button>
+      <button data-sample-track="GSKY-CTR-33650">GSKY-CTR-33650</button>
+      <button data-sample-track="GSKY-CTR-22418">GSKY-CTR-22418</button>
+    </div>
+  </div>
+
+  <!-- Tracking Result Area (hidden until search) -->
+  <div id="trackingResultArea" style="display:none">
+
+    <!-- No Result -->
+    <div class="no-result-msg" id="noResultMsg">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <strong>Container not found.</strong><br/>
+      Please check the tracking ID or container number and try again.
+    </div>
+
+    <!-- Map -->
+    <div class="map-section">
+      <div class="section-label"><i class="fa-solid fa-map-location-dot"></i> Live Shipment Map</div>
+      <div id="trackingMap"></div>
+    </div>
+
+    <!-- Container Details -->
+    <div class="container-details" id="containerDetails" style="display:none">
+      <div class="ct-section-title"><i class="fa-solid fa-box"></i> Container Details</div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Origin</label><div class="value" id="detOrigin">—</div></div>
+        <div class="detail-item"><label>Destination</label><div class="value" id="detDestination">—</div></div>
+        <div class="detail-item"><label>Vessel</label><div class="value highlight" id="detVessel">—</div></div>
+        <div class="detail-item"><label>ETD</label><div class="value" id="detETD">—</div></div>
+        <div class="detail-item"><label>ETA</label><div class="value highlight" id="detETA">—</div></div>
+        <div class="detail-item"><label>Status</label><div class="value" id="detStatus">—</div></div>
+        <div class="detail-item"><label>Container #</label><div class="value" id="detContainer">—</div></div>
+        <div class="detail-item"><label>Cargo Type</label><div class="value" id="detCargo">—</div></div>
+        <div class="detail-item"><label>Weight</label><div class="value" id="detWeight">—</div></div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-section" id="timelineSection" style="display:none">
+      <div class="ct-section-title"><i class="fa-solid fa-timeline"></i> Shipment Timeline</div>
+      <div class="timeline" id="shipmentTimeline"></div>
+    </div>
+
+    <!-- Documents -->
+    <div class="documents-section" id="docsSection" style="display:none">
+      <div class="ct-section-title"><i class="fa-solid fa-folder-open"></i> Shipping Documents</div>
+      <ul class="doc-list" id="documentList"></ul>
+    </div>
+
+  </div>
+
+  <!-- Active Shipments Table -->
+  <div class="shipments-table">
+    <div class="table-header">
+      <div class="ct-section-title" style="margin-bottom:0"><i class="fa-solid fa-list"></i> Active Shipments</div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Tracking ID</th>
+            <th>Container</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Vessel</th>
+            <th>Status</th>
+            <th>ETA</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="shipmentsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Freight Quote Calculator -->
+  <div class="quote-form-section">
+    <div class="ct-section-title"><i class="fa-solid fa-calculator"></i> Freight Quote Calculator</div>
+    <form id="freightQuoteForm">
+      <div class="quote-form-grid">
+        <div class="form-group">
+          <label for="quoteOrigin">Origin Port / City *</label>
+          <input type="text" id="quoteOrigin" placeholder="e.g. Shanghai, China"/>
+        </div>
+        <div class="form-group">
+          <label for="quoteDest">Destination Port / City *</label>
+          <input type="text" id="quoteDest" placeholder="e.g. Rotterdam, Netherlands"/>
+        </div>
+        <div class="form-group">
+          <label for="quoteWeight">Cargo Weight (kg) *</label>
+          <input type="number" id="quoteWeight" placeholder="e.g. 18000" min="1"/>
+        </div>
+        <div class="form-group">
+          <label for="quoteContainerType">Container Type</label>
+          <select id="quoteContainerType">
+            <option value="20ft">20ft Standard</option>
+            <option value="40ft">40ft Standard</option>
+            <option value="40hc">40ft High Cube</option>
+            <option value="reefer">Reefer (Refrigerated)</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-track" style="margin-top:18px"><i class="fa-solid fa-calculator"></i> Calculate Quote</button>
+    </form>
+
+    <div class="quote-result" id="quoteResult">
+      <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#374151;margin-bottom:6px">Estimated Freight Cost</div>
+      <div class="quote-amount">$0.00</div>
+      <div class="quote-breakdown">
+        <div><span style="color:#64748b">Ocean Freight:</span> <strong id="qFreight">$0.00</strong></div>
+        <div><span style="color:#64748b">Port Handling:</span> <strong id="qHandling">$0.00</strong></div>
+        <div><span style="color:#64748b">Insurance:</span> <strong id="qInsurance">$0.00</strong></div>
+        <div><span style="color:#64748b">Customs Fees:</span> <strong id="qCustoms">$0.00</strong></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Footer ──────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copyright">&copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. All rights reserved.</p>
+    <ul class="footer-links-row">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="../terms.html">Terms</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="../../assets/js/container-tracking.js"></script>
+</body>
+</html>
