@@ -89,6 +89,7 @@ import securityRoutes from './routes/security.routes.js';
 import websocketRoutes from './routes/websocket.routes.js';
 import languageRoutes, { adminLanguageRouter } from './routes/language.routes.js';
 import escrowRoutes from './routes/escrow.routes.js';
+import chatTranslationRoutes from './routes/chatTranslation.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -116,6 +117,7 @@ import payoutsRoutes from './routes/payouts.js';
 import { swaggerUi, swaggerSpec } from './swagger.js';
 import { initializeWebSocket } from './services/websocket.service.js';
 import { initializeWebRTC } from './services/webrtc.service.js';
+import { initializeChatTranslation } from './services/chatTranslationSocket.service.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -125,6 +127,7 @@ const PORT = process.env.PORT || 5000;
 const io = new SocketIOServer(httpServer, websocketConfig.options);
 initializeWebSocket(io);
 initializeWebRTC(io);
+initializeChatTranslation(io);
 
 // Make io accessible to route handlers via req.app.get('io')
 app.set('io', io);
@@ -252,6 +255,7 @@ app.use(`${API}/ws`, websocketRoutes);
 app.use(`${API}/languages`, languageRoutes);
 app.use(`${API}/admin/languages`, adminLanguageRouter);
 app.use(`${API}/escrow`, escrowRoutes);
+app.use(`${API}/translation`, chatTranslationRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
