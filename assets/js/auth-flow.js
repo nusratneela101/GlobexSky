@@ -1,14 +1,26 @@
 /**
  * Globex Sky — auth-flow.js
- * Wires up the standalone login/register pages (pages/auth/login.html,
- * pages/auth/register.html) to the real backend auth endpoints via window.API.
- * Stores the JWT session in localStorage and redirects on success.
+ * Wires up standalone login/register pages to Supabase Auth.
+ * Stores the Supabase session and redirects on success.
+ *
+ * Depends on:
+ *   - Supabase CDN: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ *   - assets/js/config.js (initializes window.supabaseClient)
  */
 
 (function () {
   'use strict';
 
-  /* ─── Helpers ─────────────────────────────────────────────────────────── */
+  function _sb() {
+    return window.supabaseClient ||
+      (window.supabase && window.supabase.createClient &&
+        window.supabase.createClient(
+          'https://czpqbdkarwdvrnhtvysd.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E'
+        ));
+  }
+
+  /* ─── Helpers ──────────────────────────────────────────────────────────── */
 
   function showAlert(container, message, type) {
     if (!container) return;
@@ -27,13 +39,18 @@
   function setLoading(btn, loading) {
     if (!btn) return;
     btn.disabled = loading;
-    btn.dataset.originalText = btn.dataset.originalText || btn.textContent;
-    btn.textContent = loading ? 'Please wait…' : btn.dataset.originalText;
+    btn.dataset.originalText = btn.dataset.originalText || btn.innerHTML;
+    btn.innerHTML = loading
+      ? '<i class="fas fa-spinner fa-spin"></i> Please wait…'
+      : btn.dataset.originalText;
   }
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('redirect') || '/';
+    const redirect = params.get('redirect');
+    // Only allow relative or same-origin redirects
+    if (redirect && redirect.startsWith('/')) return redirect;
+    return '/index.html';
   }
 
   /* ─── Login Page ──────────────────────────────────────────────────────── */
@@ -42,16 +59,15 @@
     const form = document.getElementById('login-form');
     if (!form) return;
 
-    const alertBox = form.querySelector('.auth-alert') ||
-      document.getElementById('login-alert');
+    const alertBox  = form.querySelector('.auth-alert') || document.getElementById('login-alert');
     const submitBtn = form.querySelector('[type="submit"]');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertBox);
 
-      const email = form.querySelector('[name="email"]')?.value.trim() || '';
-      const password = form.querySelector('[name="password"]')?.value || '';
+      const email    = form.querySelector('[name="email"]')?.value.trim() || '';
+      const password = form.querySelector('[name="password"]')?.value     || '';
 
       if (!email || !password) {
         showAlert(alertBox, 'Please enter your email and password.', 'error');
@@ -61,29 +77,14 @@
       setLoading(submitBtn, true);
 
       try {
-        if (!window.API) throw new Error('API client not loaded.');
-        const res = await window.API.auth.login(email, password);
-        const { token, refresh_token, user } = res.data || res;
-        const profile = (user && user.profile) || {};
+        const sb = _sb();
+        if (!sb) throw new Error('Supabase client not available. Please include the CDN script.');
 
-        // Persist session (compatible with auth.js session format)
-        const sessionData = { token, refresh_token: refresh_token || null };
-        localStorage.setItem('globexSession', JSON.stringify(sessionData));
-
-        const userData = {
-          name: profile.full_name || (user && user.email && user.email.split('@')[0]) || 'User',
-          email: (user && user.email) || email,
-          avatar: profile.avatar_url || '',
-          role: profile.role || 'buyer',
-          id: user && user.id,
-          loggedInAt: new Date().toISOString(),
-        };
-        localStorage.setItem('globexUser', JSON.stringify(userData));
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw new Error(error.message);
 
         showAlert(alertBox, 'Login successful! Redirecting…', 'success');
-        setTimeout(() => {
-          window.location.href = getRedirectTarget();
-        }, 800);
+        setTimeout(() => { window.location.href = getRedirectTarget(); }, 800);
       } catch (err) {
         const msg = (err && err.message) || 'Login failed. Please check your credentials.';
         showAlert(alertBox, msg, 'error');
@@ -98,74 +99,43 @@
     const form = document.getElementById('register-form');
     if (!form) return;
 
-    const alertBox = form.querySelector('.auth-alert') ||
-      document.getElementById('register-alert');
+    const alertBox  = form.querySelector('.auth-alert') || document.getElementById('register-alert');
     const submitBtn = form.querySelector('[type="submit"]');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertBox);
 
-      // Support multiple naming conventions used across register form variants
-      const name = (
-        form.querySelector('[name="name"]') ||
-        form.querySelector('[name="full-name"]') ||
-        form.querySelector('[name="fullName"]')
-      )?.value.trim() || '';
-      const email = form.querySelector('[name="email"]')?.value.trim() || '';
-      const password = form.querySelector('[name="password"]')?.value || '';
-      const confirmPassword = (
-        form.querySelector('[name="confirm_password"]') ||
-        form.querySelector('[name="confirmPassword"]') ||
-        form.querySelector('[name="confirm-password"]')
-      )?.value || '';
-      // Radio group "account-type" is used in the register page; fall back to "role" select
-      const roleRadio = form.querySelector('[name="account-type"]:checked');
-      const role = roleRadio?.value ||
-        form.querySelector('[name="role"]')?.value ||
-        'buyer';
-      const country = form.querySelector('[name="country"]')?.value || '';
+      const name     = form.querySelector('[name="name"], [name="full_name"]')?.value.trim() || '';
+      const email    = form.querySelector('[name="email"]')?.value.trim()    || '';
+      const password = form.querySelector('[name="password"]')?.value        || '';
+      const role     = form.querySelector('[name="role"]')?.value            || 'buyer';
+      const country  = form.querySelector('[name="country"]')?.value         || '';
 
-      // Client-side validation
-      if (!name || name.length < 2) {
-        showAlert(alertBox, 'Please enter your full name (at least 2 characters).', 'error');
+      if (!name || !email || !password) {
+        showAlert(alertBox, 'Please fill in all required fields.', 'error');
         return;
       }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showAlert(alertBox, 'Please enter a valid email address.', 'error');
-        return;
-      }
-      if (password.length < 8) {
-        showAlert(alertBox, 'Password must be at least 8 characters.', 'error');
-        return;
-      }
-      if (confirmPassword && confirmPassword !== password) {
-        showAlert(alertBox, 'Passwords do not match.', 'error');
-        return;
-      }
-      if (!country) {
-        showAlert(alertBox, 'Please select your country.', 'error');
+      if (password.length < 6) {
+        showAlert(alertBox, 'Password must be at least 6 characters.', 'error');
         return;
       }
 
       setLoading(submitBtn, true);
 
       try {
-        if (!window.API) throw new Error('API client not loaded.');
-        await window.API.auth.register({ name, email, password, role, country });
+        const sb = _sb();
+        if (!sb) throw new Error('Supabase client not available. Please include the CDN script.');
 
-        showAlert(
-          alertBox,
-          'Account created! Please check your email to verify your account.',
-          'success'
-        );
-        form.reset();
+        const { data, error } = await sb.auth.signUp({
+          email,
+          password,
+          options: { data: { name, role, country } },
+        });
+        if (error) throw new Error(error.message);
 
-        // Redirect to login after a short delay
-        setTimeout(() => {
-          const loginUrl = '/pages/auth/login.html?registered=1';
-          window.location.href = loginUrl;
-        }, 2000);
+        showAlert(alertBox, 'Account created! Please check your email to verify your account.', 'success');
+        setLoading(submitBtn, false);
       } catch (err) {
         const msg = (err && err.message) || 'Registration failed. Please try again.';
         showAlert(alertBox, msg, 'error');
@@ -177,35 +147,17 @@
   /* ─── Forgot Password Page ────────────────────────────────────────────── */
 
   function initForgotPasswordPage() {
-    // Support both id="forgot-password-form" (preferred) and id="forgotForm" (legacy)
-    const form = document.getElementById('forgot-password-form') ||
-      document.getElementById('forgotForm');
+    const form = document.getElementById('forgot-password-form');
     if (!form) return;
 
-    // Inject an alert container if one doesn't already exist
-    let alertBox = form.querySelector('.auth-alert') ||
-      document.getElementById('forgot-alert');
-    if (!alertBox) {
-      alertBox = document.createElement('div');
-      alertBox.id = 'forgot-alert';
-      alertBox.style.display = 'none';
-      form.insertBefore(alertBox, form.firstChild);
-    }
-
+    const alertBox  = form.querySelector('.auth-alert') || document.getElementById('forgot-alert');
     const submitBtn = form.querySelector('[type="submit"]');
-
-    // Prevent the legacy inline onsubmit from running
-    form.removeAttribute('onsubmit');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertBox);
 
-      // Support both name="email" and name="identifier" (legacy forgot-password form)
-      const emailInput = form.querySelector('[name="email"]') ||
-        form.querySelector('[name="identifier"]');
-      const email = emailInput?.value.trim() || '';
-
+      const email = form.querySelector('[name="email"]')?.value.trim() || '';
       if (!email) {
         showAlert(alertBox, 'Please enter your email address.', 'error');
         return;
@@ -214,14 +166,18 @@
       setLoading(submitBtn, true);
 
       try {
-        if (!window.API) throw new Error('API client not loaded.');
-        await window.API.auth.forgotPassword(email);
-        showAlert(alertBox, 'If that email is registered, a password reset link has been sent. Please check your inbox.', 'success');
-        form.reset();
+        const sb = _sb();
+        if (!sb) throw new Error('Supabase client not available.');
+
+        const { error } = await sb.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/pages/auth/reset-password.html',
+        });
+        if (error) throw new Error(error.message);
+
+        showAlert(alertBox, 'Password reset email sent! Please check your inbox.', 'success');
+        setLoading(submitBtn, false);
       } catch (err) {
-        const msg = (err && err.message) || 'Failed to send reset email. Please try again.';
-        showAlert(alertBox, msg, 'error');
-      } finally {
+        showAlert(alertBox, err.message || 'Failed to send reset email.', 'error');
         setLoading(submitBtn, false);
       }
     });
@@ -230,94 +186,38 @@
   /* ─── Reset Password Page ─────────────────────────────────────────────── */
 
   function initResetPasswordPage() {
-    // Support both id="reset-password-form" (preferred) and id="resetForm" (legacy)
-    const form = document.getElementById('reset-password-form') ||
-      document.getElementById('resetForm');
+    const form = document.getElementById('reset-password-form');
     if (!form) return;
 
-    // Inject an alert container if one doesn't already exist
-    let alertBox = form.querySelector('.auth-alert') ||
-      document.getElementById('reset-alert');
-    if (!alertBox) {
-      alertBox = document.createElement('div');
-      alertBox.id = 'reset-alert';
-      alertBox.style.display = 'none';
-      form.insertBefore(alertBox, form.firstChild);
-    }
-
+    const alertBox  = form.querySelector('.auth-alert') || document.getElementById('reset-alert');
     const submitBtn = form.querySelector('[type="submit"]');
-
-    // Prevent the legacy inline onsubmit from running
-    form.removeAttribute('onsubmit');
-
-    // Extract the recovery token from the URL
-    // Supabase may provide it as ?token_hash=… or in the hash fragment as #access_token=…
-    function getResetToken() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('token_hash')) return params.get('token_hash');
-      if (params.get('token')) return params.get('token');
-      // Hash fragment fallback: #access_token=…&type=recovery
-      const hash = new URLSearchParams(window.location.hash.substring(1));
-      return hash.get('access_token') || null;
-    }
-
-    const token = getResetToken();
-    if (!token) {
-      showAlert(alertBox, 'Invalid or missing reset token. Please request a new password reset link.', 'error');
-      if (submitBtn) submitBtn.disabled = true;
-      return;
-    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertBox);
 
-      const password = (
-        form.querySelector('[name="newpw"]') ||
-        form.querySelector('[name="password"]') ||
-        form.querySelector('[name="new_password"]')
-      )?.value || '';
-      const confirmPassword = (
-        form.querySelector('[name="confirmpw"]') ||
-        form.querySelector('[name="confirm_password"]') ||
-        form.querySelector('[name="confirmPassword"]')
-      )?.value || '';
-
-      if (password.length < 8) {
-        showAlert(alertBox, 'Password must be at least 8 characters.', 'error');
-        return;
-      }
-      if (confirmPassword && confirmPassword !== password) {
-        showAlert(alertBox, 'Passwords do not match.', 'error');
+      const password = form.querySelector('[name="password"]')?.value || '';
+      if (password.length < 6) {
+        showAlert(alertBox, 'Password must be at least 6 characters.', 'error');
         return;
       }
 
       setLoading(submitBtn, true);
 
       try {
-        if (!window.API) throw new Error('API client not loaded.');
-        await window.API.auth.resetPassword(token, password);
-        showAlert(alertBox, 'Password reset successful! Redirecting to login…', 'success');
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 1500);
+        const sb = _sb();
+        if (!sb) throw new Error('Supabase client not available.');
+
+        const { error } = await sb.auth.updateUser({ password });
+        if (error) throw new Error(error.message);
+
+        showAlert(alertBox, 'Password updated successfully! Redirecting to login…', 'success');
+        setTimeout(() => { window.location.href = '/pages/auth/login.html'; }, 1500);
       } catch (err) {
-        const msg = (err && err.message) || 'Password reset failed. The link may have expired.';
-        showAlert(alertBox, msg, 'error');
+        showAlert(alertBox, err.message || 'Failed to update password.', 'error');
         setLoading(submitBtn, false);
       }
     });
-  }
-
-  /* ─── Show "registered" success message on login page ────────────────── */
-
-  function checkRegisteredParam() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('registered') === '1') {
-      const alertBox = document.getElementById('login-alert') ||
-        document.querySelector('.auth-alert');
-      showAlert(alertBox, 'Account verified! You can now sign in.', 'success');
-    }
   }
 
   /* ─── Init ────────────────────────────────────────────────────────────── */
@@ -327,6 +227,6 @@
     initRegisterPage();
     initForgotPasswordPage();
     initResetPasswordPage();
-    checkRegisteredParam();
   });
+
 })();

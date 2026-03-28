@@ -288,6 +288,8 @@
 
 <script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/i18n.js"></script>
@@ -323,54 +325,71 @@
 </script>
 
 <script>
-  /* ── Search results: API initialisation ──────────────────────────────── */
+  /* ── Search results: Supabase-powered loader ─────────────────────────── */
   (function () {
-    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
-    function getToken() {
-      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
-    }
-    async function apiFetch(path, options) {
-      var token = getToken();
-      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
+    var SUPABASE_URL      = 'https://czpqbdkarwdvrnhtvysd.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E';
+
+    function _sb() {
+      return window.supabaseClient ||
+        (window.supabase && window.supabase.createClient &&
+          window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
     }
     function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async function () {
       var q = new URLSearchParams(window.location.search).get('q') || '';
-      if (!q) return;
 
       /* Pre-populate the search input if present */
       var input = document.getElementById('main-search-input');
-      if (input && !input.value) input.value = q;
+      if (input && !input.value && q) input.value = q;
 
-      /* Let GlobexSearch handle the query if available, otherwise use API directly */
-      if (window.GlobexSearch && typeof GlobexSearch.search === 'function') {
+      /* Let GlobexSearch handle if available */
+      if (window.GlobexSearch && typeof GlobexSearch.search === 'function' && q) {
         GlobexSearch.search(q);
         return;
       }
 
-      /* Fallback: call /api/v1/search directly */
       var grid = document.getElementById('products-grid');
       if (!grid) return;
-      grid.innerHTML = '<p style="color:#64748b;padding:1rem 0">Searching for <strong>' + esc(q) + '</strong>…</p>';
 
-      apiFetch('/search?q=' + encodeURIComponent(q)).then(function (data) {
-        var items = (data && (data.data || data.products || data.items || data.results)) || [];
-        var count = document.getElementById('results-count');
-        if (count) count.textContent = items.length + ' result' + (items.length !== 1 ? 's' : '') + ' for "' + q + '"';
+      if (!q) {
+        // Load all products if no query
+        q = '';
+      }
 
-        if (!items.length) {
-          grid.innerHTML = '<p style="color:#64748b;padding:1rem 0">No results found for <strong>' + esc(q) + '</strong>.</p>';
+      grid.innerHTML = q
+        ? '<p style="color:#64748b;padding:1rem 0">Searching for <strong>' + esc(q) + '</strong>…</p>'
+        : '<p style="color:#64748b;padding:1rem 0">Loading products…</p>';
+
+      try {
+        var sb = _sb();
+        if (!sb) throw new Error('Supabase not available');
+
+        var query = sb.from('products').select('*').eq('is_active', true).limit(48);
+        if (q) {
+          query = query.or('name.ilike.%' + q + '%,description.ilike.%' + q + '%');
+        }
+
+        var { data: items, error } = await query.order('created_at', { ascending: false });
+        if (error) throw new Error(error.message);
+
+        var countEl = document.getElementById('results-count');
+        if (countEl) {
+          var cnt = (items || []).length;
+          countEl.textContent = cnt + ' result' + (cnt !== 1 ? 's' : '') + (q ? ' for "' + q + '"' : '');
+        }
+
+        if (!items || !items.length) {
+          grid.innerHTML = '<p style="color:#64748b;padding:1rem 0">No results found' + (q ? ' for <strong>' + esc(q) + '</strong>' : '') + '.</p>';
           return;
         }
         grid.innerHTML = items.map(function (p) {
-          var img  = esc(p.image || p.images?.[0] || 'https://via.placeholder.com/200x200/EBF4FF/0052CC?text=Product');
-          var name = esc(p.name || p.title || 'Product');
-          var price = p.price != null ? esc(p.price) : '';
+          var img  = esc(p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/200x200/EBF4FF/0052CC?text=Product');
+          var name = esc(p.name || 'Product');
+          var price = '$' + Number(p.price || 0).toFixed(2);
           var href  = p.id ? ('../product/index.html?id=' + encodeURIComponent(p.id)) : '#';
           return '<article class="product-card" role="listitem">' +
             '<a href="' + href + '" aria-label="View ' + name + '">' +
@@ -378,13 +397,14 @@
             '</a>' +
             '<div class="product-body">' +
               '<div class="product-name">' + name + '</div>' +
-              (price ? '<div class="product-price">' + price + '</div>' : '') +
+              '<div class="product-price">' + price + '</div>' +
             '</div>' +
           '</article>';
         }).join('');
-      }).catch(function () {
-        /* API unavailable — search.js already showing its own state */
-      });
+      } catch (err) {
+        grid.innerHTML = '<p style="color:#94a3b8;padding:1rem 0">Could not load products. Please try again.</p>';
+        console.warn('[Search] Error:', err.message);
+      }
     });
   })();
 </script>

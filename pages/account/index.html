@@ -141,25 +141,75 @@
 </footer>
 <script src="../../assets/js/main.js" defer></script>
   <script src="../../assets/js/account.js"></script>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Populate user info from local session (account.js will refresh from API)
+    // Populate user info from Supabase session
     (function () {
-      try {
-        var user = JSON.parse(localStorage.getItem('globexUser') || 'null');
-        if (!user) return;
+      var SUPABASE_URL      = 'https://czpqbdkarwdvrnhtvysd.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E';
+
+      document.addEventListener('DOMContentLoaded', async function() {
+        var sb = window.supabase && window.supabase.createClient
+          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+          : null;
+        if (!sb) return;
+
+        var { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+          window.location.href = '/pages/auth/login.html?redirect=' + encodeURIComponent(window.location.href);
+          return;
+        }
+
+        var name  = (user.user_metadata && user.user_metadata.name) || user.email.split('@')[0];
+        var email = user.email;
+
         var nameEl  = document.getElementById('account-user-name');
         var emailEl = document.getElementById('account-user-email');
-        if (nameEl  && user.name)  nameEl.textContent  = user.name;
-        if (emailEl && user.email) emailEl.textContent = user.email;
-        // Also fill initials avatar
+        if (nameEl)  nameEl.textContent  = name;
+        if (emailEl) emailEl.textContent = email;
+
+        // Fill initials avatar
         var avatarEl = document.querySelector('.sidebar-avatar');
-        if (avatarEl && user.name) {
-          var parts = user.name.trim().split(' ');
+        if (avatarEl && name) {
+          var parts = name.trim().split(' ');
           avatarEl.textContent = parts.length > 1
-            ? parts[0][0].toUpperCase() + parts[parts.length - 1][0].toUpperCase()
-            : parts[0].slice(0, 2).toUpperCase();
+            ? parts[0][0].toUpperCase() + parts[parts.length-1][0].toUpperCase()
+            : parts[0].slice(0,2).toUpperCase();
         }
-      } catch (_) {}
+
+        // Load real stats
+        var [orderRes, wishRes] = await Promise.all([
+          sb.from('orders').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+          sb.from('wishlist').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+        ]);
+        var statCards = document.querySelectorAll('.stat-card .stat-val');
+        if (statCards[0]) statCards[0].textContent = orderRes.count || 0;
+        if (statCards[1]) statCards[1].textContent = wishRes.count || 0;
+
+        // Load recent orders
+        var { data: orders } = await sb.from('orders').select('*').eq('user_id', user.id)
+          .order('created_at', { ascending: false }).limit(5);
+        var tbody = document.querySelector('.table tbody');
+        if (tbody && orders && orders.length > 0) {
+          tbody.innerHTML = orders.map(function(o) {
+            var shortId = String(o.id || '').substring(0,8);
+            var date    = new Date(o.created_at).toLocaleDateString('en-US', { day:'2-digit', month:'short', year:'numeric' });
+            var items   = Array.isArray(o.items) ? o.items.length + ' item(s)' : '?';
+            var total   = '$' + Number(o.total_amount || 0).toFixed(2);
+            var statusColors = { pending:'badge-orange', confirmed:'badge-blue', shipped:'badge-blue', delivered:'badge-green', cancelled:'badge-red' };
+            var badgeClass = statusColors[o.status] || 'badge-orange';
+            return '<tr>' +
+              '<td>#' + shortId + '…</td>' +
+              '<td>' + items + '</td>' +
+              '<td>' + total + '</td>' +
+              '<td>' + date + '</td>' +
+              '<td><span class="badge ' + badgeClass + '">' + (o.status||'pending') + '</span></td>' +
+              '<td><a href="/pages/order/details.html?id=' + o.id + '" class="btn btn-sm btn-secondary">Details</a></td>' +
+            '</tr>';
+          }).join('');
+        }
+      });
     }());
   </script>
 </body>

@@ -1,210 +1,167 @@
 /**
- * js/admin.js — Admin panel module.
+ * js/admin.js — Real Supabase admin module.
  *
- * Provides helpers for all admin panel pages.  Requires admin authentication —
- * redirects to login if not authenticated or not an admin.
- *
- * Depends on: js/config.js (GlobexCfg), js/utils.js (GlobexUtils)
+ * Depends on:
+ *   - Supabase CDN + js/supabase.js (window.supabaseClient)
+ *   - js/utils.js (GlobexUtils)
  *
  * Functions:
  *   GlobexAdmin.requireAdmin()
- *   GlobexAdmin.getDashboardStats()       → GET  /api/v1/admin/dashboard  (or /admin/stats)
- *   GlobexAdmin.getConfig()               → GET  /api/v1/admin/config
- *   GlobexAdmin.updateConfig(data)        → PUT  /api/v1/admin/config
- *   GlobexAdmin.updateSecrets(data)       → PUT  /api/v1/admin/config/secrets
- *   GlobexAdmin.testConnections(cat?)     → POST /api/v1/admin/config/test-connection
- *   GlobexAdmin.toggleMode()              → POST /api/v1/admin/config/toggle-mode
- *   GlobexAdmin.getHealth()               → GET  /api/v1/admin/config/health
- *   GlobexAdmin.getUsers(params?)         → GET  /api/v1/admin/users
- *   GlobexAdmin.getProducts(params?)      → GET  /api/v1/admin/products
- *   GlobexAdmin.showModeIndicator()       — Injects mode badge into all admin topbars
+ *   GlobexAdmin.getDashboardStats()
+ *   GlobexAdmin.loadUsers(params?)
+ *   GlobexAdmin.loadAllOrders(params?)
+ *   GlobexAdmin.loadProducts(params?)
+ *   GlobexAdmin.init()
  */
 
 (function (global) {
   'use strict';
 
-  function _api(method, path, data) {
-    if (global.GlobexUtils && global.GlobexUtils.apiCall) {
-      return global.GlobexUtils.apiCall(method, path, data);
-    }
-    return Promise.reject(new Error('GlobexUtils not loaded'));
-  }
-
-  function _qs(obj) {
-    if (!obj) return '';
-    var parts = [];
-    Object.keys(obj).forEach(function (k) {
-      if (obj[k] !== undefined && obj[k] !== null && obj[k] !== '') {
-        parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(obj[k]));
-      }
-    });
-    return parts.length ? '?' + parts.join('&') : '';
-  }
+  function _client() { return global.supabaseClient || null; }
 
   // ─── Auth guard ────────────────────────────────────────────────────────────
 
   /**
-   * Redirect to login if not authenticated or not an admin.
-   * Call at the top of every admin page script.
+   * Check if current user is an admin. Redirects if not.
+   * @returns {Promise<boolean>}
    */
   function requireAdmin() {
-    if (!global.GlobexUtils) return;
-    return global.GlobexUtils.requireAuth(true);
+    var sb = _client();
+    if (!sb) {
+      global.location.href = '/pages/auth/login.html';
+      return Promise.resolve(false);
+    }
+    return sb.auth.getUser().then(function (result) {
+      var user = result.data && result.data.user;
+      if (!user) {
+        global.location.href = '/pages/auth/login.html?redirect=' + encodeURIComponent(global.location.href);
+        return false;
+      }
+      return sb.from('profiles').select('role').eq('id', user.id).single()
+        .then(function (profileResult) {
+          var role = profileResult.data && profileResult.data.role;
+          if (role !== 'admin' && role !== 'super_admin') {
+            global.location.href = '/index.html';
+            return false;
+          }
+          return true;
+        });
+    }).catch(function () {
+      global.location.href = '/pages/auth/login.html';
+      return false;
+    });
   }
 
-  // ─── Dashboard ─────────────────────────────────────────────────────────────
+  // ─── Dashboard stats ───────────────────────────────────────────────────────
 
   /**
-   * Fetch admin dashboard statistics.
-   * @returns {Promise<{totalUsers, totalProducts, totalOrders, totalRevenue, ...}>}
+   * Get real dashboard statistics from Supabase.
+   * @returns {Promise<object>}
    */
   function getDashboardStats() {
-    return _api('GET', '/admin/dashboard')
-      .catch(function () {
-        // Fallback path some backends use
-        return _api('GET', '/admin/stats');
-      });
+    var sb = _client();
+    if (!sb) return Promise.reject(new Error('Supabase client not initialized'));
+
+    return Promise.all([
+      sb.from('profiles').select('id', { count: 'exact', head: true }),
+      sb.from('products').select('id', { count: 'exact', head: true }),
+      sb.from('orders').select('id,total_amount'),
+    ]).then(function (results) {
+      var totalUsers    = results[0].count || 0;
+      var totalProducts = results[1].count || 0;
+      var orders        = results[2].data  || [];
+      var totalOrders   = orders.length;
+      var totalRevenue  = orders.reduce(function (acc, o) {
+        return acc + (Number(o.total_amount) || 0);
+      }, 0);
+
+      return {
+        totalUsers:    totalUsers,
+        totalProducts: totalProducts,
+        totalOrders:   totalOrders,
+        totalRevenue:  totalRevenue,
+      };
+    });
   }
 
-  // ─── Config management ─────────────────────────────────────────────────────
+  // ─── Load users ────────────────────────────────────────────────────────────
 
   /**
-   * Get all admin config (secrets masked).
-   * @returns {Promise<object>}
+   * Get all user profiles (admin only).
+   * @param {object} [params]  { limit, page, search }
+   * @returns {Promise<object[]>}
    */
-  function getConfig() {
-    return _api('GET', '/admin/config');
-  }
+  function loadUsers(params) {
+    var sb = _client();
+    if (!sb) return Promise.reject(new Error('Supabase client not initialized'));
+    params = params || {};
+    var limit = params.limit || 50;
+    var page  = params.page  || 1;
+    var from  = (page - 1) * limit;
 
-  /**
-   * Update writable config values (non-secret only).
-   * @param {object} data  Key-value pairs of writable config keys
-   * @returns {Promise<object>}
-   */
-  function updateConfig(data) {
-    return _api('PUT', '/admin/config', data);
-  }
-
-  /**
-   * Update secret API keys (requires extra validation on backend).
-   * @param {object} data  { SERVICE_KEY: value, ... }
-   * @returns {Promise<object>}
-   */
-  function updateSecrets(data) {
-    return _api('PUT', '/admin/config/secrets', data);
-  }
-
-  /**
-   * Test connections to one or all services.
-   * @param {string} [category]  Specific service name, or omit to test all
-   * @returns {Promise<{results: object}>}
-   */
-  function testConnections(category) {
-    var body = category ? { category: category } : {};
-    return _api('POST', '/admin/config/test-connection', body);
-  }
-
-  /**
-   * Toggle between test and live mode.
-   * @returns {Promise<{currentMode: string, previousMode: string}>}
-   */
-  function toggleMode() {
-    return _api('POST', '/admin/config/toggle-mode', {});
-  }
-
-  /**
-   * Get health status of all services.
-   * @returns {Promise<{services: object, mode: string}>}
-   */
-  function getHealth() {
-    return _api('GET', '/admin/config/health');
-  }
-
-  // ─── Users & Products ──────────────────────────────────────────────────────
-
-  /**
-   * List all users (admin).
-   * @param {object} [params]  { page, limit, role, search }
-   * @returns {Promise<object>}
-   */
-  function getUsers(params) {
-    return _api('GET', '/admin/users' + _qs(params));
-  }
-
-  /**
-   * List all products (admin).
-   * @param {object} [params]  { page, limit, category, status }
-   * @returns {Promise<object>}
-   */
-  function getProducts(params) {
-    return _api('GET', '/admin/products' + _qs(params));
-  }
-
-  // ─── Mode indicator ────────────────────────────────────────────────────────
-
-  /**
-   * Inject the current TEST/LIVE mode badge into the admin topbar.
-   * Also stores the mode in sessionStorage for fast access.
-   */
-  function showModeIndicator() {
-    function _render(mode) {
-      // Update all elements that carry a mode indicator
-      var isLive = mode === 'live';
-      var badge = document.getElementById('admin-mode-badge') || _createBadge();
-      if (badge) {
-        badge.textContent = isLive ? '🟢 LIVE MODE' : '🟡 TEST MODE';
-        badge.style.background  = isLive ? '#d1fae5' : '#fef9c3';
-        badge.style.color       = isLive ? '#065f46' : '#854d0e';
-        badge.style.border      = isLive ? '1px solid #6ee7b7' : '1px solid #fde68a';
-      }
-      // Update globalModeIndicator if it exists (admin settings page)
-      var gmi = document.getElementById('globalModeIndicator');
-      if (gmi) {
-        gmi.textContent       = isLive ? '🟢 Live Mode' : '🔧 Test Mode';
-        gmi.style.background  = isLive ? '#d1fae5' : '#fff7ed';
-        gmi.style.color       = isLive ? '#059669' : '#f97316';
-      }
+    var query = sb.from('profiles').select('*');
+    if (params.search) {
+      query = query.or('full_name.ilike.%' + params.search + '%,email.ilike.%' + params.search + '%');
     }
-
-    function _createBadge() {
-      var topbar = document.querySelector('.admin-topbar-right, .admin-topbar');
-      if (!topbar) return null;
-      var badge = document.createElement('span');
-      badge.id = 'admin-mode-badge';
-      badge.style.cssText = 'padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:600;' +
-        'font-family:Inter,sans-serif;letter-spacing:.3px;margin-right:8px;white-space:nowrap';
-      topbar.insertBefore(badge, topbar.firstChild);
-      return badge;
-    }
-
-    // Try to get mode from cached config first
-    var cached = global.GlobexCfg && global.GlobexCfg.get && global.GlobexCfg.get();
-    if (cached && cached.mode) {
-      _render(cached.mode);
-      return;
-    }
-    if (global.GlobexCfg && global.GlobexCfg.ready) {
-      global.GlobexCfg.ready().then(function (cfg) {
-        _render(cfg.mode);
-      }).catch(function () { _render('test'); });
-    }
+    query = query.order('created_at', { ascending: false }).range(from, from + limit - 1);
+    return query.then(function (result) {
+      if (result.error) throw new Error(result.error.message);
+      return result.data || [];
+    });
   }
 
-  // ─── Init helper ──────────────────────────────────────────────────────────
+  // ─── Load orders ───────────────────────────────────────────────────────────
 
   /**
-   * Convenience initializer for admin pages.
-   * Call once on DOMContentLoaded.  Checks auth and injects mode indicator.
+   * Get all orders (admin only).
+   * @param {object} [params]  { limit, page, status }
+   * @returns {Promise<object[]>}
    */
+  function loadAllOrders(params) {
+    var sb = _client();
+    if (!sb) return Promise.reject(new Error('Supabase client not initialized'));
+    params = params || {};
+    var limit = params.limit || 50;
+    var page  = params.page  || 1;
+    var from  = (page - 1) * limit;
+
+    var query = sb.from('orders').select('*');
+    if (params.status) query = query.eq('status', params.status);
+    query = query.order('created_at', { ascending: false }).range(from, from + limit - 1);
+    return query.then(function (result) {
+      if (result.error) throw new Error(result.error.message);
+      return result.data || [];
+    });
+  }
+
+  // ─── Load products ─────────────────────────────────────────────────────────
+
+  /**
+   * Get all products for admin panel.
+   * @param {object} [params]  { limit, page, category }
+   * @returns {Promise<object[]>}
+   */
+  function loadProducts(params) {
+    var sb = _client();
+    if (!sb) return Promise.reject(new Error('Supabase client not initialized'));
+    params = params || {};
+    var limit = params.limit || 50;
+    var page  = params.page  || 1;
+    var from  = (page - 1) * limit;
+
+    var query = sb.from('products').select('*');
+    if (params.category) query = query.eq('category', params.category);
+    query = query.order('created_at', { ascending: false }).range(from, from + limit - 1);
+    return query.then(function (result) {
+      if (result.error) throw new Error(result.error.message);
+      return result.data || [];
+    });
+  }
+
+  // ─── Init ─────────────────────────────────────────────────────────────────
+
   function init() {
-    requireAdmin();
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () {
-        showModeIndicator();
-      });
-    } else {
-      showModeIndicator();
-    }
+    return requireAdmin();
   }
 
   // ─── Expose globally ───────────────────────────────────────────────────────
@@ -212,15 +169,9 @@
   global.GlobexAdmin = {
     requireAdmin:      requireAdmin,
     getDashboardStats: getDashboardStats,
-    getConfig:         getConfig,
-    updateConfig:      updateConfig,
-    updateSecrets:     updateSecrets,
-    testConnections:   testConnections,
-    toggleMode:        toggleMode,
-    getHealth:         getHealth,
-    getUsers:          getUsers,
-    getProducts:       getProducts,
-    showModeIndicator: showModeIndicator,
+    loadUsers:         loadUsers,
+    loadAllOrders:     loadAllOrders,
+    loadProducts:      loadProducts,
     init:              init,
   };
 

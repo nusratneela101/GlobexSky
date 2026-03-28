@@ -1,212 +1,202 @@
 /**
- * js/auth.js — Authentication module.
+ * js/auth.js — Real Supabase Authentication module.
  *
- * Depends on: js/config.js (GlobexCfg), js/utils.js (GlobexUtils)
+ * Depends on:
+ *   - Supabase CDN: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ *   - js/supabase.js (initializes window.supabaseClient)
+ *   - js/utils.js (GlobexUtils)
  *
  * Functions:
  *   GlobexAuth.register(name, email, password, role?, country?)
  *   GlobexAuth.login(email, password)
  *   GlobexAuth.logout()
- *   GlobexAuth.getProfile()
- *   GlobexAuth.refreshToken()
- *   GlobexAuth.isLoggedIn()
  *   GlobexAuth.getUser()
- *   GlobexAuth.getToken()
- *
- * All methods return Promises. JWT token stored in localStorage under
- * 'globexSession' as { token, refresh_token }.
+ *   GlobexAuth.getSession()
+ *   GlobexAuth.isLoggedIn()
+ *   GlobexAuth.onAuthStateChange(callback)
+ *   GlobexAuth.updateNavUI()
  */
 
 (function (global) {
   'use strict';
 
-  // ─── Helpers ───────────────────────────────────────────────────────────────
-
-  function _baseUrl() {
-    return (global.GlobexCfg && global.GlobexCfg.apiBaseUrl) || '/api/v1';
+  function _client() {
+    return global.supabaseClient ||
+      (global.supabase && global.supabase.createClient &&
+        global.supabase.createClient(
+          'https://czpqbdkarwdvrnhtvysd.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E'
+        ));
   }
 
-  function _getToken() {
-    return global.GlobexUtils ? global.GlobexUtils.getToken() : null;
-  }
+  // ─── Navbar UI Update ──────────────────────────────────────────────────────
 
-  function _headers(json) {
-    var h = {};
-    if (json !== false) h['Content-Type'] = 'application/json';
-    var token = _getToken();
-    if (token) h['Authorization'] = 'Bearer ' + token;
-    return h;
-  }
-
-  function _saveSession(token, refreshToken, user) {
-    try {
-      localStorage.setItem('globexSession', JSON.stringify({
-        token: token,
-        refresh_token: refreshToken || null,
-      }));
+  function updateNavUI() {
+    getUser().then(function (user) {
+      // Elements visible when logged out
+      document.querySelectorAll('.auth-logged-out, [data-auth="logged-out"]').forEach(function (el) {
+        el.style.display = user ? 'none' : '';
+      });
+      // Elements visible when logged in
+      document.querySelectorAll('.auth-logged-in, [data-auth="logged-in"]').forEach(function (el) {
+        el.style.display = user ? '' : 'none';
+      });
       if (user) {
-        localStorage.setItem('globexUser', JSON.stringify({
-          id:          user.id          || null,
-          name:        user.full_name   || user.name  || (user.email || '').split('@')[0],
-          email:       user.email       || '',
-          role:        user.role        || 'buyer',
-          avatar:      user.avatar_url  || user.avatar || '',
-          loggedInAt:  new Date().toISOString(),
-        }));
+        var name = (user.user_metadata && user.user_metadata.name) || user.email.split('@')[0];
+        document.querySelectorAll('.user-display-name, [data-user-name]').forEach(function (el) {
+          el.textContent = name;
+        });
+        document.querySelectorAll('.user-display-email, [data-user-email]').forEach(function (el) {
+          el.textContent = user.email;
+        });
       }
-    } catch (_) { }
+    }).catch(function () { });
   }
 
   // ─── Register ──────────────────────────────────────────────────────────────
 
   /**
-   * Register a new account.
+   * Register a new account using Supabase Auth.
    * @param {string} name
    * @param {string} email
    * @param {string} password
    * @param {string} [role]     buyer | supplier | admin
    * @param {string} [country]
-   * @returns {Promise<object>}  API response data
+   * @returns {Promise<object>}
    */
   function register(name, email, password, role, country) {
-    return fetch(_baseUrl() + '/auth/register', {
-      method: 'POST',
-      headers: _headers(),
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        password: password,
-        role: role || 'buyer',
-        country: country || '',
-      }),
-    })
-      .then(function (res) {
-        return res.json().then(function (data) {
-          if (!res.ok) throw new Error(data.error || data.message || 'Registration failed');
-          return data;
-        });
-      });
+    var sb = _client();
+    if (!sb) return Promise.reject(new Error('Supabase client not initialized'));
+    return sb.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          name: name || email.split('@')[0],
+          role: role || 'buyer',
+          country: country || '',
+        },
+      },
+    }).then(function (result) {
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    });
   }
 
   // ─── Login ─────────────────────────────────────────────────────────────────
 
   /**
-   * Log in with email and password.
-   * Stores the JWT session in localStorage automatically.
+   * Log in with email and password via Supabase Auth.
    * @param {string} email
    * @param {string} password
-   * @returns {Promise<object>}  { token, refresh_token, user }
+   * @returns {Promise<object>}
    */
   function login(email, password) {
-    return fetch(_baseUrl() + '/auth/login', {
-      method: 'POST',
-      headers: _headers(),
-      body: JSON.stringify({ email: email, password: password }),
-    })
-      .then(function (res) {
-        return res.json().then(function (data) {
-          if (!res.ok) throw new Error(data.error || data.message || 'Login failed');
-          return data;
-        });
-      })
-      .then(function (data) {
-        var payload = data.data || data;
-        var token   = payload.token || payload.access_token;
-        var refresh = payload.refresh_token;
-        var user    = payload.user || {};
-        var profile = (user.profile) || user;
-        _saveSession(token, refresh, profile);
-        return payload;
+    var sb = _client();
+    if (!sb) return Promise.reject(new Error('Supabase client not initialized'));
+    return sb.auth.signInWithPassword({ email: email, password: password })
+      .then(function (result) {
+        if (result.error) throw new Error(result.error.message);
+        updateNavUI();
+        return result.data;
       });
   }
 
   // ─── Logout ────────────────────────────────────────────────────────────────
 
   /**
-   * Log out — calls backend and clears local session.
+   * Log out via Supabase Auth.
    * @returns {Promise<void>}
    */
   function logout() {
-    var token = _getToken();
-    var req = token
-      ? fetch(_baseUrl() + '/auth/logout', { method: 'POST', headers: _headers() })
-      : Promise.resolve();
-    return req.finally(function () {
-      if (global.GlobexUtils) global.GlobexUtils.clearSession();
-      else {
-        localStorage.removeItem('globexSession');
-        localStorage.removeItem('globexUser');
-      }
+    var sb = _client();
+    if (!sb) return Promise.resolve();
+    return sb.auth.signOut().then(function () {
+      updateNavUI();
     });
   }
 
-  // ─── Get profile ────────────────────────────────────────────────────────────
+  // ─── Get User ──────────────────────────────────────────────────────────────
 
   /**
-   * Fetch the logged-in user's profile from the API.
-   * @returns {Promise<object>}  User/profile object
+   * Get the currently authenticated user.
+   * @returns {Promise<object|null>}
    */
-  function getProfile() {
-    return fetch(_baseUrl() + '/users/profile', { headers: _headers() })
-      .then(function (res) {
-        if (res.status === 401) {
-          if (global.GlobexUtils) global.GlobexUtils.clearSession();
-          throw new Error('Session expired');
+  function getUser() {
+    var sb = _client();
+    if (!sb) return Promise.resolve(null);
+    return sb.auth.getUser().then(function (result) {
+      return (result.data && result.data.user) || null;
+    });
+  }
+
+  /**
+   * Get the current session.
+   * @returns {Promise<object|null>}
+   */
+  function getSession() {
+    var sb = _client();
+    if (!sb) return Promise.resolve(null);
+    return sb.auth.getSession().then(function (result) {
+      return (result.data && result.data.session) || null;
+    });
+  }
+
+  /**
+   * Check if the user is logged in (synchronous via Supabase localStorage key).
+   * @returns {boolean}
+   */
+  function isLoggedIn() {
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        if (keys[i].startsWith('sb-') && keys[i].endsWith('-auth-token')) {
+          var sess = JSON.parse(localStorage.getItem(keys[i]) || 'null');
+          if (sess && sess.access_token) return true;
         }
-        return res.json().then(function (data) {
-          if (!res.ok) throw new Error(data.error || data.message || 'Failed to load profile');
-          return data.data || data;
-        });
-      });
+      }
+    } catch (_) { }
+    return false;
   }
-
-  // ─── Refresh token ─────────────────────────────────────────────────────────
 
   /**
-   * Use the stored refresh token to obtain a new access token.
-   * @returns {Promise<string>}  New access token
+   * Register a callback for auth state changes.
+   * @param {function} callback  Called with (event, session)
+   * @returns {object}  Subscription object
    */
-  function refreshToken() {
-    var session = {};
-    try { session = JSON.parse(localStorage.getItem('globexSession') || '{}'); } catch (_) { }
-    var rt = session.refresh_token;
-    if (!rt) return Promise.reject(new Error('No refresh token'));
-    return fetch(_baseUrl() + '/auth/refresh', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh_token: rt }),
-    })
-      .then(function (res) {
-        return res.json().then(function (data) {
-          if (!res.ok) throw new Error(data.error || 'Refresh failed');
-          return data;
-        });
-      })
-      .then(function (data) {
-        var newToken = data.token || data.access_token;
-        session.token = newToken;
-        localStorage.setItem('globexSession', JSON.stringify(session));
-        return newToken;
-      });
+  function onAuthStateChange(callback) {
+    var sb = _client();
+    if (!sb) return { data: { subscription: { unsubscribe: function () {} } } };
+    return sb.auth.onAuthStateChange(function (event, session) {
+      updateNavUI();
+      if (typeof callback === 'function') callback(event, session);
+    });
   }
 
-  // ─── Convenience getters ───────────────────────────────────────────────────
+  // ─── Init ─────────────────────────────────────────────────────────────────
 
-  function isLoggedIn()  { return !!(global.GlobexUtils ? global.GlobexUtils.getToken() : _getToken()); }
-  function getUser()     { return global.GlobexUtils ? global.GlobexUtils.getUser() : null; }
-  function getToken()    { return _getToken(); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateNavUI);
+  } else {
+    updateNavUI();
+  }
+
+  var _sb = _client();
+  if (_sb) {
+    _sb.auth.onAuthStateChange(function () { updateNavUI(); });
+  }
 
   // ─── Expose globally ───────────────────────────────────────────────────────
 
   global.GlobexAuth = {
-    register:     register,
-    login:        login,
-    logout:       logout,
-    getProfile:   getProfile,
-    refreshToken: refreshToken,
-    isLoggedIn:   isLoggedIn,
-    getUser:      getUser,
-    getToken:     getToken,
+    register:          register,
+    login:             login,
+    logout:            logout,
+    getUser:           getUser,
+    getSession:        getSession,
+    isLoggedIn:        isLoggedIn,
+    onAuthStateChange: onAuthStateChange,
+    updateNavUI:       updateNavUI,
   };
 
 }(typeof window !== 'undefined' ? window : this));

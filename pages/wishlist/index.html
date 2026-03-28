@@ -625,13 +625,21 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 
-<script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   (function () {
     'use strict';
 
-    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    var SUPABASE_URL      = 'https://czpqbdkarwdvrnhtvysd.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E';
+
+    function _sb() {
+      return window.supabaseClient ||
+        (window.supabase && window.supabase.createClient &&
+          window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
+    }
 
     function _esc(str) {
       return String(str || '')
@@ -672,39 +680,70 @@
       '</div>';
     }
 
-    window.initWishlistPage = function () {
-      if (!window.ApiService) return;
-
+    window.initWishlistPage = async function () {
+      var sb = _sb();
       var grid = document.getElementById('productGrid');
       if (!grid) return;
 
-      // Show loading state
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#64748b;">' +
         '<i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top:1rem">Loading your wishlist…</p></div>';
 
-      window.ApiService.get('/wishlist')
-        .then(function (data) {
-          var items = (data && (data.items || data.data || data)) || [];
-          if (!Array.isArray(items) || items.length === 0) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#64748b;">' +
-              '<i class="fas fa-heart fa-3x" style="color:#fda4af;margin-bottom:1rem;display:block"></i>' +
-              '<h3>Your wishlist is empty</h3>' +
-              '<p>Save products you love and come back to them anytime.</p>' +
-              '<a href="../../index.html" class="btn-cart" style="display:inline-flex;margin-top:1rem;width:auto;padding:.6rem 1.5rem;">' +
-                '<i class="fas fa-search"></i> Browse Products</a></div>';
-            return;
-          }
-          grid.innerHTML = items.map(buildWishlistCardHTML).join('');
-        })
-        .catch(function (err) {
-          if (err && err.status === 401) {
-            window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
-            return;
-          }
-          // Restore static fallback on error by reloading; for now show message
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#ef4444;">' +
-            '<i class="fas fa-exclamation-circle"></i> Unable to load wishlist. Please refresh the page.</div>';
+      if (!sb) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#64748b;">Could not initialize Supabase. Please include the CDN script.</div>';
+        return;
+      }
+
+      var { data: { user } } = await sb.auth.getUser().catch(function() { return { data: {} }; });
+      if (!user) {
+        window.location.href = '/pages/auth/login.html?redirect=' + encodeURIComponent(window.location.href);
+        return;
+      }
+
+      try {
+        var { data: rows, error } = await sb.from('wishlist')
+          .select('*, products(*)')
+          .eq('user_id', user.id);
+
+        if (error) throw new Error(error.message);
+
+        var items = (rows || []).map(function(r) {
+          return r.products ? Object.assign({}, r.products, { wishlist_id: r.id }) : null;
+        }).filter(Boolean);
+
+        if (!items.length) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#64748b;">' +
+            '<i class="fas fa-heart fa-3x" style="color:#fda4af;margin-bottom:1rem;display:block"></i>' +
+            '<h3>Your wishlist is empty</h3>' +
+            '<p>Save products you love and come back to them anytime.</p>' +
+            '<a href="../../index.html" class="btn-cart" style="display:inline-flex;margin-top:1rem;width:auto;padding:.6rem 1.5rem;">' +
+              '<i class="fas fa-search"></i> Browse Products</a></div>';
+          return;
+        }
+        grid.innerHTML = items.map(buildWishlistCardHTML).join('');
+
+        // Wire up remove from wishlist buttons
+        grid.querySelectorAll('[data-remove-wishlist]').forEach(function(btn) {
+          btn.addEventListener('click', async function() {
+            var pid = btn.getAttribute('data-remove-wishlist');
+            await sb.from('wishlist').delete().eq('user_id', user.id).eq('product_id', pid).catch(function(){});
+            btn.closest('.product-card, article')?.remove();
+          });
         });
+
+        // Wire up add-to-cart buttons
+        grid.querySelectorAll('[data-add-to-cart-wishlist]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var pid = btn.getAttribute('data-add-to-cart-wishlist');
+            if (window.GlobexCart) {
+              window.GlobexCart.addToCart(pid, 1);
+            }
+          });
+        });
+      } catch (err) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#ef4444;">' +
+          '<i class="fas fa-exclamation-circle"></i> Unable to load wishlist. Please refresh the page.</div>';
+        console.warn('[Wishlist] Error:', err.message);
+      }
     };
 
     document.addEventListener('DOMContentLoaded', function () {

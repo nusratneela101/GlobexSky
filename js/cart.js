@@ -1,26 +1,39 @@
 /**
- * js/cart.js — Cart module.
+ * js/cart.js — Real Supabase cart module.
  *
- * Manages a local cart (persisted in localStorage) and syncs with the backend
- * cart API when the user is authenticated.  The cart badge counter is updated
- * on every mutation.
+ * Logged-in users: cart persisted in Supabase `cart_items` table.
+ * Guest users: localStorage fallback.
  *
- * Depends on: js/config.js (GlobexCfg), js/utils.js (GlobexUtils)
+ * Depends on:
+ *   - Supabase CDN + js/supabase.js (window.supabaseClient)
+ *   - js/utils.js (GlobexUtils)
  *
  * Functions:
- *   GlobexCart.getCart()               → GET  /api/v1/cart  (or local)
+ *   GlobexCart.getCart()
  *   GlobexCart.addToCart(productId, qty, meta?)
- *   GlobexCart.updateCartItem(itemId, qty)
- *   GlobexCart.removeFromCart(itemId)
+ *   GlobexCart.updateCartItem(productId, qty)
+ *   GlobexCart.removeFromCart(productId)
  *   GlobexCart.clearCart()
- *   GlobexCart.getCount()              → number of distinct items
- *   GlobexCart.getTotal()              → sum of price * qty
+ *   GlobexCart.getCount()
+ *   GlobexCart.getTotal()
+ *   GlobexCart.updateBadge()
  */
 
 (function (global) {
   'use strict';
 
   var CART_KEY = 'gsky_cart';
+
+  function _client() { return global.supabaseClient || null; }
+
+  function _isLoggedIn() {
+    return global.GlobexUtils ? global.GlobexUtils.isLoggedIn() : false;
+  }
+
+  function _userId() {
+    var user = global.GlobexUtils ? global.GlobexUtils.getUser() : null;
+    return user ? user.id : null;
+  }
 
   // ─── Local storage helpers ─────────────────────────────────────────────────
 
@@ -30,19 +43,6 @@
 
   function _writeLocal(items) {
     try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch (_) { }
-  }
-
-  // ─── API helpers ───────────────────────────────────────────────────────────
-
-  function _authCall(method, path, data) {
-    if (global.GlobexUtils && global.GlobexUtils.apiCall) {
-      return global.GlobexUtils.apiCall(method, path, data);
-    }
-    return Promise.reject(new Error('GlobexUtils not loaded'));
-  }
-
-  function _isAuth() {
-    return !!(global.GlobexUtils && global.GlobexUtils.isLoggedIn && global.GlobexUtils.isLoggedIn());
   }
 
   // ─── Badge update ──────────────────────────────────────────────────────────
@@ -59,24 +59,42 @@
 
   /**
    * Get current cart items.
-   * If authenticated, fetches from API and syncs local copy.
-   * Otherwise returns the local cart.
+   * Logged-in: fetches from Supabase and caches locally.
+   * Guest: returns localStorage cart.
    * @returns {Promise<object[]>}
    */
   function getCart() {
-    if (_isAuth()) {
-      return _authCall('GET', '/cart')
-        .then(function (res) {
-          var items = (res && (res.data || res.items || res)) || [];
-          if (Array.isArray(items)) _writeLocal(items);
+    var sb = _client();
+    if (sb && _isLoggedIn()) {
+      var uid = _userId();
+      if (!uid) {
+        var local = _readLocal();
+        updateBadge();
+        return Promise.resolve(local);
+      }
+      return sb.from('cart_items')
+        .select('*, products(*)')
+        .eq('user_id', uid)
+        .then(function (result) {
+          if (result.error) throw new Error(result.error.message);
+          var items = (result.data || []).map(function (row) {
+            return {
+              id:         row.id,
+              product_id: row.product_id,
+              quantity:   row.quantity,
+              name:       row.products ? row.products.name  : '',
+              price:      row.products ? row.products.price : 0,
+              image:      row.products && row.products.images ? row.products.images[0] : '',
+            };
+          });
+          _writeLocal(items);
           updateBadge();
           return items;
         })
         .catch(function () {
-          // Fall back to local cart if API fails
-          var local = _readLocal();
+          var fallback = _readLocal();
           updateBadge();
-          return local;
+          return fallback;
         });
     }
     var local = _readLocal();
@@ -88,18 +106,20 @@
 
   /**
    * Add a product to the cart.
-   * @param {string|number} productId
+   * @param {string} productId
    * @param {number} [qty]
-   * @param {object} [meta]  Extra info for local cart: { name, image, price, supplier }
-   * @returns {Promise<object[]>}  Updated cart items
+   * @param {object} [meta]  { name, image, price }
+   * @returns {Promise<object[]>}
    */
   function addToCart(productId, qty, meta) {
     qty = qty || 1;
     meta = meta || {};
 
-    // Optimistically update local cart
+    // Optimistic local update
     var items = _readLocal();
-    var existing = items.find(function (i) { return String(i.product_id || i.id) === String(productId); });
+    var existing = items.find(function (i) {
+      return String(i.product_id || i.id) === String(productId);
+    });
     if (existing) {
       existing.quantity = (existing.quantity || 1) + qty;
     } else {
@@ -110,7 +130,6 @@
         name:       meta.name  || '',
         image:      meta.image || '',
         price:      meta.price || 0,
-        supplier:   meta.supplier || '',
       });
     }
     _writeLocal(items);
@@ -120,19 +139,16 @@
       global.GlobexUtils.showToast((meta.name || 'Item') + ' added to cart', 'success');
     }
 
-    // Sync with backend (fire-and-forget if authenticated)
-    if (_isAuth()) {
-      _authCall('POST', '/cart', { product_id: productId, quantity: qty })
-        .then(function (res) {
-          var serverItems = (res && (res.data || res.items)) || null;
-          if (serverItems && Array.isArray(serverItems)) {
-            _writeLocal(serverItems);
-            updateBadge();
-          }
-        })
-        .catch(function (err) {
-          console.warn('[GlobexCart] Backend sync failed:', err.message);
-        });
+    var sb = _client();
+    if (sb && _isLoggedIn()) {
+      var uid = _userId();
+      if (uid) {
+        sb.from('cart_items')
+          .upsert({ user_id: uid, product_id: productId, quantity: qty }, { onConflict: 'user_id,product_id' })
+          .then(function (result) {
+            if (result.error) console.warn('[GlobexCart] Supabase upsert failed:', result.error.message);
+          });
+      }
     }
 
     return Promise.resolve(items);
@@ -141,30 +157,32 @@
   // ─── Update cart item ──────────────────────────────────────────────────────
 
   /**
-   * Update the quantity of a cart item.
-   * @param {string|number} itemId  product_id or cart item id
+   * Update quantity of a cart item.
+   * @param {string} productId
    * @param {number} qty
    * @returns {Promise<object[]>}
    */
-  function updateCartItem(itemId, qty) {
-    // Update local
+  function updateCartItem(productId, qty) {
     var items = _readLocal();
-    var item = items.find(function (i) { return String(i.product_id || i.id) === String(itemId); });
+    var item = items.find(function (i) {
+      return String(i.product_id || i.id) === String(productId);
+    });
     if (item) item.quantity = qty;
     _writeLocal(items);
     updateBadge();
 
-    if (_isAuth()) {
-      return _authCall('PUT', '/cart/' + itemId, { quantity: qty })
-        .then(function (res) {
-          var serverItems = (res && (res.data || res.items)) || null;
-          if (serverItems && Array.isArray(serverItems)) {
-            _writeLocal(serverItems);
-            updateBadge();
-          }
-          return _readLocal();
-        })
-        .catch(function () { return _readLocal(); });
+    var sb = _client();
+    if (sb && _isLoggedIn()) {
+      var uid = _userId();
+      if (uid) {
+        sb.from('cart_items')
+          .update({ quantity: qty })
+          .eq('user_id', uid)
+          .eq('product_id', productId)
+          .then(function (result) {
+            if (result.error) console.warn('[GlobexCart] Update failed:', result.error.message);
+          });
+      }
     }
     return Promise.resolve(items);
   }
@@ -173,20 +191,28 @@
 
   /**
    * Remove a cart item.
-   * @param {string|number} itemId
+   * @param {string} productId
    * @returns {Promise<object[]>}
    */
-  function removeFromCart(itemId) {
+  function removeFromCart(productId) {
     var items = _readLocal().filter(function (i) {
-      return String(i.product_id || i.id) !== String(itemId);
+      return String(i.product_id || i.id) !== String(productId);
     });
     _writeLocal(items);
     updateBadge();
 
-    if (_isAuth()) {
-      _authCall('DELETE', '/cart/' + itemId).catch(function (err) {
-        console.warn('[GlobexCart] Remove sync failed:', err.message);
-      });
+    var sb = _client();
+    if (sb && _isLoggedIn()) {
+      var uid = _userId();
+      if (uid) {
+        sb.from('cart_items')
+          .delete()
+          .eq('user_id', uid)
+          .eq('product_id', productId)
+          .then(function (result) {
+            if (result.error) console.warn('[GlobexCart] Remove failed:', result.error.message);
+          });
+      }
     }
     return Promise.resolve(items);
   }
@@ -194,12 +220,23 @@
   // ─── Clear cart ────────────────────────────────────────────────────────────
 
   /**
-   * Empty the entire cart.
+   * Clear the entire cart.
    * @returns {Promise<void>}
    */
   function clearCart() {
     _writeLocal([]);
     updateBadge();
+
+    var sb = _client();
+    if (sb && _isLoggedIn()) {
+      var uid = _userId();
+      if (uid) {
+        sb.from('cart_items').delete().eq('user_id', uid)
+          .then(function (result) {
+            if (result.error) console.warn('[GlobexCart] Clear failed:', result.error.message);
+          });
+      }
+    }
     return Promise.resolve();
   }
 
@@ -217,24 +254,28 @@
 
   // ─── Init ─────────────────────────────────────────────────────────────────
 
-  // Update badge as soon as the DOM is ready.
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateBadge);
+    document.addEventListener('DOMContentLoaded', function () {
+      updateBadge();
+      // Sync from Supabase on login
+      if (_isLoggedIn()) getCart();
+    });
   } else {
     updateBadge();
+    if (_isLoggedIn()) getCart();
   }
 
   // ─── Expose globally ───────────────────────────────────────────────────────
 
   global.GlobexCart = {
-    getCart:          getCart,
-    addToCart:        addToCart,
-    updateCartItem:   updateCartItem,
-    removeFromCart:   removeFromCart,
-    clearCart:        clearCart,
-    getCount:         getCount,
-    getTotal:         getTotal,
-    updateBadge:      updateBadge,
+    getCart:        getCart,
+    addToCart:      addToCart,
+    updateCartItem: updateCartItem,
+    removeFromCart: removeFromCart,
+    clearCart:      clearCart,
+    getCount:       getCount,
+    getTotal:       getTotal,
+    updateBadge:    updateBadge,
   };
 
 }(typeof window !== 'undefined' ? window : this));

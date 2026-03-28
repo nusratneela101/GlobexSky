@@ -1366,12 +1366,20 @@
   <script src="../../assets/js/dynamic-loader.js"></script>
   <script src="../../assets/js/cart.js"></script>
 
-  <!-- API integration: cart page -->
+  <!-- Supabase cart integration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (function () {
       'use strict';
 
-      var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+      var SUPABASE_URL      = 'https://czpqbdkarwdvrnhtvysd.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E';
+
+      function _sb() {
+        return window.supabaseClient ||
+          (window.supabase && window.supabase.createClient &&
+            window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
+      }
 
       function _esc(str) {
         return String(str || '')
@@ -1380,116 +1388,140 @@
       }
 
       function buildItemHTML(item) {
-        var id       = _esc(item.id || item._id || '');
-        var name     = _esc(item.name || item.productName || 'Product');
-        var vendor   = _esc(item.vendorName || item.supplier || '');
-        var price    = parseFloat(item.price || item.unitPrice || 0).toFixed(2);
-        var qty      = parseInt(item.quantity || 1, 10);
-        var min      = parseInt(item.minOrderQty || item.moq || 1, 10);
-        var img      = _esc(item.image || item.imageUrl || 'https://placehold.co/96x96?text=IMG');
-        var variant  = _esc(item.variant || item.sku || '');
-        var total    = (parseFloat(price) * qty).toFixed(2);
+        var id    = _esc(item.product_id || item.id || '');
+        var name  = _esc(item.name || 'Product');
+        var price = parseFloat(item.price || 0).toFixed(2);
+        var qty   = parseInt(item.quantity || 1, 10);
+        var img   = _esc(item.image || 'https://placehold.co/96x96?text=IMG');
+        var total = (parseFloat(price) * qty).toFixed(2);
 
-        return '<article class="cart-item" data-item-id="' + id + '" data-cart-item-id="' + id + '" aria-label="Product: ' + name + '">' +
+        return '<article class="cart-item" data-item-id="' + id + '" data-cart-item-id="' + id + '">' +
           '<label class="item-select-wrap"><input type="checkbox" class="item-select" checked /></label>' +
           '<img class="cart-item-img" src="' + img + '" alt="' + name + '" loading="lazy" />' +
           '<div class="cart-item-body">' +
             '<div class="cart-item-name">' + name + '</div>' +
-            (vendor ? '<div class="cart-item-variant"><span>' + vendor + '</span></div>' : '') +
-            (variant ? '<div class="cart-item-variant"><span>' + variant + '</span></div>' : '') +
             '<div class="cart-item-price">$' + price + '</div>' +
-            (min > 1 ? '<div class="cart-item-moq">Min. order: ' + min + ' units</div>' : '') +
           '</div>' +
           '<div class="cart-item-controls">' +
             '<div class="qty-control">' +
-              '<button class="qty-btn" data-action="decrease" data-item="' + id + '" aria-label="Decrease quantity">−</button>' +
-              '<input class="qty-input" type="number" value="' + qty + '" min="' + min + '" step="' + min + '" data-item="' + id + '" aria-label="Quantity" />' +
-              '<button class="qty-btn" data-action="increase" data-item="' + id + '" aria-label="Increase quantity">+</button>' +
+              '<button class="qty-btn" data-action="decrease" data-item="' + id + '">−</button>' +
+              '<input class="qty-input" type="number" value="' + qty + '" min="1" data-item="' + id + '" />' +
+              '<button class="qty-btn" data-action="increase" data-item="' + id + '">+</button>' +
             '</div>' +
             '<div class="cart-item-total">$' + total + '</div>' +
-            '<button class="remove-btn" data-remove="' + id + '" aria-label="Remove item"><i class="fas fa-trash-alt"></i></button>' +
+            '<button class="remove-btn" data-remove="' + id + '"><i class="fas fa-trash-alt"></i></button>' +
           '</div>' +
         '</article>';
       }
 
-      function buildVendorGroupHTML(vendorId, vendorName, itemsHTML) {
-        var vid = _esc(vendorId);
-        var vname = _esc(vendorName);
-        return '<div class="vendor-group" data-vendor-id="' + vid + '" role="region" aria-label="' + vname + ' items">' +
-          '<div class="vendor-group-header">' +
-            '<span class="vendor-badge"><i class="fas fa-store" aria-hidden="true"></i> Verified Supplier</span>' +
-            '<span class="vendor-name">' + vname + '</span>' +
-          '</div>' +
-          itemsHTML +
-        '</div>';
-      }
-
       function updateSummary(items) {
-        var subtotal = items.reduce(function (sum, item) {
-          return sum + parseFloat(item.price || item.unitPrice || 0) * parseInt(item.quantity || 1, 10);
+        var subtotal = items.reduce(function (s, i) {
+          return s + parseFloat(i.price || 0) * parseInt(i.quantity || 1, 10);
         }, 0);
         var subtotalEl = document.getElementById('summary-subtotal');
         if (subtotalEl) subtotalEl.textContent = '$' + subtotal.toFixed(2);
       }
 
-      window.initCartPage = function () {
-        if (!window.ApiService) return;
-
+      document.addEventListener('DOMContentLoaded', async function () {
+        var sb = _sb();
         var container = document.getElementById('cart-items-container');
         if (!container) return;
 
-        window.ApiService.get('/cart')
-          .then(function (data) {
-            var items = (data && (data.items || data.data || data)) || [];
-            if (!Array.isArray(items) || items.length === 0) {
-              container.innerHTML = '';
-              var emptyState = document.getElementById('empty-cart-state');
-              if (emptyState) emptyState.classList.add('visible');
-              var actionsBar = document.querySelector('.cart-actions-bar');
-              if (actionsBar) actionsBar.style.display = 'none';
-              var countEl = document.querySelector('.cart-item-count');
-              if (countEl) countEl.textContent = '0 items in cart';
-              return;
+        // Get items from localStorage (Supabase cart is sync'd by cart.js module)
+        var CART_KEY = 'gsky_cart';
+        var localItems = [];
+        try { localItems = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(_) {}
+
+        // If logged in, also try Supabase
+        if (sb) {
+          try {
+            var { data: { user } } = await sb.auth.getUser();
+            if (user) {
+              var { data: rows } = await sb.from('cart_items')
+                .select('*, products(id,name,price,images)')
+                .eq('user_id', user.id);
+              if (rows && rows.length > 0) {
+                localItems = rows.map(function(r) {
+                  return {
+                    product_id: r.product_id,
+                    id:         r.product_id,
+                    quantity:   r.quantity,
+                    name:       r.products ? r.products.name  : '',
+                    price:      r.products ? r.products.price : 0,
+                    image:      r.products && r.products.images && r.products.images[0] ? r.products.images[0] : '',
+                  };
+                });
+                localStorage.setItem(CART_KEY, JSON.stringify(localItems));
+              }
             }
+          } catch(e) { console.warn('[Cart] Supabase sync error:', e.message); }
+        }
 
-            // Group items by vendor
-            var vendors = {};
-            items.forEach(function (item) {
-              var vid = item.vendorId || item.sellerId || 'vendor-default';
-              var vname = item.vendorName || item.sellerName || 'Supplier';
-              if (!vendors[vid]) vendors[vid] = { name: vname, items: [] };
-              vendors[vid].items.push(item);
-            });
+        if (!localItems.length) {
+          container.innerHTML = '';
+          var emptyState = document.getElementById('empty-cart-state');
+          if (emptyState) emptyState.classList.add('visible');
+          var actionsBar = document.querySelector('.cart-actions-bar');
+          if (actionsBar) actionsBar.style.display = 'none';
+          var countEl = document.querySelector('.cart-item-count');
+          if (countEl) countEl.textContent = '0 items in cart';
+          return;
+        }
 
-            var html = '';
-            Object.keys(vendors).forEach(function (vid) {
-              var itemsHTML = vendors[vid].items.map(buildItemHTML).join('');
-              html += buildVendorGroupHTML(vid, vendors[vid].name, itemsHTML);
-            });
+        // Group all items under a single "Your Cart" section
+        container.setAttribute('data-dynamic', 'true');
+        container.innerHTML = '<div class="vendor-group">' +
+          '<div class="vendor-group-header"><span class="vendor-name">Your Cart</span></div>' +
+          localItems.map(buildItemHTML).join('') +
+          '</div>';
 
-            container.setAttribute('data-dynamic', 'true');
-            container.innerHTML = html;
+        var countEl = document.querySelector('.cart-item-count');
+        if (countEl) countEl.textContent = localItems.length + ' item' + (localItems.length !== 1 ? 's' : '') + ' in cart';
+        var cartBadge = document.getElementById('cart-count');
+        if (cartBadge) cartBadge.textContent = localItems.length;
 
-            var countEl = document.querySelector('.cart-item-count');
-            if (countEl) countEl.textContent = items.length + ' item' + (items.length !== 1 ? 's' : '') + ' in cart';
-            var cartBadge = document.getElementById('cart-count');
-            if (cartBadge) cartBadge.textContent = items.length;
+        updateSummary(localItems);
 
+        // Wire up remove buttons
+        container.querySelectorAll('.remove-btn').forEach(function(btn) {
+          btn.addEventListener('click', async function() {
+            var pid = btn.dataset.remove;
+            // Remove from localStorage
+            var items = [];
+            try { items = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(_) {}
+            items = items.filter(function(i) { return String(i.product_id || i.id) !== String(pid); });
+            localStorage.setItem(CART_KEY, JSON.stringify(items));
+            // Remove from Supabase if logged in
+            if (sb) {
+              var { data: { user } } = await sb.auth.getUser().catch(function() { return { data: {} }; });
+              if (user) await sb.from('cart_items').delete().eq('user_id', user.id).eq('product_id', pid).catch(function() {});
+            }
+            btn.closest('.cart-item').remove();
             updateSummary(items);
-          })
-          .catch(function (err) {
-            if (err && err.status === 401) {
-              window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
-            }
-            // On error, keep static fallback content visible
           });
-      };
+        });
 
-      document.addEventListener('DOMContentLoaded', function () {
-        window.initCartPage();
+        // Wire up qty buttons
+        container.querySelectorAll('.qty-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var itemId = btn.dataset.item;
+            var input = container.querySelector('.qty-input[data-item="' + itemId + '"]');
+            if (!input) return;
+            var val = parseInt(input.value, 10) || 1;
+            if (btn.dataset.action === 'increase') input.value = val + 1;
+            else input.value = Math.max(1, val - 1);
+            // Update localStorage
+            var items = [];
+            try { items = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(_) {}
+            var item = items.find(function(i) { return String(i.product_id || i.id) === String(itemId); });
+            if (item) { item.quantity = parseInt(input.value, 10); localStorage.setItem(CART_KEY, JSON.stringify(items)); }
+            updateSummary(items);
+          });
+        });
       });
     }());
   </script>
+
 
   <!-- Inline cart interaction bootstrap (gracefully no-ops if cart.js covers it) -->
   <script>
@@ -1514,9 +1546,9 @@
             input.value = Math.max(min, val - (min > 1 ? min : 1));
           }
           input.dispatchEvent(new Event('change'));
-          if (window.ApiService) {
-            window.ApiService.put('/cart/items/' + itemId, { quantity: parseInt(input.value, 10) })
-              .catch(function () {});
+          // Update localStorage via GlobexCart if available
+          if (window.GlobexCart) {
+            window.GlobexCart.updateCartItem(itemId, parseInt(input.value, 10));
           }
         });
       });
@@ -1525,8 +1557,8 @@
       document.querySelectorAll('.remove-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var itemId = btn.dataset.remove;
-          if (window.ApiService) {
-            window.ApiService.del('/cart/items/' + itemId).catch(function () {});
+          if (window.GlobexCart) {
+            window.GlobexCart.removeFromCart(itemId);
           }
           var row = document.querySelector('.cart-item[data-item-id="' + itemId + '"]');
           if (row) {

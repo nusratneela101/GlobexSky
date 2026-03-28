@@ -1918,46 +1918,115 @@
 </script>
 
 <script>
-  /* ── Related Products: dynamic API loader ─────────────────────────────── */
+  /* ── Product Page: Supabase-powered dynamic loader ─────────────────────── */
   (function () {
-    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
-    function getToken() {
-      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
-    }
-    async function apiFetch(path, options) {
-      var token = getToken();
-      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    }
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    var SUPABASE_URL     = 'https://czpqbdkarwdvrnhtvysd.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E';
+
+    function _sb() {
+      return window.supabaseClient ||
+        (window.supabase && window.supabase.createClient &&
+          window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      var sb = _sb();
+      if (!sb) return;
+
+      var params = new URLSearchParams(window.location.search);
+      var productId = params.get('id');
+
+      // Load main product
+      if (productId) {
+        try {
+          var { data: product, error } = await sb.from('products').select('*').eq('id', productId).single();
+          if (!error && product) {
+            var nameEl = document.querySelector('.product-title, h1.product-name, [data-product-name]');
+            if (nameEl) nameEl.textContent = product.name || '';
+            var priceEl = document.querySelector('.product-price, [data-product-price]');
+            if (priceEl) priceEl.textContent = '$' + Number(product.price || 0).toFixed(2);
+            var descEl = document.querySelector('.product-description, [data-product-description]');
+            if (descEl) descEl.textContent = product.description || '';
+            var imgEl = document.querySelector('.product-main-image, [data-product-image]');
+            if (imgEl && product.images && product.images[0]) {
+              imgEl.src = product.images[0];
+              imgEl.alt = product.name || '';
+            }
+            // Add to cart
+            var addBtn = document.querySelector('[data-add-to-cart], .btn-add-to-cart');
+            if (addBtn) {
+              addBtn.addEventListener('click', function() {
+                if (window.GlobexCart) {
+                  window.GlobexCart.addToCart(productId, 1, {
+                    name: product.name, price: product.price,
+                    image: product.images && product.images[0] ? product.images[0] : '',
+                  });
+                }
+              });
+            }
+            // Add to wishlist
+            var wishBtn = document.querySelector('[data-add-to-wishlist], .btn-wishlist');
+            if (wishBtn) {
+              wishBtn.addEventListener('click', async function() {
+                var { data: user } = await sb.auth.getUser();
+                if (!user || !user.user) {
+                  window.location.href = '/pages/auth/login.html?redirect=' + encodeURIComponent(window.location.href);
+                  return;
+                }
+                var { error: wErr } = await sb.from('wishlist').upsert(
+                  { user_id: user.user.id, product_id: productId },
+                  { onConflict: 'user_id,product_id' }
+                );
+                if (!wErr && window.GlobexUtils) window.GlobexUtils.showToast('Added to wishlist!', 'success');
+              });
+            }
+          }
+        } catch (err) { console.warn('[Product] Load error:', err.message); }
+
+        // Load reviews
+        try {
+          var { data: reviews } = await sb.from('reviews').select('*').eq('product_id', productId).order('created_at', { ascending: false });
+          var reviewsContainer = document.getElementById('reviews-container') || document.querySelector('.reviews-list');
+          if (reviewsContainer && reviews && reviews.length > 0) {
+            reviewsContainer.innerHTML = reviews.map(function(r) {
+              return '<div class="review-item" style="border-bottom:1px solid #f1f5f9;padding:12px 0">' +
+                '<div style="color:#f59e0b;margin-bottom:4px">' + '★'.repeat(r.rating || 0) + '</div>' +
+                '<p style="color:#374151;font-size:.9rem">' + esc(r.comment || '') + '</p>' +
+                '<small style="color:#94a3b8">' + new Date(r.created_at).toLocaleDateString() + '</small>' +
+              '</div>';
+            }).join('');
+          }
+        } catch (err) { console.warn('[Product] Reviews error:', err.message); }
+      }
+
+      // Load related products
       var grid = document.getElementById('related-products-grid');
       if (!grid) return;
 
-      var params = new URLSearchParams(window.location.search);
-      var query = '';
-      if (params.get('category')) query += '&category=' + encodeURIComponent(params.get('category'));
-      if (params.get('q'))        query += '&q='        + encodeURIComponent(params.get('q'));
-      if (params.get('page'))     query += '&page='     + encodeURIComponent(params.get('page'));
-
+      var category = params.get('category') || '';
       grid.innerHTML = '<p style="color:#64748b;padding:1rem">Loading products…</p>';
 
-      apiFetch('/products?' + query.replace(/^&/, '')).then(function (data) {
-        var items = (data && (data.data || data.products || data.items || data.results)) || [];
-        if (!items.length) {
+      try {
+        var query = sb.from('products').select('*').eq('is_active', true).limit(8);
+        if (category) query = query.eq('category', category);
+        if (productId) query = query.neq('id', productId);
+        var { data: items, error: pErr } = await query;
+        if (pErr) throw new Error(pErr.message);
+
+        if (!items || !items.length) {
           grid.innerHTML = '<p style="color:#64748b;padding:1rem">No products found.</p>';
           return;
         }
         grid.innerHTML = items.map(function (p) {
-          var img   = esc(p.image || p.images?.[0] || 'https://via.placeholder.com/200x200/EBF4FF/0052CC?text=Product');
-          var name  = esc(p.name  || p.title || 'Product');
-          var price = esc(p.price != null ? p.price : (p.sale_price != null ? p.sale_price : ''));
-          var old   = esc(p.original_price || p.compare_price || '');
-          var href  = p.id ? ('index.html?id=' + encodeURIComponent(p.id)) : '#';
+          var img  = esc(p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/200x200/EBF4FF/0052CC?text=Product');
+          var name = esc(p.name || 'Product');
+          var price = '$' + Number(p.price || 0).toFixed(2);
+          var old  = p.original_price ? '$' + Number(p.original_price).toFixed(2) : '';
+          var href = p.id ? ('index.html?id=' + encodeURIComponent(p.id)) : '#';
           return '<article class="product-card">' +
             '<a href="' + href + '" aria-label="View ' + name + '">' +
               '<div class="product-card-img-wrap">' +
@@ -1966,16 +2035,17 @@
             '</a>' +
             '<div class="product-card-body">' +
               '<div class="product-card-name">' + name + '</div>' +
-              (price ? '<div class="product-card-price">' + price + '</div>' : '') +
-              (old   ? '<div class="product-card-old-price">' + old + '</div>' : '') +
-              '<button class="product-card-btn" type="button" aria-label="Add ' + name + ' to cart">Add to Cart</button>' +
+              '<div class="product-card-price">' + price + (old ? ' <s style="color:#94a3b8;font-size:.8em">' + old + '</s>' : '') + '</div>' +
+              '<button class="product-card-btn" type="button" ' +
+                'onclick="window.GlobexCart && window.GlobexCart.addToCart(\'' + esc(p.id) + '\',1,{name:\'' + name.replace(/'/g,'\\\'') + '\',price:' + Number(p.price||0) + '})"' +
+                '>Add to Cart</button>' +
             '</div>' +
           '</article>';
         }).join('');
-      }).catch(function () {
-        /* API unavailable — keep existing static content */
-        grid.innerHTML = grid.innerHTML || '<p style="color:#64748b;padding:1rem">Unable to load products.</p>';
-      });
+      } catch (err) {
+        grid.innerHTML = '<p style="color:#64748b;padding:1rem">Unable to load products.</p>';
+        console.warn('[Products] Load error:', err.message);
+      }
     });
   })();
 </script>
