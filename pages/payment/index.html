@@ -115,7 +115,7 @@
           <div style="margin-top:16px;margin-bottom:12px">
             <div style="display:flex;gap:8px"><input class="form-control" type="text" placeholder="Coupon code" style="flex:1;padding:8px 12px;font-size:.85rem"><button class="btn btn-secondary btn-sm">Apply</button></div>
           </div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="window.location.href='success.html'"><i class="fas fa-lock"></i> Place Order — ৳12,600</button>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="window.placeOrder ? placeOrder() : (window.location.href='success.html')"><i class="fas fa-lock"></i> Place Order — ৳12,600</button>
           <p style="font-size:.75rem;color:#64748b;text-align:center;margin-top:8px"><i class="fas fa-shield-halved"></i> Secured by SSL encryption</p>
         </div>
       </div>
@@ -132,53 +132,110 @@
     </ul>
   </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/payment.js"></script>
 <script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/config.js" defer></script>
 <script src="../../assets/js/main.js" defer></script>
 <script src="../../assets/js/payment.js" defer></script>
 <script>
-  /* ── Payment methods: dynamic API loader ─────────────────────────────── */
-  (function () {
-    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
-    function getToken() {
-      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
-    }
-    async function apiFetch(path, options) {
-      var token = getToken();
-      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    }
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+(function () {
+  var GATEWAY_ICONS = {
+    stripe: '💳', bkash: '📱', nagad: '📱', sslcommerz: '🏦',
+    alipay: '支', wechat: '💬', crypto: '₿', cod: '💵', bank: '🏛️'
+  };
 
-    document.addEventListener('DOMContentLoaded', function () {
-      var grid = document.getElementById('payment-methods-grid');
-      if (!grid) return;
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-      apiFetch('/payments/methods').then(function (data) {
-        var methods = (data && (data.data || data.methods || data.items)) || [];
-        if (!methods.length) return; /* keep static fallback */
-        grid.innerHTML = methods.map(function (m, i) {
-          var val   = esc(m.id   || m.code  || m.type  || ('method-' + i));
-          var label = esc(m.name || m.label || m.title || val);
-          var icon  = esc(m.icon || m.emoji || '💳');
-          var checked = i === 0 ? ' checked' : '';
-          var border  = i === 0 ? '#0052CC' : '#e2e8f0';
-          var bg      = i === 0 ? '#f0f4ff' : 'transparent';
-          return '<label style="border:2px solid ' + border + ';border-radius:10px;padding:16px;cursor:pointer;text-align:center;background:' + bg + '">' +
-            '<input type="radio" name="pay" value="' + val + '"' + checked + ' style="display:none">' +
-            '<div style="font-size:1.5rem;margin-bottom:6px">' + icon + '</div>' +
-            '<strong style="font-size:.85rem">' + label + '</strong>' +
-          '</label>';
-        }).join('');
-      }).catch(function () {
-        /* API unavailable — keep static payment methods */
-      });
+  async function loadGatewaysFromSupabase() {
+    if (!window.GlobexPayment) return;
+    var grid = document.getElementById('payment-methods-grid');
+    if (!grid) return;
+    try {
+      var gateways = await GlobexPayment.getActiveGateways();
+      if (!gateways.length) return; // keep static fallback
+      grid.innerHTML = gateways.map(function(g, i) {
+        var icon = GATEWAY_ICONS[g.gateway] || '💳';
+        var border = i === 0 ? '#0052CC' : '#e2e8f0';
+        var bg = i === 0 ? '#f0f4ff' : 'transparent';
+        return '<label style="border:2px solid ' + border + ';border-radius:10px;padding:16px;cursor:pointer;text-align:center;background:' + bg + '" onclick="selectGateway(this,\'' + esc(g.gateway) + '\')">' +
+          '<input type="radio" name="pay" value="' + esc(g.gateway) + '"' + (i===0?' checked':'') + ' style="display:none">' +
+          '<div style="font-size:1.5rem;margin-bottom:6px">' + icon + '</div>' +
+          '<strong style="font-size:.85rem">' + esc(g.display_name || g.gateway) + '</strong>' +
+        '</label>';
+      }).join('');
+    } catch(e) {
+      console.warn('Supabase payment gateways fallback:', e.message);
+    }
+  }
+
+  window.selectGateway = function(el, gateway) {
+    document.querySelectorAll('#payment-methods-grid label').forEach(function(l) {
+      l.style.border = '2px solid #e2e8f0';
+      l.style.background = 'transparent';
     });
-  })();
+    el.style.border = '2px solid #0052CC';
+    el.style.background = '#f0f4ff';
+    el.querySelector('input[type=radio]').checked = true;
+    window._selectedGateway = gateway;
+  };
+
+  window.placeOrder = async function() {
+    var gateway = window._selectedGateway || document.querySelector('input[name=pay]:checked')?.value || 'cod';
+    if (!window.GlobexPayment) { window.location.href = 'success.html'; return; }
+    try {
+      var result = await GlobexPayment.initPayment(gateway, 0, 'USD', null, {});
+      if (result.redirect) {
+        window.location.href = result.redirect;
+      } else if (result.message) {
+        alert(result.message);
+        window.location.href = 'success.html';
+      } else {
+        window.location.href = 'success.html';
+      }
+    } catch(e) {
+      alert('Payment error: ' + e.message);
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    function tryLoad() {
+      if (window.GlobexPayment && window.supabaseClient) { loadGatewaysFromSupabase(); }
+      else { setTimeout(tryLoad, 400); }
+    }
+    tryLoad();
+
+    // Fallback API loader
+    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+    function getToken() { try { return (JSON.parse(localStorage.getItem('globexSession')||'null')||{}).token || localStorage.getItem('globexToken') || null; } catch(_){ return null; } }
+    function apiFetch(path, opts) {
+      var token = getToken();
+      return fetch(API_BASE + path, { headers: Object.assign({'Content-Type':'application/json'}, token ? {'Authorization':'Bearer '+token} : {}), ...opts }).then(function(r) { if (!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
+    }
+    apiFetch('/payments/methods').then(function(data) {
+      // Only use if Supabase didn't already load gateways
+      if (!window._supabaseGatewaysLoaded) {
+        var methods = (data && (data.data || data.methods)) || [];
+        if (!methods.length) return;
+        var grid = document.getElementById('payment-methods-grid');
+        if (!grid) return;
+        grid.innerHTML = methods.map(function(m, i) {
+          var val = esc(m.id || m.code || 'method-' + i);
+          var label = esc(m.name || m.label || val);
+          var icon = esc(m.icon || m.emoji || '💳');
+          var border = i === 0 ? '#0052CC' : '#e2e8f0';
+          var bg = i === 0 ? '#f0f4ff' : 'transparent';
+          return '<label style="border:2px solid '+border+';border-radius:10px;padding:16px;cursor:pointer;text-align:center;background:'+bg+'">' +
+            '<input type="radio" name="pay" value="'+val+'"'+(i===0?' checked':'')+' style="display:none">' +
+            '<div style="font-size:1.5rem;margin-bottom:6px">'+icon+'</div>' +
+            '<strong style="font-size:.85rem">'+label+'</strong></label>';
+        }).join('');
+      }
+    }).catch(function() {});
+  });
+})();
 </script>
 </body>
 </html>

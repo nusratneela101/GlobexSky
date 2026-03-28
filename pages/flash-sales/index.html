@@ -205,22 +205,90 @@
 <script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/navbar.js"></script>
-  <script src="../../assets/js/campaigns.js"></script>
+<script src="../../assets/js/campaigns.js"></script>
+<!-- Supabase real-time flash sales -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/flash-sales.js"></script>
 <script>
-  /* ── Flash sales: standard API helpers (used by inline and campaigns.js) */
-  (function () {
-    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
-    function getToken() {
-      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+(function () {
+  /* ── Supabase-powered flash sales loader ─────────────────────────────── */
+  function _esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderSupabaseSale(sale, products) {
+    var cdId = 'cd-' + sale.id;
+    var prods = products.map(function(p) {
+      return '<div class="product-card">' +
+        '<img src="' + _esc(p.image_url || '') + '" alt="" class="product-img" onerror="this.src=\'../../assets/images/placeholder.png\'">' +
+        '<div class="product-body">' +
+          '<div class="product-name">' + _esc(p.name || 'Product') + '</div>' +
+          '<div class="price-row">' +
+            '<span class="sale-price">$' + parseFloat(p.sale_price || p.price || 0).toFixed(2) + '</span>' +
+            (p.discount_percent ? '<span class="discount-badge">-' + p.discount_percent + '%</span>' : '') +
+          '</div>' +
+          '<button class="btn-buy" onclick="window.location.href=\'../sourcing/product-detail.html?id=' + p.id + '\'">Buy Now</button>' +
+        '</div></div>';
+    }).join('');
+
+    return '<div class="flash-sale-hero">' +
+      '<div>' +
+        '<div class="sale-name">🔥 ' + _esc(sale.title) + '</div>' +
+        '<div class="sale-countdown" id="' + cdId + '"><span style="color:#94a3b8;font-size:.85rem">Loading countdown…</span></div>' +
+        '<div class="products-row">' + prods + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  async function loadSupabaseSales() {
+    if (!window.GlobexFlashSales) return;
+    var container = document.getElementById('activeSalesContainer');
+    if (!container) return;
+    try {
+      var sales = await GlobexFlashSales.getActiveSales();
+      if (!sales.length) {
+        // Leave existing content from backend API (if any)
+        if (container.innerHTML.trim() === '' || container.innerHTML.includes('Loading')) {
+          container.innerHTML = '<div class="empty-state"><i class="fas fa-bolt"></i><p>No active flash sales right now. Check back soon!</p></div>';
+        }
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < sales.length; i++) {
+        var sale = sales[i];
+        var products = await GlobexFlashSales.loadSaleProducts(sale.product_ids || [], sale.discount_percent);
+        html += renderSupabaseSale(sale, products);
+      }
+      container.innerHTML = html;
+      sales.forEach(function(sale) {
+        GlobexFlashSales.startCountdown(sale.end_time, 'cd-' + sale.id);
+      });
+    } catch(e) {
+      console.warn('Supabase flash sales fallback:', e.message);
     }
-    async function apiFetch(path, options) {
-      var token = getToken();
-      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
+  }
+
+  function tryLoadSupabase() {
+    if (window.GlobexFlashSales && window.supabaseClient) {
+      loadSupabaseSales();
+    } else {
+      setTimeout(tryLoadSupabase, 400);
     }
-    window.GlobexApiHelpers = { API_BASE: API_BASE, getToken: getToken, apiFetch: apiFetch };
-  })();
+  }
+  document.addEventListener('DOMContentLoaded', tryLoadSupabase);
+
+  /* ── Standard API helpers ────────────────────────────────────────────── */
+  var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+  function getToken() {
+    try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
+  }
+  async function apiFetch(path, options) {
+    var token = getToken();
+    var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+  window.GlobexApiHelpers = { API_BASE: API_BASE, getToken: getToken, apiFetch: apiFetch };
+})();
 </script>
 </body>
 </html>

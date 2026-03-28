@@ -180,6 +180,27 @@
 
       <div class="or-divider" data-i18n="auth.or">or continue with</div>
 
+      <!-- OTP Login -->
+      <div id="otp-section" style="background:#f0f4ff;border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-size:.85rem;font-weight:600;color:#0052CC;margin-bottom:12px"><i class="fas fa-envelope"></i> Login with Email OTP (No password needed)</div>
+        <div id="otp-step-1">
+          <div style="display:flex;gap:8px">
+            <input id="otp-email" type="email" placeholder="your@email.com" style="flex:1;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none">
+            <button onclick="sendOTP()" style="background:#0052CC;color:#fff;border:none;border-radius:8px;padding:10px 16px;cursor:pointer;font-size:.85rem;font-weight:600" id="btn-send-otp"><i class="fas fa-paper-plane"></i> Send OTP</button>
+          </div>
+        </div>
+        <div id="otp-step-2" style="display:none;margin-top:12px">
+          <div style="font-size:.82rem;color:#374151;margin-bottom:8px">Enter the 6-digit code sent to your email:</div>
+          <div id="otp-input-container"></div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
+            <button onclick="verifyOTP()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;font-size:.88rem;font-weight:600"><i class="fas fa-check"></i> Verify &amp; Login</button>
+            <span id="otp-countdown" style="font-size:.8rem;color:#64748b"></span>
+            <button id="btn-resend" onclick="resendOTP()" style="background:none;border:none;color:#0052CC;cursor:pointer;font-size:.82rem;display:none">Resend OTP</button>
+          </div>
+        </div>
+        <div id="otp-alert" style="display:none;margin-top:8px;font-size:.82rem;padding:8px 12px;border-radius:6px"></div>
+      </div>
+
       <!-- Social -->
       <div class="social-btns">
         <button type="button" class="btn-social btn-google" data-i18n="auth.continue_with_google">
@@ -208,14 +229,86 @@
   });
 
 </script>
-<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/otp.js"></script>
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/navbar.js"></script>
 <script src="../../assets/js/i18n.js"></script>
 <script src="../../assets/js/auth.js"></script>
 <script src="../../assets/js/auth-flow.js"></script>
+<script>
+  // Password show/hide toggle
+  var toggleBtn = document.getElementById('toggle-pw');
+  var pwInput   = document.getElementById('password');
+  var pwIcon    = document.getElementById('pw-icon');
+  if (toggleBtn) toggleBtn.addEventListener('click', function() {
+    var isHidden = pwInput.type === 'password';
+    pwInput.type = isHidden ? 'text' : 'password';
+    pwIcon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+  });
+
+  // ── OTP Login ──────────────────────────────────────────────────────────────
+  var _otpEmail = '';
+
+  window.sendOTP = async function() {
+    var email = document.getElementById('otp-email').value.trim();
+    if (!email) { showOTPAlert('Enter your email address first.', 'error'); return; }
+    if (!window.GlobexOTP) { showOTPAlert('Loading… please try again.', 'error'); return; }
+    _otpEmail = email;
+    var btn = document.getElementById('btn-send-otp');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+    try {
+      await GlobexOTP.sendEmailOTP(email);
+      document.getElementById('otp-step-2').style.display = 'block';
+      GlobexOTP.renderOTPInput('otp-input-container', 6);
+      document.getElementById('otp-input-container').addEventListener('otp-complete', function(e) {
+        document.getElementById('otp-input-container').dataset.code = e.detail.code;
+      });
+      // Start countdown
+      GlobexOTP.startResendCountdown(60, function(s) {
+        var el = document.getElementById('otp-countdown');
+        if (el) el.textContent = s > 0 ? 'Resend in ' + s + 's' : '';
+      }, function() {
+        var el = document.getElementById('btn-resend');
+        if (el) el.style.display = 'inline';
+      });
+      showOTPAlert('OTP sent! Check your email inbox.', 'success');
+    } catch(e) {
+      showOTPAlert('Error: ' + e.message, 'error');
+    } finally {
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+    }
+  };
+
+  window.verifyOTP = async function() {
+    var container = document.getElementById('otp-input-container');
+    var code = container.getOTPCode ? container.getOTPCode() : (container.dataset.code || '');
+    if (code.length < 6) { showOTPAlert('Enter the complete 6-digit OTP code.', 'error'); return; }
+    if (!window.GlobexOTP) return;
+    try {
+      var result = await GlobexOTP.verifyEmailOTP(_otpEmail, code);
+      if (result.data && result.data.session) {
+        showOTPAlert('✅ Verified! Redirecting…', 'success');
+        setTimeout(function() { window.location.href = '../../index.html'; }, 1000);
+      }
+    } catch(e) { showOTPAlert('Invalid OTP: ' + e.message, 'error'); }
+  };
+
+  window.resendOTP = async function() {
+    document.getElementById('btn-resend').style.display = 'none';
+    await window.sendOTP();
+  };
+
+  function showOTPAlert(msg, type) {
+    var el = document.getElementById('otp-alert');
+    el.style.display = 'block';
+    el.textContent = msg;
+    el.style.background = type === 'success' ? '#d1fae5' : '#fee2e2';
+    el.style.color = type === 'success' ? '#065f46' : '#991b1b';
+  }
+</script>
 <script>
   // Social Auth configuration — credentials loaded dynamically from backend config
   window.SOCIAL_AUTH_REDIRECT = '../../index.html';

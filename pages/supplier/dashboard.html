@@ -169,31 +169,31 @@
       <a href="#" class="btn btn-orange"><i class="fas fa-rocket"></i>Upgrade to Pro</a>
     </div>
 
-    <!-- Metrics -->
+    <!-- Metrics — Real data from Supabase -->
     <div class="metrics-grid">
       <div class="metric-card blue">
         <div class="metric-icon blue"><i class="fas fa-boxes-stacked"></i></div>
-        <div class="metric-value">127</div>
-        <div class="metric-label">Total Products</div>
-        <div class="metric-change up"><i class="fas fa-arrow-up"></i> +8 this month</div>
+        <div class="metric-value" id="sup-stat-products">—</div>
+        <div class="metric-label">My Products</div>
+        <div class="metric-change up"><i class="fas fa-database"></i> From Supabase</div>
       </div>
       <div class="metric-card green">
         <div class="metric-icon green"><i class="fas fa-shopping-bag"></i></div>
-        <div class="metric-value">89</div>
+        <div class="metric-value" id="sup-stat-orders">—</div>
         <div class="metric-label">Total Orders</div>
-        <div class="metric-change up"><i class="fas fa-arrow-up"></i> +12 this month</div>
+        <div class="metric-change up"><i class="fas fa-database"></i> From Supabase</div>
       </div>
       <div class="metric-card orange">
         <div class="metric-icon orange"><i class="fas fa-dollar-sign"></i></div>
-        <div class="metric-value">$12,450</div>
-        <div class="metric-label">Revenue This Month</div>
-        <div class="metric-change up"><i class="fas fa-arrow-up"></i> +18.4% vs last month</div>
+        <div class="metric-value" id="sup-stat-revenue">—</div>
+        <div class="metric-label">Completed Revenue</div>
+        <div class="metric-change up"><i class="fas fa-database"></i> From payments</div>
       </div>
       <div class="metric-card purple">
         <div class="metric-icon purple"><i class="fas fa-star"></i></div>
-        <div class="metric-value">4.7 <span style="font-size:.9rem">★</span></div>
-        <div class="metric-label">Average Rating</div>
-        <div class="metric-change up">Based on 234 reviews</div>
+        <div class="metric-value" id="sup-stat-messages">—</div>
+        <div class="metric-label">Chat Rooms</div>
+        <div class="metric-change up"><i class="fas fa-database"></i> Active chats</div>
       </div>
     </div>
 
@@ -279,7 +279,51 @@
 </footer>
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/auth.js"></script>
-<script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
+<script>
+document.getElementById('copyright-year') && (document.getElementById('copyright-year').textContent = new Date().getFullYear());
+
+async function loadSupplierDashboard() {
+  var sb = window.supabaseClient;
+  if (!sb) { setTimeout(loadSupplierDashboard, 400); return; }
+
+  var user = await sb.auth.getUser();
+  if (!user.data.user) return; // Not logged in
+  var uid = user.data.user.id;
+
+  // My products count
+  try {
+    var prods = await sb.from('products').select('id', { count: 'exact', head: true }).eq('supplier_id', uid);
+    var el = document.getElementById('sup-stat-products');
+    if (el) el.textContent = (prods.count || 0).toLocaleString();
+  } catch(e) {}
+
+  // Orders
+  try {
+    var orders = await sb.from('orders').select('id', { count: 'exact', head: true }).eq('supplier_id', uid);
+    var el2 = document.getElementById('sup-stat-orders');
+    if (el2) el2.textContent = (orders.count || 0).toLocaleString();
+  } catch(e) {}
+
+  // Revenue from completed payments
+  try {
+    var pays = await sb.from('payments').select('amount').eq('user_id', uid).eq('status', 'completed');
+    var total = (pays.data || []).reduce(function(s,p) { return s + parseFloat(p.amount||0); }, 0);
+    var el3 = document.getElementById('sup-stat-revenue');
+    if (el3) el3.textContent = '$' + total.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  } catch(e) {}
+
+  // Chat rooms
+  try {
+    var chats = await sb.from('chat_rooms').select('id', { count: 'exact', head: true }).eq('supplier_id', uid);
+    var el4 = document.getElementById('sup-stat-messages');
+    if (el4) el4.textContent = (chats.count || 0).toLocaleString();
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', loadSupplierDashboard);
+</script>
 <script src="../../assets/js/navbar.js"></script>
 </body>
 </html>

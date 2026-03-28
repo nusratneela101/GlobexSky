@@ -101,8 +101,7 @@
   <div class="container">
     <div class="card">
       <div class="card-title"><i class="fas fa-fire" style="color:#ef4444"></i> 🔴 Live Now</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
-        <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);cursor:pointer" onclick="window.location.href='watch.html'">
+      <div id="live-streams-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
           <div style="background:linear-gradient(135deg,#0A0E27,#0052CC);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative">
             <i class="fas fa-play-circle" style="font-size:3rem;color:rgba(255,255,255,.8)"></i>
             <span style="position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:4px">🔴 LIVE</span>
@@ -169,27 +168,49 @@
     </ul>
   </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/livestream.js"></script>
 <script src="../../assets/js/config.js" defer></script>
 <script src="../../assets/js/main.js" defer></script>
-
 <script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
 <script>
-(function(){
-  var API_BASE=(window.GlobexConfig&&window.GlobexConfig.API_BASE_URL)||'/api/v1';
-  function getToken(){try{var s=JSON.parse(localStorage.getItem('globexSession')||'null');return(s&&s.token)||localStorage.getItem('globexToken')||localStorage.getItem('token')||null;}catch(e){return null;}}
-  function esc(v){var d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML;}
-  async function apiFetch(path,opts){var token=getToken();var res=await fetch(API_BASE+path,Object.assign({headers:Object.assign({'Content-Type':'application/json'},token?{'Authorization':'Bearer '+token}:{})},opts||{}));if(!res.ok)throw new Error('HTTP '+res.status);return res.json();}
-  document.addEventListener('DOMContentLoaded',function(){initPage();});
-  async function initPage(){
-    try{
-      var r=await apiFetch('/livestreams');
-      var items=(r&&r.data)||[];
-      if(!Array.isArray(items))return;
-      var c=document.querySelector("[class*='stream-grid'],[class*='stream-list'],table tbody");
-      if(c&&items.length){c.innerHTML=items.map(function(s){return'<div class="stream-item"><strong>'+esc(s.title||s.name||String(s.id||''))+'</strong><span>'+esc(s.status||'')+'</span></div>';}).join('');}
-    }catch(e){console.warn('API load failed, using static content',e);}
+(function() {
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderStream(s) {
+    return '<div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);cursor:pointer" onclick="window.location.href=\'watch.html?id=' + esc(s.id) + '\'">' +
+      '<div style="background:linear-gradient(135deg,#0A0E27,#0052CC);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative">' +
+        (s.thumbnail_url ? '<img src="'+esc(s.thumbnail_url)+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">' : '') +
+        '<i class="fas fa-play-circle" style="font-size:3rem;color:rgba(255,255,255,.8);position:relative;z-index:1"></i>' +
+        '<span style="position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:4px">🔴 LIVE</span>' +
+        '<span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;font-size:.72rem;padding:3px 8px;border-radius:4px">' + (s.viewer_count||0) + ' viewers</span>' +
+      '</div>' +
+      '<div style="padding:14px">' +
+        '<div style="font-weight:600;font-size:.9rem;color:#0A0E27;margin-bottom:4px">' + esc(s.title||'Live Stream') + '</div>' +
+        '<div style="font-size:.8rem;color:#64748b">' + esc(s.description||'') + '</div>' +
+      '</div></div>';
   }
+
+  async function loadLiveStreams() {
+    if (!window.GlobexLivestream) return;
+    try {
+      var streams = await GlobexLivestream.getActiveStreams();
+      var grid = document.getElementById('live-streams-grid');
+      if (!grid) return;
+      if (streams.length) {
+        grid.innerHTML = streams.map(renderStream).join('');
+      }
+      // else keep static placeholder content
+    } catch(e) { console.warn('Livestream load error:', e.message); }
+  }
+
+  function tryLoad() {
+    if (window.GlobexLivestream && window.supabaseClient) { loadLiveStreams(); }
+    else { setTimeout(tryLoad, 400); }
+  }
+  document.addEventListener('DOMContentLoaded', tryLoad);
 })();
 </script>
 </body>
