@@ -37,6 +37,7 @@ export { default as Warehouse } from './Warehouse.js';
 export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
+export { default as ChatTranslation } from './ChatTranslation.js';
 export { default as ImageSearch } from './ImageSearch.js';
 export { default as Escrow } from './Escrow.js';
 export { default as ProductComparison } from './ProductComparison.js';
@@ -78,6 +79,7 @@ import Warehouse from './Warehouse.js';
 import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
+import ChatTranslation from './ChatTranslation.js';
 import ImageSearch from './ImageSearch.js';
 import Escrow from './Escrow.js';
 import ProductComparison from './ProductComparison.js';
@@ -120,6 +122,7 @@ export default {
   SavedSearch,
   SearchHistory,
   SystemConfig,
+  ChatTranslation,
   ImageSearch,
   Escrow,
   ProductComparison,
