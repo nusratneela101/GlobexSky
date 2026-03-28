@@ -169,13 +169,21 @@ CREATE POLICY "Anyone can subscribe to newsletter"
 
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  _role TEXT;
 BEGIN
+  -- Only allow 'buyer' or 'supplier' via user metadata; ignore any 'admin' attempt
+  _role := COALESCE(NEW.raw_user_meta_data->>'role', 'buyer');
+  IF _role NOT IN ('buyer', 'supplier') THEN
+    _role := 'buyer';
+  END IF;
+
   INSERT INTO public.profiles (id, email, full_name, role)
   VALUES (
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'name', split_part(NEW.email, '@', 1)),
-    COALESCE(NEW.raw_user_meta_data->>'role', 'buyer')
+    _role
   )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;

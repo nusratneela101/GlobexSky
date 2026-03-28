@@ -19,6 +19,12 @@
 
   function _client() { return global.supabaseClient || null; }
 
+  // ─── ILIKE escape ─────────────────────────────────────────────────────────
+
+  function _escapeLike(str) {
+    return String(str || '').replace(/[%_\\]/g, function(c) { return '\\' + c; });
+  }
+
   // ─── Auth guard ────────────────────────────────────────────────────────────
 
   /**
@@ -101,7 +107,8 @@
 
     var query = sb.from('profiles').select('*');
     if (params.search) {
-      query = query.or('full_name.ilike.%' + params.search + '%,email.ilike.%' + params.search + '%');
+      var safeSearch = _escapeLike(params.search);
+      query = query.or('full_name.ilike.%' + safeSearch + '%,email.ilike.%' + safeSearch + '%');
     }
     query = query.order('created_at', { ascending: false }).range(from, from + limit - 1);
     return query.then(function (result) {

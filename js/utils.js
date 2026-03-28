@@ -86,7 +86,10 @@
   // ─── Redirect helpers ──────────────────────────────────────────────────────
 
   function redirectToLogin() {
-    global.location.href = '/pages/auth/login.html?redirect=' + encodeURIComponent(global.location.href);
+    var redirect = window.location.href;
+    // Only pass same-origin redirects (starts with / but not //)
+    var path = window.location.pathname + window.location.search;
+    global.location.href = '/pages/auth/login.html?redirect=' + encodeURIComponent(path);
   }
 
   function requireAuth(adminRequired) {

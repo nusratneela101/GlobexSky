@@ -143,11 +143,21 @@
     if (sb && _isLoggedIn()) {
       var uid = _userId();
       if (uid) {
+        // First check if the item already exists to increment quantity
         sb.from('cart_items')
-          .upsert({ user_id: uid, product_id: productId, quantity: qty }, { onConflict: 'user_id,product_id' })
-          .then(function (result) {
-            if (result.error) console.warn('[GlobexCart] Supabase upsert failed:', result.error.message);
-          });
+          .select('quantity')
+          .eq('user_id', uid)
+          .eq('product_id', productId)
+          .single()
+          .then(function(existing) {
+            var newQty = ((existing.data && existing.data.quantity) || 0) + qty;
+            return sb.from('cart_items')
+              .upsert({ user_id: uid, product_id: productId, quantity: newQty }, { onConflict: 'user_id,product_id' });
+          })
+          .then(function(result) {
+            if (result && result.error) console.warn('[GlobexCart] Supabase upsert failed:', result.error.message);
+          })
+          .catch(function(err) { console.warn('[GlobexCart] Supabase sync error:', err.message); });
       }
     }
 

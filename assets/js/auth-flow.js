@@ -48,8 +48,10 @@
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
     const redirect = params.get('redirect');
-    // Only allow relative or same-origin redirects
-    if (redirect && redirect.startsWith('/')) return redirect;
+    // Only allow relative paths (must start with / and not contain //)
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+      return redirect;
+    }
     return '/index.html';
   }
 

@@ -33,6 +33,17 @@
       .replace(/'/g, '&#39;');
   }
 
+  // ─── Escape for ILIKE ─────────────────────────────────────────────────────
+
+  /**
+   * Escape special ILIKE pattern characters to prevent unintended pattern matching.
+   * @param {string} str
+   * @returns {string}
+   */
+  function _escapeLike(str) {
+    return String(str || '').replace(/[%_\\]/g, function(c) { return '\\' + c; });
+  }
+
   // ─── Get products ──────────────────────────────────────────────────────────
 
   /**
@@ -57,7 +68,8 @@
       query = query.lte('price', filters.maxPrice);
     }
     if (filters.search) {
-      query = query.or('name.ilike.%' + filters.search + '%,description.ilike.%' + filters.search + '%');
+      var safeSearch = _escapeLike(filters.search);
+      query = query.or('name.ilike.%' + safeSearch + '%,description.ilike.%' + safeSearch + '%');
     }
 
     var limit = filters.limit || 20;

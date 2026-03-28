@@ -338,6 +338,9 @@
     function esc(s) {
       return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
+    function escapeLike(s) {
+      return String(s || '').replace(/[%_\\]/g, function(c) { return '\\' + c; });
+    }
 
     document.addEventListener('DOMContentLoaded', async function () {
       var q = new URLSearchParams(window.location.search).get('q') || '';
@@ -370,7 +373,8 @@
 
         var query = sb.from('products').select('*').eq('is_active', true).limit(48);
         if (q) {
-          query = query.or('name.ilike.%' + q + '%,description.ilike.%' + q + '%');
+          var safeQ = escapeLike(q);
+          query = query.or('name.ilike.%' + safeQ + '%,description.ilike.%' + safeQ + '%');
         }
 
         var { data: items, error } = await query.order('created_at', { ascending: false });

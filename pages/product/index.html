@@ -2037,11 +2037,26 @@
               '<div class="product-card-name">' + name + '</div>' +
               '<div class="product-card-price">' + price + (old ? ' <s style="color:#94a3b8;font-size:.8em">' + old + '</s>' : '') + '</div>' +
               '<button class="product-card-btn" type="button" ' +
-                'onclick="window.GlobexCart && window.GlobexCart.addToCart(\'' + esc(p.id) + '\',1,{name:\'' + name.replace(/'/g,'\\\'') + '\',price:' + Number(p.price||0) + '})"' +
+                'data-product-id="' + esc(p.id) + '" ' +
+                'data-product-name="' + name + '" ' +
+                'data-product-price="' + Number(p.price||0) + '" ' +
+                'data-cart-add="true"' +
                 '>Add to Cart</button>' +
             '</div>' +
           '</article>';
         }).join('');
+
+        // Wire up cart buttons using event delegation (safe, no inline handlers)
+        grid.querySelectorAll('[data-cart-add]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            if (window.GlobexCart) {
+              window.GlobexCart.addToCart(
+                btn.getAttribute('data-product-id'), 1,
+                { name: btn.getAttribute('data-product-name'), price: parseFloat(btn.getAttribute('data-product-price') || 0) }
+              );
+            }
+          });
+        });
       } catch (err) {
         grid.innerHTML = '<p style="color:#64748b;padding:1rem">Unable to load products.</p>';
         console.warn('[Products] Load error:', err.message);
