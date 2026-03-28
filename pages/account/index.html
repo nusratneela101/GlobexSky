@@ -89,8 +89,8 @@
   <div class="page-layout">
     <aside class="sidebar">
       <div class="sidebar-avatar">JD</div>
-      <div class="sidebar-name">John Doe</div>
-      <div class="sidebar-email">john@example.com</div>
+      <div class="sidebar-name" id="account-user-name">John Doe</div>
+      <div class="sidebar-email" id="account-user-email">john@example.com</div>
       <ul class="sidebar-nav">
         <li><a href="index.html" class="active"><i class="fas fa-gauge"></i> Dashboard</a></li>
         <li><a href="profile.html"><i class="fas fa-user"></i> My Profile</a></li>
@@ -141,5 +141,26 @@
 </footer>
 <script src="../../assets/js/main.js" defer></script>
   <script src="../../assets/js/account.js"></script>
+  <script>
+    // Populate user info from local session (account.js will refresh from API)
+    (function () {
+      try {
+        var user = JSON.parse(localStorage.getItem('globexUser') || 'null');
+        if (!user) return;
+        var nameEl  = document.getElementById('account-user-name');
+        var emailEl = document.getElementById('account-user-email');
+        if (nameEl  && user.name)  nameEl.textContent  = user.name;
+        if (emailEl && user.email) emailEl.textContent = user.email;
+        // Also fill initials avatar
+        var avatarEl = document.querySelector('.sidebar-avatar');
+        if (avatarEl && user.name) {
+          var parts = user.name.trim().split(' ');
+          avatarEl.textContent = parts.length > 1
+            ? parts[0][0].toUpperCase() + parts[parts.length - 1][0].toUpperCase()
+            : parts[0].slice(0, 2).toUpperCase();
+        }
+      } catch (_) {}
+    }());
+  </script>
 </body>
 </html>

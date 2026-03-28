@@ -953,6 +953,62 @@
 
       </div><!-- /#api-keys-section -->
 
+      <!-- ═══════════════════════════════════════════════════════════════════
+           Test All Connections + Go Live
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="admin-card" id="go-live-section">
+        <div class="admin-card-header">
+          <div class="settings-section-icon" style="background:#dcfce7;color:#16a34a"><i class="fas fa-rocket"></i></div>
+          <span class="admin-card-title">Test Connections &amp; Go Live</span>
+        </div>
+        <p style="color:#64748b;font-size:.875rem;margin-bottom:20px">
+          Before switching to Live mode, test all service connections to verify your API keys are valid.
+          All tests must pass before you can activate Live mode.
+        </p>
+
+        <!-- Test All button -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+          <button class="btn-sm btn-primary" id="btn-test-all" onclick="testAllConnections()">
+            <i class="fas fa-flask"></i> 🧪 Test All Connections
+          </button>
+          <button class="btn-sm btn-danger-outline" id="btn-go-live" onclick="goLiveFlow()" disabled
+            style="opacity:.5;cursor:not-allowed" title="Test all connections first">
+            <i class="fas fa-rocket"></i> 🚀 Go Live
+          </button>
+          <span id="test-all-summary" style="font-size:.83rem;color:#94a3b8"></span>
+        </div>
+
+        <!-- Per-service results grid -->
+        <div id="test-all-results" style="display:none">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px" id="test-results-grid">
+            <!-- Populated by testAllConnections() -->
+          </div>
+        </div>
+
+        <!-- Go Live confirmation modal (hidden) -->
+        <div id="go-live-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center">
+          <div style="background:#fff;border-radius:16px;padding:32px;max-width:440px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+            <h3 style="font-family:Poppins,sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27;margin-bottom:12px">
+              ⚠️ Switch to Live Mode?
+            </h3>
+            <p style="color:#64748b;font-size:.875rem;line-height:1.6;margin-bottom:20px">
+              This will activate <strong>real payment keys</strong> (Stripe Live, PayPal Live, bKash Live, etc.)
+              and all transactions will be charged to real accounts.<br><br>
+              <strong>Are you sure you want to go live?</strong>
+            </p>
+            <div style="display:flex;gap:12px;justify-content:flex-end">
+              <button class="btn-sm btn-secondary" onclick="document.getElementById('go-live-modal').style.display='none'">
+                Cancel
+              </button>
+              <button class="btn-sm btn-primary" id="btn-confirm-go-live" onclick="confirmGoLive()"
+                style="background:#ef4444">
+                <i class="fas fa-rocket"></i> Yes, Go Live!
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -977,5 +1033,125 @@ function switchPkTab(cat) {
 <script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/admin-settings.js"></script>
 <script src="../../assets/js/navbar.js"></script>
+<script>
+// ─── Test All Connections + Go Live flow ──────────────────────────────────────
+
+var _testAllResults = {};
+
+function _getApiBase() {
+  if (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) return window.GlobexConfig.API_BASE_URL;
+  var h = location.hostname;
+  return (h === 'localhost' || h === '127.0.0.1')
+    ? 'http://localhost:5000/api/v1'
+    : 'https://globexsky-backend.up.railway.app/api/v1';
+}
+
+async function _authHdrs() {
+  var token = null;
+  try { var s = JSON.parse(localStorage.getItem('globexSession') || 'null'); token = s && s.token; } catch (_) {}
+  if (!token) token = localStorage.getItem('globexToken') || localStorage.getItem('token') || null;
+  return { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) };
+}
+
+async function testAllConnections() {
+  var btn = document.getElementById('btn-test-all');
+  var summary = document.getElementById('test-all-summary');
+  var grid = document.getElementById('test-results-grid');
+  var resultsDiv = document.getElementById('test-all-results');
+  var goLiveBtn = document.getElementById('btn-go-live');
+
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing…'; }
+  if (summary) summary.textContent = 'Running tests…';
+  if (resultsDiv) resultsDiv.style.display = '';
+  if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:16px"><i class="fas fa-spinner fa-spin fa-2x" style="color:#0052CC"></i></div>';
+
+  try {
+    var res = await fetch(_getApiBase() + '/admin/config/test-connection', {
+      method: 'POST',
+      headers: await _authHdrs(),
+      body: JSON.stringify({}),
+    });
+    var json = await res.json();
+    _testAllResults = (json && json.results) || {};
+
+    var services = Object.keys(_testAllResults);
+    var passed = services.filter(function (s) { return _testAllResults[s] && _testAllResults[s].ok; }).length;
+    var allPass = passed === services.length && services.length > 0;
+
+    if (grid) {
+      grid.innerHTML = services.map(function (svc) {
+        var r = _testAllResults[svc];
+        var ok = r && r.ok;
+        return '<div style="padding:12px 14px;border-radius:10px;border:1.5px solid ' + (ok ? '#6ee7b7' : '#fca5a5') + ';background:' + (ok ? '#f0fdf4' : '#fff5f5') + '">' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+            '<span style="font-size:1.1rem">' + (ok ? '✅' : '❌') + '</span>' +
+            '<span style="font-weight:600;font-size:.875rem;text-transform:capitalize">' + svc + '</span>' +
+          '</div>' +
+          '<p style="font-size:.78rem;color:#64748b;margin:0">' + ((r && r.message) || '—') + '</p>' +
+        '</div>';
+      }).join('');
+    }
+
+    if (summary) {
+      summary.textContent = passed + '/' + services.length + ' services connected';
+      summary.style.color = allPass ? '#059669' : '#ef4444';
+    }
+
+    // Enable Go Live only if all pass
+    if (goLiveBtn) {
+      goLiveBtn.disabled = !allPass;
+      goLiveBtn.style.opacity = allPass ? '1' : '.5';
+      goLiveBtn.style.cursor  = allPass ? 'pointer' : 'not-allowed';
+      goLiveBtn.title = allPass ? 'All tests passed — ready to go live!' : 'Fix failing connections first';
+    }
+  } catch (err) {
+    if (summary) { summary.textContent = 'Test failed: ' + err.message; summary.style.color = '#ef4444'; }
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;color:#ef4444;padding:12px">Error: ' + err.message + '</div>';
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-flask"></i> 🧪 Test All Connections'; }
+  }
+}
+
+function goLiveFlow() {
+  var modal = document.getElementById('go-live-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+async function confirmGoLive() {
+  var modal = document.getElementById('go-live-modal');
+  var btn = document.getElementById('btn-confirm-go-live');
+  if (btn) { btn.disabled = true; btn.textContent = 'Switching…'; }
+
+  try {
+    var res = await fetch(_getApiBase() + '/admin/config/toggle-mode', {
+      method: 'POST',
+      headers: await _authHdrs(),
+    });
+    var json = await res.json();
+    if (json.success && json.currentMode === 'live') {
+      if (modal) modal.style.display = 'none';
+      // Refresh mode indicator
+      var gmi = document.getElementById('globalModeIndicator');
+      if (gmi) {
+        gmi.textContent = '🟢 Live Mode';
+        gmi.style.background = '#d1fae5';
+        gmi.style.color = '#059669';
+      }
+      // Show success message
+      var successEl = document.createElement('div');
+      successEl.style.cssText = 'position:fixed;top:24px;right:24px;background:#059669;color:#fff;padding:16px 24px;border-radius:12px;font-weight:600;z-index:99999;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2)';
+      successEl.innerHTML = '🟢 You are now LIVE! All payments are using real keys.';
+      document.body.appendChild(successEl);
+      setTimeout(function () { successEl.remove(); }, 5000);
+    } else {
+      alert('Toggle failed: ' + (json.message || json.error || 'Unknown error'));
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-rocket"></i> Yes, Go Live!'; }
+  }
+}
+</script>
 </body>
 </html>
