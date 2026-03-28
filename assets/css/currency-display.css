@@ -1,0 +1,220 @@
+/**
+ * currency-display.css
+ *
+ * Styles for the GlobexSky multi-currency pricing display feature.
+ * Includes the currency selector dropdown and converted-price display.
+ */
+
+/* ─── CSS Variables ────────────────────────────────────────────────────────── */
+:root {
+  --currency-primary:      #0052CC;
+  --currency-secondary:    #FF6B35;
+  --currency-accent:       #00C9A7;
+  --currency-bg:           #ffffff;
+  --currency-bg-hover:     #f4f6f8;
+  --currency-border:       #dde1e7;
+  --currency-text:         #1a1a2e;
+  --currency-text-muted:   #6b7280;
+  --currency-shadow:       0 2px 8px rgba(0, 0, 0, 0.10);
+  --currency-shadow-lg:    0 4px 20px rgba(0, 0, 0, 0.14);
+  --currency-radius:       8px;
+  --currency-radius-sm:    4px;
+  --currency-transition:   0.2s ease;
+}
+
+/* ─── Currency Selector ─────────────────────────────────────────────────────── */
+.gsky-currency-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--currency-bg);
+  border: 1px solid var(--currency-border);
+  border-radius: var(--currency-radius);
+  box-shadow: var(--currency-shadow);
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--currency-text);
+  transition: box-shadow var(--currency-transition);
+}
+
+.gsky-currency-selector:hover {
+  box-shadow: var(--currency-shadow-lg);
+}
+
+.gsky-currency-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  color: var(--currency-text-muted);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+}
+
+.gsky-currency-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ─── Select Wrapper & Select ───────────────────────────────────────────────── */
+.gsky-currency-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.gsky-currency-select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 10px;
+  color: var(--currency-text-muted);
+  pointer-events: none;
+  font-size: 11px;
+}
+
+.gsky-currency-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--currency-bg);
+  border: 1px solid var(--currency-border);
+  border-radius: var(--currency-radius-sm);
+  padding: 6px 32px 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--currency-primary);
+  cursor: pointer;
+  outline: none;
+  min-width: 180px;
+  max-width: 260px;
+  transition: border-color var(--currency-transition), box-shadow var(--currency-transition);
+}
+
+.gsky-currency-select:hover {
+  border-color: var(--currency-primary);
+  background: var(--currency-bg-hover);
+}
+
+.gsky-currency-select:focus {
+  border-color: var(--currency-primary);
+  box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.15);
+}
+
+.gsky-currency-select option {
+  font-weight: 400;
+  color: var(--currency-text);
+}
+
+/* ─── Converted Price Display ───────────────────────────────────────────────── */
+
+/* Wrapper for an element showing both original and converted prices */
+.gsky-price-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* The main visible price (updated by JS) */
+[data-price] {
+  font-weight: 600;
+  color: var(--currency-text);
+  transition: opacity 0.15s ease;
+}
+
+[data-price].gsky-price-updating {
+  opacity: 0.4;
+}
+
+/* Original price shown in a smaller muted style */
+.gsky-original-price {
+  font-size: 12px;
+  color: var(--currency-text-muted);
+  text-decoration: line-through;
+}
+
+/* Badge shown next to the price indicating the currency code */
+.gsky-currency-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  background: rgba(0, 82, 204, 0.08);
+  color: var(--currency-primary);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 4px;
+  vertical-align: middle;
+  letter-spacing: 0.3px;
+}
+
+/* Conversion rate tooltip text */
+.gsky-rate-hint {
+  display: block;
+  font-size: 11px;
+  color: var(--currency-text-muted);
+  margin-top: 2px;
+}
+
+/* ─── Loading Skeleton ──────────────────────────────────────────────────────── */
+.gsky-price-skeleton {
+  display: inline-block;
+  width: 80px;
+  height: 1.2em;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: gsky-shimmer 1.4s infinite;
+  border-radius: var(--currency-radius-sm);
+  vertical-align: middle;
+}
+
+@keyframes gsky-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Inline Currency Switcher (compact, for navbars/headers) ───────────────── */
+.gsky-currency-switcher-compact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+.gsky-currency-switcher-compact .gsky-currency-select {
+  min-width: 80px;
+  max-width: 120px;
+  font-size: 12px;
+  padding: 4px 24px 4px 8px;
+}
+
+/* ─── Dark theme override ─────────────────────────────────────────────────────── */
+[data-theme='dark'] .gsky-currency-selector,
+.dark-theme .gsky-currency-selector {
+  --currency-bg:        #1e293b;
+  --currency-bg-hover:  #273449;
+  --currency-border:    #334155;
+  --currency-text:      #f1f5f9;
+  --currency-text-muted:#94a3b8;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .gsky-currency-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 10px;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .gsky-currency-select {
+    width: 100%;
+    max-width: 100%;
+    min-width: unset;
+  }
+
+  .gsky-currency-select-wrap {
+    width: 100%;
+  }
+}
