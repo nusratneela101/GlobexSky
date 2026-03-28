@@ -903,3 +903,47 @@ BEGIN
   END LOOP;
 END;
 $$;
+
+-- ─────────────────────────────────────────────────────────────────
+-- COUPONS & VOUCHERS
+-- ─────────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id                 UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  code               TEXT UNIQUE NOT NULL,
+  type               TEXT NOT NULL DEFAULT 'percentage'
+                       CHECK (type IN ('percentage','fixed','free_shipping')),
+  value              NUMERIC(12,2) NOT NULL DEFAULT 0,
+  min_order_amount   NUMERIC(12,2) NOT NULL DEFAULT 0,
+  max_discount_amount NUMERIC(12,2),
+  currency           TEXT NOT NULL DEFAULT 'USD',
+  usage_limit        INTEGER,
+  used_count         INTEGER NOT NULL DEFAULT 0,
+  per_user_limit     INTEGER NOT NULL DEFAULT 1,
+  valid_from         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  valid_until        TIMESTAMPTZ,
+  is_active          BOOLEAN NOT NULL DEFAULT TRUE,
+  applies_to         TEXT NOT NULL DEFAULT 'all'
+                       CHECK (applies_to IN ('all','category','product','supplier')),
+  target_ids         UUID[],
+  created_by         UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupons_code      ON coupons(code);
+CREATE INDEX IF NOT EXISTS idx_coupons_is_active ON coupons(is_active);
+CREATE INDEX IF NOT EXISTS idx_coupons_valid     ON coupons(valid_from, valid_until);
+
+CREATE TABLE IF NOT EXISTS coupon_usages (
+  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  coupon_id       UUID NOT NULL REFERENCES coupons(id) ON DELETE CASCADE,
+  user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  order_id        UUID,
+  discount_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  used_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupon_usages_coupon_id ON coupon_usages(coupon_id);
+CREATE INDEX IF NOT EXISTS idx_coupon_usages_user_id   ON coupon_usages(user_id);
+CREATE INDEX IF NOT EXISTS idx_coupon_usages_order_id  ON coupon_usages(order_id);
