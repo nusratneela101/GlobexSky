@@ -50,6 +50,7 @@ export {
 export { default as SampleOrder, SampleOrderConfig } from './SampleOrder.js';
 export { default as Recommendation } from './Recommendation.js';
 export { default as CustomizationRequest } from './CustomizationRequest.js';
+export { default as Team } from './Team.js';
 export { default as RFQMatch } from './RFQMatch.js';
 
 import BaseModel from './BaseModel.js';
@@ -93,6 +94,7 @@ import {
 import SampleOrder, { SampleOrderConfig } from './SampleOrder.js';
 import Recommendation from './Recommendation.js';
 import CustomizationRequest from './CustomizationRequest.js';
+import Team from './Team.js';
 import RFQMatch from './RFQMatch.js';
 
 export default {
@@ -136,5 +138,6 @@ export default {
   SampleOrderConfig,
   Recommendation,
   CustomizationRequest,
+  Team,
   RFQMatch,
 };

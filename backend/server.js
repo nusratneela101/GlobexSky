@@ -93,6 +93,7 @@ import escrowRoutes from './routes/escrow.routes.js';
 import chatTranslationRoutes from './routes/chatTranslation.routes.js';
 import imageSearchRoutes from './routes/imageSearch.routes.js';
 import customizationRoutes from './routes/customization.routes.js';
+import teamRoutes from './routes/team.routes.js';
 import rfqMatchingRoutes from './routes/rfqMatching.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
@@ -265,6 +266,7 @@ app.use(`${API}/escrow`, escrowRoutes);
 app.use(`${API}/translation`, chatTranslationRoutes);
 app.use(`${API}/image-search`, imageSearchRoutes);
 app.use(`${API}/customization`, customizationRoutes);
+app.use(`${API}/teams`, teamRoutes);
 app.use(`${API}/rfq-matching`, rfqMatchingRoutes);
 
 // Swagger docs available at /api/docs
