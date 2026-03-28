@@ -37,9 +37,20 @@ export { default as Warehouse } from './Warehouse.js';
 export { default as SavedSearch } from './SavedSearch.js';
 export { default as SearchHistory } from './SearchHistory.js';
 export { default as SystemConfig } from './SystemConfig.js';
+export { default as ChatTranslation } from './ChatTranslation.js';
 export { default as ImageSearch } from './ImageSearch.js';
+export { default as Escrow } from './Escrow.js';
+export { default as ProductComparison } from './ProductComparison.js';
+export {
+  TradeAssurancePolicy,
+  TradeAssuranceClaim,
+  TradeAssuranceDeposit,
+  TradeAssuranceConfig,
+} from './TradeAssurance.js';
+export { default as SampleOrder, SampleOrderConfig } from './SampleOrder.js';
+export { default as Recommendation } from './Recommendation.js';
+export { default as CustomizationRequest } from './CustomizationRequest.js';
 export { default as Team } from './Team.js';
-
 
 import BaseModel from './BaseModel.js';
 import User from './User.js';
@@ -69,9 +80,20 @@ import Warehouse from './Warehouse.js';
 import SavedSearch from './SavedSearch.js';
 import SearchHistory from './SearchHistory.js';
 import SystemConfig from './SystemConfig.js';
+import ChatTranslation from './ChatTranslation.js';
 import ImageSearch from './ImageSearch.js';
+import Escrow from './Escrow.js';
+import ProductComparison from './ProductComparison.js';
+import {
+  TradeAssurancePolicy,
+  TradeAssuranceClaim,
+  TradeAssuranceDeposit,
+  TradeAssuranceConfig,
+} from './TradeAssurance.js';
+import SampleOrder, { SampleOrderConfig } from './SampleOrder.js';
+import Recommendation from './Recommendation.js';
+import CustomizationRequest from './CustomizationRequest.js';
 import Team from './Team.js';
-
 
 export default {
   BaseModel,
@@ -102,6 +124,17 @@ export default {
   SavedSearch,
   SearchHistory,
   SystemConfig,
+  ChatTranslation,
   ImageSearch,
+  Escrow,
+  ProductComparison,
+  TradeAssurancePolicy,
+  TradeAssuranceClaim,
+  TradeAssuranceDeposit,
+  TradeAssuranceConfig,
+  SampleOrder,
+  SampleOrderConfig,
+  Recommendation,
+  CustomizationRequest,
   Team,
 };
