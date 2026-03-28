@@ -71,7 +71,7 @@
       var input = form.querySelector('input[type="search"], input[type="text"], .search-input');
       var q = input ? input.value.trim() : '';
       if (!q) return;
-      var searchPage = pathname.startsWith('/pages/') ? '../../pages/search/index.html' : '/pages/search/index.html';
+      var searchPage = '/pages/search/index.html';
       global.location.href = searchPage + '?q=' + encodeURIComponent(q);
     });
   }

@@ -49,7 +49,7 @@
       var raw = localStorage.getItem(CACHE_KEY);
       if (!raw) return null;
       var entry = JSON.parse(raw);
-      if (!entry || Date.now() - entry.ts > CACHE_TTL) {
+      if (!entry || typeof entry.ts !== 'number' || Date.now() - entry.ts > CACHE_TTL) {
         localStorage.removeItem(CACHE_KEY);
         return null;
       }

@@ -107,9 +107,23 @@
    */
   function renderStatusBadge(status) {
     var s = STATUS_COLORS[status] || { bg: '#f1f5f9', text: '#475569' };
-    var label = status ? status.charAt(0).toUpperCase() + status.slice(1) : '—';
+    var label = status ? _esc(status.charAt(0).toUpperCase() + status.slice(1)) : '—';
     return '<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:.78rem;font-weight:600;' +
       'background:' + s.bg + ';color:' + s.text + '">' + label + '</span>';
+  }
+
+  /**
+   * Escape a string for safe insertion into HTML.
+   * @param {*} str
+   * @returns {string}
+   */
+  function _esc(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   /**
@@ -120,13 +134,15 @@
   function renderOrderRow(order) {
     var fmt = global.GlobexUtils ? global.GlobexUtils.formatCurrency : function (n) { return '$' + n; };
     var date = global.GlobexUtils ? global.GlobexUtils.formatDate(order.created_at) : (order.created_at || '—');
+    var orderId = _esc(String(order.id || ''));
+    var orderNum = _esc(String(order.order_number || order.id || ''));
     return '<tr>' +
-      '<td><a href="/pages/account/order-detail.html?id=' + order.id + '">#' + (order.order_number || order.id) + '</a></td>' +
+      '<td><a href="/pages/account/order-detail.html?id=' + orderId + '">#' + orderNum + '</a></td>' +
       '<td>' + date + '</td>' +
       '<td>' + (order.item_count || 1) + ' item(s)</td>' +
       '<td>' + fmt(order.total_amount || order.total || 0) + '</td>' +
       '<td>' + renderStatusBadge(order.status) + '</td>' +
-      '<td><a href="/pages/account/order-detail.html?id=' + order.id + '" class="btn btn-sm btn-secondary">View</a></td>' +
+      '<td><a href="/pages/account/order-detail.html?id=' + orderId + '" class="btn btn-sm btn-secondary">View</a></td>' +
     '</tr>';
   }
 

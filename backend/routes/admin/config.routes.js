@@ -526,11 +526,11 @@ router.put(
       }
 
       // Validate values — must be non-empty strings
-      const blank = Object.entries(updates).filter(([, v]) => v === '' || v === null || v === undefined);
-      if (blank.length > 0) {
+      const entriesWithBlankValues = Object.entries(updates).filter(([, v]) => v === '' || v === null || v === undefined);
+      if (entriesWithBlankValues.length > 0) {
         return res.status(400).json({
           success: false,
-          error: `Values must not be empty. Blank keys: ${blank.map(([k]) => k).join(', ')}.`,
+          error: `Values must not be empty. Blank keys: ${entriesWithBlankValues.map(([k]) => k).join(', ')}.`,
         });
       }
 

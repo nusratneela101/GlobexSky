@@ -1053,6 +1053,15 @@ async function _authHdrs() {
   return { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) };
 }
 
+function _esc(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 async function testAllConnections() {
   var btn = document.getElementById('btn-test-all');
   var summary = document.getElementById('test-all-summary');
@@ -1085,9 +1094,9 @@ async function testAllConnections() {
         return '<div style="padding:12px 14px;border-radius:10px;border:1.5px solid ' + (ok ? '#6ee7b7' : '#fca5a5') + ';background:' + (ok ? '#f0fdf4' : '#fff5f5') + '">' +
           '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
             '<span style="font-size:1.1rem">' + (ok ? '✅' : '❌') + '</span>' +
-            '<span style="font-weight:600;font-size:.875rem;text-transform:capitalize">' + svc + '</span>' +
+            '<span style="font-weight:600;font-size:.875rem;text-transform:capitalize">' + _esc(svc) + '</span>' +
           '</div>' +
-          '<p style="font-size:.78rem;color:#64748b;margin:0">' + ((r && r.message) || '—') + '</p>' +
+          '<p style="font-size:.78rem;color:#64748b;margin:0">' + _esc((r && r.message) || '—') + '</p>' +
         '</div>';
       }).join('');
     }
@@ -1106,7 +1115,7 @@ async function testAllConnections() {
     }
   } catch (err) {
     if (summary) { summary.textContent = 'Test failed: ' + err.message; summary.style.color = '#ef4444'; }
-    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;color:#ef4444;padding:12px">Error: ' + err.message + '</div>';
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;color:#ef4444;padding:12px">Error: ' + _esc(err.message) + '</div>';
   } finally {
     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-flask"></i> 🧪 Test All Connections'; }
   }

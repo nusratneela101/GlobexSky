@@ -96,18 +96,28 @@
 
   // ─── DOM helpers ──────────────────────────────────────────────────────────
 
+  /** Escape a string for safe insertion into HTML content/attributes. */
+  function _esc(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   /**
    * Render a product card HTML string from an API product object.
    * @param {object} product
    * @returns {string} HTML string
    */
   function renderProductCard(product) {
-    var id         = product.id || '';
-    var name       = product.name || product.title || 'Product';
+    var id         = _esc(product.id || '');
+    var name       = _esc(product.name || product.title || 'Product');
     var price      = Number(product.price || product.min_price || 0).toFixed(2);
-    var image      = product.image_url || product.thumbnail || product.image || '/assets/images/placeholder.png';
-    var supplier   = (product.supplier && (product.supplier.name || product.supplier.company_name)) || '';
-    var badge      = product.badge || '';
+    var image      = _esc(product.image_url || product.thumbnail || product.image || '/assets/images/placeholder.png');
+    var supplier   = _esc((product.supplier && (product.supplier.name || product.supplier.company_name)) || '');
+    var badge      = _esc(product.badge || '');
     var rating     = Number(product.average_rating || product.rating || 0).toFixed(1);
     var reviewCount = product.review_count || product.reviews_count || 0;
 
