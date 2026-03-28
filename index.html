@@ -1506,5 +1506,75 @@
   <!-- Floating chat widget -->
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
   <script src="assets/js/chat-widget.js"></script>
+
+  <!-- GlobexSky AI Modules -->
+  <script src="js/config.js"></script>
+  <script src="js/ai.js"></script>
+
+  <!-- AI Floating Chat Widget -->
+  <div id="ai-chat-widget" style="position:fixed;bottom:20px;right:20px;z-index:9998;font-family:'Inter',sans-serif">
+    <div id="ai-chat-box" style="display:none;width:340px;height:460px;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden">
+      <div style="background:linear-gradient(135deg,#0052CC,#0A0E27);padding:14px 16px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:1.3rem">🤖</span>
+        <div style="flex:1"><div style="font-weight:700;font-size:.9rem;color:#fff">GlobexSky AI</div><div style="font-size:.72rem;color:rgba(255,255,255,.7)">Powered by DeepSeek</div></div>
+        <button onclick="document.getElementById('ai-chat-box').style.display='none'" style="background:none;border:none;color:#fff;cursor:pointer;font-size:1rem;padding:0">✕</button>
+      </div>
+      <div id="ai-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#f8faff">
+        <div style="background:#e0e8ff;border-radius:12px 12px 12px 4px;padding:10px 14px;font-size:.85rem;color:#374151;max-width:85%">👋 Hi! I'm GlobexSky AI. Ask me about products, suppliers, pricing, or anything about the marketplace!</div>
+      </div>
+      <div style="padding:12px;border-top:1px solid #f1f5f9;display:flex;gap:8px">
+        <input id="ai-msg-input" type="text" placeholder="Ask AI anything…" style="flex:1;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;outline:none" onkeydown="if(event.key==='Enter')sendAIMessage()">
+        <button onclick="sendAIMessage()" style="background:#0052CC;color:#fff;border:none;border-radius:8px;padding:9px 14px;cursor:pointer;font-size:.85rem">▶</button>
+      </div>
+    </div>
+    <button onclick="toggleAIWidget()" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#0052CC,#7c3aed);color:#fff;border:none;cursor:pointer;font-size:1.2rem;box-shadow:0 4px 16px rgba(0,82,204,.4);display:flex;align-items:center;justify-content:center;margin-top:10px;margin-left:auto" title="AI Assistant">🤖</button>
+  </div>
+  <script>
+  (function() {
+    var open = false;
+    window.toggleAIWidget = function() {
+      var box = document.getElementById('ai-chat-box');
+      open = !open;
+      box.style.display = open ? 'flex' : 'none';
+      if (open) { var inp = document.getElementById('ai-msg-input'); if(inp) inp.focus(); }
+    };
+
+    window.sendAIMessage = async function() {
+      var inp = document.getElementById('ai-msg-input');
+      var msg = inp.value.trim();
+      if (!msg) return;
+      inp.value = '';
+      var msgs = document.getElementById('ai-messages');
+
+      // User bubble
+      var userBubble = document.createElement('div');
+      userBubble.style.cssText = 'background:#0052CC;color:#fff;border-radius:12px 12px 4px 12px;padding:10px 14px;font-size:.85rem;max-width:85%;align-self:flex-end;margin-left:auto';
+      userBubble.textContent = msg;
+      msgs.appendChild(userBubble);
+      msgs.scrollTop = msgs.scrollHeight;
+
+      // Typing indicator
+      var typing = document.createElement('div');
+      typing.style.cssText = 'background:#e0e8ff;border-radius:12px 12px 12px 4px;padding:10px 14px;font-size:.85rem;color:#64748b;max-width:85%';
+      typing.textContent = '…thinking';
+      msgs.appendChild(typing);
+      msgs.scrollTop = msgs.scrollHeight;
+
+      try {
+        var reply = window.GlobexAI
+          ? await GlobexAI.chat(msg)
+          : '⚠️ AI is not available on this page. Please configure the DeepSeek API key in the admin panel.';
+        typing.style.background = '#e0e8ff';
+        typing.style.color = '#374151';
+        typing.textContent = reply;
+      } catch(e) {
+        typing.style.background = '#fee2e2';
+        typing.style.color = '#991b1b';
+        typing.textContent = 'Error: ' + e.message;
+      }
+      msgs.scrollTop = msgs.scrollHeight;
+    };
+  })();
+  </script>
 </body>
 </html>
