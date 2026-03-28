@@ -78,6 +78,7 @@ import containerRoutes from './routes/container.routes.js';
 import customStyleRoutes from './routes/customStyle.routes.js';
 import countriesRoutes from './routes/countries.routes.js';
 import categoryRoutes from './routes/category.routes.js';
+import sampleOrderRoutes from './routes/sampleOrder.routes.js';
 import quotationRoutes from './routes/quotation.routes.js';
 import blogPostRoutes from './routes/blogPost.routes.js';
 import emailTemplateRoutes from './routes/emailTemplate.routes.js';
@@ -89,7 +90,9 @@ import securityRoutes from './routes/security.routes.js';
 import websocketRoutes from './routes/websocket.routes.js';
 import languageRoutes, { adminLanguageRouter } from './routes/language.routes.js';
 import escrowRoutes from './routes/escrow.routes.js';
+import chatTranslationRoutes from './routes/chatTranslation.routes.js';
 import imageSearchRoutes from './routes/imageSearch.routes.js';
+import customizationRoutes from './routes/customization.routes.js';
 import rfqMatchingRoutes from './routes/rfqMatching.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
@@ -100,6 +103,7 @@ import templateRoutes from './routes/templateRoutes.js';
 import integrationRoutes from './routes/integration.routes.js';
 import aiRoutes from './routes/ai.routes.js';
 import configRoutes from './routes/config.routes.js';
+import recommendationRoutes from './routes/recommendation.routes.js';
 import adminConfigRoutes from './routes/admin/config.routes.js';
 import productComparisonRoutes from './routes/productComparison.routes.js';
 import adminUsersRoutes from './routes/adminUsers.js';
@@ -118,6 +122,7 @@ import payoutsRoutes from './routes/payouts.js';
 import { swaggerUi, swaggerSpec } from './swagger.js';
 import { initializeWebSocket } from './services/websocket.service.js';
 import { initializeWebRTC } from './services/webrtc.service.js';
+import { initializeChatTranslation } from './services/chatTranslationSocket.service.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -127,6 +132,7 @@ const PORT = process.env.PORT || 5000;
 const io = new SocketIOServer(httpServer, websocketConfig.options);
 initializeWebSocket(io);
 initializeWebRTC(io);
+initializeChatTranslation(io);
 
 // Make io accessible to route handlers via req.app.get('io')
 app.set('io', io);
@@ -221,6 +227,7 @@ app.use(`${API}/feature-toggles`, featureToggleRoutes);
 app.use(`${API}/templates`, templateRoutes);
 app.use(`${API}/integrations`, integrationRoutes);
 app.use(`${API}/ai`, aiRoutes);
+app.use(`${API}/recommendations`, recommendationRoutes);
 app.use(`${API}/vr`, vrRoutes);
 app.use(`${API}/verification`, verificationRoutes);
 
@@ -242,6 +249,7 @@ app.use(`${API}/containers`, containerRoutes);
 app.use(`${API}/custom-styles`, customStyleRoutes);
 app.use('/api/countries', countriesRoutes);
 app.use(`${API}/categories`, categoryRoutes);
+app.use(`${API}/samples`, sampleOrderRoutes);
 app.use(`${API}/quotations`, quotationRoutes);
 app.use(`${API}/blog-posts`, blogPostRoutes);
 app.use(`${API}/email-templates`, emailTemplateRoutes);
@@ -254,7 +262,9 @@ app.use(`${API}/ws`, websocketRoutes);
 app.use(`${API}/languages`, languageRoutes);
 app.use(`${API}/admin/languages`, adminLanguageRouter);
 app.use(`${API}/escrow`, escrowRoutes);
+app.use(`${API}/translation`, chatTranslationRoutes);
 app.use(`${API}/image-search`, imageSearchRoutes);
+app.use(`${API}/customization`, customizationRoutes);
 app.use(`${API}/rfq-matching`, rfqMatchingRoutes);
 
 // Swagger docs available at /api/docs

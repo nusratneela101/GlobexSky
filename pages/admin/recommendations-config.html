@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Recommendations Engine – Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f2f8;color:#1a1a2e}
+    .admin-wrapper{display:flex;min-height:100vh}
+    .admin-sidebar{width:250px;background:#0A0E27;color:#fff;display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+    .admin-sidebar.collapsed{width:64px}
+    .admin-sidebar.collapsed .sidebar-logo span,.admin-sidebar.collapsed .sidebar-nav li a span{display:none}
+    .sidebar-header{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem}
+    .sidebar-nav{padding:16px 0;flex:1;overflow-y:auto}
+    .sidebar-nav ul{list-style:none}
+    .sidebar-nav li a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap}
+    .sidebar-nav li a:hover,.sidebar-nav li a.active{background:rgba(0,82,204,.3);color:#fff;border-left:3px solid #0052CC}
+    .sidebar-divider{border-top:1px solid rgba(255,255,255,.1);margin:8px 0}
+    .admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .admin-topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+    .sidebar-toggle{border:none;background:none;cursor:pointer;font-size:1.2rem;color:#374151;padding:6px}
+    .admin-page-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:600;color:#0a0e27;flex:1}
+    .admin-topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+    .admin-avatar{width:36px;height:36px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+    .admin-content{padding:24px;overflow-y:auto}
+    .admin-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+    .admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+    .admin-card-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:8px}
+    .form-field{display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+    .form-label{font-size:.82rem;font-weight:500;color:#374151}
+    .form-control{padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:'Inter',sans-serif;transition:border-color .2s;width:100%}
+    .form-control:focus{outline:none;border-color:#0052CC;box-shadow:0 0 0 3px rgba(0,82,204,.1)}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .form-hint{font-size:.75rem;color:#64748b;margin-top:2px}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1f5f9}
+    .toggle-row:last-child{border-bottom:none}
+    .toggle-label{font-size:.88rem;font-weight:500;color:#374151}
+    .toggle-sub{font-size:.76rem;color:#64748b;margin-top:2px}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;inset:0;background:#cbd5e1;border-radius:24px;cursor:pointer;transition:.3s}
+    .toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+    .toggle-switch input:checked+.toggle-slider{background:#0052CC}
+    .toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px)}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:#0052CC;color:#fff}
+    .btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}
+    .btn-success:hover{background:#047857}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}
+    .btn-danger:hover{background:#ef4444;color:#fff}
+    .btn-warning{background:#fff7ed;color:#f97316;border:1px solid #fed7aa}
+    .btn-warning:hover{background:#f97316;color:#fff}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .kpi-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-top:3px solid}
+    .kpi-card.blue{border-top-color:#0052CC}.kpi-card.green{border-top-color:#22c55e}.kpi-card.orange{border-top-color:#f97316}.kpi-card.purple{border-top-color:#8b5cf6}
+    .kpi-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:10px}
+    .kpi-icon.blue{background:#dbeafe;color:#0052CC}.kpi-icon.green{background:#dcfce7;color:#16a34a}.kpi-icon.orange{background:#ffedd5;color:#f97316}.kpi-icon.purple{background:#ede9fe;color:#7c3aed}
+    .kpi-value{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#0a0e27;margin-bottom:2px}
+    .kpi-label{font-size:.78rem;color:#64748b}
+    .tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px;width:fit-content;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:7px 18px;border-radius:8px;font-size:.83rem;font-weight:500;cursor:pointer;border:none;background:none;color:#64748b;transition:all .2s;white-space:nowrap}
+    .tab-btn.active{background:#fff;color:#0052CC;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+    .alert{padding:12px 16px;border-radius:8px;font-size:.85rem;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .alert-success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+    .alert-error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+    .alert-info{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+    .alert-warning{background:#fff7ed;color:#92400e;border:1px solid #fed7aa}
+    .badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.75rem;font-weight:600}
+    .badge-green{background:#d1fae5;color:#059669}
+    .badge-orange{background:#ffedd5;color:#f97316}
+    .badge-blue{background:#dbeafe;color:#0052CC}
+    .badge-gray{background:#f1f5f9;color:#64748b}
+    .badge-red{background:#fee2e2;color:#ef4444}
+    .mode-banner{padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:20px}
+    .mode-banner.test{background:#fff7ed;color:#92400e;border:1px solid #fed7aa}
+    .mode-banner.live{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+    .input-group{display:flex;gap:8px;align-items:flex-end}
+    .input-group .form-control{flex:1}
+    #toast{position:fixed;bottom:24px;right:24px;background:#0052CC;color:#fff;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px}
+    #toast.show{opacity:1}
+    #toast.error{background:#ef4444}
+    #toast.success{background:#059669}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){.kpi-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){.admin-sidebar{position:fixed;left:-250px;top:0;height:100%;z-index:1000;transition:left .3s}.admin-sidebar.open{left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="Globex Sky" width="140" height="44" style="object-fit:contain"/>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="users.html"><i class="fas fa-users"></i><span>Users</span></a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i><span>Products</span></a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a></li>
+        <li><a href="ai.html"><i class="fas fa-robot"></i><span>AI Tools</span></a></li>
+        <li><a href="recommendations-config.html" class="active"><i class="fas fa-star"></i><span>Recommendations</span></a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="escrow-config.html"><i class="fas fa-shield-alt"></i><span>Escrow</span></a></li>
+        <li><a href="trade-assurance-config.html"><i class="fas fa-handshake"></i><span>Trade Assurance</span></a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <span class="admin-page-title"><i class="fas fa-star" style="color:#0052CC;margin-right:8px"></i>AI Recommendations Engine</span>
+      <div class="admin-topbar-right">
+        <div class="admin-avatar" id="adminAvatar">A</div>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- Mode Banner -->
+      <div class="mode-banner test" id="modeBanner">
+        <i class="fas fa-flask"></i>
+        <span id="modeBannerText">Mode: <strong>Test</strong> — Recommendations are simulated. Click "Go Live" to activate.</span>
+        <button class="btn btn-success" id="goLiveBtn" onclick="goLive()" style="margin-left:auto">
+          <i class="fas fa-rocket"></i> Go Live
+        </button>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-icon blue"><i class="fas fa-eye"></i></div>
+          <div class="kpi-value" id="kpiShown">—</div>
+          <div class="kpi-label">Recommendations Shown</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-icon green"><i class="fas fa-mouse-pointer"></i></div>
+          <div class="kpi-value" id="kpiClicked">—</div>
+          <div class="kpi-label">Recommendations Clicked</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-icon orange"><i class="fas fa-chart-line"></i></div>
+          <div class="kpi-value" id="kpiCTR">—</div>
+          <div class="kpi-label">Click-Through Rate</div>
+        </div>
+        <div class="kpi-card purple">
+          <div class="kpi-icon purple"><i class="fas fa-brain"></i></div>
+          <div class="kpi-value" id="kpiAlgo">—</div>
+          <div class="kpi-label">Active Algorithm</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('general', event)"><i class="fas fa-sliders-h"></i> General</button>
+        <button class="tab-btn" onclick="switchTab('algorithm', event)"><i class="fas fa-brain"></i> Algorithm</button>
+        <button class="tab-btn" onclick="switchTab('ai', event)"><i class="fas fa-robot"></i> AI Provider</button>
+        <button class="tab-btn" onclick="switchTab('widgets', event)"><i class="fas fa-th-large"></i> Widgets</button>
+        <button class="tab-btn" onclick="switchTab('generate', event)"><i class="fas fa-sync-alt"></i> Generate</button>
+      </div>
+
+      <!-- ── Tab: General ─────────────────────────────────────────────── -->
+      <div class="tab-content active" id="tab-general">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-toggle-on"></i> General Settings</div>
+            <button class="btn btn-primary" onclick="saveGeneral()"><i class="fas fa-save"></i> Save</button>
+          </div>
+          <div id="alertGeneral"></div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Enable Recommendations Engine</div>
+              <div class="toggle-sub">When disabled, no recommendations are served to users.</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="feature_enabled"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <br/>
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label" for="max_recommendations">Max Recommendations per User</label>
+              <input class="form-control" type="number" id="max_recommendations" min="1" max="50" placeholder="12"/>
+              <span class="form-hint">How many product cards to show (1–50).</span>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="refresh_interval_hours">Refresh Interval (hours)</label>
+              <input class="form-control" type="number" id="refresh_interval_hours" min="1" max="168" placeholder="24"/>
+              <span class="form-hint">How often stored recommendations are regenerated.</span>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="min_interactions_for_personalization">Min Interactions for Personalisation</label>
+              <input class="form-control" type="number" id="min_interactions_for_personalization" min="1" max="100" placeholder="5"/>
+              <span class="form-hint">Below this threshold the engine falls back to trending.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tab: Algorithm ───────────────────────────────────────────── -->
+      <div class="tab-content" id="tab-algorithm">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-brain"></i> Algorithm Configuration</div>
+            <button class="btn btn-primary" onclick="saveAlgorithm()"><i class="fas fa-save"></i> Save</button>
+          </div>
+          <div id="alertAlgorithm"></div>
+
+          <div class="form-field" style="max-width:420px">
+            <label class="form-label" for="algorithm">Recommendation Algorithm</label>
+            <select class="form-control" id="algorithm">
+              <option value="collaborative">Collaborative Filtering — users who bought X also bought Y</option>
+              <option value="content_based">Content-Based — similar products by category &amp; price</option>
+              <option value="hybrid" selected>Hybrid — blend of collaborative + content (recommended)</option>
+              <option value="ai_powered">AI-Powered — OpenAI / Azure analysis (requires API key)</option>
+            </select>
+            <span class="form-hint">Hybrid gives the best results for most stores.</span>
+          </div>
+
+          <div class="alert alert-info" style="margin-top:8px">
+            <i class="fas fa-info-circle"></i>
+            <span><strong>Collaborative:</strong> finds patterns between users. Needs ≥5 interactions.<br/>
+            <strong>Content-Based:</strong> compares product attributes (category, price). Works with no history.<br/>
+            <strong>Hybrid:</strong> 60% collaborative + 40% content — best accuracy.<br/>
+            <strong>AI-Powered:</strong> sends anonymised interaction history to your AI provider for ranking.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tab: AI Provider ─────────────────────────────────────────── -->
+      <div class="tab-content" id="tab-ai">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-robot"></i> AI Provider Settings</div>
+            <button class="btn btn-primary" onclick="saveAi()"><i class="fas fa-save"></i> Save</button>
+          </div>
+          <div id="alertAi"></div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label" for="ai_provider">AI Provider</label>
+              <select class="form-control" id="ai_provider" onchange="toggleAiEndpoint()">
+                <option value="openai">OpenAI (GPT-3.5 / GPT-4)</option>
+                <option value="azure">Azure OpenAI Service</option>
+                <option value="custom">Custom / Self-Hosted Endpoint</option>
+              </select>
+            </div>
+            <div class="form-field" id="endpointRow" style="display:none">
+              <label class="form-label" for="ai_endpoint">API Endpoint URL</label>
+              <input class="form-control" type="url" id="ai_endpoint" placeholder="https://your-resource.openai.azure.com/"/>
+              <span class="form-hint">Required for Azure and Custom providers.</span>
+            </div>
+          </div>
+
+          <div class="form-field" style="max-width:500px">
+            <label class="form-label" for="ai_api_key">API Key</label>
+            <div class="input-group">
+              <input class="form-control" type="password" id="ai_api_key" placeholder="sk-… or your Azure key"/>
+              <button class="btn btn-secondary" onclick="toggleKeyVisibility()"><i class="fas fa-eye" id="keyEyeIcon"></i></button>
+            </div>
+            <span class="form-hint">Stored encrypted in the database. Never committed to code.</span>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+            <button class="btn btn-secondary" id="testConnBtn" onclick="testConnection()">
+              <i class="fas fa-plug"></i> Test Connection
+            </button>
+            <div id="testResult"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tab: Widgets ─────────────────────────────────────────────── -->
+      <div class="tab-content" id="tab-widgets">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-th-large"></i> Widget Visibility</div>
+            <button class="btn btn-primary" onclick="saveWidgets()"><i class="fas fa-save"></i> Save</button>
+          </div>
+          <div id="alertWidgets"></div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Similar Products</div>
+              <div class="toggle-sub">"You May Also Like" widget on product detail pages.</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="enable_similar_products"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Frequently Bought Together</div>
+              <div class="toggle-sub">Show bundled products commonly purchased together.</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="enable_frequently_bought_together"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Trending Now</div>
+              <div class="toggle-sub">Display products trending across the platform in the last 48 h.</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="enable_trending"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tab: Generate ────────────────────────────────────────────── -->
+      <div class="tab-content" id="tab-generate">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title"><i class="fas fa-sync-alt"></i> Batch Recommendation Generation</div>
+          </div>
+          <div id="alertGenerate"></div>
+
+          <p style="font-size:.88rem;color:#374151;margin-bottom:20px">
+            Trigger an immediate regeneration of recommendations for all users. This
+            process runs synchronously for up to 500 users; for larger datasets schedule
+            it during off-peak hours via a cron job at
+            <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px">POST /api/v1/recommendations/generate</code>.
+          </p>
+
+          <div class="form-field" style="max-width:400px">
+            <label class="form-label" for="specificUsers">Specific User IDs (optional)</label>
+            <textarea class="form-control" id="specificUsers" rows="4"
+              placeholder="Leave blank to regenerate for ALL users.&#10;Or enter one UUID per line."></textarea>
+            <span class="form-hint">Leave blank to target all users (up to 500 at once).</span>
+          </div>
+
+          <button class="btn btn-warning" id="generateBtn" onclick="triggerGenerate()">
+            <i class="fas fa-sync-alt"></i> Generate Now
+          </button>
+
+          <div id="generateResult" style="margin-top:16px"></div>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+</div>
+
+<div id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+  const API = '/api/v1/recommendations';
+  let cfg = {};
+
+  // ─── Init ────────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('collapsed');
+    });
+    loadConfig();
+    loadAnalytics();
+  });
+
+  // ─── Config ──────────────────────────────────────────────────────────────────
+  async function loadConfig() {
+    try {
+      const res = await apiFetch(`${API}/config`);
+      if (!res.success) return;
+      cfg = Object.fromEntries(res.data.map(r => [r.key, r.value]));
+      populateForm();
+    } catch (e) {
+      console.warn('Config load failed (demo mode):', e.message);
+      // Use defaults for demo / unauthenticated state
+      cfg = {
+        feature_enabled: 'false', mode: 'test', algorithm: 'hybrid',
+        ai_provider: 'openai', ai_api_key: '', ai_endpoint: '',
+        max_recommendations: '12', refresh_interval_hours: '24',
+        min_interactions_for_personalization: '5',
+        enable_similar_products: 'true',
+        enable_frequently_bought_together: 'true',
+        enable_trending: 'true',
+      };
+      populateForm();
+    }
+  }
+
+  function populateForm() {
+    setToggle('feature_enabled', cfg.feature_enabled === 'true');
+    setVal('max_recommendations', cfg.max_recommendations ?? '12');
+    setVal('refresh_interval_hours', cfg.refresh_interval_hours ?? '24');
+    setVal('min_interactions_for_personalization', cfg.min_interactions_for_personalization ?? '5');
+    setSelect('algorithm', cfg.algorithm ?? 'hybrid');
+    setSelect('ai_provider', cfg.ai_provider ?? 'openai');
+    setVal('ai_endpoint', cfg.ai_endpoint ?? '');
+    setToggle('enable_similar_products', cfg.enable_similar_products !== 'false');
+    setToggle('enable_frequently_bought_together', cfg.enable_frequently_bought_together !== 'false');
+    setToggle('enable_trending', cfg.enable_trending !== 'false');
+    updateModeBanner();
+    document.getElementById('kpiAlgo').textContent = (cfg.algorithm ?? 'hybrid').replace(/_/g, ' ');
+    toggleAiEndpoint();
+  }
+
+  function updateModeBanner() {
+    const live = cfg.feature_enabled === 'true';
+    const banner = document.getElementById('modeBanner');
+    const text   = document.getElementById('modeBannerText');
+    const btn    = document.getElementById('goLiveBtn');
+    if (live) {
+      banner.className = 'mode-banner live';
+      text.innerHTML   = '<i class="fas fa-circle" style="color:#22c55e;font-size:.6rem"></i> Status: <strong>Live</strong> — Recommendations are active for all users.';
+      btn.textContent  = '';
+      btn.innerHTML    = '<i class="fas fa-pause"></i> Disable';
+      btn.className    = 'btn btn-danger';
+    } else {
+      banner.className = 'mode-banner test';
+      text.innerHTML   = '<i class="fas fa-pause-circle" style="color:#94a3b8;font-size:.6rem"></i> Status: <strong>Disabled</strong> — Recommendations are not shown to users. Click "Go Live" to activate.';
+      btn.innerHTML    = '<i class="fas fa-rocket"></i> Go Live';
+      btn.className    = 'btn btn-success';
+    }
+  }
+
+  async function goLive() {
+    const newVal = cfg.feature_enabled === 'true' ? 'false' : 'true';
+    try {
+      await apiFetch(`${API}/config`, 'PUT', { feature_enabled: newVal });
+      cfg.feature_enabled = newVal;
+      updateModeBanner();
+      showToast(newVal === 'true' ? '🚀 Recommendations are now LIVE!' : 'Recommendations disabled.', newVal === 'true' ? 'success' : '');
+    } catch (e) {
+      showToast('Failed to update status: ' + e.message, 'error');
+    }
+  }
+
+  // ─── Save helpers ─────────────────────────────────────────────────────────
+  async function saveGeneral() {
+    const payload = {
+      feature_enabled: document.getElementById('feature_enabled').checked ? 'true' : 'false',
+      max_recommendations: document.getElementById('max_recommendations').value,
+      refresh_interval_hours: document.getElementById('refresh_interval_hours').value,
+      min_interactions_for_personalization: document.getElementById('min_interactions_for_personalization').value,
+    };
+    await saveConfig(payload, 'alertGeneral');
+  }
+
+  async function saveAlgorithm() {
+    await saveConfig({ algorithm: document.getElementById('algorithm').value }, 'alertAlgorithm');
+    cfg.algorithm = document.getElementById('algorithm').value;
+    document.getElementById('kpiAlgo').textContent = cfg.algorithm.replace(/_/g, ' ');
+  }
+
+  async function saveAi() {
+    const payload = {
+      ai_provider: document.getElementById('ai_provider').value,
+      ai_endpoint: document.getElementById('ai_endpoint').value,
+    };
+    const key = document.getElementById('ai_api_key').value;
+    if (key && !key.includes('•')) payload.ai_api_key = key;
+    await saveConfig(payload, 'alertAi');
+  }
+
+  async function saveWidgets() {
+    await saveConfig({
+      enable_similar_products:           document.getElementById('enable_similar_products').checked ? 'true' : 'false',
+      enable_frequently_bought_together: document.getElementById('enable_frequently_bought_together').checked ? 'true' : 'false',
+      enable_trending:                   document.getElementById('enable_trending').checked ? 'true' : 'false',
+    }, 'alertWidgets');
+  }
+
+  async function saveConfig(payload, alertId) {
+    const alertEl = document.getElementById(alertId);
+    try {
+      const res = await apiFetch(`${API}/config`, 'PUT', payload);
+      if (res.success) {
+        Object.assign(cfg, payload);
+        updateModeBanner();
+        showAlert(alertEl, 'success', '<i class="fas fa-check-circle"></i> Saved successfully.');
+        showToast('Settings saved!', 'success');
+      } else {
+        showAlert(alertEl, 'error', res.error ?? 'Save failed.');
+      }
+    } catch (e) {
+      showAlert(alertEl, 'error', 'Error: ' + e.message);
+    }
+  }
+
+  // ─── AI connection test ──────────────────────────────────────────────────
+  async function testConnection() {
+    const btn = document.getElementById('testConnBtn');
+    const resultEl = document.getElementById('testResult');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing…';
+    resultEl.innerHTML = '';
+
+    // Save AI settings first
+    await saveAi();
+
+    try {
+      const res = await apiFetch(`${API}/config/test`, 'POST');
+      if (res.success) {
+        resultEl.innerHTML = '<span class="badge-pill badge-green"><i class="fas fa-check-circle"></i> Connection OK — provider: ' + (res.provider ?? '') + '</span>';
+        showToast('AI connection successful!', 'success');
+      } else {
+        resultEl.innerHTML = '<span class="badge-pill badge-red"><i class="fas fa-times-circle"></i> ' + (res.error ?? 'Failed') + '</span>';
+      }
+    } catch (e) {
+      resultEl.innerHTML = '<span class="badge-pill badge-red"><i class="fas fa-times-circle"></i> ' + e.message + '</span>';
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-plug"></i> Test Connection';
+  }
+
+  // ─── Batch generate ──────────────────────────────────────────────────────
+  async function triggerGenerate() {
+    const btn = document.getElementById('generateBtn');
+    const resultEl = document.getElementById('generateResult');
+    const rawText = document.getElementById('specificUsers').value.trim();
+    const userIds = rawText ? rawText.split('\n').map(s => s.trim()).filter(Boolean) : [];
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating…';
+    resultEl.innerHTML = '';
+
+    try {
+      const body = userIds.length ? { user_ids: userIds } : {};
+      const res = await apiFetch(`${API}/generate`, 'POST', body);
+      if (res.success) {
+        resultEl.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i>
+          Processed <strong>${res.processed}</strong> users.
+          ${res.errors ? `<strong>${res.errors}</strong> errors.` : ''}
+          Total: <strong>${res.total_users}</strong>.</div>`;
+        showToast('Batch generation complete!', 'success');
+      } else {
+        resultEl.innerHTML = `<div class="alert alert-error"><i class="fas fa-times-circle"></i> ${res.error ?? 'Generation failed.'}</div>`;
+      }
+    } catch (e) {
+      resultEl.innerHTML = `<div class="alert alert-error"><i class="fas fa-times-circle"></i> ${e.message}</div>`;
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Generate Now';
+  }
+
+  // ─── Analytics ────────────────────────────────────────────────────────────
+  async function loadAnalytics() {
+    try {
+      const res = await apiFetch(`${API}/analytics`);
+      if (res.success) {
+        document.getElementById('kpiShown').textContent   = Number(res.data.total_shown).toLocaleString();
+        document.getElementById('kpiClicked').textContent = Number(res.data.total_clicked).toLocaleString();
+        document.getElementById('kpiCTR').textContent     = res.data.ctr + '%';
+      }
+    } catch { /* silent — analytics not critical */ }
+  }
+
+  // ─── Tab switching ────────────────────────────────────────────────────────
+  function switchTab(name, evt) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+  }
+
+  // ─── UI helpers ───────────────────────────────────────────────────────────
+  function toggleAiEndpoint() {
+    const provider = document.getElementById('ai_provider').value;
+    document.getElementById('endpointRow').style.display = (provider !== 'openai') ? '' : 'none';
+  }
+
+  function toggleKeyVisibility() {
+    const inp = document.getElementById('ai_api_key');
+    const icon = document.getElementById('keyEyeIcon');
+    if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+    else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+  }
+
+  function setToggle(id, val) { const el = document.getElementById(id); if (el) el.checked = !!val; }
+  function setVal(id, val)    { const el = document.getElementById(id); if (el) el.value = val ?? ''; }
+  function setSelect(id, val) { const el = document.getElementById(id); if (el) el.value = val ?? ''; }
+
+  function showAlert(el, type, html) {
+    if (!el) return;
+    el.innerHTML = `<div class="alert alert-${type}">${html}</div>`;
+    setTimeout(() => { el.innerHTML = ''; }, 4000);
+  }
+
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.className = 'show' + (type ? ' ' + type : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+  }
+
+  // ─── Fetch wrapper ────────────────────────────────────────────────────────
+  async function apiFetch(url, method = 'GET', body = null) {
+    const token = localStorage.getItem('gsky_token') ?? sessionStorage.getItem('gsky_token');
+    const opts = {
+      method,
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(url, opts);
+    const json = await res.json().catch(() => ({ success: false, error: res.statusText }));
+    if (!res.ok && !json.success) throw new Error(json.error ?? `HTTP ${res.status}`);
+    return json;
+  }
+</script>
+</body>
+</html>

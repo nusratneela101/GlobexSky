@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Recommendations Widget – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+
+  <!--
+  ╔══════════════════════════════════════════════════════════════════════════╗
+  ║  GLOBEX SKY — RECOMMENDATIONS WIDGET                                    ║
+  ║                                                                         ║
+  ║  Usage — include this file as a standalone page or embed sections via   ║
+  ║  JavaScript includes / web components. Each section (<section>) can be  ║
+  ║  copy-pasted independently into any product or home page.               ║
+  ║                                                                         ║
+  ║  Sections:                                                              ║
+  ║  1. #rec-personalised  — "You May Also Like"                            ║
+  ║  2. #rec-bought-together — "Frequently Bought Together"                 ║
+  ║  3. #rec-trending      — "Trending Now"                                 ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+  -->
+
+  <style>
+    /* ── Scoped widget styles — all use .rec-* prefix to avoid conflicts ── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f8faff;color:#1a1a2e}
+    .demo-page{max-width:1200px;margin:0 auto;padding:32px 16px}
+    .demo-notice{background:#dbeafe;color:#1e40af;padding:12px 20px;border-radius:10px;font-size:.85rem;margin-bottom:32px;border:1px solid #bfdbfe;display:flex;align-items:center;gap:8px}
+
+    /* ── Widget Section ── */
+    .rec-section{margin-bottom:48px}
+    .rec-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .rec-section-title{font-family:'Poppins',sans-serif;font-size:1.25rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .rec-section-title i{color:#0052CC}
+    .rec-view-all{font-size:.83rem;font-weight:600;color:#0052CC;text-decoration:none;display:flex;align-items:center;gap:4px}
+    .rec-view-all:hover{color:#003d99}
+
+    /* ── Card Grid ── */
+    .rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+    @media(max-width:600px){.rec-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:360px){.rec-grid{grid-template-columns:1fr}}
+
+    /* ── Product Card ── */
+    .rec-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;cursor:pointer;position:relative}
+    .rec-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,82,204,.12)}
+    .rec-card-img{width:100%;aspect-ratio:1;object-fit:cover;background:#f1f5f9;display:block}
+    .rec-card-img-placeholder{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#e0e7ff,#f0f2f8);display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:2rem}
+    .rec-card-body{padding:12px}
+    .rec-card-name{font-size:.83rem;font-weight:600;color:#0a0e27;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+    .rec-card-price{font-size:.9rem;font-weight:700;color:#0052CC}
+    .rec-card-reason{font-size:.72rem;color:#64748b;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rec-card-badge{position:absolute;top:8px;left:8px;background:#0052CC;color:#fff;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:50px}
+    .rec-card-badge.trending{background:#f97316}
+    .rec-card-badge.ai{background:#8b5cf6}
+    .rec-card-actions{padding:0 12px 12px;display:flex;gap:6px}
+    .rec-btn{flex:1;padding:7px;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .rec-btn-cart{background:#0052CC;color:#fff}
+    .rec-btn-cart:hover{background:#003d99}
+    .rec-btn-wish{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}
+    .rec-btn-wish:hover{background:#fee2e2;color:#ef4444;border-color:#fecaca}
+
+    /* ── Frequently Bought Together layout ── */
+    .fbt-wrapper{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .fbt-card{flex:0 0 160px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s}
+    .fbt-card:hover{transform:translateY(-3px)}
+    .fbt-separator{font-size:1.4rem;color:#94a3b8;flex-shrink:0}
+    .fbt-add-all{background:#0052CC;color:#fff;padding:12px 24px;border-radius:10px;font-size:.88rem;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s;margin-top:16px}
+    .fbt-add-all:hover{background:#003d99}
+
+    /* ── Skeleton loader ── */
+    .rec-skeleton{background:#f1f5f9;border-radius:12px;overflow:hidden;animation:rec-pulse 1.4s ease-in-out infinite}
+    .rec-skeleton-img{width:100%;aspect-ratio:1;background:#e2e8f0}
+    .rec-skeleton-line{height:12px;background:#e2e8f0;border-radius:4px;margin:12px 12px 6px}
+    .rec-skeleton-line.short{width:50%;margin-bottom:12px}
+    @keyframes rec-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+    /* ── Empty state ── */
+    .rec-empty{text-align:center;padding:40px;color:#94a3b8}
+    .rec-empty i{font-size:2.5rem;margin-bottom:12px;display:block}
+    .rec-empty p{font-size:.88rem}
+
+    /* ── Toast ── */
+    #recToast{position:fixed;bottom:24px;right:24px;background:#0052CC;color:#fff;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px}
+    #recToast.show{opacity:1}
+    #recToast.success{background:#059669}
+    #recToast.error{background:#ef4444}
+  </style>
+</head>
+<body>
+<div class="demo-page">
+
+  <div class="demo-notice">
+    <i class="fas fa-info-circle"></i>
+    <strong>Widget Demo Page</strong> — This file demonstrates all three recommendation sections. In production, include each <code>&lt;section&gt;</code> block and its initialisation call directly in your product/home pages.
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       Section 1 — You May Also Like (personalised)
+  ════════════════════════════════════════════════════════════════════════════ -->
+  <section class="rec-section" id="rec-personalised">
+    <div class="rec-section-header">
+      <div class="rec-section-title">
+        <i class="fas fa-star"></i> You May Also Like
+      </div>
+      <a href="/products" class="rec-view-all">View all <i class="fas fa-chevron-right"></i></a>
+    </div>
+    <div class="rec-grid" id="grid-personalised">
+      <!-- Skeleton placeholders -->
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       Section 2 — Frequently Bought Together
+  ════════════════════════════════════════════════════════════════════════════ -->
+  <section class="rec-section" id="rec-bought-together">
+    <div class="rec-section-header">
+      <div class="rec-section-title">
+        <i class="fas fa-boxes"></i> Frequently Bought Together
+      </div>
+    </div>
+    <div id="fbt-wrapper-container">
+      <!-- Skeleton -->
+      <div class="fbt-wrapper" id="fbt-skeleton">
+        <div class="rec-skeleton fbt-card"><div class="rec-skeleton-img" style="aspect-ratio:1"></div><div class="rec-skeleton-line"></div></div>
+        <span class="fbt-separator">+</span>
+        <div class="rec-skeleton fbt-card"><div class="rec-skeleton-img" style="aspect-ratio:1"></div><div class="rec-skeleton-line"></div></div>
+        <span class="fbt-separator">+</span>
+        <div class="rec-skeleton fbt-card"><div class="rec-skeleton-img" style="aspect-ratio:1"></div><div class="rec-skeleton-line"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       Section 3 — Trending Now
+  ════════════════════════════════════════════════════════════════════════════ -->
+  <section class="rec-section" id="rec-trending">
+    <div class="rec-section-header">
+      <div class="rec-section-title">
+        <i class="fas fa-fire-alt" style="color:#f97316"></i> Trending Now
+      </div>
+      <a href="/products?sort=trending" class="rec-view-all">View all <i class="fas fa-chevron-right"></i></a>
+    </div>
+    <div class="rec-grid" id="grid-trending">
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+      <div class="rec-skeleton"><div class="rec-skeleton-img"></div><div class="rec-skeleton-line"></div><div class="rec-skeleton-line short"></div></div>
+    </div>
+  </section>
+
+</div><!-- /demo-page -->
+
+<div id="recToast"><i class="fas fa-check-circle"></i><span id="recToastMsg"></span></div>
+
+<script>
+/**
+ * ── GlobexSky Recommendations Widget ────────────────────────────────────────
+ *
+ * Self-contained JS for the three recommendation sections.
+ * Configure via window.GskyRec before this script runs:
+ *
+ *   window.GskyRec = {
+ *     apiBase:   '/api/v1/recommendations',  // API base URL
+ *     productId: 'uuid-of-current-product',  // for FBT & similar
+ *     limit:     8,                           // cards per section
+ *   };
+ */
+
+(function () {
+  const cfg = window.GskyRec ?? {};
+  const API  = cfg.apiBase   ?? '/api/v1/recommendations';
+  const PID  = cfg.productId ?? null;
+  const LIMIT = cfg.limit    ?? 8;
+
+  // ── Token ─────────────────────────────────────────────────────────────────
+  function getToken() {
+    return localStorage.getItem('gsky_token') ?? sessionStorage.getItem('gsky_token') ?? null;
+  }
+
+  // ── Fetch helper ──────────────────────────────────────────────────────────
+  async function apiFetch(path) {
+    const token = getToken();
+    const res = await fetch(path, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  // ── Record interaction ────────────────────────────────────────────────────
+  async function recordInteraction(productId, type) {
+    const token = getToken();
+    try {
+      await fetch(`${API}/interaction`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ product_id: productId, interaction_type: type }),
+      });
+    } catch { /* silent */ }
+  }
+
+  // ── Build product card ────────────────────────────────────────────────────
+  function buildCard(item, badgeText = null, badgeClass = '') {
+    const p = item.product ?? item;
+    if (!p) return null;
+
+    const img = Array.isArray(p.images) ? p.images[0] : p.images;
+    const price = p.price ? `$${parseFloat(p.price).toFixed(2)}` : '';
+    const reason = item.reason ?? '';
+    const slug = p.slug ? `/products/${p.slug}` : '#';
+
+    const card = document.createElement('div');
+    card.className = 'rec-card';
+    card.dataset.productId = p.id ?? item.product_id;
+
+    card.innerHTML = `
+      ${badgeText ? `<span class="rec-card-badge ${badgeClass}">${badgeText}</span>` : ''}
+      ${img
+        ? `<img class="rec-card-img" src="${escHtml(img)}" alt="${escHtml(p.name ?? '')}" loading="lazy"/>`
+        : `<div class="rec-card-img-placeholder"><i class="fas fa-image"></i></div>`}
+      <div class="rec-card-body">
+        <div class="rec-card-name">${escHtml(p.name ?? 'Product')}</div>
+        ${price ? `<div class="rec-card-price">${escHtml(price)}</div>` : ''}
+        ${reason ? `<div class="rec-card-reason">${escHtml(reason)}</div>` : ''}
+      </div>
+      <div class="rec-card-actions">
+        <button class="rec-btn rec-btn-cart" data-id="${escHtml(p.id ?? '')}" onclick="GskyRec.addToCart(this)"><i class="fas fa-cart-plus"></i> Add</button>
+        <button class="rec-btn rec-btn-wish" data-id="${escHtml(p.id ?? '')}" onclick="GskyRec.wishlist(this)"><i class="fas fa-heart"></i></button>
+      </div>`;
+
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.rec-btn')) return;
+      recordInteraction(p.id ?? item.product_id, 'click');
+      if (slug !== '#') window.location.href = slug;
+    });
+
+    return card;
+  }
+
+  function escHtml(str) {
+    return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Render helpers ────────────────────────────────────────────────────────
+  function renderGrid(gridId, items, badgeText, badgeClass) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    grid.innerHTML = '';
+    if (!items.length) {
+      grid.innerHTML = `<div class="rec-empty" style="grid-column:1/-1"><i class="fas fa-box-open"></i><p>No recommendations available yet.</p></div>`;
+      return;
+    }
+    items.forEach(item => {
+      const card = buildCard(item, badgeText, badgeClass);
+      if (card) grid.appendChild(card);
+    });
+  }
+
+  // ── Load personalised ─────────────────────────────────────────────────────
+  async function loadPersonalised() {
+    try {
+      const res = await apiFetch(`${API}?limit=${LIMIT}`);
+      renderGrid('grid-personalised', res.data ?? [], null, '');
+    } catch {
+      renderGrid('grid-personalised', [], null, '');
+    }
+  }
+
+  // ── Load FBT ──────────────────────────────────────────────────────────────
+  async function loadFbt() {
+    const container = document.getElementById('fbt-wrapper-container');
+    if (!container) return;
+    if (!PID) { container.innerHTML = `<div class="rec-empty"><i class="fas fa-box-open"></i><p>No product context.</p></div>`; return; }
+    try {
+      const res = await apiFetch(`${API}/frequently-bought/${PID}?limit=3`);
+      const items = res.data ?? [];
+      if (!items.length) { container.innerHTML = `<div class="rec-empty"><i class="fas fa-box-open"></i><p>Not enough data yet.</p></div>`; return; }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'fbt-wrapper';
+
+      items.forEach((item, idx) => {
+        const p = item.product ?? {};
+        const img = Array.isArray(p.images) ? p.images[0] : p.images;
+        const card = document.createElement('div');
+        card.className = 'fbt-card';
+        card.innerHTML = `
+          ${img ? `<img class="rec-card-img" src="${escHtml(img)}" alt="${escHtml(p.name ?? '')}" loading="lazy"/>` : `<div class="rec-card-img-placeholder"><i class="fas fa-image"></i></div>`}
+          <div class="rec-card-body" style="padding:10px">
+            <div class="rec-card-name">${escHtml(p.name ?? 'Product')}</div>
+            ${p.price ? `<div class="rec-card-price">$${parseFloat(p.price).toFixed(2)}</div>` : ''}
+          </div>`;
+        wrapper.appendChild(card);
+        if (idx < items.length - 1) {
+          const sep = document.createElement('span');
+          sep.className = 'fbt-separator';
+          sep.textContent = '+';
+          wrapper.appendChild(sep);
+        }
+      });
+
+      const addAllBtn = document.createElement('button');
+      addAllBtn.className = 'fbt-add-all';
+      addAllBtn.innerHTML = `<i class="fas fa-cart-plus"></i> Add All ${items.length} to Cart`;
+      addAllBtn.addEventListener('click', () => {
+        items.forEach(item => {
+          const pid = item.product?.id ?? item.product_id;
+          if (pid) recordInteraction(pid, 'cart');
+        });
+        showToast('All items added to cart!', 'success');
+      });
+
+      container.innerHTML = '';
+      container.appendChild(wrapper);
+      container.appendChild(addAllBtn);
+    } catch {
+      container.innerHTML = `<div class="rec-empty"><i class="fas fa-box-open"></i><p>Could not load data.</p></div>`;
+    }
+  }
+
+  // ── Load trending ─────────────────────────────────────────────────────────
+  async function loadTrending() {
+    try {
+      const res = await apiFetch(`${API}/trending?limit=${LIMIT}`);
+      renderGrid('grid-trending', res.data ?? [], '🔥 Trending', 'trending');
+    } catch {
+      renderGrid('grid-trending', [], null, '');
+    }
+  }
+
+  // ── Toast ──────────────────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('recToast');
+    if (!t) return;
+    document.getElementById('recToastMsg').textContent = msg;
+    t.className = 'show' + (type ? ' ' + type : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+  }
+
+  // ── Public API ────────────────────────────────────────────────────────────
+  window.GskyRec = Object.assign(window.GskyRec ?? {}, {
+    addToCart(btn) {
+      const pid = btn.dataset.id;
+      if (pid) recordInteraction(pid, 'cart');
+      showToast('Added to cart!', 'success');
+    },
+    wishlist(btn) {
+      const pid = btn.dataset.id;
+      if (pid) recordInteraction(pid, 'wishlist');
+      btn.innerHTML = '<i class="fas fa-heart" style="color:#ef4444"></i>';
+      showToast('Saved to wishlist!', 'success');
+    },
+    reload() {
+      loadPersonalised();
+      if (PID) { loadFbt(); }
+      loadTrending();
+    },
+  });
+
+  // ── Boot ──────────────────────────────────────────────────────────────────
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => window.GskyRec.reload());
+  } else {
+    window.GskyRec.reload();
+  }
+})();
+</script>
+</body>
+</html>
