@@ -96,6 +96,7 @@ import customizationRoutes from './routes/customization.routes.js';
 import teamRoutes from './routes/team.routes.js';
 import rfqMatchingRoutes from './routes/rfqMatching.routes.js';
 import currencyDisplayRoutes from './routes/currencyDisplay.routes.js';
+import couponRoutes from './routes/coupon.routes.js';
 
 import backupRoutes from './routes/backup.routes.js';
 import systemLogsRoutes from './routes/systemLogs.routes.js';
@@ -270,6 +271,7 @@ app.use(`${API}/customization`, customizationRoutes);
 app.use(`${API}/teams`, teamRoutes);
 app.use(`${API}/rfq-matching`, rfqMatchingRoutes);
 app.use(`${API}/currency-display`, currencyDisplayRoutes);
+app.use(`${API}/coupons`, couponRoutes);
 
 // Swagger docs available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
