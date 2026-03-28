@@ -10,6 +10,15 @@ import CouponUsage from '../models/CouponUsage.js';
 import * as svc from '../services/coupon.service.js';
 import supabase from '../config/supabase.js';
 
+// Validation error message prefixes that should result in 422 (not 500)
+const VALIDATION_MESSAGES = [
+  'Coupon not found.', 'This coupon is no longer active.',
+  'This coupon is not yet valid.', 'This coupon has expired.',
+  'Minimum order amount', 'This coupon has reached its usage limit.',
+  'You have already used this coupon',
+];
+
+
 // ─── Admin: Create ───────────────────────────────────────────────────────────
 
 /** POST /api/v1/coupons */
@@ -118,13 +127,7 @@ export async function validateCoupon(req, res, next) {
     });
   } catch (err) {
     // Validation errors should be 400, not 500
-    const validationMessages = [
-      'Coupon not found.', 'This coupon is no longer active.',
-      'This coupon is not yet valid.', 'This coupon has expired.',
-      'Minimum order amount', 'This coupon has reached its usage limit.',
-      'You have already used this coupon',
-    ];
-    if (validationMessages.some((m) => err.message?.startsWith(m))) {
+    if (VALIDATION_MESSAGES.some((m) => err.message?.startsWith(m))) {
       return res.status(422).json({ success: false, error: err.message });
     }
     next(err);
@@ -158,13 +161,7 @@ export async function applyCoupon(req, res, next) {
       },
     });
   } catch (err) {
-    const validationMessages = [
-      'Coupon not found.', 'This coupon is no longer active.',
-      'This coupon is not yet valid.', 'This coupon has expired.',
-      'Minimum order amount', 'This coupon has reached its usage limit.',
-      'You have already used this coupon',
-    ];
-    if (validationMessages.some((m) => err.message?.startsWith(m))) {
+    if (VALIDATION_MESSAGES.some((m) => err.message?.startsWith(m))) {
       return res.status(422).json({ success: false, error: err.message });
     }
     next(err);
