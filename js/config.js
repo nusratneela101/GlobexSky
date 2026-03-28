@@ -1,161 +1,81 @@
 /**
- * js/config.js — Frontend public config loader.
+ * js/config.js — Supabase configuration.
  *
- * Fetches non-sensitive runtime config from GET /api/v1/config/public on page
- * load, then caches the result in localStorage with a 10-minute TTL so that
- * subsequent page loads are instant.  All other JS modules that need Supabase
- * URL/keys, Stripe publishable key, mode (test/live), etc. should read from
- * this module instead of hard-coding values.
+ * Provides Supabase URL, anon key, and a ready supabase client.
+ * All other JS modules should import from this module.
  *
- * Usage (plain <script> tag):
- *   GlobexCfg.ready().then(cfg => console.log(cfg.mode));
+ * Load via CDN before this file:
+ *   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
  *
- * The resolved config shape:
+ * Usage:
+ *   GlobexCfg.ready().then(cfg => console.log(cfg.supabaseUrl));
+ *
+ * Config shape:
  * {
- *   apiBaseUrl          : string   — e.g. "http://localhost:5000/api/v1"
- *   supabaseUrl         : string | null
- *   supabaseAnonKey     : string | null
- *   stripePublishableKey: string | null
- *   agoraAppId          : string | null
- *   cloudinaryCloudName : string | null
- *   defaultCurrency     : string  — e.g. "USD"
- *   defaultLanguage     : string  — e.g. "en"
- *   mode                : "test" | "live"
+ *   supabaseUrl     : string
+ *   supabaseAnonKey : string
+ *   defaultCurrency : string  — "USD"
+ *   defaultLanguage : string  — "en"
  * }
  */
 
 (function (global) {
   'use strict';
 
-  // ─── API Base URL ──────────────────────────────────────────────────────────
+  var SUPABASE_URL     = 'https://czpqbdkarwdvrnhtvysd.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E';
 
-  var hostname = global.location && global.location.hostname;
-  var isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+  var _config = {
+    supabaseUrl:      SUPABASE_URL,
+    supabaseAnonKey:  SUPABASE_ANON_KEY,
+    defaultCurrency:  'USD',
+    defaultLanguage:  'en',
+  };
 
-  var API_BASE_URL = isLocal
-    ? 'http://localhost:5000/api/v1'
-    : 'https://globexsky-backend.up.railway.app/api/v1';
-
-  // Allow the environment variable or a window-level override to take precedence.
-  if (global.GLOBEX_API_BASE) API_BASE_URL = global.GLOBEX_API_BASE;
-
-  // ─── Cache helpers ─────────────────────────────────────────────────────────
-
-  var CACHE_KEY = 'gsky_pub_cfg';
-  var CACHE_TTL = 10 * 60 * 1000; // 10 minutes
-
-  function _readCache() {
-    try {
-      var raw = localStorage.getItem(CACHE_KEY);
-      if (!raw) return null;
-      var entry = JSON.parse(raw);
-      if (!entry || typeof entry.ts !== 'number' || Date.now() - entry.ts > CACHE_TTL) {
-        localStorage.removeItem(CACHE_KEY);
-        return null;
-      }
-      return entry.data;
-    } catch (_) {
-      return null;
+  // Initialize Supabase client when library is available
+  function _initClient() {
+    if (global.supabase && global.supabase.createClient && !global.supabaseClient) {
+      global.supabaseClient = global.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      _config.client = global.supabaseClient;
     }
+    return _config.client || null;
   }
 
-  function _writeCache(data) {
-    try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: data }));
-    } catch (_) { /* quota exceeded — ignore */ }
-  }
-
-  // ─── State ─────────────────────────────────────────────────────────────────
-
-  var _config = null;
-  var _promise = null;
-
-  // ─── Fetch ─────────────────────────────────────────────────────────────────
-
-  function _fetchConfig() {
-    if (_promise) return _promise;
-
-    _promise = fetch(API_BASE_URL + '/config/public')
-      .then(function (res) {
-        if (!res.ok) throw new Error('Config fetch failed: HTTP ' + res.status);
-        return res.json();
-      })
-      .then(function (json) {
-        var d = (json && json.data) || {};
-        _config = {
-          apiBaseUrl:           API_BASE_URL,
-          supabaseUrl:          d.supabaseUrl          || null,
-          supabaseAnonKey:      d.supabaseAnonKey      || null,
-          stripePublishableKey: d.stripePublishableKey || null,
-          agoraAppId:           d.agoraAppId           || null,
-          cloudinaryCloudName:  d.cloudinaryCloudName  || null,
-          defaultCurrency:      d.defaultCurrency      || 'USD',
-          defaultLanguage:      d.defaultLanguage      || 'en',
-          mode:                 d.mode                 || 'test',
-        };
-        _writeCache(_config);
-        return _config;
-      })
-      .catch(function (err) {
-        console.warn('[GlobexCfg] Could not load public config:', err.message);
-        // Return a safe fallback so pages can still function partially.
-        _config = {
-          apiBaseUrl:           API_BASE_URL,
-          supabaseUrl:          null,
-          supabaseAnonKey:      null,
-          stripePublishableKey: null,
-          agoraAppId:           null,
-          cloudinaryCloudName:  null,
-          defaultCurrency:      'USD',
-          defaultLanguage:      'en',
-          mode:                 'test',
-        };
-        return _config;
-      });
-
-    return _promise;
-  }
-
-  // ─── Public API ────────────────────────────────────────────────────────────
+  _initClient();
 
   var GlobexCfg = {
     /**
      * Returns a Promise that resolves with the config object.
-     * Cached in localStorage for CACHE_TTL ms; safe to call on every page load.
      */
     ready: function () {
-      var cached = _readCache();
-      if (cached) {
-        _config = cached;
-        return Promise.resolve(cached);
-      }
-      if (_config) return Promise.resolve(_config);
-      return _fetchConfig();
+      _initClient();
+      return Promise.resolve(_config);
     },
 
     /**
-     * Synchronous accessor — only valid AFTER ready() has resolved.
-     * Returns null if the config has not been fetched yet.
+     * Synchronous accessor.
      */
     get: function () {
+      _initClient();
       return _config;
     },
 
-    /** The API base URL (available immediately, no async needed). */
-    apiBaseUrl: API_BASE_URL,
+    /** Supabase URL (available immediately). */
+    supabaseUrl: SUPABASE_URL,
 
-    /** Invalidate the cache and force a re-fetch on next ready() call. */
-    invalidate: function () {
-      try { localStorage.removeItem(CACHE_KEY); } catch (_) { }
-      _config = null;
-      _promise = null;
+    /** Supabase anon key (available immediately). */
+    supabaseAnonKey: SUPABASE_ANON_KEY,
+
+    /** Get the Supabase client instance. */
+    getClient: function () {
+      return _initClient() || global.supabaseClient || null;
     },
   };
 
-  // Expose globally
   global.GlobexCfg = GlobexCfg;
 
-  // Start fetching immediately on script load so it's ready by DOMContentLoaded.
-  GlobexCfg.ready();
+  // Also expose raw credentials for modules that need them directly
+  global.SUPABASE_URL = SUPABASE_URL;
+  global.SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
 
 }(typeof window !== 'undefined' ? window : this));

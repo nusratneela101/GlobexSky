@@ -245,26 +245,27 @@ function initNewsletterForm() {
     }
 
     const btn = form.querySelector('[type="submit"]');
-    const originalText = btn?.textContent;
-    if (btn) { btn.disabled = true; btn.textContent = 'Subscribing…'; }
+    const originalText = btn?.innerHTML;
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing…'; }
 
     try {
-      const base = (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL) || '/api/v1';
-      const res = await fetch(`${base}/newsletter/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || 'Subscription failed');
+      const sb = window.supabaseClient ||
+        (window.supabase && window.supabase.createClient &&
+          window.supabase.createClient(
+            'https://czpqbdkarwdvrnhtvysd.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E'
+          ));
+
+      if (sb) {
+        const { error } = await sb.from('newsletter_subscribers').upsert({ email }, { onConflict: 'email' });
+        if (error && error.code !== '23505') throw new Error(error.message);
       }
       if (typeof showToast === 'function') showToast('Thank you for subscribing!', 'success');
       form.reset();
     } catch (_) {
       if (typeof showToast === 'function') showToast('Subscription failed. Please try again.', 'error');
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = originalText; }
+      if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
     }
   });
 }

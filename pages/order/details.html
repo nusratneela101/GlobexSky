@@ -866,6 +866,8 @@
       .order-header-card { padding: 18px; }
     }
   </style>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -1464,29 +1466,34 @@
         }
       }
 
-      window.initOrderDetailsPage = function () {
-        if (!window.ApiService) return;
+      window.initOrderDetailsPage = async function () {
+        var SUPABASE_URL      = 'https://czpqbdkarwdvrnhtvysd.supabase.co';
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E';
+        var sb = window.supabaseClient ||
+          (window.supabase && window.supabase.createClient &&
+            window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
 
         var orderId = getOrderIdFromURL();
-        if (!orderId) return; // No ID in URL; keep static fallback
+        if (!orderId || !sb) return;
 
-        window.ApiService.get('/orders/' + orderId)
-          .then(function (data) {
-            var order = (data && (data.order || data.data || data)) || {};
-            if (order && (order.id || order._id || order.orderNumber)) {
-              applyOrderData(order);
-            }
-          })
-          .catch(function (err) {
-            if (err && err.status === 401) {
-              window.ApiService.redirectToLogin && window.ApiService.redirectToLogin();
-              return;
-            }
-            if (err && err.status === 404) {
-              showToast && showToast('Order not found.', 'error');
-            }
-            // Keep static fallback content on other errors
-          });
+        try {
+          var { data: order, error } = await sb.from('orders').select('*').eq('id', orderId).single();
+          if (error) throw new Error(error.message);
+          if (order && order.id) {
+            applyOrderData({
+              id:          order.id,
+              orderNumber: order.id.substring(0, 8),
+              date:        new Date(order.created_at).toLocaleDateString(),
+              status:      order.status,
+              total:       order.total_amount,
+            });
+          }
+        } catch (err) {
+          if (err.message && err.message.includes('not found')) {
+            if (typeof showToast === 'function') showToast('Order not found.', 'error');
+          }
+          console.warn('[Order] Load error:', err.message);
+        }
       };
 
       document.addEventListener('DOMContentLoaded', function () {

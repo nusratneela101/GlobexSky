@@ -1,91 +1,49 @@
 /**
  * Globex Sky - auth.js
- * Authentication modal management: login, register, mock session,
- * social login placeholders, form validation, and navbar UI updates.
+ * Real Supabase authentication: login, register, logout, navbar UI.
  *
- * NOTE: This is a frontend-only mock. No real credentials are transmitted.
- * Replace mock functions with real API calls for production.
+ * Depends on:
+ *   - Supabase CDN: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ *   - assets/js/config.js (initializes window.supabaseClient)
  */
 
-const AUTH_KEY = 'globexUser';
-const SESSION_KEY = 'globexSession';
+/* ─────────────────────────────────────────────
+   SUPABASE CLIENT
+───────────────────────────────────────────── */
+
+function _getSupabaseClient() {
+  return window.supabaseClient ||
+    (window.supabase && window.supabase.createClient &&
+      window.supabase.createClient(
+        'https://czpqbdkarwdvrnhtvysd.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E'
+      ));
+}
 
 /* ─────────────────────────────────────────────
    SESSION HELPERS
 ───────────────────────────────────────────── */
 
 /**
- * Return the currently "logged-in" user from localStorage, or null.
- * @returns {{ name: string, email: string, avatar: string } | null}
+ * Return the currently logged-in Supabase user from localStorage, or null.
+ * @returns {object|null}
  */
 function getCurrentUser() {
   try {
-    return JSON.parse(localStorage.getItem(AUTH_KEY)) || null;
-  } catch (_) {
-    return null;
-  }
-}
-
-/** Persist a user object to localStorage. */
-function saveUser(user) {
-  localStorage.setItem(AUTH_KEY, JSON.stringify(user));
-}
-
-/** Persist a session (token + user) to localStorage. */
-function saveSession(token, refreshToken, user) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ token, refresh_token: refreshToken }));
-  saveUser(user);
-}
-
-/** Remove the user session from localStorage. */
-function clearUser() {
-  localStorage.removeItem(AUTH_KEY);
-  localStorage.removeItem(SESSION_KEY);
+    const keys = Object.keys(localStorage);
+    for (const key of keys) {
+      if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+        const sess = JSON.parse(localStorage.getItem(key) || 'null');
+        if (sess && sess.user) return sess.user;
+      }
+    }
+  } catch (_) { }
+  return null;
 }
 
 /* ─────────────────────────────────────────────
    NAVBAR UI
 ───────────────────────────────────────────── */
-
-/**
- * Update the navbar to reflect the current auth state.
- * Shows user avatar + name when logged in, auth buttons when logged out.
- */
-function updateNavUI() {
-  const user = getCurrentUser();
-
-  // Elements that are only visible when logged OUT
-  document.querySelectorAll('.auth-logged-out, [data-auth="logged-out"]').forEach((el) => {
-    el.style.display = user ? 'none' : '';
-  });
-
-  // Elements that are only visible when logged IN
-  document.querySelectorAll('.auth-logged-in, [data-auth="logged-in"]').forEach((el) => {
-    el.style.display = user ? '' : 'none';
-  });
-
-  if (user) {
-    // Populate user avatar
-    document.querySelectorAll('.user-avatar, [data-user-avatar]').forEach((el) => {
-      if (el.tagName === 'IMG') {
-        el.src = user.avatar || generateInitialsAvatar(user.name);
-        el.alt = user.name;
-      } else {
-        el.textContent = user.name.charAt(0).toUpperCase();
-      }
-    });
-
-    // Populate user display name
-    document.querySelectorAll('.user-display-name, [data-user-name]').forEach((el) => {
-      el.textContent = user.name;
-    });
-
-    // Populate user email
-    document.querySelectorAll('.user-display-email, [data-user-email]').forEach((el) => {
-      el.textContent = user.email;
-    });
-  }
-}
 
 /** Generate a simple data-URI avatar from the user's initials. */
 function generateInitialsAvatar(name = '') {
@@ -100,7 +58,7 @@ function generateInitialsAvatar(name = '') {
   canvas.width = 48;
   canvas.height = 48;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#1a73e8';
+  ctx.fillStyle = '#0052CC';
   ctx.fillRect(0, 0, 48, 48);
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 20px sans-serif';
@@ -108,6 +66,51 @@ function generateInitialsAvatar(name = '') {
   ctx.textBaseline = 'middle';
   ctx.fillText(initials, 24, 24);
   return canvas.toDataURL();
+}
+
+/**
+ * Update the navbar to reflect the current auth state.
+ */
+function updateNavUI() {
+  const sb = _getSupabaseClient();
+  const syncUI = (user) => {
+    // Elements visible when logged out
+    document.querySelectorAll('.auth-logged-out, [data-auth="logged-out"]').forEach((el) => {
+      el.style.display = user ? 'none' : '';
+    });
+    // Elements visible when logged in
+    document.querySelectorAll('.auth-logged-in, [data-auth="logged-in"]').forEach((el) => {
+      el.style.display = user ? '' : 'none';
+    });
+
+    if (user) {
+      const name = (user.user_metadata && user.user_metadata.name) || user.email.split('@')[0];
+      // Avatar
+      document.querySelectorAll('.user-avatar, [data-user-avatar]').forEach((el) => {
+        if (el.tagName === 'IMG') {
+          el.src = generateInitialsAvatar(name);
+          el.alt = name;
+        } else {
+          el.textContent = name.charAt(0).toUpperCase();
+        }
+      });
+      // Display name
+      document.querySelectorAll('.user-display-name, [data-user-name]').forEach((el) => {
+        el.textContent = name;
+      });
+      // Email
+      document.querySelectorAll('.user-display-email, [data-user-email]').forEach((el) => {
+        el.textContent = user.email;
+      });
+    }
+  };
+
+  // Use async Supabase getUser for accurate state
+  if (sb) {
+    sb.auth.getUser().then(({ data }) => syncUI(data && data.user)).catch(() => syncUI(null));
+  } else {
+    syncUI(getCurrentUser());
+  }
 }
 
 /* ─────────────────────────────────────────────
@@ -175,227 +178,160 @@ function validateEmail(email) {
 function validateLoginForm(form) {
   let valid = true;
   clearFormErrors(form);
-
-  const emailField = form.querySelector('[name="email"], input[type="email"]');
+  const emailField    = form.querySelector('[name="email"], input[type="email"]');
   const passwordField = form.querySelector('[name="password"], input[type="password"]');
-
   if (emailField && !validateEmail(emailField.value.trim())) {
     showFieldError(emailField, 'Please enter a valid email address.');
     valid = false;
   }
-
   if (passwordField && passwordField.value.length < 6) {
     showFieldError(passwordField, 'Password must be at least 6 characters.');
     valid = false;
   }
-
   return valid;
 }
 
 function validateRegisterForm(form) {
   let valid = true;
   clearFormErrors(form);
-
-  const nameField = form.querySelector('[name="name"]');
-  const emailField = form.querySelector('[name="email"], input[type="email"]');
+  const nameField     = form.querySelector('[name="name"]');
+  const emailField    = form.querySelector('[name="email"], input[type="email"]');
   const passwordField = form.querySelector('[name="password"], input[type="password"]');
-  const confirmField = form.querySelector('[name="confirm_password"], [name="confirmPassword"]');
-
+  const confirmField  = form.querySelector('[name="confirm_password"], [name="confirmPassword"]');
   if (nameField && nameField.value.trim().length < 2) {
     showFieldError(nameField, 'Please enter your full name (min 2 characters).');
     valid = false;
   }
-
   if (emailField && !validateEmail(emailField.value.trim())) {
     showFieldError(emailField, 'Please enter a valid email address.');
     valid = false;
   }
-
   if (passwordField && passwordField.value.length < 6) {
     showFieldError(passwordField, 'Password must be at least 6 characters.');
     valid = false;
   }
-
   if (confirmField && passwordField && confirmField.value !== passwordField.value) {
     showFieldError(confirmField, 'Passwords do not match.');
     valid = false;
   }
-
   return valid;
 }
 
 /* ─────────────────────────────────────────────
-   MOCK LOGIN / LOGOUT
+   SUPABASE LOGIN / REGISTER / LOGOUT
 ───────────────────────────────────────────── */
 
 /**
- * Attempt real API login; falls back to mock login in development.
+ * Sign in with Supabase Auth.
  * @param {string} email
  * @param {string} password
  */
-async function mockLogin(email, password) {
-  // Try real API if available
-  const api = window.ApiClient || window.API;
-  if (api) {
-    try {
-      const res = await api.auth.login(email, password);
-      const { token, refresh_token, user } = res.data || res;
-      const profile = (user && user.profile) || {};
-      const userData = {
-        name: profile.full_name || (user && user.email || email).split('@')[0],
-        email: (user && user.email) || email,
-        avatar: profile.avatar_url || '',
-        role: profile.role || 'buyer',
-        id: user && user.id,
-        loggedInAt: new Date().toISOString(),
-      };
-      saveSession(token, refresh_token, userData);
-      updateNavUI();
-      closeLoginModal();
-      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Welcome back, ${userData.name}!`, 'success');
-      return;
-    } catch (err) {
-      const msg = err.message || 'Login failed. Please check your credentials.';
-      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
-      return;
-    }
-  }
-
-  // Fallback mock (development without backend)
-  const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-  const user = { name, email: email.trim().toLowerCase(), avatar: '', loggedInAt: new Date().toISOString() };
-  saveUser(user);
-  updateNavUI();
-  closeLoginModal();
-  if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Welcome back, ${user.name}!`, 'success');
+async function login(email, password) {
+  const sb = _getSupabaseClient();
+  if (!sb) throw new Error('Supabase client not initialized. Please include the Supabase CDN script.');
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 /**
- * Attempt real API registration; falls back to mock in development.
+ * Register a new account with Supabase Auth.
  * @param {string} name
  * @param {string} email
  * @param {string} password
- * @param {string} role
+ * @param {string} [role]
+ * @param {string} [country]
  */
-async function mockRegister(name, email, password = '', role = 'buyer', country = '') {
-  const api = window.ApiClient || window.API;
-  if (api) {
-    try {
-      await api.auth.register({ name, email, password, role, country });
-      closeRegisterModal();
-      if (window.GlobexSky?.showToast) {
-        window.GlobexSky.showToast('Account created! Please check your email to verify your account.', 'success');
-      }
-      return;
-    } catch (err) {
-      const msg = err.message || 'Registration failed. Please try again.';
-      if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
-      return;
-    }
-  }
-
-  // Fallback mock
-  const user = { name: name.trim(), email: email.trim().toLowerCase(), avatar: '', registeredAt: new Date().toISOString() };
-  saveUser(user);
-  updateNavUI();
-  closeRegisterModal();
-  if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Account created! Welcome, ${user.name}!`, 'success');
+async function register(name, email, password, role = 'buyer', country = '') {
+  const sb = _getSupabaseClient();
+  if (!sb) throw new Error('Supabase client not initialized. Please include the Supabase CDN script.');
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: { data: { name: name || email.split('@')[0], role, country } },
+  });
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 /** Log out the current user. */
 async function logout() {
-  const api = window.ApiClient || window.API;
-  if (api) {
-    try { await api.auth.logout(); } catch (_) { /* ignore */ }
-  }
-  clearUser();
+  const sb = _getSupabaseClient();
+  if (sb) await sb.auth.signOut();
   updateNavUI();
-
-  if (window.GlobexSky?.showToast) {
-    window.GlobexSky.showToast('You have been logged out.', 'info');
-  }
-
-  // Redirect to home if on a protected page
-  const protectedPaths = ['/pages/account/', '/pages/admin/'];
-  if (protectedPaths.some((p) => window.location.pathname.startsWith(p))) {
-    window.location.href = '/';
-  }
+  closeLoginModal();
 }
 
 /* ─────────────────────────────────────────────
-   SOCIAL LOGIN PLACEHOLDERS
+   MODAL EVENT HANDLERS (for inline modal usage)
 ───────────────────────────────────────────── */
-function handleSocialLogin(provider) {
-  // Placeholder — replace with real OAuth flow
-  console.info(`[Globex Sky Auth] Social login with ${provider} is not yet configured.`);
-  if (window.GlobexSky?.showToast) {
-    window.GlobexSky.showToast(`${provider} login coming soon!`, 'info');
+
+async function handleModalLogin(email, password) {
+  try {
+    await login(email, password);
+    const user = getCurrentUser();
+    const name = (user && user.user_metadata && user.user_metadata.name) || (user && user.email && user.email.split('@')[0]) || 'User';
+    updateNavUI();
+    closeLoginModal();
+    if (window.GlobexSky?.showToast) window.GlobexSky.showToast(`Welcome back, ${name}!`, 'success');
+  } catch (err) {
+    const msg = err.message || 'Login failed. Please check your credentials.';
+    if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
+  }
+}
+
+async function handleModalRegister(name, email, password, role = 'buyer', country = '') {
+  try {
+    await register(name, email, password, role, country);
+    closeRegisterModal();
+    if (window.GlobexSky?.showToast) {
+      window.GlobexSky.showToast('Account created! Please check your email to verify your account.', 'success');
+    }
+  } catch (err) {
+    const msg = err.message || 'Registration failed. Please try again.';
+    if (window.GlobexSky?.showToast) window.GlobexSky.showToast(msg, 'error');
   }
 }
 
 /* ─────────────────────────────────────────────
-   EVENT LISTENERS
+   EVENT WIRING
 ───────────────────────────────────────────── */
 function initAuthEvents() {
-  // Open login modal
   document.addEventListener('click', (e) => {
-    if (e.target.closest('[data-action="open-login"], .btn-login, [data-modal-open="login-modal"]')) {
+    // Open modals
+    if (e.target.closest('[data-modal-open="login-modal"], .btn-login, [data-action="login"]')) {
       e.preventDefault();
       openLoginModal();
     }
-
-    // Open register modal
-    if (e.target.closest('[data-action="open-register"], .btn-register, [data-modal-open="register-modal"]')) {
+    if (e.target.closest('[data-modal-open="register-modal"], .btn-register, [data-action="register"]')) {
       e.preventDefault();
       openRegisterModal();
     }
-
-    // Switch from login → register
-    if (e.target.closest('[data-action="switch-to-register"]')) {
+    // Switch between modals
+    if (e.target.closest('[data-modal-open="register-modal"]')) {
       e.preventDefault();
       closeLoginModal();
       openRegisterModal();
     }
-
-    // Switch from register → login
-    if (e.target.closest('[data-action="switch-to-login"]')) {
+    if (e.target.closest('[data-modal-open="login-modal"]')) {
       e.preventDefault();
       closeRegisterModal();
       openLoginModal();
     }
-
     // Close modals
-    if (e.target.closest('[data-modal-close="login-modal"], .login-modal-close')) {
-      closeLoginModal();
-    }
-    if (e.target.closest('[data-modal-close="register-modal"], .register-modal-close')) {
-      closeRegisterModal();
-    }
-
-    // Click outside modal
+    if (e.target.closest('[data-modal-close="login-modal"], .login-modal-close')) closeLoginModal();
+    if (e.target.closest('[data-modal-close="register-modal"], .register-modal-close')) closeRegisterModal();
     if (e.target.id === 'login-modal') closeLoginModal();
     if (e.target.id === 'register-modal') closeRegisterModal();
-
     // Logout
     if (e.target.closest('[data-action="logout"], .btn-logout')) {
       e.preventDefault();
       logout();
     }
-
-    // Social login buttons
-    const socialBtn = e.target.closest('[data-social-login]');
-    if (socialBtn) {
-      e.preventDefault();
-      handleSocialLogin(socialBtn.dataset.socialLogin);
-    }
   });
 
-  // Escape key closes modals
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeLoginModal();
-      closeRegisterModal();
-    }
+    if (e.key === 'Escape') { closeLoginModal(); closeRegisterModal(); }
   });
 
   // Login form submit
@@ -404,10 +340,9 @@ function initAuthEvents() {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!validateLoginForm(loginForm)) return;
-
-      const email = loginForm.querySelector('[name="email"], input[type="email"]')?.value || '';
+      const email    = loginForm.querySelector('[name="email"], input[type="email"]')?.value || '';
       const password = loginForm.querySelector('[name="password"]')?.value || '';
-      mockLogin(email, password);
+      handleModalLogin(email, password);
     });
   }
 
@@ -417,17 +352,16 @@ function initAuthEvents() {
     registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!validateRegisterForm(registerForm)) return;
-
-      const name = registerForm.querySelector('[name="name"]')?.value || '';
-      const email = registerForm.querySelector('[name="email"], input[type="email"]')?.value || '';
+      const name     = registerForm.querySelector('[name="name"]')?.value || '';
+      const email    = registerForm.querySelector('[name="email"], input[type="email"]')?.value || '';
       const password = registerForm.querySelector('[name="password"]')?.value || '';
-      const role = registerForm.querySelector('[name="role"]')?.value || 'buyer';
-      const country = registerForm.querySelector('[name="country"]')?.value || '';
-      mockRegister(name, email, password, role, country);
+      const role     = registerForm.querySelector('[name="role"]')?.value || 'buyer';
+      const country  = registerForm.querySelector('[name="country"]')?.value || '';
+      handleModalRegister(name, email, password, role, country);
     });
   }
 
-  // Real-time validation feedback (clear error on input)
+  // Clear errors on input
   document.addEventListener('input', (e) => {
     if (e.target.classList.contains('input-error')) {
       e.target.classList.remove('input-error');
@@ -441,9 +375,14 @@ function initAuthEvents() {
    INIT
 ───────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  // Restore session and update UI on every page load
   updateNavUI();
   initAuthEvents();
+
+  // Listen for Supabase auth state changes
+  const sb = _getSupabaseClient();
+  if (sb) {
+    sb.auth.onAuthStateChange(() => updateNavUI());
+  }
 });
 
 /* ─────────────────────────────────────────────
@@ -456,6 +395,8 @@ Object.assign(window.GlobexSky, {
   openRegisterModal,
   closeRegisterModal,
   getCurrentUser,
+  login,
+  register,
   logout,
   updateNavUI,
 });

@@ -335,21 +335,54 @@
   </div>
 </footer>
 
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  document.getElementById('copyright-year').textContent = new Date().getFullYear();
-  document.getElementById('contact-form').addEventListener('submit', function(e){
-    e.preventDefault();
-    const btn = this.querySelector('[type="submit"]');
-    btn.innerHTML = '<i class="fas fa-circle-check"></i> Message Sent!';
-    btn.style.background = '#10b981';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-      btn.style.background = '';
-      btn.disabled = false;
-      this.reset();
-    }, 3000);
-  });
+  document.getElementById('copyright-year') && (document.getElementById('copyright-year').textContent = new Date().getFullYear());
+
+  // Initialize Supabase client
+  const _sbContact = window.supabase && window.supabase.createClient
+    ? window.supabase.createClient(
+        'https://czpqbdkarwdvrnhtvysd.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cHFiZGthcndkdnJuaHR2eXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MjM0NDAsImV4cCI6MjA5MDI5OTQ0MH0.r09xPh0HEOWTIRroZKoyd_Y0eBlD8El-weZk_7o7x0E'
+      )
+    : null;
+
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('[type="submit"]');
+      const origHtml = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+      btn.disabled = true;
+
+      const name    = this.querySelector('[name="name"]')?.value.trim()    || '';
+      const email   = this.querySelector('[name="email"]')?.value.trim()   || '';
+      const subject = this.querySelector('[name="subject"]')?.value.trim() || '';
+      const message = this.querySelector('[name="message"]')?.value.trim() || '';
+
+      if (_sbContact) {
+        const { error } = await _sbContact.from('contact_messages').insert({ name, email, subject, message });
+        if (error) {
+          console.warn('Contact form error:', error.message);
+          btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error sending';
+          btn.style.background = '#ef4444';
+          setTimeout(() => { btn.innerHTML = origHtml; btn.style.background = ''; btn.disabled = false; }, 3000);
+          return;
+        }
+      }
+
+      btn.innerHTML = '<i class="fas fa-circle-check"></i> Message Sent!';
+      btn.style.background = '#10b981';
+      setTimeout(() => {
+        btn.innerHTML = origHtml;
+        btn.style.background = '';
+        btn.disabled = false;
+        this.reset();
+      }, 3000);
+    });
+  }
 </script>
 <script src="../assets/js/main.js" defer></script>
 <script src="../assets/js/navbar.js"></script>
