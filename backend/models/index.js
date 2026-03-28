@@ -54,6 +54,8 @@ export { default as Team } from './Team.js';
 export { default as RFQMatch } from './RFQMatch.js';
 export { default as CurrencyRate } from './CurrencyRate.js';
 export { default as BuyerCurrencyPreference } from './BuyerCurrencyPreference.js';
+export { default as Coupon } from './Coupon.js';
+export { default as CouponUsage } from './CouponUsage.js';
 
 import BaseModel from './BaseModel.js';
 import User from './User.js';
@@ -100,6 +102,8 @@ import Team from './Team.js';
 import RFQMatch from './RFQMatch.js';
 import CurrencyRate from './CurrencyRate.js';
 import BuyerCurrencyPreference from './BuyerCurrencyPreference.js';
+import Coupon from './Coupon.js';
+import CouponUsage from './CouponUsage.js';
 
 export default {
   BaseModel,
@@ -146,4 +150,6 @@ export default {
   RFQMatch,
   CurrencyRate,
   BuyerCurrencyPreference,
+  Coupon,
+  CouponUsage,
 };

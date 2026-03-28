@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coupons & Vouchers – Globex Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <link rel="stylesheet" href="../../assets/css/coupons.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e}
+
+    /* ── Navbar ── */
+    .site-header{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+    .nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:16px;height:64px}
+    .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#0052CC;flex-shrink:0}
+    .nav-logo img{height:38px;object-fit:contain}
+    .nav-links{display:flex;gap:4px;list-style:none;flex:1;justify-content:center}
+    .nav-links a{padding:8px 14px;border-radius:8px;font-size:.88rem;color:#374151;text-decoration:none;transition:all .2s;font-weight:500}
+    .nav-links a:hover,.nav-links a.active{background:#dbeafe;color:#0052CC}
+    .nav-actions{display:flex;gap:10px;align-items:center;flex-shrink:0}
+    .btn{padding:9px 20px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-success{background:#059669;color:#fff}.btn-success:hover{background:#047857}
+    .btn-outline{background:transparent;color:#0052CC;border:1.5px solid #0052CC}.btn-outline:hover{background:#dbeafe}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,#0052CC 0%,#00C9A7 100%);color:#fff;padding:56px 20px;text-align:center}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;margin-bottom:10px}
+    .hero p{font-size:1rem;opacity:.9;max-width:560px;margin:0 auto 24px}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    /* ── Layout ── */
+    .page-container{max-width:1280px;margin:0 auto;padding:32px 20px}
+
+    /* ── Section headers ── */
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:14px}
+    .section-title{font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    .section-title i{color:#0052CC}
+
+    /* ── Filter bar ── */
+    .filter-bar{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}
+    .filter-pill{padding:8px 18px;border-radius:50px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;transition:all .2s}
+    .filter-pill:hover,.filter-pill.active{background:#0052CC;color:#fff;border-color:#0052CC}
+
+    /* ── Spinner ── */
+    .spinner{display:flex;align-items:center;justify-content:center;padding:60px 20px}
+    .spinner::after{content:'';width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:#0052CC;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── Footer ── */
+    .site-footer{background:#0a0e27;color:rgba(255,255,255,.6);text-align:center;padding:28px 20px;font-size:.83rem;margin-top:60px}
+    .site-footer a{color:#00C9A7;text-decoration:none}
+
+    /* ── Responsive ── */
+    @media (max-width:768px){
+      .hero h1{font-size:1.5rem}
+      .section-header{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ────────────────────────────────────────────────────────────────────────────
+     HEADER
+──────────────────────────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <nav class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="../../assets/images/logo.svg" alt="Globex Sky"/>
+      <span>Globex Sky</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/pages/product/">Products</a></li>
+      <li><a href="/pages/coupons/" class="active">Coupons</a></li>
+      <li><a href="/pages/cart/">Cart</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="/pages/auth/login.html" class="btn btn-outline">Login</a>
+      <a href="/pages/auth/register.html" class="btn btn-primary">Register</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ────────────────────────────────────────────────────────────────────────────
+     HERO
+──────────────────────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <h1><i class="fas fa-ticket-alt"></i> Coupons &amp; Vouchers</h1>
+  <p>Save more on your orders! Browse available coupons below and apply them at checkout.</p>
+  <div class="hero-actions">
+    <a href="/pages/cart/" class="btn btn-secondary"><i class="fas fa-shopping-cart"></i> Go to Cart</a>
+    <a href="/pages/checkout/" class="btn btn-success"><i class="fas fa-credit-card"></i> Checkout</a>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────────────────────────────────────
+     MAIN CONTENT
+──────────────────────────────────────────────────────────────────────────────── -->
+<main class="page-container">
+
+  <!-- Section header -->
+  <div class="section-header">
+    <h2 class="section-title"><i class="fas fa-tags"></i> Available Coupons</h2>
+  </div>
+
+  <!-- Filter pills -->
+  <div class="filter-bar">
+    <button class="filter-pill active" data-type="all">All</button>
+    <button class="filter-pill" data-type="percentage">Percentage Off</button>
+    <button class="filter-pill" data-type="fixed">Fixed Discount</button>
+    <button class="filter-pill" data-type="free_shipping">Free Shipping</button>
+  </div>
+
+  <!-- Loading spinner -->
+  <div id="coupon-spinner" class="spinner"></div>
+
+  <!-- Coupon grid (populated by JS) -->
+  <div id="coupon-grid" class="coupon-grid"></div>
+
+</main>
+
+<!-- ────────────────────────────────────────────────────────────────────────────
+     FOOTER
+──────────────────────────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  &copy; 2026 Globex Sky. All rights reserved.
+  <a href="/pages/terms.html">Terms</a> · <a href="/pages/privacy.html">Privacy</a>
+</footer>
+
+<!-- Scripts -->
+<script src="../../assets/js/coupons.js"></script>
+<script>
+  // Filter pills interaction
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const type = btn.dataset.type;
+      const cards = document.querySelectorAll('.coupon-card');
+      cards.forEach(card => {
+        if (type === 'all') {
+          card.style.display = '';
+        } else {
+          const couponType = card.querySelector('.coupon-type-badge')?.textContent.toLowerCase() || '';
+          const match =
+            (type === 'percentage' && couponType.includes('percent')) ||
+            (type === 'fixed' && couponType.includes('fixed')) ||
+            (type === 'free_shipping' && couponType.includes('shipping'));
+          card.style.display = match ? '' : 'none';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
