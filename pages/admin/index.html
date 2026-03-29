@@ -146,52 +146,52 @@
         <a href="#" class="quick-action-btn"><i class="fas fa-broadcast-tower" style="color:#f97316"></i> Broadcast</a>
       </div>
 
-      <!-- Metrics Grid -->
+      <!-- Metrics Grid — Real data from Supabase -->
       <div class="metrics-grid">
         <div class="metric-card">
           <div class="metric-icon blue"><i class="fas fa-users"></i></div>
           <div>
-            <div class="metric-value">12,450</div>
+            <div class="metric-value" id="stat-total-users">—</div>
             <div class="metric-label">Total Users</div>
-            <div class="metric-change up"><i class="fas fa-arrow-up"></i> +3.2% this month</div>
+            <div class="metric-change up"><i class="fas fa-database"></i> From Supabase</div>
           </div>
         </div>
         <div class="metric-card">
           <div class="metric-icon green"><i class="fas fa-shopping-bag"></i></div>
           <div>
-            <div class="metric-value">247</div>
-            <div class="metric-label">Orders Today</div>
-            <div class="metric-change up"><i class="fas fa-arrow-up"></i> +12.5% vs yesterday</div>
+            <div class="metric-value" id="stat-total-orders">—</div>
+            <div class="metric-label">Total Orders</div>
+            <div class="metric-change up"><i class="fas fa-database"></i> From Supabase</div>
           </div>
         </div>
         <div class="metric-card">
           <div class="metric-icon orange"><i class="fas fa-dollar-sign"></i></div>
           <div>
-            <div class="metric-value">$1.2M</div>
-            <div class="metric-label">Total Revenue</div>
-            <div class="metric-change up"><i class="fas fa-arrow-up"></i> +8.1% this month</div>
+            <div class="metric-value" id="stat-total-revenue">—</div>
+            <div class="metric-label">Completed Revenue</div>
+            <div class="metric-change up"><i class="fas fa-database"></i> From payments</div>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon purple"><i class="fas fa-bullhorn"></i></div>
+          <div class="metric-icon purple"><i class="fas fa-box-open"></i></div>
           <div>
-            <div class="metric-value">38</div>
-            <div class="metric-label">Active Campaigns</div>
-            <div class="metric-change down"><i class="fas fa-arrow-down"></i> -2 from last week</div>
+            <div class="metric-value" id="stat-total-products">—</div>
+            <div class="metric-label">Total Products</div>
+            <div class="metric-change up"><i class="fas fa-database"></i> From Supabase</div>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon teal"><i class="fas fa-clock"></i></div>
+          <div class="metric-icon teal"><i class="fas fa-comment-dots"></i></div>
           <div>
-            <div class="metric-value">15</div>
-            <div class="metric-label">Pending Approvals</div>
-            <div class="metric-change orange" style="color:#f97316"><i class="fas fa-exclamation-circle"></i> Requires attention</div>
+            <div class="metric-value" id="stat-active-chats">—</div>
+            <div class="metric-label">Chat Rooms</div>
+            <div class="metric-change up"><i class="fas fa-database"></i> Active rooms</div>
           </div>
         </div>
         <div class="metric-card">
           <div class="metric-icon green"><i class="fas fa-heartbeat"></i></div>
           <div>
-            <div class="metric-value">99.9%</div>
+            <div class="metric-value">🟢</div>
             <div class="metric-label">System Health</div>
             <div class="metric-change up"><i class="fas fa-check-circle"></i> All systems normal</div>
           </div>
@@ -390,23 +390,82 @@
 <script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/admin-dashboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<!-- Supabase real-time admin stats -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/ai.js"></script>
+<script src="../../js/payment.js"></script>
 <script>
-// Wire admin-dashboard stats and mode indicator
 document.addEventListener('DOMContentLoaded', function () {
   if (typeof initDashboard === 'function') initDashboard();
 
-  // Show TEST/LIVE mode badge in topbar
+  // Show LIVE mode badge
   var topbarRight = document.querySelector('.admin-topbar-right');
   if (topbarRight) {
     var badge = document.createElement('span');
     badge.id = 'admin-mode-badge';
-    badge.style.cssText = 'padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:600;font-family:Inter,sans-serif;margin-right:8px;white-space:nowrap';
-    topbarRight.insertBefore(badge, topbarRight.firstChild);
-    // Always show Live Mode since we're using real Supabase
+    badge.style.cssText = 'padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:600;font-family:Inter,sans-serif;margin-right:8px;white-space:nowrap;background:#d1fae5;color:#065f46;border:1px solid #6ee7b7';
     badge.textContent = '🟢 LIVE MODE';
-    badge.style.background = '#d1fae5';
-    badge.style.color      = '#065f46';
-    badge.style.border     = '1px solid #6ee7b7';
+    topbarRight.insertBefore(badge, topbarRight.firstChild);
   }
+
+  // Load real stats from Supabase
+  function tryLoadStats() {
+    if (!window.supabaseClient) { setTimeout(tryLoadStats, 400); return; }
+    loadAdminStats();
+  }
+  tryLoadStats();
 });
+
+async function loadAdminStats() {
+  var sb = window.supabaseClient;
+  try {
+    // Users
+    var users = await sb.from('profiles').select('id', { count: 'exact', head: true });
+    var el = document.getElementById('stat-total-users');
+    if (el) el.textContent = (users.count || 0).toLocaleString();
+  } catch(e) {}
+  try {
+    // Orders
+    var orders = await sb.from('orders').select('id', { count: 'exact', head: true });
+    var el2 = document.getElementById('stat-total-orders');
+    if (el2) el2.textContent = (orders.count || 0).toLocaleString();
+  } catch(e) {}
+  try {
+    // Revenue
+    var payments = await sb.from('payments').select('amount').eq('status', 'completed');
+    var total = (payments.data || []).reduce(function(sum, p) { return sum + parseFloat(p.amount || 0); }, 0);
+    var el3 = document.getElementById('stat-total-revenue');
+    if (el3) el3.textContent = '$' + total.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  } catch(e) {}
+  try {
+    // Products
+    var products = await sb.from('products').select('id', { count: 'exact', head: true });
+    var el4 = document.getElementById('stat-total-products');
+    if (el4) el4.textContent = (products.count || 0).toLocaleString();
+  } catch(e) {}
+  try {
+    // Chat rooms
+    var chats = await sb.from('chat_rooms').select('id', { count: 'exact', head: true });
+    var el5 = document.getElementById('stat-active-chats');
+    if (el5) el5.textContent = (chats.count || 0).toLocaleString();
+  } catch(e) {}
+}
+
+// AI API Key save (admin setting)
+window.saveAIKey = async function() {
+  var key = document.getElementById('deepseek-api-key');
+  if (!key) return;
+  if (!window.GlobexAI) { alert('Loading, try again.'); return; }
+  try {
+    await GlobexAI.saveApiKey(key.value.trim());
+    alert('✅ DeepSeek API key saved!');
+  } catch(e) { alert('Error: ' + e.message); }
+};
+
+window.testAI = async function() {
+  if (!window.GlobexAI) { alert('Loading…'); return; }
+  var result = await GlobexAI.chat('Say hello and introduce yourself as GlobexSky AI assistant in one sentence.');
+  alert('AI Response:\n\n' + result);
+};
 </script>

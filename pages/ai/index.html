@@ -111,11 +111,12 @@
     </div>
     <div style="background:linear-gradient(135deg,#0052CC,#0A0E27);border-radius:20px;padding:48px;text-align:center;color:#fff;margin-top:24px">
       <h2 style="font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:12px">Try AI Smart Search</h2>
-      <p style="opacity:.8;margin-bottom:28px">Type what you're looking for in natural language.</p>
+      <p style="opacity:.8;margin-bottom:28px">Type what you're looking for in natural language. Powered by DeepSeek AI.</p>
       <div style="display:flex;gap:12px;max-width:540px;margin:0 auto">
-        <input style="flex:1;padding:14px 18px;border-radius:10px;border:none;font-size:.95rem;font-family:'Inter',sans-serif;outline:none" placeholder="e.g. I need 500 units of eco-friendly cotton bags under ৳200 each...">
-        <button class="btn btn-primary" style="background:#00C9A7;color:#0A0E27;font-weight:700;white-space:nowrap"><i class="fas fa-search"></i> Search</button>
+        <input id="ai-search-input" style="flex:1;padding:14px 18px;border-radius:10px;border:none;font-size:.95rem;font-family:'Inter',sans-serif;outline:none" placeholder="e.g. I need 500 units of eco-friendly cotton bags under $20 each...">
+        <button id="ai-search-btn" class="btn btn-primary" style="background:#00C9A7;color:#0A0E27;font-weight:700;white-space:nowrap" onclick="doAISearch()"><i class="fas fa-search"></i> Search</button>
       </div>
+      <div id="ai-search-result" style="margin-top:16px;background:rgba(255,255,255,.1);border-radius:10px;padding:16px;text-align:left;font-size:.9rem;display:none;white-space:pre-wrap"></div>
     </div>
   </div>
 </div>
@@ -129,9 +130,42 @@
     </ul>
   </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/ai.js"></script>
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/main.js" defer></script>
+<script src="../../assets/js/ai.js"></script>
+<script>
+window.doAISearch = async function() {
+  var inp = document.getElementById('ai-search-input');
+  var btn = document.getElementById('ai-search-btn');
+  var res = document.getElementById('ai-search-result');
+  var q = inp.value.trim();
+  if (!q) return;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Thinking…';
+  res.style.display = 'block';
+  res.textContent = 'AI is thinking…';
+  try {
+    if (window.GlobexAI) {
+      var answer = await GlobexAI.chat(q, 'Help the user find products or suppliers on GlobexSky marketplace.');
+      res.textContent = answer;
+    } else {
+      res.textContent = 'AI module loading, please try again in a moment.';
+    }
+  } catch(e) {
+    res.textContent = 'Error: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-search"></i> Search';
+  }
+};
 
-  <script src="../../assets/js/ai.js"></script>
+document.addEventListener('DOMContentLoaded', function() {
+  var inp = document.getElementById('ai-search-input');
+  if (inp) inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') doAISearch(); });
+});
+</script>
 </body>
 </html>
