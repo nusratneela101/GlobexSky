@@ -53,7 +53,8 @@
 
 /* ─── 768px — Mobile / Tablet ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* Global font size */
+  /* Global font size; prevent horizontal scroll */
+  html, body { overflow-x: hidden; }
   body { font-size: var(--fs-base); }
 
   /* Buttons: min 44px height */
@@ -408,14 +409,30 @@
 
 /* ─── Navbar overflow fix (sub-pages) ───────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* Hide heavy nav controls on mobile; use mobile drawer instead */
+  /* Hide heavy nav controls on mobile; use mobile drawer instead.
+     Exception: login/register buttons and user menu stay visible. */
   .nav-controls {
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Hide lang/currency/search dropdowns — accessible via hamburger menu */
+  .nav-lang-switcher,
+  .nav-select-group,
+  .nav-search-bar,
+  .secondary-nav,
+  .nav-categories,
+  .nav-dropdown-group {
     display: none !important;
   }
 
-  .nav-lang-switcher,
-  .nav-select-group {
-    display: none !important;
+  /* Login / register buttons: keep compact but visible */
+  .btn-login,
+  .btn-register {
+    display: inline-flex !important;
+    padding: 6px 10px !important;
+    font-size: 0.78rem !important;
   }
 
   /* Cart icon stays visible */

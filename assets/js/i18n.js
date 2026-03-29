@@ -299,6 +299,17 @@
       })
       .catch(function (err) {
         console.error(err);
+        // Fall back to English if the requested locale fails to load
+        if (lang !== DEFAULT_LANG) {
+          console.warn('i18n: falling back to "' + DEFAULT_LANG + '".');
+          return fetchTranslations(DEFAULT_LANG).then(function (fallbackData) {
+            _translations = fallbackData;
+            _currentLang  = DEFAULT_LANG;
+            translateDOM();
+          }).catch(function () {
+            console.error('i18n: English locale also unavailable. Translations will not be applied.');
+          });
+        }
       });
   }
 

@@ -94,8 +94,19 @@ const Currency = (() => {
         const json = await res.json();
         _rates = { USD: 1, ...json.rates };
         _saveCache(_rates);
+        return _rates;
       }
-    } catch (_) { /* use fallback static rates */ }
+    } catch (_) { /* fall through to static fallback rates */ }
+
+    // Static fallback rates vs USD (approximate as of early 2025).
+    // Update these values periodically if live APIs remain unavailable.
+    _rates = {
+      USD: 1,      EUR: 0.92,   GBP: 0.79,   JPY: 149.50, CNY: 7.24,
+      INR: 83.12,  BDT: 110.00, AED: 3.67,   SAR: 3.75,   CAD: 1.36,
+      AUD: 1.53,   CHF: 0.89,   KRW: 1325.00,SGD: 1.34,   MYR: 4.72,
+      IDR: 15600,  THB: 35.10,  BRL: 4.97,   MXN: 17.15,  TRY: 32.20,
+      RUB: 89.50,  ZAR: 18.63,  NGN: 1550.00,PKR: 277.50,
+    };
 
     return _rates;
   }

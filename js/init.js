@@ -31,12 +31,12 @@
       : null;
 
     // Elements that should be hidden when logged in
-    document.querySelectorAll('[data-auth="guest"], .nav-login-btn, .nav-register-btn').forEach(function (el) {
+    document.querySelectorAll('[data-auth="guest"], .nav-login-btn, .nav-register-btn, .btn-login, .btn-register, .auth-logged-out, [data-auth="logged-out"]').forEach(function (el) {
       el.style.display = user ? 'none' : '';
     });
 
     // Elements that should be visible when logged in
-    document.querySelectorAll('[data-auth="user"], .nav-user-menu').forEach(function (el) {
+    document.querySelectorAll('[data-auth="user"], .nav-user-menu, .auth-logged-in, [data-auth="logged-in"]').forEach(function (el) {
       el.style.display = user ? '' : 'none';
     });
 
