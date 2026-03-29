@@ -61,8 +61,20 @@ const GlobexImageSearch = (() => {
     return { valid: true };
   }
 
-  /* ── Camera Capture ─────────────────────────────────────────────────── */
+  /* ── Camera Capture — Live Preview via getUserMedia ──────────────────── */
+  let _cameraStream = null;
+
   function openCamera() {
+    // Prefer live camera stream when getUserMedia is available
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      openLiveCamera();
+    } else {
+      // Fallback: file input with capture for older browsers / iOS
+      openFileCapture();
+    }
+  }
+
+  function openFileCapture() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -72,6 +84,93 @@ const GlobexImageSearch = (() => {
       if (file) handleFile(file);
     };
     input.click();
+  }
+
+  function openLiveCamera() {
+    // Build or show camera overlay
+    let overlay = document.getElementById('camera-live-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'camera-live-overlay';
+      overlay.style.cssText = [
+        'position:fixed','inset:0','background:rgba(0,0,0,.85)',
+        'z-index:99999','display:flex','flex-direction:column',
+        'align-items:center','justify-content:center','gap:16px',
+      ].join(';');
+
+      const video = document.createElement('video');
+      video.id = 'camera-live-video';
+      video.autoplay = true;
+      video.playsInline = true;
+      video.style.cssText = 'max-width:min(480px,90vw);border-radius:12px;background:#000';
+
+      const btnRow = document.createElement('div');
+      btnRow.style.cssText = 'display:flex;gap:12px';
+
+      const captureBtn = document.createElement('button');
+      captureBtn.textContent = '📸 Capture';
+      captureBtn.style.cssText = 'padding:10px 22px;background:#0052CC;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer';
+      captureBtn.addEventListener('click', captureFromCamera);
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.style.cssText = 'padding:10px 22px;background:#64748b;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer';
+      cancelBtn.addEventListener('click', closeLiveCamera);
+
+      btnRow.appendChild(captureBtn);
+      btnRow.appendChild(cancelBtn);
+      overlay.appendChild(video);
+      overlay.appendChild(btnRow);
+      document.body.appendChild(overlay);
+    }
+
+    overlay.style.display = 'flex';
+    const video = document.getElementById('camera-live-video');
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => {
+        _cameraStream = stream;
+        if (video) video.srcObject = stream;
+      })
+      .catch(err => {
+        closeLiveCamera();
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          showError('Camera access was denied. Please grant camera permission in your browser settings, then try again.');
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          showError('No camera found on this device. Please use the upload option instead.');
+          openFileCapture();
+        } else if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+          showError('Camera access requires a secure (HTTPS) connection. Please use the upload option.');
+          openFileCapture();
+        } else {
+          // Other errors (NotReadableError, etc.) — fall back to file input
+          openFileCapture();
+        }
+      });
+  }
+
+  function captureFromCamera() {
+    const video = document.getElementById('camera-live-video');
+    if (!video || !_cameraStream) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width  = video.videoWidth  || 640;
+    canvas.height = video.videoHeight || 480;
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    currentImageData = dataUrl;
+    showPreview(dataUrl, 'camera-capture.jpg');
+    closeLiveCamera();
+  }
+
+  function closeLiveCamera() {
+    if (_cameraStream) {
+      _cameraStream.getTracks().forEach(t => t.stop());
+      _cameraStream = null;
+    }
+    const overlay = document.getElementById('camera-live-overlay');
+    if (overlay) overlay.style.display = 'none';
   }
 
   /* ── File Handler ───────────────────────────────────────────────────── */
@@ -246,6 +345,7 @@ const GlobexImageSearch = (() => {
   function closeModal() {
     const modal = document.getElementById('image-search-modal');
     if (modal) modal.classList.remove('open');
+    closeLiveCamera();
     clearPreview();
   }
 
@@ -314,10 +414,14 @@ const GlobexImageSearch = (() => {
     openModal,
     closeModal,
     openCamera,
+    openLiveCamera,
+    closeLiveCamera,
+    captureFromCamera,
     handleFile,
     performSearch,
     clearPreview,
     isSupported: () => true, // Canvas is universally supported
+    isCameraSupported: () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
     ACCEPTED_TYPES,
     MAX_DIMENSION,
     MAX_FILE_SIZE,

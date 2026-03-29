@@ -31,10 +31,17 @@ function initMobileMenu() {
   const hamburger = document.querySelector('.hamburger, .nav-toggle, [data-toggle="nav"]');
   if (!hamburger) return;
 
+  const mobileNav = document.getElementById('mobile-nav') ||
+                    document.querySelector('.mobile-nav, .mobile-menu, #mobile-menu');
+
   hamburger.addEventListener('click', () => {
     document.body.classList.toggle('nav-open');
     const expanded = document.body.classList.contains('nav-open');
-    hamburger.setAttribute('aria-expanded', expanded);
+    hamburger.setAttribute('aria-expanded', String(expanded));
+    if (mobileNav) {
+      mobileNav.classList.toggle('open', expanded);
+      mobileNav.setAttribute('aria-hidden', String(!expanded));
+    }
   });
 
   // Close on overlay click
@@ -43,10 +50,16 @@ function initMobileMenu() {
       document.body.classList.contains('nav-open') &&
       !e.target.closest('.navbar') &&
       !e.target.closest('.hamburger') &&
-      !e.target.closest('.nav-toggle')
+      !e.target.closest('.nav-toggle') &&
+      !e.target.closest('.mobile-nav') &&
+      !e.target.closest('#mobile-nav')
     ) {
       document.body.classList.remove('nav-open');
       if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+      if (mobileNav) {
+        mobileNav.classList.remove('open');
+        mobileNav.setAttribute('aria-hidden', 'true');
+      }
     }
   });
 }

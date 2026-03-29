@@ -118,7 +118,12 @@ function updateNavUI() {
 ───────────────────────────────────────────── */
 function openLoginModal() {
   const modal = document.getElementById('login-modal');
-  if (!modal) return;
+  if (!modal) {
+    // No inline modal — fall back to the dedicated login page
+    const redirect = encodeURIComponent(window.location.href);
+    window.location.href = '/pages/auth/login.html?redirect=' + redirect;
+    return;
+  }
   document.getElementById('register-modal')?.classList.remove('modal-open');
   modal.classList.add('modal-open');
   modal.setAttribute('aria-hidden', 'false');
@@ -137,7 +142,12 @@ function closeLoginModal() {
 
 function openRegisterModal() {
   const modal = document.getElementById('register-modal');
-  if (!modal) return;
+  if (!modal) {
+    // No inline modal — fall back to the dedicated register page
+    const redirect = encodeURIComponent(window.location.href);
+    window.location.href = '/pages/auth/register.html?redirect=' + redirect;
+    return;
+  }
   document.getElementById('login-modal')?.classList.remove('modal-open');
   modal.classList.add('modal-open');
   modal.setAttribute('aria-hidden', 'false');
