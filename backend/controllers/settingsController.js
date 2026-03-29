@@ -333,7 +333,8 @@ async function _testFedex(mode) {
   }
 }
 
-
+// Helper: fetch all settings for a group as key-value object
+async function getGroupSettings(group) {
   const { data, error } = await supabase
     .from('settings')
     .select('key, value, type')
