@@ -17,7 +17,7 @@ const ApiClient = (() => {
     const h = window.location.hostname;
     return (h === 'localhost' || h === '127.0.0.1')
       ? 'http://localhost:5000/api/v1'
-      : 'https://globexsky-backend.up.railway.app/api/v1';
+      : 'https://globexsky-production.up.railway.app/api/v1';
   })();
 
   const RETRY_ATTEMPTS   = 3;

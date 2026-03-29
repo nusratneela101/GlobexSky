@@ -1,7 +1,7 @@
 # GlobexSky API Documentation
 
 **Version:** 2.0.0  
-**Base URL:** `https://globexsky-backend.up.railway.app/api/v1`  
+**Base URL:** `https://globexsky-production.up.railway.app/api/v1`  
 **Interactive Docs:** `/api/docs` (Swagger UI)
 
 ---
@@ -479,7 +479,7 @@ Authorization: Bearer <admin_token>
 
 ## WebSocket Events
 
-Connect to the WebSocket server at `wss://globexsky-backend.up.railway.app`
+Connect to the WebSocket server at `wss://globexsky-production.up.railway.app`
 
 ### Authentication
 

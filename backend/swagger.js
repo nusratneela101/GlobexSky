@@ -44,7 +44,7 @@ GlobexSky B2B/B2C E-Commerce Platform API
         description: 'Development server',
       },
       {
-        url: 'https://globexsky-backend.up.railway.app',
+        url: 'https://globexsky-production.up.railway.app',
         description: 'Production server (Railway)',
       },
     ],

@@ -13,7 +13,7 @@
   const BASE = (() => {
     const h = window.location.hostname;
     if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000/api/v1';
-    return 'https://globexsky-backend.up.railway.app/api/v1';
+    return 'https://globexsky-production.up.railway.app/api/v1';
   })();
 
   function getToken() {

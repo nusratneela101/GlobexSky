@@ -10,7 +10,9 @@
  * project requirements.
  */
 
-const API_BASE = window.location.origin + '/api/v1';
+const API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL)
+  ? window.GlobexConfig.API_BASE_URL
+  : (window.API_BASE_URL || window.location.origin + '/api/v1');
 
 /**
  * Get the stored auth token.

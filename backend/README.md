@@ -163,7 +163,7 @@ Authorization: Bearer <token>
 The frontend automatically detects the environment:
 
 - **Development**: connects to `http://localhost:5000/api/v1`
-- **Production**: connects to `https://globexsky-backend.up.railway.app/api/v1`
+- **Production**: connects to `https://globexsky-production.up.railway.app/api/v1`
 
 See `assets/js/config.js` to update the production URL.
 
