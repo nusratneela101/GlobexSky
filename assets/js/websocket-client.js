@@ -20,7 +20,7 @@
     }
     const h = global.location.hostname;
     const isLocal = h === 'localhost' || h === '127.0.0.1';
-    return isLocal ? 'ws://localhost:5000' : 'wss://globexsky-backend.up.railway.app';
+    return isLocal ? 'ws://localhost:5000' : 'wss://globexsky-production.up.railway.app';
   }
 
   const _handlers = {};

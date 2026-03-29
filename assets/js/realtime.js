@@ -20,7 +20,7 @@ const Realtime = (() => {
     const h = window.location.hostname;
     return (h === 'localhost' || h === '127.0.0.1')
       ? 'http://localhost:5000'
-      : 'https://globexsky-backend.up.railway.app';
+      : 'https://globexsky-production.up.railway.app';
   }
 
   /* ─────────────────────────────────────────────

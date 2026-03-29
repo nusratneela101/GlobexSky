@@ -33,7 +33,7 @@ GlobexSky.SearchHistory = (() => {
     return (window.GlobexConfig && GlobexConfig.API_BASE_URL) ||
            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
              ? 'http://localhost:5000/api/v1'
-             : 'https://globexsky-backend.up.railway.app/api/v1');
+             : 'https://globexsky-production.up.railway.app/api/v1');
   }
 
   function authHeader() {
