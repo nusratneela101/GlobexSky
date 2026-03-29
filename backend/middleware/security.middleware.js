@@ -7,6 +7,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Writable } from 'stream';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
@@ -14,11 +15,17 @@ import cors from 'cors';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ─── Ensure logs directory exists ────────────────────────────────────────────
-const logsDir = path.resolve(__dirname, '../../logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
+const logsDir = path.resolve(__dirname, '../logs');
+let accessLogStream;
+try {
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+  accessLogStream = fs.createWriteStream(path.join(logsDir, 'access.log'), { flags: 'a' });
+} catch (err) {
+  console.warn('⚠️  Could not create logs directory, file logging disabled:', err.message);
+  accessLogStream = new Writable({ write(_chunk, _enc, cb) { cb(); } });
 }
-const accessLogStream = fs.createWriteStream(path.join(logsDir, 'access.log'), { flags: 'a' });
 
 // ─── Known bad IPs (in-memory blocklist) ─────────────────────────────────────
 const blockedIPs = new Set(

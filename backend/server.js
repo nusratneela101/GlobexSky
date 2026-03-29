@@ -282,7 +282,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────────────────────────
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Globex Sky API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
 
