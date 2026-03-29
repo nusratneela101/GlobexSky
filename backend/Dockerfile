@@ -7,11 +7,11 @@ RUN apk add --no-cache curl
 WORKDIR /app
 
 # Copy package files and install dependencies
-COPY backend/package*.json ./
+COPY package*.json ./
 RUN npm ci --only=production
 
 # Copy backend source code
-COPY backend/ .
+COPY . .
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -24,7 +24,7 @@ EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:5000/api/health || exit 1
+    CMD curl -f http://localhost:5000/health || exit 1
 
 # Start the application
-CMD ["node", "backend/server.js"]
+CMD ["node", "server.js"]
