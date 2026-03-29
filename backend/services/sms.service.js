@@ -17,8 +17,7 @@ export async function sendSMS(to, message) {
   const fromNumber = process.env.TWILIO_PHONE_NUMBER;
 
   if (!accountSid || !authToken || !fromNumber) {
-    console.warn('[SMS] Twilio credentials not configured. Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER.');
-    return { success: false, error: 'SMS provider not configured.' };
+    throw new Error('SMS provider not configured.');
   }
 
   const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;

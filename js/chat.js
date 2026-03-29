@@ -165,11 +165,24 @@
 
       var attachmentHtml = '';
       if (msg.attachment_url) {
-        var url = String(msg.attachment_url).replace(/"/g, '&quot;');
-        if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
-          attachmentHtml = '<img src="' + url + '" alt="attachment" style="max-width:200px;border-radius:8px;margin-top:4px;display:block">';
-        } else {
-          attachmentHtml = '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color:#0052CC;font-size:.8rem">📎 Attachment</a>';
+        var rawUrl = String(msg.attachment_url);
+        var safeUrl = '';
+        try {
+          var parsed = new URL(rawUrl);
+          var scheme = parsed.protocol.toLowerCase();
+          if (scheme === 'http:' || scheme === 'https:') {
+            safeUrl = parsed.toString();
+          }
+        } catch (e) {
+          safeUrl = '';
+        }
+        if (safeUrl) {
+          var escapedUrl = safeUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          if (/\.(jpg|jpeg|png|gif|webp)$/i.test(safeUrl)) {
+            attachmentHtml = '<img src="' + escapedUrl + '" alt="attachment" style="max-width:200px;border-radius:8px;margin-top:4px;display:block">';
+          } else {
+            attachmentHtml = '<a href="' + escapedUrl + '" target="_blank" rel="noopener noreferrer" style="color:#0052CC;font-size:.8rem">📎 Attachment</a>';
+          }
         }
       }
 
@@ -185,7 +198,7 @@
 
     // ── Render room list sidebar ──────────────────────────────────────────────
 
-    renderRoomList: function (rooms, currentUserId, onRoomClick) {
+    renderRoomList: function (rooms, currentUserId) {
       if (!rooms || rooms.length === 0) {
         return '<p style="text-align:center;color:#94a3b8;padding:24px">No conversations yet.</p>';
       }
@@ -233,14 +246,10 @@
     // ── Update user online presence ───────────────────────────────────────────
 
     updateOnlineStatus: async function (isOnline) {
-      var sb = _sb();
-      if (!sb) return;
-      var userResult = await sb.auth.getUser();
-      if (!userResult.data || !userResult.data.user) return;
-      var uid = userResult.data.user.id;
-      await sb.from('users')
-        .update({ is_online: isOnline, last_seen: new Date().toISOString() })
-        .eq('id', uid);
+      // Presence tracking requires an is_online/last_seen column on a profile
+      // table keyed by auth.users.id. Add the column and update this query
+      // when that schema is available. Currently a no-op to avoid DB errors.
+      void isOnline;
     }
   };
 

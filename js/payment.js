@@ -221,23 +221,42 @@
         .eq('order_id', orderId)
         .eq('status', 'pending');
 
-      // Render success message
+      // Render success message using DOM APIs to prevent XSS
       var container = document.getElementById('payment-result') ||
         document.getElementById('payment-status') ||
         document.querySelector('[data-payment-result]');
       if (container) {
-        container.innerHTML =
-          '<div style="text-align:center;padding:40px 20px">' +
-            '<div style="width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">' +
-              '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
-            '</div>' +
-            '<h2 style="color:#16a34a;font-size:1.5rem;font-weight:700;margin:0 0 8px">Payment Successful!</h2>' +
-            '<p style="color:#475569;margin:0 0 16px">Your order <strong>#' + String(orderId).substring(0, 8) + '</strong> has been confirmed.</p>' +
-            '<a href="/pages/order/details.html?id=' + orderId + '" ' +
-              'style="display:inline-block;padding:10px 24px;background:#0052CC;color:#fff;text-decoration:none;border-radius:8px;font-weight:600">' +
-              'View Order' +
-            '</a>' +
-          '</div>';
+        container.innerHTML = '';
+
+        var wrapper = document.createElement('div');
+        wrapper.style.cssText = 'text-align:center;padding:40px 20px';
+
+        var iconWrap = document.createElement('div');
+        iconWrap.style.cssText = 'width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px';
+        iconWrap.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
+        var heading = document.createElement('h2');
+        heading.style.cssText = 'color:#16a34a;font-size:1.5rem;font-weight:700;margin:0 0 8px';
+        heading.textContent = 'Payment Successful!';
+
+        var para = document.createElement('p');
+        para.style.cssText = 'color:#475569;margin:0 0 16px';
+        para.appendChild(document.createTextNode('Your order '));
+        var strong = document.createElement('strong');
+        strong.textContent = '#' + String(orderId).substring(0, 8);
+        para.appendChild(strong);
+        para.appendChild(document.createTextNode(' has been confirmed.'));
+
+        var link = document.createElement('a');
+        link.href = '/pages/order/details.html?id=' + encodeURIComponent(String(orderId));
+        link.style.cssText = 'display:inline-block;padding:10px 24px;background:#0052CC;color:#fff;text-decoration:none;border-radius:8px;font-weight:600';
+        link.textContent = 'View Order';
+
+        wrapper.appendChild(iconWrap);
+        wrapper.appendChild(heading);
+        wrapper.appendChild(para);
+        wrapper.appendChild(link);
+        container.appendChild(wrapper);
       }
 
       if (global.GlobexUtils && global.GlobexUtils.showToast) {
@@ -258,12 +277,16 @@
               '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
             '</div>' +
             '<h2 style="color:#dc2626;font-size:1.5rem;font-weight:700;margin:0 0 8px">Payment Failed</h2>' +
-            '<p style="color:#475569;margin:0 0 16px">' + String(message || 'An error occurred while processing your payment. Please try again.') + '</p>' +
+            '<p style="color:#475569;margin:0 0 16px" data-payment-error-message></p>' +
             '<button onclick="history.back()" ' +
               'style="display:inline-block;padding:10px 24px;background:#0052CC;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">' +
               'Try Again' +
             '</button>' +
           '</div>';
+        var msgEl = container.querySelector('[data-payment-error-message]');
+        if (msgEl) {
+          msgEl.textContent = String(message || 'An error occurred while processing your payment. Please try again.');
+        }
       }
 
       if (global.GlobexUtils && global.GlobexUtils.showToast) {
@@ -341,8 +364,24 @@
             var result = await self.initPayment(gateway, amount, currency || 'USD', orderId, { amount: amount, currency: currency });
             if (result && result.redirect) {
               global.location.href = result.redirect;
-            } else if (result && result.message) {
+            } else if (result && (result.status === 'paid' || result.status === 'completed')) {
               self.showPaymentSuccess(orderId);
+            } else if (result && result.message) {
+              // Instruction-only / pending flows (COD, bank transfer):
+              // show instructions without marking order as paid.
+              var instructionEl = containerEl.querySelector('.gp-payment-instructions');
+              if (!instructionEl) {
+                instructionEl = document.createElement('div');
+                instructionEl.className = 'gp-payment-instructions';
+                instructionEl.style.cssText = 'margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;color:#0f172a;font-size:.9rem';
+                containerEl.appendChild(instructionEl);
+              }
+              instructionEl.textContent = result.message;
+              btn.disabled = false;
+              btn.textContent = 'Pay';
+            } else {
+              btn.disabled = false;
+              btn.textContent = 'Pay';
             }
           } catch (err) {
             self.showPaymentError(err.message);

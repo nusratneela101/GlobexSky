@@ -223,20 +223,18 @@
 
     incrementViewerCount: async function (streamId) {
       var sb = _sb();
-      var current = await sb.from('live_streams').select('viewer_count').eq('id', streamId).single();
-      var count = ((current.data && current.data.viewer_count) || 0) + 1;
-      await sb.from('live_streams').update({ viewer_count: count }).eq('id', streamId);
-      return count;
+      var result = await sb.rpc('increment_viewer_count', { stream_id: streamId });
+      if (result && result.error) throw result.error;
+      return (result && result.data != null) ? result.data : null;
     },
 
     // ── Decrement viewer count ───────────────────────────────────────────────
 
     decrementViewerCount: async function (streamId) {
       var sb = _sb();
-      var current = await sb.from('live_streams').select('viewer_count').eq('id', streamId).single();
-      var count = Math.max(0, ((current.data && current.data.viewer_count) || 1) - 1);
-      await sb.from('live_streams').update({ viewer_count: count }).eq('id', streamId);
-      return count;
+      var result = await sb.rpc('decrement_viewer_count', { stream_id: streamId });
+      if (result && result.error) throw result.error;
+      return (result && result.data != null) ? result.data : null;
     },
 
     // ── Render stream card ───────────────────────────────────────────────────
