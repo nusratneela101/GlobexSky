@@ -10,7 +10,6 @@ import { fileURLToPath } from 'url';
 import { Writable } from 'stream';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import cors from 'cors';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -60,26 +59,6 @@ export const helmetMiddleware = helmet({
   noSniff:              true,
   referrerPolicy:       { policy: 'strict-origin-when-cross-origin' },
   crossOriginOpenerPolicy: { policy: 'same-origin' },
-});
-
-// ─── CORS configuration ───────────────────────────────────────────────────────
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.FRONTEND_URL_WWW,
-  'http://localhost:3000',
-  'http://localhost:5500',
-  'http://127.0.0.1:5500',
-].filter(Boolean);
-
-export const corsMiddleware = cors({
-  origin(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS: origin '${origin}' not allowed`));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
 });
 
 // ─── Rate limiters ────────────────────────────────────────────────────────────
@@ -160,7 +139,6 @@ export function requestLogger(req, res, next) {
 // ─── Apply all security middleware to an Express app ─────────────────────────
 export function applySecurityMiddleware(app) {
   app.use(helmetMiddleware);
-  app.use(corsMiddleware);
   app.use(ipBlocker);
   app.use(requestLogger);
   app.use(globalLimiter);
