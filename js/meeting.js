@@ -175,6 +175,38 @@
       Object.values(this._calls).forEach(function (call) { call.close(); });
       this._calls = {};
       if (this._peer) { this._peer.destroy(); this._peer = null; }
+    },
+
+    // ── Copy meeting link to clipboard ────────────────────────────────────────
+
+    copyMeetingLink: function () {
+      var peerId = this._peer && this._peer.id;
+      var url = peerId
+        ? global.location.origin + '/pages/meetings/?room=' + peerId
+        : global.location.href;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(url).then(function () {
+          if (global.GlobexUtils && global.GlobexUtils.showToast) {
+            global.GlobexUtils.showToast('Meeting link copied to clipboard!', 'success');
+          }
+          return url;
+        });
+      }
+
+      // Fallback for older browsers
+      var textarea = document.createElement('textarea');
+      textarea.value = url;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      if (global.GlobexUtils && global.GlobexUtils.showToast) {
+        global.GlobexUtils.showToast('Meeting link copied to clipboard!', 'success');
+      }
+      return Promise.resolve(url);
     }
   };
 

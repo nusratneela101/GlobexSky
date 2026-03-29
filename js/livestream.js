@@ -217,6 +217,54 @@
           if (typeof callback === 'function') callback(payload.new.viewer_count || 0);
         })
         .subscribe();
+    },
+
+    // ── Increment viewer count ───────────────────────────────────────────────
+
+    incrementViewerCount: async function (streamId) {
+      var sb = _sb();
+      var result = await sb.rpc('increment_viewer_count', { stream_id: streamId });
+      if (result && result.error) throw result.error;
+      return (result && result.data != null) ? result.data : null;
+    },
+
+    // ── Decrement viewer count ───────────────────────────────────────────────
+
+    decrementViewerCount: async function (streamId) {
+      var sb = _sb();
+      var result = await sb.rpc('decrement_viewer_count', { stream_id: streamId });
+      if (result && result.error) throw result.error;
+      return (result && result.data != null) ? result.data : null;
+    },
+
+    // ── Render stream card ───────────────────────────────────────────────────
+
+    renderStreamCard: function (stream) {
+      var id          = String(stream.id || '').replace(/"/g, '&quot;');
+      var title       = String(stream.title || 'Live Stream').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var desc        = String(stream.description || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var viewers     = stream.viewer_count || 0;
+      var thumbnail   = stream.thumbnail_url ? String(stream.thumbnail_url).replace(/"/g,'&quot;') : '/assets/images/livestream-placeholder.jpg';
+      var startedAt   = stream.created_at ? new Date(stream.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+      return '<div class="stream-card" data-stream-id="' + id + '" ' +
+        'style="border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer" ' +
+        'onclick="location.href=\'/pages/livestream/watch.html?id=' + id + '\'">' +
+        '<div style="position:relative">' +
+          '<img src="' + thumbnail + '" alt="' + title + '" ' +
+            'onerror="this.src=\'/assets/images/livestream-placeholder.jpg\'" ' +
+            'style="width:100%;height:180px;object-fit:cover">' +
+          '<span style="position:absolute;top:8px;left:8px;background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:4px">● LIVE</span>' +
+          '<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:.78rem;padding:3px 8px;border-radius:4px">' +
+            '👁 ' + viewers +
+          '</span>' +
+        '</div>' +
+        '<div style="padding:12px">' +
+          '<h3 style="font-size:.95rem;font-weight:600;color:#1e293b;margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + title + '</h3>' +
+          (desc ? '<p style="font-size:.8rem;color:#64748b;margin:0 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + desc + '</p>' : '') +
+          '<div style="font-size:.75rem;color:#94a3b8">Started at ' + startedAt + '</div>' +
+        '</div>' +
+      '</div>';
     }
   };
 

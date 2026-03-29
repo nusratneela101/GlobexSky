@@ -130,6 +130,126 @@
         .eq('room_id', roomId)
         .neq('sender_id', user.data.user.id)
         .eq('is_read', false);
+    },
+
+    // ── Init: start auth listener and update online presence ─────────────────
+
+    init: async function () {
+      var sb = _sb();
+      if (!sb) return;
+      var self = this;
+      var userResult = await sb.auth.getUser();
+      if (userResult.data && userResult.data.user) {
+        await self.updateOnlineStatus(true);
+        global.addEventListener('beforeunload', function () {
+          self.updateOnlineStatus(false);
+        });
+      }
+      sb.auth.onAuthStateChange(function (event, session) {
+        if (event === 'SIGNED_IN' && session) {
+          self.updateOnlineStatus(true);
+        } else if (event === 'SIGNED_OUT') {
+          self.updateOnlineStatus(false);
+        }
+      });
+    },
+
+    // ── Render a single message bubble ───────────────────────────────────────
+
+    renderMessage: function (msg, currentUserId) {
+      var isOwn = msg.sender_id === currentUserId;
+      var text  = String(msg.message || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var time  = msg.created_at
+        ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : '';
+
+      var attachmentHtml = '';
+      if (msg.attachment_url) {
+        var rawUrl = String(msg.attachment_url);
+        var safeUrl = '';
+        try {
+          var parsed = new URL(rawUrl);
+          var scheme = parsed.protocol.toLowerCase();
+          if (scheme === 'http:' || scheme === 'https:') {
+            safeUrl = parsed.toString();
+          }
+        } catch (e) {
+          safeUrl = '';
+        }
+        if (safeUrl) {
+          var escapedUrl = safeUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          if (/\.(jpg|jpeg|png|gif|webp)$/i.test(safeUrl)) {
+            attachmentHtml = '<img src="' + escapedUrl + '" alt="attachment" style="max-width:200px;border-radius:8px;margin-top:4px;display:block">';
+          } else {
+            attachmentHtml = '<a href="' + escapedUrl + '" target="_blank" rel="noopener noreferrer" style="color:#0052CC;font-size:.8rem">📎 Attachment</a>';
+          }
+        }
+      }
+
+      return '<div class="chat-message ' + (isOwn ? 'own' : 'other') + '" ' +
+        'style="display:flex;flex-direction:column;align-items:' + (isOwn ? 'flex-end' : 'flex-start') + ';margin-bottom:12px">' +
+        '<div style="max-width:70%;padding:10px 14px;border-radius:' + (isOwn ? '16px 16px 4px 16px' : '16px 16px 16px 4px') + ';' +
+          'background:' + (isOwn ? '#0052CC' : '#f1f5f9') + ';color:' + (isOwn ? '#fff' : '#1e293b') + ';font-size:.9rem">' +
+          text + attachmentHtml +
+        '</div>' +
+        '<span style="font-size:.72rem;color:#94a3b8;margin-top:2px">' + time + '</span>' +
+      '</div>';
+    },
+
+    // ── Render room list sidebar ──────────────────────────────────────────────
+
+    renderRoomList: function (rooms, currentUserId) {
+      if (!rooms || rooms.length === 0) {
+        return '<p style="text-align:center;color:#94a3b8;padding:24px">No conversations yet.</p>';
+      }
+      return rooms.map(function (room) {
+        var id      = String(room.id || '').replace(/"/g, '&quot;');
+        var lastMsg = String(room.last_message || 'No messages yet').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        var time    = room.last_message_at
+          ? new Date(room.last_message_at).toLocaleDateString()
+          : '';
+        var otherId = room.buyer_id === currentUserId ? room.supplier_id : room.buyer_id;
+        var initials = otherId ? otherId.substring(0, 2).toUpperCase() : '??';
+        return '<div class="chat-room-item" data-room-id="' + id + '" ' +
+          'style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid #f1f5f9;transition:background .15s" ' +
+          'onmouseover="this.style.background=\'#f8fafc\'" onmouseout="this.style.background=\'\'">' +
+          '<div style="width:44px;height:44px;border-radius:50%;background:#0052CC;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">' +
+            initials +
+          '</div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-weight:600;font-size:.9rem;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Chat #' + id.substring(0, 8) + '</div>' +
+            '<div style="font-size:.8rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + lastMsg + '</div>' +
+          '</div>' +
+          '<span style="font-size:.72rem;color:#94a3b8;flex-shrink:0">' + time + '</span>' +
+        '</div>';
+      }).join('');
+    },
+
+    // ── Upload attachment to Supabase Storage ────────────────────────────────
+
+    uploadAttachment: async function (file) {
+      var sb = _sb();
+      if (!sb) throw new Error('Supabase not initialised');
+      if (!file) throw new Error('No file provided');
+
+      var ext  = file.name.split('.').pop().toLowerCase();
+      var name = Date.now() + '-' + Math.random().toString(36).substring(2, 8) + '.' + ext;
+      var path = 'chat-attachments/' + name;
+
+      var result = await sb.storage.from('chat').upload(path, file, { cacheControl: '3600', upsert: false });
+      if (result.error) throw result.error;
+
+      var urlResult = sb.storage.from('chat').getPublicUrl(path);
+      return urlResult.data && urlResult.data.publicUrl ? urlResult.data.publicUrl : null;
+    },
+
+    // ── Update user online presence ───────────────────────────────────────────
+
+    updateOnlineStatus: async function (isOnline) {
+      // Presence tracking requires an is_online/last_seen column on a profile
+      // table keyed by auth.users.id. Add the column and update this query
+      // when that schema is available. Currently a no-op to avoid DB errors.
+      void isOnline;
     }
   };
 

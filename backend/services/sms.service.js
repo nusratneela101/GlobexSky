@@ -1,17 +1,44 @@
 /**
- * SMS service — integrates with Twilio, Vonage, or similar provider.
+ * SMS service — integrates with Twilio when credentials are configured.
+ * Falls back to console logging in development mode.
  * Uses SMS templates for message content.
  */
 
 import { renderSmsTemplate } from './templateEngine.js';
 
 export async function sendSMS(to, message) {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' && !process.env.TWILIO_ACCOUNT_SID) {
     console.log(`[SMS] To: ${to} | Message: ${message}`);
     return { success: true, mock: true };
   }
-  // TODO: implement real SMS provider (e.g. Twilio)
-  throw new Error('SMS provider not configured.');
+
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken  = process.env.TWILIO_AUTH_TOKEN;
+  const fromNumber = process.env.TWILIO_PHONE_NUMBER;
+
+  if (!accountSid || !authToken || !fromNumber) {
+    throw new Error('SMS provider not configured.');
+  }
+
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+  const body = new URLSearchParams({ To: to, From: fromNumber, Body: message });
+  const credentials = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${credentials}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: body.toString(),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(`Twilio error ${data.code}: ${data.message}`);
+  }
+
+  return { success: true, sid: data.sid, status: data.status };
 }
 
 export async function sendOTP(to, { otp, expiresIn, platformName } = {}) {
