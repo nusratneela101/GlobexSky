@@ -1,12 +1,20 @@
 import webpush from 'web-push';
 import supabase from '../config/supabase.js';
 
-// Configure VAPID details once on module load
-webpush.setVapidDetails(
-  `mailto:${process.env.VAPID_EMAIL || 'admin@globexsky.com'}`,
-  process.env.VAPID_PUBLIC_KEY || '',
-  process.env.VAPID_PRIVATE_KEY || '',
-);
+// Configure VAPID details only if keys are present
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+const pushEnabled = !!(VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY);
+
+if (pushEnabled) {
+  webpush.setVapidDetails(
+    `mailto:${process.env.VAPID_EMAIL || 'admin@globexsky.com'}`,
+    VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY,
+  );
+} else {
+  console.warn('[PushNotification] VAPID keys not configured — push notifications disabled.');
+}
 
 /**
  * Generate a new VAPID key pair (run once, store results in env).
@@ -65,6 +73,10 @@ export async function getUserSubscriptions(userId) {
  * Send a push notification to a single subscription object.
  */
 export async function sendPushToSubscription(subscription, payload) {
+  if (!pushEnabled) {
+    console.warn('[PushNotification] Push not configured — skipping sendPushToSubscription.');
+    return;
+  }
   try {
     await webpush.sendNotification(subscription, JSON.stringify(payload));
   } catch (err) {
@@ -84,6 +96,10 @@ export async function sendPushToSubscription(subscription, payload) {
  * Send a push notification to all active subscriptions of a user.
  */
 export async function sendPushToUser(userId, payload) {
+  if (!pushEnabled) {
+    console.warn('[PushNotification] Push not configured — skipping sendPushToUser.');
+    return;
+  }
   const subs = await getUserSubscriptions(userId);
   await Promise.all(
     subs.map((row) => sendPushToSubscription(JSON.parse(row.subscription), payload)),
@@ -94,6 +110,10 @@ export async function sendPushToUser(userId, payload) {
  * Broadcast a push notification to ALL active subscribers.
  */
 export async function broadcastPush(payload) {
+  if (!pushEnabled) {
+    console.warn('[PushNotification] Push not configured — skipping broadcast.');
+    return;
+  }
   const { data, error } = await supabase
     .from('push_subscriptions')
     .select('subscription')
@@ -112,6 +132,10 @@ export async function broadcastPush(payload) {
  */
 export async function sendBulkPush(userIds, payload) {
   if (!userIds || userIds.length === 0) return { sent: 0, failed: 0 };
+  if (!pushEnabled) {
+    console.warn('[PushNotification] Push not configured — skipping bulk notification.');
+    return { sent: 0, failed: 0 };
+  }
 
   const { data, error } = await supabase
     .from('push_subscriptions')
