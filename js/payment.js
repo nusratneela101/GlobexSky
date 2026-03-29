@@ -181,6 +181,176 @@
           ? 'Pay on delivery. Your order is confirmed.'
           : 'Transfer the amount to our bank account. Your order will be processed after confirmation.'
       };
+    },
+
+    // ── Verify payment status ────────────────────────────────────────────────
+
+    verifyPayment: async function (orderId) {
+      var sb = _sb();
+      var result = await sb.from('payments')
+        .select('*')
+        .eq('order_id', orderId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      if (result.error) return { status: 'unknown', verified: false };
+      var payment = result.data;
+      return {
+        verified: payment.status === 'paid' || payment.status === 'completed',
+        status: payment.status,
+        gateway: payment.gateway,
+        amount: payment.amount,
+        currency: payment.currency,
+        transactionId: payment.transaction_id,
+        payment: payment
+      };
+    },
+
+    // ── Show payment success UI ──────────────────────────────────────────────
+
+    showPaymentSuccess: async function (orderId) {
+      // Update order payment status in Supabase
+      var sb = _sb();
+      await sb.from('orders')
+        .update({ payment_status: 'paid', status: 'confirmed' })
+        .eq('id', orderId);
+
+      // Update payment record
+      await sb.from('payments')
+        .update({ status: 'paid' })
+        .eq('order_id', orderId)
+        .eq('status', 'pending');
+
+      // Render success message
+      var container = document.getElementById('payment-result') ||
+        document.getElementById('payment-status') ||
+        document.querySelector('[data-payment-result]');
+      if (container) {
+        container.innerHTML =
+          '<div style="text-align:center;padding:40px 20px">' +
+            '<div style="width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">' +
+              '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
+            '</div>' +
+            '<h2 style="color:#16a34a;font-size:1.5rem;font-weight:700;margin:0 0 8px">Payment Successful!</h2>' +
+            '<p style="color:#475569;margin:0 0 16px">Your order <strong>#' + String(orderId).substring(0, 8) + '</strong> has been confirmed.</p>' +
+            '<a href="/pages/order/details.html?id=' + orderId + '" ' +
+              'style="display:inline-block;padding:10px 24px;background:#0052CC;color:#fff;text-decoration:none;border-radius:8px;font-weight:600">' +
+              'View Order' +
+            '</a>' +
+          '</div>';
+      }
+
+      if (global.GlobexUtils && global.GlobexUtils.showToast) {
+        global.GlobexUtils.showToast('Payment successful! Order confirmed.', 'success');
+      }
+    },
+
+    // ── Show payment error UI ────────────────────────────────────────────────
+
+    showPaymentError: function (message) {
+      var container = document.getElementById('payment-result') ||
+        document.getElementById('payment-status') ||
+        document.querySelector('[data-payment-result]');
+      if (container) {
+        container.innerHTML =
+          '<div style="text-align:center;padding:40px 20px">' +
+            '<div style="width:64px;height:64px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">' +
+              '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+            '</div>' +
+            '<h2 style="color:#dc2626;font-size:1.5rem;font-weight:700;margin:0 0 8px">Payment Failed</h2>' +
+            '<p style="color:#475569;margin:0 0 16px">' + String(message || 'An error occurred while processing your payment. Please try again.') + '</p>' +
+            '<button onclick="history.back()" ' +
+              'style="display:inline-block;padding:10px 24px;background:#0052CC;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">' +
+              'Try Again' +
+            '</button>' +
+          '</div>';
+      }
+
+      if (global.GlobexUtils && global.GlobexUtils.showToast) {
+        global.GlobexUtils.showToast(message || 'Payment failed. Please try again.', 'error');
+      }
+    },
+
+    // ── Render payment method cards ──────────────────────────────────────────
+
+    renderPaymentMethods: async function (containerEl, amount, currency, orderId) {
+      if (typeof containerEl === 'string') {
+        containerEl = document.querySelector(containerEl);
+      }
+      if (!containerEl) return;
+
+      var gateways = await this.getActiveGateways();
+      if (!gateways || gateways.length === 0) {
+        containerEl.innerHTML = '<p style="color:#94a3b8;text-align:center">No payment methods available.</p>';
+        return;
+      }
+
+      var icons = {
+        stripe:     '💳',
+        bkash:      '📱',
+        nagad:      '📱',
+        sslcommerz: '🏦',
+        alipay:     '🟦',
+        wechat:     '🟢',
+        crypto:     '₿',
+        cod:        '🚚',
+        bank:       '🏦'
+      };
+
+      var labels = {
+        stripe:     'Credit / Debit Card',
+        bkash:      'bKash',
+        nagad:      'Nagad',
+        sslcommerz: 'SSLCommerz',
+        alipay:     'Alipay',
+        wechat:     'WeChat Pay',
+        crypto:     'Cryptocurrency',
+        cod:        'Cash on Delivery',
+        bank:       'Bank Transfer'
+      };
+
+      var self = this;
+      var html = '<div style="display:grid;gap:12px">';
+      gateways.forEach(function (gw) {
+        var key = gw.gateway;
+        html +=
+          '<div class="payment-method-card" data-gateway="' + key + '" ' +
+            'style="display:flex;align-items:center;gap:16px;padding:16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:border-color .2s"' +
+            ' onmouseover="this.style.borderColor=\'#0052CC\'" onmouseout="this.style.borderColor=\'#e2e8f0\'">' +
+            '<span style="font-size:1.5rem">' + (icons[key] || '💰') + '</span>' +
+            '<div style="flex:1">' +
+              '<div style="font-weight:600;color:#1e293b">' + (labels[key] || key) + '</div>' +
+              '<div style="font-size:.8rem;color:#94a3b8">Pay securely</div>' +
+            '</div>' +
+            '<button data-pay-btn="' + key + '" ' +
+              'style="padding:8px 16px;background:#0052CC;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:.85rem">' +
+              'Pay' +
+            '</button>' +
+          '</div>';
+      });
+      html += '</div>';
+      containerEl.innerHTML = html;
+
+      // Wire up pay buttons
+      containerEl.querySelectorAll('[data-pay-btn]').forEach(function (btn) {
+        btn.addEventListener('click', async function () {
+          var gateway = btn.getAttribute('data-pay-btn');
+          btn.disabled = true;
+          btn.textContent = 'Processing…';
+          try {
+            var result = await self.initPayment(gateway, amount, currency || 'USD', orderId, { amount: amount, currency: currency });
+            if (result && result.redirect) {
+              global.location.href = result.redirect;
+            } else if (result && result.message) {
+              self.showPaymentSuccess(orderId);
+            }
+          } catch (err) {
+            self.showPaymentError(err.message);
+            btn.disabled = false;
+            btn.textContent = 'Pay';
+          }
+        });
+      });
     }
   };
 

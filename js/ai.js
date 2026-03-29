@@ -156,6 +156,19 @@
         .upsert({ key: 'deepseek_api_key', value: apiKey, updated_at: new Date().toISOString() });
       if (result.error) throw result.error;
       _apiKey = apiKey;
+    },
+
+    // ── Init: preload config ─────────────────────────────────────────────────
+
+    init: async function () {
+      await _loadKey();
+      return this.isConfigured();
+    },
+
+    // ── sendMessage alias for chat() ─────────────────────────────────────────
+
+    sendMessage: async function (message, context) {
+      return this.chat(message, context);
     }
   };
 
