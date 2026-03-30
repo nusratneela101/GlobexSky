@@ -1162,3 +1162,18 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ── Performance: GPU-accelerated grid overlay ── */
+.vr-360-grid-overlay {
+  will-change: transform;
+}
+/* Override background-position animation with transform-based approach */
+@keyframes vr-grid-move {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(80px, 80px); }
+}
+
+/* ── Accessibility: Respect prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .vr-360-grid-overlay { animation: none; }
+}

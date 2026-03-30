@@ -99,38 +99,38 @@
   <div class="ai-modes-grid">
 
     <!-- Text Search -->
-    <div class="ai-mode-card text-mode" onclick="document.getElementById('main-search-input').focus()">
+    <div class="ai-mode-card text-mode" onclick="gsAIMode.textSearch()">
       <div class="ai-mode-icon"><i class="fas fa-keyboard"></i></div>
       <div class="ai-mode-title">Smart Text Search</div>
       <div class="ai-mode-desc">Type any keyword, product name, or supplier — our AI understands natural language and context for precise results.</div>
-      <button class="ai-mode-btn" onclick="document.getElementById('main-search-input').focus(); event.stopPropagation()">
+      <button class="ai-mode-btn" onclick="event.stopPropagation(); gsAIMode.textSearch()">
         <i class="fas fa-search"></i> Try Now
       </button>
     </div>
 
     <!-- Image Search -->
-    <div class="ai-mode-card image-mode" onclick="GlobexImageSearch && GlobexImageSearch.open ? GlobexImageSearch.open() : document.getElementById('image-search-modal').classList.add('open')">
+    <div class="ai-mode-card image-mode" onclick="gsAIMode.imageSearch()">
       <div class="ai-mode-icon"><i class="fas fa-camera"></i></div>
       <div class="ai-mode-title">Visual Image Search</div>
-      <div class="ai-mode-desc">Drag & drop or upload a product photo — our vision AI scans millions of items to find exact or similar matches.</div>
+      <div class="ai-mode-desc">Drag &amp; drop or upload a product photo — our vision AI scans millions of items to find exact or similar matches.</div>
       <div class="ai-mode-drop-area" id="ai-drop-hint">
         <i class="fas fa-cloud-upload-alt" style="font-size:1.6rem;color:#a78bfa;display:block;margin-bottom:6px"></i>
         Drop an image here or <strong style="color:#7c3aed">browse</strong>
       </div>
-      <button class="ai-mode-btn" onclick="event.stopPropagation(); GlobexImageSearch && GlobexImageSearch.open ? GlobexImageSearch.open() : document.getElementById('image-search-modal').classList.add('open')">
+      <button class="ai-mode-btn" onclick="event.stopPropagation(); gsAIMode.imageSearch()">
         <i class="fas fa-camera"></i> Search by Image
       </button>
     </div>
 
     <!-- Voice Search -->
-    <div class="ai-mode-card voice-mode" onclick="document.getElementById('btn-mic') && document.getElementById('btn-mic').click()">
+    <div class="ai-mode-card voice-mode" onclick="gsAIMode.voiceSearch()">
       <div class="ai-mode-icon"><i class="fas fa-microphone"></i></div>
       <div class="ai-mode-title">Voice Search</div>
       <div class="ai-mode-desc">Speak your search query naturally. Our AI transcribes and understands your request to find exactly what you need.</div>
       <div class="voice-wave" aria-hidden="true">
         <span></span><span></span><span></span><span></span><span></span>
       </div>
-      <button class="ai-mode-btn" onclick="event.stopPropagation(); document.getElementById('btn-mic') && document.getElementById('btn-mic').click()">
+      <button class="ai-mode-btn" onclick="event.stopPropagation(); gsAIMode.voiceSearch()">
         <i class="fas fa-microphone"></i> Start Listening
       </button>
     </div>
@@ -358,6 +358,27 @@
 <!-- ══════════════════════════════════════════
      SCRIPTS
 ══════════════════════════════════════════ -->
+<!-- AI Mode card helpers (named functions used by the AI modes section) -->
+<script>
+var gsAIMode = {
+  textSearch: function() {
+    var el = document.getElementById('main-search-input');
+    if (el) { el.focus(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  },
+  imageSearch: function() {
+    if (window.GlobexImageSearch && typeof GlobexImageSearch.open === 'function') {
+      GlobexImageSearch.open();
+    } else {
+      var modal = document.getElementById('image-search-modal');
+      if (modal) modal.classList.add('open');
+    }
+  },
+  voiceSearch: function() {
+    var btn = document.getElementById('btn-mic');
+    if (btn) btn.click();
+  }
+};
+</script>
 <!-- QuaggaJS is loaded dynamically by search.js when barcode scanner is opened -->
 
 <script src="../../assets/js/api-service.js"></script>

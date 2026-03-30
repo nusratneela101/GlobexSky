@@ -1418,3 +1418,13 @@
   color: #fff;
   box-shadow: 0 4px 16px rgba(0,82,204,0.35);
 }
+
+/* ── Accessibility: Respect prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .live-indicator::before    { animation: none; opacity: 1; }
+  .stream-viewer-count::before { animation: none; opacity: 1; }
+  .floating-emoji            { animation: none; opacity: 0; }
+  @keyframes live-pulse-ring { to {} }
+  @keyframes ls-pulse        { to {} }
+  @keyframes float-up        { to {} }
+}

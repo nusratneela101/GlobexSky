@@ -205,7 +205,7 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;overflow-x:
     <div class="she-track-title"><i class="fas fa-map-marker-alt"></i> Track Your Shipment</div>
     <div class="she-track-form">
       <input type="text" class="she-track-input" id="she-track-input" placeholder="Enter tracking number (e.g. GS-123456789)" aria-label="Tracking number"/>
-      <button class="she-track-btn" onclick="var v=document.getElementById('she-track-input').value.trim();if(v)window.location.href='track.html?id='+encodeURIComponent(v)">
+      <button class="she-track-btn" onclick="gsTrackShipment()">
         <i class="fas fa-search"></i> Track
       </button>
     </div>
@@ -408,7 +408,19 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;overflow-x:
 </footer>
 <script src="../../assets/js/main.js"></script>
 <script>
-document.getElementById('copyright-year').textContent = new Date().getFullYear();
+/* Track shipment with input validation */
+function gsTrackShipment() {
+  var input = document.getElementById('she-track-input');
+  var v = (input ? input.value : '').trim();
+  if (!v) { if (input) { input.focus(); } return; }
+  /* Allow alphanumeric, hyphens, dots, up to 40 chars */
+  if (!/^[A-Za-z0-9\-\.]{1,40}$/.test(v)) {
+    alert('Please enter a valid tracking number (letters, digits, hyphens only).');
+    return;
+  }
+  window.location.href = 'track.html?id=' + encodeURIComponent(v);
+}
+document.getElementById('copyright-year') && (document.getElementById('copyright-year').textContent = new Date().getFullYear());
 const hero = document.getElementById('doorHero');
 const reveal = document.getElementById('revealContent');
 hero.addEventListener('click', function(){
