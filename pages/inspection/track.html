@@ -187,8 +187,43 @@
     }
     @keyframes fadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
 
-    /* REPORT LOCKED */
-    .report-locked-wrap { position: relative; border-radius: 12px; overflow: hidden; }
+    /* CERTIFICATION BADGES */
+    .cert-badges { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+    .cert-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .25rem .7rem; border-radius: 6px; font-size: .7rem; font-weight: 600;
+    }
+    .cert-badge.iso { background: #dbeafe; color: #1d4ed8; }
+    .cert-badge.ciq { background: #dcfce7; color: #15803d; }
+    .cert-badge.aqf { background: #ede9fe; color: #6d28d9; }
+    .cert-badge.sgs { background: #ffedd5; color: #c2410c; }
+
+    /* STATUS OVERVIEW CARD */
+    .status-overview {
+      background: linear-gradient(135deg, #0052CC, #003d99);
+      border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 1.5rem;
+      color: #fff; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .so-item { display: flex; flex-direction: column; align-items: center; gap: .25rem; text-align: center; }
+    .so-val { font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 700; }
+    .so-lbl { font-size: .75rem; opacity: .75; }
+    .so-divider { width: 1px; height: 48px; background: rgba(255,255,255,.2); }
+    .so-progress-wrap { flex: 1; min-width: 200px; }
+    .so-progress-lbl { font-size: .78rem; opacity: .8; margin-bottom: .5rem; }
+    .so-progress-bar { height: 8px; background: rgba(255,255,255,.2); border-radius: 999px; overflow: hidden; }
+    .so-progress-fill { height: 100%; background: #00C9A7; border-radius: 999px; transition: width .8s ease; }
+
+    /* REPORT DOWNLOAD CARD */
+    .report-download-card {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 2px solid #86efac; border-radius: 14px; padding: 1.5rem;
+      display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+    }
+    .rdc-icon { width: 56px; height: 56px; border-radius: 14px; background: #22c55e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
+    .rdc-text h4 { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; color: #14532d; margin-bottom: .3rem; }
+    .rdc-text p { font-size: .82rem; color: #166534; line-height: 1.5; }
+    .rdc-btn { display: inline-flex; align-items: center; gap: .5rem; padding: .65rem 1.4rem; background: #16a34a; color: #fff; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 600; cursor: pointer; transition: all .2s; text-decoration: none; margin-top: .5rem; }
+    .rdc-btn:hover { background: #15803d; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(22,163,74,.3); }
     .report-preview {
       padding: 1.5rem; filter: blur(4px); pointer-events: none; user-select: none;
       background: linear-gradient(135deg, #f8faff, #eef3ff);
@@ -303,6 +338,39 @@
     </div>
   </div>
 
+  <!-- STATUS OVERVIEW STRIP -->
+  <div class="status-overview">
+    <div class="so-item">
+      <div class="so-val">3<span style="font-size:1rem">/4</span></div>
+      <div class="so-lbl">Steps Complete</div>
+    </div>
+    <div class="so-divider"></div>
+    <div class="so-item">
+      <div class="so-val">97.3%</div>
+      <div class="so-lbl">Pass Rate</div>
+    </div>
+    <div class="so-divider"></div>
+    <div class="so-item">
+      <div class="so-val">320</div>
+      <div class="so-lbl">Units Sampled</div>
+    </div>
+    <div class="so-divider"></div>
+    <div class="so-item">
+      <div class="so-val">12</div>
+      <div class="so-lbl">Minor Defects</div>
+    </div>
+    <div class="so-divider"></div>
+    <div class="so-progress-wrap">
+      <div class="so-progress-lbl">Overall Inspection Progress</div>
+      <div class="so-progress-bar">
+        <div class="so-progress-fill" style="width:75%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.72rem;opacity:.7;margin-top:.4rem">
+        <span>In Progress</span><span>75% Complete</span>
+      </div>
+    </div>
+  </div>
+
   <!-- TWO COLUMN -->
   <div class="two-col">
 
@@ -371,6 +439,13 @@
                 <div class="contact-item"><i class="fa-solid fa-phone"></i> +86 138 0013 8000</div>
                 <div class="contact-item"><i class="fa-solid fa-envelope"></i> james.chen@aqiservices.com</div>
                 <div class="contact-item"><i class="fa-solid fa-id-badge"></i> License: QI-CN-20910</div>
+                <div class="contact-item"><i class="fa-solid fa-map-marker-alt"></i> 12 Years Experience · Shenzhen, CN</div>
+              </div>
+              <div class="cert-badges">
+                <span class="cert-badge iso"><i class="fas fa-certificate"></i> ISO 9001</span>
+                <span class="cert-badge ciq"><i class="fas fa-shield-alt"></i> CIQ Certified</span>
+                <span class="cert-badge aqf"><i class="fas fa-award"></i> AQF Member</span>
+                <span class="cert-badge sgs"><i class="fas fa-check-double"></i> SGS Auditor</span>
               </div>
               <div class="inspector-actions">
                 <button class="btn-sm btn-sm-primary"><i class="fa-solid fa-message"></i> Message</button>
@@ -423,7 +498,7 @@
         </div>
       </div>
 
-      <!-- COMPLETED REPORT (locked) -->
+      <!-- COMPLETED REPORT -->
       <div class="card">
         <div class="card-head"><i class="fa-solid fa-file-contract"></i> Inspection Report</div>
         <div class="card-body">
@@ -450,6 +525,22 @@
               <i class="fa-solid fa-lock"></i>
               <h4>Report Not Yet Available</h4>
               <p>The full report will be unlocked once the inspection is marked as completed.</p>
+            </div>
+          </div>
+          <!-- REPORT DOWNLOAD CARD (shown when complete) -->
+          <div class="report-download-card" id="reportDownloadCard" style="display:none;margin-top:1rem">
+            <div class="rdc-icon"><i class="fas fa-file-pdf"></i></div>
+            <div style="flex:1">
+              <div class="rdc-text">
+                <h4>✅ Inspection Report Ready</h4>
+                <p>Your full inspection report for <strong>INS-2024-0042</strong> is available. Includes 48 photos, defect log, and final verdict.</p>
+              </div>
+              <button class="rdc-btn" onclick="alert('Downloading INS-2024-0042 PDF Report…')">
+                <i class="fas fa-download"></i> Download PDF Report
+              </button>
+              <button class="rdc-btn" style="background:#1d4ed8;margin-left:.5rem" onclick="alert('Opening online report…')">
+                <i class="fas fa-eye"></i> View Online
+              </button>
             </div>
           </div>
         </div>
@@ -639,6 +730,12 @@
     btn.disabled = false;
     btn.classList.add('ready');
     btn.onclick = () => alert('Downloading INS-2024-0042 PDF Report…');
+    // Show the report download card
+    const rdCard = document.getElementById('reportDownloadCard');
+    if (rdCard) { rdCard.style.display = 'flex'; rdCard.style.animation = 'fadeIn .5s ease'; }
+    // Hide the locked overlay
+    const overlay = document.querySelector('.report-overlay');
+    if (overlay) overlay.style.display = 'none';
   }, 60000);
 </script>
 </body>
