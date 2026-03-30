@@ -61,4 +61,8 @@ router.get('/dashboard/orders', authenticate, requireSupplier, ctrl.getSupplierO
 router.get('/dashboard/analytics', authenticate, requireSupplier, ctrl.getSupplierAnalytics);
 router.get('/dashboard/earnings', authenticate, requireSupplier, ctrl.getSupplierEarnings);
 
+// Import sync endpoints
+router.get('/dashboard/products/import-status', authenticate, requireSupplier, ctrl.getImportStatus);
+router.post('/dashboard/products/sync', authenticate, requireSupplier, ctrl.syncImportedProducts);
+
 export default router;

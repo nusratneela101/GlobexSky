@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Import Sync Dashboard | Globex Sky Supplier</title>
+  <meta name="description" content="Manage and sync imported products from Alibaba, 1688, and AliExpress."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/categories.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    /* ── Header ─────────────────────────────────────────────── */
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
+    .nav-container{display:flex;align-items:center;gap:16px;max-width:1400px;margin:0 auto;padding:12px 24px}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-subtitle{font-size:.72rem;color:#64748b}
+    .nav-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+    /* ── Layout ──────────────────────────────────────────────── */
+    .page-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;max-width:1400px;margin:0 auto;padding:32px 24px}
+    /* ── Sidebar ─────────────────────────────────────────────── */
+    .account-sidebar{background:#fff;border-radius:16px;padding:24px;height:fit-content;position:sticky;top:80px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .account-sidebar-avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#0052CC,#00C9A7);color:#fff;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+    .account-sidebar-name{font-family:'Poppins',sans-serif;font-weight:600;color:#0a0e27;text-align:center;font-size:.95rem}
+    .account-nav{list-style:none;margin-top:18px}
+    .account-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:.87rem;transition:all .2s}
+    .account-nav li a:hover,.account-nav li a.active{background:#f0f4ff;color:#0052CC;font-weight:500}
+    .account-nav li a i{width:18px;text-align:center}
+    .account-nav-divider{border-top:1px solid #f1f5f9;margin:8px 0}
+    /* ── Content ─────────────────────────────────────────────── */
+    .account-content{min-width:0}
+    .page-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+    .page-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .page-card-title{font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:600;color:#0a0e27;display:flex;align-items:center;gap:10px}
+    /* ── Buttons ─────────────────────────────────────────────── */
+    .btn{padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Poppins',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:#0052CC;color:#fff}.btn-primary:hover{background:#003d99}
+    .btn-secondary{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+    .btn-danger{background:#fee2e2;color:#ef4444;border:1px solid #fecaca}.btn-danger:hover{background:#fecaca}
+    .btn-success{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}.btn-success:hover{background:#a7f3d0}
+    .btn-sm{padding:5px 12px;font-size:.78rem}
+    .btn-icon{padding:6px 8px;font-size:.85rem}
+    /* ── Stats ───────────────────────────────────────────────── */
+    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+    .stat-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;border-top:3px solid}
+    .stat-card.blue{border-top-color:#0052CC}
+    .stat-card.green{border-top-color:#22c55e}
+    .stat-card.orange{border-top-color:#f97316}
+    .stat-card.red{border-top-color:#ef4444}
+    .stat-value{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:#0a0e27}
+    .stat-label{font-size:.8rem;color:#64748b;margin-top:2px}
+    /* ── Filter bar ──────────────────────────────────────────── */
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .search-input-wrap{position:relative;flex:1;min-width:200px;max-width:300px}
+    .search-input-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem}
+    .search-input{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px 8px 34px;font-size:.85rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;outline:none}
+    .search-input:focus{border-color:#0052CC}
+    .filter-select{border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:.83rem;font-family:'Inter',sans-serif;color:#374151;background:#fff;cursor:pointer;outline:none}
+    .filter-select:focus{border-color:#0052CC}
+    /* ── Table ───────────────────────────────────────────────── */
+    .table-wrap{overflow-x:auto}
+    .data-table{width:100%;border-collapse:collapse;font-size:.855rem;min-width:900px}
+    .data-table th{background:#f8faff;color:#374151;font-weight:600;padding:10px 14px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+    .data-table td{padding:10px 14px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+    .data-table tr:hover td{background:#f8faff}
+    /* Product cell */
+    .product-cell{display:flex;align-items:center;gap:10px}
+    .product-thumb{width:42px;height:42px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#e2e8f0}
+    .product-cell-name{font-weight:600;color:#0a0e27;font-size:.85rem;line-height:1.3}
+    .product-cell-sku{font-size:.72rem;color:#94a3b8}
+    /* Source badge in table */
+    .source-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:50px;font-size:.68rem;font-weight:700;white-space:nowrap}
+    .source-badge-alibaba{background:#fff3e0;color:#e65100;border:1px solid #ffcc80}
+    .source-badge-1688{background:#fce4ec;color:#c62828;border:1px solid #ef9a9a}
+    .source-badge-aliexpress{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9}
+    /* Status badge */
+    .sync-status{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600}
+    .sync-ok{background:#d1fae5;color:#065f46}
+    .sync-warn{background:#fef3c7;color:#92400e}
+    .sync-oos{background:#fee2e2;color:#991b1b}
+    .sync-ing{background:#eff6ff;color:#1d4ed8}
+    /* Markup edit cell */
+    .markup-cell{display:flex;align-items:center;gap:6px}
+    .markup-inline{width:64px;border:1.5px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:.8rem;font-family:'Inter',sans-serif;text-align:center;outline:none}
+    .markup-inline:focus{border-color:#0052CC}
+    /* Auto-sync toggle */
+    .auto-sync-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid #f1f5f9;flex-wrap:wrap}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#e2e8f0;border-radius:24px;transition:.3s}
+    .toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+    .toggle-switch input:checked + .toggle-slider{background:#0052CC}
+    .toggle-switch input:checked + .toggle-slider::before{transform:translateX(20px)}
+    /* Toast */
+    .toast{position:fixed;bottom:24px;right:24px;background:#0a0e27;color:#fff;padding:12px 20px;border-radius:10px;font-size:.875rem;font-weight:500;display:none;align-items:center;gap:8px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+    .toast.show{display:flex}
+    /* Responsive */
+    @media(max-width:1024px){.stats-bar{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.stats-bar{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.stats-bar{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="site-header" role="banner">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo" aria-label="Globex Sky Home">
+        <i class="fas fa-globe" style="font-size:1.4rem;color:#0052CC" aria-hidden="true"></i>
+        <div>
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:#0a0e27">Globex Sky</div>
+          <div class="nav-subtitle">Supplier Dashboard</div>
+        </div>
+      </a>
+      <div class="nav-controls">
+        <a href="products.html" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left" aria-hidden="true"></i> Products</a>
+        <a href="index.html" class="btn btn-primary btn-sm"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-layout" role="main">
+
+    <!-- ── Sidebar ─────────────────────────────────────────────── -->
+    <aside class="account-sidebar" aria-label="Supplier navigation">
+      <div class="account-sidebar-avatar" aria-hidden="true">S</div>
+      <div class="account-sidebar-name">Supplier Account</div>
+      <ul class="account-nav" role="list">
+        <li><a href="dashboard.html" role="listitem"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a></li>
+        <li><a href="products.html" role="listitem"><i class="fas fa-boxes-stacked" aria-hidden="true"></i> My Products</a></li>
+        <li><a href="imports.html" class="active" role="listitem"><i class="fas fa-cloud-download-alt" aria-hidden="true"></i> Import Sync</a></li>
+        <li><a href="orders.html" role="listitem"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Orders</a></li>
+        <li><a href="analytics.html" role="listitem"><i class="fas fa-chart-line" aria-hidden="true"></i> Analytics</a></li>
+        <li><a href="earnings.html" role="listitem"><i class="fas fa-dollar-sign" aria-hidden="true"></i> Earnings</a></li>
+        <li><div class="account-nav-divider" role="separator"></div></li>
+        <li><a href="settings.html" role="listitem"><i class="fas fa-cog" aria-hidden="true"></i> Settings</a></li>
+      </ul>
+    </aside>
+
+    <!-- ── Main Content ───────────────────────────────────────── -->
+    <div class="account-content">
+
+      <!-- Stats -->
+      <div class="stats-bar" role="list" aria-label="Import statistics">
+        <div class="stat-card blue" role="listitem">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total Imported</div>
+        </div>
+        <div class="stat-card green" role="listitem">
+          <div class="stat-value" id="stat-synced">0</div>
+          <div class="stat-label">In Sync</div>
+        </div>
+        <div class="stat-card orange" role="listitem">
+          <div class="stat-value" id="stat-changed">0</div>
+          <div class="stat-label">Price Changed</div>
+        </div>
+        <div class="stat-card red" role="listitem">
+          <div class="stat-value" id="stat-oos">0</div>
+          <div class="stat-label">Out of Stock</div>
+        </div>
+      </div>
+
+      <!-- Import Sync Dashboard -->
+      <div class="page-card">
+        <div class="page-card-header">
+          <div class="page-card-title">
+            <i class="fas fa-cloud-download-alt" style="color:#0052CC" aria-hidden="true"></i>
+            Import Sync Dashboard
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" id="btn-sync-all" onclick="syncAll()" aria-label="Sync all imported products">
+              <i class="fas fa-sync-alt" id="sync-all-icon" aria-hidden="true"></i> Sync All
+            </button>
+            <a href="../../pages/alibaba/index.html" class="btn btn-primary btn-sm" aria-label="Import more products">
+              <i class="fas fa-plus" aria-hidden="true"></i> Import More
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" role="search">
+          <div class="search-input-wrap">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="search" class="search-input" id="search-imports" placeholder="Search imported products…" aria-label="Search imported products" oninput="filterTable()"/>
+          </div>
+          <select class="filter-select" id="filter-source" aria-label="Filter by source" onchange="filterTable()">
+            <option value="">All Sources</option>
+            <option value="alibaba">Alibaba</option>
+            <option value="1688">1688</option>
+            <option value="aliexpress">AliExpress</option>
+          </select>
+          <select class="filter-select" id="filter-status" aria-label="Filter by status" onchange="filterTable()">
+            <option value="">All Statuses</option>
+            <option value="sync-ok">In Sync</option>
+            <option value="sync-warn">Price Changed</option>
+            <option value="sync-oos">Out of Stock</option>
+          </select>
+        </div>
+
+        <!-- Auto-sync toggle -->
+        <div class="auto-sync-row">
+          <label class="toggle-switch" aria-label="Enable auto-sync">
+            <input type="checkbox" id="auto-sync-toggle" checked onchange="toggleAutoSync(this)"/>
+            <span class="toggle-slider"></span>
+          </label>
+          <div>
+            <div style="font-weight:600;font-size:.875rem;color:#0a0e27">Auto-Sync Enabled</div>
+            <div style="font-size:.75rem;color:#64748b">Prices and stock auto-refresh from source</div>
+          </div>
+          <select class="filter-select" id="sync-frequency" aria-label="Sync frequency" style="margin-left:auto">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="manual">Manual Only</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table class="data-table" id="imports-table" aria-label="Imported products">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="select-all" aria-label="Select all" onchange="toggleSelectAll(this)"/></th>
+                <th>Product</th>
+                <th>Source</th>
+                <th>Source Price</th>
+                <th>Markup %</th>
+                <th>Your Price</th>
+                <th>Last Synced</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="imports-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-state" style="display:none;text-align:center;padding:48px 24px;color:#94a3b8">
+          <i class="fas fa-cloud-upload-alt" style="font-size:2.5rem;margin-bottom:14px;display:block;color:#cbd5e1" aria-hidden="true"></i>
+          <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:1rem;margin-bottom:8px;color:#374151">No Imported Products</div>
+          <p style="font-size:.875rem">Import products from Alibaba, 1688, or AliExpress to get started.</p>
+          <a href="../../pages/alibaba/index.html" class="btn btn-primary" style="margin-top:16px">
+            <i class="fas fa-search" aria-hidden="true"></i> Browse Suppliers
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /account-content -->
+  </div><!-- /page-layout -->
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <i class="fas fa-check-circle" style="color:#00C9A7" aria-hidden="true"></i>
+    <span id="toast-msg">Done!</span>
+  </div>
+
+  <script>
+  /* ─── Sample data ────────────────────────────────────────── */
+  var PRODUCTS = [
+    { id:1, name:'Wireless Earbuds TWS Pro', sku:'SKU-WE-001', img:'https://picsum.photos/seed/imp1/50/50', source:'alibaba', sourcePrice:8.50, markup:30, lastSynced:'2 hours ago', status:'sync-ok' },
+    { id:2, name:'LED Smart Bulb 9W RGBW', sku:'SKU-LB-002', img:'https://picsum.photos/seed/imp2/50/50', source:'1688', sourcePrice:1.80, markup:45, lastSynced:'5 hours ago', status:'sync-warn' },
+    { id:3, name:'Portable Power Bank 20000mAh', sku:'SKU-PB-003', img:'https://picsum.photos/seed/imp3/50/50', source:'aliexpress', sourcePrice:12.00, markup:25, lastSynced:'1 day ago', status:'sync-ok' },
+    { id:4, name:'Stainless Steel Water Bottle 1L', sku:'SKU-WB-004', img:'https://picsum.photos/seed/imp4/50/50', source:'alibaba', sourcePrice:3.50, markup:60, lastSynced:'3 days ago', status:'sync-oos' },
+    { id:5, name:'Yoga Mat Anti-Slip 6mm', sku:'SKU-YM-005', img:'https://picsum.photos/seed/imp5/50/50', source:'1688', sourcePrice:5.20, markup:40, lastSynced:'6 hours ago', status:'sync-ok' },
+    { id:6, name:'USB-C Multi-Port Hub 7-in-1', sku:'SKU-UH-006', img:'https://picsum.photos/seed/imp6/50/50', source:'aliexpress', sourcePrice:9.90, markup:35, lastSynced:'12 hours ago', status:'sync-warn' },
+    { id:7, name:'Bamboo Cutting Board Set', sku:'SKU-CB-007', img:'https://picsum.photos/seed/imp7/50/50', source:'alibaba', sourcePrice:7.20, markup:50, lastSynced:'2 days ago', status:'sync-ok' },
+    { id:8, name:'Resistance Bands Set (5-Pack)', sku:'SKU-RB-008', img:'https://picsum.photos/seed/imp8/50/50', source:'1688', sourcePrice:4.80, markup:55, lastSynced:'1 day ago', status:'sync-oos' },
+  ];
+
+  var globalMarkup = parseFloat(localStorage.getItem('globex_global_markup')) || 30;
+  PRODUCTS.forEach(function(p) { if(!p.markup) p.markup = globalMarkup; });
+
+  function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+  function getSourceBadge(source) {
+    var map = {
+      alibaba: '<span class="source-badge source-badge-alibaba" aria-label="Imported from Alibaba"><i class="fas fa-box-open" aria-hidden="true"></i> Alibaba</span>',
+      '1688':  '<span class="source-badge source-badge-1688" aria-label="Imported from 1688"><i class="fas fa-box-open" aria-hidden="true"></i> 1688</span>',
+      aliexpress: '<span class="source-badge source-badge-aliexpress" aria-label="Imported from AliExpress"><i class="fas fa-box-open" aria-hidden="true"></i> AliExpress</span>',
+    };
+    return map[source] || source;
+  }
+
+  function getStatusBadge(status) {
+    var map = {
+      'sync-ok':   '<span class="sync-status sync-ok" aria-label="In sync"><i class="fas fa-check-circle" aria-hidden="true"></i> In Sync</span>',
+      'sync-warn': '<span class="sync-status sync-warn" aria-label="Price changed"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Price Changed</span>',
+      'sync-oos':  '<span class="sync-status sync-oos" aria-label="Out of stock"><i class="fas fa-times-circle" aria-hidden="true"></i> Out of Stock</span>',
+      'sync-ing':  '<span class="sync-status sync-ing" aria-label="Syncing"><i class="fas fa-sync-alt fa-spin" aria-hidden="true"></i> Syncing…</span>',
+    };
+    return map[status] || status;
+  }
+
+  function sellPrice(p) { return (p.sourcePrice * (1 + p.markup / 100)).toFixed(2); }
+
+  function renderTable(products) {
+    var tbody = document.getElementById('imports-tbody');
+    var empty = document.getElementById('empty-state');
+
+    if (!products.length) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = products.map(function(p) {
+      return '<tr data-id="' + p.id + '" data-source="' + escapeHtml(p.source) + '" data-status="' + escapeHtml(p.status) + '">' +
+        '<td><input type="checkbox" class="row-check" aria-label="Select ' + escapeHtml(p.name) + '"/></td>' +
+        '<td><div class="product-cell"><img class="product-thumb" src="' + escapeHtml(p.img) + '" alt="' + escapeHtml(p.name) + '" width="42" height="42" loading="lazy"/><div><div class="product-cell-name">' + escapeHtml(p.name) + '</div><div class="product-cell-sku">' + escapeHtml(p.sku) + '</div></div></div></td>' +
+        '<td>' + getSourceBadge(p.source) + '</td>' +
+        '<td style="font-weight:600">$' + p.sourcePrice.toFixed(2) + '</td>' +
+        '<td><div class="markup-cell"><input type="number" class="markup-inline" value="' + p.markup + '" min="0" max="1000" step="1" aria-label="Markup for ' + escapeHtml(p.name) + '" onchange="updateProductMarkup(' + p.id + ',this.value)"/><span style="color:#94a3b8;font-size:.8rem">%</span></div></td>' +
+        '<td style="color:#0052CC;font-weight:600">$' + sellPrice(p) + '</td>' +
+        '<td style="font-size:.78rem;color:#94a3b8">' + escapeHtml(p.lastSynced) + '</td>' +
+        '<td>' + getStatusBadge(p.status) + '</td>' +
+        '<td><div style="display:flex;gap:4px">' +
+          '<button class="btn btn-secondary btn-sm btn-icon" onclick="syncProduct(' + p.id + ')" aria-label="Sync ' + escapeHtml(p.name) + '" title="Sync"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>' +
+          '<button class="btn btn-danger btn-sm btn-icon" onclick="removeProduct(' + p.id + ')" aria-label="Remove ' + escapeHtml(p.name) + '" title="Remove"><i class="fas fa-trash" aria-hidden="true"></i></button>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function updateStats() {
+    var data = PRODUCTS;
+    document.getElementById('stat-total').textContent = data.length;
+    document.getElementById('stat-synced').textContent = data.filter(function(p){return p.status==='sync-ok';}).length;
+    document.getElementById('stat-changed').textContent = data.filter(function(p){return p.status==='sync-warn';}).length;
+    document.getElementById('stat-oos').textContent = data.filter(function(p){return p.status==='sync-oos';}).length;
+  }
+
+  function filterTable() {
+    var search = document.getElementById('search-imports').value.toLowerCase();
+    var source = document.getElementById('filter-source').value;
+    var status = document.getElementById('filter-status').value;
+    var filtered = PRODUCTS.filter(function(p) {
+      var matchSearch = !search || p.name.toLowerCase().includes(search) || p.sku.toLowerCase().includes(search);
+      var matchSource = !source || p.source === source;
+      var matchStatus = !status || p.status === status;
+      return matchSearch && matchSource && matchStatus;
+    });
+    renderTable(filtered);
+  }
+
+  function updateProductMarkup(id, value) {
+    var p = PRODUCTS.find(function(x){return x.id===id;});
+    if (!p) return;
+    p.markup = parseFloat(value) || 0;
+    // Update the selling price cell inline
+    var row = document.querySelector('tr[data-id="' + id + '"]');
+    if (row) {
+      var cells = row.querySelectorAll('td');
+      if (cells[5]) cells[5].textContent = '$' + sellPrice(p);
+    }
+  }
+
+  function syncProduct(id) {
+    var p = PRODUCTS.find(function(x){return x.id===id;});
+    if (!p) return;
+    var prevStatus = p.status;
+    p.status = 'sync-ing';
+    filterTable();
+    setTimeout(function() {
+      p.status = 'sync-ok';
+      p.lastSynced = 'Just now';
+      filterTable();
+      showToast('✅ ' + p.name + ' synced successfully!');
+    }, 1800);
+  }
+
+  function syncAll() {
+    var icon = document.getElementById('sync-all-icon');
+    icon.className = 'fas fa-sync-alt fa-spin';
+    document.getElementById('btn-sync-all').disabled = true;
+    var delay = 0;
+    PRODUCTS.forEach(function(p) {
+      p.status = 'sync-ing';
+      delay += 300;
+      setTimeout(function() {
+        p.status = 'sync-ok';
+        p.lastSynced = 'Just now';
+      }, delay);
+    });
+    filterTable();
+    setTimeout(function() {
+      filterTable();
+      updateStats();
+      icon.className = 'fas fa-sync-alt';
+      document.getElementById('btn-sync-all').disabled = false;
+      showToast('✅ All products synced successfully!');
+    }, delay + 500);
+    // POST to API
+    fetch('/api/v1/suppliers/dashboard/products/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('globex_token') || '') }
+    }).catch(function(){});
+  }
+
+  function removeProduct(id) {
+    if (!confirm('Remove this imported product?')) return;
+    PRODUCTS = PRODUCTS.filter(function(p){return p.id !== id;});
+    filterTable();
+    updateStats();
+    showToast('Product removed.');
+  }
+
+  function toggleSelectAll(cb) {
+    document.querySelectorAll('.row-check').forEach(function(c){c.checked = cb.checked;});
+  }
+
+  function toggleAutoSync(cb) {
+    showToast(cb.checked ? '🔄 Auto-sync enabled' : '⏸ Auto-sync disabled');
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    var m = document.getElementById('toast-msg');
+    m.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');}, 3500);
+  }
+
+  /* ─── Init ───────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', function() {
+    renderTable(PRODUCTS);
+    updateStats();
+    // Fetch from API if available
+    fetch('/api/v1/suppliers/dashboard/products/import-status', {
+      headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('globex_token') || '') }
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.success && data.products && data.products.length) {
+        PRODUCTS = data.products;
+        renderTable(PRODUCTS);
+        updateStats();
+      }
+    }).catch(function(){});
+  });
+  </script>
+  <script src="../../assets/js/navbar.js"></script>
+</body>
+</html>

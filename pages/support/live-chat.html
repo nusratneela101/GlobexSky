@@ -134,11 +134,11 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:
       </div>
       <div class="stat-card">
         <div class="stat-icon stat-icon-orange"><i class="fas fa-hourglass-half"></i></div>
-        <div><div class="stat-value">3</div><div class="stat-label">Waiting</div></div>
+        <div><div class="stat-value" id="stat-queue">3</div><div class="stat-label">Waiting</div></div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon stat-icon-teal"><i class="fas fa-stopwatch"></i></div>
-        <div><div class="stat-value">1m 20s</div><div class="stat-label">Avg Wait Time</div></div>
+        <div class="stat-icon stat-icon-teal"><i class="fas fa-headset"></i></div>
+        <div><div class="stat-value" id="stat-agents">2</div><div class="stat-label">Available Agents</div></div>
       </div>
     </div>
 
@@ -149,7 +149,7 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:
         <div class="chat-list-header">
           Active Chats <span class="badge-sm">5</span>
         </div>
-        <div class="chat-list-body">
+        <div class="chat-list-body" id="chat-list-body">
           <div class="chat-item active" onclick="selectChat('Adaeze Mensah','AM','Order missing')">
             <div class="chat-avatar">AM<span class="online-dot"></span></div>
             <div class="chat-info">
@@ -212,6 +212,7 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:
           <div class="msg msg-customer">Thank you. It's been more than a week since I placed the order.<div class="msg-time">10:24 AM</div></div>
           <div class="msg msg-agent">I can see your order is currently in transit. There appears to be a delay at the customs checkpoint. Expected delivery is now in 2 business days. I'll send you an updated tracking link.<div class="msg-time">10:25 AM</div></div>
           <div class="msg msg-customer">Okay, please do. I'm getting a bit worried.<div class="msg-time">10:26 AM</div></div>
+          <div id="typing-indicator" style="display:none;font-size:.78rem;color:#94a3b8;padding:4px 0;font-style:italic">Customer is typing…</div>
         </div>
         <div class="chat-input-area">
           <div class="input-row">
@@ -262,38 +263,164 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa;min-height:
 </footer>
 <script>
 document.getElementById('yr').textContent=new Date().getFullYear();
-function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-function sendMsg(){
-  const input=document.getElementById('chat-input');
-  const text=input.value.trim();
-  if(!text)return;
-  const box=document.getElementById('msg-box');
-  const div=document.createElement('div');
-  div.className='msg msg-agent';
-  div.innerHTML=escapeHtml(text)+'<div class="msg-time">'+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</div>';
+
+/* ─── Utilities ─────────────────────────────────────────────── */
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function timeStr(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+
+/* ─── Socket.IO Live Chat (Agent) ───────────────────────────── */
+let socket = null;
+let activeSessionId = null;
+const agentId = localStorage.getItem('globex_agent_id') || ('agent_' + Math.random().toString(36).slice(2,9));
+localStorage.setItem('globex_agent_id', agentId);
+
+function connectSocket(){
+  const BACKEND = window.GLOBEX_API || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
+  if(typeof io === 'undefined') return; // Socket.IO not loaded
+  socket = io(BACKEND + '/support', { auth: { role: 'agent', agentId }, transports: ['websocket','polling'] });
+
+  socket.on('connect', () => console.log('[LiveChat] Agent socket connected:', socket.id));
+
+  socket.on('queue:update', ({ queueLength, availableAgents, sessions }) => {
+    document.getElementById('stat-queue').textContent = queueLength;
+    document.getElementById('stat-agents').textContent = availableAgents;
+    renderQueue(sessions || []);
+  });
+
+  socket.on('chat:message', ({ sessionId, sender, senderName, content, timestamp }) => {
+    if(sessionId !== activeSessionId) return;
+    appendMessage(sender === 'agent' ? 'msg-agent' : 'msg-customer', escapeHtml(content), new Date(timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  });
+
+  socket.on('chat:typing', ({ sessionId, sender, isTyping }) => {
+    if(sessionId !== activeSessionId) return;
+    const el = document.getElementById('typing-indicator');
+    if(el) el.style.display = isTyping && sender !== 'agent' ? 'block' : 'none';
+  });
+
+  socket.on('chat:ended', ({ sessionId }) => {
+    if(sessionId === activeSessionId){
+      appendSystemMsg('This chat has ended.');
+      document.getElementById('chat-input').disabled = true;
+      document.querySelector('.btn-send').disabled = true;
+    }
+  });
+
+  socket.on('agent:pickup-success', ({ session }) => {
+    activeSessionId = session.sessionId;
+    document.getElementById('win-name').textContent = session.name || 'Customer';
+    document.getElementById('win-issue').textContent = (session.topic || 'Support') + ' · Active now';
+    const box = document.getElementById('msg-box');
+    box.innerHTML = '';
+    (session.messages || []).forEach(m => {
+      appendMessage(m.sender === 'agent' ? 'msg-agent' : 'msg-customer', escapeHtml(m.content || ''), new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    });
+    appendSystemMsg('You have joined this chat.');
+    document.getElementById('chat-input').disabled = false;
+    document.querySelector('.btn-send').disabled = false;
+  });
+
+  socket.on('agent:pickup-error', ({ error }) => alert('Could not pick up chat: ' + error));
+}
+
+function renderQueue(sessions){
+  const list = document.getElementById('chat-list-body');
+  if(!list) return;
+  // Keep existing active chat items; prepend queued ones at top
+  const queuedItems = sessions.map(s => `
+    <div class="chat-item" onclick="pickUpChat('${escapeHtml(s.sessionId)}','${escapeHtml(s.customerName||'Customer')}','${escapeHtml(s.topic||'Support')}')">
+      <div class="chat-avatar">${escapeHtml((s.customerName||'?').charAt(0).toUpperCase())}<div class="online-dot"></div></div>
+      <div class="chat-info">
+        <div class="chat-name">${escapeHtml(s.customerName||'Customer')}</div>
+        <div class="chat-preview">${escapeHtml(s.topic||'General support')}</div>
+        <div class="chat-meta">Waiting ${s.waitTime}s · Queue #${s.position} <span class="badge-sm">Queued</span></div>
+      </div>
+    </div>`).join('');
+  // Update queue badge
+  const header = list.previousElementSibling;
+  if(header) header.querySelector('.badge-sm') && (header.querySelector('.badge-sm').textContent = sessions.length);
+  // Re-insert queued items without removing active ones
+  const existing = list.querySelectorAll('.chat-item:not([data-queued])');
+  list.innerHTML = queuedItems + [...existing].map(e=>e.outerHTML).join('');
+}
+
+function appendMessage(cls, html, time){
+  const box = document.getElementById('msg-box');
+  const div = document.createElement('div');
+  div.className = 'msg ' + cls;
+  div.innerHTML = html + '<div class="msg-time">' + (time||timeStr()) + '</div>';
   box.appendChild(div);
-  box.scrollTop=box.scrollHeight;
-  input.value='';
+  box.scrollTop = box.scrollHeight;
 }
-function useTemplate(){
-  const sel=document.getElementById('tpl-select');
-  if(sel.value){document.getElementById('chat-input').value=sel.value;sel.value='';}
+
+function appendSystemMsg(text){
+  const box = document.getElementById('msg-box');
+  const div = document.createElement('div');
+  div.style.cssText = 'text-align:center;font-size:.75rem;color:#94a3b8;padding:6px 0;';
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
 }
-function insertCanned(el){document.getElementById('chat-input').value=el.textContent.trim();}
-function selectChat(name,initials,issue){
+
+function pickUpChat(sessionId, name, issue){
+  if(!socket) return;
+  socket.emit('agent:pickup', { sessionId });
   document.querySelectorAll('.chat-item').forEach(i=>i.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  document.getElementById('win-name').textContent=name;
-  document.getElementById('win-avatar').textContent=initials;
-  document.getElementById('win-issue').textContent=issue+' · Active now';
 }
+
+function sendMsg(){
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text || !activeSessionId) return;
+  if(socket) {
+    socket.emit('chat:message', { sessionId: activeSessionId, content: text });
+  } else {
+    // Fallback: local display only
+    appendMessage('msg-agent', escapeHtml(text), timeStr());
+  }
+  input.value = '';
+  if(socket) socket.emit('chat:typing', { sessionId: activeSessionId, isTyping: false });
+}
+
+function useTemplate(){
+  const sel = document.getElementById('tpl-select');
+  if(sel.value){ document.getElementById('chat-input').value = sel.value; sel.value = ''; }
+}
+function insertCanned(el){ document.getElementById('chat-input').value = el.textContent.trim(); }
+
+function selectChat(name, initials, issue){
+  document.querySelectorAll('.chat-item').forEach(i=>i.classList.remove('active'));
+  if(event && event.currentTarget) event.currentTarget.classList.add('active');
+  document.getElementById('win-name').textContent = name;
+  document.getElementById('win-avatar').textContent = initials;
+  document.getElementById('win-issue').textContent = issue + ' · Active now';
+}
+
 function setStatus(s){
   ['available','busy','away'].forEach(x=>{
-    const btn=document.getElementById('btn-'+x);
-    btn.classList.toggle('selected',x===s);
+    const btn = document.getElementById('btn-'+x);
+    if(btn) btn.classList.toggle('selected', x===s);
   });
+  if(socket) socket.emit('agent:status', { status: s });
 }
+
+// Typing indicator emit
+document.addEventListener('DOMContentLoaded', () => {
+  connectSocket();
+  const inp = document.getElementById('chat-input');
+  if(inp){
+    let typingTimer;
+    inp.addEventListener('input', () => {
+      if(!socket || !activeSessionId) return;
+      socket.emit('chat:typing', { sessionId: activeSessionId, isTyping: true });
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(() => socket.emit('chat:typing', { sessionId: activeSessionId, isTyping: false }), 1500);
+    });
+    inp.addEventListener('keydown', e => { if(e.key === 'Enter') sendMsg(); });
+  }
+});
 </script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" crossorigin="anonymous"></script>
   <script src="../../assets/js/support-page.js"></script>
 </body>
 </html>
