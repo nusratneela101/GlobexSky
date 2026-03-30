@@ -178,11 +178,18 @@ const GlobexSearch = (() => {
   async function performSearch(q, page = 1, filters = {}) {
     currentQuery = q;
     currentPage = page;
-    updateUrlParam('q', q);
-    updateUrlParam('page', page > 1 ? page : null);
 
     if (q) saveToHistory(q);
     hideDropdown();
+
+    // If there's no results grid on this page, redirect to the search results page
+    if (!resultsGrid && q) {
+      window.location.href = 'pages/search/index.html?q=' + encodeURIComponent(q) + (page > 1 ? '&page=' + Math.max(1, parseInt(page, 10) || 1) : '');
+      return;
+    }
+
+    updateUrlParam('q', q);
+    updateUrlParam('page', page > 1 ? page : null);
     showSkeleton();
 
     try {
