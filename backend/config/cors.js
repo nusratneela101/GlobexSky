@@ -6,9 +6,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5500',
   'http://127.0.0.1:5500',
-].filter(Boolean).map(origin => origin.replace(/\/+$/, ''));
-
-console.log(`✅ CORS allowed origins: ${allowedOrigins.join(', ')}`);
+].filter(Boolean);
 
 const corsOptions = {
   origin(origin, callback) {
