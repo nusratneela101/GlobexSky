@@ -100,23 +100,26 @@
             <div class="search-wrapper">
               <input
                 type="search"
-                id="nav-search-input"
+                id="main-search-input"
                 class="search-input"
                 placeholder="Search products, suppliers, categories..."
                 aria-label="Search products, suppliers, and categories"
                 autocomplete="off"
               />
               <div class="search-actions">
-                <button class="search-btn search-voice" aria-label="Voice search">
+                <button id="btn-mic" class="search-btn search-voice" aria-label="Voice search">
                   <i class="fas fa-microphone" aria-hidden="true"></i>
                 </button>
-                <button class="search-btn search-image" aria-label="Image search">
+                <button id="btn-img" class="search-btn search-image" aria-label="Image search">
                   <i class="fas fa-camera" aria-hidden="true"></i>
                 </button>
                 <a href="pages/barcode-scanner/index.html" class="search-btn search-barcode" aria-label="Barcode scanner" title="Scan a barcode">
                   <i class="fas fa-barcode" aria-hidden="true"></i>
                 </a>
-                <button class="search-btn search-submit" aria-label="Submit search">
+                <a href="pages/ai/search.html" class="search-btn search-ai" aria-label="AI search" title="AI-powered search">
+                  <i class="fas fa-robot" aria-hidden="true"></i>
+                </a>
+                <button id="btn-search-go" class="search-btn search-submit" aria-label="Submit search">
                   <i class="fas fa-search" aria-hidden="true"></i>
                 </button>
               </div>
@@ -1578,6 +1581,51 @@
       }
       msgs.scrollTop = msgs.scrollHeight;
     };
+  })();
+  </script>
+
+  <!-- Voice Search Overlay -->
+  <div id="voice-overlay" class="voice-overlay" role="dialog" aria-modal="true" aria-label="Voice search">
+    <div class="voice-circle"><i class="fas fa-microphone"></i></div>
+    <p id="voice-status" class="voice-status">Listening…</p>
+    <p id="voice-interim" class="voice-interim"></p>
+    <button id="voice-cancel" class="voice-cancel">Cancel</button>
+  </div>
+
+  <!-- Image Search Modal -->
+  <div id="image-search-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Image search">
+    <div class="modal-box">
+      <button id="close-image-modal" class="modal-close" aria-label="Close"><i class="fas fa-times"></i></button>
+      <p class="modal-title">Search by Image</p>
+      <p class="modal-subtitle">Upload a photo or drag and drop to find similar products</p>
+      <div id="drop-zone" class="drop-zone">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Drag &amp; drop an image here</p>
+        <button id="btn-browse-image" class="btn-browse" type="button">Browse / Take Photo</button>
+        <input id="image-file-input" type="file" accept="image/*" capture="environment" style="display:none" />
+      </div>
+      <img id="img-preview" class="img-preview" alt="Preview" />
+      <button id="btn-image-search" class="btn-image-search" type="button">Search by Image</button>
+    </div>
+  </div>
+
+  <script>
+  // Wire up currency selector to Currency module
+  (function() {
+    var VALID_CURRENCIES = ['USD','EUR','GBP','CNY','AED'];
+    var sel = document.getElementById('currency-select');
+    if (sel) {
+      sel.addEventListener('change', function() {
+        if (window.Currency && typeof window.Currency.setCurrent === 'function') {
+          window.Currency.setCurrent(this.value);
+        }
+      });
+      // Restore saved preference (validate against known codes)
+      var saved = localStorage.getItem('globexCurrency');
+      if (saved && VALID_CURRENCIES.indexOf(saved) !== -1) {
+        sel.value = saved;
+      }
+    }
   })();
   </script>
 </body>
