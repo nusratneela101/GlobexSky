@@ -234,15 +234,153 @@
 <header class="site-header" role="banner">
   <nav class="navbar" role="navigation" aria-label="Main navigation">
     <div class="nav-container">
+
+      <!-- Logo -->
       <a href="../../index.html" class="nav-logo" aria-label="Globex Sky Home"><img src="../../assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
       </a>
-      <div class="nav-controls">
-        <a href="cart.html" class="nav-cart" aria-label="Shopping cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge">0</span></a>
-        <a href="../../pages/auth/login.html" class="btn-nav btn-login">Login</a>
-        <a href="../../pages/auth/register.html" class="btn-nav btn-register">Register</a>
+
+      <!-- Search Bar -->
+      <div class="nav-search" role="search">
+        <div class="search-wrapper">
+          <input
+            type="search"
+            id="main-search-input"
+            class="search-input"
+            placeholder="Search products, suppliers, categories..."
+            aria-label="Search products, suppliers, and categories"
+            autocomplete="off"
+          />
+          <div class="search-actions">
+            <button id="btn-mic" class="search-btn search-voice" aria-label="Voice search">
+              <i class="fas fa-microphone" aria-hidden="true"></i>
+            </button>
+            <button id="btn-img" class="search-btn search-image" aria-label="Image search">
+              <i class="fas fa-camera" aria-hidden="true"></i>
+            </button>
+            <a href="../barcode-scanner/index.html" class="search-btn search-barcode" aria-label="Barcode scanner" title="Scan a barcode">
+              <i class="fas fa-barcode" aria-hidden="true"></i>
+            </a>
+            <a href="../ai/search.html" class="search-btn search-ai" aria-label="AI search" title="AI-powered search">
+              <i class="fas fa-robot" aria-hidden="true"></i>
+            </a>
+            <button id="btn-search-go" class="search-btn search-submit" aria-label="Submit search">
+              <i class="fas fa-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
       </div>
+
+      <!-- Nav Controls -->
+      <div class="nav-controls">
+
+        <!-- Language Switcher -->
+        <div id="lang-switcher-root" class="nav-lang-switcher" aria-label="Language switcher"></div>
+
+        <!-- Currency Selector -->
+        <div class="nav-select-group">
+          <label for="currency-select" class="sr-only">Currency</label>
+          <select id="currency-select" class="nav-select" aria-label="Select currency">
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="CNY">¥ CNY</option>
+            <option value="AED">د.إ AED</option>
+          </select>
+        </div>
+
+        <!-- Auth Buttons -->
+        <a href="../auth/login.html" class="btn-nav btn-login">
+          <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+          <span>Login</span>
+        </a>
+        <a href="../auth/register.html" class="btn-nav btn-register">
+          <i class="fas fa-user-plus" aria-hidden="true"></i>
+          <span>Register</span>
+        </a>
+
+        <!-- Cart -->
+        <a href="../cart/index.html" class="nav-cart" aria-label="Shopping cart">
+          <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+          <span class="cart-badge" id="cart-count">0</span>
+        </a>
+
+        <!-- User Avatar Dropdown -->
+        <div class="nav-user-dropdown" id="user-dropdown">
+          <button class="user-avatar-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="User account menu">
+            <img src="https://ui-avatars.com/api/?name=Guest+User&background=0052CC&color=fff&size=36" alt="User avatar" class="user-avatar" width="36" height="36" />
+            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <ul class="dropdown-menu" id="user-menu" role="menu" aria-label="User menu">
+            <li role="menuitem"><a href="../account/dashboard.html"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a></li>
+            <li role="menuitem"><a href="../account/orders.html"><i class="fas fa-box" aria-hidden="true"></i> My Orders</a></li>
+            <li role="menuitem"><a href="../account/wishlist.html"><i class="fas fa-heart" aria-hidden="true"></i> Wishlist</a></li>
+            <li role="menuitem"><a href="../account/settings.html"><i class="fas fa-cog" aria-hidden="true"></i> Settings</a></li>
+            <li class="dropdown-divider" role="separator"></li>
+            <li role="menuitem"><a href="../auth/logout.html" class="logout-link"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout</a></li>
+          </ul>
+        </div>
+
+      </div><!-- /.nav-controls -->
+
+      <!-- Cart icon: always visible (including on mobile) -->
+      <a href="../cart/index.html" class="nav-cart nav-cart-mobile" aria-label="Shopping cart" id="nav-cart-mobile" style="display:none">
+        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+        <span class="cart-badge" id="cart-count-mobile">0</span>
+      </a>
+
+      <!-- Hamburger (mobile) -->
+      <button class="hamburger" id="hamburger-btn" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-nav">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+    </div><!-- /.nav-container -->
+
+    <!-- Mobile Nav -->
+    <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+      <!-- Mobile Search -->
+      <div class="mobile-nav-search">
+        <form action="../search/index.html" method="get" role="search" class="mobile-nav-search-form">
+          <label for="mobile-search-input" class="sr-only">Search</label>
+          <input id="mobile-search-input" type="search" name="q" placeholder="Search products, suppliers…"
+            class="mobile-nav-search-input"
+            aria-label="Search">
+          <button type="submit" class="mobile-nav-search-btn" aria-label="Submit search">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+      <!-- Mobile Language & Currency -->
+      <div class="mobile-nav-locale">
+        <div id="mobile-lang-switcher-root" data-lang-switcher="root" class="mobile-nav-lang" aria-label="Language switcher"></div>
+        <div class="mobile-nav-currency">
+          <label for="mobile-currency-select" class="sr-only">Currency</label>
+          <select id="mobile-currency-select" class="nav-select currency-selector mobile-currency-select" aria-label="Select currency" data-currency-selector>
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="CNY">¥ CNY</option>
+            <option value="AED">د.إ AED</option>
+          </select>
+        </div>
+      </div>
+      <ul class="mobile-nav-list" role="list">
+        <li><a href="index.html"><i class="fas fa-boxes" aria-hidden="true"></i> Sourcing</a></li>
+        <li><a href="../shipment/index.html"><i class="fas fa-shipping-fast" aria-hidden="true"></i> Shipment</a></li>
+        <li><a href="../supplier/index.html"><i class="fas fa-store" aria-hidden="true"></i> Suppliers</a></li>
+        <li><a href="../dropshipping/index.html"><i class="fas fa-truck" aria-hidden="true"></i> Dropshipping</a></li>
+        <li><a href="../livestream/index.html"><i class="fas fa-video" aria-hidden="true"></i> Live Streams</a></li>
+        <li><a href="../auth/login.html" class="mobile-login"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</a></li>
+        <li><a href="../auth/register.html" class="mobile-register"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</a></li>
+      </ul>
     </div>
-  </nav>
+
+  </nav><!-- /.navbar -->
+
+  <!-- Secondary Nav Bar (populated by assets/js/navbar.js) -->
+  <div id="secondary-nav-root"></div>
+
 </header>
 
 <main>
@@ -472,15 +610,15 @@
 
         <!-- ACTION BUTTONS -->
         <div class="action-buttons">
-          <button class="btn-add-cart" aria-label="Add to cart">
+          <button class="btn-add-cart" id="add-to-cart-btn" data-action="add-to-cart" aria-label="Add to cart">
             <i class="fas fa-shopping-cart"></i> Add to Cart
           </button>
           <div class="btn-row">
-            <button class="btn-outline accent"><i class="fas fa-file-invoice-dollar"></i> Request Quotation</button>
+            <button class="btn-outline accent" onclick="window.location.href='rfq/create.html'"><i class="fas fa-file-invoice-dollar"></i> Request Quotation</button>
             <button class="btn-outline"><i class="fas fa-flask"></i> Request Sample</button>
           </div>
           <div class="btn-row">
-            <button class="btn-outline orange"><i class="fas fa-message"></i> Contact Supplier</button>
+            <button class="btn-outline orange" onclick="window.location.href='../communication/index.html'"><i class="fas fa-message"></i> Contact Supplier</button>
             <button class="btn-outline"><i class="fas fa-magnifying-glass"></i> Request Inspection</button>
           </div>
           <div class="btn-wishlist-share">
