@@ -126,27 +126,6 @@
     .notify-btn.notified{background:rgba(245,158,11,.1)}
 
     @media(max-width:768px){.streams-grid{grid-template-columns:1fr}.filter-inner{gap:8px}.tab-pills{width:100%}.tab-pill{flex:1;justify-content:center}.hero-stats{gap:20px}}
-    /* Category pills bar */
-    .cat-pills-bar{background:#0d1117;border-bottom:1px solid #30363d;padding:10px 24px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
-    .cat-pills-inner{max-width:1280px;margin:0 auto;display:flex;gap:6px;align-items:center}
-    .cat-pill-b{display:inline-flex;align-items:center;gap:5px;padding:7px 16px;border-radius:50px;font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid #30363d;background:transparent;color:rgba(255,255,255,.55);transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif;flex-shrink:0}
-    .cat-pill-b:hover,.cat-pill-b.active{border-color:#0052CC;background:#0052CC;color:#fff}
-    .cat-pill-b i{font-size:.75rem}
-    /* Sidebar layout for live tab */
-    .live-tab-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
-    @media(max-width:1024px){.live-tab-layout{grid-template-columns:1fr}}
-    .sidebar-schedule{background:#161b22;border:1px solid #30363d;border-radius:14px;padding:16px;position:sticky;top:120px}
-    .sidebar-schedule-title{font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:700;color:#e6edf3;margin-bottom:14px;display:flex;align-items:center;gap:7px}
-    .sidebar-schedule-title i{color:#f59e0b}
-    .sidebar-sched-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #21262d}
-    .sidebar-sched-item:last-child{border-bottom:none;padding-bottom:0}
-    .sidebar-sched-time{background:#0d1117;border-radius:7px;padding:5px 9px;text-align:center;flex-shrink:0;min-width:52px}
-    .sidebar-sched-time .sh{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:#e6edf3;line-height:1}
-    .sidebar-sched-time .st{font-size:.58rem;color:#8b949e}
-    .sidebar-sched-info h4{font-size:.8rem;font-weight:600;color:#e6edf3;margin-bottom:3px;line-height:1.35}
-    .sidebar-sched-info p{font-size:.72rem;color:#8b949e}
-    .sidebar-notify-btn{background:transparent;border:1px solid #30363d;color:#8b949e;border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;margin-top:5px;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:4px;transition:all .2s}
-    .sidebar-notify-btn:hover{border-color:#f59e0b;color:#f59e0b}
   </style>
 </head>
 <body>
@@ -223,79 +202,15 @@
   </div>
 </div>
 
-<!-- Category Pills Bar -->
-<div class="cat-pills-bar">
-  <div class="cat-pills-inner">
-    <button class="cat-pill-b active" onclick="filterCat(this,'')"><i class="fas fa-th"></i> All</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'Electronics')"><i class="fas fa-microchip"></i> Electronics</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'Solar Energy')"><i class="fas fa-solar-panel"></i> Solar Energy</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'Auto Parts')"><i class="fas fa-car"></i> Auto Parts</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'Industrial Machinery')"><i class="fas fa-cog"></i> Machinery</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'Packaging')"><i class="fas fa-box"></i> Packaging</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'Textiles')"><i class="fas fa-tshirt"></i> Textiles</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'LED Lighting')"><i class="fas fa-lightbulb"></i> LED Lighting</button>
-    <button class="cat-pill-b" onclick="filterCat(this,'Medical')"><i class="fas fa-heartbeat"></i> Medical</button>
-  </div>
-</div>
-
 <div class="page-wrap">
 
   <!-- LIVE TAB -->
   <div class="tab-content active" id="tab-live">
-    <div class="live-tab-layout">
-      <div>
-        <div class="section-head">
-          <div class="section-title"><i class="fas fa-fire"></i> Featured Live Streams</div>
-          <a href="#" class="see-all">View all</a>
-        </div>
-        <div class="streams-grid" id="liveGrid"></div>
-      </div>
-      <!-- Upcoming Sidebar -->
-      <div class="sidebar-schedule">
-        <div class="sidebar-schedule-title"><i class="fas fa-clock"></i> Up Next Today</div>
-        <div class="sidebar-sched-item">
-          <div class="sidebar-sched-time"><div class="sh">14:00</div><div class="st">GMT+8</div></div>
-          <div class="sidebar-sched-info">
-            <h4>PCB &amp; PCBA Manufacturing Factory Tour</h4>
-            <p>CircuitPro Electronics · Electronics</p>
-            <button class="sidebar-notify-btn" onclick="this.textContent='✓ Set';this.style.color='#f59e0b';this.style.borderColor='#f59e0b'"><i class="fas fa-bell"></i> Remind</button>
-          </div>
-        </div>
-        <div class="sidebar-sched-item">
-          <div class="sidebar-sched-time"><div class="sh">15:30</div><div class="st">GMT+8</div></div>
-          <div class="sidebar-sched-info">
-            <h4>Premium Fabric Wholesale: Winter Collection</h4>
-            <p>TextilePro Mills · Textiles</p>
-            <button class="sidebar-notify-btn" onclick="this.textContent='✓ Set';this.style.color='#f59e0b';this.style.borderColor='#f59e0b'"><i class="fas fa-bell"></i> Remind</button>
-          </div>
-        </div>
-        <div class="sidebar-sched-item">
-          <div class="sidebar-sched-time"><div class="sh">16:00</div><div class="st">GMT+8</div></div>
-          <div class="sidebar-sched-info">
-            <h4>Medical Device Certification: ISO 13485 Live</h4>
-            <p>MedTech Supply Co. · Medical</p>
-            <button class="sidebar-notify-btn" onclick="this.textContent='✓ Set';this.style.color='#f59e0b';this.style.borderColor='#f59e0b'"><i class="fas fa-bell"></i> Remind</button>
-          </div>
-        </div>
-        <div class="sidebar-sched-item">
-          <div class="sidebar-sched-time"><div class="sh">17:30</div><div class="st">GMT+8</div></div>
-          <div class="sidebar-sched-info">
-            <h4>Packaging Machinery Demo: Sealing Lines</h4>
-            <p>PackMach Industry · Packaging</p>
-            <button class="sidebar-notify-btn" onclick="this.textContent='✓ Set';this.style.color='#f59e0b';this.style.borderColor='#f59e0b'"><i class="fas fa-bell"></i> Remind</button>
-          </div>
-        </div>
-        <div class="sidebar-sched-item">
-          <div class="sidebar-sched-time"><div class="sh">19:00</div><div class="st">GMT+8</div></div>
-          <div class="sidebar-sched-info">
-            <h4>Eco Packaging: Biodegradable Materials 2025</h4>
-            <p>EcoPackaging Ltd. · Packaging</p>
-            <button class="sidebar-notify-btn" onclick="this.textContent='✓ Set';this.style.color='#f59e0b';this.style.borderColor='#f59e0b'"><i class="fas fa-bell"></i> Remind</button>
-          </div>
-        </div>
-        <a href="#" onclick="event.preventDefault();document.querySelectorAll('.tab-pill')[1].click();switchTab('upcoming',document.querySelectorAll('.tab-pill')[1])" style="display:block;text-align:center;margin-top:12px;font-size:.8rem;color:#0052CC;text-decoration:none;font-weight:600">Full Schedule <i class="fas fa-arrow-right"></i></a>
-      </div>
+    <div class="section-head">
+      <div class="section-title"><i class="fas fa-fire"></i> Featured Live Streams</div>
+      <a href="#" class="see-all">View all</a>
     </div>
+    <div class="streams-grid" id="liveGrid"></div>
   </div>
 
   <!-- UPCOMING TAB -->
@@ -430,15 +345,6 @@
     if (!cat) { document.getElementById('liveGrid').innerHTML = streams.map(renderCard).join(''); return; }
     const filtered = streams.filter(s => s.category === cat);
     document.getElementById('liveGrid').innerHTML = filtered.length ? filtered.map(renderCard).join('') : '<p style="color:#8b949e;padding:20px">No streams in this category right now.</p>';
-  }
-
-  function filterCat(btn, cat) {
-    document.querySelectorAll('.cat-pill-b').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    filterStreams(cat);
-    // also sync the dropdown
-    const sel = document.querySelector('.filter-select');
-    if (sel) { for (var i=0;i<sel.options.length;i++) { if(sel.options[i].text === cat || (cat==='' && sel.options[i].value==='')) { sel.selectedIndex=i; break; } } }
   }
 
   function liveSearch() {
