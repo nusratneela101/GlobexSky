@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="assets/css/search-history.css" />
   <link rel="stylesheet" href="assets/css/responsive.css" />
   <link rel="stylesheet" href="assets/css/mobile.css" />
+  <link rel="stylesheet" href="assets/css/alibaba-design.css" />
   <!-- RTL stylesheet injected dynamically by i18n.js when Arabic is active -->
 </head>
 <body>
@@ -85,265 +86,336 @@
   <div id="main-content" class="main-content" aria-hidden="true">
 
     <!-- ============================================================
-         STICKY NAVIGATION
+         A. TOP INFO BAR
     ============================================================ -->
-    <header class="site-header" role="banner">
-      <nav class="navbar" role="navigation" aria-label="Main navigation">
-        <div class="nav-container">
+    <div class="gs-topbar" role="navigation" aria-label="Site information">
+      <div class="gs-topbar-inner">
+        <div class="gs-topbar-left">
+          <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Ship to: <a href="pages/shipment/index.html">Worldwide</a></span>
+          <span class="gs-topbar-divider">|</span>
+          <a href="pages/support/index.html">Help Center</a>
+          <span class="gs-topbar-divider">|</span>
+          <a href="pages/suppliers/register.html">Sell on GlobexSky</a>
+          <span class="gs-topbar-divider">|</span>
+          <a href="pages/legal/buyer-protection.html"><i class="fas fa-shield-alt" aria-hidden="true"></i> Buyer Protection</a>
+        </div>
+        <div class="gs-topbar-right">
+          <!-- Language Switcher (populated by i18n.js) -->
+          <div id="lang-switcher-root" aria-label="Language switcher"></div>
+          <!-- Currency Selector -->
+          <label for="currency-select" class="sr-only">Currency</label>
+          <select id="currency-select" aria-label="Select currency" class="gs-topbar-select">
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="CNY">¥ CNY</option>
+            <option value="AED">د.إ AED</option>
+          </select>
+          <span class="gs-topbar-divider">|</span>
+          <a href="pages/auth/login.html" data-i18n="nav.signin">Sign In</a>
+          <span class="gs-topbar-divider">|</span>
+          <a href="pages/auth/register.html" data-i18n="nav.register">Register</a>
+        </div>
+      </div>
+    </div>
 
-          <!-- Logo -->
-          <a href="index.html" class="nav-logo" aria-label="Globex Sky Home"><img src="assets/images/logo.png" alt="Globex Sky Logo" width="180" height="56" style="object-fit:contain">
-          </a>
+    <!-- ============================================================
+         B. MODERN HEADER
+    ============================================================ -->
+    <header class="gs-header site-header" role="banner">
+      <div class="gs-header-inner">
 
-          <!-- Search Bar -->
-          <button class="nav-cat-dropdown" aria-haspopup="true" aria-expanded="false" aria-label="All categories">
-          <i class="fas fa-th" aria-hidden="true"></i>
-          <span>All Categories</span>
-          <i class="fas fa-chevron-down" aria-hidden="true"></i>
-        </button>
-          <div class="nav-search" role="search">
-            <div class="search-tabs" role="tablist" aria-label="Search mode">
-              <button class="search-tab active" role="tab" aria-selected="true" data-tab="ai">
-                <i class="fas fa-robot" aria-hidden="true"></i> AI Mode
-              </button>
-              <button class="search-tab" role="tab" aria-selected="false" data-tab="products">Products</button>
-              <button class="search-tab" role="tab" aria-selected="false" data-tab="manufacturers">Manufacturers</button>
-              <button class="search-tab" role="tab" aria-selected="false" data-tab="worldwide">Worldwide</button>
-            </div>
-            <div class="search-wrapper">
-              <input
-                type="search"
-                id="nav-search-input"
-                class="search-input"
-                placeholder="Search products, suppliers, categories..."
-                aria-label="Search products, suppliers, and categories"
-                autocomplete="off"
-              />
-              <div class="search-actions">
-                <button class="search-btn search-voice" aria-label="Voice search">
-                  <i class="fas fa-microphone" aria-hidden="true"></i>
-                </button>
-                <button class="search-btn search-image" aria-label="Image search">
-                  <i class="fas fa-camera" aria-hidden="true"></i>
-                </button>
-                <a href="pages/barcode-scanner/index.html" class="search-btn search-barcode" aria-label="Barcode scanner" title="Scan a barcode">
-                  <i class="fas fa-barcode" aria-hidden="true"></i>
-                </a>
-                <button class="search-btn search-submit search-submit-orange" aria-label="Submit search">
-                  <i class="fas fa-search" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
+        <!-- Logo -->
+        <a href="index.html" class="gs-logo nav-logo" aria-label="Globex Sky Home">
+          Globex<span>Sky</span>
+        </a>
+
+        <!-- Search Bar with Tabs -->
+        <div class="gs-search-container" role="search">
+          <div class="gs-search-tabs" role="tablist" aria-label="Search type">
+            <button class="gs-search-tab active" role="tab" aria-selected="true" data-tab="products">Products</button>
+            <button class="gs-search-tab" role="tab" aria-selected="false" data-tab="manufacturers">Manufacturers</button>
+            <button class="gs-search-tab" role="tab" aria-selected="false" data-tab="ai"><i class="fas fa-magic" aria-hidden="true"></i> AI Mode</button>
           </div>
-
-          <!-- Nav Controls -->
-          <div class="nav-controls">
-
-            <!-- Language Switcher -->
-            <div id="lang-switcher-root" class="nav-lang-switcher" aria-label="Language switcher"></div>
-
-            <!-- Currency Selector -->
-            <div class="nav-select-group">
-              <label for="currency-select" class="sr-only">Currency</label>
-              <select id="currency-select" class="nav-select" aria-label="Select currency">
-                <option value="USD">$ USD</option>
-                <option value="EUR">€ EUR</option>
-                <option value="GBP">£ GBP</option>
-                <option value="CNY">¥ CNY</option>
-                <option value="AED">د.إ AED</option>
-              </select>
+          <div class="gs-search-box">
+            <select class="gs-search-category" aria-label="Search category">
+              <option>All Categories</option>
+              <option>Electronics</option>
+              <option>Fashion &amp; Apparel</option>
+              <option>Home &amp; Garden</option>
+              <option>Industrial Supplies</option>
+              <option>Beauty &amp; Personal Care</option>
+              <option>Automotive Parts</option>
+              <option>Food &amp; Beverages</option>
+              <option>Machinery</option>
+              <option>Packaging</option>
+              <option>Toys &amp; Games</option>
+            </select>
+            <input
+              type="search"
+              id="nav-search-input"
+              class="gs-search-input search-input"
+              placeholder="Search products, suppliers, or use AI..."
+              aria-label="Search products, suppliers, and categories"
+              autocomplete="off"
+            />
+            <div class="gs-search-icon-btns">
+              <button class="gs-search-icon-btn search-btn search-voice" aria-label="Voice search"><i class="fas fa-microphone" aria-hidden="true"></i></button>
+              <button class="gs-search-icon-btn search-btn search-image" aria-label="Image search"><i class="fas fa-camera" aria-hidden="true"></i></button>
             </div>
+            <button class="gs-search-submit search-btn search-submit" aria-label="Submit search">
+              <i class="fas fa-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
 
-            <!-- Auth Buttons -->
-            <a href="pages/auth/login.html" class="btn-nav btn-login">
-              <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
-              <span>Login</span>
-            </a>
-            <a href="pages/auth/register.html" class="btn-nav btn-register">
-              <i class="fas fa-user-plus" aria-hidden="true"></i>
-              <span>Register</span>
-            </a>
-
-            <!-- Cart -->
-            <a href="pages/cart/index.html" class="nav-cart" aria-label="Shopping cart, 3 items">
-              <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-              <span class="cart-badge" id="cart-count">3</span>
-            </a>
-
-            <!-- User Avatar Dropdown -->
-            <div class="nav-user-dropdown" id="user-dropdown">
-              <button class="user-avatar-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="User account menu">
-                <img src="https://ui-avatars.com/api/?name=Guest+User&background=0052CC&color=fff&size=36" alt="User avatar" class="user-avatar" width="36" height="36" />
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-              </button>
-              <ul class="dropdown-menu" id="user-menu" role="menu" aria-label="User menu">
-                <li role="menuitem"><a href="pages/account/dashboard.html"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a></li>
-                <li role="menuitem"><a href="pages/account/orders.html"><i class="fas fa-box" aria-hidden="true"></i> My Orders</a></li>
-                <li role="menuitem"><a href="pages/account/wishlist.html"><i class="fas fa-heart" aria-hidden="true"></i> Wishlist</a></li>
-                <li role="menuitem"><a href="pages/account/settings.html"><i class="fas fa-cog" aria-hidden="true"></i> Settings</a></li>
-                <li class="dropdown-divider" role="separator"></li>
-                <li role="menuitem"><a href="pages/auth/logout.html" class="logout-link"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout</a></li>
-              </ul>
-            </div>
-
-          </div><!-- /.nav-controls -->
-
-          <!-- Cart icon: always visible (including on mobile) -->
-          <a href="pages/cart/index.html" class="nav-cart nav-cart-mobile" aria-label="Shopping cart" id="nav-cart-mobile" style="display:none">
-            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-            <span class="cart-badge" id="cart-count-mobile">3</span>
+        <!-- Header Actions -->
+        <nav class="gs-header-actions" aria-label="User actions">
+          <a href="pages/account/messages.html" class="gs-action-btn" aria-label="Messages">
+            <i class="fas fa-comment-dots" aria-hidden="true"></i>
+            <span>Messages</span>
           </a>
-
+          <a href="pages/account/orders.html" class="gs-action-btn" aria-label="Orders">
+            <i class="fas fa-box" aria-hidden="true"></i>
+            <span>Orders</span>
+          </a>
+          <a href="pages/cart/index.html" class="gs-action-btn nav-cart" aria-label="Shopping cart">
+            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+            <span class="gs-badge" id="cart-count">3</span>
+            <span>Cart</span>
+          </a>
+          <!-- User Dropdown -->
+          <div class="nav-user-dropdown" id="user-dropdown">
+            <button class="gs-action-btn user-avatar-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="User account menu">
+              <i class="fas fa-user-circle gs-action-user-icon" aria-hidden="true"></i>
+              <span>Account</span>
+            </button>
+            <ul class="dropdown-menu" id="user-menu" role="menu" aria-label="User menu">
+              <li role="menuitem"><a href="pages/account/dashboard.html"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a></li>
+              <li role="menuitem"><a href="pages/account/orders.html"><i class="fas fa-box" aria-hidden="true"></i> My Orders</a></li>
+              <li role="menuitem"><a href="pages/account/wishlist.html"><i class="fas fa-heart" aria-hidden="true"></i> Wishlist</a></li>
+              <li role="menuitem"><a href="pages/account/settings.html"><i class="fas fa-cog" aria-hidden="true"></i> Settings</a></li>
+              <li class="dropdown-divider" role="separator"></li>
+              <li role="menuitem"><a href="pages/auth/login.html"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In</a></li>
+              <li role="menuitem"><a href="pages/auth/register.html"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</a></li>
+            </ul>
+          </div>
           <!-- Hamburger (mobile) -->
           <button class="hamburger" id="hamburger-btn" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-nav">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
           </button>
+        </nav>
 
-        </div><!-- /.nav-container -->
+      </div><!-- /.gs-header-inner -->
 
-        <!-- Mobile Nav -->
-        <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
-          <ul class="mobile-nav-list" role="list">
-            <li><a href="pages/sourcing/index.html"><i class="fas fa-boxes" aria-hidden="true"></i> Sourcing</a></li>
-            <li><a href="pages/shipment/index.html"><i class="fas fa-shipping-fast" aria-hidden="true"></i> Shipment</a></li>
-            <li><a href="pages/suppliers/index.html"><i class="fas fa-store" aria-hidden="true"></i> Suppliers</a></li>
-            <li><a href="pages/dropshipping/index.html"><i class="fas fa-truck" aria-hidden="true"></i> Dropshipping</a></li>
-            <li><a href="pages/livestream/index.html"><i class="fas fa-video" aria-hidden="true"></i> Live Streams</a></li>
-            <li><a href="pages/auth/login.html" class="mobile-login"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</a></li>
-            <li><a href="pages/auth/register.html" class="mobile-register"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</a></li>
-          </ul>
-        </div>
-
-      </nav><!-- /.navbar -->
+      <!-- Mobile Nav -->
+      <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+        <ul class="mobile-nav-list" role="list">
+          <li><a href="pages/sourcing/index.html"><i class="fas fa-boxes" aria-hidden="true"></i> Sourcing</a></li>
+          <li><a href="pages/shipment/index.html"><i class="fas fa-shipping-fast" aria-hidden="true"></i> Shipment</a></li>
+          <li><a href="pages/suppliers/index.html"><i class="fas fa-store" aria-hidden="true"></i> Suppliers</a></li>
+          <li><a href="pages/dropshipping/index.html"><i class="fas fa-truck" aria-hidden="true"></i> Dropshipping</a></li>
+          <li><a href="pages/livestream/index.html"><i class="fas fa-video" aria-hidden="true"></i> Live Streams</a></li>
+          <li><a href="pages/auth/login.html" class="mobile-login"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</a></li>
+          <li><a href="pages/auth/register.html" class="mobile-register"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</a></li>
+        </ul>
+      </div>
 
       <!-- Secondary Nav Bar (populated by assets/js/navbar.js) -->
       <div id="secondary-nav-root"></div>
 
-    </header><!-- /.site-header -->
+    </header><!-- /.gs-header -->
 
     <!-- ============================================================
-         HERO SECTION
+         C. CATEGORY NAVIGATION BAR
     ============================================================ -->
-    <!-- ============================================================
-     HERO SECTION - Alibaba-style 3-panel layout
-============================================================ -->
-    <section class="hero-v2" aria-labelledby="hero-v2-heading">
-  <div class="hero-v2-container">
-
-    <!-- Left: Category Sidebar -->
-    <nav class="cat-sidebar" aria-label="Product categories sidebar">
-      <ul class="cat-sidebar-list" role="list">
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=electronics" class="cat-sidebar-link">
-            <i class="fas fa-microchip" aria-hidden="true"></i>
-            <span>Electronics</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=fashion" class="cat-sidebar-link">
-            <i class="fas fa-tshirt" aria-hidden="true"></i>
-            <span>Fashion &amp; Apparel</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=home-garden" class="cat-sidebar-link">
-            <i class="fas fa-home" aria-hidden="true"></i>
-            <span>Home &amp; Garden</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=industrial" class="cat-sidebar-link">
-            <i class="fas fa-industry" aria-hidden="true"></i>
-            <span>Industrial &amp; B2B</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=beauty" class="cat-sidebar-link">
-            <i class="fas fa-spa" aria-hidden="true"></i>
-            <span>Beauty &amp; Health</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=automotive" class="cat-sidebar-link">
-            <i class="fas fa-car" aria-hidden="true"></i>
-            <span>Automotive</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=sports" class="cat-sidebar-link">
-            <i class="fas fa-football-ball" aria-hidden="true"></i>
-            <span>Sports &amp; Outdoors</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=food-bev" class="cat-sidebar-link">
-            <i class="fas fa-utensils" aria-hidden="true"></i>
-            <span>Food &amp; Beverage</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=toys" class="cat-sidebar-link">
-            <i class="fas fa-gamepad" aria-hidden="true"></i>
-            <span>Toys &amp; Games</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="cat-sidebar-item">
-          <a href="pages/sourcing/products.html?cat=office" class="cat-sidebar-link">
-            <i class="fas fa-briefcase" aria-hidden="true"></i>
-            <span>Office Supplies</span>
-            <i class="fas fa-chevron-right cat-sidebar-arrow" aria-hidden="true"></i>
-          </a>
-        </li>
-      </ul>
+    <nav class="gs-category-nav" aria-label="Product categories">
+      <div class="gs-category-nav-inner">
+        <button class="gs-cat-link-all" aria-haspopup="true" aria-label="All categories">
+          <i class="fas fa-th" aria-hidden="true"></i> All Categories
+        </button>
+        <a href="pages/sourcing/products.html?cat=electronics" class="gs-cat-link active">Electronics</a>
+        <a href="pages/sourcing/products.html?cat=fashion" class="gs-cat-link">Fashion</a>
+        <a href="pages/sourcing/products.html?cat=home-garden" class="gs-cat-link">Home &amp; Garden</a>
+        <a href="pages/sourcing/products.html?cat=industrial" class="gs-cat-link">Industrial</a>
+        <a href="pages/sourcing/products.html?cat=beauty" class="gs-cat-link">Beauty</a>
+        <a href="pages/sourcing/products.html?cat=automotive" class="gs-cat-link">Automotive</a>
+        <a href="pages/sourcing/products.html?cat=food" class="gs-cat-link">Food &amp; Bev</a>
+        <a href="pages/sourcing/products.html?cat=machinery" class="gs-cat-link">Machinery</a>
+        <a href="pages/sourcing/products.html?cat=packaging" class="gs-cat-link">Packaging</a>
+        <a href="pages/sourcing/products.html?cat=toys" class="gs-cat-link">Toys</a>
+        <a href="pages/livestream/index.html" class="gs-cat-link gs-cat-link--featured"><i class="fas fa-video" aria-hidden="true"></i> Live</a>
+        <a href="pages/dropshipping/index.html" class="gs-cat-link">Dropship</a>
+      </div>
     </nav>
 
-    <!-- Center: Frequently Searched + Savings Bonanza -->
-    <div class="hero-v2-center">
-      <h2 id="hero-v2-heading" class="freq-searched-title">Frequently searched</h2>
-      <div class="freq-searched-grid" role="list" aria-label="Frequently searched products">
-        <a href="pages/sourcing/products.html?q=wireless+earbuds" class="freq-card" role="listitem">
-          <img src="https://picsum.photos/seed/freq1/120/90" alt="Wireless Earbuds" width="120" height="90" loading="lazy" />
-          <span>Wireless Earbuds</span>
-        </a>
-        <a href="pages/sourcing/products.html?q=solar+panels" class="freq-card" role="listitem">
-          <img src="https://picsum.photos/seed/freq2/120/90" alt="Solar Panels" width="120" height="90" loading="lazy" />
-          <span>Solar Panels</span>
-        </a>
-        <a href="pages/sourcing/products.html?q=cotton+t-shirts" class="freq-card" role="listitem">
-          <img src="https://picsum.photos/seed/freq3/120/90" alt="Cotton T-Shirts" width="120" height="90" loading="lazy" />
-          <span>Cotton T-Shirts</span>
-        </a>
-        <a href="pages/sourcing/products.html?q=led+strips" class="freq-card" role="listitem">
-          <img src="https://picsum.photos/seed/freq4/120/90" alt="LED Strips" width="120" height="90" loading="lazy" />
-          <span>LED Strips</span>
-        </a>
-        <a href="pages/sourcing/products.html?q=water+bottles" class="freq-card" role="listitem">
-          <img src="https://picsum.photos/seed/freq5/120/90" alt="Water Bottles" width="120" height="90" loading="lazy" />
-          <span>Water Bottles</span>
-        </a>
-        <a href="pages/sourcing/products.html?q=smartphone+cases" class="freq-card" role="listitem">
-          <img src="https://picsum.photos/seed/freq6/120/90" alt="Smartphone Cases" width="120" height="90" loading="lazy" />
-          <span>Smartphone Cases</span>
-        </a>
-      </div>
+    <!-- ============================================================
+         D. HERO SECTION
+    ============================================================ -->
+    <section class="gs-hero" aria-labelledby="hero-heading">
+      <div class="gs-hero-inner">
 
-      <!-- Savings Bonanza Banner -->
-      <div class="savings-bonanza" aria-label="Savings Bonanza promotional section">
-        <div class="savings-bonanza-header">
-          <div>
-            <h3 class="savings-title">Savings Bonanza</h3>
-            <p class="savings-subtitle">Limited time bulk deals</p>
+        <!-- Category Sidebar -->
+        <aside class="gs-cat-sidebar" aria-label="Category sidebar">
+          <a href="pages/sourcing/products.html?cat=electronics" class="gs-cat-sidebar-item">
+            <i class="fas fa-microchip" aria-hidden="true"></i> Electronics &amp; Tech
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=fashion" class="gs-cat-sidebar-item">
+            <i class="fas fa-tshirt" aria-hidden="true"></i> Fashion &amp; Apparel
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=home-garden" class="gs-cat-sidebar-item">
+            <i class="fas fa-couch" aria-hidden="true"></i> Home &amp; Garden
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=industrial" class="gs-cat-sidebar-item">
+            <i class="fas fa-industry" aria-hidden="true"></i> Industrial Supplies
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=beauty" class="gs-cat-sidebar-item">
+            <i class="fas fa-spa" aria-hidden="true"></i> Beauty &amp; Care
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=automotive" class="gs-cat-sidebar-item">
+            <i class="fas fa-car" aria-hidden="true"></i> Automotive Parts
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=food" class="gs-cat-sidebar-item">
+            <i class="fas fa-utensils" aria-hidden="true"></i> Food &amp; Beverages
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=machinery" class="gs-cat-sidebar-item">
+            <i class="fas fa-cogs" aria-hidden="true"></i> Machinery &amp; Tools
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=packaging" class="gs-cat-sidebar-item">
+            <i class="fas fa-box-open" aria-hidden="true"></i> Packaging
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=sports" class="gs-cat-sidebar-item">
+            <i class="fas fa-football-ball" aria-hidden="true"></i> Sports &amp; Outdoors
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=health" class="gs-cat-sidebar-item">
+            <i class="fas fa-heartbeat" aria-hidden="true"></i> Health &amp; Medical
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=toys" class="gs-cat-sidebar-item">
+            <i class="fas fa-gamepad" aria-hidden="true"></i> Toys &amp; Games
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html?cat=construction" class="gs-cat-sidebar-item">
+            <i class="fas fa-hard-hat" aria-hidden="true"></i> Construction
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="pages/sourcing/products.html" class="gs-cat-sidebar-item gs-cat-sidebar-item--featured">
+            <i class="fas fa-th-large" aria-hidden="true"></i> All Categories
+            <i class="fas fa-chevron-right cat-arrow" aria-hidden="true"></i>
+          </a>
+        </aside>
+
+        <!-- Banner Area -->
+        <div class="gs-banner-area">
+          <!-- Main Banner Slider -->
+          <div class="gs-banner-main" id="gs-banner-main" aria-label="Promotional banners" role="region">
+
+            <!-- Slide 1: Orange -->
+            <div class="gs-banner-slide gs-banner-slide-1 active" role="group" aria-label="Slide 1 of 3">
+              <div class="gs-banner-content">
+                <span class="gs-banner-eyebrow">🌍 500,000+ Verified Suppliers</span>
+                <h1 id="hero-heading" class="gs-banner-title">Source Globally,<br>Grow Locally</h1>
+                <p class="gs-banner-subtitle">Connect with verified manufacturers and wholesalers. Get factory-direct prices on every order.</p>
+                <a href="pages/sourcing/index.html" class="gs-banner-cta">Start Sourcing <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </div>
+
+            <!-- Slide 2: Blue -->
+            <div class="gs-banner-slide gs-banner-slide-2" role="group" aria-label="Slide 2 of 3">
+              <div class="gs-banner-content">
+                <span class="gs-banner-eyebrow">💳 Flexible Payment Terms</span>
+                <h2 class="gs-banner-title">Trade Finance<br>Available</h2>
+                <p class="gs-banner-subtitle">Get up to $500,000 in credit for your B2B orders. Flexible repayment terms up to 120 days.</p>
+                <a href="pages/finance/index.html" class="gs-banner-cta">Learn More <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </div>
+
+            <!-- Slide 3: Dark -->
+            <div class="gs-banner-slide gs-banner-slide-3" role="group" aria-label="Slide 3 of 3">
+              <div class="gs-banner-content">
+                <span class="gs-banner-eyebrow">🤖 Powered by AI</span>
+                <h2 class="gs-banner-title">AI-Powered<br>Sourcing</h2>
+                <p class="gs-banner-subtitle">Find the perfect supplier with our AI matching engine. Get instant quotes and quality reports.</p>
+                <a href="pages/sourcing/ai-mode.html" class="gs-banner-cta">Try AI Mode <i class="fas fa-magic" aria-hidden="true"></i></a>
+              </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <div class="gs-banner-arrows" aria-hidden="true">
+              <button class="gs-banner-arrow" id="gs-banner-prev" aria-label="Previous slide"><i class="fas fa-chevron-left"></i></button>
+              <button class="gs-banner-arrow" id="gs-banner-next" aria-label="Next slide"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <!-- Dots -->
+            <div class="gs-banner-dots" role="tablist" aria-label="Slide indicators">
+              <button class="gs-banner-dot active" role="tab" aria-selected="true" aria-label="Go to slide 1" data-slide="0"></button>
+              <button class="gs-banner-dot" role="tab" aria-selected="false" aria-label="Go to slide 2" data-slide="1"></button>
+              <button class="gs-banner-dot" role="tab" aria-selected="false" aria-label="Go to slide 3" data-slide="2"></button>
+            </div>
+          </div><!-- /.gs-banner-main -->
+
+          <!-- Sub Banners -->
+          <div class="gs-banner-sub">
+            <a href="pages/dropshipping/index.html" class="gs-banner-sub-card" aria-label="Dropshipping">
+              <i class="fas fa-truck" aria-hidden="true"></i>
+              <h4>Zero Inventory Dropship</h4>
+              <p>Ship directly from supplier to your customer</p>
+            </a>
+            <a href="pages/suppliers/verified.html" class="gs-banner-sub-card" aria-label="Verified suppliers">
+              <i class="fas fa-certificate" aria-hidden="true"></i>
+              <h4>Gold Verified Suppliers</h4>
+              <p>Audited factories with quality guarantees</p>
+            </a>
+          </div>
+        </div><!-- /.gs-banner-area -->
+
+      </div><!-- /.gs-hero-inner -->
+    </section><!-- /.gs-hero -->
+
+    <!-- ============================================================
+         E. TRUST BADGES
+    ============================================================ -->
+    <section class="gs-trust" aria-labelledby="trust-heading">
+      <h2 id="trust-heading" class="sr-only">Why Choose GlobexSky</h2>
+      <div class="gs-trust-inner">
+        <div class="gs-trust-card">
+          <div class="gs-trust-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+          <div class="gs-trust-text">
+            <h4>Trade Assurance</h4>
+            <p>Full refund if product doesn't arrive or match description</p>
+          </div>
+        </div>
+        <div class="gs-trust-card">
+          <div class="gs-trust-icon"><i class="fas fa-hand-holding-usd" aria-hidden="true"></i></div>
+          <div class="gs-trust-text">
+            <h4>Buyer Protection</h4>
+            <p>Secure payments held until you confirm delivery</p>
+          </div>
+        </div>
+        <div class="gs-trust-card">
+          <div class="gs-trust-icon"><i class="fas fa-undo-alt" aria-hidden="true"></i></div>
+          <div class="gs-trust-text">
+            <h4>Easy Returns</h4>
+            <p>30-day hassle-free return policy on all orders</p>
+          </div>
+        </div>
+        <div class="gs-trust-card">
+          <div class="gs-trust-icon"><i class="fas fa-headset" aria-hidden="true"></i></div>
+          <div class="gs-trust-text">
+            <h4>24/7 Support</h4>
+            <p>Dedicated trade specialists available around the clock</p>
           </div>
           <a href="pages/sourcing/flash-sale.html" class="savings-viewall">View All →</a>
         </div>
@@ -370,1243 +442,667 @@
           </a>
         </div>
       </div>
-    </div>
-
-    <!-- Right: Hot Picks Banner -->
-    <aside class="hero-v2-right" aria-label="Hot Picks">
-      <div class="hot-picks-banner">
-        <div class="hot-picks-header">
-          <h3 class="hot-picks-title">🔥 Hot Picks</h3>
-          <p class="hot-picks-subtitle">Best sellers this week</p>
-        </div>
-        <div class="hot-picks-products" role="list" aria-label="Hot pick products">
-          <a href="pages/sourcing/product-detail.html?id=5" class="hot-pick-card" role="listitem">
-            <img src="https://picsum.photos/seed/hot1/120/100" alt="Hot pick product" width="120" height="100" loading="lazy" />
-            <div class="hot-pick-info">
-              <span class="hot-pick-name">Solar Charger 20W</span>
-              <span class="hot-pick-price">$18.00</span>
-            </div>
-          </a>
-          <a href="pages/sourcing/product-detail.html?id=6" class="hot-pick-card" role="listitem">
-            <img src="https://picsum.photos/seed/hot2/120/100" alt="Hot pick product" width="120" height="100" loading="lazy" />
-            <div class="hot-pick-info">
-              <span class="hot-pick-name">Ergonomic Chair</span>
-              <span class="hot-pick-price">$65.00</span>
-            </div>
-          </a>
-          <a href="pages/sourcing/product-detail.html?id=7" class="hot-pick-card" role="listitem">
-            <img src="https://picsum.photos/seed/hot3/120/100" alt="Hot pick product" width="120" height="100" loading="lazy" />
-            <div class="hot-pick-info">
-              <span class="hot-pick-name">Vitamin C Serum</span>
-              <span class="hot-pick-price">$4.50</span>
-            </div>
-          </a>
-        </div>
-        <a href="pages/sourcing/products.html" class="btn hot-picks-cta">
-          View All Deals <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        </a>
-      </div>
-    </aside>
-
-  </div>
-</section><!-- /.hero-v2 -->
+    </section>
 
     <!-- ============================================================
-     GLOBEXSKY GUARANTEED - Trust Section
-============================================================ -->
-    <section class="trust-section" aria-labelledby="trust-heading">
-  <div class="container">
-    <h2 id="trust-heading" class="trust-heading">GlobexSky Guaranteed</h2>
-    <div class="trust-cards" role="list" aria-label="Trust guarantees">
-      <div class="trust-card" role="listitem">
-        <div class="trust-card-icon" aria-hidden="true">
-          <i class="fas fa-shopping-cart"></i>
-        </div>
-        <div class="trust-card-body">
-          <h3>Quick Order &amp; Pay</h3>
-          <p>Fast checkout with trade assurance protection</p>
-        </div>
-      </div>
-      <div class="trust-card" role="listitem">
-        <div class="trust-card-icon" aria-hidden="true">
-          <i class="fas fa-truck"></i>
-        </div>
-        <div class="trust-card-body">
-          <h3>On-Time Delivery</h3>
-          <p>95% on-time delivery rate guaranteed</p>
-        </div>
-      </div>
-      <div class="trust-card" role="listitem">
-        <div class="trust-card-icon" aria-hidden="true">
-          <i class="fas fa-shield-alt"></i>
-        </div>
-        <div class="trust-card-body">
-          <h3>Money-Back Guarantee</h3>
-          <p>Full refund if order not received</p>
-        </div>
-      </div>
-    </div>
-    <div class="fast-custom-row" role="list" aria-label="Fast customization features">
-      <div class="fast-custom-box" role="listitem">
-        <i class="fas fa-layer-group" aria-hidden="true"></i>
-        <strong>Low MOQ</strong>
-        <span>Start small, scale fast</span>
-      </div>
-      <div class="fast-custom-box" role="listitem">
-        <i class="fas fa-shipping-fast" aria-hidden="true"></i>
-        <strong>14-Day Dispatch</strong>
-        <span>Fast turnaround guaranteed</span>
-      </div>
-      <div class="fast-custom-box" role="listitem">
-        <i class="fas fa-check-double" aria-hidden="true"></i>
-        <strong>True to Design</strong>
-        <span>Verified samples, exact match</span>
-      </div>
-    </div>
-  </div>
-</section><!-- /.trust-section -->
-
-    <!-- ============================================================
-         FEATURED CATEGORIES
+         F. FLASH SALE
     ============================================================ -->
-    <section class="section categories-section" aria-labelledby="categories-heading">
-      <div class="container">
-        <div class="section-header">
-          <h2 id="categories-heading" class="section-title">Browse Categories</h2>
-          <a href="pages/sourcing/products.html" class="section-link">
-            View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </div>
-        <div class="categories-scroll" role="list" aria-label="Product categories">
-          <a href="pages/sourcing/products.html?cat=electronics" class="category-chip" role="listitem">
-            <i class="fas fa-microchip" aria-hidden="true"></i>
-            <span>Electronics</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=fashion" class="category-chip" role="listitem">
-            <i class="fas fa-tshirt" aria-hidden="true"></i>
-            <span>Fashion</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=home-garden" class="category-chip" role="listitem">
-            <i class="fas fa-home" aria-hidden="true"></i>
-            <span>Home &amp; Garden</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=industrial" class="category-chip" role="listitem">
-            <i class="fas fa-industry" aria-hidden="true"></i>
-            <span>Industrial</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=beauty" class="category-chip" role="listitem">
-            <i class="fas fa-spa" aria-hidden="true"></i>
-            <span>Beauty</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=automotive" class="category-chip" role="listitem">
-            <i class="fas fa-car" aria-hidden="true"></i>
-            <span>Automotive</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=sports" class="category-chip" role="listitem">
-            <i class="fas fa-football-ball" aria-hidden="true"></i>
-            <span>Sports</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=food-bev" class="category-chip" role="listitem">
-            <i class="fas fa-utensils" aria-hidden="true"></i>
-            <span>Food &amp; Bev</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=health" class="category-chip" role="listitem">
-            <i class="fas fa-heartbeat" aria-hidden="true"></i>
-            <span>Health</span>
-          </a>
-          <a href="pages/sourcing/products.html?cat=office" class="category-chip" role="listitem">
-            <i class="fas fa-briefcase" aria-hidden="true"></i>
-            <span>Office</span>
-          </a>
-        </div>
-      </div>
-    </section><!-- /.categories-section -->
-
-    <!-- ============================================================
-         TRENDING PRODUCTS
-    ============================================================ -->
-    <!-- ============================================================
-     TOP DEALS
-============================================================ -->
-    <section class="section top-deals-section" aria-labelledby="top-deals-heading">
-  <div class="container">
-    <div class="section-header">
-      <h2 id="top-deals-heading" class="section-title">
-        🔥 Top Deals
-      </h2>
-      <a href="pages/sourcing/products.html" class="section-link">
-        View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-    <div class="top-deals-scroll-wrapper">
-      <button class="deals-scroll-btn deals-scroll-prev" aria-label="Scroll left">
-        <i class="fas fa-chevron-left" aria-hidden="true"></i>
-      </button>
-      <div class="top-deals-scroll" role="list" aria-label="Top deals products" data-load-products="trending">
-
-        <!-- Deal Card 1 -->
-        <article class="product-card-v2" role="listitem" data-product-id="1" data-product-name="Wireless Earbuds Pro X200" data-product-price="12.00">
-          <div class="pcv2-image">
-            <a href="pages/sourcing/product-detail.html?id=1">
-              <img src="https://picsum.photos/seed/product1/280/200" alt="Wireless Earbuds Pro X200" width="280" height="200" loading="lazy" />
-            </a>
-            <span class="pcv2-badge badge-hot">HOT</span>
-            <button class="product-wishlist" data-wishlist-toggle aria-label="Add Wireless Earbuds Pro X200 to wishlist" aria-pressed="false">
-              <i class="far fa-heart" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="pcv2-body">
-            <div class="pcv2-price">$12.00 <span class="pcv2-price-to">– $28.00</span></div>
-            <div class="pcv2-moq">Min. 50 pcs</div>
-            <div class="pcv2-supplier">
-              <i class="fas fa-check-circle pcv2-verified" aria-label="Verified supplier" aria-hidden="true"></i>
-              TechSource Global
+    <div class="gs-section">
+      <div class="gs-section-inner">
+        <div class="gs-flash-sale" aria-labelledby="flash-sale-heading">
+          <div class="gs-flash-header">
+            <div class="gs-flash-badge">
+              <i class="fas fa-bolt" aria-hidden="true"></i>
+              <span id="flash-sale-heading">Flash Sale</span>
             </div>
-            <p class="pcv2-name"><a href="pages/sourcing/product-detail.html?id=1">Wireless Earbuds Pro X200</a></p>
-            <div class="pcv2-sold">2,341 pieces sold</div>
-            <button class="btn btn-primary btn-sm pcv2-cart" data-add-to-cart aria-label="Add to cart">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
-            </button>
-          </div>
-        </article>
-
-        <!-- Deal Card 2 -->
-        <article class="product-card-v2" role="listitem" data-product-id="2" data-product-name="Smart LED Desk Lamp" data-product-price="8.00">
-          <div class="pcv2-image">
-            <a href="pages/sourcing/product-detail.html?id=2">
-              <img src="https://picsum.photos/seed/product2/280/200" alt="Smart LED Desk Lamp" width="280" height="200" loading="lazy" />
-            </a>
-            <span class="pcv2-badge badge-new">NEW</span>
-            <button class="product-wishlist" data-wishlist-toggle aria-label="Add Smart LED Desk Lamp to wishlist" aria-pressed="false">
-              <i class="far fa-heart" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="pcv2-body">
-            <div class="pcv2-price">$8.00 <span class="pcv2-price-to">– $18.00</span></div>
-            <div class="pcv2-moq">Min. 100 pcs</div>
-            <div class="pcv2-supplier">
-              <i class="fas fa-check-circle pcv2-verified" aria-label="Verified supplier" aria-hidden="true"></i>
-              BrightHome Co.
-            </div>
-            <p class="pcv2-name"><a href="pages/sourcing/product-detail.html?id=2">Smart LED Desk Lamp</a></p>
-            <div class="pcv2-sold">1,890 pieces sold</div>
-            <button class="btn btn-primary btn-sm pcv2-cart" data-add-to-cart aria-label="Add to cart">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
-            </button>
-          </div>
-        </article>
-
-        <!-- Deal Card 3 -->
-        <article class="product-card-v2" role="listitem" data-product-id="3" data-product-name="Organic Cotton T-Shirt Bundle" data-product-price="3.00">
-          <div class="pcv2-image">
-            <a href="pages/sourcing/product-detail.html?id=3">
-              <img src="https://picsum.photos/seed/product3/280/200" alt="Organic Cotton T-Shirt Bundle" width="280" height="200" loading="lazy" />
-            </a>
-            <button class="product-wishlist" data-wishlist-toggle aria-label="Add Organic Cotton T-Shirt Bundle to wishlist" aria-pressed="false">
-              <i class="far fa-heart" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="pcv2-body">
-            <div class="pcv2-price">$3.00 <span class="pcv2-price-to">– $9.00</span></div>
-            <div class="pcv2-moq">Min. 200 pcs</div>
-            <div class="pcv2-supplier">
-              <i class="fas fa-check-circle pcv2-verified" aria-label="Verified supplier" aria-hidden="true"></i>
-              FashionForward Ltd.
-            </div>
-            <p class="pcv2-name"><a href="pages/sourcing/product-detail.html?id=3">Organic Cotton T-Shirt Bundle</a></p>
-            <div class="pcv2-sold">5,120 pieces sold</div>
-            <button class="btn btn-primary btn-sm pcv2-cart" data-add-to-cart aria-label="Add to cart">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
-            </button>
-          </div>
-        </article>
-
-        <!-- Deal Card 4 -->
-        <article class="product-card-v2" role="listitem" data-product-id="4" data-product-name="Stainless Steel Water Bottle" data-product-price="5.00">
-          <div class="pcv2-image">
-            <a href="pages/sourcing/product-detail.html?id=4">
-              <img src="https://picsum.photos/seed/product4/280/200" alt="Stainless Steel Water Bottle" width="280" height="200" loading="lazy" />
-            </a>
-            <span class="pcv2-badge badge-sale">SALE</span>
-            <button class="product-wishlist" data-wishlist-toggle aria-label="Add Stainless Steel Water Bottle to wishlist" aria-pressed="false">
-              <i class="far fa-heart" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="pcv2-body">
-            <div class="pcv2-price">$5.00 <span class="pcv2-price-to">– $14.00</span></div>
-            <div class="pcv2-moq">Min. 150 pcs</div>
-            <div class="pcv2-supplier">
-              <i class="fas fa-check-circle pcv2-verified" aria-label="Verified supplier" aria-hidden="true"></i>
-              EcoWare Industries
-            </div>
-            <p class="pcv2-name"><a href="pages/sourcing/product-detail.html?id=4">Stainless Steel Water Bottle</a></p>
-            <div class="pcv2-sold">3,440 pieces sold</div>
-            <button class="btn btn-primary btn-sm pcv2-cart" data-add-to-cart aria-label="Add to cart">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
-            </button>
-          </div>
-        </article>
-
-        <!-- Deal Card 5 -->
-        <article class="product-card-v2" role="listitem" data-product-id="5" data-product-name="Portable Solar Charger 20W" data-product-price="18.00">
-          <div class="pcv2-image">
-            <a href="pages/sourcing/product-detail.html?id=5">
-              <img src="https://picsum.photos/seed/product5/280/200" alt="Portable Solar Charger 20W" width="280" height="200" loading="lazy" />
-            </a>
-            <span class="pcv2-badge badge-hot">HOT</span>
-            <button class="product-wishlist" data-wishlist-toggle aria-label="Add Portable Solar Charger to wishlist" aria-pressed="false">
-              <i class="far fa-heart" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="pcv2-body">
-            <div class="pcv2-price">$18.00 <span class="pcv2-price-to">– $45.00</span></div>
-            <div class="pcv2-moq">Min. 30 pcs</div>
-            <div class="pcv2-supplier">
-              <i class="fas fa-check-circle pcv2-verified" aria-label="Verified supplier" aria-hidden="true"></i>
-              GreenEnergy Corp.
-            </div>
-            <p class="pcv2-name"><a href="pages/sourcing/product-detail.html?id=5">Portable Solar Charger 20W</a></p>
-            <div class="pcv2-sold">987 pieces sold</div>
-            <button class="btn btn-primary btn-sm pcv2-cart" data-add-to-cart aria-label="Add to cart">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
-            </button>
-          </div>
-        </article>
-
-        <!-- Deal Card 6 -->
-        <article class="product-card-v2" role="listitem" data-product-id="6" data-product-name="Ergonomic Office Chair" data-product-price="65.00">
-          <div class="pcv2-image">
-            <a href="pages/sourcing/product-detail.html?id=6">
-              <img src="https://picsum.photos/seed/product6/280/200" alt="Ergonomic Office Chair" width="280" height="200" loading="lazy" />
-            </a>
-            <button class="product-wishlist" data-wishlist-toggle aria-label="Add Ergonomic Office Chair to wishlist" aria-pressed="false">
-              <i class="far fa-heart" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="pcv2-body">
-            <div class="pcv2-price">$65.00 <span class="pcv2-price-to">– $120.00</span></div>
-            <div class="pcv2-moq">Min. 10 pcs</div>
-            <div class="pcv2-supplier">
-              <i class="fas fa-check-circle pcv2-verified" aria-label="Verified supplier" aria-hidden="true"></i>
-              ComfortSeating Pro
-            </div>
-            <p class="pcv2-name"><a href="pages/sourcing/product-detail.html?id=6">Ergonomic Office Chair</a></p>
-            <div class="pcv2-sold">412 pieces sold</div>
-            <button class="btn btn-primary btn-sm pcv2-cart" data-add-to-cart aria-label="Add to cart">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
-            </button>
-          </div>
-        </article>
-
-      </div><!-- /.top-deals-scroll -->
-      <button class="deals-scroll-btn deals-scroll-next" aria-label="Scroll right">
-        <i class="fas fa-chevron-right" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
-</section><!-- /.top-deals-section -->
-
-    <!-- ============================================================
-         FEATURED SUPPLIERS
-    ============================================================ -->
-    <!-- ============================================================
-     TOP RANKING SECTION
-============================================================ -->
-    <section class="section ranking-section" aria-labelledby="ranking-heading">
-  <div class="container">
-    <div class="section-header">
-      <h2 id="ranking-heading" class="section-title">🏆 Top Ranking</h2>
-      <a href="pages/sourcing/products.html" class="section-link">
-        View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-    <div class="ranking-tabs" role="tablist" aria-label="Ranking categories">
-      <button class="ranking-tab active" role="tab" aria-selected="true" data-rtab="electronics">Electronics</button>
-      <button class="ranking-tab" role="tab" aria-selected="false" data-rtab="fashion">Fashion</button>
-      <button class="ranking-tab" role="tab" aria-selected="false" data-rtab="industrial">Industrial</button>
-      <button class="ranking-tab" role="tab" aria-selected="false" data-rtab="beauty">Beauty</button>
-      <button class="ranking-tab" role="tab" aria-selected="false" data-rtab="automotive">Automotive</button>
-    </div>
-    <div class="ranking-grid" role="list" aria-label="Top ranking products">
-      <a href="pages/sourcing/product-detail.html?id=1" class="ranking-card" role="listitem">
-        <span class="rank-number rank-gold" aria-label="Rank 1">1</span>
-        <img src="https://picsum.photos/seed/rank1/120/120" alt="Wireless Earbuds" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Hot selling</span>
-          <p class="ranking-name">Wireless Earbuds Pro</p>
-          <span class="ranking-price">$12.00</span>
-        </div>
-      </a>
-      <a href="pages/sourcing/product-detail.html?id=2" class="ranking-card" role="listitem">
-        <span class="rank-number rank-silver" aria-label="Rank 2">2</span>
-        <img src="https://picsum.photos/seed/rank2/120/120" alt="Smart Watch" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Hot selling</span>
-          <p class="ranking-name">Smart Watch Series 5</p>
-          <span class="ranking-price">$24.00</span>
-        </div>
-      </a>
-      <a href="pages/sourcing/product-detail.html?id=3" class="ranking-card" role="listitem">
-        <span class="rank-number rank-bronze" aria-label="Rank 3">3</span>
-        <img src="https://picsum.photos/seed/rank3/120/120" alt="USB-C Hub" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Trending</span>
-          <p class="ranking-name">7-in-1 USB-C Hub</p>
-          <span class="ranking-price">$8.50</span>
-        </div>
-      </a>
-      <a href="pages/sourcing/product-detail.html?id=4" class="ranking-card" role="listitem">
-        <span class="rank-number" aria-label="Rank 4">4</span>
-        <img src="https://picsum.photos/seed/rank4/120/120" alt="Bluetooth Speaker" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Trending</span>
-          <p class="ranking-name">Bluetooth Speaker Pro</p>
-          <span class="ranking-price">$15.00</span>
-        </div>
-      </a>
-      <a href="pages/sourcing/product-detail.html?id=5" class="ranking-card" role="listitem">
-        <span class="rank-number" aria-label="Rank 5">5</span>
-        <img src="https://picsum.photos/seed/rank5/120/120" alt="LED Strip Lights" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Popular</span>
-          <p class="ranking-name">LED Strip Lights 5m</p>
-          <span class="ranking-price">$4.20</span>
-        </div>
-      </a>
-      <a href="pages/sourcing/product-detail.html?id=6" class="ranking-card" role="listitem">
-        <span class="rank-number" aria-label="Rank 6">6</span>
-        <img src="https://picsum.photos/seed/rank6/120/120" alt="Solar Panel" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Popular</span>
-          <p class="ranking-name">Solar Panel 100W</p>
-          <span class="ranking-price">$32.00</span>
-        </div>
-      </a>
-      <a href="pages/sourcing/product-detail.html?id=7" class="ranking-card" role="listitem">
-        <span class="rank-number" aria-label="Rank 7">7</span>
-        <img src="https://picsum.photos/seed/rank7/120/120" alt="Power Bank" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Hot selling</span>
-          <p class="ranking-name">20000mAh Power Bank</p>
-          <span class="ranking-price">$9.80</span>
-        </div>
-      </a>
-      <a href="pages/sourcing/product-detail.html?id=8" class="ranking-card" role="listitem">
-        <span class="rank-number" aria-label="Rank 8">8</span>
-        <img src="https://picsum.photos/seed/rank8/120/120" alt="Gaming Mouse" width="120" height="120" loading="lazy" />
-        <div class="ranking-info">
-          <span class="ranking-badge">Hot selling</span>
-          <p class="ranking-name">Gaming Mouse RGB</p>
-          <span class="ranking-price">$7.50</span>
-        </div>
-      </a>
-    </div>
-  </div>
-</section><!-- /.ranking-section -->
-
-    <!-- ============================================================
-     TAILORED SELECTIONS
-============================================================ -->
-    <section class="section tailored-section" aria-labelledby="tailored-heading">
-  <div class="container">
-    <div class="section-header">
-      <div>
-        <h2 id="tailored-heading" class="section-title">✨ Tailored Selections</h2>
-        <p class="section-subtitle">Daily picks for you</p>
-      </div>
-      <a href="pages/sourcing/products.html" class="section-link">
-        View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-    <div class="tailored-grid" role="list" aria-label="Tailored product selections">
-
-      <article class="tailored-card" role="listitem">
-        <div class="tailored-card-img">
-          <img src="https://picsum.photos/seed/tail1/260/200" alt="Fashion collection" width="260" height="200" loading="lazy" />
-          <span class="tailored-daily-badge">Daily Pick</span>
-        </div>
-        <div class="tailored-card-body">
-          <p class="tailored-price-range">$3.00 – $9.00</p>
-          <p class="tailored-name">Organic Cotton T-Shirts</p>
-          <p class="tailored-supplier">FashionForward Ltd.</p>
-        </div>
-      </article>
-
-      <article class="tailored-card" role="listitem">
-        <div class="tailored-card-img">
-          <img src="https://picsum.photos/seed/tail2/260/200" alt="Electronics collection" width="260" height="200" loading="lazy" />
-          <span class="tailored-daily-badge">Daily Pick</span>
-        </div>
-        <div class="tailored-card-body">
-          <p class="tailored-price-range">$12.00 – $28.00</p>
-          <p class="tailored-name">Wireless Earbuds Pro</p>
-          <p class="tailored-supplier">TechSource Global</p>
-        </div>
-      </article>
-
-      <article class="tailored-card" role="listitem">
-        <div class="tailored-card-img">
-          <img src="https://picsum.photos/seed/tail3/260/200" alt="Home goods" width="260" height="200" loading="lazy" />
-          <span class="tailored-daily-badge">Daily Pick</span>
-        </div>
-        <div class="tailored-card-body">
-          <p class="tailored-price-range">$5.00 – $14.00</p>
-          <p class="tailored-name">Stainless Steel Bottles</p>
-          <p class="tailored-supplier">EcoWare Industries</p>
-        </div>
-      </article>
-
-      <article class="tailored-card" role="listitem">
-        <div class="tailored-card-img">
-          <img src="https://picsum.photos/seed/tail4/260/200" alt="Beauty products" width="260" height="200" loading="lazy" />
-          <span class="tailored-daily-badge">Daily Pick</span>
-        </div>
-        <div class="tailored-card-body">
-          <p class="tailored-price-range">$4.00 – $12.00</p>
-          <p class="tailored-name">Vitamin C Serum 30ml</p>
-          <p class="tailored-supplier">BeautyLab HK</p>
-        </div>
-      </article>
-
-      <article class="tailored-card" role="listitem">
-        <div class="tailored-card-img">
-          <img src="https://picsum.photos/seed/tail5/260/200" alt="Energy products" width="260" height="200" loading="lazy" />
-          <span class="tailored-daily-badge">Daily Pick</span>
-        </div>
-        <div class="tailored-card-body">
-          <p class="tailored-price-range">$18.00 – $45.00</p>
-          <p class="tailored-name">Solar Charger 20W</p>
-          <p class="tailored-supplier">GreenEnergy Corp.</p>
-        </div>
-      </article>
-
-      <article class="tailored-card" role="listitem">
-        <div class="tailored-card-img">
-          <img src="https://picsum.photos/seed/tail6/260/200" alt="Tech accessories" width="260" height="200" loading="lazy" />
-          <span class="tailored-daily-badge">Daily Pick</span>
-        </div>
-        <div class="tailored-card-body">
-          <p class="tailored-price-range">$22.00 – $55.00</p>
-          <p class="tailored-name">Mechanical Keyboard BT</p>
-          <p class="tailored-supplier">KeyMaster Tech</p>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section><!-- /.tailored-section -->
-
-    <!-- ============================================================
-         LIVE STREAMS SECTION
-    ============================================================ -->
-    <!-- ============================================================
-     PROMOTIONAL BANNER - €10 off every €100
-============================================================ -->
-    <section class="promo-section" aria-labelledby="promo-heading">
-  <div class="container">
-    <div class="promo-banner">
-      <div class="promo-banner-text">
-        <h2 id="promo-heading" class="promo-title">€10 off every €100</h2>
-        <p class="promo-subtitle">Use code <strong>GLOBE10</strong> at checkout on your first bulk order</p>
-        <a href="pages/sourcing/products.html" class="btn promo-btn">Shop Now</a>
-      </div>
-      <div class="promo-products" role="list" aria-label="Promotional products">
-        <a href="pages/sourcing/product-detail.html?id=1" class="promo-product" role="listitem">
-          <img src="https://picsum.photos/seed/promo1/100/100" alt="Promo product" width="100" height="100" loading="lazy" />
-          <span class="promo-product-moq">MOQ 50</span>
-        </a>
-        <a href="pages/sourcing/product-detail.html?id=2" class="promo-product" role="listitem">
-          <img src="https://picsum.photos/seed/promo2/100/100" alt="Promo product" width="100" height="100" loading="lazy" />
-          <span class="promo-product-moq">MOQ 100</span>
-        </a>
-        <a href="pages/sourcing/product-detail.html?id=3" class="promo-product" role="listitem">
-          <img src="https://picsum.photos/seed/promo3/100/100" alt="Promo product" width="100" height="100" loading="lazy" />
-          <span class="promo-product-moq">MOQ 200</span>
-        </a>
-        <a href="pages/sourcing/product-detail.html?id=4" class="promo-product" role="listitem">
-          <img src="https://picsum.photos/seed/promo4/100/100" alt="Promo product" width="100" height="100" loading="lazy" />
-          <span class="promo-product-moq">MOQ 150</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</section><!-- /.promo-section -->
-
-    <section class="section livestream-section" aria-labelledby="livestream-heading">
-      <div class="container">
-        <div class="section-header">
-          <h2 id="livestream-heading" class="section-title">
-            <span class="live-dot" aria-hidden="true"></span>
-            Live Streams
-          </h2>
-          <a href="pages/livestream/index.html" class="section-link">
-            All Streams <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </div>
-
-        <h3 class="subsection-label">
-          <span class="live-dot" aria-hidden="true"></span> Currently Live
-        </h3>
-        <div class="livestream-grid" role="list" aria-label="Currently live streams">
-
-          <!-- Live Stream Card 1 -->
-          <article class="stream-card" role="listitem">
-            <div class="stream-thumbnail">
-              <img src="https://picsum.photos/seed/stream1/400/225" alt="Live product showcase stream" width="400" height="225" loading="lazy" />
-              <div class="stream-live-badge" aria-label="Live stream">
-                <span class="live-dot-sm" aria-hidden="true"></span> LIVE
-              </div>
-              <div class="stream-viewers">
-                <i class="fas fa-eye" aria-hidden="true"></i>
-                <span>3,421</span>
+            <div class="gs-flash-timer" aria-label="Time remaining">
+              <span class="gs-flash-timer-label">Ends in:</span>
+              <div class="gs-flash-countdown" aria-live="polite" id="flash-countdown-display" data-end-ts="">
+                <span class="gs-countdown-unit" id="flash-hours">08</span>
+                <span class="gs-countdown-sep">:</span>
+                <span class="gs-countdown-unit" id="flash-minutes">34</span>
+                <span class="gs-countdown-sep">:</span>
+                <span class="gs-countdown-unit" id="flash-seconds">21</span>
               </div>
             </div>
-            <div class="stream-card-body">
-              <div class="stream-streamer">
-                <img src="https://ui-avatars.com/api/?name=TechSource+Global&background=0052CC&color=fff&size=32" alt="TechSource Global" width="32" height="32" />
-                <span>TechSource Global</span>
+            <a href="pages/sourcing/products.html?sale=flash" class="gs-flash-view-all">
+              View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+          <div class="gs-flash-scroll" role="list" aria-label="Flash sale products">
+
+            <a href="pages/sourcing/product-detail.html?id=fs1" class="gs-flash-item" role="listitem">
+              <div class="gs-flash-item-img">
+                <img src="https://picsum.photos/seed/flash1/300/200" alt="Wireless Bluetooth Headphones" loading="lazy" width="160" height="120" />
               </div>
-              <h4 class="stream-title">New Electronics Showcase - Q4 2025</h4>
-              <a href="pages/livestream/watch.html?id=1" class="btn btn-primary btn-sm stream-btn">
-                <i class="fas fa-play" aria-hidden="true"></i> Join Stream
-              </a>
+              <div class="gs-flash-item-body">
+                <div class="gs-flash-item-name">Wireless BT Headphones Pro</div>
+                <div><span class="gs-flash-item-price">$12.50</span> <span class="gs-flash-item-original">$25.00</span></div>
+                <div class="gs-flash-progress"><div class="gs-flash-progress-bar" style="width:72%"></div></div>
+              </div>
+            </a>
+
+            <a href="pages/sourcing/product-detail.html?id=fs2" class="gs-flash-item" role="listitem">
+              <div class="gs-flash-item-img">
+                <img src="https://picsum.photos/seed/flash2/300/200" alt="Smart LED Light Bulbs" loading="lazy" width="160" height="120" />
+              </div>
+              <div class="gs-flash-item-body">
+                <div class="gs-flash-item-name">Smart LED Bulb 10W</div>
+                <div><span class="gs-flash-item-price">$1.80</span> <span class="gs-flash-item-original">$4.50</span></div>
+                <div class="gs-flash-progress"><div class="gs-flash-progress-bar" style="width:58%"></div></div>
+              </div>
+            </a>
+
+            <a href="pages/sourcing/product-detail.html?id=fs3" class="gs-flash-item" role="listitem">
+              <div class="gs-flash-item-img">
+                <img src="https://picsum.photos/seed/flash3/300/200" alt="Stainless Steel Water Bottle" loading="lazy" width="160" height="120" />
+              </div>
+              <div class="gs-flash-item-body">
+                <div class="gs-flash-item-name">Insulated Steel Bottle 500ml</div>
+                <div><span class="gs-flash-item-price">$3.20</span> <span class="gs-flash-item-original">$7.00</span></div>
+                <div class="gs-flash-progress"><div class="gs-flash-progress-bar" style="width:85%"></div></div>
+              </div>
+            </a>
+
+            <a href="pages/sourcing/product-detail.html?id=fs4" class="gs-flash-item" role="listitem">
+              <div class="gs-flash-item-img">
+                <img src="https://picsum.photos/seed/flash4/300/200" alt="USB-C Fast Charging Cable" loading="lazy" width="160" height="120" />
+              </div>
+              <div class="gs-flash-item-body">
+                <div class="gs-flash-item-name">USB-C 65W Fast Charge Cable</div>
+                <div><span class="gs-flash-item-price">$0.95</span> <span class="gs-flash-item-original">$2.80</span></div>
+                <div class="gs-flash-progress"><div class="gs-flash-progress-bar" style="width:91%"></div></div>
+              </div>
+            </a>
+
+            <a href="pages/sourcing/product-detail.html?id=fs5" class="gs-flash-item" role="listitem">
+              <div class="gs-flash-item-img">
+                <img src="https://picsum.photos/seed/flash5/300/200" alt="Silicone Phone Case" loading="lazy" width="160" height="120" />
+              </div>
+              <div class="gs-flash-item-body">
+                <div class="gs-flash-item-name">Premium Silicone Phone Case</div>
+                <div><span class="gs-flash-item-price">$0.75</span> <span class="gs-flash-item-original">$2.20</span></div>
+                <div class="gs-flash-progress"><div class="gs-flash-progress-bar" style="width:44%"></div></div>
+              </div>
+            </a>
+
+            <a href="pages/sourcing/product-detail.html?id=fs6" class="gs-flash-item" role="listitem">
+              <div class="gs-flash-item-img">
+                <img src="https://picsum.photos/seed/flash6/300/200" alt="Portable Power Bank" loading="lazy" width="160" height="120" />
+              </div>
+              <div class="gs-flash-item-body">
+                <div class="gs-flash-item-name">10000mAh Power Bank</div>
+                <div><span class="gs-flash-item-price">$8.40</span> <span class="gs-flash-item-original">$18.00</span></div>
+                <div class="gs-flash-progress"><div class="gs-flash-progress-bar" style="width:67%"></div></div>
+              </div>
+            </a>
+
+          </div>
+        </div><!-- /.gs-flash-sale -->
+      </div>
+    </div>
+
+    <!-- ============================================================
+         G. FREQUENTLY SEARCHED PRODUCTS
+    ============================================================ -->
+    <section class="gs-section" aria-labelledby="freq-heading">
+      <div class="gs-section-inner">
+        <div class="gs-section-header">
+          <h2 id="freq-heading" class="gs-section-title">Frequently Searched</h2>
+          <a href="pages/sourcing/products.html" class="gs-section-link">View All <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="gs-products-grid" role="list" aria-label="Frequently searched products">
+
+          <!-- Product 1 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod1/300/300" alt="Wireless Earbuds TWS" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge">HOT</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=1" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
+              </div>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> SoundTech Co.</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=1">TWS Wireless Earbuds Bluetooth 5.3 ANC Noise Cancelling</a></div>
+              <div class="gs-product-rating" aria-label="4.8 out of 5 stars">★★★★★ <span>(2.4k reviews)</span></div>
+              <div class="gs-product-price">$8.50–$14.00</div>
+              <div class="gs-product-moq">Min. order: 50 pairs</div>
+              <div class="gs-sold-count">12,400+ sold</div>
             </div>
           </article>
 
-          <!-- Live Stream Card 2 -->
-          <article class="stream-card" role="listitem">
-            <div class="stream-thumbnail">
-              <img src="https://picsum.photos/seed/stream2/400/225" alt="Fashion collection live stream" width="400" height="225" loading="lazy" />
-              <div class="stream-live-badge" aria-label="Live stream">
-                <span class="live-dot-sm" aria-hidden="true"></span> LIVE
-              </div>
-              <div class="stream-viewers">
-                <i class="fas fa-eye" aria-hidden="true"></i>
-                <span>1,892</span>
+          <!-- Product 2 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod2/300/300" alt="Bamboo Cutting Board Set" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-new">NEW</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=2" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
               </div>
             </div>
-            <div class="stream-card-body">
-              <div class="stream-streamer">
-                <img src="https://ui-avatars.com/api/?name=FashionForward+Ltd&background=FF6B35&color=fff&size=32" alt="FashionForward Ltd" width="32" height="32" />
-                <span>FashionForward Ltd.</span>
-              </div>
-              <h4 class="stream-title">Summer 2025 Collection Launch</h4>
-              <a href="pages/livestream/watch.html?id=2" class="btn btn-primary btn-sm stream-btn">
-                <i class="fas fa-play" aria-hidden="true"></i> Join Stream
-              </a>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> EcoHome Ltd</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=2">Bamboo Cutting Board Set of 3 Kitchen Chopping Boards</a></div>
+              <div class="gs-product-rating" aria-label="4.6 out of 5 stars">★★★★★ <span>(890 reviews)</span></div>
+              <div class="gs-product-price">$4.20–$6.80</div>
+              <div class="gs-product-moq">Min. order: 100 sets</div>
+              <div class="gs-sold-count">5,200+ sold</div>
             </div>
           </article>
 
-          <!-- Live Stream Card 3 -->
-          <article class="stream-card" role="listitem">
-            <div class="stream-thumbnail">
-              <img src="https://picsum.photos/seed/stream3/400/225" alt="Eco products live stream" width="400" height="225" loading="lazy" />
-              <div class="stream-live-badge" aria-label="Live stream">
-                <span class="live-dot-sm" aria-hidden="true"></span> LIVE
-              </div>
-              <div class="stream-viewers">
-                <i class="fas fa-eye" aria-hidden="true"></i>
-                <span>567</span>
+          <!-- Product 3 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod3/300/300" alt="LED Strip Lights" loading="lazy" width="300" height="300" />
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=3" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
               </div>
             </div>
-            <div class="stream-card-body">
-              <div class="stream-streamer">
-                <img src="https://ui-avatars.com/api/?name=EcoWare+Industries&background=00C9A7&color=fff&size=32" alt="EcoWare Industries" width="32" height="32" />
-                <span>EcoWare Industries</span>
-              </div>
-              <h4 class="stream-title">Sustainable Products Mega Drop</h4>
-              <a href="pages/livestream/watch.html?id=3" class="btn btn-primary btn-sm stream-btn">
-                <i class="fas fa-play" aria-hidden="true"></i> Join Stream
-              </a>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> LightMax Factory</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=3">RGB LED Strip Lights 5m Smart App Control Waterproof IP65</a></div>
+              <div class="gs-product-rating" aria-label="4.7 out of 5 stars">★★★★★ <span>(3.1k reviews)</span></div>
+              <div class="gs-product-price">$2.90–$5.50</div>
+              <div class="gs-product-moq">Min. order: 200 pcs</div>
+              <div class="gs-sold-count">31,000+ sold</div>
             </div>
           </article>
 
-        </div><!-- /.livestream-grid -->
+          <!-- Product 4 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod4/300/300" alt="Yoga Mat" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-sale">SALE</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=4" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
+              </div>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> FitGear Sports</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=4">Non-Slip TPE Yoga Mat 6mm Thick with Carrying Strap</a></div>
+              <div class="gs-product-rating" aria-label="4.5 out of 5 stars">★★★★☆ <span>(1.7k reviews)</span></div>
+              <div class="gs-product-price">$5.60–$9.00</div>
+              <div class="gs-product-moq">Min. order: 30 pcs</div>
+              <div class="gs-sold-count">8,900+ sold</div>
+            </div>
+          </article>
 
-        <!-- Upcoming Streams -->
-        <h3 class="subsection-label upcoming-label">
-          <i class="fas fa-calendar-alt" aria-hidden="true"></i> Upcoming Streams
-        </h3>
-        <ul class="upcoming-streams-list" aria-label="Upcoming live streams">
-          <li class="upcoming-stream-item">
-            <div class="upcoming-stream-info">
-              <img src="https://ui-avatars.com/api/?name=BeautyLab+HK&background=E91E8C&color=fff&size=40" alt="BeautyLab HK" width="40" height="40" loading="lazy" />
-              <div>
-                <strong>BeautyLab HK</strong>
-                <span>Skincare Masterclass &amp; Live Sales</span>
+          <!-- Product 5 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod5/300/300" alt="Stainless Steel Thermos" loading="lazy" width="300" height="300" />
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=5" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
               </div>
             </div>
-            <div class="upcoming-stream-time">
-              <i class="fas fa-clock" aria-hidden="true"></i>
-              <time datetime="2025-07-20T14:00">Today, 2:00 PM GMT</time>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> ThermoKing MFG</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=5">Double-Wall Insulated Stainless Thermos Flask 500ml</a></div>
+              <div class="gs-product-rating" aria-label="4.8 out of 5 stars">★★★★★ <span>(4.2k reviews)</span></div>
+              <div class="gs-product-price">$3.80–$7.20</div>
+              <div class="gs-product-moq">Min. order: 50 pcs</div>
+              <div class="gs-sold-count">22,600+ sold</div>
             </div>
-            <a href="pages/livestream/schedule.html?id=4" class="btn btn-outline-primary btn-xs">
-              Set Reminder
-            </a>
-          </li>
-          <li class="upcoming-stream-item">
-            <div class="upcoming-stream-info">
-              <img src="https://ui-avatars.com/api/?name=GreenEnergy+Corp&background=4CAF50&color=fff&size=40" alt="GreenEnergy Corp" width="40" height="40" loading="lazy" />
-              <div>
-                <strong>GreenEnergy Corp.</strong>
-                <span>Solar Tech Innovation Demo</span>
-              </div>
-            </div>
-            <div class="upcoming-stream-time">
-              <i class="fas fa-clock" aria-hidden="true"></i>
-              <time datetime="2025-07-20T18:00">Today, 6:00 PM GMT</time>
-            </div>
-            <a href="pages/livestream/schedule.html?id=5" class="btn btn-outline-primary btn-xs">
-              Set Reminder
-            </a>
-          </li>
-          <li class="upcoming-stream-item">
-            <div class="upcoming-stream-info">
-              <img src="https://ui-avatars.com/api/?name=KeyMaster+Tech&background=673AB7&color=fff&size=40" alt="KeyMaster Tech" width="40" height="40" loading="lazy" />
-              <div>
-                <strong>KeyMaster Tech</strong>
-                <span>Keyboard &amp; Peripheral Auction Night</span>
-              </div>
-            </div>
-            <div class="upcoming-stream-time">
-              <i class="fas fa-clock" aria-hidden="true"></i>
-              <time datetime="2025-07-21T10:00">Tomorrow, 10:00 AM GMT</time>
-            </div>
-            <a href="pages/livestream/schedule.html?id=6" class="btn btn-outline-primary btn-xs">
-              Set Reminder
-            </a>
-          </li>
-        </ul>
+          </article>
 
+          <!-- Product 6 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod6/300/300" alt="Mesh Office Chair" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge">HOT</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=6" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
+              </div>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> OfficePro Intl</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=6">Ergonomic Mesh Office Chair Adjustable Lumbar Support</a></div>
+              <div class="gs-product-rating" aria-label="4.6 out of 5 stars">★★★★★ <span>(987 reviews)</span></div>
+              <div class="gs-product-price">$42.00–$68.00</div>
+              <div class="gs-product-moq">Min. order: 5 pcs</div>
+              <div class="gs-sold-count">3,400+ sold</div>
+            </div>
+          </article>
+
+          <!-- Product 7 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod7/300/300" alt="Mechanical Keyboard" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-new">NEW</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=7" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
+              </div>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> KeyTech Electronics</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=7">RGB Mechanical Gaming Keyboard TKL 87-Key Hot Swap</a></div>
+              <div class="gs-product-rating" aria-label="4.7 out of 5 stars">★★★★★ <span>(2.0k reviews)</span></div>
+              <div class="gs-product-price">$18.50–$28.00</div>
+              <div class="gs-product-moq">Min. order: 20 pcs</div>
+              <div class="gs-sold-count">7,800+ sold</div>
+            </div>
+          </article>
+
+          <!-- Product 8 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod8/300/300" alt="Custom Tote Bags" loading="lazy" width="300" height="300" />
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=8" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
+              </div>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> BagWorld Factory</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=8">Custom Logo Canvas Tote Bag Reusable Shopping Bags</a></div>
+              <div class="gs-product-rating" aria-label="4.4 out of 5 stars">★★★★☆ <span>(680 reviews)</span></div>
+              <div class="gs-product-price">$0.85–$2.50</div>
+              <div class="gs-product-moq">Min. order: 500 pcs</div>
+              <div class="gs-sold-count">45,000+ sold</div>
+            </div>
+          </article>
+
+          <!-- Product 9 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod9/300/300" alt="Smart Watch" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge">HOT</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=9" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
+              </div>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> SmartWear Co.</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=9">Smart Watch Fitness Tracker Heart Rate Monitor IP68</a></div>
+              <div class="gs-product-rating" aria-label="4.5 out of 5 stars">★★★★☆ <span>(3.3k reviews)</span></div>
+              <div class="gs-product-price">$15.00–$24.00</div>
+              <div class="gs-product-moq">Min. order: 10 pcs</div>
+              <div class="gs-sold-count">18,200+ sold</div>
+            </div>
+          </article>
+
+          <!-- Product 10 -->
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/prod10/300/300" alt="Protein Shaker Bottle" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-sale">SALE</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+              <div class="gs-product-card-actions" aria-hidden="true">
+                <a href="pages/sourcing/product-detail.html?id=10" class="gs-product-card-action">Quick View</a>
+                <a href="pages/cart/index.html" class="gs-product-card-action">Add to Cart</a>
+              </div>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> SportNutrition MFG</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=10">BPA-Free Protein Shaker Bottle 700ml with Mesh Ball</a></div>
+              <div class="gs-product-rating" aria-label="4.3 out of 5 stars">★★★★☆ <span>(1.1k reviews)</span></div>
+              <div class="gs-product-price">$1.90–$3.80</div>
+              <div class="gs-product-moq">Min. order: 100 pcs</div>
+              <div class="gs-sold-count">9,600+ sold</div>
+            </div>
+          </article>
+
+        </div><!-- /.gs-products-grid -->
       </div>
-    </section><!-- /.livestream-section -->
+    </section>
 
     <!-- ============================================================
-         FLASH SALE BANNER
+         H. TOP RANKING PRODUCTS
     ============================================================ -->
-    <section class="flash-sale-banner" aria-labelledby="flash-sale-heading">
-      <div class="container">
-        <div class="flash-sale-content">
-          <div class="flash-sale-text">
-            <span class="flash-sale-label">
-              <i class="fas fa-bolt" aria-hidden="true"></i> FLASH SALE
-            </span>
-            <h2 id="flash-sale-heading" class="flash-sale-title">Up to 60% Off Selected Products!</h2>
-            <p class="flash-sale-subtitle">Limited time offer. Grab the deals before they expire!</p>
-          </div>
-          <div class="flash-sale-timer" aria-label="Flash sale countdown timer">
-            <p class="timer-label">Ends In:</p>
-            <div class="countdown-display">
-              <div class="countdown-unit">
-                <span id="flash-hours" class="countdown-value">08</span>
-                <span class="countdown-label">HRS</span>
-              </div>
-              <span class="countdown-separator" aria-hidden="true">:</span>
-              <div class="countdown-unit">
-                <span id="flash-minutes" class="countdown-value">45</span>
-                <span class="countdown-label">MIN</span>
-              </div>
-              <span class="countdown-separator" aria-hidden="true">:</span>
-              <div class="countdown-unit">
-                <span id="flash-seconds" class="countdown-value">30</span>
-                <span class="countdown-label">SEC</span>
-              </div>
-            </div>
-            <!-- Hidden accessible countdown for screen readers -->
-            <time id="flash-countdown" datetime="" aria-live="off" class="sr-only">
-              Flash sale countdown
-            </time>
-          </div>
-          <a href="pages/sourcing/flash-sale.html" class="btn btn-flash-sale">
-            Shop Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
+    <section class="gs-section gs-section--alt" aria-labelledby="top-ranking-heading">
+      <div class="gs-section-inner">
+        <div class="gs-section-header">
+          <h2 id="top-ranking-heading" class="gs-section-title">Top Ranking</h2>
+          <a href="pages/sourcing/products.html?sort=bestseller" class="gs-section-link">View All <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
+        <div class="gs-products-grid" role="list" aria-label="Top ranking products">
+
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/top1/300/300" alt="Solar Power Bank" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-ranking">⭐ #1</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> GreenEnergy Tech</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=t1">Waterproof Solar Panel Power Bank 20000mAh Dual USB</a></div>
+              <div class="gs-product-rating" aria-label="4.9 out of 5 stars">★★★★★ <span>(5.6k reviews)</span></div>
+              <div class="gs-product-price">$11.20–$18.50</div>
+              <div class="gs-product-moq">Min. order: 20 pcs</div>
+            </div>
+          </article>
+
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/top2/300/300" alt="Wireless Charging Pad" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-ranking">⭐ #2</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> ChargePro Ltd</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=t2">15W Fast Wireless Charger Pad Compatible with MagSafe</a></div>
+              <div class="gs-product-rating" aria-label="4.7 out of 5 stars">★★★★★ <span>(3.9k reviews)</span></div>
+              <div class="gs-product-price">$4.50–$8.00</div>
+              <div class="gs-product-moq">Min. order: 50 pcs</div>
+            </div>
+          </article>
+
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/top3/300/300" alt="Portable Air Purifier" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-ranking">⭐ #3</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> PureAir Factory</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=t3">Desktop Mini Air Purifier HEPA Filter True H13 USB</a></div>
+              <div class="gs-product-rating" aria-label="4.6 out of 5 stars">★★★★★ <span>(2.2k reviews)</span></div>
+              <div class="gs-product-price">$9.80–$16.00</div>
+              <div class="gs-product-moq">Min. order: 10 pcs</div>
+            </div>
+          </article>
+
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/top4/300/300" alt="Reusable Silicone Bags" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-ranking">⭐ #4</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> EcoSilica MFG</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=t4">Food-Grade Reusable Silicone Storage Bags Set of 6</a></div>
+              <div class="gs-product-rating" aria-label="4.5 out of 5 stars">★★★★☆ <span>(1.4k reviews)</span></div>
+              <div class="gs-product-price">$2.20–$4.00</div>
+              <div class="gs-product-moq">Min. order: 200 sets</div>
+            </div>
+          </article>
+
+          <article class="gs-product-card" role="listitem">
+            <div class="gs-product-card-img">
+              <img src="https://picsum.photos/seed/top5/300/300" alt="Folding Electric Scooter" loading="lazy" width="300" height="300" />
+              <span class="gs-product-card-badge badge-ranking">⭐ #5</span>
+              <button class="gs-product-card-wishlist" aria-label="Add to wishlist"><i class="fas fa-heart" aria-hidden="true"></i></button>
+            </div>
+            <div class="gs-product-card-body">
+              <div class="gs-product-supplier"><i class="fas fa-check-circle gs-verified-badge" aria-hidden="true"></i> EcoRide Mobility</div>
+              <div class="gs-product-name"><a href="pages/sourcing/product-detail.html?id=t5">Adult Folding Electric Scooter 350W 25km/h LED Display</a></div>
+              <div class="gs-product-rating" aria-label="4.8 out of 5 stars">★★★★★ <span>(780 reviews)</span></div>
+              <div class="gs-product-price">$148.00–$220.00</div>
+              <div class="gs-product-moq">Min. order: 3 pcs</div>
+            </div>
+          </article>
+
+        </div><!-- /.gs-products-grid -->
       </div>
-    </section><!-- /.flash-sale-banner -->
+    </section>
 
     <!-- ============================================================
-         STATISTICS SECTION
+         I. FEATURED SUPPLIERS
     ============================================================ -->
-    <section class="section stats-section" aria-labelledby="stats-heading">
-      <div class="container">
-        <h2 id="stats-heading" class="section-title text-center text-light">
-          Globex Sky by the Numbers
-        </h2>
-        <p class="section-subtitle text-center text-light-muted">
-          Trusted by businesses across the globe
-        </p>
-        <div class="stats-grid" role="list" aria-label="Platform statistics">
+    <section class="gs-section" aria-labelledby="suppliers-heading">
+      <div class="gs-section-inner">
+        <div class="gs-section-header">
+          <h2 id="suppliers-heading" class="gs-section-title">Featured Suppliers</h2>
+          <a href="pages/suppliers/index.html" class="gs-section-link">View All Suppliers <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="gs-suppliers-grid" role="list" aria-label="Featured suppliers">
 
-          <div class="stats-card" role="listitem">
-            <i class="fas fa-box-open stats-icon" aria-hidden="true"></i>
-            <div class="stats-number counter" data-target="1000000" aria-label="1 million plus products">
-              0
+          <div class="gs-supplier-card" role="listitem">
+            <img src="https://ui-avatars.com/api/?name=ShenzhenTech&background=0052CC&color=fff&size=64" alt="ShenzhenTech Electronics avatar" class="gs-supplier-avatar" width="64" height="64" loading="lazy" />
+            <div class="gs-supplier-name">ShenzhenTech Electronics</div>
+            <div class="gs-supplier-verified"><i class="fas fa-certificate" aria-hidden="true"></i> Gold Verified Supplier</div>
+            <div class="gs-supplier-stats">
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">1,240</span>
+                <span class="gs-supplier-stat-label">Products</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">98%</span>
+                <span class="gs-supplier-stat-label">Response</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">8yr</span>
+                <span class="gs-supplier-stat-label">On Platform</span>
+              </div>
             </div>
-            <div class="stats-suffix">+</div>
-            <p class="stats-label">Products Listed</p>
+            <a href="pages/suppliers/profile.html?id=1" class="gs-supplier-btn">View Store</a>
           </div>
 
-          <div class="stats-card" role="listitem">
-            <i class="fas fa-store stats-icon" aria-hidden="true"></i>
-            <div class="stats-number counter" data-target="50000" aria-label="50 thousand plus suppliers">
-              0
+          <div class="gs-supplier-card" role="listitem">
+            <img src="https://ui-avatars.com/api/?name=GlobalFashion&background=FF6A00&color=fff&size=64" alt="GlobalFashion Apparel avatar" class="gs-supplier-avatar" width="64" height="64" loading="lazy" />
+            <div class="gs-supplier-name">GlobalFashion Apparel</div>
+            <div class="gs-supplier-verified"><i class="fas fa-certificate" aria-hidden="true"></i> Gold Verified Supplier</div>
+            <div class="gs-supplier-stats">
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">876</span>
+                <span class="gs-supplier-stat-label">Products</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">96%</span>
+                <span class="gs-supplier-stat-label">Response</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">5yr</span>
+                <span class="gs-supplier-stat-label">On Platform</span>
+              </div>
             </div>
-            <div class="stats-suffix">+</div>
-            <p class="stats-label">Verified Suppliers</p>
+            <a href="pages/suppliers/profile.html?id=2" class="gs-supplier-btn">View Store</a>
           </div>
 
-          <div class="stats-card" role="listitem">
-            <i class="fas fa-globe stats-icon" aria-hidden="true"></i>
-            <div class="stats-number counter" data-target="150" aria-label="150 plus countries">
-              0
+          <div class="gs-supplier-card" role="listitem">
+            <img src="https://ui-avatars.com/api/?name=EcoHomeGoods&background=00C853&color=fff&size=64" alt="EcoHome Goods avatar" class="gs-supplier-avatar" width="64" height="64" loading="lazy" />
+            <div class="gs-supplier-name">EcoHome Goods Intl</div>
+            <div class="gs-supplier-verified"><i class="fas fa-certificate" aria-hidden="true"></i> Silver Verified Supplier</div>
+            <div class="gs-supplier-stats">
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">542</span>
+                <span class="gs-supplier-stat-label">Products</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">94%</span>
+                <span class="gs-supplier-stat-label">Response</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">3yr</span>
+                <span class="gs-supplier-stat-label">On Platform</span>
+              </div>
             </div>
-            <div class="stats-suffix">+</div>
-            <p class="stats-label">Countries Served</p>
+            <a href="pages/suppliers/profile.html?id=3" class="gs-supplier-btn">View Store</a>
           </div>
 
-          <div class="stats-card" role="listitem">
-            <i class="fas fa-truck stats-icon" aria-hidden="true"></i>
-            <div class="stats-number counter" data-target="500000" aria-label="500 thousand plus deliveries">
-              0
+          <div class="gs-supplier-card" role="listitem">
+            <img src="https://ui-avatars.com/api/?name=AutoPartsPro&background=191919&color=fff&size=64" alt="AutoParts Pro avatar" class="gs-supplier-avatar" width="64" height="64" loading="lazy" />
+            <div class="gs-supplier-name">AutoParts Pro MFG</div>
+            <div class="gs-supplier-verified"><i class="fas fa-certificate" aria-hidden="true"></i> Gold Verified Supplier</div>
+            <div class="gs-supplier-stats">
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">3,100</span>
+                <span class="gs-supplier-stat-label">Products</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">99%</span>
+                <span class="gs-supplier-stat-label">Response</span>
+              </div>
+              <div class="gs-supplier-stat">
+                <span class="gs-supplier-stat-num">10yr</span>
+                <span class="gs-supplier-stat-label">On Platform</span>
+              </div>
             </div>
-            <div class="stats-suffix">+</div>
-            <p class="stats-label">Successful Deliveries</p>
+            <a href="pages/suppliers/profile.html?id=4" class="gs-supplier-btn">View Store</a>
           </div>
 
         </div>
       </div>
-    </section><!-- /.stats-section -->
+    </section>
 
     <!-- ============================================================
-         HOW IT WORKS
+         J. HOW IT WORKS
     ============================================================ -->
-    <section class="section how-it-works-section" aria-labelledby="how-it-works-heading">
-      <div class="container">
-        <div class="section-header text-center">
-          <h2 id="how-it-works-heading" class="section-title">How It Works</h2>
-          <p class="section-subtitle">Two powerful services to grow your business</p>
+    <div class="gs-how-it-works" aria-labelledby="how-heading">
+      <div class="gs-how-inner">
+        <div class="gs-how-header">
+          <h2 id="how-heading">How GlobexSky Works</h2>
+          <p>From discovery to delivery in four simple steps</p>
         </div>
-
-        <div class="how-it-works-grid">
-
-          <!-- Sourcing Timeline -->
-          <div class="timeline-column">
-            <div class="timeline-header">
-              <div class="timeline-icon-wrapper timeline-sourcing">
-                <i class="fas fa-boxes" aria-hidden="true"></i>
-              </div>
-              <h3>Product Sourcing</h3>
-            </div>
-            <ol class="timeline" aria-label="Product sourcing process steps">
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-search" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Browse Products</h4>
-                  <p>Search from over 1 million products across 150+ countries with advanced filters.</p>
-                </div>
-              </li>
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-comments" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Contact Supplier</h4>
-                  <p>Connect directly with verified suppliers via live chat, email, or video call.</p>
-                </div>
-              </li>
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-handshake" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Negotiate &amp; Sample</h4>
-                  <p>Request samples, negotiate pricing, and finalise product specifications.</p>
-                </div>
-              </li>
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-credit-card" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Order &amp; Pay Securely</h4>
-                  <p>Place your bulk order with escrow-protected payments and trade assurance.</p>
-                </div>
-              </li>
-            </ol>
-            <a href="pages/sourcing/index.html" class="btn btn-primary btn-how">
-              Start Sourcing <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            </a>
+        <div class="gs-steps" role="list" aria-label="How it works steps">
+          <div class="gs-step" role="listitem">
+            <div class="gs-step-icon"><i class="fas fa-search" aria-hidden="true"></i></div>
+            <span class="gs-step-num">1</span>
+            <h4>Find Products</h4>
+            <p>Browse 1M+ products or use AI search to find exactly what you need from verified global suppliers.</p>
           </div>
-
-          <!-- Shipping Timeline -->
-          <div class="timeline-column">
-            <div class="timeline-header">
-              <div class="timeline-icon-wrapper timeline-shipping">
-                <i class="fas fa-shipping-fast" aria-hidden="true"></i>
-              </div>
-              <h3>Parcel Shipping</h3>
-            </div>
-            <ol class="timeline" aria-label="Parcel shipping process steps">
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-file-alt" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Create Shipment Request</h4>
-                  <p>Enter parcel details, dimensions, weight, and choose your destination.</p>
-                </div>
-              </li>
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-box" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Package &amp; Label</h4>
-                  <p>Receive your printable shipping label. Securely pack your items.</p>
-                </div>
-              </li>
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Drop Off or Collect</h4>
-                  <p>Drop off at a nearby partner location or schedule a free home collection.</p>
-                </div>
-              </li>
-              <li class="timeline-step">
-                <div class="timeline-step-icon">
-                  <i class="fas fa-satellite-dish" aria-hidden="true"></i>
-                </div>
-                <div class="timeline-step-content">
-                  <h4>Track &amp; Receive</h4>
-                  <p>Real-time GPS tracking at every step until your parcel is delivered.</p>
-                </div>
-              </li>
-            </ol>
-            <a href="pages/shipment/index.html" class="btn btn-secondary btn-how">
-              Ship a Parcel <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            </a>
+          <div class="gs-step" role="listitem">
+            <div class="gs-step-icon"><i class="fas fa-handshake" aria-hidden="true"></i></div>
+            <span class="gs-step-num">2</span>
+            <h4>Contact Suppliers</h4>
+            <p>Message suppliers directly, request samples, and negotiate pricing with real-time chat.</p>
           </div>
-
-        </div><!-- /.how-it-works-grid -->
-      </div>
-    </section><!-- /.how-it-works-section -->
-
-    <!-- ============================================================
-         TESTIMONIALS SLIDER
-    ============================================================ -->
-    <section class="section testimonials-section" aria-labelledby="testimonials-heading">
-      <div class="container">
-        <div class="section-header text-center">
-          <h2 id="testimonials-heading" class="section-title">What Our Customers Say</h2>
-          <p class="section-subtitle">Real stories from real businesses</p>
-        </div>
-
-        <div class="testimonials-slider" id="testimonials-slider" role="region" aria-label="Customer testimonials" aria-roledescription="carousel">
-          <div class="testimonials-track" id="testimonials-track">
-
-            <!-- Testimonial 1 -->
-            <article class="testimonial-card" role="group" aria-roledescription="slide" aria-label="Testimonial 1 of 3">
-              <div class="testimonial-stars" aria-label="5 star rating">
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-              </div>
-              <blockquote class="testimonial-text">
-                "Globex Sky transformed our supply chain. We found verified suppliers in Shenzhen within 48 hours and our first order arrived on time. The escrow payment system gave us total peace of mind."
-              </blockquote>
-              <footer class="testimonial-author">
-                <img src="https://ui-avatars.com/api/?name=Sarah+Mitchell&background=0052CC&color=fff&size=56&bold=true" alt="Sarah Mitchell" class="testimonial-avatar" width="56" height="56" loading="lazy" />
-                <div class="testimonial-author-info">
-                  <cite class="testimonial-name">Sarah Mitchell</cite>
-                  <span class="testimonial-role">CEO, Ember Retail</span>
-                  <span class="testimonial-country">🇬🇧 United Kingdom</span>
-                </div>
-              </footer>
-            </article>
-
-            <!-- Testimonial 2 -->
-            <article class="testimonial-card" role="group" aria-roledescription="slide" aria-label="Testimonial 2 of 3">
-              <div class="testimonial-stars" aria-label="5 star rating">
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-              </div>
-              <blockquote class="testimonial-text">
-                "The shipping platform is incredibly easy to use. We ship 300+ parcels monthly across 40 countries and Globex Sky's bulk rates save us 35% compared to our previous courier. Outstanding service!"
-              </blockquote>
-              <footer class="testimonial-author">
-                <img src="https://ui-avatars.com/api/?name=Carlos+Mendez&background=FF6B35&color=fff&size=56&bold=true" alt="Carlos Mendez" class="testimonial-avatar" width="56" height="56" loading="lazy" />
-                <div class="testimonial-author-info">
-                  <cite class="testimonial-name">Carlos Mendez</cite>
-                  <span class="testimonial-role">Logistics Manager, Vivo Commerce</span>
-                  <span class="testimonial-country">🇲🇽 Mexico</span>
-                </div>
-              </footer>
-            </article>
-
-            <!-- Testimonial 3 -->
-            <article class="testimonial-card" role="group" aria-roledescription="slide" aria-label="Testimonial 3 of 3">
-              <div class="testimonial-stars" aria-label="5 star rating">
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star" aria-hidden="true"></i>
-                <i class="fas fa-star-half-alt" aria-hidden="true"></i>
-              </div>
-              <blockquote class="testimonial-text">
-                "As a small business owner, I was worried about finding trustworthy international suppliers. Globex Sky's verification system and trade shows gave me the confidence to scale globally. Highly recommended!"
-              </blockquote>
-              <footer class="testimonial-author">
-                <img src="https://ui-avatars.com/api/?name=Aisha+Okonkwo&background=00C9A7&color=fff&size=56&bold=true" alt="Aisha Okonkwo" class="testimonial-avatar" width="56" height="56" loading="lazy" />
-                <div class="testimonial-author-info">
-                  <cite class="testimonial-name">Aisha Okonkwo</cite>
-                  <span class="testimonial-role">Founder, Radiance Naturals</span>
-                  <span class="testimonial-country">🇳🇬 Nigeria</span>
-                </div>
-              </footer>
-            </article>
-
-          </div><!-- /.testimonials-track -->
-
-          <div class="testimonials-controls" role="group" aria-label="Testimonial slider controls">
-            <button class="testimonial-btn testimonial-prev" id="testimonial-prev" aria-label="Previous testimonial">
-              <i class="fas fa-chevron-left" aria-hidden="true"></i>
-            </button>
-            <div class="testimonials-dots" role="tablist" aria-label="Testimonial indicators">
-              <button class="testimonial-dot active" role="tab" aria-selected="true" aria-label="Testimonial 1" data-index="0"></button>
-              <button class="testimonial-dot" role="tab" aria-selected="false" aria-label="Testimonial 2" data-index="1"></button>
-              <button class="testimonial-dot" role="tab" aria-selected="false" aria-label="Testimonial 3" data-index="2"></button>
-            </div>
-            <button class="testimonial-btn testimonial-next" id="testimonial-next" aria-label="Next testimonial">
-              <i class="fas fa-chevron-right" aria-hidden="true"></i>
-            </button>
+          <div class="gs-step" role="listitem">
+            <div class="gs-step-icon"><i class="fas fa-credit-card" aria-hidden="true"></i></div>
+            <span class="gs-step-num">3</span>
+            <h4>Secure Payment</h4>
+            <p>Pay securely with Trade Assurance. Your funds are protected until delivery is confirmed.</p>
           </div>
-
-        </div><!-- /.testimonials-slider -->
-      </div>
-    </section><!-- /.testimonials-section -->
-
-    <!-- ============================================================
-         NEWSLETTER SECTION
-    ============================================================ -->
-    <section class="newsletter-section" aria-labelledby="newsletter-heading">
-      <div class="container">
-        <div class="newsletter-content">
-          <div class="newsletter-icon" aria-hidden="true">
-            <i class="fas fa-envelope-open-text"></i>
-          </div>
-          <div class="newsletter-text">
-            <h2 id="newsletter-heading" class="newsletter-title">
-              Stay Updated with Global Trade News
-            </h2>
-            <p class="newsletter-subtitle">
-              Get the latest sourcing tips, shipping rates, trade opportunities, and exclusive deals delivered to your inbox.
-            </p>
-          </div>
-          <form class="newsletter-form" id="newsletter-form" novalidate aria-label="Newsletter subscription form">
-            <div class="newsletter-input-group" role="group" aria-label="Email subscription">
-              <label for="newsletter-email" class="sr-only">Email address</label>
-              <input
-                type="email"
-                id="newsletter-email"
-                name="email"
-                class="newsletter-input"
-                placeholder="Enter your business email..."
-                autocomplete="email"
-                required
-                aria-required="true"
-                aria-describedby="newsletter-privacy"
-              />
-              <button type="submit" class="btn btn-newsletter">
-                Subscribe <i class="fas fa-paper-plane" aria-hidden="true"></i>
-              </button>
-            </div>
-            <p id="newsletter-privacy" class="newsletter-privacy">
-              <i class="fas fa-lock" aria-hidden="true"></i>
-              No spam. Unsubscribe at any time. Read our
-              <a href="pages/legal/privacy.html">Privacy Policy</a>.
-            </p>
-          </form>
-        </div>
-      </div>
-    </section><!-- /.newsletter-section -->
-
-    <!-- ============================================================
-         FOOTER
-    ============================================================ -->
-    <!-- ============================================================
-     FOOTER - Enhanced Alibaba-style
-============================================================ -->
-    <footer class="site-footer footer-v2" role="contentinfo">
-
-  <!-- Footer Top: App + Social Row -->
-  <div class="footer-top-bar">
-    <div class="container footer-top-inner">
-      <div class="footer-app-row">
-        <span class="footer-app-label"><i class="fas fa-mobile-alt" aria-hidden="true"></i> Get the GlobexSky App:</span>
-        <a href="#" class="footer-app-btn" aria-label="Download on the App Store">
-          <i class="fab fa-apple" aria-hidden="true"></i> App Store
-        </a>
-        <a href="#" class="footer-app-btn" aria-label="Get it on Google Play">
-          <i class="fab fa-google-play" aria-hidden="true"></i> Google Play
-        </a>
-        <span class="footer-app-divider" aria-hidden="true">|</span>
-        <span class="footer-app-label">Add GlobexSky Lens to:</span>
-        <a href="#" class="footer-app-btn" aria-label="Add GlobexSky Lens extension to Chrome">
-          <i class="fab fa-chrome" aria-hidden="true"></i> Chrome Extension
-        </a>
-      </div>
-      <nav class="footer-social" aria-label="Social media links">
-        <a href="https://twitter.com/globexsky" class="social-link" aria-label="Globex Sky on Twitter" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-twitter" aria-hidden="true"></i>
-        </a>
-        <a href="https://linkedin.com/company/globexsky" class="social-link" aria-label="Globex Sky on LinkedIn" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-linkedin" aria-hidden="true"></i>
-        </a>
-        <a href="https://instagram.com/globexsky" class="social-link" aria-label="Globex Sky on Instagram" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-instagram" aria-hidden="true"></i>
-        </a>
-        <a href="https://youtube.com/@globexsky" class="social-link" aria-label="Globex Sky on YouTube" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-youtube" aria-hidden="true"></i>
-        </a>
-        <a href="https://facebook.com/globexsky" class="social-link" aria-label="Globex Sky on Facebook" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-facebook" aria-hidden="true"></i>
-        </a>
-      </nav>
-    </div>
-  </div>
-
-  <!-- Footer Main: 5-column grid -->
-  <div class="footer-main">
-    <div class="container">
-      <div class="footer-grid-v2">
-
-        <!-- Col 1: Get Support -->
-        <div class="footer-col">
-          <h3 class="footer-col-title">Get Support</h3>
-          <ul class="footer-links" role="list">
-            <li><a href="pages/support/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Help Centre</a></li>
-            <li><a href="pages/support/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Live Chat</a></li>
-            <li><a href="pages/account/orders.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Order Tracking</a></li>
-            <li><a href="pages/legal/trade-assurance.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Dispute Resolution</a></li>
-            <li>
-              <address class="footer-contact" aria-label="Contact information">
-                <p class="footer-contact-item">
-                  <i class="fas fa-envelope" aria-hidden="true"></i>
-                  <a href="mailto:info@globexsky.com">info@globexsky.com</a>
-                </p>
-                <p class="footer-contact-item">
-                  <i class="fas fa-phone" aria-hidden="true"></i>
-                  <a href="tel:+8613086766947">+86 130 8676 6947</a>
-                </p>
-              </address>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Col 2: Payments & Protections -->
-        <div class="footer-col">
-          <h3 class="footer-col-title">Payments &amp; Protections</h3>
-          <ul class="footer-links" role="list">
-            <li><a href="pages/legal/trade-assurance.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Trade Assurance</a></li>
-            <li><a href="pages/legal/trade-assurance.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Secure Payments</a></li>
-            <li><a href="pages/legal/privacy.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Buyer Protection</a></li>
-            <li><a href="pages/legal/terms.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Return Policy</a></li>
-          </ul>
-          <div class="footer-payments" aria-label="Accepted payment methods">
-            <p class="footer-payments-label">We Accept:</p>
-            <div class="payment-badges">
-              <span class="payment-badge" aria-label="Visa"><i class="fab fa-cc-visa" aria-hidden="true"></i></span>
-              <span class="payment-badge" aria-label="Mastercard"><i class="fab fa-cc-mastercard" aria-hidden="true"></i></span>
-              <span class="payment-badge" aria-label="PayPal"><i class="fab fa-cc-paypal" aria-hidden="true"></i></span>
-              <span class="payment-badge" aria-label="Stripe"><i class="fab fa-cc-stripe" aria-hidden="true"></i></span>
-              <span class="payment-badge payment-badge-text" aria-label="Apple Pay"><i class="fab fa-apple" aria-hidden="true"></i> Pay</span>
-              <span class="payment-badge payment-badge-text" aria-label="Google Pay"><i class="fab fa-google" aria-hidden="true"></i> Pay</span>
-              <span class="payment-badge payment-badge-text" aria-label="Klarna">Klarna</span>
-            </div>
+          <div class="gs-step" role="listitem">
+            <div class="gs-step-icon"><i class="fas fa-truck" aria-hidden="true"></i></div>
+            <span class="gs-step-num">4</span>
+            <h4>Fast Delivery</h4>
+            <p>Track your shipment in real time. Door-to-door logistics with customs clearance support.</p>
           </div>
         </div>
-
-        <!-- Col 3: Source on GlobexSky -->
-        <div class="footer-col">
-          <h3 class="footer-col-title">Source on GlobexSky</h3>
-          <ul class="footer-links" role="list">
-            <li><a href="pages/sourcing/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Product Sourcing</a></li>
-            <li><a href="pages/sourcing/products.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Browse Products</a></li>
-            <li><a href="pages/sourcing/trade-shows.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Trade Shows</a></li>
-            <li><a href="pages/dropshipping/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Dropshipping</a></li>
-            <li><a href="pages/sourcing/flash-sale.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Flash Sales</a></li>
-            <li><a href="pages/shipment/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Parcel Delivery</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Sell on GlobexSky -->
-        <div class="footer-col">
-          <h3 class="footer-col-title">Sell on GlobexSky</h3>
-          <ul class="footer-links" role="list">
-            <li><a href="pages/suppliers/become-supplier.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Become a Supplier</a></li>
-            <li><a href="pages/suppliers/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Supplier Central</a></li>
-            <li><a href="pages/livestream/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Live Commerce</a></li>
-            <li><a href="pages/api/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> API Platform</a></li>
-            <li><a href="pages/carry/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Carry Service</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 5: Get to Know Us -->
-        <div class="footer-col">
-          <h3 class="footer-col-title">Get to Know Us</h3>
-          <ul class="footer-links" role="list">
-            <li><a href="pages/about/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> About Us</a></li>
-            <li><a href="pages/blog/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Blog &amp; News</a></li>
-            <li><a href="pages/careers/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Careers</a></li>
-            <li><a href="pages/about/index.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Investor Relations</a></li>
-            <li><a href="pages/legal/accessibility.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Accessibility</a></li>
-          </ul>
-          <div class="footer-address-compact">
-            <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Room 111, 6F, International Commercial Plaza, Haizhu, Guangzhou, China</p>
-          </div>
-        </div>
-
-      </div><!-- /.footer-grid-v2 -->
-
-      <!-- Sister sites row -->
-      <div class="footer-sister-sites">
-        <span class="footer-sister-label">GlobexSky Group:</span>
-        <a href="#">GlobexSky Trade</a>
-        <a href="#">GlobexSky Logistics</a>
-        <a href="#">GlobexSky Pay</a>
-        <a href="#">GlobexSky Cloud</a>
-      </div>
-
-    </div>
-  </div><!-- /.footer-main -->
-
-  <!-- Footer Bottom -->
-  <div class="footer-bottom">
-    <div class="container">
-      <div class="footer-bottom-inner">
-        <p class="footer-copyright">
-          &copy; <script>document.write(new Date().getFullYear())</script> Globex International Trade Co., Ltd. (广州戈洛贝克斯凯国际贸易有限公司). All rights reserved.
-        </p>
-        <nav class="footer-legal-links" aria-label="Legal links">
-          <a href="pages/legal/privacy.html">Privacy Policy</a>
-          <a href="pages/legal/terms.html">Terms of Service</a>
-          <a href="pages/legal/cookies.html">Cookie Policy</a>
-          <a href="pages/legal/accessibility.html">Accessibility</a>
-        </nav>
       </div>
     </div>
-  </div><!-- /.footer-bottom -->
 
-</footer><!-- /.site-footer -->
+    <!-- ============================================================
+         K. NEWSLETTER
+    ============================================================ -->
+    <section class="gs-newsletter" aria-labelledby="newsletter-heading">
+      <div class="gs-newsletter-inner">
+        <h2 id="newsletter-heading">Stay Ahead of the Market</h2>
+        <p>Get trade insights, new supplier alerts, and exclusive deals delivered to your inbox weekly.</p>
+        <form class="gs-newsletter-form" action="#" method="post" aria-label="Newsletter signup">
+          <label for="newsletter-email" class="sr-only">Your email address</label>
+          <input type="email" id="newsletter-email" class="gs-newsletter-input" placeholder="Enter your business email..." required aria-required="true" />
+          <button type="submit" class="gs-newsletter-submit">Subscribe <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         L. FOOTER
+    ============================================================ -->
+    <footer class="gs-footer site-footer" role="contentinfo">
+      <div class="gs-footer-inner">
+        <div class="gs-footer-grid">
+
+          <!-- Brand Column -->
+          <div>
+            <div class="gs-footer-logo">Globex<span>Sky</span></div>
+            <p class="gs-footer-brand-tagline">Your Global Trade Gateway. Connecting buyers and suppliers across 150+ countries with trust, speed, and innovation.</p>
+            <div class="gs-footer-social" aria-label="Social media links">
+              <a href="https://twitter.com/globexsky" aria-label="Twitter" rel="noopener"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+              <a href="https://linkedin.com/company/globexsky" aria-label="LinkedIn" rel="noopener"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+              <a href="https://facebook.com/globexsky" aria-label="Facebook" rel="noopener"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+              <a href="https://instagram.com/globexsky" aria-label="Instagram" rel="noopener"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+              <a href="https://youtube.com/globexsky" aria-label="YouTube" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+            </div>
+          </div>
+
+          <!-- Marketplace Column -->
+          <div>
+            <div class="gs-footer-col-title">Marketplace</div>
+            <ul class="gs-footer-links">
+              <li><a href="pages/sourcing/index.html">Product Sourcing</a></li>
+              <li><a href="pages/sourcing/products.html">Browse Products</a></li>
+              <li><a href="pages/suppliers/index.html">Find Suppliers</a></li>
+              <li><a href="pages/dropshipping/index.html">Dropshipping</a></li>
+              <li><a href="pages/sourcing/rfq.html">Request for Quote</a></li>
+              <li><a href="pages/livestream/index.html">Live Sourcing</a></li>
+            </ul>
+          </div>
+
+          <!-- Services Column -->
+          <div>
+            <div class="gs-footer-col-title">Services</div>
+            <ul class="gs-footer-links">
+              <li><a href="pages/shipment/index.html">Shipment Services</a></li>
+              <li><a href="pages/shipment/tracking.html">Order Tracking</a></li>
+              <li><a href="pages/finance/index.html">Trade Finance</a></li>
+              <li><a href="pages/inspection/index.html">Quality Inspection</a></li>
+              <li><a href="pages/customs/index.html">Customs Clearance</a></li>
+              <li><a href="pages/insurance/index.html">Cargo Insurance</a></li>
+            </ul>
+          </div>
+
+          <!-- Company Column -->
+          <div>
+            <div class="gs-footer-col-title">Company</div>
+            <ul class="gs-footer-links">
+              <li><a href="pages/about/index.html">About Us</a></li>
+              <li><a href="pages/careers/index.html">Careers</a></li>
+              <li><a href="pages/press/index.html">Press &amp; Media</a></li>
+              <li><a href="pages/blog/index.html">Trade Blog</a></li>
+              <li><a href="pages/partners/index.html">Partner Program</a></li>
+              <li><a href="pages/contact/index.html">Contact Us</a></li>
+            </ul>
+          </div>
+
+          <!-- Help & Payments Column -->
+          <div>
+            <div class="gs-footer-col-title">Help &amp; Support</div>
+            <ul class="gs-footer-links">
+              <li><a href="pages/support/index.html">Help Center</a></li>
+              <li><a href="pages/legal/buyer-protection.html">Buyer Protection</a></li>
+              <li><a href="pages/legal/disputes.html">Dispute Resolution</a></li>
+              <li><a href="pages/support/faq.html">FAQ</a></li>
+              <li><a href="pages/legal/privacy.html">Privacy Policy</a></li>
+              <li><a href="pages/legal/terms.html">Terms of Service</a></li>
+            </ul>
+            <div class="gs-footer-col-title gs-footer-payments-title">We Accept</div>
+            <div class="gs-footer-payments" aria-label="Accepted payment methods">
+              <span class="gs-payment-icon" title="Visa"><i class="fab fa-cc-visa" aria-label="Visa"></i></span>
+              <span class="gs-payment-icon" title="Mastercard"><i class="fab fa-cc-mastercard" aria-label="Mastercard"></i></span>
+              <span class="gs-payment-icon" title="PayPal"><i class="fab fa-cc-paypal" aria-label="PayPal"></i></span>
+              <span class="gs-payment-icon" title="Stripe"><i class="fab fa-cc-stripe" aria-label="Stripe"></i></span>
+              <span class="gs-payment-icon" title="Apple Pay"><i class="fab fa-cc-apple-pay" aria-label="Apple Pay"></i></span>
+            </div>
+          </div>
+
+        </div><!-- /.gs-footer-grid -->
+      </div>
+
+      <hr class="gs-footer-divider" />
+
+      <div class="gs-footer-inner">
+        <div class="gs-footer-bottom">
+          <p class="gs-footer-copyright">&copy; 2025 GlobexSky Ltd. All rights reserved. Registered in England &amp; Wales.</p>
+          <nav class="gs-footer-bottom-links" aria-label="Legal links">
+            <a href="pages/legal/privacy.html">Privacy</a>
+            <a href="pages/legal/terms.html">Terms</a>
+            <a href="pages/legal/cookies.html">Cookies</a>
+            <a href="pages/legal/accessibility.html">Accessibility</a>
+          </nav>
+        </div>
+      </div>
+    </footer><!-- /.gs-footer -->
 
   </div><!-- /#main-content -->
 
@@ -1626,6 +1122,119 @@
   <script src="assets/js/search.js"></script>
   <script src="assets/js/voice-search.js"></script>
   <script src="assets/js/image-search.js"></script>
+
+  <!-- Banner Slider Script -->
+  <script>
+  (function() {
+    var slides = document.querySelectorAll('.gs-banner-slide');
+    var dots = document.querySelectorAll('.gs-banner-dot');
+    var current = 0;
+    var timer;
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      dots[current].setAttribute('aria-selected', 'false');
+      current = (n + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+      dots[current].setAttribute('aria-selected', 'true');
+    }
+
+    function autoPlay() {
+      timer = setInterval(function() { goTo(current + 1); }, 5000);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      autoPlay();
+    }
+
+    var prev = document.getElementById('gs-banner-prev');
+    var next = document.getElementById('gs-banner-next');
+    if (prev) prev.addEventListener('click', function() { goTo(current - 1); resetTimer(); });
+    if (next) next.addEventListener('click', function() { goTo(current + 1); resetTimer(); });
+
+    dots.forEach(function(dot, i) {
+      dot.addEventListener('click', function() { goTo(i); resetTimer(); });
+    });
+
+    autoPlay();
+  })();
+  </script>
+
+  <!-- Flash Sale Countdown Script -->
+  <script>
+  (function() {
+    // Store end timestamp in sessionStorage so the countdown is consistent
+    // within a session (survives page refreshes). Reset once expired.
+    var STORAGE_KEY = 'gs_flash_sale_end';
+    var DEFAULT_DURATION_S = 8 * 3600 + 34 * 60 + 21; // 8h 34m 21s default window
+    var stored = sessionStorage.getItem(STORAGE_KEY);
+    var endTime;
+    if (stored) {
+      endTime = parseInt(stored, 10);
+      if (isNaN(endTime) || endTime <= Date.now()) {
+        // Expired — start a fresh window
+        endTime = Date.now() + DEFAULT_DURATION_S * 1000;
+        sessionStorage.setItem(STORAGE_KEY, endTime);
+      }
+    } else {
+      endTime = Date.now() + DEFAULT_DURATION_S * 1000;
+      sessionStorage.setItem(STORAGE_KEY, endTime);
+    }
+
+    // Expose end time on the container element for any external scripts
+    var container = document.getElementById('flash-countdown-display');
+    if (container) container.setAttribute('data-end-ts', endTime);
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      var diff = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      var h = Math.floor(diff / 3600);
+      var m = Math.floor((diff % 3600) / 60);
+      var s = diff % 60;
+      var elH = document.getElementById('flash-hours');
+      var elM = document.getElementById('flash-minutes');
+      var elS = document.getElementById('flash-seconds');
+      if (elH) elH.textContent = pad(h);
+      if (elM) elM.textContent = pad(m);
+      if (elS) elS.textContent = pad(s);
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  })();
+  </script>
+
+  <!-- Search Tab Script -->
+  <script>
+  (function() {
+    var tabs = document.querySelectorAll('.gs-search-tab');
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        tabs.forEach(function(t) {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        var input = document.getElementById('nav-search-input');
+        if (input) {
+          var tabType = tab.getAttribute('data-tab');
+          if (tabType === 'ai') {
+            input.placeholder = 'Describe what you need and AI will find it...';
+          } else if (tabType === 'manufacturers') {
+            input.placeholder = 'Search manufacturers by name, product, or country...';
+          } else {
+            input.placeholder = 'Search products, suppliers, or use AI...';
+          }
+        }
+      });
+    });
+  })();
+  </script>
 
   <!-- Safety net: if the door animation hasn't completed after 6 seconds,
        force-reveal the main content. Protects against JS errors, slow
