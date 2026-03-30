@@ -447,6 +447,123 @@ async function loadCategoriesFromAPI() {
 /* ─────────────────────────────────────────────
    INIT
 ───────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────
+   SEARCH TABS
+───────────────────────────────────────────── */
+function initSearchTabs() {
+  const tabs = document.querySelectorAll('.search-tab[data-tab]');
+  if (!tabs.length) return;
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      const input = document.getElementById('nav-search-input');
+      if (input) {
+        const placeholders = {
+          ai: 'Ask AI: find me the best suppliers for...',
+          products: 'Search products, categories...',
+          manufacturers: 'Search manufacturers and factories...',
+          worldwide: 'Search worldwide suppliers and trade...',
+        };
+        input.placeholder = placeholders[tab.dataset.tab] || input.placeholder;
+      }
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   CATEGORY SIDEBAR
+───────────────────────────────────────────── */
+function initCatSidebar() {
+  const sidebar = document.querySelector('.cat-sidebar');
+  if (!sidebar) return;
+  sidebar.querySelectorAll('.cat-sidebar-link').forEach((link) => {
+    link.addEventListener('mouseenter', () => {
+      sidebar.querySelectorAll('.cat-sidebar-item').forEach((item) => item.classList.remove('hovered'));
+      link.closest('.cat-sidebar-item')?.classList.add('hovered');
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   TOP DEALS HORIZONTAL SCROLL
+───────────────────────────────────────────── */
+function initTopDealsScroll() {
+  const scroll = document.querySelector('.top-deals-scroll');
+  if (!scroll) return;
+
+  const prevBtn = document.querySelector('.deals-scroll-prev');
+  const nextBtn = document.querySelector('.deals-scroll-next');
+  const cardWidth = 220 + 14;
+
+  if (prevBtn) prevBtn.addEventListener('click', () => {
+    scroll.scrollBy({ left: -(cardWidth * 2), behavior: 'smooth' });
+  });
+
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    scroll.scrollBy({ left: cardWidth * 2, behavior: 'smooth' });
+  });
+
+  let startX = 0;
+  scroll.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  scroll.addEventListener('touchend', (e) => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      scroll.scrollBy({ left: diff > 0 ? cardWidth * 2 : -(cardWidth * 2), behavior: 'smooth' });
+    }
+  });
+}
+
+/* ─────────────────────────────────────────────
+   RANKING TABS
+───────────────────────────────────────────── */
+function initRankingTabs() {
+  const tabs = document.querySelectorAll('.ranking-tab[data-rtab]');
+  if (!tabs.length) return;
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   DEALS COUNTDOWN TIMER
+───────────────────────────────────────────── */
+function initDealsCountdown() {
+  const timerEls = document.querySelectorAll('#flash-hours, #flash-minutes, #flash-seconds');
+  if (!timerEls.length) return;
+
+  let endTime = parseInt(sessionStorage.getItem('flashSaleEnd') || '0', 10);
+  if (!endTime || endTime < Date.now()) {
+    endTime = Date.now() + 8 * 3600 * 1000 + 45 * 60 * 1000;
+    sessionStorage.setItem('flashSaleEnd', String(endTime));
+  }
+
+  const hEl = document.getElementById('flash-hours');
+  const mEl = document.getElementById('flash-minutes');
+  const sEl = document.getElementById('flash-seconds');
+
+  const tick = () => {
+    const diff = Math.max(0, endTime - Date.now());
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    if (hEl) hEl.textContent = String(h).padStart(2, '0');
+    if (mEl) mEl.textContent = String(m).padStart(2, '0');
+    if (sEl) sEl.textContent = String(s).padStart(2, '0');
+    if (diff <= 0) clearInterval(id);
+  };
+  tick();
+  const id = setInterval(tick, 1000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
   initHomeCountdowns();
@@ -458,6 +575,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initStatsCounters();
   initPopularSearchTags();
   initLazyProductImages();
+
+  // New Alibaba-style features
+  initSearchTabs();
+  initCatSidebar();
+  initTopDealsScroll();
+  initRankingTabs();
+  initDealsCountdown();
 
   // Load dynamic data from backend (no-op when containers are absent or API unavailable)
   if (typeof GlobexConfig !== 'undefined' && typeof GlobexConfig.getConfig === 'function') {
