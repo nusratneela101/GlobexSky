@@ -88,6 +88,80 @@
 </div>
 
 <!-- ══════════════════════════════════════════
+     AI SEARCH MODES SECTION
+══════════════════════════════════════════ -->
+<section class="ai-modes-section">
+  <div class="ai-modes-header">
+    <div class="ai-badge"><i class="fas fa-robot"></i> Powered by AI</div>
+    <h2>Choose Your Search Mode</h2>
+    <p>Find any B2B product instantly — search by text, image or voice</p>
+  </div>
+  <div class="ai-modes-grid">
+
+    <!-- Text Search -->
+    <div class="ai-mode-card text-mode" onclick="document.getElementById('main-search-input').focus()">
+      <div class="ai-mode-icon"><i class="fas fa-keyboard"></i></div>
+      <div class="ai-mode-title">Smart Text Search</div>
+      <div class="ai-mode-desc">Type any keyword, product name, or supplier — our AI understands natural language and context for precise results.</div>
+      <button class="ai-mode-btn" onclick="document.getElementById('main-search-input').focus(); event.stopPropagation()">
+        <i class="fas fa-search"></i> Try Now
+      </button>
+    </div>
+
+    <!-- Image Search -->
+    <div class="ai-mode-card image-mode" onclick="GlobexImageSearch && GlobexImageSearch.open ? GlobexImageSearch.open() : document.getElementById('image-search-modal').classList.add('open')">
+      <div class="ai-mode-icon"><i class="fas fa-camera"></i></div>
+      <div class="ai-mode-title">Visual Image Search</div>
+      <div class="ai-mode-desc">Drag & drop or upload a product photo — our vision AI scans millions of items to find exact or similar matches.</div>
+      <div class="ai-mode-drop-area" id="ai-drop-hint">
+        <i class="fas fa-cloud-upload-alt" style="font-size:1.6rem;color:#a78bfa;display:block;margin-bottom:6px"></i>
+        Drop an image here or <strong style="color:#7c3aed">browse</strong>
+      </div>
+      <button class="ai-mode-btn" onclick="event.stopPropagation(); GlobexImageSearch && GlobexImageSearch.open ? GlobexImageSearch.open() : document.getElementById('image-search-modal').classList.add('open')">
+        <i class="fas fa-camera"></i> Search by Image
+      </button>
+    </div>
+
+    <!-- Voice Search -->
+    <div class="ai-mode-card voice-mode" onclick="document.getElementById('btn-mic') && document.getElementById('btn-mic').click()">
+      <div class="ai-mode-icon"><i class="fas fa-microphone"></i></div>
+      <div class="ai-mode-title">Voice Search</div>
+      <div class="ai-mode-desc">Speak your search query naturally. Our AI transcribes and understands your request to find exactly what you need.</div>
+      <div class="voice-wave" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <button class="ai-mode-btn" onclick="event.stopPropagation(); document.getElementById('btn-mic') && document.getElementById('btn-mic').click()">
+        <i class="fas fa-microphone"></i> Start Listening
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     TRENDING SEARCHES
+══════════════════════════════════════════ -->
+<div class="trending-section">
+  <div class="trending-inner">
+    <div class="trending-label">
+      <i class="fas fa-fire"></i> Trending
+    </div>
+    <div class="trending-pills">
+      <a href="?q=solar+panels" class="trending-pill"><i class="fas fa-solar-panel" style="color:#f59e0b;font-size:0.7rem"></i> Solar Panels <span class="pill-count">12k</span></a>
+      <a href="?q=led+lights" class="trending-pill"><i class="fas fa-lightbulb" style="color:#fbbf24;font-size:0.7rem"></i> LED Lights <span class="pill-count">9.4k</span></a>
+      <a href="?q=electronic+components" class="trending-pill">Electronic Components <span class="pill-count">8.1k</span></a>
+      <a href="?q=packaging+materials" class="trending-pill">Packaging Materials <span class="pill-count">7.3k</span></a>
+      <a href="?q=industrial+machinery" class="trending-pill"><i class="fas fa-industry" style="color:#64748b;font-size:0.7rem"></i> Industrial Machinery <span class="pill-count">6.8k</span></a>
+      <a href="?q=textiles" class="trending-pill">Textiles &amp; Fabric <span class="pill-count">5.9k</span></a>
+      <a href="?q=smart+home" class="trending-pill"><i class="fas fa-home" style="color:#0052CC;font-size:0.7rem"></i> Smart Home <span class="pill-count">5.2k</span></a>
+      <a href="?q=safety+equipment" class="trending-pill">Safety Equipment <span class="pill-count">4.7k</span></a>
+      <a href="?q=auto+parts" class="trending-pill"><i class="fas fa-car" style="color:#ef4444;font-size:0.7rem"></i> Auto Parts <span class="pill-count">4.1k</span></a>
+      <a href="?q=medical+supplies" class="trending-pill"><i class="fas fa-medkit" style="color:#059669;font-size:0.7rem"></i> Medical Supplies <span class="pill-count">3.8k</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
      MAIN LAYOUT
 ══════════════════════════════════════════ -->
 <div class="search-layout">
