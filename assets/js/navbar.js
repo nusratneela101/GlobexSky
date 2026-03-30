@@ -26,7 +26,7 @@
     { href: 'pages/shipment/index.html',      icon: 'fa-shipping-fast', label: 'Shipment'     },
     { href: 'pages/shipment/carry/index.html',icon: 'fa-people-carry', label: 'Carry Service' },
     { href: 'pages/dropshipping/index.html',  icon: 'fa-truck',        label: 'Dropshipping'  },
-    { href: 'pages/suppliers/index.html',     icon: 'fa-store',        label: 'Suppliers'     },
+    { href: 'pages/supplier/index.html',     icon: 'fa-store',        label: 'Suppliers'     },
     { href: 'pages/livestream/index.html',    icon: 'fa-video',        label: 'Live Streams'  },
     { href: 'pages/trade-shows/index.html',   icon: 'fa-handshake',    label: 'Trade Shows'   },
     { href: 'pages/sourcing/vr-showroom.html',icon: 'fa-vr-cardboard', label: 'VR Showroom'   },
