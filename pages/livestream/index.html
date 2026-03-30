@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="../../assets/css/mobile.css" />
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#07091a}
-    .site-header{background:#050810;box-shadow:0 2px 20px rgba(0,0,0,.5);border-bottom:1px solid #1a1f3a;position:sticky;top:0;z-index:1000}
+    body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
+    .site-header{background:#fff;box-shadow:0 2px 20px rgba(0,82,204,.08);position:sticky;top:0;z-index:1000}
     .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:14px 24px}
     .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
     .nav-controls{display:flex;align-items:center;gap:10px}
@@ -91,300 +91,71 @@
   </nav>
 </header>
 
-<!-- DARK HERO with pulse circles -->
-<style>
-  .ls-hero{background:#050810;padding:90px 24px 70px;text-align:center;color:#fff;position:relative;overflow:hidden;border-bottom:1px solid #1a1f3a}
-  .ls-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(239,68,68,.18) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(0,82,204,.15) 0%,transparent 50%)}
-  .pulse-ring{position:absolute;border-radius:50%;border:1px solid rgba(239,68,68,.2);animation:ls-expand 3s ease-out infinite}
-  .pulse-ring:nth-child(1){width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
-  .pulse-ring:nth-child(2){width:350px;height:350px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:.8s}
-  .pulse-ring:nth-child(3){width:520px;height:520px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.6s}
-  @keyframes ls-expand{0%{opacity:.6;transform:translate(-50%,-50%) scale(.85)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}}
-  .ls-hero-content{position:relative;z-index:2}
-  .ls-live-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#ef4444;padding:6px 20px;border-radius:50px;font-size:.78rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:22px}
-  .ls-live-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;animation:blink 1.2s infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-  .ls-hero h1{font-family:'Poppins',sans-serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:800;line-height:1.15;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .ls-hero h1 em{font-style:normal;-webkit-text-fill-color:#ef4444}
-  .ls-hero p{font-size:1rem;color:rgba(255,255,255,.65);max-width:540px;margin:0 auto 32px;line-height:1.75}
-  .ls-hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
-  .ls-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
-  .ls-stat strong{display:block;font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800;color:#fff}
-  .ls-stat span{font-size:.75rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
-  /* Category pills */
-  .cat-filter-bar{background:#0a0e1c;border-bottom:1px solid #1a1f3a;padding:14px 24px;overflow-x:auto;white-space:nowrap}
-  .cat-filter-inner{max-width:1200px;margin:0 auto;display:flex;gap:8px;align-items:center}
-  .cat-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:50px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid #2a2f4a;background:transparent;color:rgba(255,255,255,.6);transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif}
-  .cat-pill:hover,.cat-pill.active{border-color:#0052CC;background:#0052CC;color:#fff}
-  .cat-pill i{font-size:.78rem}
-  /* Featured live stream cards */
-  .featured-streams{background:#07091a;padding:48px 24px 0}
-  .featured-streams .fs-header{max-width:1200px;margin:0 auto 24px;display:flex;align-items:center;justify-content:space-between}
-  .featured-streams .fs-header h2{font-family:'Poppins',sans-serif;font-size:1.25rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px}
-  .fs-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:22px}
-  .fs-card{background:#0f1229;border:1px solid #1e2444;border-radius:18px;overflow:hidden;transition:all .25s;cursor:pointer}
-  .fs-card:hover{border-color:#0052CC;box-shadow:0 8px 32px rgba(0,82,204,.25);transform:translateY(-4px)}
-  .fs-thumb{position:relative;aspect-ratio:16/9;overflow:hidden}
-  .fs-thumb-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;filter:blur(.5px);transform:scale(1.05)}
-  .fs-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.75) 100%)}
-  .fs-badge-live{position:absolute;top:12px;left:12px;background:#ef4444;color:#fff;font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:5px}
-  .fs-badge-live::before{content:'';width:6px;height:6px;background:#fff;border-radius:50%;animation:blink 1.2s infinite}
-  .fs-viewers{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.75);color:#fff;font-size:.72rem;padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:5px}
-  .fs-cat{position:absolute;bottom:12px;left:12px;background:rgba(0,82,204,.85);color:#fff;font-size:.68rem;font-weight:600;padding:3px 10px;border-radius:5px}
-  .fs-play{position:absolute;bottom:12px;right:12px;width:40px;height:40px;background:#0052CC;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 14px rgba(0,82,204,.5)}
-  .fs-body{padding:16px}
-  .fs-host{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-  .fs-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
-  .fs-host-name{font-size:.82rem;font-weight:600;color:#c9d1d9}
-  .fs-verified{color:#3b82f6;font-size:.7rem;margin-left:3px}
-  .fs-title{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#e6edf3;line-height:1.4;margin-bottom:12px}
-  .fs-actions{display:flex;gap:8px}
-  .fs-btn-watch{flex:1;background:#0052CC;color:#fff;border:none;border-radius:9px;padding:10px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s;text-decoration:none}
-  .fs-btn-watch:hover{background:#003d99}
-  /* Countdown */
-  .countdown-box{display:inline-flex;gap:4px;align-items:center;margin-top:6px}
-  .cd-block{background:#1a1f3a;border:1px solid #2a2f4a;border-radius:6px;padding:6px 10px;text-align:center;min-width:44px}
-  .cd-block strong{display:block;font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#a78bfa;line-height:1}
-  .cd-block span{display:block;font-size:.55rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
-  .cd-sep{color:rgba(255,255,255,.3);font-size:1rem;font-weight:700;padding:0 2px}
-  /* Dark content sections */
-  .dark-section{background:#07091a;padding:56px 24px}
-  .dark-section .container{max-width:1200px;margin:0 auto}
-  .dark-section-header{margin-bottom:36px}
-  .dark-section-header h2{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-  .dark-section-header p{font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.7}
-  .upcoming-row{display:flex;align-items:center;gap:16px;padding:18px 20px;background:#0f1229;border:1px solid #1e2444;border-radius:14px;margin-bottom:12px;transition:border-color .2s}
-  .upcoming-row:hover{border-color:#0052CC}
-  .upc-icon{width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
-  .upc-info{flex:1}
-  .upc-title{font-weight:600;font-size:.9rem;color:#e6edf3;margin-bottom:3px}
-  .upc-meta{font-size:.78rem;color:rgba(255,255,255,.45)}
-  .upc-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
-  /* Become a Host CTA */
-  .host-cta{background:linear-gradient(135deg,#050810 0%,#0d1040 50%,#050810 100%);padding:72px 24px;text-align:center;border-top:1px solid #1a1f3a}
-  .host-cta-inner{max-width:900px;margin:0 auto}
-  .host-cta h2{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:#fff;margin-bottom:14px}
-  .host-cta p{color:rgba(255,255,255,.6);font-size:.97rem;max-width:540px;margin:0 auto 40px;line-height:1.75}
-  .host-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;margin-bottom:40px;text-align:left}
-  .host-step{background:#0f1229;border:1px solid #1e2444;border-radius:16px;padding:24px;position:relative}
-  .host-step-num{width:32px;height:32px;background:linear-gradient(135deg,#0052CC,#7c3aed);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;margin-bottom:14px}
-  .host-step h3{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:#e6edf3;margin-bottom:8px}
-  .host-step p{font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.6}
-  .btn-red{background:#ef4444;color:#fff;font-family:'Poppins',sans-serif}
-  .btn-red:hover{background:#dc2626;transform:translateY(-1px);box-shadow:0 6px 20px rgba(239,68,68,.35)}
-</style>
-
-<div class="ls-hero">
-  <div class="pulse-ring"></div>
-  <div class="pulse-ring"></div>
-  <div class="pulse-ring"></div>
-  <div class="ls-hero-content">
-    <div class="ls-live-pill"><div class="ls-live-dot"></div> Live Now</div>
-    <h1>LIVE <em>Commerce</em><br>Goes Global</h1>
-    <p>Watch real-time factory tours, product demos, and exclusive deals from verified B2B suppliers worldwide.</p>
-    <div class="ls-hero-btns">
-      <a href="browse.html" class="btn btn-lg btn-red"><i class="fas fa-play-circle"></i> Watch Live Now</a>
-      <a href="create.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.3)"><i class="fas fa-video"></i> Go Live</a>
-    </div>
-    <div class="ls-stats">
-      <div class="ls-stat"><strong>48</strong><span>Live Now</span></div>
-      <div class="ls-stat"><strong>12.4K</strong><span>Watching</span></div>
-      <div class="ls-stat"><strong>3,200+</strong><span>Replays</span></div>
-      <div class="ls-stat"><strong>860+</strong><span>Hosts</span></div>
-    </div>
+<div class="page-hero">
+  <div class="page-hero-content">
+    <h1><i class="fas fa-broadcast-tower"></i> Live Streams</h1>
+    <p>Watch live product demos, factory tours, and exclusive deals from verified suppliers.</p>
   </div>
 </div>
-
-<!-- Category Filter Pills -->
-<div class="cat-filter-bar">
-  <div class="cat-filter-inner">
-    <button class="cat-pill active" onclick="filterCat(this,'all')"><i class="fas fa-th"></i> All</button>
-    <button class="cat-pill" onclick="filterCat(this,'electronics')"><i class="fas fa-microchip"></i> Electronics</button>
-    <button class="cat-pill" onclick="filterCat(this,'fashion')"><i class="fas fa-tshirt"></i> Fashion</button>
-    <button class="cat-pill" onclick="filterCat(this,'food')"><i class="fas fa-utensils"></i> Food &amp; Agri</button>
-    <button class="cat-pill" onclick="filterCat(this,'beauty')"><i class="fas fa-spa"></i> Beauty</button>
-    <button class="cat-pill" onclick="filterCat(this,'machinery')"><i class="fas fa-cog"></i> Machinery</button>
-    <button class="cat-pill" onclick="filterCat(this,'solar')"><i class="fas fa-solar-panel"></i> Solar</button>
-    <button class="cat-pill" onclick="filterCat(this,'auto')"><i class="fas fa-car"></i> Auto Parts</button>
-    <button class="cat-pill" onclick="filterCat(this,'health')"><i class="fas fa-heartbeat"></i> Health</button>
-  </div>
-</div>
-
-<!-- Featured Live Streams -->
-<div class="featured-streams">
-  <div class="fs-header">
-    <h2><i class="fas fa-fire" style="color:#ef4444"></i> Featured Live Streams</h2>
-    <a href="browse.html" class="btn btn-sm btn-outline" style="color:#8b949e;border-color:#1e2444;background:transparent;font-size:.8rem">View All <i class="fas fa-arrow-right"></i></a>
-  </div>
-  <div class="fs-grid" id="live-streams-grid">
-    <div class="fs-card" onclick="window.location.href='watch.html'">
-      <div class="fs-thumb">
-        <div class="fs-thumb-bg" style="background:linear-gradient(135deg,#1a0d00,#331a00)">⚙️</div>
-        <div class="fs-thumb-overlay"></div>
-        <div class="fs-badge-live">LIVE</div>
-        <div class="fs-viewers"><i class="fas fa-eye" style="color:#ef4444"></i> 4,100 viewers</div>
-        <div class="fs-cat">Auto Parts</div>
-        <div class="fs-play"><i class="fas fa-play"></i></div>
-      </div>
-      <div class="fs-body">
-        <div class="fs-host">
-          <div class="fs-avatar" style="background:#dc2626">AP</div>
-          <div><div class="fs-host-name">AutoParts Global <i class="fas fa-check-circle fs-verified"></i></div><div style="font-size:.73rem;color:rgba(255,255,255,.4)">15.6K followers</div></div>
-        </div>
-        <div class="fs-title">Auto Parts Wholesale: OEM vs Aftermarket Deep Dive</div>
-        <div class="fs-actions"><a href="watch.html" class="fs-btn-watch"><i class="fas fa-circle" style="font-size:.5rem;color:#ef4444"></i> Watch Live</a></div>
-      </div>
-    </div>
-    <div class="fs-card" onclick="window.location.href='watch.html'">
-      <div class="fs-thumb">
-        <div class="fs-thumb-bg" style="background:linear-gradient(135deg,#1a1a00,#3a3000)">☀️</div>
-        <div class="fs-thumb-overlay"></div>
-        <div class="fs-badge-live">LIVE</div>
-        <div class="fs-viewers"><i class="fas fa-eye" style="color:#ef4444"></i> 2,840 viewers</div>
-        <div class="fs-cat">Solar Energy</div>
-        <div class="fs-play"><i class="fas fa-play"></i></div>
-      </div>
-      <div class="fs-body">
-        <div class="fs-host">
-          <div class="fs-avatar" style="background:#f59e0b">SP</div>
-          <div><div class="fs-host-name">SunPower Industrial <i class="fas fa-check-circle fs-verified"></i></div><div style="font-size:.73rem;color:rgba(255,255,255,.4)">12.4K followers</div></div>
-        </div>
-        <div class="fs-title">Solar Panel 2025 New Models — Factory Floor Tour &amp; Live Q&amp;A</div>
-        <div class="fs-actions"><a href="watch.html" class="fs-btn-watch"><i class="fas fa-circle" style="font-size:.5rem;color:#ef4444"></i> Watch Live</a></div>
-      </div>
-    </div>
-    <div class="fs-card" onclick="window.location.href='watch.html'">
-      <div class="fs-thumb">
-        <div class="fs-thumb-bg" style="background:linear-gradient(135deg,#0d0d1a,#1a1a40)">💡</div>
-        <div class="fs-thumb-overlay"></div>
-        <div class="fs-badge-live">LIVE</div>
-        <div class="fs-viewers"><i class="fas fa-eye" style="color:#ef4444"></i> 3,200 viewers</div>
-        <div class="fs-cat">LED Lighting</div>
-        <div class="fs-play"><i class="fas fa-play"></i></div>
-      </div>
-      <div class="fs-body">
-        <div class="fs-host">
-          <div class="fs-avatar" style="background:#7c3aed">BT</div>
-          <div><div class="fs-host-name">BrightTech Lighting <i class="fas fa-check-circle fs-verified"></i></div><div style="font-size:.73rem;color:rgba(255,255,255,.4)">9.7K followers</div></div>
-        </div>
-        <div class="fs-title">Smart LED Street Light Factory: From Chip to Finished Product</div>
-        <div class="fs-actions"><a href="watch.html" class="fs-btn-watch"><i class="fas fa-circle" style="font-size:.5rem;color:#ef4444"></i> Watch Live</a></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Upcoming Streams with Countdown -->
-<div style="background:#07091a;padding:48px 24px">
+<div class="content-section">
   <div class="container">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-      <h2 style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px"><i class="fas fa-calendar-check" style="color:#a78bfa"></i> Upcoming Streams</h2>
-      <a href="browse.html" style="font-size:.82rem;color:#0052CC;text-decoration:none;font-weight:600">Full Schedule <i class="fas fa-arrow-right"></i></a>
-    </div>
-
-    <div class="upcoming-row">
-      <div class="upc-icon" style="background:linear-gradient(135deg,#1e1040,#3b1f8c)">🔌</div>
-      <div class="upc-info">
-        <div class="upc-title">PCB &amp; PCBA Manufacturing: End-to-End Factory Tour</div>
-        <div class="upc-meta"><i class="fas fa-user" style="margin-right:4px"></i>CircuitPro Electronics · Electronics</div>
-        <div class="countdown-box" id="cd1">
-          <div class="cd-block"><strong>02</strong><span>hrs</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>14</strong><span>min</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>38</strong><span>sec</span></div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-fire" style="color:#ef4444"></i> 🔴 Live Now</div>
+      <div id="live-streams-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
+          <div style="background:linear-gradient(135deg,#0A0E27,#0052CC);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative">
+            <i class="fas fa-play-circle" style="font-size:3rem;color:rgba(255,255,255,.8)"></i>
+            <span style="position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:4px">🔴 LIVE</span>
+            <span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;font-size:.72rem;padding:3px 8px;border-radius:4px">1200 viewers</span>
+          </div>
+          <div style="padding:14px">
+            <div style="font-weight:600;font-size:.9rem;color:#0A0E27;margin-bottom:4px">Summer Collection Live 1</div>
+            <div style="font-size:.8rem;color:#64748b">Dhaka Fashion House</div>
+          </div>
+        </div><div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);cursor:pointer" onclick="window.location.href='watch.html'">
+          <div style="background:linear-gradient(135deg,#0A0E27,#0052CC);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative">
+            <i class="fas fa-play-circle" style="font-size:3rem;color:rgba(255,255,255,.8)"></i>
+            <span style="position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:4px">🔴 LIVE</span>
+            <span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;font-size:.72rem;padding:3px 8px;border-radius:4px">1600 viewers</span>
+          </div>
+          <div style="padding:14px">
+            <div style="font-weight:600;font-size:.9rem;color:#0A0E27;margin-bottom:4px">Summer Collection Live 2</div>
+            <div style="font-size:.8rem;color:#64748b">Dhaka Fashion House</div>
+          </div>
+        </div><div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);cursor:pointer" onclick="window.location.href='watch.html'">
+          <div style="background:linear-gradient(135deg,#0A0E27,#0052CC);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative">
+            <i class="fas fa-play-circle" style="font-size:3rem;color:rgba(255,255,255,.8)"></i>
+            <span style="position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:4px">🔴 LIVE</span>
+            <span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;font-size:.72rem;padding:3px 8px;border-radius:4px">2000 viewers</span>
+          </div>
+          <div style="padding:14px">
+            <div style="font-weight:600;font-size:.9rem;color:#0A0E27;margin-bottom:4px">Summer Collection Live 3</div>
+            <div style="font-size:.8rem;color:#64748b">Dhaka Fashion House</div>
+          </div>
         </div>
       </div>
-      <div class="upc-actions">
-        <button class="btn btn-sm btn-outline" style="border-color:#a78bfa;color:#a78bfa;font-size:.8rem" onclick="this.textContent='✓ Set';this.style.background='rgba(167,139,250,.15)'"><i class="fas fa-bell"></i> Remind Me</button>
-      </div>
     </div>
-
-    <div class="upcoming-row">
-      <div class="upc-icon" style="background:linear-gradient(135deg,#2d0d3a,#7c1f9c)">🧵</div>
-      <div class="upc-info">
-        <div class="upc-title">Premium Fabric Wholesale: Winter Collection Preview</div>
-        <div class="upc-meta"><i class="fas fa-user" style="margin-right:4px"></i>TextilePro Mills · Fashion &amp; Textiles</div>
-        <div class="countdown-box">
-          <div class="cd-block"><strong>04</strong><span>hrs</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>30</strong><span>min</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>00</strong><span>sec</span></div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-calendar-check"></i> Upcoming Streams</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:16px;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px">
+          <div style="width:60px;height:60px;background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem"><i class="fas fa-video"></i></div>
+          <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:#0A0E27">Electronics Launch Event 1</div><div style="font-size:.8rem;color:#64748b">Global Tech Supplies · March 25, 2025 at 8:00 PM</div></div>
+          <button class="btn btn-sm btn-outline" style="border-color:#0052CC;color:#0052CC;font-size:.8rem"><i class="fas fa-bell"></i> Remind Me</button>
+        </div><div style="display:flex;align-items:center;gap:16px;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px">
+          <div style="width:60px;height:60px;background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem"><i class="fas fa-video"></i></div>
+          <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:#0A0E27">Electronics Launch Event 2</div><div style="font-size:.8rem;color:#64748b">Global Tech Supplies · March 26, 2025 at 8:00 PM</div></div>
+          <button class="btn btn-sm btn-outline" style="border-color:#0052CC;color:#0052CC;font-size:.8rem"><i class="fas fa-bell"></i> Remind Me</button>
+        </div><div style="display:flex;align-items:center;gap:16px;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px">
+          <div style="width:60px;height:60px;background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem"><i class="fas fa-video"></i></div>
+          <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:#0A0E27">Electronics Launch Event 3</div><div style="font-size:.8rem;color:#64748b">Global Tech Supplies · March 27, 2025 at 8:00 PM</div></div>
+          <button class="btn btn-sm btn-outline" style="border-color:#0052CC;color:#0052CC;font-size:.8rem"><i class="fas fa-bell"></i> Remind Me</button>
+        </div><div style="display:flex;align-items:center;gap:16px;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px">
+          <div style="width:60px;height:60px;background:linear-gradient(135deg,#0052CC,#00C9A7);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem"><i class="fas fa-video"></i></div>
+          <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:#0A0E27">Electronics Launch Event 4</div><div style="font-size:.8rem;color:#64748b">Global Tech Supplies · March 28, 2025 at 8:00 PM</div></div>
+          <button class="btn btn-sm btn-outline" style="border-color:#0052CC;color:#0052CC;font-size:.8rem"><i class="fas fa-bell"></i> Remind Me</button>
         </div>
       </div>
-      <div class="upc-actions">
-        <button class="btn btn-sm btn-outline" style="border-color:#a78bfa;color:#a78bfa;font-size:.8rem" onclick="this.textContent='✓ Set';this.style.background='rgba(167,139,250,.15)'"><i class="fas fa-bell"></i> Remind Me</button>
-      </div>
     </div>
-
-    <div class="upcoming-row">
-      <div class="upc-icon" style="background:linear-gradient(135deg,#001a0d,#005c2b)">🏥</div>
-      <div class="upc-info">
-        <div class="upc-title">Medical Device Certification: ISO 13485 Explained Live</div>
-        <div class="upc-meta"><i class="fas fa-user" style="margin-right:4px"></i>MedTech Supply Co. · Health &amp; Medical</div>
-        <div class="countdown-box">
-          <div class="cd-block"><strong>06</strong><span>hrs</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>00</strong><span>min</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>00</strong><span>sec</span></div>
-        </div>
-      </div>
-      <div class="upc-actions">
-        <button class="btn btn-sm btn-outline" style="border-color:#a78bfa;color:#a78bfa;font-size:.8rem" onclick="this.textContent='✓ Set';this.style.background='rgba(167,139,250,.15)'"><i class="fas fa-bell"></i> Remind Me</button>
-      </div>
-    </div>
-
-    <div class="upcoming-row">
-      <div class="upc-icon" style="background:linear-gradient(135deg,#1a0d00,#4d2a00)">📦</div>
-      <div class="upc-info">
-        <div class="upc-title">Packaging Machinery Demo: Automatic Sealing Lines</div>
-        <div class="upc-meta"><i class="fas fa-user" style="margin-right:4px"></i>PackMach Industry · Industrial Machinery</div>
-        <div class="countdown-box">
-          <div class="cd-block"><strong>08</strong><span>hrs</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>30</strong><span>min</span></div>
-          <span class="cd-sep">:</span>
-          <div class="cd-block"><strong>00</strong><span>sec</span></div>
-        </div>
-      </div>
-      <div class="upc-actions">
-        <button class="btn btn-sm btn-outline" style="border-color:#a78bfa;color:#a78bfa;font-size:.8rem" onclick="this.textContent='✓ Set';this.style.background='rgba(167,139,250,.15)'"><i class="fas fa-bell"></i> Remind Me</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Become a Host CTA -->
-<div class="host-cta">
-  <div class="host-cta-inner">
-    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:#a78bfa;padding:6px 18px;border-radius:50px;font-size:.78rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:20px"><i class="fas fa-video"></i> For Suppliers</div>
-    <h2>Become a Live Commerce Host</h2>
-    <p>Showcase your factory, launch new products, and connect with thousands of global buyers — live.</p>
-    <div class="host-steps">
-      <div class="host-step">
-        <div class="host-step-num">1</div>
-        <h3><i class="fas fa-user-check" style="color:#a78bfa;margin-right:6px"></i> Verify Your Business</h3>
-        <p>Complete our supplier verification process to get your Verified badge and build buyer trust.</p>
-      </div>
-      <div class="host-step">
-        <div class="host-step-num">2</div>
-        <h3><i class="fas fa-calendar-plus" style="color:#a78bfa;margin-right:6px"></i> Schedule a Stream</h3>
-        <p>Pick a date, set your topic, and notify your followers in advance to maximize viewership.</p>
-      </div>
-      <div class="host-step">
-        <div class="host-step-num">3</div>
-        <h3><i class="fas fa-broadcast-tower" style="color:#ef4444;margin-right:6px"></i> Go Live</h3>
-        <p>Start streaming from your factory floor, showroom, or office. Engage buyers with real-time Q&amp;A.</p>
-      </div>
-      <div class="host-step">
-        <div class="host-step-num">4</div>
-        <h3><i class="fas fa-handshake" style="color:#00C9A7;margin-right:6px"></i> Close Deals</h3>
-        <p>Respond to inquiries, share pricing, and convert live viewers into bulk purchase orders.</p>
-      </div>
-    </div>
-    <a href="create.html" class="btn btn-lg btn-red"><i class="fas fa-play-circle"></i> Start Streaming Free</a>
   </div>
 </div>
 <footer class="site-footer">
@@ -440,34 +211,6 @@
     else { setTimeout(tryLoad, 400); }
   }
   document.addEventListener('DOMContentLoaded', tryLoad);
-})();
-</script>
-<script>
-// Category filter pills
-function filterCat(btn, cat) {
-  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-}
-// Live countdown timers
-(function() {
-  var targets = [
-    {id:'cd1', hours:2, mins:14, secs:38},
-  ];
-  function pad(n){return String(n).padStart(2,'0');}
-  var timers = targets.map(function(t){
-    return {el: document.getElementById(t.id), total: t.hours*3600+t.mins*60+t.secs};
-  });
-  setInterval(function(){
-    timers.forEach(function(t){
-      if(!t.el||t.total<=0) return;
-      t.total--;
-      var h=Math.floor(t.total/3600), m=Math.floor((t.total%3600)/60), s=t.total%60;
-      var blocks = t.el.querySelectorAll('.cd-block strong');
-      if(blocks[0]) blocks[0].textContent=pad(h);
-      if(blocks[1]) blocks[1].textContent=pad(m);
-      if(blocks[2]) blocks[2].textContent=pad(s);
-    });
-  },1000);
 })();
 </script>
 </body>

@@ -111,51 +111,17 @@
       font-size: .72rem; font-weight: 700; flex-shrink: 0;
     }
 
-    /* ── WIZARD STEPPER ── */
-    .wizard-bar {
-      display: flex; align-items: center; gap: 0;
-      padding: 1.5rem 1.75rem; border-bottom: 1px solid var(--border);
-      background: #f8faff;
-    }
-    .wz-step { display: flex; align-items: center; gap: .6rem; flex: 1; }
-    .wz-step:last-child { flex: 0; }
-    .wz-dot {
-      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .78rem; font-weight: 700; font-family: 'Poppins', sans-serif;
-      border: 2px solid var(--border); background: #fff; color: var(--muted);
-      transition: all .3s;
-    }
-    .wz-step.done .wz-dot { background: var(--success); border-color: var(--success); color: #fff; }
-    .wz-step.active .wz-dot { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 0 0 4px rgba(0,82,204,.15); }
-    .wz-label { font-size: .78rem; font-weight: 500; color: var(--muted); white-space: nowrap; }
-    .wz-step.active .wz-label { color: var(--primary); font-weight: 600; }
-    .wz-step.done .wz-label { color: var(--success); }
-    .wz-line { flex: 1; height: 2px; background: var(--border); margin: 0 6px; min-width: 20px; }
-    .wz-step.done + .wz-line, .wz-step.done ~ .wz-step.active .wz-line { background: var(--success); }
-
-    /* STEP SECTION LABELS */
-    .step-label-badge {
-      display: inline-flex; align-items: center; gap: .4rem;
-      background: var(--primary); color: #fff; padding: .3rem .9rem;
-      border-radius: 50px; font-size: .72rem; font-weight: 700; margin-bottom: 1rem;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    /* INSPECTION TYPE ENHANCED */
+    /* ── INSPECTION TYPE CARDS ── */
     .itype-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .itype-card {
-      border: 2px solid var(--border); border-radius: 14px; padding: 1.3rem;
+      border: 2px solid var(--border); border-radius: 12px; padding: 1.2rem;
       cursor: pointer; transition: all .25s; background: #fafbfd; position: relative;
-      overflow: hidden;
     }
-    .itype-card::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-      background: var(--border); transition: background .25s;
+    .itype-card:hover { border-color: var(--primary); box-shadow: 0 4px 14px rgba(0,82,204,.1); }
+    .itype-card.selected {
+      border-color: var(--primary); background: rgba(0,82,204,.04);
+      box-shadow: 0 4px 14px rgba(0,82,204,.13);
     }
-    .itype-card:hover { border-color: var(--primary); box-shadow: 0 4px 18px rgba(0,82,204,.1); }
-    .itype-card.selected { border-color: var(--primary); background: rgba(0,82,204,.04); box-shadow: 0 4px 18px rgba(0,82,204,.13); }
-    .itype-card.selected::before { background: var(--primary); }
     .itype-card input[type="radio"] {
       position: absolute; top: .9rem; right: .9rem;
       width: 17px; height: 17px; accent-color: var(--primary); cursor: pointer;
@@ -309,64 +275,39 @@
   <!-- ── FORM ── -->
   <div class="form-card">
 
-    <!-- WIZARD PROGRESS BAR -->
-    <div class="wizard-bar" id="wizardBar">
-      <div class="wz-step done" id="wz1">
-        <div class="wz-dot"><i class="fas fa-check"></i></div>
-        <div class="wz-label">Inspection Type</div>
-      </div>
-      <div class="wz-line"></div>
-      <div class="wz-step active" id="wz2">
-        <div class="wz-dot">2</div>
-        <div class="wz-label">Order Details</div>
-      </div>
-      <div class="wz-line"></div>
-      <div class="wz-step" id="wz3">
-        <div class="wz-dot">3</div>
-        <div class="wz-label">Schedule</div>
-      </div>
-      <div class="wz-line"></div>
-      <div class="wz-step" id="wz4">
-        <div class="wz-dot">4</div>
-        <div class="wz-label">Review &amp; Submit</div>
-      </div>
-    </div>
-
     <!-- STEP 1 -->
     <div class="fsec">
-      <div class="step-label-badge"><i class="fas fa-list-check"></i> Step 1 of 4 — Inspection Type</div>
       <h3 class="sec-title"><span class="step-num">1</span> Select Inspection Type</h3>
       <div class="itype-grid" id="itypeGrid">
-        <label class="itype-card" onclick="selectCard(this)">
-          <input type="radio" name="itype" value="pre-production" />
-          <div class="itype-icon"><i class="fa-solid fa-drafting-compass"></i></div>
-          <h4>Pre-Production</h4>
-          <p>Verify raw materials and components before production begins. Catch issues before they become expensive.</p>
-        </label>
         <label class="itype-card selected" onclick="selectCard(this)">
-          <input type="radio" name="itype" value="during-production" checked />
-          <div class="itype-icon"><i class="fa-solid fa-industry"></i></div>
-          <h4>During Production</h4>
-          <p>Monitor quality actively during the manufacturing process to catch issues early and reduce rework costs.</p>
-        </label>
-        <label class="itype-card" onclick="selectCard(this)">
-          <input type="radio" name="itype" value="pre-shipment" />
+          <input type="radio" name="itype" value="pre-shipment" checked />
           <div class="itype-icon"><i class="fa-solid fa-box-open"></i></div>
           <h4>Pre-Shipment</h4>
-          <p>Inspect goods after production is 80%+ complete. Most popular — prevents defective goods from shipping.</p>
+          <p>Inspect goods after production is 80%+ complete, before goods leave the factory.</p>
+        </label>
+        <label class="itype-card" onclick="selectCard(this)">
+          <input type="radio" name="itype" value="during-production" />
+          <div class="itype-icon"><i class="fa-solid fa-industry"></i></div>
+          <h4>During Production</h4>
+          <p>Monitor quality actively during the manufacturing process to catch issues early.</p>
+        </label>
+        <label class="itype-card" onclick="selectCard(this)">
+          <input type="radio" name="itype" value="final-random" />
+          <div class="itype-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          <h4>Final Random Inspection</h4>
+          <p>Random AQL sampling of finished goods against international defect standards.</p>
         </label>
         <label class="itype-card" onclick="selectCard(this)">
           <input type="radio" name="itype" value="container-loading" />
           <div class="itype-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
           <h4>Container Loading</h4>
-          <p>Supervise container loading, verify cargo count, product condition, and container seal integrity.</p>
+          <p>Supervise container loading, verify cargo count, condition, and seal integrity.</p>
         </label>
       </div>
     </div>
 
     <!-- STEP 2 -->
     <div class="fsec">
-      <div class="step-label-badge" style="background:var(--accent)"><i class="fas fa-file-alt"></i> Step 2 of 4 — Order Details</div>
       <h3 class="sec-title"><span class="step-num">2</span> Order &amp; Product Details</h3>
       <div class="fg">
         <label class="flabel">Product / Order Name <span class="req">*</span></label>
@@ -392,7 +333,6 @@
 
     <!-- STEP 3 -->
     <div class="fsec">
-      <div class="step-label-badge" style="background:#f97316"><i class="fas fa-calendar-days"></i> Step 3 of 4 — Schedule</div>
       <h3 class="sec-title"><span class="step-num">3</span> Preferred Inspection Date</h3>
       <div class="fg">
         <label class="flabel">Inspection Date <span class="req">*</span></label>
@@ -403,7 +343,6 @@
 
     <!-- STEP 4 -->
     <div class="fsec">
-      <div class="step-label-badge" style="background:#7c3aed"><i class="fas fa-map-marker-alt"></i> Inspection Location</div>
       <h3 class="sec-title"><span class="step-num">4</span> Inspection Location</h3>
       <div class="frow">
         <div class="fg" style="margin-bottom:0">
