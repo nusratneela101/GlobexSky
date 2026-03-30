@@ -371,7 +371,7 @@
           </div>
           <div class="rfq-group">
             <label style="visibility:hidden">Submit</label>
-            <button class="rfq-btn" onclick="this.innerHTML='<i class=\'fas fa-check\'></i> Sent!';setTimeout(()=>this.innerHTML='<i class=\'fas fa-paper-plane\'></i> Get Quotes',2500)"><i class="fas fa-paper-plane"></i> Get Quotes</button>
+            <button class="rfq-btn" onclick="handleRfqSubmit(this)"><i class="fas fa-paper-plane"></i> Get Quotes</button>
           </div>
         </div>
       </div>
@@ -968,6 +968,12 @@
       mobileNav.classList.toggle('open', !expanded);
       mobileNav.setAttribute('aria-hidden', String(expanded));
     });
+  }
+  function handleRfqSubmit(btn) {
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i> Sent!';
+    btn.disabled = true;
+    setTimeout(() => { btn.innerHTML = original; btn.disabled = false; }, 2500);
   }
 </script>
 <script src="../../assets/js/navbar.js"></script>
