@@ -459,18 +459,26 @@ function saveMarkupSettings() {
   if (isNaN(markup) || markup < 0) { alert('Please enter a valid markup percentage.'); return; }
   localStorage.setItem('globex_global_markup', markup);
   localStorage.setItem('globex_min_margin', minMargin);
-  // Optionally POST to API
+  // POST to API; show success or error toast based on result
   fetch('/api/v1/dropshipping/markups', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('globex_token') || '') },
     body: JSON.stringify({ global_markup_pct: markup, min_margin_pct: minMargin })
-  }).catch(function() {});
-  var t = document.getElementById('toast');
-  t.querySelector('i').className = 'fas fa-check-circle';
-  t.style.setProperty('--toast-color', '#00C9A7');
-  t.innerHTML = '<i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px"></i> Markup settings saved!';
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }).then(function(r) {
+    var t = document.getElementById('toast');
+    if (r.ok) {
+      t.innerHTML = '<i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px" aria-hidden="true"></i> Markup settings saved!';
+    } else {
+      t.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#f97316;margin-right:6px" aria-hidden="true"></i> Saved locally. API sync failed.';
+    }
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }).catch(function() {
+    var t = document.getElementById('toast');
+    t.innerHTML = '<i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px" aria-hidden="true"></i> Saved locally (offline).';
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  });
 }
 
 // Restore saved settings on load

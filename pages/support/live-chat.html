@@ -326,9 +326,9 @@ function connectSocket(){
 function renderQueue(sessions){
   const list = document.getElementById('chat-list-body');
   if(!list) return;
-  // Keep existing active chat items; prepend queued ones at top
+  // Use data attributes instead of inline onclick to avoid XSS
   const queuedItems = sessions.map(s => `
-    <div class="chat-item" onclick="pickUpChat('${escapeHtml(s.sessionId)}','${escapeHtml(s.customerName||'Customer')}','${escapeHtml(s.topic||'Support')}')">
+    <div class="chat-item" data-session-id="${escapeHtml(s.sessionId)}" data-customer-name="${escapeHtml(s.customerName||'Customer')}" data-topic="${escapeHtml(s.topic||'Support')}">
       <div class="chat-avatar">${escapeHtml((s.customerName||'?').charAt(0).toUpperCase())}<div class="online-dot"></div></div>
       <div class="chat-info">
         <div class="chat-name">${escapeHtml(s.customerName||'Customer')}</div>
@@ -342,6 +342,12 @@ function renderQueue(sessions){
   // Re-insert queued items without removing active ones
   const existing = list.querySelectorAll('.chat-item:not([data-queued])');
   list.innerHTML = queuedItems + [...existing].map(e=>e.outerHTML).join('');
+  // Attach click handlers using data attributes
+  list.querySelectorAll('.chat-item[data-session-id]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      pickUpChat(el.dataset.sessionId);
+    });
+  });
 }
 
 function appendMessage(cls, html, time){
@@ -362,7 +368,7 @@ function appendSystemMsg(text){
   box.scrollTop = box.scrollHeight;
 }
 
-function pickUpChat(sessionId, name, issue){
+function pickUpChat(sessionId) {
   if(!socket) return;
   socket.emit('agent:pickup', { sessionId });
   document.querySelectorAll('.chat-item').forEach(i=>i.classList.remove('active'));

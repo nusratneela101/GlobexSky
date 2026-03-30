@@ -401,7 +401,7 @@
     fetch('/api/v1/suppliers/dashboard/products/sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('globex_token') || '') }
-    }).catch(function(){});
+    }).catch(function(err) { showToast('⚠️ Sync API error: ' + (err && err.message ? err.message : 'Network error')); });
   }
 
   function removeProduct(id) {
@@ -441,7 +441,9 @@
         renderTable(PRODUCTS);
         updateStats();
       }
-    }).catch(function(){});
+    }).catch(function() {
+      // API not available; continue with local sample data
+    });
   });
   </script>
   <script src="../../assets/js/navbar.js"></script>

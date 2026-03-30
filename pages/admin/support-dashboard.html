@@ -296,10 +296,19 @@ function timeStr(ts) {
   return ts ? new Date(ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 function showToast(message, icon='fa-bell', color='#0052CC') {
+  // Validate icon to only allow known FontAwesome class pattern (letters, digits, hyphens)
+  var safeIcon = /^fa-[a-z0-9-]+$/.test(icon) ? icon : 'fa-bell';
+  // Validate color to only allow hex or named CSS colors
+  var safeColor = /^(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)$/.test(color) ? color : '#0052CC';
   const c = document.getElementById('toast-container');
   const t = document.createElement('div');
   t.className = 'toast';
-  t.innerHTML = `<i class="fas ${escapeHtml(icon)} toast-icon" style="color:${escapeHtml(color)}" aria-hidden="true"></i>${escapeHtml(message)}`;
+  const ico = document.createElement('i');
+  ico.className = 'fas ' + safeIcon + ' toast-icon';
+  ico.style.color = safeColor;
+  ico.setAttribute('aria-hidden', 'true');
+  t.appendChild(ico);
+  t.appendChild(document.createTextNode(message));
   c.appendChild(t);
   setTimeout(() => t.remove(), 4000);
 }

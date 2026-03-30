@@ -215,22 +215,13 @@ export async function syncImportedProducts(req, res, next) {
     const supplierId = req.user?.id;
     const now = new Date().toISOString();
 
-    // Mark all imported products as syncing
+    // Mark all imported products as syncing, then immediately mark as synced
+    // (In production, this would dispatch background jobs per integration platform)
     await supabase
       .from('products')
-      .update({ sync_status: 'sync-ing', last_synced_at: now })
+      .update({ sync_status: 'sync-ok', last_synced_at: now })
       .eq('supplier_id', supplierId)
       .not('source_platform', 'is', null);
-
-    // In a real implementation, this would queue async jobs for each integration
-    // For now, mark them all as in-sync after a brief delay simulation
-    setTimeout(async () => {
-      await supabase
-        .from('products')
-        .update({ sync_status: 'sync-ok', last_synced_at: new Date().toISOString() })
-        .eq('supplier_id', supplierId)
-        .eq('sync_status', 'sync-ing');
-    }, 2000);
 
     res.json({
       success: true,

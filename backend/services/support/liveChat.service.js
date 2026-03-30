@@ -257,6 +257,10 @@ export async function endSession(sessionId, endedBy = 'system') {
 export function initializeLiveChat(io) {
   const ns = io.of('/support');
 
+  // Track interval for periodic queue updates
+  let agentConnectionCount = 0;
+  let queueIntervalId = null;
+
   ns.on('connection', socket => {
     const { role, agentId, sessionId } = socket.handshake.auth || {};
 
@@ -266,6 +270,14 @@ export function initializeLiveChat(io) {
       socket.join(`agent:${agentId}`);
       // Notify agent of queued sessions
       socket.emit('queue:update', getQueueStatus());
+
+      // Start periodic queue broadcast when first agent connects
+      agentConnectionCount++;
+      if (!queueIntervalId) {
+        queueIntervalId = setInterval(() => {
+          if (agentConnectionCount > 0) ns.emit('queue:update', getQueueStatus());
+        }, 30_000);
+      }
 
       socket.on('agent:status', ({ status }) => {
         updateAgentStatus(agentId, status);
@@ -306,6 +318,11 @@ export function initializeLiveChat(io) {
 
       socket.on('disconnect', () => {
         deregisterAgent(agentId);
+        agentConnectionCount = Math.max(0, agentConnectionCount - 1);
+        if (agentConnectionCount === 0 && queueIntervalId) {
+          clearInterval(queueIntervalId);
+          queueIntervalId = null;
+        }
       });
 
     // ── Customer connections ──────────────────────────────────────────
@@ -341,9 +358,4 @@ export function initializeLiveChat(io) {
       });
     }
   });
-
-  // Periodically notify agents of queue updates (every 30 s)
-  setInterval(() => {
-    ns.emit('queue:update', getQueueStatus());
-  }, 30_000);
 }
