@@ -13,7 +13,34 @@
   ───────────────────────────────────────────── */
   const STORAGE_KEY   = 'globexLang';
   const DEFAULT_LANG  = 'en';
-  const LOCALES_PATH  = '/locales/';
+  // Resolve the site root dynamically from the current script src so the path
+  // works regardless of where the site is hosted (root or sub-directory).
+  // Strategy: find this script's URL, then strip path segments until we reach
+  // the directory that contains 'locales/'.  The locales/ folder is expected
+  // to live at the repository/site root (same level as index.html).
+  const _scriptBase = (function () {
+    try {
+      const scripts = document.querySelectorAll('script[src]');
+      for (let i = scripts.length - 1; i >= 0; i--) {
+        const src = scripts[i].getAttribute('src') || '';
+        if (src.indexOf('i18n') !== -1) {
+          // Split on '/', drop the filename, then keep popping segments until
+          // we find the root (the segment that precedes 'assets').
+          const parts = src.replace(/\\/g, '/').split('/');
+          parts.pop(); // remove filename (i18n.js)
+          // Walk up past any directory segments until 'assets' is removed
+          while (parts.length > 0 && parts[parts.length - 1] !== '') {
+            const segment = parts[parts.length - 1];
+            parts.pop();
+            if (segment === 'assets') break; // we've reached the root
+          }
+          return parts.length ? parts.join('/') + '/' : './';
+        }
+      }
+    } catch (e) { /* ignore */ }
+    return './';
+  }());
+  const LOCALES_PATH  = _scriptBase + 'locales/';
   const RTL_CSS_ID    = 'globex-rtl-stylesheet';
 
   /** Supported languages with display names and flag emoji. */
@@ -283,8 +310,9 @@
         // Persist
         localStorage.setItem(STORAGE_KEY, lang);
 
-        // Apply RTL / LTR
-        applyDirection(!!data.rtl);
+        // Apply RTL / LTR — use LANGUAGES map (locale JSON files don't include an rtl property)
+        const isRtl = (LANGUAGES[lang] && LANGUAGES[lang].dir === 'rtl') || RTL_LANGS.indexOf(lang) !== -1;
+        applyDirection(isRtl);
 
         // Translate DOM
         translateDOM();
@@ -294,7 +322,7 @@
 
         // Dispatch custom event so other scripts can react
         window.dispatchEvent(new CustomEvent('globex:langChanged', {
-          detail: { lang: lang, rtl: !!data.rtl, translations: data },
+          detail: { lang: lang, rtl: isRtl, translations: data },
         }));
       })
       .catch(function (err) {

@@ -434,7 +434,7 @@
             </div>
             <div class="gs-flash-timer" aria-label="Time remaining">
               <span class="gs-flash-timer-label">Ends in:</span>
-              <div class="gs-flash-countdown" aria-live="polite">
+              <div class="gs-flash-countdown" aria-live="polite" id="flash-countdown-display" data-end-ts="">
                 <span class="gs-countdown-unit" id="flash-hours">08</span>
                 <span class="gs-countdown-sep">:</span>
                 <span class="gs-countdown-unit" id="flash-minutes">34</span>
@@ -1143,7 +1143,27 @@
   <!-- Flash Sale Countdown Script -->
   <script>
   (function() {
-    var endTime = Date.now() + (8 * 3600 + 34 * 60 + 21) * 1000;
+    // Store end timestamp in sessionStorage so the countdown is consistent
+    // within a session (survives page refreshes). Reset once expired.
+    var STORAGE_KEY = 'gs_flash_sale_end';
+    var DEFAULT_DURATION_S = 8 * 3600 + 34 * 60 + 21; // 8h 34m 21s default window
+    var stored = sessionStorage.getItem(STORAGE_KEY);
+    var endTime;
+    if (stored) {
+      endTime = parseInt(stored, 10);
+      if (isNaN(endTime) || endTime <= Date.now()) {
+        // Expired — start a fresh window
+        endTime = Date.now() + DEFAULT_DURATION_S * 1000;
+        sessionStorage.setItem(STORAGE_KEY, endTime);
+      }
+    } else {
+      endTime = Date.now() + DEFAULT_DURATION_S * 1000;
+      sessionStorage.setItem(STORAGE_KEY, endTime);
+    }
+
+    // Expose end time on the container element for any external scripts
+    var container = document.getElementById('flash-countdown-display');
+    if (container) container.setAttribute('data-end-ts', endTime);
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
