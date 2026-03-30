@@ -13,6 +13,20 @@
     return new URLSearchParams(window.location.search).get(name) || '';
   }
 
+  function sanitizeHTML(html) {
+    if (window.GlobexSanitize) return window.GlobexSanitize.sanitizeHTML(html);
+    // Fallback: encode as escaped text if sanitize.js not loaded
+    var div = document.createElement('div');
+    div.textContent = String(html || '');
+    return div.innerHTML;
+  }
+
+  function validateId(value) {
+    if (window.GlobexSanitize) return window.GlobexSanitize.validateId(value);
+    return /^\d{1,19}$|^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || '').trim())
+      ? String(value).trim() : '';
+  }
+
   function showMessage(selector, message, type) {
     const el = typeof selector === 'string'
       ? document.querySelector(selector)
@@ -197,7 +211,7 @@
       document.querySelector('.product-detail');
     if (!detailRoot) return;
 
-    const id = getParam('id');
+    const id = validateId(getParam('id'));
     if (!id) return;
 
     try {
@@ -209,9 +223,9 @@
       document.querySelectorAll('[data-product-name]').forEach((el) => {
         el.textContent = product.name || '';
       });
-      // Populate description
+      // Populate description (sanitized to prevent XSS)
       document.querySelectorAll('[data-product-description]').forEach((el) => {
-        el.innerHTML = product.description || '';
+        el.innerHTML = sanitizeHTML(product.description || '');
       });
       // Populate price
       document.querySelectorAll('[data-product-price]').forEach((el) => {
