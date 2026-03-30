@@ -212,10 +212,18 @@
     padding: 24px 16px !important;
     text-align: center;
     gap: 20px;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
 
   .hero-section h1,
-  .hero-banner h1 { font-size: var(--fs-2xl) !important; }
+  .hero-banner h1,
+  .hero-title {
+    font-size: clamp(1.4rem, 5vw, 2rem) !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 
   .hero-section p,
   .hero-banner p { font-size: var(--fs-base) !important; }
@@ -441,10 +449,10 @@
     display: flex !important;
   }
 
-  /* Ensure nav-container doesn't overflow */
+  /* Ensure nav-container doesn't clip its children */
   .nav-container {
     flex-wrap: nowrap !important;
-    overflow: hidden;
+    overflow: visible;
   }
 
   /* Sub-page nav: keep logo + any icon buttons + hamburger */
