@@ -546,5 +546,10 @@ document.getElementById('mode').addEventListener('change', function () {
 // ─── Init ────────────────────────────────────────────────────────────────────
 loadConfig();
 </script>
+  <script>
+    if(!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminAuth')) {
+      window.location.href = '../auth/login.html?redirect=' + encodeURIComponent(window.location.href);
+    }
+  </script>
 </body>
 </html>
