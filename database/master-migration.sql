@@ -2026,13 +2026,13 @@ CREATE TABLE IF NOT EXISTS settings (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   key         TEXT UNIQUE NOT NULL,
   value       TEXT,
-  group       TEXT NOT NULL DEFAULT 'general',
+  "group"       TEXT NOT NULL DEFAULT 'general',
   type        TEXT NOT NULL DEFAULT 'string',  -- string | number | boolean | json
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS settings_group_idx ON settings (group);
+CREATE INDEX IF NOT EXISTS settings_group_idx ON settings ("group");
 
 -- ─── Admin Roles ──────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS admin_roles (
@@ -2094,7 +2094,7 @@ CREATE INDEX IF NOT EXISTS backups_status_idx     ON backups (status);
 CREATE INDEX IF NOT EXISTS backups_created_at_idx ON backups (created_at DESC);
 
 -- ─── Seed default settings ────────────────────────────────────────────────────
-INSERT INTO settings (key, value, group, type) VALUES
+INSERT INTO settings (key, value, "group", type) VALUES
   -- General
   ('general.site_name',        'Globex Sky',              'general', 'string'),
   ('general.site_description', 'B2B/B2C Marketplace',     'general', 'string'),
