@@ -8,6 +8,8 @@ This directory contains the **Master Database Migration** file that creates the 
 
 ## ⚡ Quick Setup (Recommended)
 
+Run the 4 migration files **in order**. Each file is small enough to run without timeout errors.
+
 ### Step 1 — Open Supabase SQL Editor
 
 1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
@@ -15,19 +17,38 @@ This directory contains the **Master Database Migration** file that creates the 
 3. Click **SQL Editor** in the left sidebar
 4. Click **+ New** to create a new query
 
-### Step 2 — Run the Master Migration
+### Step 2 — Run Part 1 (Core)
 
-1. Open the file `database/master-migration.sql` from this repository
-2. Select **all** the content (Ctrl+A / Cmd+A)
-3. Copy it (Ctrl+C / Cmd+C)
-4. Paste it into the Supabase SQL Editor
-5. Click the green **Run** button
+1. Open `database/migration-part1-core.sql`
+2. Copy all the content and paste into the SQL Editor
+3. Click the green **Run** button
+4. You should see: `Success. No rows returned.`
 
-### Step 3 — Verify Success
+### Step 3 — Run Part 2 (Commerce)
 
-You should see: `Success. No rows returned.`
+1. Click **+ New** in the SQL Editor
+2. Open `database/migration-part2-commerce.sql`
+3. Copy, paste, and **Run**
+
+### Step 4 — Run Part 3 (Features)
+
+1. Click **+ New** in the SQL Editor
+2. Open `database/migration-part3-features.sql`
+3. Copy, paste, and **Run**
+
+### Step 5 — Run Part 4 (Admin & Extended Features)
+
+1. Click **+ New** in the SQL Editor
+2. Open `database/migration-part4-admin.sql`
+3. Copy, paste, and **Run**
+
+### ✅ Verify Success
+
+After each part you should see: `Success. No rows returned.`
 
 If you see errors, see the **Troubleshooting** section below.
+
+> **Note:** The `master-migration.sql` file still exists for reference but is not recommended for direct use — it is very large and contains duplicate table definitions from earlier development.
 
 ---
 
@@ -102,14 +123,18 @@ If you see errors, see the **Troubleshooting** section below.
 
 ```
 database/
-├── master-migration.sql     ← 🎯 Run this ONE file to set up everything
-├── README-SETUP.md          ← This file
-├── migrations/              ← Individual migration files (for reference)
+├── migration-part1-core.sql     ← 🎯 Run FIRST: Extensions, Users, Profiles, Products
+├── migration-part2-commerce.sql ← 🎯 Run SECOND: Orders, Shipments, Carry, Suppliers
+├── migration-part3-features.sql ← 🎯 Run THIRD: Payments, Escrow, RFQ, Chat, Notifications
+├── migration-part4-admin.sql    ← 🎯 Run FOURTH: CMS, Admin, Analytics, Inspections, Trade
+├── master-migration.sql         ← (Reference only — not recommended for direct use)
+├── README-SETUP.md              ← This file
+├── migrations/                  ← Individual migration files (for reference)
 │   ├── 001_users.sql
 │   ├── 002_products.sql
 │   └── ...
 └── seeds/
-    └── seed.sql             ← Optional test data
+    └── seed.sql                 ← Optional test data
 ```
 
 ---
