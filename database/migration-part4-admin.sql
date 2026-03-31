@@ -1638,6 +1638,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_facebook_id
   ON profiles(facebook_id) WHERE facebook_id IS NOT NULL;
 
 -- ── Address Book: Extend Addresses ───────────────────────────────────────────
+ALTER TABLE addresses ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active';
+
 ALTER TABLE addresses
   ADD COLUMN IF NOT EXISTS full_name           VARCHAR(150),
   ADD COLUMN IF NOT EXISTS phone               VARCHAR(30),
