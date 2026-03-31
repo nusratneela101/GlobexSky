@@ -86,7 +86,22 @@
         if (error) throw new Error(error.message);
 
         showAlert(alertBox, 'Login successful! Redirecting…', 'success');
-        setTimeout(() => { window.location.href = getRedirectTarget(); }, 800);
+        setTimeout(() => {
+          const params = new URLSearchParams(window.location.search);
+          const redirectParam = params.get('redirect');
+          if (redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')) {
+            window.location.href = redirectParam;
+          } else {
+            const userRole = data.user?.user_metadata?.role || data.user?.role || 'buyer';
+            if (userRole === 'admin' || userRole === 'super_admin') {
+              window.location.href = '/pages/admin/index.html';
+            } else if (userRole === 'supplier') {
+              window.location.href = '/pages/supplier/dashboard.html';
+            } else {
+              window.location.href = '/index.html';
+            }
+          }
+        }, 800);
       } catch (err) {
         const msg = (err && err.message) || 'Login failed. Please check your credentials.';
         showAlert(alertBox, msg, 'error');

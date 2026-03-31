@@ -18,7 +18,8 @@ export function requireRole(...roles) {
   };
 }
 
-export const requireAdmin = requireRole(ROLES.ADMIN);
+export const requireAdmin = requireRole(ROLES.ADMIN, 'super_admin');
+export const requireSuperAdmin = requireRole('super_admin');
 export const requireSupplier = requireRole(ROLES.SUPPLIER, ROLES.ADMIN);
 export const requireCarrier = requireRole(ROLES.CARRIER, ROLES.ADMIN);
 export const requireBuyer = requireRole(ROLES.BUYER, ROLES.ADMIN);
