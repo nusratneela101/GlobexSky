@@ -115,6 +115,7 @@ import adminSettingsRoutes from './routes/settings.js';
 import adminRolesRoutes from './routes/adminRoles.js';
 import adminCmsRoutes from './routes/cms.js';
 import { ticketRouter as supportTicketRouter, kbRouter as adminKbRouter } from './routes/supportTicket.routes.js';
+import supportChatRoutes from './routes/supportChat.routes.js';
 import vrRoutes from './routes/vr.routes.js';
 import verificationRoutes from './routes/verification.routes.js';
 import paymentsRoutes from './routes/payments.js';
@@ -126,6 +127,7 @@ import { swaggerUi, swaggerSpec } from './swagger.js';
 import { initializeWebSocket } from './services/websocket.service.js';
 import { initializeWebRTC } from './services/webrtc.service.js';
 import { initializeChatTranslation } from './services/chatTranslationSocket.service.js';
+import { initializeLiveChat } from './services/support/liveChat.service.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -136,6 +138,7 @@ const io = new SocketIOServer(httpServer, websocketConfig.options);
 initializeWebSocket(io);
 initializeWebRTC(io);
 initializeChatTranslation(io);
+initializeLiveChat(io);
 
 // Make io accessible to route handlers via req.app.get('io')
 app.set('io', io);
@@ -240,6 +243,7 @@ app.use(`${API}/admin/reports`, reportsRoutes);
 app.use(`${API}/admin/payouts`, payoutsRoutes);
 
 app.use(`${API}/support`, supportTicketRouter);
+app.use(`${API}/support/chat`, supportChatRoutes);
 app.use(`${API}/admin/kb`, adminKbRouter);
 app.use(`${API}/system-logs`, systemLogsRoutes);
 app.use(`${API}/gdpr`, gdprRoutes);

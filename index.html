@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="assets/css/animations.css" />
   <link rel="stylesheet" href="assets/css/door-entry.css" />
   <link rel="stylesheet" href="assets/css/search-history.css" />
+  <link rel="stylesheet" href="assets/css/categories.css" />
   <link rel="stylesheet" href="assets/css/responsive.css" />
   <link rel="stylesheet" href="assets/css/mobile.css" />
   <!-- RTL stylesheet injected dynamically by i18n.js when Arabic is active -->
@@ -241,12 +242,346 @@
     </header><!-- /.site-header -->
 
     <!-- ============================================================
-         HERO SECTION
+         HERO SECTION WITH CATEGORY SIDEBAR
     ============================================================ -->
-    <section class="hero" aria-labelledby="hero-heading">
+
+    <!-- Mobile Categories Button -->
+    <div class="container" style="padding-top:12px;padding-bottom:0;display:none" id="mobile-cat-btn-wrap">
+      <button class="cat-mobile-btn" aria-label="Browse all categories" aria-expanded="false" aria-controls="cat-drawer" onclick="openCatDrawer()" data-i18n="categories.browse_all">
+        <i class="fas fa-th-large" aria-hidden="true"></i>
+        All Categories
+        <i class="fas fa-chevron-right" style="margin-left:auto" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Category Drawer Overlay (mobile) -->
+    <div class="cat-drawer-overlay" id="cat-drawer-overlay" role="presentation" onclick="closeCatDrawer()"></div>
+    <nav class="cat-drawer" id="cat-drawer" aria-label="Browse categories" aria-hidden="true">
+      <div class="cat-drawer-head">
+        <span><i class="fas fa-th-large" aria-hidden="true"></i> All Categories</span>
+        <button class="cat-drawer-close" aria-label="Close categories" onclick="closeCatDrawer()"><i class="fas fa-times" aria-hidden="true"></i></button>
+      </div>
+      <div class="cat-drawer-body" role="list">
+        <a href="pages/sourcing/products.html?cat=electronics" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-microchip" aria-hidden="true"></i></span>Electronics</a>
+        <a href="pages/sourcing/products.html?cat=fashion" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-tshirt" aria-hidden="true"></i></span>Fashion &amp; Apparel</a>
+        <a href="pages/sourcing/products.html?cat=home-garden" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-home" aria-hidden="true"></i></span>Home &amp; Garden</a>
+        <a href="pages/sourcing/products.html?cat=industrial" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-industry" aria-hidden="true"></i></span>Industrial &amp; Machinery</a>
+        <a href="pages/sourcing/products.html?cat=beauty" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-spa" aria-hidden="true"></i></span>Beauty &amp; Personal Care</a>
+        <a href="pages/sourcing/products.html?cat=automotive" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-car" aria-hidden="true"></i></span>Automotive</a>
+        <a href="pages/sourcing/products.html?cat=sports" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-football-ball" aria-hidden="true"></i></span>Sports &amp; Outdoors</a>
+        <a href="pages/sourcing/products.html?cat=food-bev" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-utensils" aria-hidden="true"></i></span>Food &amp; Beverages</a>
+        <a href="pages/sourcing/products.html?cat=health" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-heartbeat" aria-hidden="true"></i></span>Health &amp; Medical</a>
+        <a href="pages/sourcing/products.html?cat=office" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-briefcase" aria-hidden="true"></i></span>Office Supplies</a>
+        <a href="pages/sourcing/products.html?cat=bags" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-briefcase" aria-hidden="true"></i></span>Bags &amp; Luggage</a>
+        <a href="pages/sourcing/products.html?cat=shoes" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-shoe-prints" aria-hidden="true"></i></span>Shoes &amp; Footwear</a>
+        <a href="pages/sourcing/products.html?cat=jewelry" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-gem" aria-hidden="true"></i></span>Jewelry &amp; Accessories</a>
+        <a href="pages/sourcing/products.html?cat=toys" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-gamepad" aria-hidden="true"></i></span>Toys &amp; Games</a>
+        <a href="pages/sourcing/products.html?cat=building" class="cat-drawer-item" role="listitem"><span class="cat-drawer-icon"><i class="fas fa-hard-hat" aria-hidden="true"></i></span>Building Materials</a>
+      </div>
+    </nav>
+
+    <section class="hero" aria-labelledby="hero-heading" style="overflow:visible">
       <div class="hero-bg" aria-hidden="true"></div>
-      <div class="hero-container">
-        <div class="hero-content">
+      <div style="max-width:1400px;margin:0 auto;width:100%;display:flex;align-items:stretch;position:relative;z-index:1">
+
+        <!-- Category Mega-Menu Sidebar (desktop ≥1024px) -->
+        <nav class="homepage-cat-sidebar" aria-label="Browse product categories" id="cat-sidebar-desktop">
+          <div class="cat-sidebar-head">
+            <i class="fas fa-th-large" aria-hidden="true"></i>
+            <span data-i18n="categories.all_categories">All Categories</span>
+          </div>
+          <ul class="cat-list" role="list">
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=electronics" class="cat-item-link" aria-haspopup="true">
+                <span class="cat-item-icon"><i class="fas fa-microchip" aria-hidden="true"></i></span>
+                Electronics
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu" aria-label="Electronics subcategories">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Consumer Electronics</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=electronics&sub=smartphones" role="menuitem">Smartphones &amp; Accessories</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=laptops" role="menuitem">Laptops &amp; Computers</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=tablets" role="menuitem">Tablets &amp; E-Readers</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=cameras" role="menuitem">Cameras &amp; Photography</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Components</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=electronics&sub=pcb" role="menuitem">PCBs &amp; Modules</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=sensors" role="menuitem">Sensors &amp; Controllers</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=batteries" role="menuitem">Batteries &amp; Power</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=cables" role="menuitem">Cables &amp; Connectors</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Smart Home</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=electronics&sub=smart-home" role="menuitem">Smart Home Devices</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=wearables" role="menuitem">Wearables</a></li><li><a href="pages/sourcing/products.html?cat=electronics&sub=audio" role="menuitem">Audio &amp; Headphones</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=fashion" class="cat-item-link" aria-haspopup="true">
+                <span class="cat-item-icon"><i class="fas fa-tshirt" aria-hidden="true"></i></span>
+                Fashion &amp; Apparel
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu" aria-label="Fashion subcategories">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Men's Wear</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=fashion&sub=mens-shirts" role="menuitem">Shirts &amp; T-Shirts</a></li><li><a href="pages/sourcing/products.html?cat=fashion&sub=mens-trousers" role="menuitem">Trousers &amp; Jeans</a></li><li><a href="pages/sourcing/products.html?cat=fashion&sub=mens-suits" role="menuitem">Suits &amp; Blazers</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Women's Wear</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=fashion&sub=womens-dresses" role="menuitem">Dresses &amp; Skirts</a></li><li><a href="pages/sourcing/products.html?cat=fashion&sub=womens-tops" role="menuitem">Tops &amp; Blouses</a></li><li><a href="pages/sourcing/products.html?cat=fashion&sub=activewear" role="menuitem">Activewear</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Accessories</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=fashion&sub=hats" role="menuitem">Hats &amp; Caps</a></li><li><a href="pages/sourcing/products.html?cat=fashion&sub=scarves" role="menuitem">Scarves &amp; Shawls</a></li><li><a href="pages/sourcing/products.html?cat=fashion&sub=belts" role="menuitem">Belts &amp; Suspenders</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=home-garden" class="cat-item-link" aria-haspopup="true">
+                <span class="cat-item-icon"><i class="fas fa-home" aria-hidden="true"></i></span>
+                Home &amp; Garden
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Furniture</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=home-garden&sub=living-room" role="menuitem">Living Room</a></li><li><a href="pages/sourcing/products.html?cat=home-garden&sub=bedroom" role="menuitem">Bedroom</a></li><li><a href="pages/sourcing/products.html?cat=home-garden&sub=office-furniture" role="menuitem">Office Furniture</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Kitchen &amp; Dining</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=home-garden&sub=cookware" role="menuitem">Cookware &amp; Bakeware</a></li><li><a href="pages/sourcing/products.html?cat=home-garden&sub=tableware" role="menuitem">Tableware &amp; Cutlery</a></li><li><a href="pages/sourcing/products.html?cat=home-garden&sub=appliances" role="menuitem">Kitchen Appliances</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Garden</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=home-garden&sub=tools" role="menuitem">Garden Tools</a></li><li><a href="pages/sourcing/products.html?cat=home-garden&sub=outdoor" role="menuitem">Outdoor Furniture</a></li><li><a href="pages/sourcing/products.html?cat=home-garden&sub=decor" role="menuitem">Home Décor</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=industrial" class="cat-item-link" aria-haspopup="true">
+                <span class="cat-item-icon"><i class="fas fa-industry" aria-hidden="true"></i></span>
+                Industrial &amp; Machinery
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Machinery</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=industrial&sub=cnc" role="menuitem">CNC &amp; Laser Machines</a></li><li><a href="pages/sourcing/products.html?cat=industrial&sub=packaging" role="menuitem">Packaging Machinery</a></li><li><a href="pages/sourcing/products.html?cat=industrial&sub=food-processing" role="menuitem">Food Processing</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Tools</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=industrial&sub=hand-tools" role="menuitem">Hand Tools</a></li><li><a href="pages/sourcing/products.html?cat=industrial&sub=power-tools" role="menuitem">Power Tools</a></li><li><a href="pages/sourcing/products.html?cat=industrial&sub=safety" role="menuitem">Safety Equipment</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=beauty" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-spa" aria-hidden="true"></i></span>
+                Beauty &amp; Personal Care
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Skincare</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=beauty&sub=face-care" role="menuitem">Face Care</a></li><li><a href="pages/sourcing/products.html?cat=beauty&sub=body-care" role="menuitem">Body Care</a></li><li><a href="pages/sourcing/products.html?cat=beauty&sub=sunscreen" role="menuitem">Sunscreen &amp; SPF</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Hair Care</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=beauty&sub=shampoo" role="menuitem">Shampoo &amp; Conditioner</a></li><li><a href="pages/sourcing/products.html?cat=beauty&sub=hair-tools" role="menuitem">Hair Tools</a></li><li><a href="pages/sourcing/products.html?cat=beauty&sub=hair-accessories" role="menuitem">Hair Accessories</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=automotive" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-car" aria-hidden="true"></i></span>
+                Automotive
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Car Parts</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=automotive&sub=engine" role="menuitem">Engine Parts</a></li><li><a href="pages/sourcing/products.html?cat=automotive&sub=body-parts" role="menuitem">Body Parts</a></li><li><a href="pages/sourcing/products.html?cat=automotive&sub=brakes" role="menuitem">Brakes &amp; Suspension</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Accessories</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=automotive&sub=car-audio" role="menuitem">Car Audio &amp; Video</a></li><li><a href="pages/sourcing/products.html?cat=automotive&sub=lighting" role="menuitem">Lighting</a></li><li><a href="pages/sourcing/products.html?cat=automotive&sub=tools" role="menuitem">Automotive Tools</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=sports" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-football-ball" aria-hidden="true"></i></span>
+                Sports &amp; Outdoors
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Sports Equipment</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=sports&sub=fitness" role="menuitem">Fitness &amp; Gym</a></li><li><a href="pages/sourcing/products.html?cat=sports&sub=team-sports" role="menuitem">Team Sports</a></li><li><a href="pages/sourcing/products.html?cat=sports&sub=racket" role="menuitem">Racket Sports</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Outdoor</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=sports&sub=camping" role="menuitem">Camping &amp; Hiking</a></li><li><a href="pages/sourcing/products.html?cat=sports&sub=cycling" role="menuitem">Cycling</a></li><li><a href="pages/sourcing/products.html?cat=sports&sub=water-sports" role="menuitem">Water Sports</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=food-bev" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-utensils" aria-hidden="true"></i></span>
+                Food &amp; Beverages
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Food Products</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=food-bev&sub=snacks" role="menuitem">Snacks &amp; Confectionery</a></li><li><a href="pages/sourcing/products.html?cat=food-bev&sub=grains" role="menuitem">Grains &amp; Cereals</a></li><li><a href="pages/sourcing/products.html?cat=food-bev&sub=organic" role="menuitem">Organic Foods</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Beverages</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=food-bev&sub=tea-coffee" role="menuitem">Tea &amp; Coffee</a></li><li><a href="pages/sourcing/products.html?cat=food-bev&sub=juices" role="menuitem">Juices &amp; Drinks</a></li><li><a href="pages/sourcing/products.html?cat=food-bev&sub=energy-drinks" role="menuitem">Energy Drinks</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=health" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-heartbeat" aria-hidden="true"></i></span>
+                Health &amp; Medical
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Medical Supplies</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=health&sub=ppe" role="menuitem">PPE &amp; Safety</a></li><li><a href="pages/sourcing/products.html?cat=health&sub=diagnostic" role="menuitem">Diagnostic Equipment</a></li><li><a href="pages/sourcing/products.html?cat=health&sub=first-aid" role="menuitem">First Aid</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Wellness</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=health&sub=supplements" role="menuitem">Vitamins &amp; Supplements</a></li><li><a href="pages/sourcing/products.html?cat=health&sub=fitness-health" role="menuitem">Fitness Health</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=office" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-briefcase" aria-hidden="true"></i></span>
+                Office Supplies
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Stationery</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=office&sub=pens" role="menuitem">Pens &amp; Markers</a></li><li><a href="pages/sourcing/products.html?cat=office&sub=notebooks" role="menuitem">Notebooks &amp; Pads</a></li><li><a href="pages/sourcing/products.html?cat=office&sub=filing" role="menuitem">Filing &amp; Storage</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Office Equipment</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=office&sub=printers" role="menuitem">Printers &amp; Scanners</a></li><li><a href="pages/sourcing/products.html?cat=office&sub=projectors" role="menuitem">Projectors</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=bags" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-briefcase" aria-hidden="true"></i></span>
+                Bags &amp; Luggage
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Bags</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=bags&sub=handbags" role="menuitem">Handbags &amp; Purses</a></li><li><a href="pages/sourcing/products.html?cat=bags&sub=backpacks" role="menuitem">Backpacks</a></li><li><a href="pages/sourcing/products.html?cat=bags&sub=tote" role="menuitem">Tote Bags</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Luggage</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=bags&sub=suitcases" role="menuitem">Suitcases</a></li><li><a href="pages/sourcing/products.html?cat=bags&sub=travel-bags" role="menuitem">Travel Bags</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=shoes" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-shoe-prints" aria-hidden="true"></i></span>
+                Shoes &amp; Footwear
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Men's Shoes</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=shoes&sub=mens-formal" role="menuitem">Formal Shoes</a></li><li><a href="pages/sourcing/products.html?cat=shoes&sub=mens-casual" role="menuitem">Casual Sneakers</a></li><li><a href="pages/sourcing/products.html?cat=shoes&sub=mens-sports" role="menuitem">Sports Shoes</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Women's Shoes</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=shoes&sub=womens-heels" role="menuitem">Heels &amp; Pumps</a></li><li><a href="pages/sourcing/products.html?cat=shoes&sub=womens-flats" role="menuitem">Flats &amp; Sandals</a></li><li><a href="pages/sourcing/products.html?cat=shoes&sub=boots" role="menuitem">Boots</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=jewelry" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-gem" aria-hidden="true"></i></span>
+                Jewelry &amp; Accessories
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Jewelry</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=jewelry&sub=necklaces" role="menuitem">Necklaces &amp; Pendants</a></li><li><a href="pages/sourcing/products.html?cat=jewelry&sub=rings" role="menuitem">Rings &amp; Bangles</a></li><li><a href="pages/sourcing/products.html?cat=jewelry&sub=earrings" role="menuitem">Earrings</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Watches</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=jewelry&sub=mens-watches" role="menuitem">Men's Watches</a></li><li><a href="pages/sourcing/products.html?cat=jewelry&sub=womens-watches" role="menuitem">Women's Watches</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=toys" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-gamepad" aria-hidden="true"></i></span>
+                Toys &amp; Games
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Toys</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=toys&sub=educational" role="menuitem">Educational Toys</a></li><li><a href="pages/sourcing/products.html?cat=toys&sub=dolls" role="menuitem">Dolls &amp; Action Figures</a></li><li><a href="pages/sourcing/products.html?cat=toys&sub=outdoor-toys" role="menuitem">Outdoor Toys</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Games</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=toys&sub=board-games" role="menuitem">Board Games</a></li><li><a href="pages/sourcing/products.html?cat=toys&sub=video-games" role="menuitem">Video Game Accessories</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+            <li class="cat-item" role="listitem">
+              <a href="pages/sourcing/products.html?cat=building" class="cat-item-link">
+                <span class="cat-item-icon"><i class="fas fa-hard-hat" aria-hidden="true"></i></span>
+                Building Materials
+                <i class="fas fa-chevron-right cat-item-chevron" aria-hidden="true"></i>
+              </a>
+              <div class="cat-mega" role="menu">
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Construction</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=building&sub=cement" role="menuitem">Cement &amp; Concrete</a></li><li><a href="pages/sourcing/products.html?cat=building&sub=steel" role="menuitem">Steel &amp; Metal</a></li><li><a href="pages/sourcing/products.html?cat=building&sub=timber" role="menuitem">Timber &amp; Wood</a></li></ul>
+                </div>
+                <div class="cat-mega-col">
+                  <div class="cat-mega-col-title">Finishing</div>
+                  <ul class="cat-mega-links" role="list"><li><a href="pages/sourcing/products.html?cat=building&sub=tiles" role="menuitem">Tiles &amp; Flooring</a></li><li><a href="pages/sourcing/products.html?cat=building&sub=paint" role="menuitem">Paint &amp; Coatings</a></li></ul>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </nav>
+        <!-- /Category Sidebar -->
+
+        <!-- Hero Content -->
+        <div class="homepage-hero-content">
+          <div class="hero-container" style="padding-left:28px">
+
           <span class="hero-eyebrow">
             <i class="fas fa-globe-americas" aria-hidden="true"></i>
             Trusted by 500,000+ businesses worldwide
@@ -292,7 +627,9 @@
             <span>Deliveries</span>
           </div>
         </div>
-      </div>
+        <!-- /Hero Content -->
+        </div><!-- /homepage-hero-content -->
+      </div><!-- /hero-with-sidebar flex container -->
     </section><!-- /.hero -->
 
     <!-- ============================================================
@@ -1654,6 +1991,48 @@
       }
     }
   })();
+  </script>
+  <script>
+  /* ─── Category Drawer (mobile) ───────────────────────────── */
+  (function() {
+    var btn = document.getElementById('mobile-cat-btn-wrap');
+    // Show mobile cat button only on < 1024px
+    function checkMobile() {
+      if (btn) btn.style.display = window.innerWidth < 1024 ? 'block' : 'none';
+    }
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+  })();
+
+  function openCatDrawer() {
+    var drawer = document.getElementById('cat-drawer');
+    var overlay = document.getElementById('cat-drawer-overlay');
+    if (!drawer || !overlay) return;
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    var close = drawer.querySelector('.cat-drawer-close');
+    if (close) close.focus();
+  }
+
+  function closeCatDrawer() {
+    var drawer = document.getElementById('cat-drawer');
+    var overlay = document.getElementById('cat-drawer-overlay');
+    if (!drawer || !overlay) return;
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  // Keyboard: close drawer on Escape (only when drawer is actually open)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var drawer = document.getElementById('cat-drawer');
+      if (drawer && drawer.classList.contains('open')) closeCatDrawer();
+    }
+  });
   </script>
 </body>
 </html>

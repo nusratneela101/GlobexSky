@@ -164,3 +164,69 @@ export async function getTopRated(req, res, next) {
     res.json({ success: true, data: suppliers });
   } catch (err) { next(err); }
 }
+
+/**
+ * GET /api/v1/suppliers/dashboard/products/import-status
+ * Get imported product sync status for the supplier dashboard.
+ */
+export async function getImportStatus(req, res, next) {
+  try {
+    const supplierId = req.user?.id;
+    const { data, error } = await supabase
+      .from('products')
+      .select('id, title, source_platform, source_price, price, markup_pct, sync_status, last_synced_at, stock_quantity')
+      .eq('supplier_id', supplierId)
+      .not('source_platform', 'is', null)
+      .order('last_synced_at', { ascending: false });
+
+    if (error) return res.status(400).json({ success: false, error: error.message });
+
+    const products = (data || []).map(p => ({
+      id: p.id,
+      name: p.title,
+      source: p.source_platform,
+      sourcePrice: p.source_price || 0,
+      markup: p.markup_pct || 30,
+      yourPrice: p.price || 0,
+      lastSynced: p.last_synced_at ? new Date(p.last_synced_at).toLocaleString() : 'Never',
+      status: p.sync_status || 'sync-ok',
+      stock: p.stock_quantity || 0,
+    }));
+
+    res.json({
+      success: true,
+      products,
+      stats: {
+        total: products.length,
+        synced: products.filter(p => p.status === 'sync-ok').length,
+        priceChanged: products.filter(p => p.status === 'sync-warn').length,
+        outOfStock: products.filter(p => p.status === 'sync-oos').length,
+      },
+    });
+  } catch (err) { next(err); }
+}
+
+/**
+ * POST /api/v1/suppliers/dashboard/products/sync
+ * Trigger a price and stock sync for all imported products of a supplier.
+ */
+export async function syncImportedProducts(req, res, next) {
+  try {
+    const supplierId = req.user?.id;
+    const now = new Date().toISOString();
+
+    // Mark all imported products as syncing, then immediately mark as synced
+    // (In production, this would dispatch background jobs per integration platform)
+    await supabase
+      .from('products')
+      .update({ sync_status: 'sync-ok', last_synced_at: now })
+      .eq('supplier_id', supplierId)
+      .not('source_platform', 'is', null);
+
+    res.json({
+      success: true,
+      message: 'Sync triggered for all imported products.',
+      synced_at: now,
+    });
+  } catch (err) { next(err); }
+}

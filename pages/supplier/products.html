@@ -135,6 +135,7 @@
     <ul class="account-nav">
       <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
       <li><a href="products.html" class="active"><i class="fas fa-boxes-stacked"></i> Products</a></li>
+      <li><a href="imports.html"><i class="fas fa-cloud-download-alt"></i> Import Sync</a></li>
       <li><a href="../account/messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
       <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
       <li class="account-nav-divider"></li>
@@ -152,7 +153,74 @@
       <div class="stat-card orange"><div class="stat-value">12</div><div class="stat-label">Pending Review</div></div>
     </div>
 
-    <div class="page-card">
+    <!-- ── Price Markup Settings ──────────────────────────────── -->
+    <div class="page-card" id="markup-settings-card">
+      <div class="page-card-header">
+        <div class="page-card-title"><i class="fas fa-percentage" style="color:#f97316"></i> Price Markup Settings</div>
+        <a href="imports.html" class="btn btn-secondary btn-sm"><i class="fas fa-sync-alt"></i> Import Sync Dashboard</a>
+      </div>
+      <style>
+        .markup-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+        .markup-field{display:flex;flex-direction:column;gap:6px}
+        .markup-label{font-size:.8rem;font-weight:600;color:#374151}
+        .markup-input{border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:.875rem;font-family:'Inter',sans-serif;color:#1a1a2e;transition:border-color .2s;outline:none}
+        .markup-input:focus{border-color:#0052CC}
+        .markup-preview{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+        .markup-preview-item{text-align:center}
+        .markup-preview-val{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:#0a0e27}
+        .markup-preview-lbl{font-size:.72rem;color:#64748b;margin-top:2px}
+        .profit-bar-wrap{flex:1;min-width:180px}
+        .profit-bar-track{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-top:4px}
+        .profit-bar-fill{height:100%;background:linear-gradient(90deg,#00C9A7,#0052CC);border-radius:99px;transition:width .4s ease}
+        .markup-hint{font-size:.75rem;color:#64748b;margin-top:4px}
+        @media(max-width:768px){.markup-grid{grid-template-columns:1fr 1fr}}
+        @media(max-width:480px){.markup-grid{grid-template-columns:1fr}}
+      </style>
+      <div class="markup-grid">
+        <div class="markup-field">
+          <label class="markup-label" for="global-markup"><i class="fas fa-globe" style="color:#0052CC"></i> Global Markup (%)</label>
+          <input type="number" class="markup-input" id="global-markup" value="30" min="0" max="500" step="1" aria-label="Global markup percentage" oninput="updateMarkupPreview()"/>
+          <span class="markup-hint">Applied to all imported products by default</span>
+        </div>
+        <div class="markup-field">
+          <label class="markup-label" for="min-margin"><i class="fas fa-lock" style="color:#f97316"></i> Minimum Margin (%)</label>
+          <input type="number" class="markup-input" id="min-margin" value="15" min="0" max="100" step="1" aria-label="Minimum margin percentage" oninput="updateMarkupPreview()"/>
+          <span class="markup-hint">Prevent selling below this margin</span>
+        </div>
+        <div class="markup-field">
+          <label class="markup-label" for="sample-source-price"><i class="fas fa-tag" style="color:#7c3aed"></i> Sample Source Price ($)</label>
+          <input type="number" class="markup-input" id="sample-source-price" value="10.00" min="0" step="0.01" aria-label="Sample source price for preview" oninput="updateMarkupPreview()"/>
+          <span class="markup-hint">Used to calculate profit margin preview</span>
+        </div>
+      </div>
+      <!-- Margin preview -->
+      <div class="markup-preview" role="region" aria-label="Markup preview">
+        <div class="markup-preview-item">
+          <div class="markup-preview-val" id="prev-source-price">$10.00</div>
+          <div class="markup-preview-lbl">Source Price</div>
+        </div>
+        <div style="color:#94a3b8;font-size:1.1rem">→</div>
+        <div class="markup-preview-item">
+          <div class="markup-preview-val" id="prev-sell-price" style="color:#0052CC">$13.00</div>
+          <div class="markup-preview-lbl">Your Selling Price</div>
+        </div>
+        <div style="color:#94a3b8;font-size:1.1rem">→</div>
+        <div class="markup-preview-item">
+          <div class="markup-preview-val" id="prev-profit" style="color:#00C9A7">$3.00</div>
+          <div class="markup-preview-lbl">Profit / Unit</div>
+        </div>
+        <div class="profit-bar-wrap">
+          <div style="font-size:.75rem;color:#64748b">Margin: <strong id="prev-margin-pct">23.1%</strong></div>
+          <div class="profit-bar-track" aria-hidden="true">
+            <div class="profit-bar-fill" id="profit-bar" style="width:23%"></div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveMarkupSettings()" aria-label="Save markup settings">
+          <i class="fas fa-save"></i> Save Settings
+        </button>
+      </div>
+    </div><!-- /markup-settings-card -->
+
       <div class="page-card-header">
         <div class="page-card-title"><i class="fas fa-boxes-stacked" style="color:#0052CC"></i> My Products</div>
         <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Add Product</button>
@@ -369,5 +437,58 @@
   }
 </script>
 <script src="../../assets/js/navbar.js"></script>
+<script>
+/* ── Price Markup Settings ──────────────────────────────────── */
+function updateMarkupPreview() {
+  var sourcePrice = parseFloat(document.getElementById('sample-source-price').value) || 0;
+  var markupPct = parseFloat(document.getElementById('global-markup').value) || 0;
+  var sellPrice = sourcePrice * (1 + markupPct / 100);
+  var profit = sellPrice - sourcePrice;
+  var marginPct = sellPrice > 0 ? (profit / sellPrice * 100) : 0;
+
+  document.getElementById('prev-source-price').textContent = '$' + sourcePrice.toFixed(2);
+  document.getElementById('prev-sell-price').textContent = '$' + sellPrice.toFixed(2);
+  document.getElementById('prev-profit').textContent = '$' + profit.toFixed(2);
+  document.getElementById('prev-margin-pct').textContent = marginPct.toFixed(1) + '%';
+  document.getElementById('profit-bar').style.width = Math.min(marginPct, 100) + '%';
+}
+
+function saveMarkupSettings() {
+  var markup = parseFloat(document.getElementById('global-markup').value);
+  var minMargin = parseFloat(document.getElementById('min-margin').value);
+  if (isNaN(markup) || markup < 0) { alert('Please enter a valid markup percentage.'); return; }
+  localStorage.setItem('globex_global_markup', markup);
+  localStorage.setItem('globex_min_margin', minMargin);
+  // POST to API; show success or error toast based on result
+  fetch('/api/v1/dropshipping/markups', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('globex_token') || '') },
+    body: JSON.stringify({ global_markup_pct: markup, min_margin_pct: minMargin })
+  }).then(function(r) {
+    var t = document.getElementById('toast');
+    if (r.ok) {
+      t.innerHTML = '<i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px" aria-hidden="true"></i> Markup settings saved!';
+    } else {
+      t.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#f97316;margin-right:6px" aria-hidden="true"></i> Saved locally. API sync failed.';
+    }
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }).catch(function() {
+    var t = document.getElementById('toast');
+    t.innerHTML = '<i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px" aria-hidden="true"></i> Saved locally (offline).';
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  });
+}
+
+// Restore saved settings on load
+(function() {
+  var savedMarkup = localStorage.getItem('globex_global_markup');
+  var savedMinMargin = localStorage.getItem('globex_min_margin');
+  if (savedMarkup !== null) document.getElementById('global-markup').value = savedMarkup;
+  if (savedMinMargin !== null) document.getElementById('min-margin').value = savedMinMargin;
+  updateMarkupPreview();
+})();
+</script>
 </body>
 </html>

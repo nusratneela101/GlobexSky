@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Support Dashboard | Globex Sky Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjn8lAMsCLJL3lcqkdkXkhmIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="../../assets/css/main.css"/>
+  <link rel="stylesheet" href="../../assets/css/admin.css"/>
+  <link rel="stylesheet" href="../../assets/css/responsive.css"/>
+  <link rel="stylesheet" href="../../assets/css/mobile.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#0052CC;--primary-dark:#003d99;--accent:#00C9A7;--dark:#0A0E27;--light:#f4f6fa;--white:#fff;--grey:#6B7280;--grey-light:#E5E7EB;--success:#10B981;--warning:#F59E0B;--danger:#EF4444}
+    body{font-family:'Inter',sans-serif;background:var(--light);color:var(--dark)}
+    .page-layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    /* Sidebar */
+    .admin-sidebar{background:var(--dark);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+    .sidebar-brand{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:12px}
+    .sidebar-brand-icon{width:36px;height:36px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff}
+    .sidebar-brand-text{font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem}
+    .sidebar-nav{padding:12px 0}
+    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 20px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.875rem;transition:all .15s}
+    .sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.1);border-left:3px solid var(--primary)}
+    .sidebar-nav .nav-section{padding:12px 20px 6px;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4)}
+    /* Header */
+    .page-header{background:var(--white);border-bottom:1px solid var(--grey-light);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .page-header-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1.15rem;color:var(--dark);display:flex;align-items:center;gap:10px}
+    .header-badge{background:var(--danger);color:#fff;border-radius:50px;padding:2px 10px;font-size:.72rem;font-weight:700;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+    .header-actions{display:flex;gap:10px;align-items:center}
+    /* Content */
+    .content-wrap{padding:24px 28px}
+    /* Stats */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:var(--white);border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;align-items:center;gap:14px}
+    .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .stat-icon-blue{background:#eff6ff;color:var(--primary)}
+    .stat-icon-orange{background:#fff7ed;color:#f97316}
+    .stat-icon-green{background:#d1fae5;color:#059669}
+    .stat-icon-purple{background:#f3e8ff;color:#7c3aed}
+    .stat-val{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--dark)}
+    .stat-lbl{font-size:.75rem;color:var(--grey);margin-top:2px}
+    /* Two-column layout */
+    .dash-grid{display:grid;grid-template-columns:1fr 340px;gap:20px}
+    /* Chat panels */
+    .panel{background:var(--white);border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
+    .panel-header{padding:14px 18px;border-bottom:1px solid var(--grey-light);display:flex;align-items:center;justify-content:space-between}
+    .panel-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem;color:var(--dark);display:flex;align-items:center;gap:8px}
+    /* Queue list */
+    .queue-list{max-height:380px;overflow-y:auto}
+    .queue-item{padding:14px 18px;border-bottom:1px solid var(--grey-light);display:flex;gap:12px;align-items:flex-start;transition:background .15s}
+    .queue-item:hover{background:#f8faff}
+    .q-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;position:relative}
+    .q-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:#22c55e;border:2px solid #fff}
+    .q-dot-wait{background:#f97316}
+    .q-info{flex:1;min-width:0}
+    .q-name{font-weight:600;font-size:.85rem;color:var(--dark)}
+    .q-topic{font-size:.77rem;color:var(--grey);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .q-meta{font-size:.72rem;color:#94a3b8;margin-top:4px;display:flex;align-items:center;gap:8px}
+    .q-badge{background:#fef3c7;color:#b45309;border-radius:50px;padding:2px 8px;font-size:.68rem;font-weight:600}
+    .q-badge-active{background:#d1fae5;color:#059669}
+    .q-badge-bot{background:#eff6ff;color:var(--primary)}
+    .btn-pickup{padding:5px 12px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap;flex-shrink:0}
+    .btn-pickup:hover{background:var(--primary-dark)}
+    /* Active chat window */
+    .chat-window{display:flex;flex-direction:column;height:480px}
+    .chat-win-header{background:var(--primary);padding:14px 18px;color:#fff;display:flex;align-items:center;gap:12px;flex-shrink:0}
+    .chat-win-avatar{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+    .chat-win-name{font-weight:600;font-size:.9rem}
+    .chat-win-sub{font-size:.73rem;opacity:.8}
+    .messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+    .msg{max-width:72%;padding:9px 13px;border-radius:12px;font-size:.855rem;line-height:1.5}
+    .msg-customer{background:#f1f5f9;color:var(--dark);border-bottom-left-radius:2px;align-self:flex-start}
+    .msg-agent{background:var(--primary);color:#fff;border-bottom-right-radius:2px;align-self:flex-end}
+    .msg-bot{background:#f0fdf4;color:#166534;border:1px dashed #86efac;align-self:flex-start}
+    .msg-time{font-size:.68rem;margin-top:3px;opacity:.65}
+    .msg-system{text-align:center;font-size:.73rem;color:#94a3b8;font-style:italic;align-self:center}
+    .typing-ind{font-size:.75rem;color:#94a3b8;font-style:italic;align-self:flex-start}
+    .chat-input-area{padding:10px 14px;border-top:1px solid var(--grey-light);flex-shrink:0}
+    .input-row{display:flex;gap:8px}
+    .chat-input{flex:1;border:1.5px solid var(--grey-light);border-radius:8px;padding:9px 12px;font-size:.855rem;font-family:'Inter',sans-serif;resize:none;outline:none}
+    .chat-input:focus{border-color:var(--primary)}
+    .btn-send{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:0 16px;cursor:pointer;font-size:.9rem;transition:background .2s}
+    .btn-send:hover{background:var(--primary-dark)}
+    /* Notification toast */
+    .toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+    .toast{background:var(--dark);color:#fff;padding:12px 18px;border-radius:10px;font-size:.85rem;box-shadow:0 4px 16px rgba(0,0,0,.2);display:flex;align-items:center;gap:10px;animation:slideIn .3s ease}
+    @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    .toast-icon{font-size:1rem}
+    /* Agent status */
+    .agent-status-bar{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--grey-light);flex-shrink:0}
+    .status-btn{padding:6px 14px;border-radius:6px;border:1.5px solid;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}
+    .status-avail{border-color:#22c55e;color:#15803d;background:#f0fdf4}
+    .status-busy{border-color:#f97316;color:#c2410c;background:#fff7ed}
+    .status-away{border-color:#94a3b8;color:var(--grey);background:#f8fafc}
+    .status-avail.active{background:#22c55e;color:#fff}
+    .status-busy.active{background:#f97316;color:#fff}
+    .status-away.active{background:#94a3b8;color:#fff}
+    /* Transfer overlay */
+    .transfer-overlay{display:none;position:absolute;inset:0;background:rgba(0,82,204,.92);color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:10;border-radius:14px}
+    .transfer-overlay.show{display:flex}
+    .transfer-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .transfer-text{font-family:'Poppins',sans-serif;font-weight:600;font-size:1rem}
+    .transfer-sub{font-size:.82rem;opacity:.8}
+    /* Responsive */
+    @media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr)}.dash-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.admin-sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.content-wrap{padding:16px}}
+  </style>
+</head>
+<body>
+<div class="page-layout">
+
+  <!-- ── Admin Sidebar ─────────────────────────────────────────── -->
+  <aside class="admin-sidebar" role="navigation" aria-label="Admin navigation">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="fas fa-globe" aria-hidden="true"></i></div>
+      <div>
+        <div class="sidebar-brand-text">Globex Sky</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.5)">Admin Panel</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="users.html"><i class="fas fa-users"></i> Users</a>
+      <a href="categories.html"><i class="fas fa-tags"></i> Categories</a>
+      <div class="nav-section">Support</div>
+      <a href="support-dashboard.html" class="active"><i class="fas fa-headset"></i> Support Dashboard</a>
+      <a href="../support/live-chat.html"><i class="fas fa-comments"></i> Live Chat</a>
+      <a href="chatbot.html"><i class="fas fa-robot"></i> AI Chatbot</a>
+      <a href="disputes.html"><i class="fas fa-gavel"></i> Disputes</a>
+      <div class="nav-section">Commerce</div>
+      <a href="commissions.html"><i class="fas fa-percentage"></i> Commissions</a>
+      <a href="orders.html"><i class="fas fa-box"></i> Orders</a>
+      <a href="financial-reports.html"><i class="fas fa-chart-bar"></i> Reports</a>
+    </nav>
+  </aside>
+
+  <!-- ── Main Area ──────────────────────────────────────────────── -->
+  <div>
+    <header class="page-header" role="banner">
+      <div class="page-header-title">
+        <i class="fas fa-headset" style="color:#0052CC" aria-hidden="true"></i>
+        Support Dashboard
+        <span class="header-badge" id="new-chat-badge" style="display:none" aria-live="polite">New</span>
+      </div>
+      <div class="header-actions">
+        <div id="conn-status" style="font-size:.8rem;color:#94a3b8;display:flex;align-items:center;gap:6px">
+          <i class="fas fa-circle" style="font-size:.5rem;color:#94a3b8" id="conn-icon"></i>
+          <span id="conn-label">Connecting…</span>
+        </div>
+        <a href="index.html" class="btn" style="padding:7px 14px;background:#f1f5f9;border-radius:8px;font-size:.82rem;text-decoration:none;color:#374151">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> Back
+        </a>
+      </div>
+    </header>
+
+    <main class="content-wrap">
+      <!-- Stats -->
+      <div class="stats-grid" role="list">
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon stat-icon-blue"><i class="fas fa-comments" aria-hidden="true"></i></div>
+          <div><div class="stat-val" id="stat-active">0</div><div class="stat-lbl">Active Chats</div></div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon stat-icon-orange"><i class="fas fa-clock" aria-hidden="true"></i></div>
+          <div><div class="stat-val" id="stat-queue">0</div><div class="stat-lbl">In Queue</div></div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon stat-icon-green"><i class="fas fa-headset" aria-hidden="true"></i></div>
+          <div><div class="stat-val" id="stat-agents">0</div><div class="stat-lbl">Available Agents</div></div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon stat-icon-purple"><i class="fas fa-robot" aria-hidden="true"></i></div>
+          <div><div class="stat-val" id="stat-escalated">0</div><div class="stat-lbl">Bot Escalations</div></div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dash-grid">
+
+        <!-- Queue + Active Chat -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Queue Panel -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fas fa-list-ol" style="color:#f97316" aria-hidden="true"></i> Support Queue</div>
+              <button onclick="refreshQueue()" style="background:none;border:none;color:#0052CC;font-size:.8rem;cursor:pointer" aria-label="Refresh queue">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+            <div class="queue-list" id="queue-list" role="list" aria-label="Support queue">
+              <div style="text-align:center;padding:30px;color:#94a3b8;font-size:.875rem" id="queue-empty">
+                <i class="fas fa-check-circle" style="font-size:1.5rem;display:block;margin-bottom:8px;color:#22c55e"></i>
+                No customers waiting
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Chat Window -->
+          <div class="panel" style="position:relative">
+            <div class="transfer-overlay" id="transfer-overlay" role="status" aria-live="polite">
+              <div class="transfer-spinner" aria-hidden="true"></div>
+              <div class="transfer-text">Transferring to Human Agent</div>
+              <div class="transfer-sub">Please wait while we connect you…</div>
+            </div>
+            <div class="chat-window">
+              <div class="chat-win-header" id="chat-win-header">
+                <div class="chat-win-avatar" id="win-avatar">—</div>
+                <div>
+                  <div class="chat-win-name" id="win-name">Select a chat to start</div>
+                  <div class="chat-win-sub" id="win-status">No active session</div>
+                </div>
+                <div style="margin-left:auto;display:flex;gap:8px">
+                  <button onclick="endCurrentChat()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:.8rem" aria-label="End chat" title="End Chat">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="messages" id="msg-box" role="log" aria-live="polite" aria-label="Chat messages">
+                <div class="msg-system">Pick up a chat from the queue to begin.</div>
+              </div>
+              <div class="chat-input-area">
+                <div class="input-row">
+                  <input type="text" class="chat-input" id="chat-input" placeholder="Type a reply…" aria-label="Type a message" disabled/>
+                  <button class="btn-send" onclick="sendMsg()" aria-label="Send message" disabled>
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div id="typing-ind" class="typing-ind" style="margin-top:4px;display:none">Customer is typing…</div>
+              </div>
+              <div class="agent-status-bar">
+                <span style="font-size:.78rem;color:#64748b;margin-right:auto;align-self:center">My status:</span>
+                <button class="status-btn status-avail active" id="btn-available" onclick="setAgentStatus('available')" aria-pressed="true">Available</button>
+                <button class="status-btn status-busy" id="btn-busy" onclick="setAgentStatus('busy')" aria-pressed="false">Busy</button>
+                <button class="status-btn status-away" id="btn-away" onclick="setAgentStatus('away')" aria-pressed="false">Away</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel: AI Transcript + Canned -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fas fa-robot" style="color:#0052CC" aria-hidden="true"></i> AI Chatbot History</div>
+            </div>
+            <div style="padding:14px;max-height:220px;overflow-y:auto" id="ai-history">
+              <div style="font-size:.78rem;color:#94a3b8;text-align:center;padding:20px">
+                Pick up a chat to see AI history
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fas fa-bolt" style="color:#f97316" aria-hidden="true"></i> Quick Replies</div>
+            </div>
+            <div style="padding:12px;display:flex;flex-direction:column;gap:6px" role="list" aria-label="Quick reply templates">
+              <div class="canned-item" role="listitem" onclick="insertCanned(this)" style="padding:8px 10px;background:#f8fafc;border-radius:8px;font-size:.78rem;cursor:pointer;transition:background .15s">Thanks for contacting us! How can I assist you today?</div>
+              <div class="canned-item" role="listitem" onclick="insertCanned(this)" style="padding:8px 10px;background:#f8fafc;border-radius:8px;font-size:.78rem;cursor:pointer;transition:background .15s">I completely understand your concern. Let me look into this right away.</div>
+              <div class="canned-item" role="listitem" onclick="insertCanned(this)" style="padding:8px 10px;background:#f8fafc;border-radius:8px;font-size:.78rem;cursor:pointer;transition:background .15s">Your order is currently in transit and should arrive within 2–3 business days.</div>
+              <div class="canned-item" role="listitem" onclick="insertCanned(this)" style="padding:8px 10px;background:#f8fafc;border-radius:8px;font-size:.78rem;cursor:pointer;transition:background .15s">I've processed a refund for your order. It will reflect in 5–7 business days.</div>
+              <div class="canned-item" role="listitem" onclick="insertCanned(this)" style="padding:8px 10px;background:#f8fafc;border-radius:8px;font-size:.78rem;cursor:pointer;transition:background .15s">Let me escalate this to our specialist team for faster resolution.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js" crossorigin="anonymous"></script>
+<script>
+/* ─── State ──────────────────────────────────────────────────── */
+let socket = null;
+let activeSessionId = null;
+let escalatedCount = 0;
+const agentId = localStorage.getItem('globex_agent_id') || ('agent_' + Math.random().toString(36).slice(2, 9));
+localStorage.setItem('globex_agent_id', agentId);
+
+/* ─── Utils ──────────────────────────────────────────────────── */
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function timeStr(ts) {
+  return ts ? new Date(ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+function showToast(message, icon='fa-bell', color='#0052CC') {
+  // Validate icon to only allow known FontAwesome class pattern (letters, digits, hyphens)
+  var safeIcon = /^fa-[a-z0-9-]+$/.test(icon) ? icon : 'fa-bell';
+  // Validate color to only allow hex or named CSS colors
+  var safeColor = /^(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)$/.test(color) ? color : '#0052CC';
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  const ico = document.createElement('i');
+  ico.className = 'fas ' + safeIcon + ' toast-icon';
+  ico.style.color = safeColor;
+  ico.setAttribute('aria-hidden', 'true');
+  t.appendChild(ico);
+  t.appendChild(document.createTextNode(message));
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+/* ─── Socket Connection ──────────────────────────────────────── */
+function connectSocket() {
+  const BACKEND = window.GLOBEX_API || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
+  if (typeof io === 'undefined') {
+    setConnStatus(false, 'Socket.IO unavailable');
+    return;
+  }
+  socket = io(BACKEND + '/support', {
+    auth: { role: 'agent', agentId },
+    transports: ['websocket', 'polling'],
+  });
+
+  socket.on('connect', () => setConnStatus(true, 'Connected'));
+  socket.on('disconnect', () => setConnStatus(false, 'Disconnected'));
+  socket.on('connect_error', () => setConnStatus(false, 'Connection failed'));
+
+  socket.on('queue:update', ({ queueLength, availableAgents, totalAgents, sessions }) => {
+    document.getElementById('stat-queue').textContent = queueLength;
+    document.getElementById('stat-agents').textContent = availableAgents;
+    renderQueue(sessions || []);
+
+    if (queueLength > 0) {
+      const badge = document.getElementById('new-chat-badge');
+      badge.style.display = 'inline-block';
+      badge.textContent = queueLength + ' New';
+    } else {
+      document.getElementById('new-chat-badge').style.display = 'none';
+    }
+  });
+
+  socket.on('chat:agent-joined', ({ sessionId, message }) => {
+    if (sessionId === activeSessionId) appendSystemMsg(message);
+  });
+
+  socket.on('chat:message', ({ sessionId, sender, content, timestamp, source }) => {
+    if (sessionId !== activeSessionId) return;
+    const cls = sender === 'agent' ? 'msg-agent' : (source === 'history' ? 'msg-bot' : 'msg-customer');
+    appendMessage(cls, escapeHtml(content), timeStr(timestamp));
+  });
+
+  socket.on('chat:typing', ({ sessionId, sender, isTyping }) => {
+    if (sessionId !== activeSessionId) return;
+    const ind = document.getElementById('typing-ind');
+    if (ind) ind.style.display = (isTyping && sender !== 'agent') ? 'block' : 'none';
+  });
+
+  socket.on('chat:ended', ({ sessionId }) => {
+    if (sessionId === activeSessionId) {
+      appendSystemMsg('This chat has ended.');
+      document.getElementById('chat-input').disabled = true;
+      document.querySelector('.btn-send').disabled = true;
+    }
+  });
+
+  socket.on('agent:pickup-success', ({ session }) => {
+    activeSessionId = session.sessionId;
+    const initial = (session.name || '?').charAt(0).toUpperCase();
+    document.getElementById('win-avatar').textContent = initial;
+    document.getElementById('win-name').textContent = session.name || 'Customer';
+    document.getElementById('win-status').textContent = (session.topic || 'Support') + ' · Active';
+
+    const box = document.getElementById('msg-box');
+    box.innerHTML = '';
+
+    // Show AI history
+    const aiHistory = (session.messages || []).filter(m => m.source === 'history');
+    renderAIHistory(aiHistory);
+
+    // Show escalation indicator if there's history
+    if (aiHistory.length) {
+      appendSystemMsg('📋 AI conversation history loaded above. Picking up from agent handoff…');
+      escalatedCount++;
+      document.getElementById('stat-escalated').textContent = escalatedCount;
+    }
+
+    (session.messages || []).filter(m => m.source !== 'history').forEach(m => {
+      appendMessage(m.sender === 'agent' ? 'msg-agent' : 'msg-customer', escapeHtml(m.content || ''), timeStr(m.timestamp));
+    });
+
+    appendSystemMsg('You have joined this chat.');
+    document.getElementById('chat-input').disabled = false;
+    document.querySelector('.btn-send').disabled = false;
+  });
+
+  socket.on('agent:pickup-error', ({ error }) => showToast('Could not pick up chat: ' + error, 'fa-exclamation-triangle', '#ef4444'));
+}
+
+function setConnStatus(connected, label) {
+  const icon = document.getElementById('conn-icon');
+  const lbl = document.getElementById('conn-label');
+  if (icon) icon.style.color = connected ? '#22c55e' : '#ef4444';
+  if (lbl) lbl.textContent = label;
+}
+
+/* ─── Queue Rendering ────────────────────────────────────────── */
+function renderQueue(sessions) {
+  const list = document.getElementById('queue-list');
+  const empty = document.getElementById('queue-empty');
+  document.getElementById('stat-active').textContent = sessions.filter(s => s.status === 'active').length;
+
+  if (!sessions.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = sessions.map(s => `
+    <div class="queue-item" role="listitem">
+      <div class="q-avatar">${escapeHtml((s.customerName||'?').charAt(0).toUpperCase())}<span class="q-dot q-dot-wait" aria-hidden="true"></span></div>
+      <div class="q-info">
+        <div class="q-name">${escapeHtml(s.customerName||'Customer')}</div>
+        <div class="q-topic">${escapeHtml(s.topic||'General support')}</div>
+        <div class="q-meta">
+          Wait: ${s.waitTime}s
+          <span class="q-badge" aria-label="Queue position">#${s.position}</span>
+        </div>
+      </div>
+      <button class="btn-pickup" onclick="pickUpChat('${escapeHtml(s.sessionId)}')" aria-label="Pick up chat with ${escapeHtml(s.customerName||'customer')}">
+        Pick Up
+      </button>
+    </div>`).join('');
+}
+
+function pickUpChat(sessionId) {
+  if (!socket) { showToast('Not connected to server', 'fa-exclamation-triangle', '#f97316'); return; }
+  // Show transfer animation
+  const overlay = document.getElementById('transfer-overlay');
+  overlay.classList.add('show');
+  setTimeout(() => overlay.classList.remove('show'), 2000);
+  socket.emit('agent:pickup', { sessionId });
+}
+
+function refreshQueue() {
+  fetch('/api/v1/support/chat/queue')
+    .then(r => r.json())
+    .then(data => { if (data.success) renderQueue(data.sessions || []); })
+    .catch(() => {});
+}
+
+/* ─── Chat Functions ─────────────────────────────────────────── */
+function appendMessage(cls, html, time) {
+  const box = document.getElementById('msg-box');
+  const div = document.createElement('div');
+  div.className = 'msg ' + cls;
+  div.innerHTML = html + '<div class="msg-time">' + (time || timeStr()) + '</div>';
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function appendSystemMsg(text) {
+  const box = document.getElementById('msg-box');
+  const div = document.createElement('div');
+  div.className = 'msg-system';
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function renderAIHistory(history) {
+  const container = document.getElementById('ai-history');
+  if (!history.length) {
+    container.innerHTML = '<div style="font-size:.78rem;color:#94a3b8;text-align:center;padding:14px">No AI conversation history</div>';
+    return;
+  }
+  container.innerHTML = history.map(m => `
+    <div style="margin-bottom:8px">
+      <div style="font-size:.68rem;color:#94a3b8;margin-bottom:2px">${m.sender === 'user' ? '👤 Customer' : '🤖 AI Bot'} · ${timeStr(m.timestamp)}</div>
+      <div style="font-size:.78rem;background:${m.sender==='user'?'#f1f5f9':'#f0fdf4'};padding:6px 10px;border-radius:6px;color:#374151">${escapeHtml(m.content||m.text||'')}</div>
+    </div>`).join('');
+}
+
+function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!activeSessionId) { showToast('No active session', 'fa-exclamation-triangle', '#f97316'); return; }
+  if (socket) socket.emit('chat:message', { sessionId: activeSessionId, content: text });
+  input.value = '';
+}
+
+function endCurrentChat() {
+  if (!activeSessionId || !socket) return;
+  if (!confirm('End this chat session?')) return;
+  socket.emit('chat:end', { sessionId: activeSessionId });
+  activeSessionId = null;
+  document.getElementById('win-name').textContent = 'Select a chat to start';
+  document.getElementById('win-status').textContent = 'No active session';
+  document.getElementById('win-avatar').textContent = '—';
+  document.getElementById('chat-input').disabled = true;
+  document.querySelector('.btn-send').disabled = true;
+}
+
+function setAgentStatus(status) {
+  ['available','busy','away'].forEach(s => {
+    const btn = document.getElementById('btn-'+s);
+    if (btn) { btn.classList.toggle('active', s===status); btn.setAttribute('aria-pressed', s===status ? 'true':'false'); }
+  });
+  if (socket) socket.emit('agent:status', { status });
+}
+
+function insertCanned(el) { document.getElementById('chat-input').value = el.textContent.trim(); }
+
+/* ─── Init ───────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  connectSocket();
+  const inp = document.getElementById('chat-input');
+  if (inp) {
+    let typingTimer;
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+    inp.addEventListener('input', () => {
+      if (!socket || !activeSessionId) return;
+      socket.emit('chat:typing', { sessionId: activeSessionId, isTyping: true });
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(() => socket.emit('chat:typing', { sessionId: activeSessionId, isTyping: false }), 1500);
+    });
+  }
+  // Attach hover styles to canned items
+  document.querySelectorAll('.canned-item').forEach(el => {
+    el.addEventListener('mouseenter', () => el.style.background = '#eff6ff');
+    el.addEventListener('mouseleave', () => el.style.background = '#f8fafc');
+  });
+  // Initial queue fetch
+  refreshQueue();
+});
+</script>
+</body>
+</html>

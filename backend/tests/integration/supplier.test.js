@@ -134,6 +134,16 @@ jest.mock('../../controllers/supplier.controller.js', () => ({
   getTopRated: jest.fn((_req, res) => {
     res.json({ success: true, data: [] });
   }),
+  getImportStatus: jest.fn((_req, res) => {
+    res.json({
+      success: true,
+      products: [],
+      stats: { total: 0, synced: 0, priceChanged: 0, outOfStock: 0 },
+    });
+  }),
+  syncImportedProducts: jest.fn((_req, res) => {
+    res.json({ success: true, message: 'Sync triggered for all imported products.', synced_at: new Date().toISOString() });
+  }),
 }));
 
 // ─── Role check mock ─────────────────────────────────────────────────────────
