@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   avatar_url          TEXT,
   phone               TEXT,
   company_name        TEXT,
-  role                TEXT NOT NULL DEFAULT 'buyer' CHECK (role IN ('admin','buyer','supplier','carrier','inspector')),
+  role                TEXT NOT NULL DEFAULT 'buyer' CHECK (role IN ('admin','buyer','supplier','carrier','inspector','super_admin','employee')),
   verification_status TEXT NOT NULL DEFAULT 'unverified' CHECK (verification_status IN ('unverified','pending','verified')),
   language            TEXT NOT NULL DEFAULT 'en',
   currency            TEXT NOT NULL DEFAULT 'USD',

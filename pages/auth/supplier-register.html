@@ -134,13 +134,30 @@
     <p class="footer-link">Already have an account? <a href="login.html">Log in here</a></p>
   </div>
   <script>
-    function submitSupReg(e){
+    async function submitSupReg(e){
       e.preventDefault();
       const p1=document.getElementById('password').value;
       const p2=document.getElementById('confirmPw').value;
       if(p1!==p2){alert('Passwords do not match.');return;}
-      alert('Application submitted! Our team will review and contact you within 2-3 business days.');
-      window.location.href='../../index.html';
+
+      const email = document.getElementById('email').value;
+      const compName = document.getElementById('compName').value;
+
+      try {
+        const sb = window.supabaseClient;
+        if (sb) {
+          const { data, error } = await sb.auth.signUp({
+            email: email,
+            password: p1,
+            options: { data: { name: compName, role: 'supplier', country: document.getElementById('country').value } }
+          });
+          if (error) throw new Error(error.message);
+        }
+        alert('Application submitted! Our team will review and contact you within 2-3 business days.');
+        window.location.href = '../auth/login.html';
+      } catch(err) {
+        alert('Registration failed: ' + err.message);
+      }
     }
   </script>
   <script src="../../assets/js/main.js" defer></script>

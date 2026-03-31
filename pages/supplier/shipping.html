@@ -246,5 +246,25 @@
 function addZone(){alert('Add Zone feature coming soon. Use the zone editor to define regions and carriers.');}
 </script>
 <script src="../../assets/js/main.js" defer></script>
+<script>
+  // Supplier auth guard — redirect to login if not authenticated
+  (function() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!token) {
+      try {
+        var keys = Object.keys(localStorage);
+        for (var i = 0; i < keys.length; i++) {
+          if (keys[i].startsWith('sb-') && keys[i].endsWith('-auth-token')) {
+            var sess = JSON.parse(localStorage.getItem(keys[i]) || 'null');
+            if (sess && sess.access_token) { token = sess.access_token; break; }
+          }
+        }
+      } catch(e) {}
+    }
+    if (!token) {
+      window.location.href = '../auth/login.html?redirect=' + encodeURIComponent(window.location.href);
+    }
+  })();
+</script>
 </body>
 </html>

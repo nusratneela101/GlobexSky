@@ -16,7 +16,7 @@ import bcrypt from 'bcryptjs';
 const ADMIN_ID    = '00000000-0000-0000-0000-000000000099';
 const ADMIN_EMAIL = 'admin@globexsky.com';
 // Default password — must be rotated on first login.
-const ADMIN_PASSWORD = 'Admin@GlobexSky#Change!';
+const ADMIN_PASSWORD = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@GlobexSky#Change!';
 
 export async function run(supabase) {
   // Hash the default password with bcrypt (cost factor 12)

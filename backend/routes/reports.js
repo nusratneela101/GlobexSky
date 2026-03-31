@@ -12,7 +12,7 @@ import * as ctrl from '../controllers/reportController.js';
 
 const router = Router();
 
-router.use(authenticate, requireRole('admin', 'superadmin'));
+router.use(authenticate, requireRole('admin', 'super_admin'));
 
 router.get('/revenue', ctrl.getRevenueReport);
 router.get('/profit-loss', ctrl.getProfitLossReport);

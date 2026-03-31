@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
   phone         TEXT,
   avatar_url    TEXT,
   role          TEXT NOT NULL DEFAULT 'buyer'
-                  CHECK (role IN ('buyer','supplier','carrier','admin','inspector')),
+                  CHECK (role IN ('buyer','supplier','carrier','admin','super_admin','inspector','employee')),
   status        TEXT NOT NULL DEFAULT 'active'
                   CHECK (status IN ('active','inactive','suspended','banned','pending_verification')),
   email_verified  BOOLEAN NOT NULL DEFAULT FALSE,

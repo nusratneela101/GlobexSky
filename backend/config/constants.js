@@ -1,9 +1,11 @@
 export const ROLES = {
   ADMIN: 'admin',
+  SUPER_ADMIN: 'super_admin',
   BUYER: 'buyer',
   SUPPLIER: 'supplier',
   CARRIER: 'carrier',
   INSPECTOR: 'inspector',
+  EMPLOYEE: 'employee',
 };
 
 export const ORDER_STATUS = {
