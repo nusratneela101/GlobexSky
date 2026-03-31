@@ -169,7 +169,10 @@
 <script src="../../assets/js/main.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
-  const productId = params.get('product_id') || '1';
+  const rawProductId = params.get('product_id') || '1';
+  // Validate productId to prevent javascript: URL injection (numeric or UUID only)
+  const productId = /^\d{1,19}$|^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(rawProductId.trim())
+    ? rawProductId.trim() : '1';
 
   const DEMO_QA = [
     {id:1,user:'Ahmed K.',time:'2 days ago',question:'What is the minimum order quantity for custom branding?',answer:{supplier:'Guangzhou Supplier Co.',text:'The MOQ for custom branding (logo printing or embroidery) is 100 pieces per design. We offer flexible packaging options as well.'},helpful:12,voted:false},
