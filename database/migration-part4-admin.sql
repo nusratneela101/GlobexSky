@@ -6,6 +6,35 @@
 -- Safe to run multiple times — uses IF NOT EXISTS everywhere.
 -- ═══════════════════════════════════════════════════════════════════════════
 
+-- ── Social Auth: Extend Profiles ──────────────────────────────────────────────
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS google_id      VARCHAR(255);
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS facebook_id    VARCHAR(255);
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS auth_provider  VARCHAR(50) DEFAULT 'email';
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_google_id
+  ON profiles(google_id) WHERE google_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_facebook_id
+  ON profiles(facebook_id) WHERE facebook_id IS NOT NULL;
+
+-- ── Address Book: Extend Addresses ───────────────────────────────────────────
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'addresses' AND column_name = 'status'
+  ) THEN
+    ALTER TABLE addresses ADD COLUMN status TEXT NOT NULL DEFAULT 'active';
+  END IF;
+END $$;
+
+ALTER TABLE addresses
+  ADD COLUMN IF NOT EXISTS full_name           VARCHAR(150),
+  ADD COLUMN IF NOT EXISTS phone               VARCHAR(30),
+  ADD COLUMN IF NOT EXISTS address_line1       VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS address_line2       VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS is_default_shipping BOOLEAN NOT NULL DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS is_default_billing  BOOLEAN NOT NULL DEFAULT FALSE;
+
 -- ── CMS: Pages ───────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS pages (
   id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -1627,23 +1656,3 @@ CREATE INDEX IF NOT EXISTS idx_freight_bookings_shipper_id        ON freight_boo
 CREATE INDEX IF NOT EXISTS idx_freight_bookings_status            ON freight_bookings(status);
 CREATE INDEX IF NOT EXISTS idx_freight_bookings_booking_reference ON freight_bookings(booking_reference);
 
--- ── Social Auth: Extend Profiles ──────────────────────────────────────────────
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS google_id      VARCHAR(255);
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS facebook_id    VARCHAR(255);
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS auth_provider  VARCHAR(50) DEFAULT 'email';
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_google_id
-  ON profiles(google_id) WHERE google_id IS NOT NULL;
-CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_facebook_id
-  ON profiles(facebook_id) WHERE facebook_id IS NOT NULL;
-
--- ── Address Book: Extend Addresses ───────────────────────────────────────────
-ALTER TABLE addresses ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active';
-
-ALTER TABLE addresses
-  ADD COLUMN IF NOT EXISTS full_name           VARCHAR(150),
-  ADD COLUMN IF NOT EXISTS phone               VARCHAR(30),
-  ADD COLUMN IF NOT EXISTS address_line1       VARCHAR(255),
-  ADD COLUMN IF NOT EXISTS address_line2       VARCHAR(255),
-  ADD COLUMN IF NOT EXISTS is_default_shipping BOOLEAN NOT NULL DEFAULT FALSE,
-  ADD COLUMN IF NOT EXISTS is_default_billing  BOOLEAN NOT NULL DEFAULT FALSE;
