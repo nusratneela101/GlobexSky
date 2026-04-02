@@ -285,21 +285,27 @@
               <!-- SHIPPING METHOD -->
               <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
                 <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;color:var(--dark);margin-bottom:14px;"><i class="fas fa-shipping-fast" style="color:var(--primary);margin-right:6px"></i>Shipping Method</div>
-                <div style="display:flex;flex-direction:column;gap:10px">
+                <div id="shippingMethodsContainer" style="display:flex;flex-direction:column;gap:10px">
+                  <!-- Static fallback options — replaced dynamically by shipping.js when available -->
                   <label style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--primary);border-radius:12px;padding:14px 16px;background:#f0f4ff;cursor:pointer">
-                    <input type="radio" name="shipping-method" value="sea" checked style="accent-color:var(--primary);width:16px;height:16px">
-                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-ship" style="color:#0052CC;margin-right:6px"></i>Sea Freight (FCL/LCL)</div><div style="font-size:.78rem;color:var(--muted)">20–35 business days · Most economical for bulk</div></div>
+                    <input type="radio" name="shipping-method" value="sea_freight" checked data-price="0" style="accent-color:var(--primary);width:16px;height:16px">
+                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-ship" style="color:#0052CC;margin-right:6px"></i>Sea Freight (FCL/LCL)</div><div style="font-size:.78rem;color:var(--muted)">15–30 days · Most economical for bulk</div></div>
                     <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#16a34a;font-size:.9rem">FREE</div>
                   </label>
                   <label style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer">
-                    <input type="radio" name="shipping-method" value="air" style="accent-color:var(--primary);width:16px;height:16px">
-                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-plane" style="color:#FF6B35;margin-right:6px"></i>Air Freight Express</div><div style="font-size:.78rem;color:var(--muted)">5–8 business days · Best for urgent orders</div></div>
-                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.9rem">$480.00</div>
+                    <input type="radio" name="shipping-method" value="standard" data-price="12" style="accent-color:var(--primary);width:16px;height:16px">
+                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-truck" style="color:#7c3aed;margin-right:6px"></i>Standard Shipping</div><div style="font-size:.78rem;color:var(--muted)">7–15 days · Reliable international delivery</div></div>
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.9rem">$12.00</div>
                   </label>
                   <label style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer">
-                    <input type="radio" name="shipping-method" value="express" style="accent-color:var(--primary);width:16px;height:16px">
-                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-bolt" style="color:#7c3aed;margin-right:6px"></i>DHL / FedEx Express</div><div style="font-size:.78rem;color:var(--muted)">3–5 business days · Door-to-door tracking</div></div>
-                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.9rem">$720.00</div>
+                    <input type="radio" name="shipping-method" value="air_freight" data-price="45" style="accent-color:var(--primary);width:16px;height:16px">
+                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-plane" style="color:#FF6B35;margin-right:6px"></i>Air Freight Express</div><div style="font-size:.78rem;color:var(--muted)">1–3 days · Best for urgent orders</div></div>
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.9rem">$45.00</div>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer">
+                    <input type="radio" name="shipping-method" value="express" data-price="25" style="accent-color:var(--primary);width:16px;height:16px">
+                    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;color:var(--dark)"><i class="fas fa-bolt" style="color:#7c3aed;margin-right:6px"></i>DHL / FedEx Express</div><div style="font-size:.78rem;color:var(--muted)">3–7 days · Door-to-door tracking</div></div>
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--dark);font-size:.9rem">$25.00</div>
                   </label>
                 </div>
               </div>
@@ -739,9 +745,8 @@
       }
 
       var token = _getToken();
-      var shippingMethod = document.querySelector('input[name="shipping-method"]:checked')?.value || 'sea';
-      var shippingCostMap = { sea: 0, air: 480, express: 720 };
-      var shippingCost = shippingCostMap[shippingMethod] || 0;
+      var shippingMethod = document.querySelector('input[name="shipping-method"]:checked')?.value || 'sea_freight';
+      var shippingCost = parseFloat(document.querySelector('input[name="shipping-method"]:checked')?.dataset?.price || '0');
 
       var payRadios = document.querySelectorAll('input[name="payment"]');
       var payMethod = 'credit_card';
@@ -805,8 +810,19 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     populateCartSummary();
+    // Load real shipping rates from API when country changes or on load
+    var countryEl = document.getElementById('country');
+    function _loadRates() {
+      var country = countryEl ? countryEl.value : '';
+      if (typeof initCheckoutShippingRates === 'function') {
+        initCheckoutShippingRates({ country: country, weight: 1 });
+      }
+    }
+    if (countryEl) countryEl.addEventListener('change', _loadRates);
   });
 </script>
 <script src="../../assets/js/navbar.js"></script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/shipping.js"></script>
 </body>
 </html>

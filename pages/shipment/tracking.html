@@ -85,58 +85,13 @@
 <div class="content-section">
   <div class="container" style="max-width:760px">
     <div class="card" style="margin-bottom:24px">
-      <div style="display:flex;gap:12px"><input class="form-control" type="text" placeholder="Enter tracking number e.g. GS-2025-XXXX" value="GS-2025-5521"><button class="btn btn-primary"><i class="fas fa-search"></i> Track</button></div>
+      <form id="trackingForm" style="display:flex;gap:12px;flex-wrap:wrap">
+        <input class="form-control" type="text" id="trackingNumber" name="tracking_number" placeholder="Enter tracking number e.g. GS-2025-XXXX" style="flex:1;min-width:200px">
+        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Track</button>
+        <button type="button" id="refreshTracking" class="btn btn-secondary" style="display:none"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </form>
     </div>
-    <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-        <div><div style="font-family:'Poppins',sans-serif;font-size:1rem;font-weight:600;color:#0A0E27">Order #GS-20250320-5521</div><div style="font-size:.85rem;color:#64748b">2 items — Pathao Courier</div></div>
-        <span class="badge badge-blue" style="padding:6px 14px;font-size:.82rem">In Transit</span>
-      </div>
-      <div style="position:relative;padding-left:32px">
-        <!-- Timeline -->
-        <div style="position:absolute;left:10px;top:24px;bottom:24px;width:2px;background:#e2e8f0"></div>
-        <!-- Step 1 -->
-        <div style="position:relative;margin-bottom:28px">
-          <div style="position:absolute;left:-22px;width:20px;height:20px;background:#059669;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff"><i class="fas fa-check"></i></div>
-          <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0A0E27">Order Placed</div>
-          <div style="font-size:.82rem;color:#64748b">March 20, 2025 — 10:35 AM</div>
-          <div style="font-size:.82rem;color:#94a3b8;margin-top:2px">Your order was successfully placed and payment confirmed.</div>
-        </div>
-        <!-- Step 2 -->
-        <div style="position:relative;margin-bottom:28px">
-          <div style="position:absolute;left:-22px;width:20px;height:20px;background:#059669;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff"><i class="fas fa-check"></i></div>
-          <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0A0E27">Order Confirmed</div>
-          <div style="font-size:.82rem;color:#64748b">March 20, 2025 — 2:14 PM</div>
-          <div style="font-size:.82rem;color:#94a3b8;margin-top:2px">Supplier confirmed your order and started preparing.</div>
-        </div>
-        <!-- Step 3 -->
-        <div style="position:relative;margin-bottom:28px">
-          <div style="position:absolute;left:-22px;width:20px;height:20px;background:#059669;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff"><i class="fas fa-check"></i></div>
-          <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0A0E27">Dispatched</div>
-          <div style="font-size:.82rem;color:#64748b">March 21, 2025 — 9:00 AM</div>
-          <div style="font-size:.82rem;color:#94a3b8;margin-top:2px">Your package was dispatched via Pathao Courier. Tracking: PATH-20250321-841</div>
-        </div>
-        <!-- Step 4 (current) -->
-        <div style="position:relative;margin-bottom:28px">
-          <div style="position:absolute;left:-22px;width:20px;height:20px;background:#0052CC;border-radius:50%;border:3px solid #bfdbfe;box-sizing:border-box"></div>
-          <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#0052CC">In Transit <span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:50px;font-size:.72rem;margin-left:8px">Current</span></div>
-          <div style="font-size:.82rem;color:#64748b">March 22, 2025 — 4:30 PM</div>
-          <div style="font-size:.82rem;color:#94a3b8;margin-top:2px">Package arrived at Motijheel sorting hub.</div>
-        </div>
-        <!-- Step 5 (pending) -->
-        <div style="position:relative;margin-bottom:28px;opacity:.5">
-          <div style="position:absolute;left:-22px;width:20px;height:20px;background:#e2e8f0;border-radius:50%"></div>
-          <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#94a3b8">Out for Delivery</div>
-          <div style="font-size:.82rem;color:#94a3b8">Expected: March 23, 2025</div>
-        </div>
-        <!-- Step 6 (pending) -->
-        <div style="position:relative;opacity:.5">
-          <div style="position:absolute;left:-22px;width:20px;height:20px;background:#e2e8f0;border-radius:50%"></div>
-          <div style="font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;color:#94a3b8">Delivered</div>
-          <div style="font-size:.82rem;color:#94a3b8">Expected: March 23–24, 2025</div>
-        </div>
-      </div>
-    </div>
+    <div id="trackingResult"></div>
   </div>
 </div>
 <footer class="site-footer">
@@ -150,6 +105,8 @@
   </div>
 </footer>
 <script src="../../assets/js/main.js" defer></script>
-  <script src="../../assets/js/shipment.js"></script>
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/api-service.js"></script>
+  <script src="../../assets/js/shipping.js"></script>
 </body>
 </html>
