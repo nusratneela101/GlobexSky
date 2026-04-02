@@ -44,22 +44,43 @@ function initMobileMenu() {
     }
   });
 
-  // Close on overlay click
+  // Helper to close the mobile nav
+  function closeMobileNav() {
+    document.body.classList.remove('nav-open');
+    if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+    if (mobileNav) {
+      mobileNav.classList.remove('open');
+      mobileNav.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // Close on overlay / outside click
   document.addEventListener('click', (e) => {
     if (
       document.body.classList.contains('nav-open') &&
-      !e.target.closest('.navbar') &&
       !e.target.closest('.hamburger') &&
       !e.target.closest('.nav-toggle') &&
       !e.target.closest('.mobile-nav') &&
       !e.target.closest('#mobile-nav')
     ) {
-      document.body.classList.remove('nav-open');
-      if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
-      if (mobileNav) {
-        mobileNav.classList.remove('open');
-        mobileNav.setAttribute('aria-hidden', 'true');
+      closeMobileNav();
+    }
+  });
+
+  // Close when clicking a link inside mobile nav
+  if (mobileNav) {
+    mobileNav.addEventListener('click', (e) => {
+      if (e.target.closest('a')) {
+        closeMobileNav();
       }
+    });
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
+      closeMobileNav();
+      if (hamburger) hamburger.focus();
     }
   });
 }
