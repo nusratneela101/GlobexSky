@@ -67,6 +67,18 @@ body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;min-height:
       <p id="order-number-display" style="font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;color:#0052CC">#GS-LOADING</p>
     </div>
 
+    <!-- Tracking Number -->
+    <div id="tracking-number-box" style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;display:none">
+      <div style="display:flex;align-items:center;gap:10px">
+        <i class="fas fa-map-marker-alt" style="color:#16a34a;font-size:1.1rem"></i>
+        <div>
+          <p style="font-size:.78rem;color:#15803d;font-weight:500;margin-bottom:2px">TRACKING NUMBER</p>
+          <p id="tracking-number-display" style="font-family:'Poppins',sans-serif;font-weight:700;color:#0a0e27;font-size:1rem">—</p>
+        </div>
+      </div>
+      <a id="track-order-link" href="../shipment/tracking.html" class="btn-primary" style="font-size:.85rem;padding:8px 16px"><i class="fas fa-search"></i> Track Now</a>
+    </div>
+
     <!-- Email Notice -->
     <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:12px;margin-bottom:32px">
       <i class="fas fa-envelope" style="color:#16a34a;font-size:1.1rem"></i>
@@ -101,7 +113,7 @@ body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;min-height:
 
     <!-- CTA Buttons -->
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
-      <a href="order-tracking.html" class="btn-primary"><i class="fas fa-map-marker-alt"></i> Track Your Order</a>
+      <a id="track-order-btn" href="../shipment/tracking.html" class="btn-primary"><i class="fas fa-map-marker-alt"></i> Track Your Order</a>
       <a href="products.html" class="btn-secondary"><i class="fas fa-shopping-bag"></i> Continue Shopping</a>
     </div>
 
@@ -215,6 +227,25 @@ body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;min-height:
   /* Order date */
   var dateEl = document.getElementById('confirm-date');
   if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+
+  /* Tracking number — read from localStorage (set by checkout/order flow) */
+  var trackingNumber = null;
+  try {
+    var lastOrder = JSON.parse(localStorage.getItem('globexLastOrder') || 'null');
+    trackingNumber = (lastOrder && (lastOrder.tracking_number || lastOrder.trackingNumber)) || params.get('tracking') || null;
+  } catch(_) {}
+
+  if (trackingNumber) {
+    var tBox = document.getElementById('tracking-number-box');
+    var tDisplay = document.getElementById('tracking-number-display');
+    var tLink = document.getElementById('track-order-link');
+    var tBtn = document.getElementById('track-order-btn');
+    if (tBox) tBox.style.display = 'flex';
+    if (tDisplay) tDisplay.textContent = trackingNumber;
+    var trackUrl = '../shipment/tracking.html?tracking=' + encodeURIComponent(trackingNumber);
+    if (tLink) tLink.href = trackUrl;
+    if (tBtn) tBtn.href = trackUrl;
+  }
 
   /* Read cart snapshot saved by checkout page */
   var cartItems = [];
