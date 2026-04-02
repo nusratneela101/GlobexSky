@@ -257,8 +257,9 @@ async function initProfilePage() {
       const lastEl  = form.querySelector('[name="last_name"]');
       const payload = {};
       if (firstEl || lastEl) {
-        payload.full_name = [firstEl?.value.trim(), lastEl?.value.trim()].filter(Boolean).join(' ');
+        payload.full_name = [firstEl?.value?.trim(), lastEl?.value?.trim()].filter(Boolean).join(' ');
       }
+      // Skip 'full_name' below since it may already be constructed from first/last name above
       ['phone', 'company_name', 'language', 'currency', 'timezone', 'full_name'].forEach((k) => {
         const el = form.querySelector(`[name="${k}"]`);
         if (el && el.value !== undefined && !payload[k]) payload[k] = el.value;
@@ -306,7 +307,7 @@ function initChangePassword() {
     // Support both name="..." and id="current-pass" / id="new-pass" patterns
     const current = (form.querySelector('[name="current_password"]') || form.querySelector('#current-pass'))?.value;
     const newPw   = (form.querySelector('[name="new_password"]')     || form.querySelector('#new-pass'))?.value;
-    const confirm = (form.querySelector('[name="confirm_password"]') || form.querySelectorAll('[type="password"]')[2])?.value;
+    const confirm = (form.querySelector('[name="confirm_password"]') || form.querySelector('#confirm-pass') || form.querySelectorAll('[type="password"]')[2])?.value;
 
     if (!current || !newPw || !confirm) {
       if (typeof showToast === 'function') showToast('All fields are required.', 'error'); return;
