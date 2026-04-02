@@ -490,7 +490,8 @@
         </div>
         <div class="step-nav">
           <button class="btn-back" onclick="goStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
-          <button class="btn-next" style="background:#16a34a" onclick="goStep(4)"><i class="fas fa-lock"></i> Place Order — $4,380.00</button>
+          <div id="place-order-error" style="display:none;color:#ef4444;font-size:.85rem;padding:8px 0;max-width:400px;text-align:left"></div>
+          <button class="btn-next" style="background:#16a34a" onclick="doPlaceOrder()"><i class="fas fa-lock"></i> Place Order</button>
         </div>
       </div>
 
@@ -609,6 +610,79 @@
 
   let currentStep = 1;
 
+  /* ── Helpers ── */
+  function _esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function _getToken() {
+    try {
+      var s = JSON.parse(localStorage.getItem('globexSession') || 'null');
+      return (s && s.token) || localStorage.getItem('globexToken') || null;
+    } catch(_) { return null; }
+  }
+
+  function _getApiBase() {
+    return (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || 'https://globexsky-production.up.railway.app/api/v1';
+  }
+
+  function _getCart() {
+    try { return JSON.parse(localStorage.getItem('globexCart') || '[]'); } catch(_) { return []; }
+  }
+
+  /* ── Populate sidebar + review panel with real cart items ── */
+  function populateCartSummary() {
+    var items = _getCart();
+    var subtotal = items.reduce(function(s, i) { return s + parseFloat(i.price || 0) * parseInt(i.quantity || 1, 10); }, 0);
+
+    var sidebarItems = document.querySelector('.sidebar-items');
+    if (sidebarItems) {
+      if (items.length === 0) {
+        sidebarItems.innerHTML = '<p style="color:#64748b;font-size:.85rem;padding:8px 0">Your cart is empty</p>';
+      } else {
+        sidebarItems.innerHTML = items.map(function(item) {
+          return '<div class="sidebar-item">' +
+            '<div class="sidebar-item-img" style="background:#f1f5f9;overflow:hidden">' +
+              (item.image ? '<img src="' + _esc(item.image) + '" alt="" style="width:100%;height:100%;object-fit:cover">' : '<i class="fas fa-box"></i>') +
+            '</div>' +
+            '<div class="sidebar-item-name">' + _esc(item.name) + ' × ' + parseInt(item.quantity, 10) + '</div>' +
+            '<div class="sidebar-item-price">$' + (parseFloat(item.price || 0) * parseInt(item.quantity || 1, 10)).toFixed(2) + '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+
+    var rows = document.querySelectorAll('.sidebar-row');
+    rows.forEach(function(row) {
+      var label = row.querySelector('span:first-child');
+      var value = row.querySelector('span:last-child');
+      if (!label || !value) return;
+      if (label.textContent.trim() === 'Subtotal') value.textContent = '$' + subtotal.toFixed(2);
+      if (label.textContent.trim() === 'Total') value.textContent = '$' + subtotal.toFixed(2);
+    });
+
+    var reviewItems = document.querySelector('.review-items');
+    if (reviewItems) {
+      if (items.length === 0) {
+        reviewItems.innerHTML = '<p style="color:#64748b;font-size:.85rem">Your cart is empty. <a href="cart.html">Go back to cart</a></p>';
+      } else {
+        reviewItems.innerHTML = items.map(function(item) {
+          return '<div class="review-item">' +
+            '<div class="review-item-img" style="background:#f1f5f9;overflow:hidden">' +
+              (item.image ? '<img src="' + _esc(item.image) + '" alt="" style="width:100%;height:100%;object-fit:cover">' : '<i class="fas fa-box"></i>') +
+            '</div>' +
+            '<div class="review-item-details">' +
+              '<div class="review-item-name">' + _esc(item.name) + '</div>' +
+              '<div class="review-item-meta">Qty: ' + parseInt(item.quantity, 10) + ' · $' + parseFloat(item.price || 0).toFixed(2) + '/unit</div>' +
+            '</div>' +
+            '<div class="review-item-price">$' + (parseFloat(item.price || 0) * parseInt(item.quantity || 1, 10)).toFixed(2) + '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+  }
+
+  /* ── Step navigation ── */
   function goStep(n) {
     document.getElementById('panel-' + currentStep).classList.remove('active');
     document.getElementById('step-indicator-' + currentStep).classList.remove('active');
@@ -623,13 +697,13 @@
     window.scrollTo({top:0,behavior:'smooth'});
 
     if (n === 3) {
-      const name = document.getElementById('full-name').value || 'Jane Smith';
-      const addr1 = document.getElementById('address1').value || '123 Commerce Street, Suite 400';
-      const city = document.getElementById('city').value || 'New York';
-      const st = document.getElementById('state').value || 'NY';
-      const zip = document.getElementById('zip').value || '10001';
+      const name = document.getElementById('full-name').value || '';
+      const addr1 = document.getElementById('address1').value || '';
+      const city = document.getElementById('city').value || '';
+      const st = document.getElementById('state').value || '';
+      const zip = document.getElementById('zip').value || '';
       const country = document.getElementById('country');
-      const countryText = country.options[country.selectedIndex]?.text || '🇺🇸 United States';
+      const countryText = country.options[country.selectedIndex]?.text || '';
       document.getElementById('review-name').textContent = name;
       document.getElementById('review-addr').textContent = addr1;
       document.getElementById('review-city').textContent = [city, st, zip].filter(Boolean).join(', ');
@@ -637,7 +711,7 @@
       const payRadios = document.querySelectorAll('input[name="payment"]');
       let payName = 'Credit / Debit Card';
       payRadios.forEach(r => { if (r.checked) { const label = r.nextElementSibling.querySelector('.payment-card-name'); if (label) payName = label.textContent; } });
-      document.getElementById('review-payment').innerHTML = '<i class="far fa-credit-card" style="margin-right:6px;color:#0052CC"></i>' + payName;
+      document.getElementById('review-payment').innerHTML = '<i class="far fa-credit-card" style="margin-right:6px;color:#0052CC"></i>' + _esc(payName);
     }
 
     if (n === 4) {
@@ -647,6 +721,91 @@
       if (document.getElementById('sidebar-summary')) document.getElementById('sidebar-summary').style.display = 'none';
     }
   }
+
+  /* ── Place Order — calls API then shows confirmation ── */
+  async function doPlaceOrder() {
+    var placeBtn = document.querySelector('.btn-next[onclick*="doPlaceOrder"]');
+    if (placeBtn) { placeBtn.disabled = true; placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…'; }
+
+    var errorEl = document.getElementById('place-order-error');
+    if (errorEl) errorEl.style.display = 'none';
+
+    try {
+      var cart = _getCart();
+      if (!cart.length) {
+        if (errorEl) { errorEl.textContent = 'Your cart is empty. Please add items before placing an order.'; errorEl.style.display = 'block'; }
+        if (placeBtn) { placeBtn.disabled = false; placeBtn.innerHTML = '<i class="fas fa-lock"></i> Place Order'; }
+        return;
+      }
+
+      var token = _getToken();
+      var shippingMethod = document.querySelector('input[name="shipping-method"]:checked')?.value || 'sea';
+      var shippingCostMap = { sea: 0, air: 480, express: 720 };
+      var shippingCost = shippingCostMap[shippingMethod] || 0;
+
+      var payRadios = document.querySelectorAll('input[name="payment"]');
+      var payMethod = 'credit_card';
+      payRadios.forEach(function(r) { if (r.checked) payMethod = r.id.replace('pay-', ''); });
+
+      var orderPayload = {
+        items: cart.map(function(item) {
+          return { product_id: item.id, quantity: parseInt(item.quantity, 10), unit_price: parseFloat(item.price || 0) };
+        }),
+        shipping_address: {
+          full_name: document.getElementById('full-name')?.value || '',
+          address_line1: document.getElementById('address1')?.value || '',
+          address_line2: document.getElementById('address2')?.value || '',
+          city: document.getElementById('city')?.value || '',
+          state: document.getElementById('state')?.value || '',
+          postal_code: document.getElementById('zip')?.value || '',
+          country: document.getElementById('country')?.value || '',
+          phone: document.getElementById('phone')?.value || '',
+        },
+        shipping_method: shippingMethod,
+        shipping_cost: shippingCost,
+        payment_method: payMethod,
+      };
+
+      var orderId = null;
+      if (token) {
+        var res = await fetch(_getApiBase() + '/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(orderPayload),
+        });
+        var json = await res.json();
+        if (json.success || json.data || json.id) {
+          orderId = (json.data && (json.data.id || json.data.order_id)) || json.id || json.order_id || null;
+        } else if (!res.ok) {
+          throw new Error(json.error || json.message || 'Order creation failed');
+        }
+      }
+
+      /* Save cart snapshot for order confirmation page before clearing */
+      localStorage.setItem('globexLastCartSnapshot', JSON.stringify(cart));
+
+      /* Clear the cart after successful order */
+      localStorage.removeItem('globexCart');
+      if (window.GlobexSky && window.GlobexSky.updateCartBadge) window.GlobexSky.updateCartBadge();
+
+      /* Show real order ID in confirmation panel */
+      var orderNumEl = document.querySelector('.order-number-value');
+      if (orderNumEl && orderId) orderNumEl.textContent = '#GS-' + String(orderId).slice(0, 8).toUpperCase();
+      else if (orderNumEl) orderNumEl.textContent = '#GS-' + Date.now().toString(36).toUpperCase();
+
+      goStep(4);
+
+    } catch (err) {
+      console.error('[checkout] Order placement error:', err);
+      var msg = err.message || 'Failed to place order. Please try again.';
+      if (errorEl) { errorEl.textContent = msg; errorEl.style.display = 'block'; }
+      if (placeBtn) { placeBtn.disabled = false; placeBtn.innerHTML = '<i class="fas fa-lock"></i> Place Order'; }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    populateCartSummary();
+  });
 </script>
 <script src="../../assets/js/navbar.js"></script>
 </body>
