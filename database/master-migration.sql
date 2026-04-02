@@ -336,6 +336,7 @@ CREATE TABLE IF NOT EXISTS suppliers (
   main_categories TEXT[] DEFAULT '{}',
   -- Documents
   business_license_url TEXT,
+  visiting_card_url TEXT,
   registration_cert_url TEXT,
   certifications JSONB DEFAULT '[]',
   factory_photos JSONB DEFAULT '[]',

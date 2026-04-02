@@ -76,6 +76,46 @@
     .footer-links-row{display:flex;gap:20px;list-style:none}
     .footer-links-row a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none}
     .footer-links-row a:hover{color:#00C9A7}
+    /* Mobile hamburger */
+    .sidebar-toggle{display:none;background:none;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:1rem;cursor:pointer;color:#0052CC}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:999}
+    /* ── Responsive ── */
+    @media(max-width:1024px){
+      .page-layout{padding:16px;gap:16px}
+      .search-hero{padding:24px}
+      .search-hero h2{font-size:1.4rem}
+    }
+    @media(max-width:768px){
+      .sidebar-toggle{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px}
+      .sidebar{position:fixed;top:0;left:-280px;width:260px;height:100%;z-index:1000;background:#fff;box-shadow:4px 0 24px rgba(0,0,0,.12);transition:left .3s ease;padding:20px 16px;overflow-y:auto}
+      .sidebar.open{left:0}
+      .sidebar-overlay.open{display:block}
+      .page-layout{flex-direction:column;padding:12px}
+      .search-hero{padding:20px 16px;border-radius:12px}
+      .search-hero h2{font-size:1.2rem}
+      .search-hero p{font-size:.82rem}
+      .search-bar{flex-direction:column}
+      .search-bar input{padding:12px 14px;font-size:.9rem}
+      .search-bar .search-actions{justify-content:stretch}
+      .search-bar .search-btn{flex:1;justify-content:center}
+      .example-chips{gap:6px}
+      .chip{font-size:.72rem;padding:5px 10px}
+      .result-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+      .result-img{height:110px}
+      .result-body{padding:10px}
+      .result-name{font-size:.82rem}
+      .card{padding:16px;border-radius:12px}
+      .nav-container{padding:10px 16px}
+      .footer-inner{flex-direction:column;text-align:center}
+    }
+    @media(max-width:480px){
+      .result-grid{grid-template-columns:1fr 1fr;gap:10px}
+      .result-img{height:90px;font-size:1.5rem}
+      .result-name{font-size:.78rem}
+      .result-price{font-size:.82rem}
+      .search-hero h2{font-size:1.05rem}
+      .nav-logo span{font-size:1rem}
+    }
   </style>
 </head>
 <body>
@@ -90,7 +130,9 @@
 </header>
 
 <div class="page-layout">
-  <aside class="sidebar">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="openSidebar()"><i class="fa-solid fa-bars"></i> AI Features</button>
+  <aside class="sidebar" id="aiSidebar">
     <div class="sidebar-card">
       <div class="sidebar-title">AI Features</div>
       <ul class="sidebar-nav">
@@ -417,6 +459,16 @@
       input.addEventListener('input', function () { fetchSuggestions(this.value.trim()); });
     }
   });
+
+  /* Sidebar toggle (mobile) */
+  function openSidebar() {
+    document.getElementById('aiSidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('open');
+  }
+  function closeSidebar() {
+    document.getElementById('aiSidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
 </script>
   <script src="../../assets/js/ai.js"></script>
   <script src="../../assets/js/ai-search.js"></script>

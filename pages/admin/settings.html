@@ -476,6 +476,7 @@
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="nagad"    onclick="switchPkTab('nagad')">    <i class="fas fa-wallet"></i>     Nagad</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="supabase" onclick="switchPkTab('supabase')"> <i class="fas fa-database"></i>   Supabase</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="openai"   onclick="switchPkTab('openai')">   <i class="fas fa-robot"></i>      OpenAI</button>
+          <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="deepseek" onclick="switchPkTab('deepseek')"> <i class="fas fa-brain"></i>      DeepSeek</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="agora"    onclick="switchPkTab('agora')">    <i class="fas fa-video"></i>      Agora</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="smtp"     onclick="switchPkTab('smtp')">     <i class="fas fa-envelope"></i>   SMTP</button>
           <button class="btn-sm btn-secondary pk-tab"      data-pk-tab="cloudinary" onclick="switchPkTab('cloudinary')"><i class="fas fa-cloud"></i>    Cloudinary</button>
@@ -721,6 +722,45 @@
           <div class="form-footer">
             <button class="btn-sm btn-secondary" onclick="testPlatformConnection('openai')"><i class="fas fa-plug"></i> Test Connection</button>
             <button class="btn-sm btn-primary"   onclick="savePlatformCategory('openai')"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- ── DeepSeek ── -->
+        <div class="pk-pane" id="pk-pane-deepseek" style="display:none">
+          <div class="pk-service-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600;font-size:.9rem">DeepSeek AI</span>
+              <span id="status-icon-deepseek" style="font-size:1.1rem">⬜</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="mode-label-deepseek" style="font-size:.8rem;font-weight:600;color:#f97316">🔧 Test</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mode-toggle-deepseek" onchange="onModeToggle('deepseek',this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <span style="font-size:.75rem;color:#94a3b8">Live</span>
+            </div>
+          </div>
+          <form id="pk-form-deepseek" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">API Key</label>
+              <input type="password" class="form-control" id="pk-deepseek-DEEPSEEK_API_KEY" data-pk-key="DEEPSEEK_API_KEY" placeholder="sk-…"/>
+              <small style="color:#64748b;font-size:.75rem">Get your API key from <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:#0052CC">platform.deepseek.com</a></small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Model</label>
+              <select class="form-control" id="pk-deepseek-DEEPSEEK_MODEL" data-pk-key="DEEPSEEK_MODEL">
+                <option value="deepseek-chat">DeepSeek Chat</option>
+                <option value="deepseek-reasoner">DeepSeek Reasoner</option>
+              </select>
+            </div>
+          </form>
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:.82rem;color:#1e40af">
+            <i class="fas fa-info-circle"></i> DeepSeek powers the AI chatbot, smart search, and product recommendations. The API key is stored in the <code>app_settings</code> table (key: <code>deepseek_api_key</code>).
+          </div>
+          <div class="form-footer">
+            <button class="btn-sm btn-secondary" onclick="testDeepSeekConnection()"><i class="fas fa-plug"></i> Test Connection</button>
+            <button class="btn-sm btn-primary"   onclick="saveDeepSeekKey()"><i class="fas fa-save"></i> Save</button>
           </div>
         </div>
 
@@ -1052,6 +1092,97 @@ async function _authHdrs() {
   if (!token) token = localStorage.getItem('globexToken') || localStorage.getItem('token') || null;
   return { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) };
 }
+
+// ─── DeepSeek API Key: Save & Test ────────────────────────────────────────────
+
+async function saveDeepSeekKey() {
+  var keyInput = document.getElementById('pk-deepseek-DEEPSEEK_API_KEY');
+  var apiKey = keyInput ? keyInput.value.trim() : '';
+  if (!apiKey) { alert('Please enter a DeepSeek API key.'); return; }
+
+  try {
+    // Use GlobexAI.saveApiKey if available (writes to app_settings table)
+    if (window.GlobexAI && typeof GlobexAI.saveApiKey === 'function') {
+      await GlobexAI.saveApiKey(apiKey);
+    } else {
+      // Fallback: save via Supabase directly
+      var sb = window.supabaseClient || (window.GlobexCfg && GlobexCfg.getClient());
+      if (!sb) { alert('Supabase client not available. Cannot save.'); return; }
+      var result = await sb.from('app_settings')
+        .upsert({ key: 'deepseek_api_key', value: apiKey, updated_at: new Date().toISOString() });
+      if (result.error) throw result.error;
+    }
+
+    // Also save model preference
+    var modelSelect = document.getElementById('pk-deepseek-DEEPSEEK_MODEL');
+    if (modelSelect) {
+      var sb2 = window.supabaseClient || (window.GlobexCfg && GlobexCfg.getClient());
+      if (sb2) {
+        await sb2.from('app_settings')
+          .upsert({ key: 'deepseek_model', value: modelSelect.value, updated_at: new Date().toISOString() });
+      }
+    }
+
+    var icon = document.getElementById('status-icon-deepseek');
+    if (icon) icon.textContent = '✅';
+    alert('✅ DeepSeek API key saved successfully!');
+  } catch (e) {
+    alert('Error saving DeepSeek key: ' + e.message);
+  }
+}
+
+async function testDeepSeekConnection() {
+  var keyInput = document.getElementById('pk-deepseek-DEEPSEEK_API_KEY');
+  var apiKey = keyInput ? keyInput.value.trim() : '';
+  if (!apiKey) { alert('Please enter a DeepSeek API key first.'); return; }
+
+  var icon = document.getElementById('status-icon-deepseek');
+  if (icon) icon.textContent = '⏳';
+
+  try {
+    var resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [{ role: 'user', content: 'Say hello in one word.' }],
+        max_tokens: 10
+      })
+    });
+
+    if (resp.ok) {
+      if (icon) icon.textContent = '✅';
+      alert('✅ DeepSeek connection successful!');
+    } else {
+      var err = await resp.json().catch(function() { return {}; });
+      if (icon) icon.textContent = '❌';
+      alert('❌ DeepSeek connection failed: ' + (err.error && err.error.message || 'HTTP ' + resp.status));
+    }
+  } catch (e) {
+    if (icon) icon.textContent = '❌';
+    alert('❌ DeepSeek connection error: ' + e.message);
+  }
+}
+
+// Load existing DeepSeek key on page load
+(async function loadDeepSeekKey() {
+  try {
+    var sb = window.supabaseClient || (window.GlobexCfg && GlobexCfg.getClient());
+    if (!sb) return;
+    var result = await sb.from('app_settings').select('value').eq('key', 'deepseek_api_key').single();
+    if (result.data && result.data.value) {
+      var input = document.getElementById('pk-deepseek-DEEPSEEK_API_KEY');
+      if (input) input.value = result.data.value;
+      var icon = document.getElementById('status-icon-deepseek');
+      if (icon) icon.textContent = '✅';
+    }
+    var modelResult = await sb.from('app_settings').select('value').eq('key', 'deepseek_model').single();
+    if (modelResult.data && modelResult.data.value) {
+      var select = document.getElementById('pk-deepseek-DEEPSEEK_MODEL');
+      if (select) select.value = modelResult.data.value;
+    }
+  } catch (_) { /* ignore load errors */ }
+})();
 
 function _esc(str) {
   return String(str || '')

@@ -80,6 +80,24 @@ export async function getProduct(req, res, next) {
 /** POST /api/v1/products */
 export async function createProduct(req, res, next) {
   try {
+    const userId = req.user.id;
+
+    // Check KYC verification status — block unverified suppliers
+    const { data: kycRecords } = await supabase
+      .from('kyc_verifications')
+      .select('status')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    const kycStatus = (kycRecords && kycRecords.length > 0) ? kycRecords[0].status : 'unverified';
+    if (kycStatus !== 'verified' && kycStatus !== 'pending_review') {
+      return res.status(403).json({
+        success: false,
+        error: 'Identity verification required. Complete Real Name Authentication (NID/Passport) before uploading products.',
+      });
+    }
+
     const { title, description, price, moq, stock, category_id, specifications } = req.body;
     const images = (req.files || []).map((f) => f.path);
     const supplierId = req.user.profile?.id;

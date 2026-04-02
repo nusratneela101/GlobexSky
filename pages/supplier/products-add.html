@@ -90,7 +90,18 @@
     .cert-item input[type=checkbox]{accent-color:#0052CC;width:14px;height:14px}
     .cert-item:has(input:checked){background:#eef3ff;border-color:#0052CC;color:#0052CC;font-weight:600}
     .form-hint{font-size:.75rem;color:#94a3b8;margin-top:4px}
-    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-row,.form-row-3{grid-template-columns:1fr}.thumb-grid{grid-template-columns:repeat(4,1fr)}}
+    /* Verification banner */
+    .verification-banner{background:#fff8ed;border:1.5px solid #fed7aa;border-radius:12px;padding:20px;display:flex;gap:14px;align-items:flex-start;margin-bottom:20px}
+    .verification-banner.blocked{background:#fef2f2;border-color:#fecaca}
+    .verification-banner.info{background:#eff6ff;border-color:#bfdbfe}
+    .verification-banner i{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+    .verification-banner h3{font-size:.92rem;font-weight:700;margin-bottom:4px}
+    .verification-banner p{font-size:.82rem;color:#374151}
+    /* Variant section */
+    .variant-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 2fr 48px;gap:10px;align-items:end;margin-bottom:10px}
+    .variant-row input{width:100%;border:1.5px solid #e2e8f0;border-radius:6px;padding:7px 10px;font-size:.82rem;font-family:'Inter',sans-serif}
+    .variant-row input:focus{outline:none;border-color:#0052CC}
+    @media(max-width:768px){.page-layout{grid-template-columns:1fr}.account-sidebar{display:none}.form-row,.form-row-3{grid-template-columns:1fr}.thumb-grid{grid-template-columns:repeat(4,1fr)}.variant-row{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
@@ -138,6 +149,16 @@
   </aside>
 
   <main class="account-content">
+    <!-- Verification Banner (shown if KYC not completed) -->
+    <div class="verification-banner blocked" id="verificationBanner" style="display:none">
+      <i class="fas fa-shield-halved" style="color:#ef4444"></i>
+      <div>
+        <h3 id="verifyBannerTitle">Identity Verification Required</h3>
+        <p id="verifyBannerDesc">You must complete Real Name Authentication (NID/Passport verification) before you can upload products.</p>
+        <a href="verification.html" class="btn btn-primary btn-sm" style="margin-top:10px"><i class="fas fa-shield-halved"></i> Complete Verification Now</a>
+      </div>
+    </div>
+
     <!-- Header -->
     <div class="page-card">
       <div class="page-card-header">
@@ -337,6 +358,24 @@
       </div>
     </div>
 
+    <!-- Product Variants -->
+    <div class="page-card">
+      <div class="section-title"><i class="fas fa-layer-group"></i> Product Variants <span style="color:#64748b;font-weight:400;font-size:.78rem">(optional)</span></div>
+      <p class="form-hint" style="margin-bottom:14px">Add variants like different sizes, colors, or materials. Each variant can have its own SKU, price, and stock.</p>
+      <div id="variantContainer">
+        <div class="variant-row" style="margin-bottom:6px">
+          <label class="form-label" style="margin:0">Variant Name</label>
+          <label class="form-label" style="margin:0">SKU</label>
+          <label class="form-label" style="margin:0">Price (USD)</label>
+          <label class="form-label" style="margin:0">Stock</label>
+          <label class="form-label" style="margin:0">Attributes (JSON)</label>
+          <span></span>
+        </div>
+      </div>
+      <div id="variantRows"></div>
+      <button class="btn btn-secondary btn-sm" onclick="addVariantRow()"><i class="fas fa-plus"></i> Add Variant</button>
+    </div>
+
     <!-- Certifications -->
     <div class="page-card">
       <div class="section-title"><i class="fas fa-certificate"></i> Certifications &amp; Compliance</div>
@@ -367,17 +406,86 @@
 <div class="toast" id="toast"></div>
 
 <script src="../../assets/js/navbar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config.js"></script>
 <script>
   const thumbGrid = document.getElementById('thumbGrid');
   let uploadedFiles = [];
+  let isVerified = false;
 
-  function showToast(msg, duration = 3000) {
-    const t = document.getElementById('toast');
+  function showToast(msg, duration) {
+    duration = duration || 3000;
+    var t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), duration);
+    setTimeout(function() { t.classList.remove('show'); }, duration);
   }
 
+  // ── Verification gate ──
+  var verifyRetryCount = 0;
+  async function checkVerificationStatus() {
+    var sb = window.supabaseClient;
+    if (!sb) {
+      verifyRetryCount++;
+      if (verifyRetryCount < 20) { setTimeout(checkVerificationStatus, 400); }
+      return;
+    }
+    try {
+      var userRes = await sb.auth.getUser();
+      if (!userRes.data.user) {
+        window.location.href = '../auth/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      var uid = userRes.data.user.id;
+
+      // Check KYC verification status
+      var kycRes = await sb.from('kyc_verifications').select('status').eq('user_id', uid).order('created_at', { ascending: false }).limit(1);
+      var kycData = (kycRes.data && kycRes.data.length > 0) ? kycRes.data[0] : null;
+      var kycStatus = (kycData && kycData.status) || 'unverified';
+
+      // Check supplier profile verification
+      var supRes = await sb.from('supplier_profiles').select('verification_status, business_license_url').eq('user_id', uid).single();
+      var supStatus = (supRes.data && supRes.data.verification_status) || 'pending';
+      var hasLicense = !!(supRes.data && supRes.data.business_license_url);
+
+      var banner = document.getElementById('verificationBanner');
+      var bannerTitle = document.getElementById('verifyBannerTitle');
+      var bannerDesc = document.getElementById('verifyBannerDesc');
+
+      if (kycStatus === 'verified' || kycStatus === 'pending_review') {
+        // KYC complete — allow product upload
+        isVerified = true;
+        if (!hasLicense) {
+          // Show info banner: business licence needed for Verified Store badge, but upload allowed
+          banner.style.display = 'flex';
+          banner.classList.remove('blocked');
+          banner.classList.add('info');
+          banner.querySelector('i').style.color = '#3b82f6';
+          bannerTitle.textContent = 'Upload Business License for Verified Store Badge';
+          bannerDesc.textContent = 'You can upload products now. To get the Verified Store badge and higher search ranking, upload your Business License and Visiting Card from the Verification page.';
+        } else if (supStatus === 'verified' || supStatus === 'under_review') {
+          banner.style.display = 'none';
+        } else {
+          banner.style.display = 'none';
+        }
+      } else {
+        // KYC not complete — block product upload
+        isVerified = false;
+        banner.style.display = 'flex';
+        banner.classList.add('blocked');
+        banner.classList.remove('info');
+        bannerTitle.textContent = 'Real Name Authentication Required';
+        bannerDesc.textContent = 'You must complete NID/Passport verification before uploading products. Without Real Name Authentication, product upload is blocked.';
+      }
+    } catch(e) {
+      // If KYC table doesn't exist or other error, allow upload (graceful degradation)
+      isVerified = true;
+      document.getElementById('verificationBanner').style.display = 'none';
+    }
+  }
+  document.addEventListener('DOMContentLoaded', checkVerificationStatus);
+
+  // ── Drag & Drop Image Upload ──
   function handleDragOver(e) {
     e.preventDefault();
     document.getElementById('uploadArea').classList.add('drag-over');
@@ -391,20 +499,20 @@
     handleFiles(e.dataTransfer.files);
   }
   function handleFiles(files) {
-    Array.from(files).forEach(file => {
+    Array.from(files).forEach(function(file) {
       if (uploadedFiles.length >= 8) { showToast('Maximum 8 images allowed.'); return; }
       if (!file.type.startsWith('image/')) return;
       uploadedFiles.push(file);
-      const reader = new FileReader();
-      reader.onload = e => addThumb(e.target.result, uploadedFiles.length - 1);
+      var reader = new FileReader();
+      reader.onload = function(e) { addThumb(e.target.result, uploadedFiles.length - 1); };
       reader.readAsDataURL(file);
     });
   }
   function addThumb(src, idx) {
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.className = 'thumb-item';
     div.dataset.idx = idx;
-    div.innerHTML = `<img src="${src}" alt="Product image"><button class="remove-thumb" onclick="removeThumb(this,${idx})"><i class="fas fa-times"></i></button>`;
+    div.innerHTML = '<img src="' + src + '" alt="Product image"><button class="remove-thumb" onclick="removeThumb(this,' + idx + ')"><i class="fas fa-times"></i></button>';
     thumbGrid.appendChild(div);
   }
   function removeThumb(btn, idx) {
@@ -412,32 +520,180 @@
     uploadedFiles[idx] = null;
   }
 
+  // ── Tier Pricing ──
   function addTierRow() {
-    const tbody = document.getElementById('tierBody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input type="number" placeholder="Min qty" min="1"></td>
-      <td><input type="number" placeholder="Max qty" min="1"></td>
-      <td><input type="number" placeholder="0.00" step="0.01" min="0"></td>
-      <td><button class="btn btn-danger btn-sm" onclick="removeTierRow(this)" title="Remove"><i class="fas fa-trash"></i></button></td>`;
+    var tbody = document.getElementById('tierBody');
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td><input type="number" placeholder="Min qty" min="1"></td>' +
+      '<td><input type="number" placeholder="Max qty" min="1"></td>' +
+      '<td><input type="number" placeholder="0.00" step="0.01" min="0"></td>' +
+      '<td><button class="btn btn-danger btn-sm" onclick="removeTierRow(this)" title="Remove"><i class="fas fa-trash"></i></button></td>';
     tbody.appendChild(tr);
   }
   function removeTierRow(btn) {
-    const rows = document.querySelectorAll('#tierBody tr');
+    var rows = document.querySelectorAll('#tierBody tr');
     if (rows.length <= 1) { showToast('At least one tier row is required.'); return; }
     btn.closest('tr').remove();
   }
 
-  function submitProduct() {
-    const name = document.getElementById('productName').value.trim();
-    const sku = document.getElementById('productSku').value.trim();
-    const cat = document.getElementById('productCategory').value;
-    const price = document.getElementById('unitPrice').value;
-    const moq = document.getElementById('moq').value;
+  // ── Product Variants ──
+  function addVariantRow() {
+    var container = document.getElementById('variantRows');
+    var row = document.createElement('div');
+    row.className = 'variant-row';
+    row.innerHTML = '<input type="text" placeholder="e.g. Red / Large" class="variant-name">' +
+      '<input type="text" placeholder="SKU-VAR-001" class="variant-sku">' +
+      '<input type="number" placeholder="0.00" step="0.01" min="0" class="variant-price">' +
+      '<input type="number" placeholder="0" min="0" class="variant-stock">' +
+      '<input type="text" placeholder=\'{"color":"red","size":"L"}\' class="variant-attrs">' +
+      '<button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()" title="Remove"><i class="fas fa-trash"></i></button>';
+    container.appendChild(row);
+  }
+
+  function collectVariants() {
+    var rows = document.querySelectorAll('#variantRows .variant-row');
+    var variants = [];
+    rows.forEach(function(row) {
+      var name = row.querySelector('.variant-name').value.trim();
+      if (!name) return;
+      var attrs = {};
+      try { attrs = JSON.parse(row.querySelector('.variant-attrs').value || '{}'); } catch(e) {}
+      variants.push({
+        name: name,
+        sku: row.querySelector('.variant-sku').value.trim(),
+        price: parseFloat(row.querySelector('.variant-price').value) || null,
+        stock: parseInt(row.querySelector('.variant-stock').value) || 0,
+        attributes: attrs
+      });
+    });
+    return variants;
+  }
+
+  // ── Get auth token ──
+  function getAuthToken() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (token) return token;
+    var keys = Object.keys(localStorage);
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i].startsWith('sb-') && keys[i].endsWith('-auth-token')) {
+        try {
+          var sess = JSON.parse(localStorage.getItem(keys[i]) || 'null');
+          if (sess && sess.access_token) return sess.access_token;
+        } catch(e) {}
+      }
+    }
+    return null;
+  }
+
+  // ── Submit Product (Real API call) ──
+  async function submitProduct() {
+    var name = document.getElementById('productName').value.trim();
+    var sku = document.getElementById('productSku').value.trim();
+    var cat = document.getElementById('productCategory').value;
+    var desc = document.getElementById('productDesc').value.trim();
+    var price = document.getElementById('unitPrice').value;
+    var moq = document.getElementById('moq').value;
+
     if (!name || !sku || !cat || !price || !moq) {
       showToast('⚠️ Please fill in all required fields.');
       return;
     }
-    showToast('✅ Product submitted for review!');
+
+    // Verification gate check
+    if (!isVerified) {
+      showToast('⚠️ You must complete identity verification before uploading products.', 5000);
+      document.getElementById('verificationBanner').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    var token = getAuthToken();
+    if (!token) {
+      showToast('⚠️ Please log in to submit products.');
+      window.location.href = '../auth/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+      return;
+    }
+
+    // Build FormData for multipart upload
+    var formData = new FormData();
+    formData.append('title', name);
+    formData.append('description', desc || name);
+    formData.append('price', price);
+    formData.append('moq', moq || 1);
+    formData.append('stock', moq || 1);
+    formData.append('category_id', cat);
+    formData.append('sku', sku);
+
+    // Collect features as specifications
+    var features = document.getElementById('productFeatures').value.trim();
+    if (features) {
+      formData.append('specifications', JSON.stringify({ features: features.split('\n').filter(function(f) { return f.trim(); }) }));
+    }
+
+    // Attach images
+    var imageCount = 0;
+    uploadedFiles.forEach(function(file) {
+      if (file) {
+        formData.append('images', file);
+        imageCount++;
+      }
+    });
+
+    // Show loading state
+    var submitBtn = document.querySelector('[onclick="submitProduct()"]');
+    var originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+    try {
+      var apiBase = window.GLOBEX_CONFIG && window.GLOBEX_CONFIG.apiBase ? window.GLOBEX_CONFIG.apiBase : '/api/v1';
+      var response = await fetch(apiBase + '/products', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData
+      });
+
+      var result = await response.json();
+
+      if (response.ok && result.success) {
+        showToast('✅ Product submitted for review! It will appear on the website once approved.', 5000);
+
+        // Create variants if any
+        var variants = collectVariants();
+        if (variants.length > 0 && result.data && result.data.id) {
+          try {
+            var sb = window.supabaseClient;
+            if (sb) {
+              var variantData = variants.map(function(v) {
+                return {
+                  product_id: result.data.id,
+                  name: v.name,
+                  sku: v.sku,
+                  price: v.price,
+                  stock: v.stock,
+                  attributes: v.attributes
+                };
+              });
+              var varRes = await sb.from('product_variants').insert(variantData);
+              if (varRes.error) {
+                showToast('⚠️ Product saved but variants could not be created: ' + varRes.error.message, 5000);
+              }
+            }
+          } catch(varErr) {
+            showToast('⚠️ Product saved but variant creation failed.', 4000);
+          }
+        }
+
+        // Redirect to products list after a short delay
+        setTimeout(function() { window.location.href = 'products.html'; }, 2000);
+      } else {
+        showToast('❌ ' + (result.error || 'Failed to upload product. Please try again.'), 5000);
+      }
+    } catch(err) {
+      showToast('❌ Network error. Please check your connection and try again.', 5000);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    }
   }
 </script>
 </body>

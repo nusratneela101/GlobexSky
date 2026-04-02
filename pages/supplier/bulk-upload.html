@@ -252,56 +252,186 @@
     </ul>
   </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-var sampleRows=[
-  {name:'Wireless Bluetooth Headphones',sku:'WBH-001',price:'49.99',stock:'150',category:'Electronics',valid:true},
-  {name:'Ergonomic Office Chair',sku:'EOC-042',price:'219.00',stock:'30',category:'Furniture',valid:true},
-  {name:'Stainless Steel Water Bottle',sku:'',price:'18.50',stock:'500',category:'Kitchen',valid:false,err:'Missing SKU'},
-  {name:'LED Desk Lamp',sku:'LDL-088',price:'34.99',stock:'200',category:'Home Office',valid:true},
-  {name:'Yoga Mat Premium',sku:'YMP-011',price:'',stock:'80',category:'Sports',valid:false,err:'Missing price'},
-];
+var parsedRows = [];
+var validRows = [];
+
 function dragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('dragover');}
 function dragLeave(){document.getElementById('dropZone').classList.remove('dragover');}
 function dropFile(e){e.preventDefault();dragLeave();var f=e.dataTransfer.files[0];if(f)processFile(f);}
 function handleFile(inp){if(inp.files[0])processFile(inp.files[0]);}
-function processFile(f){
-  document.getElementById('dropText').textContent=f.name;
-  document.getElementById('dropSubtext').textContent='File selected — '+Math.round(f.size/1024)+' KB';
-  var prog=document.getElementById('progressSection');
-  prog.style.display='block';
-  var fill=document.getElementById('progressFill');
-  var pct=document.getElementById('progressPct');
-  var lbl=document.getElementById('progressLabel');
-  var p=0;
-  var t=setInterval(function(){
-    p+=10;fill.style.width=p+'%';pct.textContent=p+'%';
-    if(p>=100){clearInterval(t);lbl.textContent='Processing complete!';showPreview();}
-  },120);
-}
-function showPreview(){
-  var sec=document.getElementById('previewSection');
-  var body=document.getElementById('previewBody');
-  body.innerHTML='';
-  var errors=0;
-  sampleRows.forEach(function(r,i){
-    var tr=document.createElement('tr');
-    var statusCell=r.valid?'<span class="badge badge-green"><i class="fas fa-circle-check"></i> Valid</span>':'<span class="badge badge-red"><i class="fas fa-triangle-exclamation"></i> '+r.err+'</span>';
-    tr.innerHTML='<td>'+(i+1)+'</td><td>'+(r.valid?'':'<span style="color:#dc2626">')+r.name+(r.valid?'':'</span>')+'</td><td>'+(r.sku||'<span style="color:#dc2626">—</span>')+'</td><td>'+(r.price||'<span style="color:#dc2626">—</span>')+'</td><td>'+r.stock+'</td><td>'+r.category+'</td><td>'+statusCell+'</td>';
-    body.appendChild(tr);
-    if(!r.valid)errors++;
+
+function processFile(f) {
+  if (!f.name.endsWith('.csv')) {
+    alert('Please upload a CSV file.');
+    return;
+  }
+  if (f.size > 5 * 1024 * 1024) {
+    alert('File too large (' + Math.round(f.size / 1024 / 1024 * 10) / 10 + 'MB). Maximum allowed is 5MB.');
+    return;
+  }
+
+  document.getElementById('dropText').textContent = f.name;
+  document.getElementById('dropSubtext').textContent = 'Parsing — ' + Math.round(f.size / 1024) + ' KB';
+  var prog = document.getElementById('progressSection');
+  prog.style.display = 'block';
+  var fill = document.getElementById('progressFill');
+  var pct = document.getElementById('progressPct');
+  var lbl = document.getElementById('progressLabel');
+  fill.style.width = '30%'; pct.textContent = '30%';
+
+  Papa.parse(f, {
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      fill.style.width = '100%'; pct.textContent = '100%';
+      lbl.textContent = 'Parsing complete!';
+
+      parsedRows = [];
+      validRows = [];
+      var requiredCols = ['Product Name', 'SKU', 'Price', 'Stock', 'Category'];
+
+      results.data.forEach(function(row, i) {
+        var name = (row['Product Name'] || row['product_name'] || row['name'] || '').trim();
+        var sku = (row['SKU'] || row['sku'] || '').trim();
+        var price = (row['Price'] || row['price'] || '').toString().replace('$', '').trim();
+        var stock = (row['Stock'] || row['stock'] || row['quantity'] || '').toString().trim();
+        var category = (row['Category'] || row['category'] || '').trim();
+        var description = (row['Description'] || row['description'] || '').trim();
+
+        var errors = [];
+        if (!name) errors.push('Missing Product Name');
+        if (!sku) errors.push('Missing SKU');
+        if (!price || isNaN(parseFloat(price))) errors.push('Missing or invalid Price');
+        if (!stock || isNaN(parseInt(stock))) errors.push('Missing or invalid Stock');
+        if (!category) errors.push('Missing Category');
+
+        var parsed = {
+          name: name, sku: sku, price: price, stock: stock,
+          category: category, description: description,
+          valid: errors.length === 0, err: errors.join(', ')
+        };
+        parsedRows.push(parsed);
+        if (parsed.valid) validRows.push(parsed);
+      });
+
+      showPreview();
+    },
+    error: function(err) {
+      fill.style.width = '0%'; pct.textContent = '0%';
+      lbl.textContent = 'Parse error: ' + err.message;
+    }
   });
-  document.getElementById('rowCount').textContent=sampleRows.length;
-  document.getElementById('errorCount').textContent=errors>0?'('+errors+' error'+(errors>1?'s':'')+' found)':'';
-  sec.style.display='block';
 }
-function confirmUpload(){alert('Products imported successfully! 3 of 5 rows were added. 2 rows had errors and were skipped.');}
-function cancelUpload(){
-  document.getElementById('previewSection').style.display='none';
-  document.getElementById('progressSection').style.display='none';
-  document.getElementById('dropText').textContent='Drag & drop your CSV file here';
-  document.getElementById('dropSubtext').textContent='or click to browse — max file size 5MB';
+
+function showPreview() {
+  var sec = document.getElementById('previewSection');
+  var body = document.getElementById('previewBody');
+  body.innerHTML = '';
+  var errors = 0;
+  parsedRows.forEach(function(r, i) {
+    var tr = document.createElement('tr');
+    var statusCell = r.valid
+      ? '<span class="badge badge-green"><i class="fas fa-circle-check"></i> Valid</span>'
+      : '<span class="badge badge-red"><i class="fas fa-triangle-exclamation"></i> ' + r.err + '</span>';
+    tr.innerHTML = '<td>' + (i + 1) + '</td><td>' + (r.valid ? '' : '<span style="color:#dc2626">') + r.name + (r.valid ? '' : '</span>') + '</td><td>' + (r.sku || '<span style="color:#dc2626">—</span>') + '</td><td>' + (r.price || '<span style="color:#dc2626">—</span>') + '</td><td>' + r.stock + '</td><td>' + r.category + '</td><td>' + statusCell + '</td>';
+    body.appendChild(tr);
+    if (!r.valid) errors++;
+  });
+  document.getElementById('rowCount').textContent = parsedRows.length;
+  document.getElementById('errorCount').textContent = errors > 0 ? '(' + errors + ' error' + (errors > 1 ? 's' : '') + ' found)' : '';
+  sec.style.display = 'block';
 }
-function downloadTemplate(e){e.preventDefault();alert('CSV template download would start here in production.');}
+
+function getAuthToken() {
+  var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  if (token) return token;
+  var keys = Object.keys(localStorage);
+  for (var i = 0; i < keys.length; i++) {
+    if (keys[i].startsWith('sb-') && keys[i].endsWith('-auth-token')) {
+      try {
+        var sess = JSON.parse(localStorage.getItem(keys[i]) || 'null');
+        if (sess && sess.access_token) return sess.access_token;
+      } catch(e) {}
+    }
+  }
+  return null;
+}
+
+async function confirmUpload() {
+  if (validRows.length === 0) {
+    alert('No valid rows to import. Please fix errors and re-upload.');
+    return;
+  }
+
+  var token = getAuthToken();
+  if (!token) {
+    alert('Please log in to import products.');
+    return;
+  }
+
+  var apiBase = window.GLOBEX_CONFIG && window.GLOBEX_CONFIG.apiBase ? window.GLOBEX_CONFIG.apiBase : '/api/v1';
+  var success = 0;
+  var failed = 0;
+
+  for (var i = 0; i < validRows.length; i++) {
+    var r = validRows[i];
+    try {
+      // Note: category is passed as-is. The backend may need UUIDs;
+      // for named categories, admin should set up a mapping or use
+      // category names that match the category_id in the database.
+      var response = await fetch(apiBase + '/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          title: r.name,
+          description: r.description || r.name,
+          price: parseFloat(r.price),
+          moq: 1,
+          stock: parseInt(r.stock),
+          category_id: r.category
+        })
+      });
+      if (response.ok) {
+        success++;
+      } else {
+        failed++;
+      }
+    } catch(e) {
+      failed++;
+    }
+  }
+
+  alert('Import complete! ' + success + ' of ' + validRows.length + ' products imported successfully.' + (failed > 0 ? ' ' + failed + ' failed.' : ''));
+  if (success > 0) {
+    setTimeout(function() { window.location.href = 'products.html'; }, 1000);
+  }
+}
+
+function cancelUpload() {
+  document.getElementById('previewSection').style.display = 'none';
+  document.getElementById('progressSection').style.display = 'none';
+  document.getElementById('dropText').textContent = 'Drag & drop your CSV file here';
+  document.getElementById('dropSubtext').textContent = 'or click to browse — max file size 5MB';
+  parsedRows = [];
+  validRows = [];
+}
+
+function downloadTemplate(e) {
+  e.preventDefault();
+  var csv = 'Product Name,SKU,Price,Stock,Category,Description\n';
+  csv += 'Wireless Bluetooth Headphones,WBH-001,49.99,150,Electronics,High quality wireless headphones\n';
+  csv += 'Ergonomic Office Chair,EOC-042,219.00,30,Furniture,Adjustable ergonomic chair\n';
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'globexsky-product-template.csv';
+  link.click();
+}
 </script>
 <script src="../../assets/js/main.js" defer></script>
 </body>
