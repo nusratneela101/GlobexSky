@@ -403,25 +403,16 @@
       <!-- GALLERY -->
       <section aria-label="Product Images" style="background:#fff;border-radius:16px;border:1px solid #e2e8f0;padding:24px;margin-bottom:24px;">
         <div class="gallery-main" id="gallery-main">
-          <div class="gallery-placeholder">
-            <i class="fas fa-headphones" style="font-size:5rem;opacity:.35;color:#6366f1"></i>
-            <span>Wireless Bluetooth Headphones Pro X500</span>
+          <img data-gallery-main class="gallery-main-img" src="" alt="Product image"
+               style="display:none"
+               onload="this.style.display='block';var ph=document.getElementById('gallery-placeholder');if(ph)ph.style.display='none';"
+               onerror="this.style.display='none'"/>
+          <div class="gallery-placeholder" id="gallery-placeholder">
+            <i class="fas fa-image" style="font-size:4rem;opacity:.3;color:#6366f1"></i>
+            <span>Loading product image…</span>
           </div>
         </div>
-        <div class="gallery-thumbnails" role="list" aria-label="Product image thumbnails">
-          <div class="thumb active" role="listitem" tabindex="0" aria-label="View image 1" onclick="setActiveThumb(this,0)">
-            <i class="fas fa-headphones"></i>
-          </div>
-          <div class="thumb" role="listitem" tabindex="0" aria-label="View image 2" onclick="setActiveThumb(this,1)">
-            <i class="fas fa-volume-up"></i>
-          </div>
-          <div class="thumb" role="listitem" tabindex="0" aria-label="View image 3" onclick="setActiveThumb(this,2)">
-            <i class="fas fa-microphone"></i>
-          </div>
-          <div class="thumb" role="listitem" tabindex="0" aria-label="View image 4" onclick="setActiveThumb(this,3)">
-            <i class="fas fa-battery-full"></i>
-          </div>
-        </div>
+        <div class="gallery-thumbnails" role="list" aria-label="Product image thumbnails" data-gallery-thumbs></div>
       </section>
 
       <!-- TABS -->
@@ -443,7 +434,7 @@
         <div class="tabs-content">
           <!-- DESCRIPTION -->
           <div class="tab-panel active" id="tab-description" role="tabpanel" aria-labelledby="tbtn-description">
-            <div class="description-text">
+          <div class="description-text" data-product-description>
               <p>The <strong>Wireless Bluetooth Headphones Pro X500</strong> deliver studio-grade audio performance in a premium over-ear design. Engineered for audiophiles and professionals alike, these headphones combine advanced noise cancellation technology with 40-hour battery life, making them ideal for long-haul travel, office use, or immersive home listening sessions.</p>
               <p>Equipped with 40mm custom-tuned dynamic drivers, the X500 produces deep, punchy bass alongside crisp highs and a detailed midrange. The adaptive active noise cancellation (ANC) system uses dual microphones to analyze ambient sound and neutralize it in real time, giving you an uninterrupted sonic experience no matter your environment.</p>
               <p>The foldable, lightweight architecture — crafted from aircraft-grade aluminum and premium vegan leather — ensures durability and comfort for extended wear. A multi-point connection feature allows simultaneous pairing with two devices, while the built-in voice assistant support works seamlessly with Google Assistant, Siri, and Alexa.</p>
@@ -556,17 +547,17 @@
           <span class="badge badge-verified"><i class="fas fa-shield-halved"></i> Trade Assured</span>
         </div>
 
-        <h1 class="product-title">Wireless Bluetooth Headphones Pro X500 — Over-Ear ANC</h1>
+        <h1 class="product-title" data-product-name>Wireless Bluetooth Headphones Pro X500 — Over-Ear ANC</h1>
 
         <div class="product-meta">
-          <div class="stars" aria-label="4.7 out of 5 stars">
+          <div class="stars" aria-label="4.7 out of 5 stars" data-product-stars>
             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
           </div>
-          <span class="rating-count">4.7 (1,284 reviews)</span>
+          <span class="rating-count" data-product-reviews-count>4.7 (1,284 reviews)</span>
           <span class="sold-count"><i class="fas fa-box"></i> 8,400+ sold</span>
         </div>
 
-        <div class="product-price-hero">$12.50 – $18.90</div>
+        <div class="product-price-hero" data-product-price>$12.50 – $18.90</div>
         <p class="price-range">Per unit · Price depends on quantity</p>
 
         <!-- TIERED PRICING TABLE -->
@@ -602,7 +593,7 @@
           <label class="qty-label" for="qty-input">Quantity:</label>
           <div class="qty-control">
             <button class="qty-btn" aria-label="Decrease quantity" onclick="changeQty(-1)"><i class="fas fa-minus"></i></button>
-            <input class="qty-input" type="number" id="qty-input" value="100" min="1" max="9999" aria-label="Quantity"/>
+            <input class="qty-input" type="number" id="qty-input" data-qty-input value="100" min="1" max="9999" aria-label="Quantity"/>
             <button class="qty-btn" aria-label="Increase quantity" onclick="changeQty(1)"><i class="fas fa-plus"></i></button>
           </div>
         </div>
@@ -638,7 +629,7 @@
           <div class="supplier-card-header">
             <div class="supplier-avatar">SH</div>
             <div>
-              <div class="supplier-name">SoundHarvest Electronics Co., Ltd.</div>
+              <div class="supplier-name" data-product-supplier>SoundHarvest Electronics Co., Ltd.</div>
               <div class="supplier-verified"><i class="fas fa-circle-check"></i> Gold Verified Supplier</div>
             </div>
           </div>
@@ -778,6 +769,8 @@
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/cart.js"></script>
 <script src="../../assets/js/auth.js"></script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/product.js"></script>
 <script>
   document.getElementById('copyright-year').textContent = new Date().getFullYear();
@@ -813,8 +806,21 @@
       btn.style.color = '';
     }
   }
+
+  // ── Header search redirect ──
+  (function () {
+    var searchInput = document.getElementById('main-search-input');
+    var searchBtn   = document.getElementById('btn-search-go');
+    function doSearch() {
+      var q = searchInput ? searchInput.value.trim() : '';
+      if (q) window.location.href = '/pages/search/index.html?q=' + encodeURIComponent(q);
+    }
+    if (searchBtn) searchBtn.addEventListener('click', doSearch);
+    if (searchInput) searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+    });
+  })();
 </script>
 <script src="../../assets/js/navbar.js"></script>
-  <script src="../../assets/js/products.js"></script>
 </body>
 </html>
