@@ -611,6 +611,7 @@ function updateCompareBar(ids, bar) {
 
 /** Return API base URL. */
 function _productsApiBase() {
+  if (typeof GlobexAPI !== 'undefined') return GlobexAPI.baseURL;
   return (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL)
     ? GlobexConfig.API_BASE_URL
     : '/api/v1';
@@ -699,30 +700,39 @@ async function loadProductsFromAPI() {
   const container = document.querySelector('[data-load-products-api]');
   if (!container) return;
 
-  const base   = _productsApiBase();
-  const params = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(window.location.search);
   // Ensure sensible defaults
-  if (!params.get('limit')) params.set('limit', '20');
+  if (!urlParams.get('limit')) urlParams.set('limit', '20');
 
   container.innerHTML = '<p class="products-loading-msg" style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8">Loading products…</p>';
 
   try {
-    const res  = await fetch(`${base}/products?${params}`);
-    if (!res.ok) {
-      _renderListingEmpty(container, 'Unable to load products. Please try again later.');
-      return;
+    let products, meta;
+    if (typeof GlobexAPI !== 'undefined') {
+      // Use centralized GlobexAPI when available
+      const paramObj = Object.fromEntries(urlParams.entries());
+      const json = await GlobexAPI.getProducts(paramObj);
+      products = (json && json.data !== undefined) ? json.data : (json || []);
+      meta = (json && json.meta) || {};
+    } else {
+      const base = _productsApiBase();
+      const res  = await fetch(`${base}/products?${urlParams}`);
+      if (!res.ok) {
+        _renderListingEmpty(container, 'Unable to load products. Please try again later.');
+        return;
+      }
+      const json = await res.json();
+      products = json.data || [];
+      meta = json.meta || {};
     }
-    const json     = await res.json();
-    const products = json.data || [];
-    const meta     = json.meta || {};
 
-    if (!products.length) {
+    if (!Array.isArray(products) || !products.length) {
       _renderListingEmpty(container, 'No products found. Try adjusting your filters.');
       return;
     }
 
     container.innerHTML = products.map(_buildListingCard).join('');
-    _renderListingPagination(meta.total || products.length, parseInt(params.get('page') || '1', 10), parseInt(params.get('limit') || '20', 10));
+    _renderListingPagination(meta.total || products.length, parseInt(urlParams.get('page') || '1', 10), parseInt(urlParams.get('limit') || '20', 10));
 
     // Update result count display if present
     const countEl = document.querySelector('[data-products-count]');

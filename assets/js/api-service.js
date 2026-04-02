@@ -342,3 +342,198 @@ window.apiGet    = function (path, params) { return ApiService.get(path, params)
 window.apiPost   = function (path, body)   { return ApiService.post(path, body);  };
 window.apiPut    = function (path, body)   { return ApiService.put(path, body);   };
 window.apiDelete = function (path)         { return ApiService.del(path);          };
+
+/* ─────────────────────────────────────────────
+   GlobexAPI — Centralized Domain API Service
+   All pages should use window.GlobexAPI instead
+   of writing their own fetch calls.
+───────────────────────────────────────────── */
+(function (global) {
+  'use strict';
+
+  var GlobexAPI = {
+
+    /** Base URL for all API requests. */
+    get baseURL() {
+      return (global.GlobexConfig && global.GlobexConfig.API_BASE_URL) ||
+             (global.GLOBEX_CONFIG && global.GLOBEX_CONFIG.API_BASE_URL) ||
+             '/api/v1';
+    },
+
+    /* ── Token management ─────────────────────────────────────────── */
+    getToken: function () {
+      // Priority: globexToken (set by auth on login) → globexSession.token → Supabase session
+      var direct = localStorage.getItem('globexToken');
+      if (direct) return direct;
+      try {
+        var sess = JSON.parse(localStorage.getItem('globexSession') || 'null');
+        if (sess && sess.token) return sess.token;
+      } catch (_) { /* ignore */ }
+      // Fall back to Supabase access_token stored in sb-*-auth-token
+      try {
+        var keys = Object.keys(localStorage);
+        for (var i = 0; i < keys.length; i++) {
+          if (keys[i].startsWith('sb-') && keys[i].endsWith('-auth-token')) {
+            var sbSess = JSON.parse(localStorage.getItem(keys[i]) || 'null');
+            if (sbSess && sbSess.access_token) return sbSess.access_token;
+          }
+        }
+      } catch (_) { /* ignore */ }
+      return null;
+    },
+
+    setToken: function (token) {
+      localStorage.setItem('globexToken', token);
+    },
+
+    clearToken: function () {
+      localStorage.removeItem('globexToken');
+    },
+
+    /* ── Core HTTP methods ────────────────────────────────────────── */
+    _buildHeaders: function () {
+      var headers = { 'Content-Type': 'application/json' };
+      var token = this.getToken();
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      return headers;
+    },
+
+    _handleResponse: function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        if (!res.ok) {
+          var msg = (data && (data.error || data.message)) || ('HTTP ' + res.status);
+          return Promise.reject(new Error(msg));
+        }
+        return data;
+      });
+    },
+
+    get: function (endpoint, params) {
+      var self = this;
+      var url = this.baseURL + endpoint;
+      if (params && typeof params === 'object' && Object.keys(params).length) {
+        url += '?' + new URLSearchParams(params).toString();
+      }
+      return fetch(url, { headers: this._buildHeaders() }).then(function (res) { return self._handleResponse(res); });
+    },
+
+    post: function (endpoint, body) {
+      var self = this;
+      return fetch(this.baseURL + endpoint, {
+        method: 'POST',
+        headers: this._buildHeaders(),
+        body: JSON.stringify(body || {}),
+      }).then(function (res) { return self._handleResponse(res); });
+    },
+
+    put: function (endpoint, body) {
+      var self = this;
+      return fetch(this.baseURL + endpoint, {
+        method: 'PUT',
+        headers: this._buildHeaders(),
+        body: JSON.stringify(body || {}),
+      }).then(function (res) { return self._handleResponse(res); });
+    },
+
+    delete: function (endpoint) {
+      var self = this;
+      return fetch(this.baseURL + endpoint, {
+        method: 'DELETE',
+        headers: this._buildHeaders(),
+      }).then(function (res) { return self._handleResponse(res); });
+    },
+
+    /* ── Auth helpers ─────────────────────────────────────────────── */
+    login: function (email, password) {
+      var self = this;
+      return this.post('/auth/login', { email: email, password: password })
+        .then(function (data) {
+          var token = data && (data.token || (data.data && data.data.token));
+          if (token) self.setToken(token);
+          return data;
+        });
+    },
+
+    register: function (data) {
+      return this.post('/auth/register', data);
+    },
+
+    getProfile: function () {
+      return this.get('/auth/me');
+    },
+
+    isLoggedIn: function () {
+      return !!this.getToken();
+    },
+
+    logout: function () {
+      this.clearToken();
+      // Also sign out of Supabase if available
+      if (global.supabaseClient && global.supabaseClient.auth) {
+        global.supabaseClient.auth.signOut().catch(function () { /* ignore */ });
+      }
+      var loginPage = (global.GlobexConfig && global.GlobexConfig.LOGIN_URL) || '/pages/auth/login.html';
+      global.location.href = loginPage;
+    },
+
+    /* ── Product APIs ─────────────────────────────────────────────── */
+    getProducts: function (params) {
+      return this.get('/products', params || {});
+    },
+
+    getProduct: function (id) {
+      return this.get('/products/' + id);
+    },
+
+    searchProducts: function (query, params) {
+      // Explicit query takes precedence over any 'q' in params
+      var qParams = Object.assign({}, params || {}, { q: query });
+      return this.get('/search', qParams);
+    },
+
+    /* ── Cart APIs ────────────────────────────────────────────────── */
+    getCart: function () {
+      return this.get('/cart');
+    },
+
+    addToCart: function (productId, qty) {
+      return this.post('/cart/add', { product_id: productId, quantity: qty || 1 });
+    },
+
+    /* ── Order APIs ───────────────────────────────────────────────── */
+    getOrders: function () {
+      return this.get('/orders');
+    },
+
+    createOrder: function (data) {
+      return this.post('/orders', data);
+    },
+  };
+
+  /* ── Auth state UI management ─────────────────────────────────────
+     On DOMContentLoaded, check login state and show/hide UI elements.
+     Works on ALL pages that include this script.
+  ─────────────────────────────────────────────────────────────────── */
+  function updateAuthUI() {
+    var isLoggedIn = GlobexAPI.isLoggedIn();
+
+    // Elements to show when logged out
+    document.querySelectorAll('.auth-logged-out, [data-auth="logged-out"]').forEach(function (el) {
+      el.style.display = isLoggedIn ? 'none' : '';
+    });
+
+    // Elements to show when logged in
+    document.querySelectorAll('.auth-logged-in, [data-auth="logged-in"]').forEach(function (el) {
+      el.style.display = isLoggedIn ? '' : 'none';
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateAuthUI);
+  } else {
+    updateAuthUI();
+  }
+
+  global.GlobexAPI = GlobexAPI;
+
+}(typeof window !== 'undefined' ? window : this));

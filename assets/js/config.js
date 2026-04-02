@@ -63,3 +63,11 @@ window.GlobexConfig = GlobexConfig;
 window.SUPABASE_URL = SUPABASE_URL;
 window.SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
 window.API_BASE_URL = API_BASE_URL;
+
+// GLOBEX_CONFIG — canonical config object accessible by all modules
+window.GLOBEX_CONFIG = {
+  API_BASE_URL,
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  ENV: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'development' : 'production',
+};

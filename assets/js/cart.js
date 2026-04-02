@@ -301,6 +301,7 @@ function initCartEvents() {
 
 /** Return the stored JWT token (null when not logged in). */
 function _getAuthToken() {
+  if (typeof GlobexAPI !== 'undefined') return GlobexAPI.getToken();
   try {
     const session = JSON.parse(localStorage.getItem('globexSession') || 'null');
     return session?.token || null;
@@ -311,6 +312,7 @@ function _getAuthToken() {
 
 /** Return the API base URL. */
 function _cartApiBase() {
+  if (typeof GlobexAPI !== 'undefined') return GlobexAPI.baseURL;
   return (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL)
     ? GlobexConfig.API_BASE_URL
     : '/api/v1';
