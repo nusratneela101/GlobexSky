@@ -201,6 +201,33 @@ function initCurrencySwitcher() {
   if (savedItem) savedItem.classList.add('active');
 }
 
+function initSelectCurrencySwitcher() {
+  const selects = document.querySelectorAll('#currency-select, #mobile-currency-select, [data-currency-selector]');
+  if (!selects.length) return;
+
+  const applySymbol = (currency) => {
+    const symbol = (CURRENCY_SYMBOLS && CURRENCY_SYMBOLS[currency]) || currency + ' ';
+    document.querySelectorAll('.price-symbol, .currency-symbol').forEach((el) => {
+      el.textContent = symbol;
+    });
+  };
+
+  selects.forEach((sel) => {
+    sel.addEventListener('change', () => {
+      const currency = sel.value;
+      localStorage.setItem('globexCurrency', currency);
+      applySymbol(currency);
+      // sync all other selects
+      selects.forEach((other) => { if (other !== sel) other.value = currency; });
+    });
+  });
+
+  // Restore saved currency on load
+  const saved = localStorage.getItem('globexCurrency') || 'USD';
+  selects.forEach((sel) => { sel.value = saved; });
+  applySymbol(saved);
+}
+
 /* ─────────────────────────────────────────────
    TAB COMPONENT
 ───────────────────────────────────────────── */
@@ -755,6 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAdminSidebar();
   initLanguageSwitcher();
   initCurrencySwitcher();
+  initSelectCurrencySwitcher();
   initTabs();
   initModals();
   initSmoothScroll();
