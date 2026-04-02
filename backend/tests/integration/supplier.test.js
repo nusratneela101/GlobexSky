@@ -144,6 +144,30 @@ jest.mock('../../controllers/supplier.controller.js', () => ({
   syncImportedProducts: jest.fn((_req, res) => {
     res.json({ success: true, message: 'Sync triggered for all imported products.', synced_at: new Date().toISOString() });
   }),
+  listSuppliers: jest.fn((_req, res) => {
+    res.json({ success: true, data: [], meta: { total: 0, page: 1, limit: 20 } });
+  }),
+  registerSupplier: jest.fn((req, res) => {
+    res.status(201).json({ success: true, data: { id: 'new-supplier-1', company_name: req.body.company_name }, message: 'Supplier registration submitted successfully.' });
+  }),
+  contactSupplier: jest.fn((_req, res) => {
+    res.status(201).json({ success: true, message: 'Your inquiry has been sent!' });
+  }),
+  getDashboardProducts: jest.fn((_req, res) => {
+    res.json({ success: true, data: [], meta: { total: 0, page: 1, limit: 20 } });
+  }),
+  createDashboardProduct: jest.fn((req, res) => {
+    res.status(201).json({ success: true, data: { id: 'prod-new', title: req.body.title, price: req.body.price } });
+  }),
+  updateDashboardProduct: jest.fn((req, res) => {
+    res.json({ success: true, data: { id: req.params.id, ...req.body } });
+  }),
+  deleteDashboardProduct: jest.fn((_req, res) => {
+    res.json({ success: true, message: 'Product deleted.' });
+  }),
+  updateOrderStatus: jest.fn((req, res) => {
+    res.json({ success: true, data: { id: req.params.id, status: req.body.status } });
+  }),
 }));
 
 // ─── Role check mock ─────────────────────────────────────────────────────────
