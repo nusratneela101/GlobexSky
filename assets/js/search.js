@@ -184,7 +184,7 @@ const GlobexSearch = (() => {
 
     // If there's no results grid on this page, redirect to the search results page
     if (!resultsGrid && q) {
-      window.location.href = 'pages/search/index.html?q=' + encodeURIComponent(q) + (page > 1 ? '&page=' + Math.max(1, parseInt(page, 10) || 1) : '');
+      window.location.href = '/pages/search/index.html?q=' + encodeURIComponent(q) + (page > 1 ? '&page=' + Math.max(1, parseInt(page, 10) || 1) : '');
       return;
     }
 
@@ -205,7 +205,7 @@ const GlobexSearch = (() => {
       } catch (_aiErr) {
         // Fall back to regular search
         const params = new URLSearchParams({ q, page, limit: 20, ...filters });
-        const data = await window.API.get(`/search?${params}`);
+        const data = await window.API.get(`/products/search?${params}`);
         products = data.data || [];
         meta = data.meta || { total: products.length };
         suggestion = data.suggestion;

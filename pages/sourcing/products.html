@@ -632,7 +632,7 @@
 
         <!-- TOP BAR -->
         <div class="topbar">
-          <p class="results-count" aria-live="polite">Showing <strong>1–24</strong> of <strong>12,450</strong> products</p>
+          <p class="results-count" aria-live="polite" data-products-count>Loading products…</p>
           <div class="topbar-controls">
             <label for="sort-select" class="sr-only">Sort by</label>
             <select id="sort-select" class="sort-select" aria-label="Sort products">
@@ -654,415 +654,15 @@
           </div>
         </div>
 
-        <!-- ACTIVE FILTER CHIPS -->
-        <div class="active-filters" id="active-filters" aria-label="Active filters">
-          <span class="filter-chip">Electronics <button class="filter-chip-remove" aria-label="Remove Electronics filter">×</button></span>
-          <span class="filter-chip">China <button class="filter-chip-remove" aria-label="Remove China filter">×</button></span>
-          <span class="filter-chip">CE <button class="filter-chip-remove" aria-label="Remove CE filter">×</button></span>
-        </div>
+        <!-- ACTIVE FILTER CHIPS — populated dynamically -->
+        <div class="active-filters" id="active-filters" aria-label="Active filters"></div>
 
-        <!-- PRODUCT GRID -->
-        <div class="products-grid" id="products-grid" role="list">
-
-          <!-- Cards 1–24 -->
-          <!-- Card 1 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product1/300/200" alt="Wireless Earbuds Pro" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="1" aria-label="Quick view Wireless Earbuds Pro">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Wireless Earbuds Pro to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Wireless Earbuds Pro</h3>
-              <p class="card-price">$18.50 – $25.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> TechPro Electronics</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.5 (234)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 2 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product2/300/200" alt="LED Smart Bulb 9W" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="2" aria-label="Quick view LED Smart Bulb 9W">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add LED Smart Bulb 9W to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">LED Smart Bulb 9W</h3>
-              <p class="card-price">$2.10 – $4.50</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> BrightLight Co.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.0 (89)</p>
-              <span class="card-moq">Min. 100 units</span>
-            </div>
-          </article>
-
-          <!-- Card 3 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product3/300/200" alt="USB-C Hub 7-Port" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="3" aria-label="Quick view USB-C Hub 7-Port">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add USB-C Hub 7-Port to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">USB-C Hub 7-Port</h3>
-              <p class="card-price">$12.00 – $18.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> ConnectPro Ltd.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span> 4.8 (412)</p>
-              <span class="card-moq">Min. 20 units</span>
-            </div>
-          </article>
-
-          <!-- Card 4 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product4/300/200" alt="Bamboo Phone Case" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="4" aria-label="Quick view Bamboo Phone Case">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Bamboo Phone Case to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Bamboo Phone Case</h3>
-              <p class="card-price">$3.50 – $6.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> EcoDesigns Inc.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.5 (178)</p>
-              <span class="card-moq">Min. 200 units</span>
-            </div>
-          </article>
-
-          <!-- Card 5 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product5/300/200" alt="Portable Solar Panel" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="5" aria-label="Quick view Portable Solar Panel">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Portable Solar Panel to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Portable Solar Panel</h3>
-              <p class="card-price">$35.00 – $58.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> SolarTech Corp.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.2 (67)</p>
-              <span class="card-moq">Min. 10 units</span>
-            </div>
-          </article>
-
-          <!-- Card 6 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product6/300/200" alt="Stainless Steel Thermos" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="6" aria-label="Quick view Stainless Steel Thermos">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Stainless Steel Thermos to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Stainless Steel Thermos</h3>
-              <p class="card-price">$8.00 – $14.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> DrinkWell Mfg.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span> 4.9 (521)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 7 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product7/300/200" alt="Smart Home Hub" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="7" aria-label="Quick view Smart Home Hub">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Smart Home Hub to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Smart Home Hub</h3>
-              <p class="card-price">$22.00 – $35.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> SmartLife Tech.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.6 (302)</p>
-              <span class="card-moq">Min. 30 units</span>
-            </div>
-          </article>
-
-          <!-- Card 8 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product8/300/200" alt='LED Ring Light 18"' loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="8" aria-label='Quick view LED Ring Light 18"'>Quick View</button></div>
-              <button class="card-wishlist" aria-label='Add LED Ring Light 18" to wishlist'><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">LED Ring Light 18&quot;</h3>
-              <p class="card-price">$28.00 – $45.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> PhotoPro Supplies</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.3 (145)</p>
-              <span class="card-moq">Min. 20 units</span>
-            </div>
-          </article>
-
-          <!-- Card 9 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product9/300/200" alt="Ergonomic Mouse Pad" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="9" aria-label="Quick view Ergonomic Mouse Pad">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Ergonomic Mouse Pad to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Ergonomic Mouse Pad</h3>
-              <p class="card-price">$4.50 – $8.50</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> ComfortDesk Co.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.5 (198)</p>
-              <span class="card-moq">Min. 100 units</span>
-            </div>
-          </article>
-
-          <!-- Card 10 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product10/300/200" alt="Foldable Keyboard" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="10" aria-label="Quick view Foldable Keyboard">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Foldable Keyboard to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Foldable Keyboard</h3>
-              <p class="card-price">$15.00 – $24.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> FoldTech Ltd.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.1 (76)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 11 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product11/300/200" alt="Mini Air Purifier" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="11" aria-label="Quick view Mini Air Purifier">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Mini Air Purifier to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Mini Air Purifier</h3>
-              <p class="card-price">$19.00 – $30.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> CleanAir Factory</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span> 4.7 (289)</p>
-              <span class="card-moq">Min. 30 units</span>
-            </div>
-          </article>
-
-          <!-- Card 12 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product12/300/200" alt="Smart Door Lock" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="12" aria-label="Quick view Smart Door Lock">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Smart Door Lock to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Smart Door Lock</h3>
-              <p class="card-price">$45.00 – $72.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> SecureHome Tech.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.6 (354)</p>
-              <span class="card-moq">Min. 10 units</span>
-            </div>
-          </article>
-
-          <!-- Card 13 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product13/300/200" alt="Yoga Mat Premium" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="13" aria-label="Quick view Yoga Mat Premium">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Yoga Mat Premium to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Yoga Mat Premium</h3>
-              <p class="card-price">$9.50 – $16.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> FitLife Sports</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.2 (112)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 14 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product14/300/200" alt="Bamboo Cutting Board" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="14" aria-label="Quick view Bamboo Cutting Board">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Bamboo Cutting Board to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Bamboo Cutting Board</h3>
-              <p class="card-price">$6.00 – $11.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> GreenKitchen Ltd.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span> 4.8 (445)</p>
-              <span class="card-moq">Min. 100 units</span>
-            </div>
-          </article>
-
-          <!-- Card 15 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product15/300/200" alt="Electric Kettle 1.7L" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="15" aria-label="Quick view Electric Kettle 1.7L">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Electric Kettle 1.7L to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Electric Kettle 1.7L</h3>
-              <p class="card-price">$14.00 – $22.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> HomeAppliance Co.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.5 (267)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 16 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product16/300/200" alt="Noise-Cancel Headphones" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="16" aria-label="Quick view Noise-Cancel Headphones">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Noise-Cancel Headphones to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Noise-Cancel Headphones</h3>
-              <p class="card-price">$32.00 – $55.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> AudioMax Factory</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span> 4.9 (612)</p>
-              <span class="card-moq">Min. 20 units</span>
-            </div>
-          </article>
-
-          <!-- Card 17 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product17/300/200" alt="4K Webcam Pro" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="17" aria-label="Quick view 4K Webcam Pro">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add 4K Webcam Pro to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">4K Webcam Pro</h3>
-              <p class="card-price">$28.00 – $42.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> VisionTech Mfg.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.4 (189)</p>
-              <span class="card-moq">Min. 30 units</span>
-            </div>
-          </article>
-
-          <!-- Card 18 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product18/300/200" alt="Smart Plug WiFi" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="18" aria-label="Quick view Smart Plug WiFi">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Smart Plug WiFi to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Smart Plug WiFi</h3>
-              <p class="card-price">$5.50 – $9.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> SmartHome Pro</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.3 (334)</p>
-              <span class="card-moq">Min. 100 units</span>
-            </div>
-          </article>
-
-          <!-- Card 19 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product19/300/200" alt="Carbon Fiber Wallet" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="19" aria-label="Quick view Carbon Fiber Wallet">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Carbon Fiber Wallet to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Carbon Fiber Wallet</h3>
-              <p class="card-price">$7.50 – $13.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> CarbonStyle Ltd.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span> 4.7 (278)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 20 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product20/300/200" alt="Portable Blender" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="20" aria-label="Quick view Portable Blender">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Portable Blender to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Portable Blender</h3>
-              <p class="card-price">$11.00 – $18.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> BlendFast Corp.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.5 (156)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 21 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product21/300/200" alt="LED Strip Lights 5m" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="21" aria-label="Quick view LED Strip Lights 5m">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add LED Strip Lights 5m to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">LED Strip Lights 5m</h3>
-              <p class="card-price">$6.50 – $12.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> LightCraft Factory</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.1 (203)</p>
-              <span class="card-moq">Min. 100 units</span>
-            </div>
-          </article>
-
-          <!-- Card 22 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product22/300/200" alt="Mechanical Keyboard" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="22" aria-label="Quick view Mechanical Keyboard">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Mechanical Keyboard to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Mechanical Keyboard</h3>
-              <p class="card-price">$35.00 – $60.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> KeyMaster Tech.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span> 4.8 (387)</p>
-              <span class="card-moq">Min. 20 units</span>
-            </div>
-          </article>
-
-          <!-- Card 23 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product23/300/200" alt="WiFi Range Extender" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="23" aria-label="Quick view WiFi Range Extender">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add WiFi Range Extender to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">WiFi Range Extender</h3>
-              <p class="card-price">$9.00 – $16.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> NetBoost Mfg.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span> 4.4 (241)</p>
-              <span class="card-moq">Min. 50 units</span>
-            </div>
-          </article>
-
-          <!-- Card 24 -->
-          <article class="product-card" role="listitem">
-            <div class="card-img-wrap">
-              <img class="card-img" src="https://picsum.photos/seed/product24/300/200" alt="Smart Scale Bluetooth" loading="lazy" width="300" height="200"/>
-              <div class="card-overlay"><button class="btn-quick-view" data-product="24" aria-label="Quick view Smart Scale Bluetooth">Quick View</button></div>
-              <button class="card-wishlist" aria-label="Add Smart Scale Bluetooth to wishlist"><i class="far fa-heart"></i></button>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title">Smart Scale Bluetooth</h3>
-              <p class="card-price">$13.50 – $22.00</p>
-              <p class="card-supplier"><i class="fas fa-check-circle verified-badge"></i> HealthTrack Ltd.</p>
-              <p class="card-rating"><span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span> 4.3 (167)</p>
-              <span class="card-moq">Min. 30 units</span>
-            </div>
-          </article>
-
+        <!-- PRODUCT GRID — populated dynamically by loadProductsFromAPI() in products.js -->
+        <div class="products-grid" id="products-grid" role="list" data-load-products-api>
         </div><!-- /products-grid -->
 
-        <!-- PAGINATION -->
-        <nav class="pagination-wrap" aria-label="Product pagination" id="pagination">
-          <button class="page-btn" disabled aria-label="Previous page"><i class="fas fa-chevron-left"></i></button>
-          <button class="page-btn active" aria-current="page">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn">4</button>
-          <button class="page-btn">5</button>
-          <span class="page-ellipsis">…</span>
-          <button class="page-btn">518</button>
-          <button class="page-btn" aria-label="Next page"><i class="fas fa-chevron-right"></i></button>
-        </nav>
+        <!-- PAGINATION — populated dynamically by loadProductsFromAPI() in products.js -->
+        <nav class="pagination-wrap" aria-label="Product pagination" data-products-pagination></nav>
 
       </section><!-- /main-content -->
     </div><!-- /page-layout -->
@@ -1173,7 +773,6 @@
 <script src="../../assets/js/main.js" defer></script>
 <script src="../../assets/js/cart.js" defer></script>
 <script src="../../assets/js/auth.js" defer></script>
-<script src="../../assets/js/search.js" defer></script>
 <script>
 (function() {
   'use strict';
@@ -1211,11 +810,14 @@
   });
 
   // ── FILTER CHIP REMOVAL ──
-  document.getElementById('active-filters').addEventListener('click', function(e) {
-    if (e.target.classList.contains('filter-chip-remove')) {
-      e.target.closest('.filter-chip').remove();
-    }
-  });
+  const activeFiltersEl = document.getElementById('active-filters');
+  if (activeFiltersEl) {
+    activeFiltersEl.addEventListener('click', function(e) {
+      if (e.target.classList.contains('filter-chip-remove')) {
+        e.target.closest('.filter-chip').remove();
+      }
+    });
+  }
 
   // ── GRID / LIST TOGGLE ──
   const gridBtn = document.getElementById('grid-btn');
@@ -1238,132 +840,144 @@
     });
   }
 
-  // ── WISHLIST TOGGLE ──
-  document.querySelectorAll('.card-wishlist').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      this.classList.toggle('active');
-      const icon = this.querySelector('i');
-      if (this.classList.contains('active')) {
-        icon.classList.replace('far', 'fas');
-      } else {
-        icon.classList.replace('fas', 'far');
-      }
+  // ── SORT SELECT ──
+  const sortSelect = document.getElementById('sort-select');
+  if (sortSelect) {
+    const currentSort = new URLSearchParams(window.location.search).get('sort') || 'best';
+    sortSelect.value = currentSort;
+    sortSelect.addEventListener('change', function() {
+      const params = new URLSearchParams(window.location.search);
+      params.set('sort', this.value);
+      params.set('page', '1');
+      window.location.search = params.toString();
     });
-  });
-
-  // ── QUICK VIEW MODAL ──
-  const modal = document.getElementById('quick-view-modal');
-  const modalClose = document.getElementById('modal-close-btn');
-  const productData = [
-    { title: 'Wireless Earbuds Pro', price: '$18.50 – $25.00', supplier: 'TechPro Electronics', img: 'product1' },
-    { title: 'LED Smart Bulb 9W', price: '$2.10 – $4.50', supplier: 'BrightLight Co.', img: 'product2' },
-    { title: 'USB-C Hub 7-Port', price: '$12.00 – $18.00', supplier: 'ConnectPro Ltd.', img: 'product3' },
-    { title: 'Bamboo Phone Case', price: '$3.50 – $6.00', supplier: 'EcoDesigns Inc.', img: 'product4' },
-    { title: 'Portable Solar Panel', price: '$35.00 – $58.00', supplier: 'SolarTech Corp.', img: 'product5' },
-    { title: 'Stainless Steel Thermos', price: '$8.00 – $14.00', supplier: 'DrinkWell Mfg.', img: 'product6' },
-    { title: 'Smart Home Hub', price: '$22.00 – $35.00', supplier: 'SmartLife Tech.', img: 'product7' },
-    { title: 'LED Ring Light 18"', price: '$28.00 – $45.00', supplier: 'PhotoPro Supplies', img: 'product8' },
-    { title: 'Ergonomic Mouse Pad', price: '$4.50 – $8.50', supplier: 'ComfortDesk Co.', img: 'product9' },
-    { title: 'Foldable Keyboard', price: '$15.00 – $24.00', supplier: 'FoldTech Ltd.', img: 'product10' },
-    { title: 'Mini Air Purifier', price: '$19.00 – $30.00', supplier: 'CleanAir Factory', img: 'product11' },
-    { title: 'Smart Door Lock', price: '$45.00 – $72.00', supplier: 'SecureHome Tech.', img: 'product12' },
-    { title: 'Yoga Mat Premium', price: '$9.50 – $16.00', supplier: 'FitLife Sports', img: 'product13' },
-    { title: 'Bamboo Cutting Board', price: '$6.00 – $11.00', supplier: 'GreenKitchen Ltd.', img: 'product14' },
-    { title: 'Electric Kettle 1.7L', price: '$14.00 – $22.00', supplier: 'HomeAppliance Co.', img: 'product15' },
-    { title: 'Noise-Cancel Headphones', price: '$32.00 – $55.00', supplier: 'AudioMax Factory', img: 'product16' },
-    { title: '4K Webcam Pro', price: '$28.00 – $42.00', supplier: 'VisionTech Mfg.', img: 'product17' },
-    { title: 'Smart Plug WiFi', price: '$5.50 – $9.00', supplier: 'SmartHome Pro', img: 'product18' },
-    { title: 'Carbon Fiber Wallet', price: '$7.50 – $13.00', supplier: 'CarbonStyle Ltd.', img: 'product19' },
-    { title: 'Portable Blender', price: '$11.00 – $18.00', supplier: 'BlendFast Corp.', img: 'product20' },
-    { title: 'LED Strip Lights 5m', price: '$6.50 – $12.00', supplier: 'LightCraft Factory', img: 'product21' },
-    { title: 'Mechanical Keyboard', price: '$35.00 – $60.00', supplier: 'KeyMaster Tech.', img: 'product22' },
-    { title: 'WiFi Range Extender', price: '$9.00 – $16.00', supplier: 'NetBoost Mfg.', img: 'product23' },
-    { title: 'Smart Scale Bluetooth', price: '$13.50 – $22.00', supplier: 'HealthTrack Ltd.', img: 'product24' }
-  ];
-
-  function openModal(idx) {
-    const p = productData[idx - 1];
-    if (!p) return;
-    document.getElementById('modal-product-title').textContent = p.title;
-    document.getElementById('modal-product-price').textContent = p.price;
-    document.getElementById('modal-supplier-name').textContent = p.supplier;
-    document.getElementById('modal-product-img').src = 'https://picsum.photos/seed/' + p.img + '/400/500';
-    document.getElementById('modal-product-img').alt = p.title;
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    modalClose.focus();
   }
 
-  function closeModal() {
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+  // ── APPLY FILTERS BUTTON ──
+  function applyFilters() {
+    const params = new URLSearchParams(window.location.search);
+    const minPrice = document.getElementById('price-min');
+    const maxPrice = document.getElementById('price-max');
+    const moq = document.getElementById('moq-input');
+    if (minPrice && minPrice.value) params.set('min_price', minPrice.value);
+    else params.delete('min_price');
+    if (maxPrice && maxPrice.value) params.set('max_price', maxPrice.value);
+    else params.delete('max_price');
+    if (moq && moq.value) params.set('moq', moq.value);
+    else params.delete('moq');
+    params.set('page', '1');
+    window.location.search = params.toString();
   }
-
-  document.querySelectorAll('.btn-quick-view').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      openModal(parseInt(this.dataset.product, 10));
-    });
-  });
-
-  if (modalClose) modalClose.addEventListener('click', closeModal);
-
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) closeModal();
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-  });
-
-  // ── MODAL QTY CONTROLS ──
-  const qtyInput = document.getElementById('modal-qty-input');
-  document.getElementById('modal-qty-minus').addEventListener('click', function() {
-    const v = parseInt(qtyInput.value, 10);
-    if (v > 1) qtyInput.value = v - 1;
-  });
-  document.getElementById('modal-qty-plus').addEventListener('click', function() {
-    qtyInput.value = parseInt(qtyInput.value, 10) + 1;
-  });
-
-  // ── PAGINATION ──
-  document.getElementById('pagination').addEventListener('click', function(e) {
-    const btn = e.target.closest('.page-btn');
-    if (!btn || btn.disabled) return;
-    const prevActive = this.querySelector('.page-btn.active');
-    if (prevActive) {
-      prevActive.classList.remove('active');
-      prevActive.removeAttribute('aria-current');
-    }
-    if (!btn.querySelector('i')) {
-      btn.classList.add('active');
-      btn.setAttribute('aria-current', 'page');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  const applyBtn = document.getElementById('apply-filters-btn');
+  if (applyBtn) applyBtn.addEventListener('click', applyFilters);
 
   // ── RESET FILTERS ──
   function resetFilters() {
     document.querySelectorAll('.sidebar input[type="checkbox"]').forEach(function(cb) { cb.checked = false; });
     document.querySelectorAll('.sidebar input[type="radio"]').forEach(function(r) { r.checked = false; });
-    document.getElementById('price-min').value = '';
-    document.getElementById('price-max').value = '';
-    document.getElementById('moq-input').value = '';
-    document.getElementById('trade-assurance-toggle').checked = false;
-    document.getElementById('active-filters').innerHTML = '';
+    const priceMin = document.getElementById('price-min');
+    const priceMax = document.getElementById('price-max');
+    const moqInput = document.getElementById('moq-input');
+    const taToggle = document.getElementById('trade-assurance-toggle');
+    if (priceMin) priceMin.value = '';
+    if (priceMax) priceMax.value = '';
+    if (moqInput) moqInput.value = '';
+    if (taToggle) taToggle.checked = false;
+    if (activeFiltersEl) activeFiltersEl.innerHTML = '';
+    const params = new URLSearchParams();
+    const q = new URLSearchParams(window.location.search).get('q');
+    if (q) params.set('q', q);
+    window.location.search = params.toString();
   }
-  const resetBtn = document.getElementById('reset-filters-btn');
   const resetAllBtn = document.getElementById('reset-all-btn');
-  if (resetBtn) resetBtn.addEventListener('click', resetFilters);
   if (resetAllBtn) resetAllBtn.addEventListener('click', resetFilters);
 
-  // ── COPYRIGHT YEAR ──
-  const yearEl = document.getElementById('copyright-year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  // ── SEARCH REDIRECT ── (header search navigates within products.html via URL params)
+  const searchInput = document.getElementById('main-search-input');
+  const searchBtn = document.getElementById('btn-search-go');
+  // Pre-fill search input from URL
+  const currentQ = new URLSearchParams(window.location.search).get('q');
+  if (searchInput && currentQ) searchInput.value = currentQ;
+
+  function doSearch() {
+    const q = searchInput ? searchInput.value.trim() : '';
+    if (!q) return;
+    const params = new URLSearchParams(window.location.search);
+    params.set('q', q);
+    params.set('page', '1');
+    window.location.search = params.toString();
+  }
+  if (searchBtn) searchBtn.addEventListener('click', doSearch);
+  if (searchInput) {
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+    });
+  }
+
+  // ── CATEGORY FILTER LINKS ──
+  document.querySelectorAll('[data-cat]').forEach(function(item) {
+    const checkbox = item.querySelector('input[type="checkbox"][name="cat"]');
+    if (checkbox) {
+      const catValue = checkbox.value;
+      // Check if this category is currently active
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('category') === catValue) {
+        checkbox.checked = true;
+        item.classList.add('expanded');
+      }
+      checkbox.addEventListener('change', function() {
+        const params = new URLSearchParams(window.location.search);
+        if (this.checked) {
+          params.set('category', catValue);
+        } else {
+          params.delete('category');
+        }
+        params.set('page', '1');
+        window.location.search = params.toString();
+      });
+    }
+  });
+
+  // ── MODAL CLOSE (quick-view modal may still appear from dynamic cards) ──
+  const modal = document.getElementById('quick-view-modal');
+  const modalClose = document.getElementById('modal-close-btn');
+  if (modal && modalClose) {
+    modalClose.addEventListener('click', function() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    });
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.classList.contains('open')) {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    });
+    // Modal qty controls
+    const qtyInput = document.getElementById('modal-qty-input');
+    const qtyMinus = document.getElementById('modal-qty-minus');
+    const qtyPlus = document.getElementById('modal-qty-plus');
+    if (qtyInput && qtyMinus && qtyPlus) {
+      qtyMinus.addEventListener('click', function() {
+        const v = parseInt(qtyInput.value, 10);
+        if (v > 1) qtyInput.value = v - 1;
+      });
+      qtyPlus.addEventListener('click', function() {
+        qtyInput.value = parseInt(qtyInput.value, 10) + 1;
+      });
+    }
+  }
 })();
 </script>
 <script src="../../assets/js/navbar.js"></script>
-  <script src="../../assets/js/products.js"></script>
+<script src="../../assets/js/products.js"></script>
 </body>
 </html>
