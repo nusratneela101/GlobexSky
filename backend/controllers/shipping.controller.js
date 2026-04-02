@@ -38,8 +38,8 @@ function _generateTrackingNumber() {
 
 function _calcPrice(weight, dimensions, methodId) {
   const { length = 0, width = 0, height = 0 } = dimensions || {};
-  const dimWeight       = (length * width * height) / 5000; // volumetric weight (cm³ / 5000)
-  const chargeableWeight = Math.max(Number(weight) || 1, dimWeight);
+  const volumetricWeight = (length * width * height) / 5000; // volumetric weight (cm³ / 5000)
+  const chargeableWeight = Math.max(Number(weight) || 1, volumetricWeight);
   const r               = BASE_RATES[methodId] || BASE_RATES.standard;
   return +(r.base + chargeableWeight * r.perKg).toFixed(2);
 }

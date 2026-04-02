@@ -295,19 +295,30 @@ function initRatesPage() {
                 <table class="table">
                   <thead><tr><th>Method</th><th>Carrier</th><th>Est. Delivery</th><th>Price</th><th></th></tr></thead>
                   <tbody>
-                    ${rates.map((r) => `
+                    ${rates.map((r, idx) => `
                       <tr>
                         <td><strong>${_esc(r.method_name)}</strong><div style="font-size:.78rem;color:#64748b">${_esc(r.description || '')}</div></td>
                         <td>${_esc(r.carrier)}</td>
                         <td>${_esc(r.estimated_days)}</td>
                         <td style="font-family:'Poppins',sans-serif;font-weight:700;color:#0052CC">$${parseFloat(r.price || 0).toFixed(2)}</td>
-                        <td><button class="btn btn-sm btn-primary" onclick="ShippingAPI._selectedRate=${JSON.stringify(r).replace(/"/g,'&quot;')};alert('Rate selected! Proceed to checkout to book this shipment.')" style="white-space:nowrap"><i class="fas fa-check"></i> Select</button></td>
+                        <td><button class="btn btn-sm btn-primary" data-rate-index="${idx}" style="white-space:nowrap"><i class="fas fa-check"></i> Select</button></td>
                       </tr>`).join('')}
                   </tbody>
                 </table>
               </div>
             </div>`
           : '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:20px;color:#92400e;margin-top:8px"><i class="fas fa-exclamation-triangle" style="margin-right:8px"></i>No rates available for this route.</div>';
+
+        // Use event delegation to avoid inline onclick and XSS
+        resultBox.addEventListener('click', function (e) {
+          const btn = e.target.closest('[data-rate-index]');
+          if (!btn) return;
+          const idx = parseInt(btn.dataset.rateIndex, 10);
+          if (!isNaN(idx) && rates[idx]) {
+            ShippingAPI._selectedRate = rates[idx];
+            alert('Rate selected: ' + rates[idx].method_name + ' — $' + rates[idx].price + '. Proceed to checkout to book this shipment.');
+          }
+        }, { once: true });
       }
     } catch (err) {
       if (resultBox) resultBox.innerHTML = `<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:20px;color:#dc2626;margin-top:8px"><i class="fas fa-exclamation-triangle" style="margin-right:8px"></i>${_esc(err.message || 'Failed to calculate rates.')}</div>`;
