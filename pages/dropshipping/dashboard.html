@@ -100,25 +100,29 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
       <div class="admin-avatar">JD</div>
     </div>
 
-    <div class="admin-content">
+    <div class="admin-content" data-dropshipping-dashboard>
 
       <!-- Metrics -->
       <div class="metrics-grid">
         <div class="metric-card">
           <div class="metric-icon blue"><i class="fas fa-boxes-stacked"></i></div>
-          <div><div class="metric-value">1,248</div><div class="metric-label">Total Products</div></div>
+          <div><div class="metric-value" data-stat="imported">—</div><div class="metric-label">Imported Products</div></div>
         </div>
         <div class="metric-card">
           <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
-          <div><div class="metric-value">987</div><div class="metric-label">Active Listings</div></div>
+          <div><div class="metric-value" data-stat="orders">—</div><div class="metric-label">Total Orders</div></div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon orange"><i class="fas fa-cart-shopping"></i></div>
-          <div><div class="metric-value">23</div><div class="metric-label">Orders Today</div></div>
+          <div class="metric-icon orange"><i class="fas fa-dollar-sign"></i></div>
+          <div><div class="metric-value" data-stat="revenue">—</div><div class="metric-label">Total Revenue</div></div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon teal"><i class="fas fa-dollar-sign"></i></div>
-          <div><div class="metric-value">$8,450</div><div class="metric-label">Revenue This Month</div></div>
+          <div class="metric-icon teal"><i class="fas fa-sack-dollar"></i></div>
+          <div><div class="metric-value" data-stat="profit">—</div><div class="metric-label">Total Profit</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fas fa-truck"></i></div>
+          <div><div class="metric-value" data-stat="suppliers">—</div><div class="metric-label">Connected Suppliers</div></div>
         </div>
       </div>
 
@@ -295,6 +299,19 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
         </div>
       </div>
 
+      <!-- Recent Orders -->
+      <div class="page-card">
+        <div class="page-card-title"><i class="fas fa-clock-rotate-left" style="color:#0052CC"></i> Recent Orders</div>
+        <div style="overflow-x:auto">
+          <table class="data-table recent-orders-table">
+            <thead>
+              <tr><th>Order ID</th><th>Product</th><th>Revenue</th><th>Profit</th><th>Status</th></tr>
+            </thead>
+            <tbody><tr><td colspan="5" style="text-align:center;color:#94a3b8">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -310,6 +327,8 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
 </style>
 
 <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
 <script>
   function triggerSync() {
     const btn = document.getElementById('syncNowBtn');

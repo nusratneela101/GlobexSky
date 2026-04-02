@@ -283,23 +283,37 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f0f2f8}
 </div>
 
 <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
 <script>
-  const periodData = {
-    '7d':  { revenue: '$11,240', profit: '$3,372', margin: '30.0%', orders: '298', products: '987' },
-    '30d': { revenue: '$48,320', profit: '$14,496', margin: '30.0%', orders: '1,284', products: '987' },
-    '90d': { revenue: '$142,800', profit: '$42,840', margin: '30.0%', orders: '3,810', products: '987' },
-  };
-
   function setPeriod(period, btn) {
     document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    const d = periodData[period];
-    document.getElementById('metRevenue').textContent = d.revenue;
-    document.getElementById('metProfit').textContent = d.profit;
-    document.getElementById('metMargin').textContent = d.margin;
-    document.getElementById('metOrders').textContent = d.orders;
-    document.getElementById('metProducts').textContent = d.products;
+    loadAnalytics(period);
   }
+
+  async function loadAnalytics(period) {
+    try {
+      const apiBase = (typeof GlobexAPI !== 'undefined' && GlobexAPI.baseURL) ||
+                      (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL) ||
+                      '/api/v1';
+      const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${apiBase}/dropshipping/analytics?period=${period || '30d'}`, { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      const d = json.data || json;
+      const fmt = v => '$' + parseFloat(v || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const fmtN = v => parseInt(v || 0).toLocaleString();
+      const el = id => document.getElementById(id);
+      if (el('metRevenue')) el('metRevenue').textContent = fmt(d.total_revenue);
+      if (el('metProfit')) el('metProfit').textContent = fmt(d.total_profit);
+      if (el('metMargin')) el('metMargin').textContent = (d.profit_margin || '0.00') + '%';
+      if (el('metOrders')) el('metOrders').textContent = fmtN(d.total_orders);
+    } catch (_) {}
+  }
+
+  document.addEventListener('DOMContentLoaded', () => loadAnalytics('30d'));
 </script>
 <script src="../../assets/js/navbar.js"></script>
   <script src="../../assets/js/dropshipping.js"></script>

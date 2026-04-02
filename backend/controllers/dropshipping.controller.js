@@ -3,8 +3,49 @@ import { calculateMarkup } from '../services/pricing.service.js';
 
 export async function getDashboard(req, res, next) {
   try {
-    const { data: products, count } = await supabase.from('products').select('id', { count: 'exact', head: true }).eq('status', 'active');
-    res.json({ success: true, data: { total_products: count } });
+    const userId = req.user?.id;
+
+    // Count imported products
+    const { count: importedProducts } = await supabase
+      .from('dropshipping_imported_products')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', userId);
+
+    // Count and aggregate orders (fetch only needed fields for aggregation)
+    const { data: allOrders } = await supabase
+      .from('orders')
+      .select('id, total_amount, profit, status')
+      .eq('order_type', 'dropship');
+
+    const totalOrders = allOrders?.length || 0;
+    const totalRevenue = (allOrders || []).reduce((sum, o) => sum + (o.total_amount || 0), 0);
+    const totalProfit = (allOrders || []).reduce((sum, o) => sum + (o.profit || 0), 0);
+
+    // Connected suppliers
+    const { count: connectedSuppliers } = await supabase
+      .from('dropshipping_suppliers')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_active', true);
+
+    // Fetch 5 most recent orders from DB directly
+    const { data: recentOrders } = await supabase
+      .from('orders')
+      .select('id, total_amount, profit, status, created_at')
+      .eq('order_type', 'dropship')
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    res.json({
+      success: true,
+      data: {
+        importedProducts: importedProducts || 0,
+        totalOrders,
+        totalRevenue,
+        totalProfit,
+        connectedSuppliers: connectedSuppliers || 0,
+        recentOrders: recentOrders || [],
+      },
+    });
   } catch (err) { next(err); }
 }
 
@@ -23,10 +64,54 @@ export async function listDropshippingProducts(req, res, next) {
 
 export async function importProduct(req, res, next) {
   try {
-    const { product_id } = req.body;
+    const { product_id, markup_percentage } = req.body;
+    const userId = req.user.id;
+
+    // Check product exists
     const { data: product } = await supabase.from('products').select('*').eq('id', product_id).single();
     if (!product) return res.status(404).json({ success: false, error: 'Product not found.' });
-    res.json({ success: true, data: product, message: 'Product imported to your store.' });
+
+    // Check if already imported
+    const { data: existing } = await supabase
+      .from('dropshipping_imported_products')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('product_id', product_id)
+      .single();
+    if (existing) return res.status(409).json({ success: false, error: 'Product already imported.' });
+
+    // Calculate markup
+    let markup;
+    try {
+      markup = await calculateMarkup(product.price, product.category_id);
+    } catch (_) {
+      markup = { selling_price: product.price * 1.2, markup_percent: 20 };
+    }
+    const sellingPrice = markup_percentage
+      ? product.price * (1 + markup_percentage / 100)
+      : markup.selling_price;
+
+    // Save to dropshipping_imported_products
+    const { data: imported, error } = await supabase
+      .from('dropshipping_imported_products')
+      .insert({
+        user_id: userId,
+        product_id: product_id,
+        original_price: product.price,
+        selling_price: sellingPrice,
+        markup_percent: markup_percentage || markup.markup_percent,
+        product_name: product.name,
+        product_image: product.image || (product.images?.[0] ?? null),
+        category_id: product.category_id,
+        supplier_id: product.supplier_id,
+        status: 'active',
+        imported_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.json({ success: true, data: imported, message: 'Product imported to your store.' });
   } catch (err) { next(err); }
 }
 
@@ -192,7 +277,40 @@ export async function getInventorySync(req, res, next) {
 
 export async function syncInventory(req, res, next) {
   try {
-    // Placeholder for real inventory sync logic
-    res.json({ success: true, message: 'Inventory sync triggered.', synced_at: new Date().toISOString() });
+    const userId = req.user.id;
+
+    // Get all imported products for this user
+    const { data: imported } = await supabase
+      .from('dropshipping_imported_products')
+      .select('id, product_id')
+      .eq('user_id', userId);
+
+    if (!imported?.length) return res.json({ success: true, data: { synced: 0, updated: 0 } });
+
+    // Check each product's current status/price in source
+    const productIds = imported.map(p => p.product_id);
+    const { data: sourceProducts } = await supabase
+      .from('products')
+      .select('id, price, status, stock_quantity')
+      .in('id', productIds);
+
+    let updated = 0;
+    for (const source of (sourceProducts || [])) {
+      const imp = imported.find(i => i.product_id === source.id);
+      if (imp) {
+        await supabase
+          .from('dropshipping_imported_products')
+          .update({
+            original_price: source.price,
+            source_status: source.status,
+            source_stock: source.stock_quantity,
+            last_synced_at: new Date().toISOString(),
+          })
+          .eq('id', imp.id);
+        updated++;
+      }
+    }
+
+    res.json({ success: true, data: { synced: imported.length, updated } });
   } catch (err) { next(err); }
 }
