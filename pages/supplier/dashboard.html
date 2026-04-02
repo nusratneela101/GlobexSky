@@ -205,26 +205,21 @@
       <a href="#" class="quick-action"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
     </div>
 
+    <!-- Recent Orders — Dynamic from Supabase -->
     <div class="grid-2">
-      <!-- Recent Orders -->
       <div class="page-card">
         <div class="page-card-title"><i class="fas fa-clock" style="color:#0052CC"></i> Recent Orders</div>
         <table class="data-table">
           <thead>
             <tr>
               <th>Order #</th>
-              <th>Buyer</th>
               <th>Total</th>
               <th>Status</th>
               <th>Date</th>
             </tr>
           </thead>
-          <tbody>
-            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0892</a></td><td>James D.</td><td>$3,240</td><td><span class="badge-pill badge-blue">Shipped</span></td><td style="color:#64748b;font-size:.8rem">May 18</td></tr>
-            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0877</a></td><td>Sarah K.</td><td>$1,560</td><td><span class="badge-pill badge-green">Delivered</span></td><td style="color:#64748b;font-size:.8rem">May 14</td></tr>
-            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0903</a></td><td>Marco L.</td><td>$768</td><td><span class="badge-pill badge-purple">Processing</span></td><td style="color:#64748b;font-size:.8rem">May 21</td></tr>
-            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0856</a></td><td>Priya M.</td><td>$4,100</td><td><span class="badge-pill badge-orange">Pending</span></td><td style="color:#64748b;font-size:.8rem">May 11</td></tr>
-            <tr><td><a href="#" style="color:#0052CC;text-decoration:none;font-weight:600">#GS-2025-0831</a></td><td>Tom W.</td><td>$920</td><td><span class="badge-pill badge-green">Delivered</span></td><td style="color:#64748b;font-size:.8rem">May 7</td></tr>
+          <tbody id="recentOrdersBody">
+            <tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px"><i class="fas fa-spinner fa-spin"></i> Loading orders...</td></tr>
           </tbody>
         </table>
       </div>
@@ -235,33 +230,16 @@
         <div class="chart-placeholder">
           <i class="fas fa-chart-area"></i>
           <p>Revenue chart — connect analytics to display</p>
-          <a href="#" class="btn btn-sm btn-primary">View Analytics</a>
+          <a href="analytics.html" class="btn btn-sm btn-primary">View Analytics</a>
         </div>
       </div>
     </div>
 
-    <!-- Top Products -->
+    <!-- Top Products — Dynamic from Supabase -->
     <div class="page-card">
       <div class="page-card-title"><i class="fas fa-trophy" style="color:#0052CC"></i> Top Products</div>
-      <div class="top-products-grid">
-        <div class="top-product-card">
-          <div class="top-product-thumb">Arduino PCB Board v3</div>
-          <div class="top-product-name">Arduino PCB Board v3</div>
-          <div class="top-product-cat"><i class="fas fa-tag" style="margin-right:4px;color:#94a3b8"></i>Electronics</div>
-          <div class="top-product-stats"><span class="sold"><i class="fas fa-fire" style="margin-right:3px"></i>1,240 sold</span><span class="revenue">$2,976</span></div>
-        </div>
-        <div class="top-product-card">
-          <div class="top-product-thumb">USB-C Hub 7-in-1</div>
-          <div class="top-product-name">USB-C Hub 7-in-1</div>
-          <div class="top-product-cat"><i class="fas fa-tag" style="margin-right:4px;color:#94a3b8"></i>Accessories</div>
-          <div class="top-product-stats"><span class="sold"><i class="fas fa-fire" style="margin-right:3px"></i>860 sold</span><span class="revenue">$5,590</span></div>
-        </div>
-        <div class="top-product-card">
-          <div class="top-product-thumb">SMD LED Strip 5050</div>
-          <div class="top-product-name">SMD LED Strip 5050</div>
-          <div class="top-product-cat"><i class="fas fa-tag" style="margin-right:4px;color:#94a3b8"></i>Lighting</div>
-          <div class="top-product-stats"><span class="sold"><i class="fas fa-fire" style="margin-right:3px"></i>640 sold</span><span class="revenue">$2,688</span></div>
-        </div>
+      <div class="top-products-grid" id="topProductsGrid">
+        <div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:24px"><i class="fas fa-spinner fa-spin"></i> Loading products...</div>
       </div>
     </div>
 
@@ -319,6 +297,62 @@ async function loadSupplierDashboard() {
     var chats = await sb.from('chat_rooms').select('id', { count: 'exact', head: true }).eq('supplier_id', uid);
     var el4 = document.getElementById('sup-stat-messages');
     if (el4) el4.textContent = (chats.count || 0).toLocaleString();
+  } catch(e) {}
+
+  // Load recent orders dynamically
+  try {
+    var ordersRes = await sb.from('orders').select('id, total, status, created_at')
+      .eq('supplier_id', uid)
+      .order('created_at', { ascending: false })
+      .limit(5);
+    var tbody = document.getElementById('recentOrdersBody');
+    if (tbody) {
+      var ordersData = ordersRes.data || [];
+      if (ordersData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:24px"><i class="fas fa-inbox"></i> No orders yet</td></tr>';
+      } else {
+        tbody.innerHTML = '';
+        ordersData.forEach(function(o) {
+          var statusClass = { pending: 'badge-orange', processing: 'badge-purple', shipped: 'badge-blue', delivered: 'badge-green', cancelled: 'badge-red' }[o.status] || 'badge-gray';
+          var date = new Date(o.created_at);
+          var dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td><a href="orders-detail.html?id=' + o.id + '" style="color:#0052CC;text-decoration:none;font-weight:600">#' + o.id.substring(0, 8).toUpperCase() + '</a></td>' +
+            '<td>$' + parseFloat(o.total || 0).toLocaleString() + '</td>' +
+            '<td><span class="badge-pill ' + statusClass + '">' + (o.status || 'pending').charAt(0).toUpperCase() + (o.status || 'pending').slice(1) + '</span></td>' +
+            '<td style="color:#64748b;font-size:.8rem">' + dateStr + '</td>';
+          tbody.appendChild(tr);
+        });
+      }
+    }
+  } catch(e) {}
+
+  // Load top products dynamically
+  try {
+    var prodsRes = await sb.from('products').select('id, title, price, status, images, created_at')
+      .eq('supplier_id', uid)
+      .order('created_at', { ascending: false })
+      .limit(6);
+    var grid = document.getElementById('topProductsGrid');
+    if (grid) {
+      var prodsData = prodsRes.data || [];
+      if (prodsData.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:32px"><i class="fas fa-box-open" style="font-size:2rem;margin-bottom:12px;display:block"></i>No products yet.<br><a href="products-add.html" style="color:#0052CC;font-weight:600;margin-top:8px;display:inline-block"><i class="fas fa-plus-circle"></i> Add Your First Product</a></div>';
+      } else {
+        grid.innerHTML = '';
+        prodsData.forEach(function(p) {
+          var statusBadge = p.status === 'active'
+            ? '<span class="badge-pill badge-green" style="font-size:.68rem">Active</span>'
+            : '<span class="badge-pill badge-orange" style="font-size:.68rem">' + (p.status || 'pending').charAt(0).toUpperCase() + (p.status || 'pending').slice(1) + '</span>';
+          var card = document.createElement('div');
+          card.className = 'top-product-card';
+          card.innerHTML = '<div class="top-product-thumb">' + (p.title || 'Untitled').substring(0, 30) + '</div>' +
+            '<div class="top-product-name">' + (p.title || 'Untitled') + '</div>' +
+            '<div class="top-product-stats"><span class="revenue">$' + parseFloat(p.price || 0).toFixed(2) + '</span>' + statusBadge + '</div>';
+          grid.appendChild(card);
+        });
+      }
+    }
   } catch(e) {}
 }
 
