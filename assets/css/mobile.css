@@ -539,3 +539,230 @@
     gap: 24px !important;
   }
 }
+
+/* ==========================================================================
+   Additional Mobile-Specific Enhancements
+   ========================================================================== */
+
+/* ─── 992px — Tablet Landscape Refinements ────────────────────────────────── */
+@media (max-width: 992px) {
+  /* Admin sidebar: hidden, slide-in on toggle */
+  .admin-sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    width: 260px;
+    height: 100%;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.open,
+  .admin-sidebar.sidebar-open {
+    left: 0;
+  }
+
+  .admin-main,
+  .admin-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Sidebar toggle: always visible */
+  .sidebar-toggle,
+  .sidebar-mobile-toggle {
+    display: flex !important;
+  }
+
+  /* Auth pages: hide branding panel */
+  .auth-panel {
+    display: none;
+  }
+
+  .auth-wrapper {
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .auth-card-wrap {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* Search results layout */
+  .search-layout,
+  .search-results-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .search-sidebar,
+  .filter-sidebar {
+    position: static;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  /* Checkout: single column */
+  .checkout-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* ─── 576px — Small Mobile Refinements ───────────────────────────────────── */
+@media (max-width: 576px) {
+  /* Reduce section spacing */
+  .section,
+  .section-padding {
+    padding: 20px 0;
+  }
+
+  /* Card compact mode */
+  .product-card {
+    padding: 8px;
+  }
+
+  .product-card .product-title {
+    font-size: var(--fs-sm);
+    line-height: 1.3;
+  }
+
+  .product-card .product-price {
+    font-size: var(--fs-md);
+  }
+
+  /* Auth form: extra compact */
+  .auth-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .auth-card .form-group {
+    margin-bottom: 14px;
+  }
+
+  .auth-card .btn {
+    width: 100%;
+    padding: 14px;
+    font-size: var(--fs-base);
+  }
+
+  /* Social auth buttons: stack */
+  .social-auth,
+  .social-login-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .social-auth .btn,
+  .social-login-buttons .btn {
+    width: 100%;
+  }
+
+  /* Checkout steps: compact */
+  .steps {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .step-item {
+    flex-direction: row;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  /* Order summary: compact */
+  .order-summary {
+    padding: 16px;
+  }
+
+  /* Cart items: stack image and details */
+  .cart-item {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .cart-item-image {
+    width: 100%;
+    max-width: 120px;
+    margin: 0 auto;
+  }
+
+  .cart-item-details {
+    text-align: center;
+  }
+
+  .cart-item-actions {
+    justify-content: center;
+  }
+}
+
+/* ─── Touch Device Enhancements ──────────────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  /* Disable hover-dependent transforms */
+  .product-card:hover,
+  .card:hover,
+  .admin-card:hover,
+  .metric-card:hover,
+  .source-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Active state feedback for touch */
+  .btn:active,
+  button:active,
+  a.btn:active,
+  .product-card:active,
+  .card:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  /* Larger touch targets for interactive elements */
+  .pagination-btn,
+  .tab-btn,
+  .filter-tag {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 14px;
+  }
+}
+
+/* ─── Footer Mobile Alignment ────────────────────────────────────────────── */
+@media (max-width: 576px) {
+  .footer-grid,
+  .footer-columns,
+  .footer-row {
+    text-align: center;
+  }
+
+  .footer-col h3,
+  .footer-col h4 {
+    margin-bottom: 12px;
+  }
+
+  .footer-col ul {
+    padding: 0;
+  }
+
+  .footer-social,
+  .footer-social-icons {
+    justify-content: center;
+    display: flex;
+    gap: 12px;
+  }
+
+  .footer-bottom,
+  .footer-legal {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}

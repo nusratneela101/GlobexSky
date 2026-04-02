@@ -1439,3 +1439,725 @@ body.has-bottom-nav .page-content {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ==========================================================================
+   11. Additional Breakpoints — 1200px, 992px, 576px
+   Covers the gaps identified in the responsive audit.
+   ========================================================================== */
+
+/* ── 1200px — Large Tablets / Small Laptops ───────────────────────────────── */
+
+@media (max-width: 1200px) {
+  /* Product grids: 4 → 3 cols */
+  .products-grid,
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Dashboard metrics: 4 → 3 cols */
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Admin sidebar: narrower */
+  .admin-sidebar {
+    width: 220px;
+  }
+
+  .admin-main,
+  .admin-content {
+    margin-left: 220px;
+  }
+
+  /* Page layout sidebar: narrower */
+  .page-layout {
+    grid-template-columns: 200px 1fr;
+  }
+
+  /* Footer: 4 → 3 cols */
+  .footer-grid,
+  .footer-columns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Containers: slightly more padding */
+  .container {
+    padding-inline: 1.25rem;
+  }
+
+  /* Hero section: smaller padding */
+  .hero-section,
+  .hero-banner {
+    padding: 48px 32px;
+  }
+
+  /* Feature and service grids */
+  .features-grid,
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── 992px — Tablets Landscape ────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  /* Product grids: 3 → 2 cols */
+  .products-grid,
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Category grids: 3 → 2 cols */
+  .category-grid,
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Dashboard metrics: 3 → 2 cols */
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  /* Admin sidebar: collapsible at this width */
+  .admin-wrapper {
+    position: relative;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    width: 260px;
+    height: 100%;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.open,
+  .admin-sidebar.sidebar-open {
+    left: 0;
+  }
+
+  .admin-main,
+  .admin-content {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+
+  /* Sidebar toggle visible */
+  .sidebar-toggle,
+  .sidebar-mobile-toggle {
+    display: flex !important;
+  }
+
+  /* Page layout: sidebar collapses */
+  .page-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .account-sidebar,
+  .sidebar {
+    position: static;
+    width: 100%;
+  }
+
+  /* Checkout layout: single column */
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-summary {
+    position: static;
+  }
+
+  /* Auth pages: stack panels */
+  .auth-wrapper {
+    flex-direction: column;
+  }
+
+  .auth-panel {
+    display: none;
+  }
+
+  .auth-card-wrap {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  /* Product detail: stack */
+  .product-detail-layout,
+  .product-gallery-layout {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  /* Footer: 3 → 2 cols */
+  .footer-grid,
+  .footer-columns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Feature grids */
+  .features-grid,
+  .services-grid,
+  .how-it-works-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Quick actions: 2 cols */
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Search results layout */
+  .search-layout,
+  .search-results-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .search-sidebar,
+  .filter-sidebar {
+    position: static;
+    width: 100%;
+  }
+
+  /* Stats grid */
+  .stats-grid,
+  .info-cards,
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  /* Hero banner adjustments */
+  .hero-section,
+  .hero-banner {
+    padding: 36px 24px;
+  }
+
+  .hero-section h1,
+  .hero-banner h1,
+  .hero-title {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  /* Secondary nav: horizontal scroll */
+  .nav-secondary {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-secondary::-webkit-scrollbar {
+    display: none;
+  }
+
+  .secondary-nav-list {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  /* Tables: horizontal scroll */
+  .data-table,
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ── 576px — Mobile Phones ────────────────────────────────────────────────── */
+
+@media (max-width: 576px) {
+  /* Product grids: 2 → 1 col */
+  .products-grid,
+  .product-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Category grid: horizontal scroll */
+  .category-grid,
+  .categories-grid,
+  .category-cards {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 10px !important;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+
+  .category-grid::-webkit-scrollbar,
+  .categories-grid::-webkit-scrollbar,
+  .category-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .category-grid > *,
+  .categories-grid > *,
+  .category-cards > * {
+    flex: 0 0 130px;
+    scroll-snap-align: start;
+    min-width: 130px;
+  }
+
+  /* Dashboard metrics: single column */
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Footer: single column */
+  .footer-grid,
+  .footer-columns,
+  .footer-row {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+
+  /* Feature / service grids: single column */
+  .features-grid,
+  .services-grid,
+  .how-it-works-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stats: single column */
+  .stats-grid,
+  .info-cards,
+  .dashboard-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hero section */
+  .hero-section,
+  .hero-banner {
+    padding: 20px 16px !important;
+  }
+
+  .hero-section h1,
+  .hero-banner h1,
+  .hero-title {
+    font-size: clamp(1.25rem, 5vw, 1.75rem) !important;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-cta .btn {
+    width: 100%;
+  }
+
+  /* Auth: full width form */
+  .auth-card-wrap {
+    padding: 16px 12px !important;
+    max-width: 100%;
+  }
+
+  .auth-card {
+    padding: 20px 16px !important;
+  }
+
+  /* Checkout form inputs full width */
+  .form-grid,
+  .card-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .checkout-layout {
+    gap: 16px !important;
+  }
+
+  /* Quick actions: single column */
+  .quick-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Admin card compact */
+  .admin-card {
+    padding: 12px !important;
+  }
+
+  /* Admin topbar: stacked */
+  .admin-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Pricing grids */
+  .pricing-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Search filter bar */
+  .search-filter-bar,
+  .filter-bar {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  /* Tabs: scroll horizontally */
+  .product-tabs .tab-list,
+  .tabs-nav,
+  .tab-buttons {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+  }
+
+  .product-tabs .tab-list::-webkit-scrollbar,
+  .tabs-nav::-webkit-scrollbar,
+  .tab-buttons::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Modal: full screen on small phones */
+  .modal-content,
+  .modal-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    min-height: 100vh;
+  }
+
+  /* Container padding */
+  .container,
+  .page-container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* Section padding */
+  .section,
+  .section-padding {
+    padding: 24px 0 !important;
+  }
+
+  /* Images responsive */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Long text wrap */
+  p, li, td, th, span, a, label {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Buttons: full width */
+  .btn-block-mobile,
+  .hero-cta .btn,
+  .auth-card .btn {
+    width: 100%;
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   12. Mobile Nav Overlay & Body Lock
+   ========================================================================== */
+
+/* Body scroll lock when mobile nav is open */
+body.nav-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile nav overlay backdrop */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 85%;
+  max-width: 320px;
+  height: 100%;
+  background: #fff;
+  z-index: 2000;
+  transform: translateX(-105%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  padding-top: 0;
+}
+
+body.nav-open .mobile-nav,
+.mobile-nav.open {
+  transform: translateX(0);
+}
+
+/* Mobile nav backdrop */
+body.nav-open::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 39, 0.5);
+  z-index: 1999;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* Mobile nav list styling */
+.mobile-nav-list {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.mobile-nav-list li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: #1a1a2e;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  margin: 2px 8px;
+  transition: background 0.2s ease;
+}
+
+.mobile-nav-list li a:hover,
+.mobile-nav-list li a:active {
+  background: #f1f5f9;
+}
+
+.mobile-nav-list li a i {
+  width: 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+/* Mobile nav search */
+.mobile-nav-search {
+  padding: 16px 16px 8px;
+}
+
+.mobile-nav-search-form {
+  display: flex;
+  gap: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mobile-nav-search-input {
+  flex: 1;
+  border: none;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  min-width: 0;
+}
+
+.mobile-nav-search-btn {
+  background: #0052CC;
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+/* Mobile nav locale section */
+.mobile-nav-locale {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.mobile-nav-locale select,
+.mobile-nav-locale .nav-select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+/* Hamburger animation */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  gap: 5px;
+  z-index: 2001;
+  position: relative;
+}
+
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hamburger X animation when nav is open */
+body.nav-open .hamburger .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+body.nav-open .hamburger .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+body.nav-open .hamburger .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* ==========================================================================
+   13. Secondary Nav — Responsive Horizontal Scroll
+   ========================================================================== */
+
+.nav-secondary {
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .nav-secondary {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 8px;
+  }
+
+  .nav-secondary::-webkit-scrollbar {
+    display: none;
+  }
+
+  .secondary-nav-list {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    gap: 4px;
+    padding: 8px 0;
+  }
+
+  .secondary-nav-list li a {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   14. Sidebar Overlay for Admin/Dropshipping Pages
+   ========================================================================== */
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 39, 0.5);
+  z-index: 999;
+  cursor: pointer;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+@media (max-width: 992px) {
+  .sidebar-toggle,
+  .sidebar-mobile-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: #f1f5f9;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #334155;
+  }
+}
+
+@media (min-width: 993px) {
+  .sidebar-toggle,
+  .sidebar-mobile-toggle {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   15. Global Horizontal Overflow Prevention
+   ========================================================================== */
+
+html {
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Ensure no element causes horizontal overflow */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Wrap long text */
+  h1, h2, h3, h4, h5, h6,
+  p, li, td, th, label, span {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Table containers scroll */
+  .table-responsive,
+  .data-table-wrapper,
+  .table-wrapper,
+  .table-scroll,
+  .table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  /* Image overflow prevention */
+  img, video, iframe, embed, object, canvas, svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
