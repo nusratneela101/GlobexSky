@@ -42,7 +42,7 @@ export async function getDashboardStats(req, res, next) {
 
 export async function updateSupplierProfile(req, res, next) {
   try {
-    const allowed = ['company_name', 'business_type', 'country'];
+    const allowed = ['company_name', 'business_type', 'country', 'business_license_url', 'visiting_card_url'];
     const updates = {};
     for (const k of allowed) if (req.body[k] !== undefined) updates[k] = req.body[k];
     const { data, error } = await supabase.from('supplier_profiles').update(updates).eq('user_id', req.user.id).select().single();

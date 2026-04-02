@@ -93,6 +93,7 @@
     /* Verification banner */
     .verification-banner{background:#fff8ed;border:1.5px solid #fed7aa;border-radius:12px;padding:20px;display:flex;gap:14px;align-items:flex-start;margin-bottom:20px}
     .verification-banner.blocked{background:#fef2f2;border-color:#fecaca}
+    .verification-banner.info{background:#eff6ff;border-color:#bfdbfe}
     .verification-banner i{font-size:1.3rem;flex-shrink:0;margin-top:2px}
     .verification-banner h3{font-size:.92rem;font-weight:700;margin-bottom:4px}
     .verification-banner p{font-size:.82rem;color:#374151}
@@ -153,7 +154,7 @@
       <i class="fas fa-shield-halved" style="color:#ef4444"></i>
       <div>
         <h3 id="verifyBannerTitle">Identity Verification Required</h3>
-        <p id="verifyBannerDesc">You must complete Real Name Authentication (NID/Passport verification) and Business Licence upload before you can upload products. Without verification, your store cannot be activated.</p>
+        <p id="verifyBannerDesc">You must complete Real Name Authentication (NID/Passport verification) before you can upload products.</p>
         <a href="verification.html" class="btn btn-primary btn-sm" style="margin-top:10px"><i class="fas fa-shield-halved"></i> Complete Verification Now</a>
       </div>
     </div>
@@ -451,26 +452,30 @@
       var bannerTitle = document.getElementById('verifyBannerTitle');
       var bannerDesc = document.getElementById('verifyBannerDesc');
 
-      if ((kycStatus === 'verified' || kycStatus === 'pending_review') && (supStatus === 'verified' || supStatus === 'under_review')) {
-        // Verified — hide banner, allow upload
+      if (kycStatus === 'verified' || kycStatus === 'pending_review') {
+        // KYC complete — allow product upload
         isVerified = true;
-        banner.style.display = 'none';
-      } else {
-        isVerified = false;
-        banner.style.display = 'flex';
-        if (kycStatus !== 'verified') {
-          bannerTitle.textContent = 'Real Name Authentication Required';
-          bannerDesc.textContent = 'You must complete NID/Passport verification before uploading products. Without Real Name Authentication, product upload is blocked.';
-        } else if (!hasLicense) {
-          bannerTitle.textContent = 'Business Licence Required';
-          bannerDesc.textContent = 'Upload your business licence to get verified store status. Without a business licence, your store cannot be verified.';
+        if (!hasLicense) {
+          // Show info banner: business licence needed for Verified Store badge, but upload allowed
+          banner.style.display = 'flex';
+          banner.classList.remove('blocked');
+          banner.classList.add('info');
+          banner.querySelector('i').style.color = '#3b82f6';
+          bannerTitle.textContent = 'Upload Business Licence for Verified Store Badge';
+          bannerDesc.textContent = 'You can upload products now. To get the Verified Store badge and higher search ranking, upload your Business Licence and Visiting Card from the Verification page.';
+        } else if (supStatus === 'verified' || supStatus === 'under_review') {
+          banner.style.display = 'none';
         } else {
-          bannerTitle.textContent = 'Verification In Progress';
-          bannerDesc.textContent = 'Your verification is being reviewed. You can upload products once approved.';
-          // Allow upload while under review
-          isVerified = true;
           banner.style.display = 'none';
         }
+      } else {
+        // KYC not complete — block product upload
+        isVerified = false;
+        banner.style.display = 'flex';
+        banner.classList.add('blocked');
+        banner.classList.remove('info');
+        bannerTitle.textContent = 'Real Name Authentication Required';
+        bannerDesc.textContent = 'You must complete NID/Passport verification before uploading products. Without Real Name Authentication, product upload is blocked.';
       }
     } catch(e) {
       // If KYC table doesn't exist or other error, allow upload (graceful degradation)
