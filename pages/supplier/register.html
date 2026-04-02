@@ -406,6 +406,8 @@ body{font-family:'Inter',sans-serif;color:#1a1a2e;background:#f4f6fa}
   </div>
 </div>
 
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/supplier.js"></script>
 <script>
 let currentStep = 1;
@@ -483,7 +485,9 @@ async function submitRegistration() {
     plan: formData.get('plan') || 'free'
   };
   try {
-    const token = localStorage.getItem('auth_token');
+    const token = (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token
+      || localStorage.getItem('globexToken')
+      || localStorage.getItem('token');
     const res = await fetch('/api/v1/suppliers/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
