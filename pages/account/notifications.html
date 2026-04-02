@@ -130,89 +130,161 @@
 </footer>
 
 <script>
-const notifications = [
+const NOTIF_FALLBACK = [
   {id:1,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Order #GS-2025-0892 Confirmed",desc:"Your order from ShenzTech Electronics has been confirmed and is being processed.",time:"2 hours ago",unread:true},
   {id:2,cat:"shipments",icon:"fas fa-truck",type:"shipments",title:"Order #GS-2025-0887 Shipped",desc:"Your order has been shipped via DHL Express. Tracking: 1Z9876543210.",time:"5 hours ago",unread:true},
   {id:3,cat:"promotions",icon:"fas fa-tag",type:"promotions",title:"Flash Sale — Up to 35% Off Electronics",desc:"Limited-time offer on USB hubs, earbuds, and power banks. Ends tonight!",time:"8 hours ago",unread:true},
-  {id:4,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Payment Received for Order #GS-2025-0880",desc:"We've received your payment of $1,240.00. Thank you for your purchase.",time:"Yesterday",unread:false},
-  {id:5,cat:"shipments",icon:"fas fa-truck",type:"shipments",title:"Order #GS-2025-0875 Out for Delivery",desc:"Your shipment is out for delivery today. Expected by 6:00 PM.",time:"Yesterday",unread:true},
-  {id:6,cat:"system",icon:"fas fa-shield-alt",type:"system",title:"Security Alert: New Login Detected",desc:"A new login was detected from Chrome on Windows. If this wasn't you, secure your account.",time:"2 days ago",unread:true},
-  {id:7,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Order #GS-2025-0868 Delivered",desc:"Your order from TextilePro Garments has been delivered successfully.",time:"3 days ago",unread:false},
-  {id:8,cat:"promotions",icon:"fas fa-gift",type:"promotions",title:"New Supplier Joined: LumiTech Factory",desc:"LumiTech Factory is now on Globex Sky — check out their LED lighting catalog.",time:"4 days ago",unread:false},
-  {id:9,cat:"shipments",icon:"fas fa-truck",type:"shipments",title:"Order #GS-2025-0855 Customs Cleared",desc:"Your shipment has cleared customs and is on its way to the destination.",time:"5 days ago",unread:false},
-  {id:10,cat:"promotions",icon:"fas fa-star",type:"promotions",title:"You have 3 pending reviews",desc:"Share your experience with recently purchased products and earn loyalty points.",time:"6 days ago",unread:false},
-  {id:11,cat:"orders",icon:"fas fa-shopping-bag",type:"orders",title:"Quotation Accepted by Supplier",desc:"AudioWave Mfg. has accepted your quotation request for 500 units of Wireless Earbuds.",time:"1 week ago",unread:false},
-  {id:12,cat:"system",icon:"fas fa-cog",type:"system",title:"Account Verified Successfully",desc:"Your business account has been verified. You now have access to premium supplier listings.",time:"1 week ago",unread:false},
 ];
 
+let notifications = [];
 let activeTab = "all";
 
+function getNotifToken() {
+  try {
+    const sess = JSON.parse(localStorage.getItem('globexSession') || 'null');
+    if (sess?.token) return sess.token;
+  } catch(_) {}
+  const d = localStorage.getItem('globexToken') || localStorage.getItem('auth_token') || localStorage.getItem('token') || sessionStorage.getItem('token');
+  if (d) return d;
+  try {
+    for (const k of Object.keys(localStorage)) {
+      if (k.startsWith('sb-') && k.endsWith('-auth-token')) {
+        const s = JSON.parse(localStorage.getItem(k) || 'null');
+        if (s?.access_token) return s.access_token;
+      }
+    }
+  } catch(_) {}
+  return null;
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function getIconForType(type) {
+  const map = { orders: 'fas fa-shopping-bag', shipments: 'fas fa-truck', promotions: 'fas fa-tag', system: 'fas fa-cog' };
+  return map[type] || 'fas fa-bell';
+}
+
 function renderNotifications() {
-  const list = document.getElementById("notif-list");
-  const empty = document.getElementById("empty-state");
-  const filtered = activeTab === "all" ? notifications : notifications.filter(n => n.cat === activeTab);
-  if (!filtered.length) { list.innerHTML = ""; empty.style.display = "block"; return; }
-  empty.style.display = "none";
-  list.innerHTML = filtered.map(n => `
-    <div class="notif-item ${n.unread ? "unread" : ""}" id="notif-${n.id}">
-      <div class="notif-icon ${n.type}"><i class="${n.icon}"></i></div>
+  const list  = document.getElementById('notif-list');
+  const empty = document.getElementById('empty-state');
+  const filtered = activeTab === 'all' ? notifications : notifications.filter(n => (n.cat || n.type || n.category) === activeTab);
+  if (!filtered.length) { list.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = filtered.map(n => {
+    const id     = n.id;
+    const cat    = n.cat || n.type || n.category || 'system';
+    const icon   = n.icon || getIconForType(cat);
+    const title  = escHtml(n.title || n.message || '');
+    const desc   = escHtml(n.desc || n.body || n.message || '');
+    const time   = escHtml(n.time || (n.created_at ? new Date(n.created_at).toLocaleString() : ''));
+    const unread = n.unread || !n.is_read;
+    return `
+    <div class="notif-item ${unread ? 'unread' : ''}" id="notif-${escHtml(String(id))}">
+      <div class="notif-icon ${escHtml(cat)}"><i class="${escHtml(icon)}"></i></div>
       <div class="notif-body">
-        <div class="notif-title">${n.title}</div>
-        <div class="notif-desc">${n.desc}</div>
-        <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px;opacity:.6"></i>${n.time}</div>
+        <div class="notif-title">${title}</div>
+        ${desc !== title ? `<div class="notif-desc">${desc}</div>` : ''}
+        <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px;opacity:.6"></i>${time}</div>
       </div>
       <div class="notif-actions">
-        ${n.unread ? `<button class="mark-read-btn" onclick="markRead(${n.id})">Mark as Read</button>` : ""}
-        <button class="delete-btn" onclick="deleteNotif(${n.id})" title="Delete"><i class="fas fa-trash"></i></button>
+        ${unread ? `<button class="mark-read-btn" onclick="markRead('${escHtml(String(id))}')">Mark as Read</button>` : ''}
+        <button class="delete-btn" onclick="deleteNotif('${escHtml(String(id))}',this)" title="Delete"><i class="fas fa-trash"></i></button>
       </div>
-    </div>
-  `).join("");
+    </div>`;
+  }).join('');
   updateBadges();
 }
 
-function markRead(id) {
-  const n = notifications.find(x => x.id === id);
-  if (n) n.unread = false;
+async function markRead(id) {
+  const n = notifications.find(x => String(x.id) === String(id));
+  if (n) { n.unread = false; n.is_read = true; }
   renderNotifications();
+  const token = getNotifToken();
+  if (token) {
+    try {
+      const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
+      await fetch(`${API_BASE}/notifications/${id}/read`, { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } });
+    } catch(_) {}
+  }
 }
 
-function markAllRead() {
-  notifications.forEach(n => n.unread = false);
+async function markAllRead() {
+  notifications.forEach(n => { n.unread = false; n.is_read = true; });
   renderNotifications();
+  const token = getNotifToken();
+  if (token) {
+    try {
+      const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
+      await fetch(`${API_BASE}/notifications/mark-all-read`, { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } });
+    } catch(_) {}
+  }
 }
 
-function deleteNotif(id) {
-  const el = document.getElementById("notif-"+id);
-  el.classList.add("removing");
+function deleteNotif(id, btn) {
+  const el = document.getElementById('notif-' + id);
+  if (el) el.classList.add('removing');
   setTimeout(() => {
-    const idx = notifications.findIndex(x => x.id === id);
-    if (idx !== -1) notifications.splice(idx, 1);
+    notifications = notifications.filter(x => String(x.id) !== String(id));
     renderNotifications();
   }, 300);
+  const token = getNotifToken();
+  if (token) {
+    try {
+      const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
+      fetch(`${API_BASE}/notifications/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+    } catch(_) {}
+  }
 }
 
 function updateBadges() {
-  document.querySelectorAll(".filter-tab").forEach(tab => {
-    const key = tab.dataset.tab;
-    const badge = tab.querySelector(".tab-badge");
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    const key   = tab.dataset.tab;
+    const badge = tab.querySelector('.tab-badge');
     if (!badge) return;
-    const cnt = key === "all" ? notifications.length : notifications.filter(n => n.cat === key).length;
+    const cnt = key === 'all' ? notifications.length : notifications.filter(n => (n.cat || n.type || n.category) === key).length;
     badge.textContent = cnt;
   });
 }
 
-document.querySelectorAll(".filter-tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
+async function loadNotifications() {
+  const token = getNotifToken();
+  if (token) {
+    try {
+      const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
+      const res  = await fetch(`${API_BASE}/notifications`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) {
+        const json  = await res.json();
+        const items = json.data || json.notifications || json || [];
+        if (Array.isArray(items) && items.length > 0) {
+          notifications = items;
+          renderNotifications();
+          return;
+        }
+      }
+    } catch(_) {}
+  }
+  // Fallback to hardcoded sample data
+  notifications = [...NOTIF_FALLBACK];
+  renderNotifications();
+}
+
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
     activeTab = tab.dataset.tab;
     renderNotifications();
   });
 });
 
-renderNotifications();
-document.getElementById("copyright-year").textContent = new Date().getFullYear();
+document.addEventListener('DOMContentLoaded', function() {
+  loadNotifications();
+});
 </script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/navbar.js"></script>
   <script src="../../assets/js/account.js"></script>
 <script>
