@@ -80,7 +80,7 @@ function initMobileMenu() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
       closeMobileNav();
-      hamburger.focus();
+      if (hamburger) hamburger.focus();
     }
   });
 }
