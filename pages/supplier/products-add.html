@@ -421,9 +421,14 @@
   }
 
   // ── Verification gate ──
+  var verifyRetryCount = 0;
   async function checkVerificationStatus() {
     var sb = window.supabaseClient;
-    if (!sb) { setTimeout(checkVerificationStatus, 400); return; }
+    if (!sb) {
+      verifyRetryCount++;
+      if (verifyRetryCount < 20) { setTimeout(checkVerificationStatus, 400); }
+      return;
+    }
     try {
       var userRes = await sb.auth.getUser();
       if (!userRes.data.user) {
@@ -433,8 +438,9 @@
       var uid = userRes.data.user.id;
 
       // Check KYC verification status
-      var kycRes = await sb.from('kyc_verifications').select('status').eq('user_id', uid).order('created_at', { ascending: false }).limit(1).single();
-      var kycStatus = (kycRes.data && kycRes.data.status) || 'unverified';
+      var kycRes = await sb.from('kyc_verifications').select('status').eq('user_id', uid).order('created_at', { ascending: false }).limit(1);
+      var kycData = (kycRes.data && kycRes.data.length > 0) ? kycRes.data[0] : null;
+      var kycStatus = (kycData && kycData.status) || 'unverified';
 
       // Check supplier profile verification
       var supRes = await sb.from('supplier_profiles').select('verification_status, business_license_url').eq('user_id', uid).single();
@@ -445,7 +451,7 @@
       var bannerTitle = document.getElementById('verifyBannerTitle');
       var bannerDesc = document.getElementById('verifyBannerDesc');
 
-      if (kycStatus === 'verified' && (supStatus === 'verified' || supStatus === 'under_review')) {
+      if ((kycStatus === 'verified' || kycStatus === 'pending_review') && (supStatus === 'verified' || supStatus === 'under_review')) {
         // Verified — hide banner, allow upload
         isVerified = true;
         banner.style.display = 'none';
@@ -649,19 +655,26 @@
         // Create variants if any
         var variants = collectVariants();
         if (variants.length > 0 && result.data && result.data.id) {
-          var sb = window.supabaseClient;
-          if (sb) {
-            var variantData = variants.map(function(v) {
-              return {
-                product_id: result.data.id,
-                name: v.name,
-                sku: v.sku,
-                price: v.price,
-                stock: v.stock,
-                attributes: v.attributes
-              };
-            });
-            await sb.from('product_variants').insert(variantData);
+          try {
+            var sb = window.supabaseClient;
+            if (sb) {
+              var variantData = variants.map(function(v) {
+                return {
+                  product_id: result.data.id,
+                  name: v.name,
+                  sku: v.sku,
+                  price: v.price,
+                  stock: v.stock,
+                  attributes: v.attributes
+                };
+              });
+              var varRes = await sb.from('product_variants').insert(variantData);
+              if (varRes.error) {
+                showToast('⚠️ Product saved but variants could not be created: ' + varRes.error.message, 5000);
+              }
+            }
+          } catch(varErr) {
+            showToast('⚠️ Product saved but variant creation failed.', 4000);
           }
         }
 

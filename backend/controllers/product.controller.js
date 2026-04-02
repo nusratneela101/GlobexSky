@@ -83,15 +83,14 @@ export async function createProduct(req, res, next) {
     const userId = req.user.id;
 
     // Check KYC verification status — block unverified suppliers
-    const { data: kycRecord } = await supabase
+    const { data: kycRecords } = await supabase
       .from('kyc_verifications')
       .select('status')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
+      .limit(1);
 
-    const kycStatus = kycRecord?.status || 'unverified';
+    const kycStatus = (kycRecords && kycRecords.length > 0) ? kycRecords[0].status : 'unverified';
     if (kycStatus !== 'verified' && kycStatus !== 'pending_review') {
       return res.status(403).json({
         success: false,

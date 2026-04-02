@@ -268,7 +268,7 @@ function processFile(f) {
     return;
   }
   if (f.size > 5 * 1024 * 1024) {
-    alert('File too large. Maximum 5MB.');
+    alert('File too large (' + Math.round(f.size / 1024 / 1024 * 10) / 10 + 'MB). Maximum allowed is 5MB.');
     return;
   }
 
@@ -378,6 +378,9 @@ async function confirmUpload() {
   for (var i = 0; i < validRows.length; i++) {
     var r = validRows[i];
     try {
+      // Note: category is passed as-is. The backend may need UUIDs;
+      // for named categories, admin should set up a mapping or use
+      // category names that match the category_id in the database.
       var response = await fetch(apiBase + '/products', {
         method: 'POST',
         headers: {
