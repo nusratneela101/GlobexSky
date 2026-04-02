@@ -64,51 +64,37 @@ body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;min-height:
     <!-- Order Number -->
     <div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px">
       <p style="color:#64748b;font-size:.88rem;font-weight:500;margin-bottom:4px">ORDER NUMBER</p>
-      <p style="font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;color:#0052CC">#GS-2025-4821</p>
+      <p id="order-number-display" style="font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;color:#0052CC">#GS-LOADING</p>
     </div>
 
     <!-- Email Notice -->
     <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:12px;margin-bottom:32px">
       <i class="fas fa-envelope" style="color:#16a34a;font-size:1.1rem"></i>
-      <p style="color:#15803d;font-size:.92rem">A confirmation email has been sent to <strong>alex@example.com</strong></p>
+      <p style="color:#15803d;font-size:.92rem" id="confirm-email-notice">A confirmation email will be sent to your registered email address.</p>
     </div>
 
     <!-- Order Summary -->
     <div class="card" style="margin-bottom:28px">
       <h2 style="font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px"><i class="fas fa-receipt" style="color:#0052CC"></i> Order Summary</h2>
 
-      <div class="product-row">
-        <div><p style="font-weight:500">USB-C Hub 7-in-1</p><p style="font-size:.83rem;color:#64748b">200 units × $6.50</p></div>
-        <p style="font-weight:600">$1,300.00</p>
-      </div>
-      <div class="product-row">
-        <div><p style="font-weight:500">Wireless Earbuds Pro</p><p style="font-size:.83rem;color:#64748b">100 units × $28.00</p></div>
-        <p style="font-weight:600">$2,800.00</p>
-      </div>
-      <div class="product-row">
-        <div><p style="font-weight:500">Smart Watch Series 3</p><p style="font-size:.83rem;color:#64748b">50 units × $85.00</p></div>
-        <p style="font-weight:600">$4,250.00</p>
-      </div>
-      <div class="product-row">
-        <div><p style="font-weight:500">Bamboo Cutting Board Set</p><p style="font-size:.83rem;color:#64748b">300 units × $2.60</p></div>
-        <p style="font-weight:600">$780.00</p>
+      <div id="order-items-list">
+        <!-- Dynamically populated -->
       </div>
 
-      <div style="border-top:2px solid #e2e8f0;margin-top:16px;padding-top:16px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:#64748b">Subtotal</span><span style="font-weight:500">$9,130.00</span></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:#64748b">Shipping</span><span style="font-weight:500">$245.00</span></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:16px"><span style="color:#64748b">Tax (8%)</span><span style="font-weight:500">$730.40</span></div>
-        <div style="display:flex;justify-content:space-between;background:#eff6ff;padding:14px 16px;border-radius:10px"><span style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem">Total</span><span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.3rem;color:#0052CC">$10,105.40</span></div>
+      <div style="border-top:2px solid #e2e8f0;margin-top:16px;padding-top:16px" id="order-totals">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:#64748b">Subtotal</span><span id="confirm-subtotal" style="font-weight:500">—</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:16px"><span style="color:#64748b">Shipping</span><span id="confirm-shipping" style="font-weight:500">—</span></div>
+        <div style="display:flex;justify-content:space-between;background:#eff6ff;padding:14px 16px;border-radius:10px"><span style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem">Total</span><span id="confirm-total" style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.3rem;color:#0052CC">—</span></div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;padding-top:20px;border-top:1px solid #f1f5f9">
         <div style="background:#f8fafc;padding:14px;border-radius:10px">
-          <p style="font-size:.8rem;color:#64748b;margin-bottom:4px"><i class="fas fa-building" style="margin-right:4px"></i>SUPPLIER</p>
-          <p style="font-weight:600;font-size:.92rem">TechChina Manufacturing Co.</p>
+          <p style="font-size:.8rem;color:#64748b;margin-bottom:4px"><i class="fas fa-calendar" style="margin-right:4px"></i>ORDER DATE</p>
+          <p id="confirm-date" style="font-weight:600;font-size:.92rem">—</p>
         </div>
         <div style="background:#f8fafc;padding:14px;border-radius:10px">
           <p style="font-size:.8rem;color:#64748b;margin-bottom:4px"><i class="fas fa-calendar" style="margin-right:4px"></i>ESTIMATED DELIVERY</p>
-          <p style="font-weight:600;font-size:.92rem">July 15–20, 2025</p>
+          <p style="font-weight:600;font-size:.92rem">25–35 business days</p>
         </div>
       </div>
     </div>
@@ -211,28 +197,82 @@ body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;min-height:
 </footer>
 
 <script>
-document.getElementById('copyright-year').textContent = new Date().getFullYear();
+(function() {
+  /* ── Read order data from URL params and localStorage snapshot ── */
+  var params = new URLSearchParams(window.location.search);
+  var orderId = params.get('order') || params.get('id') || null;
 
-// Confetti effect
-function launchConfetti() {
-  const colors = ['#0052CC','#FF6B35','#00C9A7','#f59e0b','#ef4444','#a855f7'];
-  for (let i = 0; i < 80; i++) {
-    setTimeout(() => {
-      const el = document.createElement('div');
-      el.className = 'confetti-piece';
-      el.style.left = Math.random() * 100 + 'vw';
-      el.style.background = colors[Math.floor(Math.random() * colors.length)];
-      el.style.width = (Math.random() * 8 + 6) + 'px';
-      el.style.height = (Math.random() * 8 + 6) + 'px';
-      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      el.style.animationDuration = (Math.random() * 2 + 2) + 's';
-      el.style.animationDelay = '0s';
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 4000);
-    }, i * 40);
+  /* Order number */
+  var orderNumEl = document.getElementById('order-number-display');
+  if (orderNumEl) {
+    if (orderId) {
+      orderNumEl.textContent = '#GS-' + String(orderId).slice(0, 8).toUpperCase();
+    } else {
+      orderNumEl.textContent = '#GS-' + Date.now().toString(36).toUpperCase();
+    }
   }
-}
-window.addEventListener('load', () => setTimeout(launchConfetti, 600));
+
+  /* Order date */
+  var dateEl = document.getElementById('confirm-date');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+
+  /* Read cart snapshot saved by checkout page */
+  var cartItems = [];
+  try { cartItems = JSON.parse(localStorage.getItem('globexLastCartSnapshot') || '[]'); } catch(_) {}
+  var orderSnapshot = null;
+  try { orderSnapshot = JSON.parse(localStorage.getItem('globexLastOrder') || 'null'); } catch(_) {}
+  if (!cartItems.length && orderSnapshot && Array.isArray(orderSnapshot.items)) cartItems = orderSnapshot.items;
+
+  var itemsEl = document.getElementById('order-items-list');
+  if (itemsEl) {
+    if (cartItems.length > 0) {
+      itemsEl.innerHTML = cartItems.map(function(item) {
+        var name = item.name || item.product_name || 'Product';
+        var qty = parseInt(item.quantity || 1, 10);
+        var price = parseFloat(item.unit_price || item.price || 0);
+        return '<div class="product-row">' +
+          '<div><p style="font-weight:500">' + String(name).replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</p>' +
+          '<p style="font-size:.83rem;color:#64748b">' + qty + ' units × $' + price.toFixed(2) + '</p></div>' +
+          '<p style="font-weight:600">$' + (price * qty).toFixed(2) + '</p>' +
+        '</div>';
+      }).join('');
+
+      var subtotal = cartItems.reduce(function(s, i) { return s + parseFloat(i.unit_price || i.price || 0) * parseInt(i.quantity || 1, 10); }, 0);
+      var subtotalEl = document.getElementById('confirm-subtotal');
+      var shippingEl = document.getElementById('confirm-shipping');
+      var totalEl = document.getElementById('confirm-total');
+      if (subtotalEl) subtotalEl.textContent = '$' + subtotal.toFixed(2);
+      if (shippingEl) shippingEl.textContent = orderSnapshot && orderSnapshot.shipping_cost != null ? '$' + parseFloat(orderSnapshot.shipping_cost).toFixed(2) : 'Calculated at checkout';
+      var shippingCost = (orderSnapshot && orderSnapshot.shipping_cost) ? parseFloat(orderSnapshot.shipping_cost) : 0;
+      if (totalEl) totalEl.textContent = '$' + (subtotal + shippingCost).toFixed(2);
+    } else {
+      itemsEl.innerHTML = '<p style="color:#64748b;font-size:.88rem;text-align:center;padding:16px 0">Order details are being processed.</p>';
+    }
+  }
+
+  /* Confetti effect */
+  function launchConfetti() {
+    var colors = ['#0052CC','#FF6B35','#00C9A7','#f59e0b','#ef4444','#a855f7'];
+    for (var i = 0; i < 80; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var el = document.createElement('div');
+          el.className = 'confetti-piece';
+          el.style.left = Math.random() * 100 + 'vw';
+          el.style.background = colors[Math.floor(Math.random() * colors.length)];
+          el.style.width = (Math.random() * 8 + 6) + 'px';
+          el.style.height = (Math.random() * 8 + 6) + 'px';
+          el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          el.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          el.style.animationDelay = '0s';
+          document.body.appendChild(el);
+          setTimeout(function() { el.remove(); }, 4000);
+        }, idx * 40);
+      })(i);
+    }
+  }
+  window.addEventListener('load', function() { setTimeout(launchConfetti, 600); });
+}());
 </script>
 <script src="../../assets/js/navbar.js"></script>
 </body>
