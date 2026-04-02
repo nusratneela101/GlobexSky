@@ -5,7 +5,12 @@
  */
 
 const DropshippingAPI = {
-  BASE: '/api/v1/dropshipping',
+  get BASE() {
+    var apiBase = (typeof GlobexAPI !== 'undefined' && GlobexAPI.baseURL) ||
+                  (typeof GlobexConfig !== 'undefined' && GlobexConfig.API_BASE_URL) ||
+                  '/api/v1';
+    return apiBase + '/dropshipping';
+  },
 
   headers(json = true) {
     const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');

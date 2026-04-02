@@ -233,6 +233,7 @@ function validateRegisterForm(form) {
 
 /**
  * Sign in with Supabase Auth.
+ * Stores the Supabase access token as 'globexToken' so GlobexAPI can use it.
  * @param {string} email
  * @param {string} password
  */
@@ -241,6 +242,10 @@ async function login(email, password) {
   if (!sb) throw new Error('Supabase client not initialized. Please include the Supabase CDN script.');
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   if (error) throw new Error(error.message);
+  // Store the access token so GlobexAPI / ApiService can include it in requests
+  if (data && data.session && data.session.access_token) {
+    localStorage.setItem('globexToken', data.session.access_token);
+  }
   return data;
 }
 
@@ -268,6 +273,8 @@ async function register(name, email, password, role = 'buyer', country = '') {
 async function logout() {
   const sb = _getSupabaseClient();
   if (sb) await sb.auth.signOut();
+  // Clear globexToken set on login
+  localStorage.removeItem('globexToken');
   updateNavUI();
   closeLoginModal();
 }
