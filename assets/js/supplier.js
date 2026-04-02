@@ -281,17 +281,22 @@ async function loadSupplierDashboard() {
     const res = await SupplierAPI.getDashboard();
     const data = res.data || res.stats || res;
     if (!data) return;
+    function formatCurrency(val) {
+      if (val == null) return null;
+      return '$' + Number(val).toLocaleString('en-US', { maximumFractionDigits: 0 });
+    }
+    const revenue = formatCurrency(data.total_earned != null ? data.total_earned : data.revenue);
     // Support both dashboard.html IDs and index.html IDs
     const updates = {
       'dashTotalOrders': data.total_orders,
       'dashPendingOrders': data.pending_orders,
-      'dashRevenue': data.total_earned != null ? '$' + Number(data.total_earned).toLocaleString('en-US', { maximumFractionDigits: 0 }) : (data.revenue ? '$' + Number(data.revenue).toLocaleString('en-US', { maximumFractionDigits: 0 }) : null),
+      'dashRevenue': revenue,
       'dashRating': data.rating || '—',
       'dashTotalProducts': data.total_products,
       'dashResponseRate': data.response_rate ? `${data.response_rate}%` : '—',
       // Alternative IDs used on index.html
       'stat-orders': data.total_orders,
-      'stat-earnings': data.total_earned != null ? '$' + Number(data.total_earned).toLocaleString() : null,
+      'stat-earnings': formatCurrency(data.total_earned),
       'stat-products': data.total_products,
       'stat-rating': data.rating,
     };
@@ -326,10 +331,14 @@ async function loadSupplierProducts(tbodyId, emptyMessage) {
         <td><span class="badge ${statusClass}">${escHtml(p.status || 'pending')}</span></td>
         <td>
           <a href="products-edit.html?id=${escHtml(p.id)}" class="btn btn-sm btn-secondary">Edit</a>
-          <button class="btn btn-sm btn-danger" onclick="deleteSupplierProduct('${escHtml(p.id)}',this)">Delete</button>
+          <button class="btn btn-sm btn-danger" data-product-id="${escHtml(p.id)}">Delete</button>
         </td>
       </tr>`;
     }).join('');
+    // Attach delete handlers via addEventListener (no inline onclick)
+    tbody.querySelectorAll('button[data-product-id]').forEach(btn => {
+      btn.addEventListener('click', () => deleteSupplierProduct(btn.getAttribute('data-product-id'), btn));
+    });
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:#94a3b8">Failed to load products.</td></tr>`;
     console.warn('Products load error:', e);

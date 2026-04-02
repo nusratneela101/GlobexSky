@@ -432,6 +432,8 @@
       </div>
       <div class="suppliers-grid" role="list" id="featured-suppliers-grid">
         <article class="supplier-card" role="listitem">
+          <div class="supplier-header">
+            <img src="https://ui-avatars.com/api/?name=TechPro+Electronics&background=0052CC&color=fff&size=60" alt="TechPro Electronics" class="supplier-avatar" width="60" height="60"/>
             <div>
               <div class="supplier-name">TechPro Electronics</div>
               <div class="supplier-location">🇨🇳 Shenzhen, China</div>
@@ -710,12 +712,16 @@
       if (suppliers.length) {
         var grid = document.getElementById('featured-suppliers-grid');
         if (grid) {
+          function getStarClass(i, rating) {
+            if (i <= rating) return 'fas fa-star';
+            if (i - 0.5 <= rating) return 'fas fa-star-half-alt';
+            return 'far fa-star';
+          }
           grid.innerHTML = suppliers.map(function(s) {
-            var initials = (s.company_name || 'S').substring(0, 2).toUpperCase();
             var avatarUrl = s.logo_url || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(s.company_name || 'Supplier') + '&background=0052CC&color=fff&size=60');
-            var stars = '';
             var rating = parseFloat(s.rating || 0);
-            for (var i = 1; i <= 5; i++) { stars += '<i class="fas fa-star' + (i > rating ? (i - 0.5 <= rating ? '-half-alt' : ' fa-regular') : '') + '"></i>'; }
+            var stars = '';
+            for (var i = 1; i <= 5; i++) { stars += '<i class="' + getStarClass(i, rating) + '"></i>'; }
             var profileUrl = '../supplier/profile.html?id=' + esc(s.id || '');
             return '<article class="supplier-card" role="listitem">' +
               '<div class="supplier-header">' +
@@ -724,7 +730,7 @@
               '<div class="supplier-location">' + esc((s.city || '') + (s.city && s.country ? ', ' : '') + (s.country || '')) + '</div>' +
               (s.verified ? '<span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>' : '') +
               '</div></div>' +
-              '<div class="supplier-rating">' + stars + '<span>' + (rating.toFixed(1)) + '</span></div>' +
+              '<div class="supplier-rating">' + stars + '<span>' + rating.toFixed(1) + '</span></div>' +
               '<div class="supplier-stats">' +
               '<div class="supplier-stat"><span class="supplier-stat-value">' + esc(s.total_orders || '—') + '</span><span class="supplier-stat-label">Orders</span></div>' +
               '<div class="supplier-stat"><span class="supplier-stat-value">' + esc(s.response_time || '—') + '</span><span class="supplier-stat-label">Response</span></div>' +

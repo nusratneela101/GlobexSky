@@ -295,7 +295,9 @@ document.addEventListener('DOMContentLoaded', async function() {
           var date = new Date(o.created_at);
           var dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
           var tr = document.createElement('tr');
-          tr.innerHTML = '<td><a href="orders-detail.html?id=' + escHtml(o.id) + '" style="color:#0052CC;text-decoration:none;font-weight:600">#' + escHtml(o.id.substring(0, 8).toUpperCase()) + '</a></td>' +
+          var safeId = escHtml(o.id);
+          var safeIdShort = escHtml(o.id.substring(0, 8).toUpperCase());
+          tr.innerHTML = '<td><a href="orders-detail.html?id=' + safeId + '" style="color:#0052CC;text-decoration:none;font-weight:600">#' + safeIdShort + '</a></td>' +
             '<td>$' + parseFloat(o.total || 0).toLocaleString() + '</td>' +
             '<td><span class="badge-pill ' + statusClass + '">' + (o.status || 'pending').charAt(0).toUpperCase() + (o.status || 'pending').slice(1) + '</span></td>' +
             '<td style="color:#64748b;font-size:.8rem">' + dateStr + '</td>';
