@@ -154,70 +154,57 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">First Name</label>
-            <input type="text" class="form-control" value="James"/>
+            <input type="text" class="form-control" name="first_name" placeholder="First name"/>
           </div>
           <div class="form-group">
             <label class="form-label">Last Name</label>
-            <input type="text" class="form-control" value="Davidson"/>
+            <input type="text" class="form-control" name="last_name" placeholder="Last name"/>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input type="email" class="form-control" value="j.davidson@example.com" readonly/>
+            <input type="email" class="form-control" name="email" placeholder="Email" readonly/>
           </div>
           <div class="form-group">
             <label class="form-label">Phone Number</label>
-            <input type="tel" class="form-control" value="+1 (555) 234-5678"/>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Country</label>
-            <select class="form-control">
-              <option>United States</option>
-              <option>United Kingdom</option>
-              <option>Canada</option>
-              <option>Australia</option>
-              <option>Germany</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">City</label>
-            <input type="text" class="form-control" value="San Francisco"/>
+            <input type="tel" class="form-control" name="phone" placeholder="+1 (555) 000-0000"/>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Timezone</label>
-            <select class="form-control">
-              <option>UTC-08:00 Pacific Time</option>
-              <option>UTC-05:00 Eastern Time</option>
-              <option>UTC+00:00 GMT</option>
-              <option>UTC+01:00 Central European</option>
-              <option>UTC+08:00 China Standard</option>
+            <select class="form-control" name="timezone">
+              <option value="">Select timezone</option>
+              <option value="UTC-08:00">UTC-08:00 Pacific Time</option>
+              <option value="UTC-05:00">UTC-05:00 Eastern Time</option>
+              <option value="UTC+00:00">UTC+00:00 GMT</option>
+              <option value="UTC+01:00">UTC+01:00 Central European</option>
+              <option value="UTC+08:00">UTC+08:00 China Standard</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Language</label>
-            <select class="form-control">
-              <option>English</option>
-              <option>Spanish</option>
-              <option>French</option>
-              <option>German</option>
-              <option>Chinese (Simplified)</option>
+            <select class="form-control" name="language">
+              <option value="">Select language</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="zh">Chinese (Simplified)</option>
             </select>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Currency</label>
-            <select class="form-control">
-              <option>USD – US Dollar</option>
-              <option>EUR – Euro</option>
-              <option>GBP – British Pound</option>
-              <option>AUD – Australian Dollar</option>
-              <option>CNY – Chinese Yuan</option>
+            <select class="form-control" name="currency">
+              <option value="">Select currency</option>
+              <option value="USD">USD – US Dollar</option>
+              <option value="EUR">EUR – Euro</option>
+              <option value="GBP">GBP – British Pound</option>
+              <option value="AUD">AUD – Australian Dollar</option>
+              <option value="CNY">CNY – Chinese Yuan</option>
             </select>
           </div>
         </div>
@@ -256,11 +243,11 @@
       <form id="password-form" style="max-width:480px">
         <div class="form-group">
           <label class="form-label">Current Password</label>
-          <input type="password" class="form-control" placeholder="Enter current password" id="current-pass"/>
+          <input type="password" class="form-control" name="current_password" placeholder="Enter current password" id="current-pass"/>
         </div>
         <div class="form-group">
           <label class="form-label">New Password</label>
-          <input type="password" class="form-control" placeholder="Enter new password" id="new-pass" oninput="checkStrength(this.value)"/>
+          <input type="password" class="form-control" name="new_password" placeholder="Enter new password" id="new-pass" oninput="checkStrength(this.value)"/>
           <div class="strength-bar-wrap">
             <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
             <div class="strength-label" id="strength-label">Enter a password</div>
@@ -268,7 +255,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Confirm New Password</label>
-          <input type="password" class="form-control" placeholder="Confirm new password"/>
+          <input type="password" class="form-control" name="confirm_password" placeholder="Confirm new password"/>
         </div>
         <button type="submit" class="btn btn-primary"><i class="fas fa-key" style="margin-right:6px"></i>Update Password</button>
       </form>
@@ -342,15 +329,9 @@
   document.getElementById('tfa-toggle').addEventListener('change', function() {
     document.getElementById('tfa-details').style.display = this.checked ? 'block' : 'none';
   });
-
-  document.getElementById('personal-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = this.querySelector('[type=submit]');
-    btn.textContent = '✓ Saved!';
-    btn.style.background = '#22c55e';
-    setTimeout(() => { btn.innerHTML = '<i class="fas fa-save" style="margin-right:6px"></i>Save Changes'; btn.style.background = ''; }, 2000);
-  });
 </script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/navbar.js"></script>
   <script src="../../assets/js/account.js"></script>
 <script>
