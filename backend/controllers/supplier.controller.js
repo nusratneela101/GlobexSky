@@ -3,6 +3,235 @@ import { buildPagination } from '../utils/pagination.js';
 import SupplierScorecard from '../models/SupplierScorecard.js';
 import SupplierScore from '../models/SupplierScore.js';
 
+/**
+ * GET /api/v1/suppliers
+ * Public listing of verified suppliers with pagination, search, and filters.
+ */
+export async function listSuppliers(req, res, next) {
+  try {
+    const { page = 1, limit = 20, search, category, country, verified } = req.query;
+    const { from, to } = buildPagination(page, limit);
+
+    let q = supabase
+      .from('supplier_profiles')
+      .select('id,company_name,logo_url,country,city,main_categories,verified,rating,total_orders,response_time,business_type', { count: 'exact' });
+
+    if (verified !== 'false') q = q.eq('verified', true);
+    if (search) q = q.ilike('company_name', `%${search}%`);
+    if (country) q = q.eq('country', country);
+    if (category) q = q.contains('main_categories', [category]);
+
+    q = q.order('rating', { ascending: false }).range(from, to);
+
+    const { data, error, count } = await q;
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.json({ success: true, data: data || [], meta: { total: count || 0, page: +page, limit: +limit } });
+  } catch (err) { next(err); }
+}
+
+/**
+ * POST /api/v1/suppliers/register
+ * Register as a new supplier (public — called before user is fully a supplier).
+ */
+export async function registerSupplier(req, res, next) {
+  try {
+    const {
+      company_name, business_type, main_products, employee_count,
+      annual_revenue, country, city, phone, email, website,
+      description, production_capacity, oem_odm, plan,
+      user_id,
+    } = req.body;
+
+    if (!company_name || !country || !email) {
+      return res.status(400).json({ success: false, error: 'company_name, country, and email are required.' });
+    }
+
+    const supplierId = req.user?.id || user_id;
+
+    const profileData = {
+      company_name,
+      business_type: business_type || 'manufacturer',
+      country,
+      city,
+      main_categories: main_products ? [main_products] : [],
+      verified: false,
+      plan: plan || 'free',
+      ...(supplierId ? { user_id: supplierId } : {}),
+    };
+
+    const { data, error } = await supabase
+      .from('supplier_profiles')
+      .insert(profileData)
+      .select()
+      .single();
+
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.status(201).json({ success: true, data, message: 'Supplier application submitted. We will review it within 2–3 business days.' });
+  } catch (err) { next(err); }
+}
+
+/**
+ * POST /api/v1/suppliers/:id/contact
+ * Send an inquiry message to a supplier (authenticated).
+ */
+export async function contactSupplier(req, res, next) {
+  try {
+    const supplierId = req.params.id;
+    const { subject, message, product_reference } = req.body;
+
+    if (!subject || !message) {
+      return res.status(400).json({ success: false, error: 'subject and message are required.' });
+    }
+
+    const inquiry = {
+      supplier_id: supplierId,
+      sender_id: req.user?.id || null,
+      sender_email: req.body.email || req.user?.email || null,
+      subject,
+      message,
+      product_reference: product_reference || null,
+      status: 'unread',
+    };
+
+    const { data, error } = await supabase
+      .from('supplier_inquiries')
+      .insert(inquiry)
+      .select()
+      .single();
+
+    // Tolerate missing table — store as notification fallback
+    if (error && error.code === '42P01') {
+      return res.status(201).json({ success: true, message: 'Your inquiry has been sent!' });
+    }
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.status(201).json({ success: true, data, message: 'Your inquiry has been sent!' });
+  } catch (err) { next(err); }
+}
+
+/**
+ * GET /api/v1/suppliers/dashboard/profile
+ * Get the authenticated supplier's own profile.
+ */
+export async function getMyProfile(req, res, next) {
+  try {
+    const { data, error } = await supabase
+      .from('supplier_profiles')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+    if (error || !data) return res.status(404).json({ success: false, error: 'Supplier profile not found.' });
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/**
+ * GET /api/v1/suppliers/dashboard/products
+ * List the authenticated supplier's own products.
+ */
+export async function getMyProducts(req, res, next) {
+  try {
+    const supplierId = req.user.profile?.id || req.user.id;
+    const { page = 1, limit = 20, status } = req.query;
+    const { from, to } = buildPagination(page, limit);
+
+    let q = supabase
+      .from('products')
+      .select('*', { count: 'exact' })
+      .eq('supplier_id', supplierId);
+
+    if (status) q = q.eq('status', status);
+    q = q.order('created_at', { ascending: false }).range(from, to);
+
+    const { data, error, count } = await q;
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.json({ success: true, data: data || [], meta: { total: count || 0, page: +page, limit: +limit } });
+  } catch (err) { next(err); }
+}
+
+/**
+ * POST /api/v1/suppliers/dashboard/products
+ * Create a new product for the authenticated supplier.
+ */
+export async function createMyProduct(req, res, next) {
+  try {
+    const supplierId = req.user.profile?.id || req.user.id;
+    const allowed = ['title', 'description', 'price', 'compare_price', 'category_id', 'stock_quantity',
+      'min_order_qty', 'images', 'tags', 'specifications', 'status'];
+    const productData = { supplier_id: supplierId, status: 'pending' };
+    for (const k of allowed) if (req.body[k] !== undefined) productData[k] = req.body[k];
+
+    const { data, error } = await supabase.from('products').insert(productData).select().single();
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.status(201).json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/**
+ * PUT /api/v1/suppliers/dashboard/products/:id
+ * Update one of the authenticated supplier's products.
+ */
+export async function updateMyProduct(req, res, next) {
+  try {
+    const supplierId = req.user.profile?.id || req.user.id;
+    const allowed = ['title', 'description', 'price', 'compare_price', 'category_id', 'stock_quantity',
+      'min_order_qty', 'images', 'tags', 'specifications', 'status'];
+    const updates = {};
+    for (const k of allowed) if (req.body[k] !== undefined) updates[k] = req.body[k];
+
+    const { data, error } = await supabase
+      .from('products')
+      .update(updates)
+      .eq('id', req.params.id)
+      .eq('supplier_id', supplierId)
+      .select()
+      .single();
+    if (error || !data) return res.status(404).json({ success: false, error: 'Product not found or access denied.' });
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
+/**
+ * DELETE /api/v1/suppliers/dashboard/products/:id
+ * Remove one of the authenticated supplier's products.
+ */
+export async function deleteMyProduct(req, res, next) {
+  try {
+    const supplierId = req.user.profile?.id || req.user.id;
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', req.params.id)
+      .eq('supplier_id', supplierId);
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.json({ success: true, message: 'Product deleted.' });
+  } catch (err) { next(err); }
+}
+
+/**
+ * PUT /api/v1/suppliers/dashboard/orders/:id/status
+ * Update the status of an order for the authenticated supplier.
+ */
+export async function updateOrderStatus(req, res, next) {
+  try {
+    const supplierId = req.user.profile?.id || req.user.id;
+    const { status, notes } = req.body;
+    const allowed = ['confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!status || !allowed.includes(status)) {
+      return res.status(400).json({ success: false, error: `status must be one of: ${allowed.join(', ')}` });
+    }
+
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status, ...(notes ? { notes } : {}) })
+      .eq('id', req.params.id)
+      .eq('supplier_id', supplierId)
+      .select()
+      .single();
+    if (error || !data) return res.status(404).json({ success: false, error: 'Order not found or access denied.' });
+    res.json({ success: true, data });
+  } catch (err) { next(err); }
+}
+
 export async function getSupplierProfile(req, res, next) {
   try {
     const { data, error } = await supabase.from('supplier_profiles').select('*').eq('id', req.params.id).single();

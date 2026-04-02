@@ -144,6 +144,33 @@ jest.mock('../../controllers/supplier.controller.js', () => ({
   syncImportedProducts: jest.fn((_req, res) => {
     res.json({ success: true, message: 'Sync triggered for all imported products.', synced_at: new Date().toISOString() });
   }),
+  listSuppliers: jest.fn((_req, res) => {
+    res.json({ success: true, data: [{ id: 'sup-1', company_name: 'Test Supplier Co.', verified: true, rating: 4.5 }], meta: { total: 1, page: 1, limit: 20 } });
+  }),
+  registerSupplier: jest.fn((req, res) => {
+    res.status(201).json({ success: true, data: { id: 'sup-new', company_name: req.body.company_name }, message: 'Supplier application submitted.' });
+  }),
+  contactSupplier: jest.fn((req, res) => {
+    res.status(201).json({ success: true, message: 'Your inquiry has been sent!' });
+  }),
+  getMyProfile: jest.fn((_req, res) => {
+    res.json({ success: true, data: { id: 'sup-1', company_name: 'Test Supplier Co.' } });
+  }),
+  getMyProducts: jest.fn((_req, res) => {
+    res.json({ success: true, data: [], meta: { total: 0, page: 1, limit: 20 } });
+  }),
+  createMyProduct: jest.fn((req, res) => {
+    res.status(201).json({ success: true, data: { id: 'prod-new', title: req.body.title } });
+  }),
+  updateMyProduct: jest.fn((req, res) => {
+    res.json({ success: true, data: { id: req.params.id, title: req.body.title } });
+  }),
+  deleteMyProduct: jest.fn((_req, res) => {
+    res.json({ success: true, message: 'Product deleted.' });
+  }),
+  updateOrderStatus: jest.fn((req, res) => {
+    res.json({ success: true, data: { id: req.params.id, status: req.body.status } });
+  }),
 }));
 
 // ─── Role check mock ─────────────────────────────────────────────────────────
@@ -230,5 +257,56 @@ describe('Supplier Integration — Dashboard (Authenticated)', () => {
     const res = await request(app).get('/api/v1/suppliers/dashboard/stats');
 
     expect([401, 403]).toContain(res.status);
+  });
+});
+
+describe('Supplier Integration — Public Listing & Registration', () => {
+  it('should list all suppliers', async () => {
+    const res = await request(app).get('/api/v1/suppliers');
+
+    expect([200]).toContain(res.status);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+  });
+
+  it('should list suppliers with search filter', async () => {
+    const res = await request(app).get('/api/v1/suppliers?search=Test');
+
+    expect([200]).toContain(res.status);
+  });
+
+  it('should register a new supplier', async () => {
+    const res = await request(app)
+      .post('/api/v1/suppliers/register')
+      .send({ company_name: 'New Supplier Co.', country: 'China', email: 'new@supplier.com' });
+
+    expect([201, 400]).toContain(res.status);
+  });
+});
+
+describe('Supplier Integration — Contact & Products', () => {
+  it('should contact a supplier (authenticated)', async () => {
+    const res = await request(app)
+      .post('/api/v1/suppliers/supplier-profile-1/contact')
+      .set(SUPPLIER_TOKEN)
+      .send({ subject: 'Product Inquiry', message: 'I am interested in your products.' });
+
+    expect([201, 400, 401, 403, 422]).toContain(res.status);
+  });
+
+  it('should get supplier own products (authenticated supplier)', async () => {
+    const res = await request(app)
+      .get('/api/v1/suppliers/dashboard/products')
+      .set(SUPPLIER_TOKEN);
+
+    expect([200, 403]).toContain(res.status);
+  });
+
+  it('should get supplier own profile (authenticated supplier)', async () => {
+    const res = await request(app)
+      .get('/api/v1/suppliers/dashboard/profile')
+      .set(SUPPLIER_TOKEN);
+
+    expect([200, 403]).toContain(res.status);
   });
 });

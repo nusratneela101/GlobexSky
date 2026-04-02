@@ -430,10 +430,8 @@
         <h2 class="section-title" id="suppliers-heading">Featured Suppliers</h2>
         <p class="section-subtitle">Handpicked, verified suppliers with exceptional track records and buyer satisfaction.</p>
       </div>
-      <div class="suppliers-grid" role="list">
+      <div class="suppliers-grid" role="list" id="featured-suppliers-grid">
         <article class="supplier-card" role="listitem">
-          <div class="supplier-header">
-            <img src="https://ui-avatars.com/api/?name=TechPro+Electronics&background=0052CC&color=fff&size=60" alt="TechPro Electronics" class="supplier-avatar" width="60" height="60"/>
             <div>
               <div class="supplier-name">TechPro Electronics</div>
               <div class="supplier-location">🇨🇳 Shenzhen, China</div>
@@ -687,6 +685,8 @@
 <script src="../../assets/js/navbar.js"></script>
 <script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/supplier.js"></script>
 <script>
 (function(){
   var API_BASE=(window.GlobexConfig&&window.GlobexConfig.API_BASE_URL)||'/api/v1';
@@ -702,6 +702,39 @@
       var c=document.querySelector("[class*='sourcing-list'],[class*='solution-list'],ul");
       if(c&&items.length){c.innerHTML=items.map(function(s){return'<li>'+esc(s.name||s.title||String(s.id||''))+'</li>';}).join('');}
     }catch(e){console.warn('API load failed, using static content',e);}
+
+    // Load featured suppliers from API; fall back to static content on error
+    try {
+      var suppRes = await apiFetch('/suppliers?limit=6&verified=true');
+      var suppliers = (suppRes && suppRes.data) || [];
+      if (suppliers.length) {
+        var grid = document.getElementById('featured-suppliers-grid');
+        if (grid) {
+          grid.innerHTML = suppliers.map(function(s) {
+            var initials = (s.company_name || 'S').substring(0, 2).toUpperCase();
+            var avatarUrl = s.logo_url || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(s.company_name || 'Supplier') + '&background=0052CC&color=fff&size=60');
+            var stars = '';
+            var rating = parseFloat(s.rating || 0);
+            for (var i = 1; i <= 5; i++) { stars += '<i class="fas fa-star' + (i > rating ? (i - 0.5 <= rating ? '-half-alt' : ' fa-regular') : '') + '"></i>'; }
+            var profileUrl = '../supplier/profile.html?id=' + esc(s.id || '');
+            return '<article class="supplier-card" role="listitem">' +
+              '<div class="supplier-header">' +
+              '<img src="' + esc(avatarUrl) + '" alt="' + esc(s.company_name) + '" class="supplier-avatar" width="60" height="60" onerror="this.style.display=\'none\'">' +
+              '<div><div class="supplier-name">' + esc(s.company_name) + '</div>' +
+              '<div class="supplier-location">' + esc((s.city || '') + (s.city && s.country ? ', ' : '') + (s.country || '')) + '</div>' +
+              (s.verified ? '<span class="supplier-badge"><i class="fas fa-check-circle"></i> Verified</span>' : '') +
+              '</div></div>' +
+              '<div class="supplier-rating">' + stars + '<span>' + (rating.toFixed(1)) + '</span></div>' +
+              '<div class="supplier-stats">' +
+              '<div class="supplier-stat"><span class="supplier-stat-value">' + esc(s.total_orders || '—') + '</span><span class="supplier-stat-label">Orders</span></div>' +
+              '<div class="supplier-stat"><span class="supplier-stat-value">' + esc(s.response_time || '—') + '</span><span class="supplier-stat-label">Response</span></div>' +
+              '</div>' +
+              '<a href="' + profileUrl + '" class="btn-view-supplier">View Supplier <i class="fas fa-arrow-right"></i></a>' +
+              '</article>';
+          }).join('');
+        }
+      }
+    } catch(e) { /* keep static supplier cards on API failure */ }
   }
 })();
 </script>

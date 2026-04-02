@@ -4,17 +4,73 @@
  */
 
 const SupplierAPI = {
-  BASE_URL: '/api/v1/suppliers',
+  get BASE_URL() {
+    return (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
+  },
+
+  get SUPPLIERS_URL() {
+    return this.BASE_URL + '/suppliers';
+  },
 
   getHeaders(json = true) {
-    const token = localStorage.getItem('auth_token');
+    let token = null;
+    try {
+      const sess = JSON.parse(localStorage.getItem('globexSession') || 'null');
+      token = (sess && sess.token) || localStorage.getItem('globexToken') || localStorage.getItem('auth_token') || localStorage.getItem('token');
+      if (!token) {
+        const keys = Object.keys(localStorage);
+        for (const k of keys) {
+          if (k.startsWith('sb-') && k.endsWith('-auth-token')) {
+            const sb = JSON.parse(localStorage.getItem(k) || 'null');
+            if (sb && sb.access_token) { token = sb.access_token; break; }
+          }
+        }
+      }
+    } catch (_) {}
     const headers = { ...(token ? { 'Authorization': `Bearer ${token}` } : {}) };
     if (json) headers['Content-Type'] = 'application/json';
     return headers;
   },
 
+  // ── Public directory ────────────────────────────────────────────────────────
+
+  async listSuppliers(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    const res = await fetch(`${this.SUPPLIERS_URL}${qs ? '?' + qs : ''}`, { headers: this.getHeaders() });
+    if (!res.ok) throw new Error('Failed to load suppliers');
+    return res.json();
+  },
+
+  async getSupplier(id) {
+    const res = await fetch(`${this.SUPPLIERS_URL}/${id}`, { headers: this.getHeaders() });
+    if (!res.ok) throw new Error('Supplier not found');
+    return res.json();
+  },
+
+  async getSupplierPublicProducts(id, params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    const res = await fetch(`${this.SUPPLIERS_URL}/${id}/products${qs ? '?' + qs : ''}`, { headers: this.getHeaders() });
+    if (!res.ok) throw new Error('Failed to load supplier products');
+    return res.json();
+  },
+
+  async contactSupplier(id, data) {
+    const res = await fetch(`${this.SUPPLIERS_URL}/${id}/contact`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: 'Failed to send inquiry' }));
+      throw new Error(err.error || 'Failed to send inquiry');
+    }
+    return res.json();
+  },
+
+  // ── Supplier registration ───────────────────────────────────────────────────
+
   async register(data) {
-    const res = await fetch(`${this.BASE_URL}/register`, {
+    const res = await fetch(`${this.SUPPLIERS_URL}/register`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(data)
@@ -26,20 +82,22 @@ const SupplierAPI = {
     return res.json();
   },
 
+  // ── Supplier dashboard (authenticated) ─────────────────────────────────────
+
   async getDashboard() {
-    const res = await fetch(`${this.BASE_URL}/dashboard`, { headers: this.getHeaders() });
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/stats`, { headers: this.getHeaders() });
     if (!res.ok) throw new Error('Failed to load dashboard');
     return res.json();
   },
 
   async getProfile() {
-    const res = await fetch(`${this.BASE_URL}/profile`, { headers: this.getHeaders() });
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/profile`, { headers: this.getHeaders() });
     if (!res.ok) throw new Error('Failed to load profile');
     return res.json();
   },
 
   async updateProfile(data) {
-    const res = await fetch(`${this.BASE_URL}/profile`, {
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/profile`, {
       method: 'PUT',
       headers: this.getHeaders(),
       body: JSON.stringify(data)
@@ -48,16 +106,16 @@ const SupplierAPI = {
     return res.json();
   },
 
-  // Products
+  // Products (supplier's own products)
   async getProducts(params = {}) {
     const query = new URLSearchParams(params).toString();
-    const res = await fetch(`${this.BASE_URL}/products?${query}`, { headers: this.getHeaders() });
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/products${query ? '?' + query : ''}`, { headers: this.getHeaders() });
     if (!res.ok) throw new Error('Failed to load products');
     return res.json();
   },
 
   async createProduct(data) {
-    const res = await fetch(`${this.BASE_URL}/products`, {
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/products`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(data)
@@ -67,7 +125,7 @@ const SupplierAPI = {
   },
 
   async updateProduct(id, data) {
-    const res = await fetch(`${this.BASE_URL}/products/${id}`, {
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/products/${id}`, {
       method: 'PUT',
       headers: this.getHeaders(),
       body: JSON.stringify(data)
@@ -77,7 +135,7 @@ const SupplierAPI = {
   },
 
   async deleteProduct(id) {
-    const res = await fetch(`${this.BASE_URL}/products/${id}`, {
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/products/${id}`, {
       method: 'DELETE',
       headers: this.getHeaders()
     });
@@ -88,13 +146,13 @@ const SupplierAPI = {
   // Orders
   async getOrders(params = {}) {
     const query = new URLSearchParams(params).toString();
-    const res = await fetch(`${this.BASE_URL}/orders?${query}`, { headers: this.getHeaders() });
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/orders${query ? '?' + query : ''}`, { headers: this.getHeaders() });
     if (!res.ok) throw new Error('Failed to load orders');
     return res.json();
   },
 
   async updateOrderStatus(orderId, status, notes = '') {
-    const res = await fetch(`${this.BASE_URL}/orders/${orderId}/status`, {
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/orders/${orderId}/status`, {
       method: 'PUT',
       headers: this.getHeaders(),
       body: JSON.stringify({ status, notes })
@@ -105,10 +163,17 @@ const SupplierAPI = {
 
   // Analytics
   async getAnalytics(period = '30d') {
-    const res = await fetch(`${this.BASE_URL}/analytics?period=${period}`, { headers: this.getHeaders() });
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/analytics?period=${period}`, { headers: this.getHeaders() });
     if (!res.ok) throw new Error('Failed to load analytics');
     return res.json();
-  }
+  },
+
+  // Earnings
+  async getEarnings() {
+    const res = await fetch(`${this.SUPPLIERS_URL}/dashboard/earnings`, { headers: this.getHeaders() });
+    if (!res.ok) throw new Error('Failed to load earnings');
+    return res.json();
+  },
 };
 
 /**
@@ -213,24 +278,195 @@ function renderSupplierCard(supplier) {
  */
 async function loadSupplierDashboard() {
   try {
-    const { data } = await SupplierAPI.getDashboard();
+    const res = await SupplierAPI.getDashboard();
+    const data = res.data || res.stats || res;
     if (!data) return;
-    // Update DOM elements if they exist
+    // Support both dashboard.html IDs and index.html IDs
     const updates = {
       'dashTotalOrders': data.total_orders,
       'dashPendingOrders': data.pending_orders,
-      'dashRevenue': data.revenue ? `$${data.revenue.toLocaleString()}` : '$0',
+      'dashRevenue': data.total_earned != null ? '$' + Number(data.total_earned).toLocaleString('en-US', { maximumFractionDigits: 0 }) : (data.revenue ? '$' + Number(data.revenue).toLocaleString('en-US', { maximumFractionDigits: 0 }) : null),
       'dashRating': data.rating || '—',
       'dashTotalProducts': data.total_products,
-      'dashResponseRate': data.response_rate ? `${data.response_rate}%` : '—'
+      'dashResponseRate': data.response_rate ? `${data.response_rate}%` : '—',
+      // Alternative IDs used on index.html
+      'stat-orders': data.total_orders,
+      'stat-earnings': data.total_earned != null ? '$' + Number(data.total_earned).toLocaleString() : null,
+      'stat-products': data.total_products,
+      'stat-rating': data.rating,
     };
     Object.entries(updates).forEach(([id, val]) => {
       const el = document.getElementById(id);
-      if (el && val !== undefined) el.textContent = val;
+      if (el && val != null) el.textContent = val;
     });
   } catch (e) {
     console.warn('Dashboard load error:', e);
   }
+}
+
+/**
+ * Load supplier products list into a table body (tbody element by id)
+ */
+async function loadSupplierProducts(tbodyId, emptyMessage) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  try {
+    const res = await SupplierAPI.getProducts();
+    const products = res.data || [];
+    if (!products.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:#94a3b8">${emptyMessage || 'No products yet.'}</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = products.map(p => {
+      const statusClass = { active: 'badge-green', inactive: 'badge-orange', pending: 'badge-orange', rejected: 'badge-red' }[p.status] || 'badge-gray';
+      return `<tr>
+        <td>${escHtml(p.title || 'Untitled')}</td>
+        <td>$${parseFloat(p.price || 0).toFixed(2)}</td>
+        <td>${p.stock_quantity != null ? p.stock_quantity : '—'}</td>
+        <td><span class="badge ${statusClass}">${escHtml(p.status || 'pending')}</span></td>
+        <td>
+          <a href="products-edit.html?id=${escHtml(p.id)}" class="btn btn-sm btn-secondary">Edit</a>
+          <button class="btn btn-sm btn-danger" onclick="deleteSupplierProduct('${escHtml(p.id)}',this)">Delete</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:#94a3b8">Failed to load products.</td></tr>`;
+    console.warn('Products load error:', e);
+  }
+}
+
+/**
+ * Delete a supplier product with confirmation
+ */
+async function deleteSupplierProduct(id, btn) {
+  if (!confirm('Are you sure you want to delete this product?')) return;
+  try {
+    await SupplierAPI.deleteProduct(id);
+    const row = btn && btn.closest('tr');
+    if (row) row.remove();
+  } catch (e) {
+    alert('Failed to delete product: ' + e.message);
+  }
+}
+
+/**
+ * Load supplier orders into a table body
+ */
+async function loadSupplierOrders(tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  try {
+    const res = await SupplierAPI.getOrders();
+    const orders = res.data || [];
+    if (!orders.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#94a3b8">No orders yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = orders.map(o => {
+      const statusInfo = formatOrderStatus(o.status);
+      const date = o.created_at ? new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+      return `<tr>
+        <td><a href="orders-detail.html?id=${escHtml(o.id)}" style="color:#0052CC;font-weight:600">#${escHtml(o.id.substring(0, 8).toUpperCase())}</a></td>
+        <td>$${parseFloat(o.total || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td><span class="badge ${statusInfo.class}">${statusInfo.label}</span></td>
+        <td>${date}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" onclick="markOrderShipped('${escHtml(o.id)}',this)">Mark Shipped</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#94a3b8">Failed to load orders.</td></tr>';
+    console.warn('Orders load error:', e);
+  }
+}
+
+/**
+ * Mark an order as shipped
+ */
+async function markOrderShipped(orderId, btn) {
+  try {
+    await SupplierAPI.updateOrderStatus(orderId, 'shipped');
+    const row = btn && btn.closest('tr');
+    if (row) {
+      const statusCell = row.querySelector('.badge');
+      if (statusCell) { statusCell.className = 'badge badge-blue'; statusCell.textContent = 'Shipped'; }
+    }
+  } catch (e) {
+    alert('Failed to update order: ' + e.message);
+  }
+}
+
+/**
+ * Load the public supplier directory into a grid container
+ */
+async function loadSupplierDirectory(gridId, params) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b"><i class="fas fa-spinner fa-spin" style="font-size:2rem"></i><p style="margin-top:12px">Loading suppliers...</p></div>';
+  try {
+    const res = await SupplierAPI.listSuppliers(params || {});
+    const suppliers = res.data || [];
+    if (!suppliers.length) {
+      grid.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8">No suppliers found.</div>';
+      return;
+    }
+    grid.innerHTML = suppliers.map(s => renderSupplierCard(s)).join('');
+  } catch (e) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8">Failed to load suppliers.</div>';
+    console.warn('Supplier directory load error:', e);
+  }
+}
+
+/**
+ * Load and populate supplier profile page from ?id= URL param
+ */
+async function loadSupplierProfilePage() {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) return;
+  try {
+    const res = await SupplierAPI.getSupplier(id);
+    const s = res.data || res.supplier || res;
+    if (!s) return;
+    // Update common fields
+    const fields = { 'supplier-company-name': s.company_name, 'supplier-country': s.country, 'supplier-city': s.city, 'supplier-rating': s.rating, 'supplier-orders': s.total_orders };
+    Object.entries(fields).forEach(([id2, val]) => { const el = document.getElementById(id2); if (el && val != null) el.textContent = val; });
+    // Set contact form supplier id
+    const contactForm = document.getElementById('contact-supplier-form');
+    if (contactForm) contactForm.setAttribute('data-supplier-id', s.id);
+  } catch (e) {
+    console.warn('Supplier profile load error:', e);
+  }
+}
+
+/**
+ * Submit contact supplier form
+ */
+async function submitContactSupplier(form) {
+  const supplierId = form.getAttribute('data-supplier-id') || new URLSearchParams(window.location.search).get('id');
+  if (!supplierId) { alert('Cannot identify supplier.'); return; }
+  const data = {
+    subject: (form.querySelector('[name="subject"]') || {}).value || 'Product Inquiry',
+    message: (form.querySelector('[name="message"]') || {}).value,
+    product_reference: (form.querySelector('[name="product_reference"]') || {}).value || null,
+    email: (form.querySelector('[name="email"]') || {}).value || null,
+  };
+  if (!data.message) { alert('Please enter a message.'); return; }
+  try {
+    await SupplierAPI.contactSupplier(supplierId, data);
+    alert('Your inquiry has been sent!');
+    form.reset();
+  } catch (e) {
+    alert('Failed to send inquiry: ' + e.message);
+  }
+}
+
+/**
+ * HTML escape utility
+ */
+function escHtml(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 /**
@@ -254,4 +490,12 @@ window.formatOrderStatus = formatOrderStatus;
 window.calcPerformanceScore = calcPerformanceScore;
 window.renderSupplierCard = renderSupplierCard;
 window.loadSupplierDashboard = loadSupplierDashboard;
+window.loadSupplierProducts = loadSupplierProducts;
+window.deleteSupplierProduct = deleteSupplierProduct;
+window.loadSupplierOrders = loadSupplierOrders;
+window.markOrderShipped = markOrderShipped;
+window.loadSupplierDirectory = loadSupplierDirectory;
+window.loadSupplierProfilePage = loadSupplierProfilePage;
+window.submitContactSupplier = submitContactSupplier;
 window.validateSupplierForm = validateSupplierForm;
+window.escHtml = escHtml;

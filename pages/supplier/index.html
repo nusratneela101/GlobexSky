@@ -148,61 +148,31 @@
     </ul>
   </div>
 </footer>
+<script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/supplier.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
 <script src="../../assets/js/main.js" defer></script>
 <script>
-  /* ── Supplier dashboard: dynamic API loader ──────────────────────────── */
-  (function () {
-    var API_BASE = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL) || '/api/v1';
-    function getToken() {
-      try { return (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token || localStorage.getItem('globexToken') || localStorage.getItem('token'); } catch(_){ return null; }
-    }
-    async function apiFetch(path, options) {
-      var token = getToken();
-      var res = await fetch(API_BASE + path, { headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }, ...options });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    }
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-    function badgeClass(status) {
-      var s = (status || '').toLowerCase();
-      if (s === 'delivered' || s === 'completed') return 'badge badge-green';
-      if (s === 'shipped')    return 'badge badge-blue';
-      if (s === 'processing') return 'badge badge-orange';
-      return 'badge';
-    }
+  document.addEventListener('DOMContentLoaded', function () {
+    /* Load dashboard stats */
+    loadSupplierDashboard();
 
-    document.addEventListener('DOMContentLoaded', function () {
-      apiFetch('/suppliers').then(function (data) {
-        var supplier = (data && (data.data || data.supplier || (Array.isArray(data) ? data[0] : null))) || null;
-        if (!supplier) return;
-
-        var elOrders   = document.getElementById('stat-orders');
-        var elEarnings = document.getElementById('stat-earnings');
-        var elProducts = document.getElementById('stat-products');
-        var elRating   = document.getElementById('stat-rating');
-        if (elOrders   && supplier.total_orders   != null) elOrders.textContent   = supplier.total_orders;
-        if (elEarnings && supplier.total_earnings != null) elEarnings.textContent = supplier.total_earnings;
-        if (elProducts && supplier.active_products != null) elProducts.textContent = supplier.active_products;
-        if (elRating   && supplier.rating         != null) elRating.textContent   = supplier.rating;
-
+    /* Load recent orders */
+    (function loadRecentOrders() {
+      SupplierAPI.getOrders({ limit: 5 }).then(function (res) {
+        var orders = (res && res.data) || [];
         var tbody = document.getElementById('recent-orders-tbody');
-        var orders = supplier.recent_orders || [];
-        if (tbody && orders.length) {
-          tbody.innerHTML = orders.map(function (o) {
-            return '<tr><td>' + esc(o.id || o.order_id || '') + '</td>' +
-              '<td>' + esc(o.amount || o.total || '') + '</td>' +
-              '<td><span class="' + esc(badgeClass(o.status)) + '">' + esc(o.status || '') + '</span></td></tr>';
-          }).join('');
-        }
-      }).catch(function () {
-        /* API unavailable — keep static dashboard content */
-      });
-    });
-  })();
+        if (!tbody || !orders.length) return;
+        tbody.innerHTML = orders.map(function (o) {
+          var statusInfo = formatOrderStatus(o.status);
+          return '<tr><td>#' + escHtml(o.id.substring(0, 8).toUpperCase()) + '</td>' +
+            '<td>$' + parseFloat(o.total || 0).toFixed(2) + '</td>' +
+            '<td><span class="badge ' + statusInfo.class + '">' + statusInfo.label + '</span></td></tr>';
+        }).join('');
+      }).catch(function () { /* keep static content if API unavailable */ });
+    })();
+  });
 </script>
 <script src="../../assets/js/auth-guard.js"></script>
 </body>
