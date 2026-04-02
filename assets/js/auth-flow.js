@@ -123,11 +123,15 @@
       e.preventDefault();
       hideAlert(alertBox);
 
-      const name     = form.querySelector('[name="name"], [name="full_name"]')?.value.trim() || '';
+      const name     = form.querySelector('[name="name"], [name="full_name"], [name="full-name"]')?.value.trim() || '';
       const email    = form.querySelector('[name="email"]')?.value.trim()    || '';
       const password = form.querySelector('[name="password"]')?.value        || '';
-      const role     = form.querySelector('[name="role"]')?.value            || 'buyer';
+      const roleInput = form.querySelector('[name="role"]') || form.querySelector('[name="account-type"]:checked');
+      const role     = roleInput?.value || 'buyer';
       const country  = form.querySelector('[name="country"]')?.value         || '';
+
+      const companyName = form.querySelector('[name="company-name"]')?.value.trim() || '';
+      const bizType     = form.querySelector('[name="biz-type"]')?.value || '';
 
       if (!name || !email || !password) {
         showAlert(alertBox, 'Please fill in all required fields.', 'error');
@@ -135,6 +139,15 @@
       }
       if (password.length < 6) {
         showAlert(alertBox, 'Password must be at least 6 characters.', 'error');
+        return;
+      }
+      const confirmPassword = form.querySelector('[name="confirm-password"]')?.value || '';
+      if (confirmPassword && confirmPassword !== password) {
+        showAlert(alertBox, 'Passwords do not match.', 'error');
+        return;
+      }
+      if (role === 'supplier' && !companyName) {
+        showAlert(alertBox, 'Please enter your company name.', 'error');
         return;
       }
 
@@ -147,12 +160,27 @@
         const { data, error } = await sb.auth.signUp({
           email,
           password,
-          options: { data: { name, role, country } },
+          options: {
+            data: {
+              name,
+              role,
+              country,
+              ...(role === 'supplier' ? { company_name: companyName, biz_type: bizType } : {}),
+            }
+          },
         });
         if (error) throw new Error(error.message);
 
         showAlert(alertBox, 'Account created! Please check your email to verify your account.', 'success');
         setLoading(submitBtn, false);
+
+        setTimeout(() => {
+          if (role === 'supplier') {
+            window.location.href = '/pages/supplier/dashboard.html';
+          } else {
+            window.location.href = '/index.html';
+          }
+        }, 2000);
       } catch (err) {
         const msg = (err && err.message) || 'Registration failed. Please try again.';
         showAlert(alertBox, msg, 'error');
