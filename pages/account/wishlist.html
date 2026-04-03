@@ -179,7 +179,7 @@ function sortItems(items, by) {
     case 'price_desc': arr.sort((a, b) => parsePriceNum(b.price || b.unit_price) - parsePriceNum(a.price || a.unit_price)); break;
     case 'name':       arr.sort((a, b) => (a.name || a.product_name || '').localeCompare(b.name || b.product_name || '')); break;
     case 'date':
-    default:           arr.sort((a, b) => (b.addedAt || b.created_at || 0) > (a.addedAt || a.created_at || 0) ? 1 : -1);
+    default:           arr.sort((a, b) => (new Date(b.addedAt || b.created_at || 0).getTime()) - (new Date(a.addedAt || a.created_at || 0).getTime()));
   }
   return arr;
 }

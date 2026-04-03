@@ -284,19 +284,54 @@
       document.body.appendChild(bar);
     }
 
-    // Thumbnails HTML
-    const thumbsHtml = items.map(p =>
-      `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer" onclick="compareManager.remove('${p.id}');updateCompareBar()" title="Click to remove ${p.name}">
-        <div class="cbar-thumb">${p.icon || '📦'}</div>
-        <div class="cbar-name">${(p.name || 'Product').substring(0, 12)}</div>
-       </div>`
-    ).join('');
+    // Build bar using DOM manipulation to avoid XSS
+    while (bar.firstChild) bar.removeChild(bar.firstChild);
 
-    bar.innerHTML =
-      '<span class="cbar-label"><i class="fas fa-balance-scale" style="margin-right:6px"></i>Compare (' + items.length + ')</span>' +
-      '<div style="display:flex;gap:10px;align-items:center;flex:1;overflow-x:auto">' + thumbsHtml + '</div>' +
-      '<a href="' + _getComparePath() + '" style="white-space:nowrap;padding:9px 20px;background:#0052CC;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-table"></i> Compare Now</a>' +
-      '<button onclick="compareManager.clearBar()" style="padding:8px 14px;background:transparent;color:#94a3b8;border:1.5px solid #334;border-radius:8px;cursor:pointer;font-size:.8rem;white-space:nowrap">Clear All</button>';
+    // Label
+    const label = document.createElement('span');
+    label.className = 'cbar-label';
+    label.innerHTML = '<i class="fas fa-balance-scale" style="margin-right:6px"></i>';
+    label.appendChild(document.createTextNode('Compare (' + items.length + ')'));
+    bar.appendChild(label);
+
+    // Thumbnails container
+    const thumbsWrap = document.createElement('div');
+    thumbsWrap.style.cssText = 'display:flex;gap:10px;align-items:center;flex:1;overflow-x:auto';
+    items.forEach(function (p) {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer';
+      wrap.title = 'Click to remove ' + (p.name || '');
+      const pid = p.id;
+      wrap.addEventListener('click', function () {
+        compareManager.remove(pid);
+        updateCompareBar();
+      });
+      const thumb = document.createElement('div');
+      thumb.className = 'cbar-thumb';
+      thumb.textContent = p.icon || '📦';
+      const nameEl = document.createElement('div');
+      nameEl.className = 'cbar-name';
+      nameEl.textContent = (p.name || 'Product').substring(0, 12);
+      wrap.appendChild(thumb);
+      wrap.appendChild(nameEl);
+      thumbsWrap.appendChild(wrap);
+    });
+    bar.appendChild(thumbsWrap);
+
+    // Compare Now link
+    const compareLink = document.createElement('a');
+    compareLink.href = _getComparePath();
+    compareLink.style.cssText = 'white-space:nowrap;padding:9px 20px;background:#0052CC;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px';
+    compareLink.innerHTML = '<i class="fas fa-table"></i>';
+    compareLink.appendChild(document.createTextNode(' Compare Now'));
+    bar.appendChild(compareLink);
+
+    // Clear All button
+    const clearBtn = document.createElement('button');
+    clearBtn.style.cssText = 'padding:8px 14px;background:transparent;color:#94a3b8;border:1.5px solid #334;border-radius:8px;cursor:pointer;font-size:.8rem;white-space:nowrap';
+    clearBtn.textContent = 'Clear All';
+    clearBtn.addEventListener('click', function () { compareManager.clearBar(); });
+    bar.appendChild(clearBtn);
 
     bar.style.display = 'flex';
   }
