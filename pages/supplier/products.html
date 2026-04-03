@@ -426,19 +426,40 @@
     tierCount--;
     document.getElementById('add-tier-btn').disabled = false;
   }
-  function submitProduct(e) {
+  async function submitProduct(e) {
     e.preventDefault();
-    closeModal();
-    const t = document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-    e.target.reset();
-    tierCount = 1;
+    const form = e.target;
+    const title = form.querySelector('[name="title"], input[placeholder*="Product"]');
+    const price = form.querySelector('[name="price"], input[placeholder*="price"], input[type="number"]');
+    const data = {};
+    form.querySelectorAll('input[name], select[name], textarea[name]').forEach(function(el) {
+      if (el.name) data[el.name] = el.value;
+    });
+    if (!data.title && title) data.title = title.value;
+    try {
+      await window.SupplierAPI.createProduct(data);
+      closeModal();
+      const t = document.getElementById('toast');
+      t.innerHTML = '<i class="fas fa-check-circle" style="color:#00C9A7;margin-right:6px"></i> Product added successfully!';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+      form.reset();
+      tierCount = 1;
+      loadSupplierProducts('products-tbody', 'No products yet.');
+    } catch(err) {
+      const t = document.getElementById('toast');
+      t.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#f97316;margin-right:6px"></i> ' + err.message;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 4000);
+    }
   }
 </script>
 <script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/supplier.js"></script>
 <script src="../../assets/js/navbar.js"></script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
+<script src="../../assets/js/supplier.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () { loadSupplierProducts('products-tbody'); });
 </script>
@@ -492,26 +513,11 @@ function saveMarkupSettings() {
   if (savedMinMargin !== null) document.getElementById('min-margin').value = savedMinMargin;
   updateMarkupPreview();
 })();
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadSupplierProducts('products-tbody', 'No products yet.');
+});
 </script>
-<script>
-  // Supplier auth guard — redirect to login if not authenticated
-  (function() {
-    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    if (!token) {
-      try {
-        var keys = Object.keys(localStorage);
-        for (var i = 0; i < keys.length; i++) {
-          if (keys[i].startsWith('sb-') && keys[i].endsWith('-auth-token')) {
-            var sess = JSON.parse(localStorage.getItem(keys[i]) || 'null');
-            if (sess && sess.access_token) { token = sess.access_token; break; }
-          }
-        }
-      } catch(e) {}
-    }
-    if (!token) {
-      window.location.href = '../auth/login.html?redirect=' + encodeURIComponent(window.location.href);
-    }
-  })();
-</script>
+<script src="../../assets/js/auth-guard.js"></script>
 </body>
 </html>
