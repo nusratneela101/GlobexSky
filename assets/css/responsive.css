@@ -2159,3 +2159,748 @@ img {
     height: auto;
   }
 }
+
+/* ==========================================================================
+   16. Page-Specific Responsive Enhancements
+   Comprehensive rules for all page categories following the breakpoint
+   strategy: Mobile ≤576px | Tablet 577px–992px | Desktop 993px+
+   ========================================================================== */
+
+/* ── Product Gallery (Product Detail Page) ───────────────────────────────── */
+
+@media (max-width: 992px) {
+  .gallery,
+  .product-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-thumbs {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .gallery-thumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gallery-thumb {
+    flex: 0 0 64px;
+    min-width: 64px;
+    height: 64px;
+  }
+
+  .gallery-main {
+    width: 100%;
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .gallery-main {
+    max-height: 280px;
+  }
+
+  .gallery-thumb {
+    flex: 0 0 52px;
+    min-width: 52px;
+    height: 52px;
+  }
+
+  .product-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .product-info {
+    padding: 0;
+  }
+}
+
+/* ── Cart Page Specific ──────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .cart-page-wrapper .container {
+    padding-inline: 16px;
+  }
+
+  .cart-summary-card {
+    position: static !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .cart-actions-bar {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .cart-actions-bar .btn {
+    width: 100% !important;
+  }
+
+  .cart-item-total {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .cart-item-controls {
+    justify-content: space-between !important;
+    width: 100%;
+  }
+
+  .cart-select-all {
+    font-size: 0.85rem;
+  }
+}
+
+/* ── Checkout Page Specific ──────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .checkout-wrapper {
+    flex-direction: column !important;
+  }
+
+  .address-list {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .checkout-steps {
+    gap: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .checkout-steps::-webkit-scrollbar {
+    display: none;
+  }
+
+  .checkout-step {
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .confirm-details {
+    grid-template-columns: 1fr !important;
+  }
+
+  .confirm-actions {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .confirm-actions .btn {
+    width: 100% !important;
+  }
+
+  .confirmation-card {
+    padding: 20px 16px !important;
+  }
+}
+
+/* ── Account Pages Specific ──────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .account-layout,
+  .account-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+
+  .action-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .account-sidebar-avatar {
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  .mini-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .account-nav {
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .account-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Order / Payment Pages Specific ─────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .order-layout,
+  .order-detail-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .order-row-header {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .order-row-header {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tracking-timeline {
+    padding-left: 24px !important;
+  }
+
+  .tracking-step {
+    flex-direction: column !important;
+    gap: 8px;
+  }
+
+  .payment-methods-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Admin Pages Specific ────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .admin-topbar-right {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-page-title {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+  }
+
+  .chart-container,
+  .chart-wrapper,
+  .chart-row {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-topbar {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  .admin-topbar-right .btn-text {
+    display: none;
+  }
+
+  .admin-user-pill {
+    padding: 6px 10px !important;
+  }
+
+  .metric-card {
+    padding: 14px !important;
+  }
+
+  .metric-value {
+    font-size: clamp(1.25rem, 4vw, 1.75rem) !important;
+  }
+
+  .chart-container,
+  .chart-placeholder {
+    min-height: 160px !important;
+    overflow: hidden;
+  }
+
+  /* Admin data tables: compact */
+  .admin-card table th,
+  .admin-card table td {
+    padding: 8px 10px !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* Admin action buttons: icon-only on small mobile */
+  .admin-actions .btn-text,
+  .table-actions .btn-text {
+    display: none;
+  }
+}
+
+/* ── Supplier Pages Specific ─────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .supplier-dashboard-layout,
+  .supplier-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .top-products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .top-products-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .supplier-profile-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .supplier-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center;
+  }
+
+  .supplier-actions {
+    flex-direction: column !important;
+    width: 100%;
+  }
+
+  .supplier-actions .btn {
+    width: 100% !important;
+  }
+}
+
+/* ── Supplier Directory (Suppliers Index) ────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .suppliers-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .search-bar {
+    flex-direction: column !important;
+    gap: 8px;
+  }
+
+  .search-bar input {
+    width: 100% !important;
+  }
+
+  .search-bar button {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-hero h1 {
+    font-size: clamp(1.25rem, 5vw, 1.75rem) !important;
+  }
+
+  .page-hero {
+    padding: 32px 16px !important;
+  }
+}
+
+/* ── Livestream Pages ────────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .stream-layout,
+  .live-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stream-sidebar,
+  .live-chat-panel {
+    position: static !important;
+    width: 100% !important;
+    max-height: 350px;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .stream-player,
+  .live-player,
+  .video-container {
+    aspect-ratio: 16 / 9;
+    width: 100% !important;
+  }
+
+  .stream-info {
+    flex-direction: column !important;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .stream-meta {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+/* ── VR Showroom / Trade Shows Pages ─────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .showroom-grid,
+  .booth-grid,
+  .trade-show-grid,
+  .events-grid,
+  .show-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .vr-layout,
+  .showroom-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .showroom-grid,
+  .booth-grid,
+  .trade-show-grid,
+  .events-grid,
+  .show-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vr-viewer,
+  .ar-viewer {
+    height: 260px !important;
+    width: 100% !important;
+  }
+}
+
+/* ── API Platform / Documentation Pages ─────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .api-layout,
+  .docs-layout,
+  .developer-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .api-sidebar,
+  .docs-nav {
+    position: static !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  pre,
+  code,
+  .code-block {
+    font-size: 0.78rem !important;
+    overflow-x: auto;
+    white-space: pre;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .code-wrapper,
+  .code-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .api-pricing-grid,
+  .pricing-plans {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── AI Search / Recommendations Pages ──────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .ai-layout,
+  .search-ai-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ai-sidebar {
+    position: static !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .ai-search-bar {
+    flex-direction: column !important;
+    gap: 8px;
+  }
+
+  .ai-search-bar input,
+  .ai-search-bar button {
+    width: 100% !important;
+  }
+
+  .ai-results-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Dropshipping / RFQ / Sourcing Pages ─────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .dropshipping-layout,
+  .rfq-layout,
+  .sourcing-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .rfq-form-grid,
+  .sourcing-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .rfq-actions,
+  .sourcing-actions {
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+  .rfq-actions .btn,
+  .sourcing-actions .btn {
+    width: 100% !important;
+  }
+}
+
+/* ── Logistics / Shipping Pages ──────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .logistics-layout,
+  .shipping-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .shipment-timeline {
+    padding-left: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .shipping-rate-grid,
+  .rate-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  .shipment-step {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+/* ── Trade Finance / Escrow Pages ────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .trade-finance-layout,
+  .escrow-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .trade-steps,
+  .finance-steps {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Blog / About / Static Pages ─────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .blog-layout,
+  .article-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .blog-sidebar {
+    position: static !important;
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .blog-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .article-header h1 {
+    font-size: clamp(1.4rem, 5vw, 2rem);
+  }
+}
+
+/* ── Notifications / Messages ────────────────────────────────────────────── */
+
+@media (max-width: 576px) {
+  .notification-list,
+  .message-list {
+    padding: 0 !important;
+  }
+
+  .notification-item,
+  .message-item {
+    flex-direction: column !important;
+    gap: 8px;
+    padding: 12px !important;
+  }
+
+  .notification-icon {
+    align-self: flex-start;
+  }
+
+  .message-time {
+    align-self: flex-start;
+  }
+}
+
+/* ── Payment Methods Page ────────────────────────────────────────────────── */
+
+@media (max-width: 576px) {
+  .payment-method-card {
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+  .card-icons {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* ── Product Compare Page ────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .compare-table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .compare-table {
+    min-width: 480px;
+  }
+}
+
+/* ── Flash Sales / Coupons Pages ─────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .flash-sales-grid,
+  .coupon-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .flash-sales-grid,
+  .coupon-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .flash-header {
+    flex-direction: column !important;
+    gap: 10px;
+  }
+}
+
+/* ── Communication / Chat Pages ──────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .chat-layout,
+  .messages-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .conversation-list {
+    width: 100% !important;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .chat-panel {
+    width: 100% !important;
+  }
+}
+
+/* ── Inspection / Sampling Pages ─────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .inspection-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .inspection-steps {
+    flex-direction: column !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .inspection-cards,
+  .sample-cards {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Wishlist / Saved Items ───────────────────────────────────────────────── */
+
+@media (max-width: 576px) {
+  .sort-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px;
+  }
+
+  .sort-bar-right {
+    margin-left: 0 !important;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .card-bottom-row {
+    flex-direction: column !important;
+    gap: 8px;
+  }
+
+  .card-footer {
+    flex-direction: column !important;
+    gap: 8px;
+  }
+
+  .card-footer .btn {
+    width: 100% !important;
+  }
+}
+
+/* ── Search Results Page ──────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .results-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px;
+  }
+
+  .search-results-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .search-results-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .results-count {
+    font-size: 0.85rem;
+  }
+}
