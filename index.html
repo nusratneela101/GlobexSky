@@ -157,6 +157,32 @@
             <!-- Language Switcher -->
             <div id="lang-switcher-root" class="nav-lang-switcher" aria-label="Language switcher"></div>
 
+            <!-- Dark Mode Toggle -->
+            <button class="btn-icon-nav dark-mode-toggle" data-theme-toggle aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark/light mode">
+              <i class="fas fa-moon dark-icon" aria-hidden="true"></i>
+              <i class="fas fa-sun light-icon" aria-hidden="true"></i>
+            </button>
+
+            <!-- Notification Bell -->
+            <div class="nav-notif" id="nav-notif-wrapper" data-auth="logged-in" style="display:none">
+              <button class="btn-icon-nav nav-notif-btn" id="nav-notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true">
+                <i class="fas fa-bell" aria-hidden="true"></i>
+                <span class="notif-badge" id="nav-notif-badge" style="display:none">0</span>
+              </button>
+              <div class="nav-notif-dropdown" id="nav-notif-dropdown" role="menu" aria-label="Notifications">
+                <div class="nav-notif-header">
+                  <span>Notifications</span>
+                  <button class="nav-notif-mark-all" id="nav-notif-mark-all">Mark all read</button>
+                </div>
+                <div class="nav-notif-list" id="nav-notif-list">
+                  <div class="nav-notif-empty">No notifications</div>
+                </div>
+                <div class="nav-notif-footer">
+                  <a href="/pages/account/notifications.html">View all notifications</a>
+                </div>
+              </div>
+            </div>
+
             <!-- Currency Selector -->
             <div class="nav-select-group">
               <label for="currency-select" class="sr-only">Currency</label>
@@ -2120,6 +2146,8 @@
     });
   });
   </script>
+  <script src="assets/js/csrf.js"></script>
+  <script src="assets/js/navbar-notifications.js"></script>
   <script src="assets/js/performance.js"></script>
   <script src="assets/js/error-handler.js"></script>
 </body>

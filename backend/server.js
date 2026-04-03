@@ -9,6 +9,8 @@ import { Server as SocketIOServer } from 'socket.io';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import { issueCsrfToken, csrfProtect } from './middleware/csrf.js';
 
 import corsConfig from './config/cors.js';
 import websocketConfig from './config/websocket.js';
@@ -151,6 +153,8 @@ app.use(ipBlocker);
 app.use(requestLogger);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
+app.use(csrfProtect);
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(globalRateLimiter);
 app.use(xssSanitiser);
@@ -162,6 +166,9 @@ app.get('/health', (_req, res) => {
 
 // ─── API Routes ──────────────────────────────────────────────────────────────
 const API = '/api/v1';
+
+// ─── CSRF Token Endpoint ─────────────────────────────────────────────────────
+app.get(`${API}/csrf/token`, issueCsrfToken);
 
 app.use(`${API}/auth`, authLimiter, authRoutes);
 app.use(`${API}/auth`, authLimiter, socialAuthRoutes);
