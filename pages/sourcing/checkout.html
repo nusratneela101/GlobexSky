@@ -432,12 +432,32 @@
                   </div>
                 </label>
               </div>
+              <!-- CASH ON DELIVERY -->
+              <div>
+                <input type="radio" name="payment" id="pay-cod" class="payment-radio"/>
+                <label for="pay-cod" class="payment-card">
+                  <div class="payment-card-top">
+                    <div class="payment-card-icon" style="background:linear-gradient(135deg,#fef9c3,#fde68a)">
+                      <i class="fas fa-money-bill-wave" style="color:#d97706"></i>
+                    </div>
+                    <div class="payment-card-info">
+                      <div class="payment-card-name">Cash on Delivery (COD)</div>
+                      <div class="payment-card-desc">Pay in cash when your order arrives</div>
+                    </div>
+                    <div class="payment-card-check"><i class="fas fa-check" style="font-size:.7rem"></i></div>
+                  </div>
+                  <div class="card-fields">
+                    <p style="font-size:.88rem;color:#374151">Pay in cash upon delivery. Available for eligible destinations. A delivery confirmation will be required.</p>
+                  </div>
+                </label>
+              </div>
             </div>
           </div>
         </div>
+        <div id="payment-step-error" style="display:none;color:#ef4444;font-size:.85rem;padding:6px 0 0;text-align:right"></div>
         <div class="step-nav">
           <button class="btn-back" onclick="goStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
-          <button class="btn-next" onclick="goStep(3)">Review Order <i class="fas fa-arrow-right"></i></button>
+          <button class="btn-next" onclick="validateAndGoReview()">Review Order <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
 
@@ -728,7 +748,24 @@
     }
   }
 
-  /* ── Place Order — calls API then shows confirmation ── */
+  /* ── Validate payment step and advance to review ── */
+  function validateAndGoReview() {
+    var errEl = document.getElementById('payment-step-error');
+    if (errEl) errEl.style.display = 'none';
+
+    var pm = window.PaymentManager;
+    if (pm) {
+      pm.syncMethod();
+      var result = pm.validate();
+      if (!result.valid) {
+        if (errEl) { errEl.textContent = result.errors[0] || 'Please fix payment details.'; errEl.style.display = 'block'; }
+        return;
+      }
+    }
+    goStep(3);
+  }
+
+  /* ── Place Order — validate payment, process, create order ── */
   async function doPlaceOrder() {
     var placeBtn = document.querySelector('.btn-next[onclick*="doPlaceOrder"]');
     if (placeBtn) { placeBtn.disabled = true; placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…'; }
@@ -749,8 +786,23 @@
       var shippingCost = parseFloat(document.querySelector('input[name="shipping-method"]:checked')?.dataset?.price || '0');
 
       var payRadios = document.querySelectorAll('input[name="payment"]');
-      var payMethod = 'credit_card';
+      var payMethod = 'card';
       payRadios.forEach(function(r) { if (r.checked) payMethod = r.id.replace('pay-', ''); });
+
+      /* ── Payment processing (placeholder) ── */
+      var paymentStatus = 'pending';
+      var transactionId = null;
+      var pm = window.PaymentManager;
+      if (pm) {
+        pm.selectedMethod = payMethod;
+        if (placeBtn) placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing payment…';
+        var payResult = await pm.processPayment({ payment_method: payMethod });
+        if (!payResult.success) {
+          throw new Error('Payment failed. Please try again.');
+        }
+        paymentStatus = 'paid';
+        transactionId = payResult.transactionId;
+      }
 
       var orderPayload = {
         items: cart.map(function(item) {
@@ -769,10 +821,13 @@
         shipping_method: shippingMethod,
         shipping_cost: shippingCost,
         payment_method: payMethod,
+        payment_status: paymentStatus,
+        transaction_id: transactionId,
       };
 
       var orderId = null;
       if (token) {
+        if (placeBtn) placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing order…';
         var res = await fetch(_getApiBase() + '/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
@@ -810,6 +865,18 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     populateCartSummary();
+    // Initialize card formatting once PaymentManager is available
+    var pmInitAttempts = 0;
+    var pmInitInterval = setInterval(function() {
+      pmInitAttempts++;
+      if (window.PaymentManager) {
+        window.PaymentManager.syncMethod();
+        window.PaymentManager.initCardFormatting();
+        clearInterval(pmInitInterval);
+      } else if (pmInitAttempts >= 100) {
+        clearInterval(pmInitInterval); // Stop after 5 seconds if module never loads
+      }
+    }, 50);
     // Load real shipping rates from API when country changes or on load
     var countryEl = document.getElementById('country');
     function _loadRates() {
@@ -824,5 +891,6 @@
 <script src="../../assets/js/navbar.js"></script>
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/shipping.js"></script>
+<script type="module" src="../../assets/js/payment.js"></script>
 </body>
 </html>

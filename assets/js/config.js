@@ -71,3 +71,19 @@ window.GLOBEX_CONFIG = {
   SUPABASE_ANON_KEY,
   ENV: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'development' : 'production',
 };
+
+// PAYMENT_CONFIG — payment gateway placeholder configuration
+// Replace placeholder keys with real credentials when ready to go live
+window.PAYMENT_CONFIG = {
+  stripe: {
+    publishableKey: 'pk_test_placeholder', // Replace with real Stripe publishable key
+    enabled: false, // Set to true when Stripe is configured
+  },
+  paypal: {
+    clientId: 'paypal_client_placeholder', // Replace with real PayPal client ID
+    enabled: false, // Set to true when PayPal is configured
+  },
+  cod: { enabled: true },
+  bankTransfer: { enabled: true },
+  tradeAssurance: { enabled: true },
+};
