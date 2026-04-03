@@ -140,16 +140,23 @@
         <div class="search-filter-bar">
           <div style="position:relative;flex:1;min-width:200px">
             <i class="fas fa-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem"></i>
-            <input type="text" class="filter-input" placeholder="Search by name, email…" style="padding-left:32px;width:100%"/>
+            <input id="userSearch" type="text" class="filter-input" placeholder="Search by name, email…" style="padding-left:32px;width:100%"/>
           </div>
-          <select class="filter-input">
-            <option>All Status</option>
-            <option>Active</option>
-            <option>Suspended</option>
-            <option>Banned</option>
+          <select id="roleFilter" class="filter-input">
+            <option value="">All Roles</option>
+            <option value="buyer">Buyer</option>
+            <option value="supplier">Supplier</option>
+            <option value="carrier">Carrier</option>
+            <option value="admin">Admin</option>
           </select>
-          <button class="btn-sm btn-secondary"><i class="fas fa-filter"></i> Filter</button>
-          <button class="btn-sm btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+          <select id="statusFilter" class="filter-input">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+            <option value="banned">Banned</option>
+          </select>
+          <button id="applyFilters" class="btn-sm btn-primary"><i class="fas fa-filter"></i> Filter</button>
+          <button id="exportBtn" class="btn-sm btn-secondary"><i class="fas fa-file-export"></i> Export</button>
         </div>
 
         <div style="overflow-x:auto">
@@ -165,7 +172,7 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="usersTableBody">
               <tr>
                 <td><input type="checkbox"/></td>
                 <td>
@@ -339,19 +346,12 @@
         </div>
 
         <!-- Pagination -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-size:.85rem;color:#64748b">
-          <span>Showing 1–8 of 12,450 users</span>
-          <div style="display:flex;gap:6px">
-            <button class="btn-sm btn-secondary">← Prev</button>
-            <button class="btn-sm btn-primary">1</button>
-            <button class="btn-sm btn-secondary">2</button>
-            <button class="btn-sm btn-secondary">3</button>
-            <button class="btn-sm btn-secondary">Next →</button>
-          </div>
-        </div>
+        <div id="paginationContainer"></div>
       </div>
     </main>
   </div>
 </div>
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/navbar.js"></script>
+<script src="../../assets/js/admin.js"></script>
+<script src="../../assets/js/admin-users.js"></script>

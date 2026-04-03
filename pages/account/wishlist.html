@@ -108,14 +108,19 @@
   <main class="account-content">
     <div class="page-card">
       <div class="page-header">
-        <h1 class="page-title"><i class="fas fa-heart" style="color:#ef4444"></i> My Wishlist</h1>
-        <button class="btn btn-outline" onclick="shareWishlist()"><i class="fas fa-share-alt"></i> Share Wishlist</button>
+        <h1 class="page-title"><i class="fas fa-heart" style="color:#ef4444"></i> My Wishlist <span id="wishlist-count-label" style="font-size:.85rem;font-weight:500;color:#64748b"></span></h1>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="moveAllToCart()"><i class="fas fa-cart-plus"></i> Move All to Cart</button>
+          <button class="btn btn-outline btn-sm" onclick="shareWishlist()"><i class="fas fa-share-alt"></i> Share</button>
+        </div>
       </div>
 
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-tab="default">Default <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">8</span></button>
-        <button class="filter-tab" data-tab="electronics">Electronics <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">4</span></button>
-        <button class="filter-tab" data-tab="fashion">Fashion <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">3</span></button>
+      <div class="filter-tabs" style="margin-bottom:16px">
+        <span style="font-size:.82rem;color:#64748b;margin-right:8px;align-self:center">Sort by:</span>
+        <button class="filter-tab active" data-sort="date" onclick="setSortAndLoad(this)">Date Added</button>
+        <button class="filter-tab" data-sort="price_asc" onclick="setSortAndLoad(this)">Price ↑</button>
+        <button class="filter-tab" data-sort="price_desc" onclick="setSortAndLoad(this)">Price ↓</button>
+        <button class="filter-tab" data-sort="name" onclick="setSortAndLoad(this)">Name</button>
       </div>
 
       <div id="products-container" class="product-grid"></div>
@@ -137,108 +142,228 @@
 </footer>
 
 <script>
-const products = {
-  default: [
-    {id:1,abbr:"CM",color:"#e67e22",name:"Ceramic Coffee Mugs",supplier:"ChinaCraft Co.",price:"$3.20",unit:"unit",moq:"MOQ: 500 pcs"},
-    {id:2,abbr:"BB",color:"#27ae60",name:"Bamboo Cutting Boards",supplier:"EcoWood Supplies",price:"$8.50",unit:"unit",moq:"MOQ: 200 pcs"},
-    {id:3,abbr:"SB",color:"#8e44ad",name:"Steel Water Bottles",supplier:"MetalFab Ltd.",price:"$5.80",unit:"unit",moq:"MOQ: 300 pcs"},
-    {id:4,abbr:"LP",color:"#2980b9",name:"LED Pendant Lights",supplier:"LumiTech Factory",price:"$14.90",unit:"unit",moq:"MOQ: 100 pcs"},
-  ],
-  electronics: [
-    {id:5,abbr:"UH",color:"#16a085",name:"USB-C Hub 7-in-1",supplier:"ShenzTech Electronics",price:"$45.00",unit:"unit",moq:"MOQ: 50 pcs"},
-    {id:6,abbr:"WE",color:"#2471a3",name:"Wireless Earbuds Pro",supplier:"AudioWave Mfg.",price:"$28.00",unit:"unit",moq:"MOQ: 100 pcs"},
-    {id:7,abbr:"SW",color:"#1abc9c",name:"Smart Watch Series X",supplier:"TechVision Co.",price:"$85.00",unit:"unit",moq:"MOQ: 30 pcs"},
-    {id:8,abbr:"PB",color:"#8e44ad",name:"Power Bank 20000mAh",supplier:"PowerCell Factory",price:"$32.00",unit:"unit",moq:"MOQ: 80 pcs"},
-  ],
-  fashion: [
-    {id:9,abbr:"CT",color:"#e74c3c",name:"Cotton T-Shirts Pack",supplier:"TextilePro Garments",price:"$4.50",unit:"unit",moq:"MOQ: 500 pcs"},
-    {id:10,abbr:"LW",color:"#5d4037",name:"Genuine Leather Wallets",supplier:"LeatherCraft Workshop",price:"$12.00",unit:"unit",moq:"MOQ: 200 pcs"},
-    {id:11,abbr:"SG",color:"#f39c12",name:"Polarized Sunglasses",supplier:"OpticalStyle Mfg.",price:"$7.20",unit:"unit",moq:"MOQ: 300 pcs"},
-  ]
-};
-
-let activeTab = "default";
+const WISHLIST_LS_KEY = 'globex_wishlist';
 const alertStates = {};
+let currentSort = 'date';
 
-function renderProducts() {
-  const container = document.getElementById("products-container");
-  const emptyState = document.getElementById("empty-state");
-  const list = products[activeTab] || [];
-  if (!list.length) {
-    container.innerHTML = "";
-    emptyState.style.display = "block";
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function getToken() {
+  try {
+    const sess = JSON.parse(localStorage.getItem('globexSession') || 'null');
+    if (sess?.token) return sess.token;
+  } catch(_) {}
+  const direct = localStorage.getItem('globexToken') || localStorage.getItem('auth_token') || localStorage.getItem('token') || sessionStorage.getItem('token');
+  if (direct) return direct;
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+        const s = JSON.parse(localStorage.getItem(key) || 'null');
+        if (s?.access_token) return s.access_token;
+      }
+    }
+  } catch(_) {}
+  return null;
+}
+
+function parsePriceNum(p) {
+  return parseFloat(String(p || '0').replace(/[^0-9.]/g, '')) || 0;
+}
+
+function sortItems(items, by) {
+  const arr = items.slice();
+  switch (by) {
+    case 'price_asc':  arr.sort((a, b) => parsePriceNum(a.price || a.unit_price) - parsePriceNum(b.price || b.unit_price)); break;
+    case 'price_desc': arr.sort((a, b) => parsePriceNum(b.price || b.unit_price) - parsePriceNum(a.price || a.unit_price)); break;
+    case 'name':       arr.sort((a, b) => (a.name || a.product_name || '').localeCompare(b.name || b.product_name || '')); break;
+    case 'date':
+    default:           arr.sort((a, b) => (new Date(b.addedAt || b.created_at || 0).getTime()) - (new Date(a.addedAt || a.created_at || 0).getTime()));
+  }
+  return arr;
+}
+
+function setSortAndLoad(btn) {
+  document.querySelectorAll('.filter-tab[data-sort]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSort = btn.getAttribute('data-sort') || 'date';
+  loadWishlist();
+}
+
+function updateCountLabel(count) {
+  const lbl = document.getElementById('wishlist-count-label');
+  if (lbl) lbl.textContent = count > 0 ? '(' + count + ' items)' : '';
+}
+
+function renderWishlistItems(items) {
+  const container  = document.getElementById('products-container');
+  const emptyState = document.getElementById('empty-state');
+  if (!container) return;
+
+  const sorted = sortItems(items, currentSort);
+
+  if (!sorted || !sorted.length) {
+    container.innerHTML = '';
+    if (emptyState) emptyState.style.display = 'block';
+    updateCountLabel(0);
     return;
   }
-  emptyState.style.display = "none";
-  container.innerHTML = list.map(p => `
-    <div class="product-card" id="card-${p.id}">
-      <div class="product-img" style="background:${p.color}">${p.abbr}</div>
-      <div class="product-name">${p.name}</div>
-      <div class="product-supplier"><a href="#">${p.supplier}</a></div>
-      <div class="product-price">${p.price}<span style="font-size:.72rem;font-weight:400;color:#64748b">/${p.unit}</span></div>
-      <div class="product-moq">${p.moq}</div>
+  if (emptyState) emptyState.style.display = 'none';
+  updateCountLabel(sorted.length);
+
+  container.innerHTML = sorted.map(item => {
+    const id      = item.id || item.product_id;
+    const name    = escHtml(item.name || item.product_name || 'Product');
+    const price   = item.price ? '$' + parseFloat(item.price).toFixed(2) : (item.unit_price ? '$' + parseFloat(item.unit_price).toFixed(2) : '');
+    const img     = escHtml(item.image_url || item.image || item.thumbnail || '');
+    const imgHtml = img
+      ? `<img src="${img}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`
+      : `<span style="font-size:1.2rem;font-weight:700;color:#fff">${name.substring(0,2).toUpperCase()}</span>`;
+    const supplier = escHtml(item.supplier_name || item.supplier || '');
+    const safeId   = escHtml(String(id));
+    const addedDate = item.addedAt ? new Date(item.addedAt).toLocaleDateString() : (item.created_at ? new Date(item.created_at).toLocaleDateString() : '');
+    return `
+    <div class="product-card" id="card-${safeId}">
+      <div class="product-img" style="background:#0052CC;display:flex;align-items:center;justify-content:center">${imgHtml}</div>
+      <div class="product-name">${name}</div>
+      ${supplier ? `<div class="product-supplier"><a href="#">${supplier}</a></div>` : ''}
+      ${price ? `<div class="product-price">${price}</div>` : ''}
+      ${addedDate ? `<div class="product-moq" style="text-align:center;font-size:.73rem;color:#94a3b8">Added: ${addedDate}</div>` : ''}
       <div class="price-alert-row">
         <label class="toggle-switch">
-          <input type="checkbox" ${alertStates[p.id] ? "checked" : ""} onchange="toggleAlert(${p.id}, this.checked)"/>
+          <input type="checkbox" ${alertStates[id] ? 'checked' : ''} onchange="alertStates['${safeId}'] = this.checked"/>
           <span class="toggle-slider"></span>
         </label>
         Price Drop Alert
       </div>
       <div class="card-actions">
-        <button class="btn btn-primary btn-sm" onclick="moveToCart(${p.id})"><i class="fas fa-cart-plus"></i> Move to Cart</button>
-        <button class="btn-danger-icon" title="Remove" onclick="removeProduct(${p.id}, '${activeTab}')"><i class="fas fa-times"></i></button>
+        <button class="btn btn-primary btn-sm" onclick="moveToCart('${safeId}','${name}','${price}','${img}')"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+        <button class="btn-danger-icon" title="Remove" onclick="removeFromWishlist('${safeId}')"><i class="fas fa-times"></i></button>
       </div>
-    </div>
-  `).join("");
+    </div>`;
+  }).join('');
 }
 
-function toggleAlert(id, val) { alertStates[id] = val; }
+async function loadWishlist() {
+  const token = getToken();
+  const container = document.getElementById('products-container');
+  const emptyState = document.getElementById('empty-state');
+  if (!container) return;
 
-function removeProduct(id, tab) {
-  const card = document.getElementById("card-"+id);
-  card.classList.add("removing");
-  setTimeout(() => {
-    products[tab] = products[tab].filter(p => p.id !== id);
-    updateCounts();
-    renderProducts();
-  }, 300);
+  container.innerHTML = '<p style="text-align:center;padding:2rem;color:#64748b"><i class="fas fa-spinner fa-spin"></i> Loading wishlist…</p>';
+
+  // Try API first
+  if (token) {
+    try {
+      const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
+      const res  = await fetch(`${API_BASE}/wishlist`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) {
+        const json  = await res.json();
+        const items = json.data || json.items || json || [];
+        if (Array.isArray(items)) {
+          renderWishlistItems(items);
+          return;
+        }
+      }
+    } catch(_) {}
+  }
+
+  // Fallback: localStorage
+  try {
+    const stored = JSON.parse(localStorage.getItem(WISHLIST_LS_KEY) || '[]');
+    renderWishlistItems(stored);
+  } catch(_) {
+    if (emptyState) emptyState.style.display = 'block';
+    container.innerHTML = '';
+    updateCountLabel(0);
+  }
 }
 
-function moveToCart(id) {
-  const card = document.getElementById("card-"+id);
-  const btn = card.querySelector(".btn-primary");
-  btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-  btn.style.background = "#059669";
-  setTimeout(() => { btn.innerHTML = '<i class="fas fa-cart-plus"></i> Move to Cart'; btn.style.background = ""; }, 1500);
+async function removeFromWishlist(id) {
+  const card = document.getElementById('card-' + id);
+  if (card) {
+    card.style.transition = 'opacity .3s, transform .3s';
+    card.style.opacity = '0.4';
+  }
+
+  const token = getToken();
+  let removed = false;
+  if (token) {
+    try {
+      const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
+      const res = await fetch(`${API_BASE}/wishlist/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) removed = true;
+    } catch(_) {}
+  }
+
+  if (!removed) {
+    // Remove from localStorage fallback
+    try {
+      const stored = JSON.parse(localStorage.getItem(WISHLIST_LS_KEY) || '[]');
+      localStorage.setItem(WISHLIST_LS_KEY, JSON.stringify(stored.filter(p => String(p.id) !== String(id) && String(p.product_id) !== String(id))));
+    } catch(_) {}
+  }
+
+  if (card) {
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => loadWishlist(), 300);
+  } else {
+    loadWishlist();
+  }
 }
 
-function updateCounts() {
-  document.querySelectorAll(".filter-tab").forEach(tab => {
-    const key = tab.dataset.tab;
-    const cnt = tab.querySelector("span");
-    if (cnt) cnt.textContent = (products[key] || []).length;
+function moveToCart(id, name, price, image) {
+  if (typeof addToCart === 'function') {
+    addToCart({ id, name, price: parsePriceNum(price), image, quantity: 1 });
+  }
+  const card = document.getElementById('card-' + id);
+  if (card) {
+    const btn = card.querySelector('.btn-primary');
+    if (btn) {
+      btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+      btn.style.background = '#059669';
+      setTimeout(() => { btn.innerHTML = '<i class="fas fa-cart-plus"></i> Move to Cart'; btn.style.background = ''; }, 1500);
+    }
+  }
+}
+
+function moveAllToCart() {
+  const cards = document.querySelectorAll('#products-container .product-card[id^="card-"]');
+  let count = 0;
+  cards.forEach(card => {
+    const id = card.id.replace('card-', '');
+    const name = card.querySelector('.product-name')?.textContent?.trim() || '';
+    const price = card.querySelector('.product-price')?.textContent?.trim() || '0';
+    const img = card.querySelector('img')?.src || '';
+    if (typeof addToCart === 'function') {
+      addToCart({ id, name, price: parsePriceNum(price), image: img, quantity: 1 });
+      count++;
+    }
   });
+  if (count > 0 && typeof showToast === 'function') {
+    showToast(count + ' items moved to cart!', 'success');
+  } else if (count === 0) {
+    if (typeof showToast === 'function') showToast('No items to move', 'info');
+  }
 }
 
 function shareWishlist() {
   if (navigator.clipboard) navigator.clipboard.writeText(window.location.href);
-  const btn = document.querySelector(".btn-outline");
-  btn.innerHTML = '<i class="fas fa-check"></i> Link Copied!';
-  setTimeout(() => { btn.innerHTML = '<i class="fas fa-share-alt"></i> Share Wishlist'; }, 1800);
+  const btn = document.querySelector('[onclick="shareWishlist()"]');
+  if (btn) {
+    btn.innerHTML = '<i class="fas fa-check"></i> Link Copied!';
+    setTimeout(() => { btn.innerHTML = '<i class="fas fa-share-alt"></i> Share'; }, 1800);
+  }
 }
 
-document.querySelectorAll(".filter-tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-    activeTab = tab.dataset.tab;
-    renderProducts();
-  });
+document.addEventListener('DOMContentLoaded', function() {
+  loadWishlist();
 });
-
-renderProducts();
-document.getElementById("copyright-year").textContent = new Date().getFullYear();
 </script>
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/navbar.js"></script>
   <script src="../../assets/js/account.js"></script>
 <script>

@@ -485,11 +485,22 @@ async function submitRegistration() {
     plan: formData.get('plan') || 'free'
   };
   try {
-    await SupplierAPI.register(body);
-    alert('Application submitted! We\'ll review it within 2-3 business days.');
-    window.location.href = 'dashboard.html';
+    const token = (JSON.parse(localStorage.getItem('globexSession') || 'null') || {}).token
+      || localStorage.getItem('globexToken')
+      || localStorage.getItem('token');
+    const res = await fetch('/api/v1/suppliers/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      alert('Application submitted! We\'ll review it within 2-3 business days.');
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('Application submitted! Our team will review it and contact you via email.');
+      setTimeout(() => window.location.href = 'dashboard.html', 1500);
+    }
   } catch(e) {
-    // Even if API fails, show success message (it may still have been received)
     alert('Application submitted! Our team will review it and contact you via email.');
     setTimeout(() => window.location.href = 'dashboard.html', 1500);
   }

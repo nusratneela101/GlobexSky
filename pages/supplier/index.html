@@ -150,29 +150,11 @@
 </footer>
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/api-service.js"></script>
-<script src="../../assets/js/supplier.js"></script>
 <script src="../../assets/js/dynamic-loader.js"></script>
+<script src="../../assets/js/supplier.js"></script>
 <script src="../../assets/js/main.js" defer></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    /* Load dashboard stats */
-    loadSupplierDashboard();
-
-    /* Load recent orders */
-    (function loadRecentOrders() {
-      SupplierAPI.getOrders({ limit: 5 }).then(function (res) {
-        var orders = (res && res.data) || [];
-        var tbody = document.getElementById('recent-orders-tbody');
-        if (!tbody || !orders.length) return;
-        tbody.innerHTML = orders.map(function (o) {
-          var statusInfo = formatOrderStatus(o.status);
-          return '<tr><td>#' + escHtml(o.id.substring(0, 8).toUpperCase()) + '</td>' +
-            '<td>$' + parseFloat(o.total || 0).toFixed(2) + '</td>' +
-            '<td><span class="badge ' + statusInfo.class + '">' + statusInfo.label + '</span></td></tr>';
-        }).join('');
-      }).catch(function () { /* keep static content if API unavailable */ });
-    })();
-  });
+  document.addEventListener('DOMContentLoaded', function () { loadSupplierDashboard(); });
 </script>
 <script src="../../assets/js/auth-guard.js"></script>
 </body>

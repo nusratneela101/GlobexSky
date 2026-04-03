@@ -224,9 +224,11 @@
   <p>&copy; <span id="copyright-year"></span> Globex International Trade Co., Ltd. All rights reserved.</p>
 </footer>
 
+<script src="../../assets/js/config.js"></script>
+<script src="../../assets/js/api-service.js"></script>
 <script src="../../assets/js/cart.js"></script>
 <script>
-  const API_BASE = '/api/v1';
+  const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
   document.getElementById('copyright-year').textContent = new Date().getFullYear();
 
   function getToken() { return localStorage.getItem('globexToken'); }

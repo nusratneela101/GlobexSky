@@ -245,6 +245,111 @@
       .catch(() => { alert('Could not search products. Please try again.'); });
   }
 
+  // ─── Compare Bar ────────────────────────────────────────────────────────────
+
+  /**
+   * Build/update the floating compare bar at the bottom of the page.
+   * Shown when 2 or more products are in the compare list.
+   */
+  function updateCompareBar() {
+    const items = getCompareList();
+    let bar = document.getElementById('globex-compare-bar');
+
+    if (items.length < 2) {
+      if (bar) bar.style.display = 'none';
+      return;
+    }
+
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'globex-compare-bar';
+      bar.style.cssText =
+        'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0a0e27;' +
+        'color:#fff;padding:12px 24px;display:flex;align-items:center;gap:12px;' +
+        'box-shadow:0 -4px 20px rgba(0,0,0,.3);font-family:Inter,sans-serif;' +
+        'animation:slideUpIn .3s ease';
+      if (!document.getElementById('compare-bar-style')) {
+        const style = document.createElement('style');
+        style.id = 'compare-bar-style';
+        style.textContent =
+          '@keyframes slideUpIn{from{transform:translateY(100%)}to{transform:translateY(0)}}' +
+          '#globex-compare-bar .cbar-thumb{width:44px;height:44px;border-radius:8px;' +
+          'background:#1e2a4a;display:flex;align-items:center;justify-content:center;' +
+          'font-size:1.4rem;flex-shrink:0;border:2px solid #334;}' +
+          '#globex-compare-bar .cbar-label{font-size:.82rem;color:#94a3b8;white-space:nowrap}' +
+          '#globex-compare-bar .cbar-name{font-size:.78rem;font-weight:600;color:#e2e8f0;' +
+          'max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
+        document.head.appendChild(style);
+      }
+      document.body.appendChild(bar);
+    }
+
+    // Build bar using DOM manipulation to avoid XSS
+    while (bar.firstChild) bar.removeChild(bar.firstChild);
+
+    // Label
+    const label = document.createElement('span');
+    label.className = 'cbar-label';
+    label.innerHTML = '<i class="fas fa-balance-scale" style="margin-right:6px"></i>';
+    label.appendChild(document.createTextNode('Compare (' + items.length + ')'));
+    bar.appendChild(label);
+
+    // Thumbnails container
+    const thumbsWrap = document.createElement('div');
+    thumbsWrap.style.cssText = 'display:flex;gap:10px;align-items:center;flex:1;overflow-x:auto';
+    items.forEach(function (p) {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer';
+      wrap.title = 'Click to remove ' + (p.name || '');
+      const pid = p.id;
+      wrap.addEventListener('click', function () {
+        compareManager.remove(pid);
+        updateCompareBar();
+      });
+      const thumb = document.createElement('div');
+      thumb.className = 'cbar-thumb';
+      thumb.textContent = p.icon || '📦';
+      const nameEl = document.createElement('div');
+      nameEl.className = 'cbar-name';
+      nameEl.textContent = (p.name || 'Product').substring(0, 12);
+      wrap.appendChild(thumb);
+      wrap.appendChild(nameEl);
+      thumbsWrap.appendChild(wrap);
+    });
+    bar.appendChild(thumbsWrap);
+
+    // Compare Now link
+    const compareLink = document.createElement('a');
+    compareLink.href = _getComparePath();
+    compareLink.style.cssText = 'white-space:nowrap;padding:9px 20px;background:#0052CC;color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px';
+    compareLink.innerHTML = '<i class="fas fa-table"></i>';
+    compareLink.appendChild(document.createTextNode(' Compare Now'));
+    bar.appendChild(compareLink);
+
+    // Clear All button
+    const clearBtn = document.createElement('button');
+    clearBtn.style.cssText = 'padding:8px 14px;background:transparent;color:#94a3b8;border:1.5px solid #334;border-radius:8px;cursor:pointer;font-size:.8rem;white-space:nowrap';
+    clearBtn.textContent = 'Clear All';
+    clearBtn.addEventListener('click', function () { compareManager.clearBar(); });
+    bar.appendChild(clearBtn);
+
+    bar.style.display = 'flex';
+  }
+
+  function _getComparePath() {
+    // Resolve the compare page URL relative to any depth
+    const script = document.currentScript ||
+      (function () {
+        const tags = document.querySelectorAll('script[src*="compare.js"]');
+        return tags[tags.length - 1] || null;
+      }());
+    if (script && script.src) {
+      const base = script.src.replace(/assets\/js\/compare\.js(\?.*)?$/, '');
+      return base + 'pages/compare/index.html';
+    }
+    return '/pages/compare/index.html';
+  }
+
   // ─── Actions ────────────────────────────────────────────────────────────────
 
   function clearAll() {
@@ -293,6 +398,7 @@
 
   function dispatchChangeEvent() {
     try { window.dispatchEvent(new CustomEvent('compare:changed', { detail: { items: getCompareList() } })); } catch (e) {}
+    updateCompareBar();
   }
 
   // ─── Global Exposure ────────────────────────────────────────────────────────
@@ -301,12 +407,14 @@
     add: addToCompare,
     remove: function (productId) { removeFromCompare(productId); renderCompareTable(); },
     clear: clearAll,
+    clearBar: function () { clearCompare(); updateCompareBar(); },
     isInCompare,
     getAll: getCompareList,
     render: renderCompareTable,
     searchAndAdd,
     export: exportComparison,
     addAllToCart,
+    updateBar: updateCompareBar,
   };
 
   // Page-level helpers used by inline onclick handlers
@@ -315,12 +423,14 @@
   window.exportComparison = exportComparison;
   window.addAllToCart = addAllToCart;
   window.addProductToCart = addProductToCart;
+  window.updateCompareBar = updateCompareBar;
 
   // Auto-render on page load if the compare table container exists
   document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('compare-table')) {
       renderCompareTable();
     }
+    updateCompareBar();
   });
 
 })();

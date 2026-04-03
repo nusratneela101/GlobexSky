@@ -5,11 +5,34 @@
  */
 
 const AccountAPI = {
-  BASE_URL: '/api/v1',
+  get BASE_URL() {
+    return window.GLOBEX_CONFIG?.API_BASE_URL || '/api/v1';
+  },
+
+  getToken() {
+    // Check globexSession object first (set by auth-flow.js)
+    try {
+      const session = JSON.parse(localStorage.getItem('globexSession') || 'null');
+      if (session?.token) return session.token;
+    } catch (_) {}
+    // Direct token keys
+    const direct = localStorage.getItem('globexToken') || localStorage.getItem('auth_token') || localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (direct) return direct;
+    // Supabase session keys
+    try {
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+          const sess = JSON.parse(localStorage.getItem(key) || 'null');
+          if (sess?.access_token) return sess.access_token;
+        }
+      }
+    } catch (_) {}
+    return null;
+  },
 
   getHeaders(json = true) {
-    const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');
-    const h = { ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+    const token = this.getToken();
+    const h = token ? { Authorization: `Bearer ${token}` } : {};
     if (json) h['Content-Type'] = 'application/json';
     return h;
   },
@@ -40,6 +63,16 @@ const AccountAPI = {
     return res.json();
   },
 
+  async patch(path, body) {
+    const res = await fetch(`${this.BASE_URL}${path}`, {
+      method: 'PATCH',
+      headers: this.getHeaders(),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  },
+
   async del(path) {
     const res = await fetch(`${this.BASE_URL}${path}`, { method: 'DELETE', headers: this.getHeaders(false) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -51,12 +84,50 @@ const AccountAPI = {
    AUTH GUARD
 ───────────────────────────────────────────── */
 function requireAuth() {
-  const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');
+  const token = AccountAPI.getToken();
   if (!token) {
-    window.location.href = `/pages/auth/login.html?redirect=${encodeURIComponent(window.location.href)}`;
+    window.location.href = `/pages/auth/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
     return false;
   }
   return true;
+}
+
+/* ─────────────────────────────────────────────
+   SIDEBAR
+───────────────────────────────────────────── */
+async function initSidebar() {
+  const avatarEl = document.querySelector('.account-sidebar-avatar');
+  const nameEl   = document.querySelector('.account-sidebar-name');
+  const emailEl  = document.querySelector('.account-sidebar-email');
+  if (!avatarEl && !nameEl && !emailEl) return;
+
+  // Quick fill from localStorage first
+  try {
+    const user = JSON.parse(localStorage.getItem('globexUser') || 'null');
+    if (user) {
+      if (nameEl && user.full_name) nameEl.textContent = user.full_name;
+      if (emailEl && user.email)    emailEl.textContent = user.email;
+      if (avatarEl && user.full_name) {
+        avatarEl.textContent = user.full_name.split(' ').filter(Boolean).map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+      }
+    }
+  } catch (_) {}
+
+  // Then update from API
+  try {
+    const data    = await AccountAPI.get('/users/profile');
+    const profile = data.data || data;
+    if (nameEl && profile.full_name)  nameEl.textContent  = profile.full_name;
+    if (emailEl && profile.email)     emailEl.textContent = profile.email;
+    if (avatarEl) {
+      const initials = (profile.full_name || 'U').split(' ').filter(Boolean).map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+      if (profile.avatar_url) {
+        avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="${initials}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      } else {
+        avatarEl.textContent = initials;
+      }
+    }
+  } catch (_) {}
 }
 
 /* ─────────────────────────────────────────────
@@ -67,7 +138,7 @@ async function initAccountDashboard() {
   if (!section) return;
 
   try {
-    const data = await AccountAPI.get('/account/dashboard');
+    const data = await AccountAPI.get('/users/profile');
     const d = data.data || data;
 
     const set = (sel, val) => { const el = section.querySelector(sel); if (el) el.textContent = val; };
@@ -100,23 +171,67 @@ function statusColor(status) {
 /* ─────────────────────────────────────────────
    PROFILE EDIT
 ───────────────────────────────────────────── */
-function initProfilePage() {
-  const form = document.querySelector('#profileForm, [data-profile-form]');
+async function initProfilePage() {
+  const form = document.querySelector('#profileForm, [data-profile-form], #personal-form');
   if (!form) return;
 
-  // Pre-fill from localStorage
+  // Load profile from API and populate fields
   try {
-    const user = JSON.parse(localStorage.getItem('globexUser') || 'null');
-    if (user) {
-      Object.entries(user).forEach(([key, val]) => {
-        const field = form.querySelector(`[name="${key}"]`);
-        if (field) field.value = val;
-      });
+    const data    = await AccountAPI.get('/users/profile');
+    const profile = data.data || data;
+
+    // Helper: set value if field exists and profile has the key
+    const fillField = (selector, val) => {
+      const el = form.querySelector(selector);
+      if (el && val !== undefined && val !== null) el.value = val;
+    };
+
+    // Handle full_name → split into first_name / last_name when separate fields exist
+    if (profile.full_name) {
+      const firstEl = form.querySelector('[name="first_name"]');
+      const lastEl  = form.querySelector('[name="last_name"]');
+      const fullEl  = form.querySelector('[name="full_name"]');
+      if (firstEl || lastEl) {
+        const parts = profile.full_name.trim().split(/\s+/);
+        if (firstEl) firstEl.value = parts[0] || '';
+        if (lastEl)  lastEl.value  = parts.slice(1).join(' ') || '';
+      } else if (fullEl) {
+        fullEl.value = profile.full_name;
+      }
     }
-  } catch (_) {}
+
+    fillField('[name="email"]',        profile.email);
+    fillField('[name="phone"]',        profile.phone);
+    fillField('[name="company_name"]', profile.company_name);
+    fillField('[name="language"]',     profile.language);
+    fillField('[name="currency"]',     profile.currency);
+    fillField('[name="timezone"]',     profile.timezone);
+
+    // Update avatar
+    const avatarLarge = document.querySelector('.profile-avatar-large, .account-avatar-large');
+    if (avatarLarge) {
+      const initials = (profile.full_name || 'U').split(' ').filter(Boolean).map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+      if (profile.avatar_url) {
+        avatarLarge.innerHTML = `<img src="${profile.avatar_url}" alt="${initials}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      } else {
+        avatarLarge.textContent = initials;
+      }
+    }
+  } catch (_) {
+    // Fallback to localStorage
+    try {
+      const user = JSON.parse(localStorage.getItem('globexUser') || 'null');
+      if (user) {
+        Object.entries(user).forEach(([key, val]) => {
+          const field = form.querySelector(`[name="${key}"]`);
+          if (field) field.value = val;
+        });
+      }
+    } catch (_2) {}
+  }
 
   // Avatar upload preview
-  const avatarInput = form.querySelector('[name="avatar"], #avatarInput');
+  const avatarInput   = form.querySelector('[name="avatar"], #avatarInput');
   const avatarPreview = document.querySelector('.avatar-preview, #avatarPreview');
   if (avatarInput && avatarPreview) {
     avatarInput.addEventListener('change', () => {
@@ -131,23 +246,27 @@ function initProfilePage() {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!validateProfileForm(form)) return;
 
-    const btn = form.querySelector('[type="submit"]');
+    const btn  = form.querySelector('[type="submit"]');
     const orig = btn?.textContent;
     if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
 
     try {
-      const fd = new FormData(form);
-      const token = localStorage.getItem('globexToken') || localStorage.getItem('auth_token');
-      const res = await fetch('/api/v1/account/profile', {
-        method: 'PUT',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: fd,
+      // Build payload from named fields; combine first_name + last_name into full_name
+      const firstEl = form.querySelector('[name="first_name"]');
+      const lastEl  = form.querySelector('[name="last_name"]');
+      const payload = {};
+      if (firstEl || lastEl) {
+        payload.full_name = [firstEl?.value?.trim(), lastEl?.value?.trim()].filter(Boolean).join(' ');
+      }
+      // Skip 'full_name' below since it may already be constructed from first/last name above
+      ['phone', 'company_name', 'language', 'currency', 'timezone', 'full_name'].forEach((k) => {
+        const el = form.querySelector(`[name="${k}"]`);
+        if (el && el.value !== undefined && !payload[k]) payload[k] = el.value;
       });
-      const json = await res.json();
-      if (json.success || res.ok) {
-        // Update local user
+
+      const json = await AccountAPI.put('/users/profile', payload);
+      if (json.success) {
         const updated = json.data || {};
         const stored  = JSON.parse(localStorage.getItem('globexUser') || '{}');
         localStorage.setItem('globexUser', JSON.stringify({ ...stored, ...updated }));
@@ -180,14 +299,15 @@ function validateProfileForm(form) {
    CHANGE PASSWORD
 ───────────────────────────────────────────── */
 function initChangePassword() {
-  const form = document.querySelector('#changePasswordForm, [data-change-password]');
+  const form = document.querySelector('#changePasswordForm, [data-change-password], #password-form');
   if (!form) return;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const current = form.querySelector('[name="current_password"]')?.value;
-    const newPw   = form.querySelector('[name="new_password"]')?.value;
-    const confirm = form.querySelector('[name="confirm_password"]')?.value;
+    // Support both name="..." and id="current-pass" / id="new-pass" patterns
+    const current = (form.querySelector('[name="current_password"]') || form.querySelector('#current-pass'))?.value;
+    const newPw   = (form.querySelector('[name="new_password"]')     || form.querySelector('#new-pass'))?.value;
+    const confirm = (form.querySelector('[name="confirm_password"]') || form.querySelector('#confirm-pass') || form.querySelectorAll('[type="password"]')[2])?.value;
 
     if (!current || !newPw || !confirm) {
       if (typeof showToast === 'function') showToast('All fields are required.', 'error'); return;
@@ -199,12 +319,18 @@ function initChangePassword() {
       if (typeof showToast === 'function') showToast('Password must be at least 8 characters.', 'error'); return;
     }
 
+    const btn  = form.querySelector('[type="submit"]');
+    const orig = btn?.textContent;
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
     try {
-      await AccountAPI.post('/account/change-password', { current_password: current, new_password: newPw });
+      await AccountAPI.put('/users/change-password', { current_password: current, new_password: newPw });
       if (typeof showToast === 'function') showToast('Password changed successfully!', 'success');
       form.reset();
     } catch (err) {
       if (typeof showToast === 'function') showToast(err.message || 'Failed to change password.', 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = orig; }
     }
   });
 }
@@ -543,7 +669,7 @@ async function initNotificationsPage() {
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
           try {
-            await AccountAPI.put(`/notifications/${btn.dataset.markRead}/read`, {});
+            await AccountAPI.patch(`/notifications/${btn.dataset.markRead}/read`, {});
             loadNotifications();
           } catch (_) {}
         });
@@ -556,7 +682,7 @@ async function initNotificationsPage() {
   // Mark all read button
   document.querySelector('[data-mark-all-read]')?.addEventListener('click', async () => {
     try {
-      await AccountAPI.post('/notifications/read-all', {});
+      await AccountAPI.patch('/notifications/mark-all-read', {});
       loadNotifications();
     } catch (_) {}
   });
@@ -590,7 +716,7 @@ function initAccountSettings() {
     if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
 
     try {
-      await AccountAPI.put('/account/settings', data);
+      await AccountAPI.put('/users/settings', data);
       if (typeof showToast === 'function') showToast('Settings saved!', 'success');
     } catch (_) {
       if (typeof showToast === 'function') showToast('Failed to save settings.', 'error');
@@ -718,6 +844,7 @@ window.recordProductView = recordProductView;
 document.addEventListener('DOMContentLoaded', () => {
   if (!requireAuth()) return;
 
+  initSidebar();
   initAccountDashboard();
   initProfilePage();
   initChangePassword();
