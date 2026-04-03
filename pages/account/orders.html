@@ -399,6 +399,14 @@
       cancelled:  '<span class="badge-pill badge-red"><i class="fas fa-times-circle" style="margin-right:4px"></i>Cancelled</span>',
     };
 
+    var PAYMENT_BADGE = {
+      paid:        '<span class="badge-pill badge-green" title="Payment received" style="font-size:.7rem"><i class="fas fa-check-circle" style="margin-right:3px"></i>Paid ✅</span>',
+      pending:     '<span class="badge-pill badge-orange" title="Awaiting payment" style="font-size:.7rem"><i class="fas fa-clock" style="margin-right:3px"></i>Pending ⏳</span>',
+      failed:      '<span class="badge-pill badge-red" title="Payment failed" style="font-size:.7rem"><i class="fas fa-times-circle" style="margin-right:3px"></i>Failed ❌</span>',
+      cod_pending: '<span class="badge-pill badge-orange" title="Cash on delivery" style="font-size:.7rem"><i class="fas fa-money-bill-wave" style="margin-right:3px"></i>COD ⏳</span>',
+      refunded:    '<span class="badge-pill badge-gray" title="Refunded" style="font-size:.7rem"><i class="fas fa-undo" style="margin-right:3px"></i>Refunded</span>',
+    };
+
     function buildOrderRowHTML(order) {
       var id       = _esc(order.id || order._id || order.orderNumber || '');
       var num      = _esc(order.orderNumber || order.number || ('#GS-' + id));
@@ -406,8 +414,10 @@
       var date     = _esc(order.date || order.createdAt || order.orderDate || '');
       var total    = parseFloat(order.total || order.totalAmount || 0).toFixed(2);
       var status   = (order.status || 'pending').toLowerCase();
+      var payStatus = (order.payment_status || order.paymentStatus || 'pending').toLowerCase();
       var itemCount = parseInt(order.itemCount || (order.items && order.items.length) || 1, 10);
       var badge    = STATUS_BADGE[status] || STATUS_BADGE.pending;
+      var payBadge = PAYMENT_BADGE[payStatus] || PAYMENT_BADGE.pending;
       var detailHref = '../../pages/order/details.html?id=' + encodeURIComponent(id);
 
       return '<div class="order-row" data-status="' + _esc(status) + '">' +
@@ -418,7 +428,7 @@
           '<div class="order-date"><i class="fas fa-calendar-alt" style="color:#94a3b8;margin-right:4px"></i>' + date + '</div>' +
           '<div class="order-items"><div class="item-count">' + itemCount + ' item' + (itemCount !== 1 ? 's' : '') + '</div></div>' +
           '<div class="order-total">$' + total + '</div>' +
-          '<div>' + badge + '</div>' +
+          '<div>' + badge + ' ' + payBadge + '</div>' +
           '<div class="order-actions">' +
             '<button class="btn btn-sm btn-secondary" onclick="event.stopPropagation()"><i class="fas fa-redo" style="margin-right:4px"></i>Reorder</button>' +
             '<button class="expand-btn"><i class="fas fa-chevron-down"></i></button>' +

@@ -257,3 +257,154 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+/* ─── PaymentManager ──────────────────────────────────────────────────────
+   Handles card validation, input formatting, card type detection, and
+   simulated payment processing (placeholder for real Stripe/PayPal).
+   Exposed on window.PaymentManager for use by checkout inline scripts.
+────────────────────────────────────────────────────────────────────────── */
+const PaymentManager = {
+  selectedMethod: null,
+
+  // Luhn algorithm — validates a credit card number
+  _luhn(number) {
+    const digits = String(number).replace(/\D/g, '');
+    let sum = 0;
+    let alt = false;
+    for (let i = digits.length - 1; i >= 0; i--) {
+      let n = parseInt(digits[i], 10);
+      if (alt) {
+        n *= 2;
+        if (n > 9) n -= 9;
+      }
+      sum += n;
+      alt = !alt;
+    }
+    return sum % 10 === 0;
+  },
+
+  // Validate card fields — returns { valid: bool, errors: string[] }
+  validateCard() {
+    const errors = [];
+    const numberEl = document.getElementById('card-number');
+    const expiryEl = document.getElementById('card-expiry');
+    const cvvEl    = document.getElementById('card-cvv');
+    const nameEl   = document.getElementById('card-name');
+
+    const rawNumber = (numberEl?.value || '').replace(/\s/g, '');
+    if (!rawNumber || rawNumber.length < 13 || rawNumber.length > 19) {
+      errors.push('Card number must be 13–19 digits.');
+    } else if (!this._luhn(rawNumber)) {
+      errors.push('Invalid card number.');
+    }
+
+    const expiry = (expiryEl?.value || '').replace(/\s/g, '');
+    const expiryMatch = expiry.match(/^(\d{2})[\/](\d{2})$/);
+    if (!expiryMatch) {
+      errors.push('Expiry date must be MM/YY.');
+    } else {
+      const month = parseInt(expiryMatch[1], 10);
+      const year  = 2000 + parseInt(expiryMatch[2], 10);
+      const now   = new Date();
+      if (month < 1 || month > 12) {
+        errors.push('Invalid expiry month.');
+      } else if (year < now.getFullYear() || (year === now.getFullYear() && month < now.getMonth() + 1)) {
+        errors.push('Card has expired.');
+      }
+    }
+
+    const cvv = (cvvEl?.value || '').replace(/\D/g, '');
+    if (!cvv || cvv.length < 3 || cvv.length > 4) {
+      errors.push('CVV must be 3 or 4 digits.');
+    }
+
+    if (!(nameEl?.value || '').trim()) {
+      errors.push('Cardholder name is required.');
+    }
+
+    return { valid: errors.length === 0, errors };
+  },
+
+  // Validate selected payment method — returns { valid: bool, errors: string[] }
+  validate() {
+    if (this.selectedMethod === 'card') {
+      return this.validateCard();
+    }
+    return { valid: true, errors: [] };
+  },
+
+  // Format card number input: groups of 4 digits separated by spaces
+  formatCardNumber(input) {
+    const digits = input.value.replace(/\D/g, '').slice(0, 16);
+    input.value = digits.replace(/(.{4})/g, '$1 ').trim();
+  },
+
+  // Format expiry input as MM/YY
+  formatExpiry(input) {
+    const digits = input.value.replace(/\D/g, '').slice(0, 4);
+    if (digits.length >= 3) {
+      input.value = digits.slice(0, 2) + '/' + digits.slice(2);
+    } else {
+      input.value = digits;
+    }
+  },
+
+  // Detect card type from number prefix
+  detectCardType(number) {
+    const n = String(number).replace(/\D/g, '');
+    if (/^4/.test(n)) return 'visa';
+    if (/^5[1-5]/.test(n) || /^2[2-7]/.test(n)) return 'mastercard';
+    if (/^3[47]/.test(n)) return 'amex';
+    if (/^6(?:011|5)/.test(n)) return 'discover';
+    return 'unknown';
+  },
+
+  // Simulate payment processing (placeholder — resolves with success after 1.5 s)
+  // In production: call Stripe/PayPal API here.
+  async processPayment(orderData) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          transactionId: 'TXN_' + Date.now().toString(36).toUpperCase(),
+          method: this.selectedMethod || orderData?.payment_method || 'card',
+        });
+      }, 1500);
+    });
+  },
+
+  // Attach live input-formatting handlers to card fields in the checkout form
+  initCardFormatting() {
+    const numberEl = document.getElementById('card-number');
+    const expiryEl = document.getElementById('card-expiry');
+    const cvvEl    = document.getElementById('card-cvv');
+
+    if (numberEl) {
+      numberEl.addEventListener('input', () => this.formatCardNumber(numberEl));
+    }
+    if (expiryEl) {
+      expiryEl.addEventListener('input', () => this.formatExpiry(expiryEl));
+    }
+    if (cvvEl) {
+      cvvEl.addEventListener('input', () => {
+        cvvEl.value = cvvEl.value.replace(/\D/g, '').slice(0, 4);
+      });
+    }
+  },
+
+  // Sync selectedMethod with checked radio in checkout form
+  syncMethod() {
+    const checked = document.querySelector('input[name="payment"]:checked');
+    if (checked) {
+      this.selectedMethod = checked.id.replace('pay-', '');
+    }
+    document.querySelectorAll('input[name="payment"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        this.selectedMethod = radio.id.replace('pay-', '');
+      });
+    });
+  },
+};
+
+// Expose globally for inline scripts (checkout.html etc.)
+window.PaymentManager = PaymentManager;
