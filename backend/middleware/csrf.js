@@ -67,7 +67,7 @@ export function issueCsrfToken(req, res) {
     httpOnly: false,          // JS needs to read this
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'Strict',
-    maxAge: 2 * 60 * 60 * 1000, // 2 hours
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
     path: '/',
   });
   res.json({ success: true, data: { token } });
