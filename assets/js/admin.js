@@ -457,3 +457,89 @@ document.addEventListener('DOMContentLoaded', AdminPanel.init);
 
 // Expose globally
 window.AdminPanel = AdminPanel;
+
+// ─── AdminAPI ─────────────────────────────────────────────────────────────────
+// Thin API client for /api/v1/admin/* endpoints.
+const AdminAPI = (() => {
+  'use strict';
+
+  function _baseURL() {
+    const api = (window.GlobexConfig && window.GlobexConfig.API_BASE_URL)
+      || window.API_BASE_URL
+      || '/api/v1';
+    return api + '/admin';
+  }
+
+  function _headers() {
+    let token = null;
+    try {
+      const session = JSON.parse(localStorage.getItem('globexSession') || 'null');
+      token = (session && session.token) || null;
+    } catch (_) {}
+    if (!token) {
+      token = localStorage.getItem('globexToken')
+        || localStorage.getItem('token')
+        || sessionStorage.getItem('token')
+        || null;
+    }
+    const h = { 'Content-Type': 'application/json' };
+    if (token) h['Authorization'] = `Bearer ${token}`;
+    return h;
+  }
+
+  async function _request(method, path, body) {
+    const url = _baseURL() + path;
+    const opts = { method, headers: _headers() };
+    if (body !== undefined) opts.body = JSON.stringify(body);
+    const res = await fetch(url, opts);
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || json.success === false) {
+      throw new Error(json.error || json.message || `Request failed: ${res.status}`);
+    }
+    return json;
+  }
+
+  return {
+    get BASE() { return _baseURL(); },
+    headers: _headers,
+
+    // Dashboard
+    getDashboard: () => _request('GET', '/dashboard'),
+
+    // Users
+    getUsers: (params) => _request('GET', '/users' + (params ? '?' + new URLSearchParams(params) : '')),
+    getUser: (id) => _request('GET', '/users/' + id),
+    createUser: (data) => _request('POST', '/users', data),
+    updateUserRole: (id, role) => _request('PUT', '/users/' + id + '/role', { role }),
+    updateUserStatus: (id, status) => _request('PUT', '/users/' + id + '/status', { status }),
+    deleteUser: (id) => _request('DELETE', '/users/' + id),
+
+    // Products
+    getProducts: (params) => _request('GET', '/products' + (params ? '?' + new URLSearchParams(params) : '')),
+    createProduct: (data) => _request('POST', '/products', data),
+    updateProduct: (id, data) => _request('PUT', '/products/' + id, data),
+    deleteProduct: (id) => _request('DELETE', '/products/' + id),
+    updateProductStatus: (id, status) => _request('PUT', '/products/' + id + '/status', { status }),
+
+    // Orders
+    getOrders: (params) => _request('GET', '/orders' + (params ? '?' + new URLSearchParams(params) : '')),
+    getOrder: (id) => _request('GET', '/orders/' + id),
+    updateOrderStatus: (id, status) => _request('PUT', '/orders/' + id + '/status', { status }),
+    refundOrder: (id) => _request('POST', '/orders/' + id + '/refund'),
+
+    // Analytics
+    getAnalytics: (period) => _request('GET', '/analytics' + (period ? '?period=' + encodeURIComponent(period) : '')),
+
+    // Categories
+    getCategories: () => _request('GET', '/categories'),
+    createCategory: (data) => _request('POST', '/categories', data),
+    updateCategory: (id, data) => _request('PUT', '/categories/' + id, data),
+    deleteCategory: (id) => _request('DELETE', '/categories/' + id),
+
+    // Settings
+    getSettings: () => _request('GET', '/settings'),
+    updateSettings: (data) => _request('PUT', '/settings', data),
+  };
+})();
+
+window.AdminAPI = AdminAPI;
