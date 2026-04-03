@@ -108,14 +108,19 @@
   <main class="account-content">
     <div class="page-card">
       <div class="page-header">
-        <h1 class="page-title"><i class="fas fa-heart" style="color:#ef4444"></i> My Wishlist</h1>
-        <button class="btn btn-outline" onclick="shareWishlist()"><i class="fas fa-share-alt"></i> Share Wishlist</button>
+        <h1 class="page-title"><i class="fas fa-heart" style="color:#ef4444"></i> My Wishlist <span id="wishlist-count-label" style="font-size:.85rem;font-weight:500;color:#64748b"></span></h1>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="moveAllToCart()"><i class="fas fa-cart-plus"></i> Move All to Cart</button>
+          <button class="btn btn-outline btn-sm" onclick="shareWishlist()"><i class="fas fa-share-alt"></i> Share</button>
+        </div>
       </div>
 
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-tab="default">Default <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">8</span></button>
-        <button class="filter-tab" data-tab="electronics">Electronics <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">4</span></button>
-        <button class="filter-tab" data-tab="fashion">Fashion <span style="background:rgba(0,82,204,.1);color:#0052CC;border-radius:50px;padding:1px 7px;font-size:.72rem;margin-left:4px">3</span></button>
+      <div class="filter-tabs" style="margin-bottom:16px">
+        <span style="font-size:.82rem;color:#64748b;margin-right:8px;align-self:center">Sort by:</span>
+        <button class="filter-tab active" data-sort="date" onclick="setSortAndLoad(this)">Date Added</button>
+        <button class="filter-tab" data-sort="price_asc" onclick="setSortAndLoad(this)">Price ↑</button>
+        <button class="filter-tab" data-sort="price_desc" onclick="setSortAndLoad(this)">Price ↓</button>
+        <button class="filter-tab" data-sort="name" onclick="setSortAndLoad(this)">Name</button>
       </div>
 
       <div id="products-container" class="product-grid"></div>
@@ -139,6 +144,7 @@
 <script>
 const WISHLIST_LS_KEY = 'globex_wishlist';
 const alertStates = {};
+let currentSort = 'date';
 
 function escHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -162,19 +168,51 @@ function getToken() {
   return null;
 }
 
+function parsePriceNum(p) {
+  return parseFloat(String(p || '0').replace(/[^0-9.]/g, '')) || 0;
+}
+
+function sortItems(items, by) {
+  const arr = items.slice();
+  switch (by) {
+    case 'price_asc':  arr.sort((a, b) => parsePriceNum(a.price || a.unit_price) - parsePriceNum(b.price || b.unit_price)); break;
+    case 'price_desc': arr.sort((a, b) => parsePriceNum(b.price || b.unit_price) - parsePriceNum(a.price || a.unit_price)); break;
+    case 'name':       arr.sort((a, b) => (a.name || a.product_name || '').localeCompare(b.name || b.product_name || '')); break;
+    case 'date':
+    default:           arr.sort((a, b) => (new Date(b.addedAt || b.created_at || 0).getTime()) - (new Date(a.addedAt || a.created_at || 0).getTime()));
+  }
+  return arr;
+}
+
+function setSortAndLoad(btn) {
+  document.querySelectorAll('.filter-tab[data-sort]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSort = btn.getAttribute('data-sort') || 'date';
+  loadWishlist();
+}
+
+function updateCountLabel(count) {
+  const lbl = document.getElementById('wishlist-count-label');
+  if (lbl) lbl.textContent = count > 0 ? '(' + count + ' items)' : '';
+}
+
 function renderWishlistItems(items) {
   const container  = document.getElementById('products-container');
   const emptyState = document.getElementById('empty-state');
   if (!container) return;
 
-  if (!items || !items.length) {
+  const sorted = sortItems(items, currentSort);
+
+  if (!sorted || !sorted.length) {
     container.innerHTML = '';
     if (emptyState) emptyState.style.display = 'block';
+    updateCountLabel(0);
     return;
   }
   if (emptyState) emptyState.style.display = 'none';
+  updateCountLabel(sorted.length);
 
-  container.innerHTML = items.map(item => {
+  container.innerHTML = sorted.map(item => {
     const id      = item.id || item.product_id;
     const name    = escHtml(item.name || item.product_name || 'Product');
     const price   = item.price ? '$' + parseFloat(item.price).toFixed(2) : (item.unit_price ? '$' + parseFloat(item.unit_price).toFixed(2) : '');
@@ -183,22 +221,25 @@ function renderWishlistItems(items) {
       ? `<img src="${img}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`
       : `<span style="font-size:1.2rem;font-weight:700;color:#fff">${name.substring(0,2).toUpperCase()}</span>`;
     const supplier = escHtml(item.supplier_name || item.supplier || '');
+    const safeId   = escHtml(String(id));
+    const addedDate = item.addedAt ? new Date(item.addedAt).toLocaleDateString() : (item.created_at ? new Date(item.created_at).toLocaleDateString() : '');
     return `
-    <div class="product-card" id="card-${escHtml(String(id))}">
+    <div class="product-card" id="card-${safeId}">
       <div class="product-img" style="background:#0052CC;display:flex;align-items:center;justify-content:center">${imgHtml}</div>
       <div class="product-name">${name}</div>
       ${supplier ? `<div class="product-supplier"><a href="#">${supplier}</a></div>` : ''}
       ${price ? `<div class="product-price">${price}</div>` : ''}
+      ${addedDate ? `<div class="product-moq" style="text-align:center;font-size:.73rem;color:#94a3b8">Added: ${addedDate}</div>` : ''}
       <div class="price-alert-row">
         <label class="toggle-switch">
-          <input type="checkbox" ${alertStates[id] ? 'checked' : ''} onchange="alertStates['${escHtml(String(id))}'] = this.checked"/>
+          <input type="checkbox" ${alertStates[id] ? 'checked' : ''} onchange="alertStates['${safeId}'] = this.checked"/>
           <span class="toggle-slider"></span>
         </label>
         Price Drop Alert
       </div>
       <div class="card-actions">
-        <button class="btn btn-primary btn-sm" onclick="moveToCart('${escHtml(String(id))}','${name}','${price}','${img}')"><i class="fas fa-cart-plus"></i> Move to Cart</button>
-        <button class="btn-danger-icon" title="Remove" onclick="removeFromWishlist('${escHtml(String(id))}')"><i class="fas fa-times"></i></button>
+        <button class="btn btn-primary btn-sm" onclick="moveToCart('${safeId}','${name}','${price}','${img}')"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+        <button class="btn-danger-icon" title="Remove" onclick="removeFromWishlist('${safeId}')"><i class="fas fa-times"></i></button>
       </div>
     </div>`;
   }).join('');
@@ -235,19 +276,23 @@ async function loadWishlist() {
   } catch(_) {
     if (emptyState) emptyState.style.display = 'block';
     container.innerHTML = '';
+    updateCountLabel(0);
   }
 }
 
 async function removeFromWishlist(id) {
   const card = document.getElementById('card-' + id);
-  if (card) card.style.opacity = '0.4';
+  if (card) {
+    card.style.transition = 'opacity .3s, transform .3s';
+    card.style.opacity = '0.4';
+  }
 
   const token = getToken();
   let removed = false;
   if (token) {
     try {
       const API_BASE = (window.GLOBEX_CONFIG?.API_BASE_URL) || '/api/v1';
-      const res = await fetch(`${API_BASE}/wishlist/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/wishlist/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) removed = true;
     } catch(_) {}
   }
@@ -260,12 +305,18 @@ async function removeFromWishlist(id) {
     } catch(_) {}
   }
 
-  loadWishlist();
+  if (card) {
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => loadWishlist(), 300);
+  } else {
+    loadWishlist();
+  }
 }
 
 function moveToCart(id, name, price, image) {
   if (typeof addToCart === 'function') {
-    addToCart({ id, name, price: parseFloat((price || '0').replace('$', '')), image, quantity: 1 });
+    addToCart({ id, name, price: parsePriceNum(price), image, quantity: 1 });
   }
   const card = document.getElementById('card-' + id);
   if (card) {
@@ -278,12 +329,32 @@ function moveToCart(id, name, price, image) {
   }
 }
 
+function moveAllToCart() {
+  const cards = document.querySelectorAll('#products-container .product-card[id^="card-"]');
+  let count = 0;
+  cards.forEach(card => {
+    const id = card.id.replace('card-', '');
+    const name = card.querySelector('.product-name')?.textContent?.trim() || '';
+    const price = card.querySelector('.product-price')?.textContent?.trim() || '0';
+    const img = card.querySelector('img')?.src || '';
+    if (typeof addToCart === 'function') {
+      addToCart({ id, name, price: parsePriceNum(price), image: img, quantity: 1 });
+      count++;
+    }
+  });
+  if (count > 0 && typeof showToast === 'function') {
+    showToast(count + ' items moved to cart!', 'success');
+  } else if (count === 0) {
+    if (typeof showToast === 'function') showToast('No items to move', 'info');
+  }
+}
+
 function shareWishlist() {
   if (navigator.clipboard) navigator.clipboard.writeText(window.location.href);
-  const btn = document.querySelector('.btn-outline');
+  const btn = document.querySelector('[onclick="shareWishlist()"]');
   if (btn) {
     btn.innerHTML = '<i class="fas fa-check"></i> Link Copied!';
-    setTimeout(() => { btn.innerHTML = '<i class="fas fa-share-alt"></i> Share Wishlist'; }, 1800);
+    setTimeout(() => { btn.innerHTML = '<i class="fas fa-share-alt"></i> Share'; }, 1800);
   }
 }
 
