@@ -335,7 +335,7 @@ const PaymentManager = {
 
   // Format card number input: groups of 4 digits separated by spaces
   formatCardNumber(input) {
-    const digits = input.value.replace(/\D/g, '').slice(0, 16);
+    const digits = input.value.replace(/\D/g, '').slice(0, 19);
     input.value = digits.replace(/(.{4})/g, '$1 ').trim();
   },
 
@@ -398,10 +398,14 @@ const PaymentManager = {
     if (checked) {
       this.selectedMethod = checked.id.replace('pay-', '');
     }
+    // Attach change listeners only once using a data attribute guard
     document.querySelectorAll('input[name="payment"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        this.selectedMethod = radio.id.replace('pay-', '');
-      });
+      if (!radio.dataset.pmListenerAttached) {
+        radio.dataset.pmListenerAttached = '1';
+        radio.addEventListener('change', () => {
+          this.selectedMethod = radio.id.replace('pay-', '');
+        });
+      }
     });
   },
 };

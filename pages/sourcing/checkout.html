@@ -866,11 +866,15 @@
   document.addEventListener('DOMContentLoaded', function() {
     populateCartSummary();
     // Initialize card formatting once PaymentManager is available
+    var pmInitAttempts = 0;
     var pmInitInterval = setInterval(function() {
+      pmInitAttempts++;
       if (window.PaymentManager) {
         window.PaymentManager.syncMethod();
         window.PaymentManager.initCardFormatting();
         clearInterval(pmInitInterval);
+      } else if (pmInitAttempts >= 100) {
+        clearInterval(pmInitInterval); // Stop after 5 seconds if module never loads
       }
     }, 50);
     // Load real shipping rates from API when country changes or on load
