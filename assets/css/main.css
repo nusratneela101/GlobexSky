@@ -5185,3 +5185,181 @@ footer img[alt*="Logo"] {
   left: 8px;
   z-index: 5;
 }
+
+/* ── Dark Mode Toggle Button ── */
+.dark-mode-toggle {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--gray-700, #6b7280);
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.dark-mode-toggle:hover { background: var(--light-secondary, #e8ecf4); }
+[data-theme="dark"] .dark-mode-toggle:hover { background: var(--gray-200, #1e2530); }
+.dark-mode-toggle .light-icon { display: none; }
+.dark-mode-toggle .dark-icon { display: inline; }
+[data-theme="dark"] .dark-mode-toggle .dark-icon { display: none; }
+[data-theme="dark"] .dark-mode-toggle .light-icon { display: inline; color: #f59e0b; }
+
+/* ── Notification Bell ── */
+.nav-notif { position: relative; }
+.nav-notif-btn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--gray-700, #6b7280);
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-notif-btn:hover { background: var(--light-secondary, #e8ecf4); }
+[data-theme="dark"] .nav-notif-btn:hover { background: var(--gray-200, #1e2530); }
+.notif-badge {
+  position: absolute;
+  top: 0; right: 0;
+  min-width: 16px; height: 16px;
+  background: #ef4444; color: #fff;
+  border-radius: 9999px;
+  font-size: 0.65rem; font-weight: 700;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 3px;
+}
+.nav-notif-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  background: var(--white, #fff);
+  border: 1px solid var(--light-tertiary, #dde2ee);
+  border-radius: var(--radius-lg, 0.75rem);
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  display: none;
+}
+.nav-notif-dropdown.open { display: block; }
+[data-theme="dark"] .nav-notif-dropdown {
+  background: #161b22;
+  border-color: #30363d;
+}
+.nav-notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--light-tertiary, #dde2ee);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+[data-theme="dark"] .nav-notif-header { border-color: #30363d; }
+.nav-notif-mark-all {
+  background: none; border: none; cursor: pointer;
+  color: var(--primary, #0052cc); font-size: 0.75rem;
+}
+.nav-notif-list { max-height: 300px; overflow-y: auto; }
+.nav-notif-item {
+  display: flex; gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--light-secondary, #e8ecf4);
+  cursor: pointer; transition: background 0.15s;
+}
+.nav-notif-item:hover { background: var(--light, #f4f6fa); }
+[data-theme="dark"] .nav-notif-item { border-color: #21262d; }
+[data-theme="dark"] .nav-notif-item:hover { background: #1e2530; }
+.nav-notif-item.unread { background: #eff6ff; }
+[data-theme="dark"] .nav-notif-item.unread { background: #1e2d40; }
+.nav-notif-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-notif-content { flex: 1; min-width: 0; }
+.nav-notif-text { font-size: 0.8rem; color: var(--dark, #0a0e27); margin-bottom: 4px; }
+[data-theme="dark"] .nav-notif-text { color: #c9d1d9; }
+.nav-notif-time { font-size: 0.7rem; color: var(--gray-500, #6b7280); }
+.nav-notif-empty { padding: 24px; text-align: center; color: var(--gray-500, #6b7280); font-size: 0.875rem; }
+.nav-notif-footer { padding: 10px 16px; border-top: 1px solid var(--light-secondary, #e8ecf4); text-align: center; }
+[data-theme="dark"] .nav-notif-footer { border-color: #30363d; }
+.nav-notif-footer a { font-size: 0.8rem; color: var(--primary, #0052cc); text-decoration: none; }
+
+/* ── Extended Dark Mode ── */
+[data-theme="dark"] .section,
+[data-theme="dark"] .hero {
+  background-color: #0d1117;
+}
+[data-theme="dark"] .section-alt,
+[data-theme="dark"] .categories-section,
+[data-theme="dark"] .stats-section {
+  background-color: #161b22;
+}
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .supplier-card,
+[data-theme="dark"] .feature-card {
+  background-color: #161b22;
+  border-color: #30363d;
+}
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
+  color: #f0f6fc;
+}
+[data-theme="dark"] .text-muted, [data-theme="dark"] .text-secondary {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .admin-sidebar {
+  background-color: #0d1117;
+  border-color: #21262d;
+}
+[data-theme="dark"] .admin-header {
+  background-color: #161b22;
+  border-color: #30363d;
+}
+[data-theme="dark"] .admin-content {
+  background-color: #0d1117;
+}
+[data-theme="dark"] .stats-card {
+  background-color: #161b22;
+  border-color: #30363d;
+}
+[data-theme="dark"] .supplier-sidebar,
+[data-theme="dark"] .account-sidebar {
+  background-color: #161b22;
+  border-color: #30363d;
+}
+[data-theme="dark"] .footer,
+[data-theme="dark"] .site-footer {
+  background-color: #010409 !important;
+  border-color: #21262d;
+}
+[data-theme="dark"] input, [data-theme="dark"] textarea, [data-theme="dark"] select {
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .btn-outline {
+  border-color: #30363d;
+  color: #c9d1d9;
+}
+[data-theme="dark"] .nav-select {
+  background-color: #161b22;
+  color: #c9d1d9;
+  border-color: #30363d;
+}
+[data-theme="dark"] .chart-container {
+  background-color: #161b22;
+  border-color: #30363d;
+}
+/* Smooth theme transition */
+body, .navbar, .card, .card-base, .modal, .sidebar, .footer, .admin-sidebar,
+.product-card, .supplier-card, .stats-card, input, textarea, select {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+}
